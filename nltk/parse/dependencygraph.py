@@ -14,6 +14,7 @@ The input is assumed to be in Malt-TAB format
 (https://stp.lingfil.uu.se/~nivre/research/MaltXML.html).
 """
 
+import operator
 import os
 import subprocess
 import warnings
@@ -177,9 +178,12 @@ class DependencyGraph:
         # a word/relation carrying a quote or newline cannot break out of a label
         # and corrupt the graph (CWE-116; graphviz has no code execution).
         def _dot_escape(text):
+            text = str.__str__(text) if isinstance(text, str) else str(text)
+            if "\x00" in text:
+                # a C string ends at NUL: Graphviz would drop the rest of the label
+                raise ValueError("DependencyGraph labels cannot contain NUL: %r" % text)
             return (
-                str(text)
-                .replace("\\", "\\\\")
+                text.replace("\\", "\\\\")
                 .replace('"', '\\"')
                 .replace("\n", "\\n")
                 .replace("\r", "\\r")
@@ -191,18 +195,28 @@ class DependencyGraph:
         s += "node [shape=plaintext]\n"
 
         # An address or dependency index is interpolated bare (a DOT node id),
-        # so only a real integer may stand there: a string would be a
-        # different node id, or DOT syntax of its own (CWE-116).
+        # so only an integer may stand there: a string would be a different
+        # node id, or DOT syntax of its own (CWE-116). operator.index admits
+        # every integer type (numpy included) and refuses bool and everything else.
         def _dot_address(value):
-            if isinstance(value, bool) or not isinstance(value, int):
+            if isinstance(value, bool):
                 raise ValueError(
                     "DependencyGraph addresses must be integers to render as "
                     "DOT node ids, not %r" % (value,)
                 )
-            return value
+            try:
+                return operator.index(value)
+            except TypeError:
+                raise ValueError(
+                    "DependencyGraph addresses must be integers to render as "
+                    "DOT node ids, not %r" % (value,)
+                ) from None
 
-        # Draw the remaining nodes
-        for node in sorted(self.nodes.values(), key=lambda v: v["address"]):
+        # Draw the remaining nodes (addresses are judged before they are sorted,
+        # so a non-integer one is refused here and never reaches the sort)
+        for node in sorted(
+            self.nodes.values(), key=lambda v: _dot_address(v["address"])
+        ):
             address = _dot_address(node["address"])
             s += '\n{} [label="{} ({})"]'.format(
                 address,

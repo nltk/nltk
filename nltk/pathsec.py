@@ -334,10 +334,13 @@ def has_line_unsafe_char(token, allow_tab=False):
         return any(
             (b < 0x20 or b == 0x7F) and not (allow_tab and b == 0x09) for b in token
         )
+    # Judge the real characters: a str subclass can lie in __iter__ and
+    # __contains__, and str.__str__ copies the text out without consulting it.
+    text = str.__str__(token) if isinstance(token, str) else str(token)
     return any(
         unicodedata.category(ch) in _LINE_UNSAFE_CATEGORIES
         and not (allow_tab and ch == "\t")
-        for ch in token
+        for ch in text
     )
 
 
