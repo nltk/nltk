@@ -50,7 +50,7 @@ def test_hunpos_refuses_untrusted_binary(tmp_path, monkeypatch):
     os.chmod(binp, 0o755)
     os.chmod(install, 0o777)  # world-writable: another user could swap the binary
 
-    monkeypatch.setattr(hp, "find_binary", lambda *a, **k: str(binp))
+    monkeypatch.setattr(hp, "find_binary_absolute", lambda *a, **k: str(binp))
     monkeypatch.setattr(hp, "find_file", lambda p, **k: model)
     with pytest.raises(LookupError):
         hp.HunposTagger("en_wsj.model")
@@ -68,7 +68,7 @@ def test_hunpos_trusted_binary_reaches_spawn_with_scrubbed_env(monkeypatch):
     os.chmod(binp, 0o755)
 
     monkeypatch.setenv("LD_PRELOAD", "/evil.so")
-    monkeypatch.setattr(hp, "find_binary", lambda *a, **k: binp)
+    monkeypatch.setattr(hp, "find_binary_absolute", lambda *a, **k: binp)
     monkeypatch.setattr(hp, "find_file", lambda p, **k: model)
 
     calls = []
@@ -185,7 +185,7 @@ def test_group_or_world_writable_model_is_refused(monkeypatch):
     binp = _staged_binary(base)
     model = _model_in_root(base)
     os.chmod(model, 0o666)  # world-writable: attacker could swap the model bytes
-    monkeypatch.setattr(hp, "find_binary", lambda *a, **k: binp)
+    monkeypatch.setattr(hp, "find_binary_absolute", lambda *a, **k: binp)
     monkeypatch.setattr(hp, "find_file", lambda p, **k: model)
     with pytest.raises(PermissionError):
         hp.HunposTagger("en_wsj.model")
@@ -201,7 +201,7 @@ def test_oversize_model_is_refused(monkeypatch):
     with open(model, "wb") as fh:
         fh.write(b"x" * 4096)  # over the 1024-byte cap below
     monkeypatch.setattr(hp, "MAX_TOOL_MODEL_BYTES", 1024)
-    monkeypatch.setattr(hp, "find_binary", lambda *a, **k: binp)
+    monkeypatch.setattr(hp, "find_binary_absolute", lambda *a, **k: binp)
     monkeypatch.setattr(hp, "find_file", lambda p, **k: model)
     with pytest.raises(PermissionError):
         hp.HunposTagger("en_wsj.model")

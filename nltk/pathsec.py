@@ -142,7 +142,7 @@ def is_private_dir(path):
     """
     try:
         st = os.stat(path)
-    except OSError:
+    except (OSError, ValueError):
         return False
     if not stat.S_ISDIR(st.st_mode):
         return False
@@ -175,14 +175,11 @@ def _resolve_private(path, _hops=0):
     """
     if _hops > _MAX_LINK_HOPS:
         return None
-    try:
-        text = os.fspath(path)
-    except TypeError:
-        return None  # not a path-like at all (int, None, list, ...)
+    text = _plain_path_text(path)
     # Only an absolute, NUL-free path is resolvable. A relative path resolves
     # against the attacker-controllable CWD; a '..' is refused, not folded, since
     # os.path.abspath collapses it lexically before symlinks resolve (skips a link).
-    if not isinstance(text, str) or "\x00" in text or not os.path.isabs(text):
+    if text is None or "\x00" in text or not os.path.isabs(text):
         return None
     cur = os.sep
     for part in text.split(os.sep):
@@ -195,7 +192,7 @@ def _resolve_private(path, _hops=0):
         nxt = os.path.join(cur, part)
         try:
             st = os.lstat(nxt)
-        except OSError:
+        except (OSError, ValueError):
             return None
         if stat.S_ISLNK(st.st_mode):
             try:
@@ -237,11 +234,33 @@ def resolve_trusted_executable(target):
         return None
     try:
         st = os.stat(real)
-    except OSError:
+    except (OSError, ValueError):
         return None
     if not stat.S_ISREG(st.st_mode) or not _private_stat(st):
         return None
     return real
+
+
+def _plain_path_text(value):
+    """The real characters of a ``str`` path-like *value* as an exact ``str``,
+    or None if it is not a str path (int, None, list, and bytes, which the
+    trusted resolvers have always refused: the finder decodes a bytes location
+    before it gets here).
+
+    ``os.fspath`` hands a ``str`` subclass back unchanged, so a subclass that
+    overrides ``startswith``, ``__contains__`` or ``__getitem__`` would answer
+    the trust checks with lies; copying out with ``str.__str__`` (which ignores
+    a ``__str__`` override) makes every check run on the real value, exactly as
+    :func:`_as_path_text` does for the data-path guards."""
+    try:
+        text = os.fspath(value)
+    except TypeError:
+        return None
+    if not isinstance(text, str):
+        return None
+    if type(text) is not str:
+        text = str.__str__(text)
+    return text
 
 
 def _resolve_trusted_nonposix(target):
@@ -255,10 +274,13 @@ def _resolve_trusted_nonposix(target):
     find_binary_iter refuses a CWD-relative match and spawn_trusted refuses a
     shell and scrubs the loader environment. No environment-derived root allowlist
     is consulted (that is not a trust boundary)."""
+    text = _plain_path_text(target)
+    if text is None or "\x00" in text:
+        return None
     try:
-        real = os.path.realpath(target)
+        real = os.path.realpath(text)
         st = os.stat(real)
-    except OSError:
+    except (OSError, ValueError):
         return None
     return real if stat.S_ISREG(st.st_mode) else None
 
@@ -674,9 +696,12 @@ def _as_path_text(value, context, error=ValueError):
         ) from exc
     if isinstance(text, bytes):
         # A bytes path is a legal spelling on POSIX, so decode it rather than
-        # refusing; every check below then runs on the decoded characters.
+        # refusing. os.fsdecode would call the value's own decode(), which a bytes
+        # subclass can override; the unbound bytes.decode reads the real bytes.
         try:
-            text = os.fsdecode(text)
+            text = bytes.decode(
+                text, sys.getfilesystemencoding(), sys.getfilesystemencodeerrors()
+            )
         except (UnicodeDecodeError, ValueError) as exc:
             raise error(
                 f"Security Violation [{context}]: {text!r} is not decodable as a "

@@ -16,6 +16,7 @@ import subprocess
 import nltk
 from nltk import redos
 from nltk.inference.api import BaseProverCommand, Prover
+from nltk.internals import find_binary_absolute
 from nltk.pathsec import TrustError, spawn_trusted
 from nltk.sem.logic import (
     AllExpression,
@@ -127,7 +128,11 @@ class Prover9Parent:
             self._prover9_bin = None
         else:
             name = "prover9"
-            self._prover9_bin = nltk.internals.find_binary(
+            # Accept only an absolute binary: a relative binary_location yields a
+            # CWD-relative path that _call()'s Popen would execute without
+            # consulting $PATH, so a planted "prover9" there would run (untrusted
+            # search path, CWE-426/CWE-427). Boxer/Malt/REPP refuse it the same way.
+            self._prover9_bin = find_binary_absolute(
                 name,
                 path_to_bin=binary_location,
                 env_vars=["PROVER9"],
@@ -135,7 +140,7 @@ class Prover9Parent:
                 binary_names=[name, name + ".exe"],
                 verbose=verbose,
             )
-            self._binary_location = self._prover9_bin.rsplit(os.path.sep, 1)
+            self._binary_location = os.path.dirname(self._prover9_bin)
 
     def prover9_input(self, goal, assumptions):
         """
@@ -177,7 +182,7 @@ class Prover9Parent:
         binary_locations = self.binary_locations()
         if self._binary_location is not None:
             binary_locations += [self._binary_location]
-        return nltk.internals.find_binary(
+        return find_binary_absolute(
             name,
             searchpath=binary_locations,
             env_vars=["PROVER9"],
