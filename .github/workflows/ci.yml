@@ -371,6 +371,24 @@ jobs:
             pytest --numprocesses auto -rsx --doctest-modules nltk
           fi
 
+  docker-cross-account:
+    name: Docker root build, appuser runtime (#3928)
+    # The reporter's shape run for real: a python:3.11-slim image built from
+    # this checkout downloads the data as root and runs as an unprivileged
+    # user that must be served the extracted files, never the private archive.
+    needs: [changes]
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the image from this checkout and run it as appuser
+        run: |
+          set -euo pipefail
+          docker build -t nltk-3928 -f .github/docker/cross-account.Dockerfile .
+          docker run --rm nltk-3928
+
   advisory-coverage:
     name: Advisory coverage (GitHub)
     # The only job that pulls the live advisory list, so the only one that hits
