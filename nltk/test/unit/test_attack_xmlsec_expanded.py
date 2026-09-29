@@ -29,6 +29,7 @@ characters are built with chr().
 """
 
 import copy
+import gc
 import importlib
 import io
 import os
@@ -136,17 +137,47 @@ def count_attributes(root):
     return sum(len(element.attrib) for element in root.iter())
 
 
+_snapshot = None
+
+
 def peak_of(fn, *args):
-    """Run under tracemalloc; return (outcome or exception, peak bytes)."""
+    """Run under tracemalloc; return (outcome or exception, peak bytes).
+
+    Garbage left by earlier tests is collected first, so a finaliser it would
+    otherwise run inside the traced window (a writer flushing, a directory
+    being reaped) is not charged to *fn*: the trace starts on a quiet heap and
+    the peak is fn's own. Tracing must not already be running, or the peak
+    would include whatever the earlier tracer saw. A peak past one MiB keeps a
+    snapshot so ``where`` can say which lines allocated it.
+    """
+    global _snapshot
+    gc.collect()
+    assert not tracemalloc.is_tracing(), "an earlier test left tracemalloc running"
     tracemalloc.start()
     try:
         try:
             outcome = fn(*args)
         except Exception as exc:  # the outcome IS the refusal
             outcome = exc
-        return outcome, tracemalloc.get_traced_memory()[1]
+        peak = tracemalloc.get_traced_memory()[1]
+        _snapshot = tracemalloc.take_snapshot() if peak > MiB else None
+        return outcome, peak
     finally:
         tracemalloc.stop()
+
+
+def where(peak, note=""):
+    """An assertion message naming the largest allocation sites of the last peak."""
+    text = f"peak {peak} bytes"
+    if note:
+        text += f" ({note})"
+    if _snapshot is not None:
+        top = _snapshot.statistics("lineno")[:5]
+        text += "; largest: " + "; ".join(
+            f"{stat.size} B at {stat.traceback[0].filename}:{stat.traceback[0].lineno}"
+            for stat in top
+        )
+    return text
 
 
 def assert_refused_small(module, fn, doc, *args):
@@ -157,7 +188,7 @@ def assert_refused_small(module, fn, doc, *args):
     assert isinstance(outcome, module.StructureForbidden), outcome
     assert isinstance(outcome, ValueError)
     budget = (module.MAX_EXPANSION + 4) * len(doc) + 2 * MiB
-    assert peak <= budget, f"peak {peak} for a {len(doc)} byte document"
+    assert peak <= budget, where(peak, f"for a {len(doc)} byte document")
     return outcome
 
 
@@ -230,7 +261,7 @@ class TestAmplifiers:
     def test_a_merely_malformed_document_is_deferred_to_the_parser(self, backend):
         outcome, peak = peak_of(backend.fromstring, "<a><b></a>")
         assert isinstance(outcome, ParseError), outcome
-        assert peak < MiB
+        assert peak < MiB, where(peak)
 
 
 # ===========================================================================
@@ -294,7 +325,7 @@ class TestDepthAndTokens:
         assert isinstance(outcome, backend.StructureForbidden), outcome
         # depth is judged on the built tree, so the peak is the tree (linear
         # in the input, about 40x), never the crash that would follow
-        assert peak < 64 * MiB
+        assert peak < 64 * MiB, where(peak)
         tree_outcome, _ = peak_of(backend.parse, io.StringIO(doc))
         assert isinstance(tree_outcome, backend.StructureForbidden)
 
@@ -314,7 +345,7 @@ class TestDepthAndTokens:
         outcome, peak = peak_of(backend.fromstring, doc)
         assert isinstance(outcome, backend.StructureForbidden), outcome
         assert "markup token" in str(outcome)
-        assert peak < 8 * MiB
+        assert peak < 8 * MiB, where(peak)
         outcome, _ = peak_of(backend.parse, io.BytesIO(doc.encode()))
         assert isinstance(outcome, backend.StructureForbidden), outcome
 
@@ -629,7 +660,7 @@ class TestCallers:
         write_in(base / "cldr", "common-subdivisions-en.xml", attack)
         outcome, peak = peak_of(BCP47CorpusReader, str(base), r"(cldr|iana)/*")
         assert isinstance(outcome, xmlsec.StructureForbidden), outcome
-        assert peak < 4 * MiB, f"peak {peak} for an {len(attack)} byte file"
+        assert peak < 4 * MiB, where(peak, f"for an {len(attack)} byte file")
         write_in(base / "cldr", "common-subdivisions-en.xml", benign)
         reader = BCP47CorpusReader(str(base), r"(cldr|iana)/*")
         assert len(reader.subdiv) == 2000 and reader.subdiv["t7"] == "name 7"
@@ -648,7 +679,7 @@ class TestCallers:
             lambda: list(load_ace_file(str(base / "doc.sgm"), "binary"))
         )
         assert isinstance(outcome, xmlsec.StructureForbidden), outcome
-        assert peak < 8 * MiB, f"peak {peak} for a {len(attack)} byte file"
+        assert peak < 8 * MiB, where(peak, f"for a {len(attack)} byte file")
 
     def test_named_entity_ace_loader_still_reads_a_benign_file(self, pathsec_sandbox):
         from nltk.chunk.named_entity import load_ace_file
@@ -681,10 +712,10 @@ class TestCallers:
         doc = AMPLIFIERS["dtd-defaults-200x2000"]
         outcome, peak = peak_of(ElementWrapper, doc)
         assert isinstance(outcome, xmlsec.StructureForbidden), outcome
-        assert peak < 2 * MiB
+        assert peak < 2 * MiB, where(peak)
         outcome, peak = peak_of(ElementWrapper, AMPLIFIERS["namespace-element-names"])
         assert isinstance(outcome, xmlsec.StructureForbidden), outcome
-        assert peak < 4 * MiB
+        assert peak < 4 * MiB, where(peak)
         wrapped = ElementWrapper("<test><e a='1'>x</e></test>")
         assert wrapped.find("e").get("a") == "1" and wrapped.unwrap().tag == "test"
         assert str(wrapped).endswith('<test><e a="1">x</e></test>')
@@ -702,7 +733,7 @@ class TestCallers:
         path = write_in(root, "package.xml", doc)
         outcome, peak = peak_of(Package.fromxml, path)
         assert isinstance(outcome, xmlsec.StructureForbidden), outcome
-        assert peak < 2 * MiB
+        assert peak < 2 * MiB, where(peak)
 
 
 # ===========================================================================

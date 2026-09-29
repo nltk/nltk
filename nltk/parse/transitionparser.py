@@ -8,6 +8,7 @@
 
 import pickle
 import tempfile
+from collections import deque
 from copy import deepcopy
 from operator import itemgetter
 from os import remove
@@ -113,7 +114,9 @@ class Configuration:
         """
         # dep_graph.nodes contain list of token for a sentence
         self.stack = [0]  # The root element
-        self.buffer = list(range(1, len(dep_graph.nodes)))  # The rest is in the buffer
+        # A deque lets shift/right-arc consume the front in O(1) (CWE-407);
+        # index/len/setitem semantics used elsewhere are unchanged.
+        self.buffer = deque(range(1, len(dep_graph.nodes)))  # The rest is in the buffer
         self.arcs = []  # empty set of arc
         self._tokens = dep_graph.nodes
         self._max_address = len(self.buffer)
@@ -123,7 +126,7 @@ class Configuration:
             "Stack : "
             + str(self.stack)
             + "  Buffer : "
-            + str(self.buffer)
+            + str(list(self.buffer))
             + "   Arcs : "
             + str(self.arcs)
         )
@@ -316,7 +319,7 @@ class Transition:
             conf.arcs.append((idx_wi, relation, idx_wj))
         else:  # arc-eager
             idx_wi = conf.stack[len(conf.stack) - 1]
-            idx_wj = conf.buffer.pop(0)
+            idx_wj = conf.buffer.popleft()
             conf.stack.append(idx_wj)
             conf.arcs.append((idx_wi, relation, idx_wj))
 
@@ -352,7 +355,7 @@ class Transition:
         """
         if len(conf.buffer) <= 0:
             return -1
-        idx_wi = conf.buffer.pop(0)
+        idx_wi = conf.buffer.popleft()
         conf.stack.append(idx_wi)
 
 
@@ -697,19 +700,15 @@ class TransitionParser(ParserI):
 
                     if y_pred in self._match_transition:
                         strTransition = self._match_transition[y_pred]
-                        baseTransition = strTransition.split(":")[0]
+                        # Split on the first colon only: a relation label may
+                        # itself carry one (Universal Dependencies "nmod:poss").
+                        baseTransition, _, relation = strTransition.partition(":")
 
                         if baseTransition == Transition.LEFT_ARC:
-                            if (
-                                operation.left_arc(conf, strTransition.split(":")[1])
-                                != -1
-                            ):
+                            if operation.left_arc(conf, relation) != -1:
                                 break
                         elif baseTransition == Transition.RIGHT_ARC:
-                            if (
-                                operation.right_arc(conf, strTransition.split(":")[1])
-                                != -1
-                            ):
+                            if operation.right_arc(conf, relation) != -1:
                                 break
                         elif baseTransition == Transition.REDUCE:
                             if operation.reduce(conf) != -1:
