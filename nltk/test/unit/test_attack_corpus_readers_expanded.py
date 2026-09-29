@@ -6,8 +6,8 @@
 """The corpus readers this branch changes, driven with hostile and benign input
 and judged against reference implementations and against Python's own XML
 parser on the same bytes: the CoNLL SRL predicate index (GHSA-v8f3), the TIMIT
-phone-tree walk, the XML corpus view's read window, and the XML view's
-entity refusal. The real corpora are read as documented.
+phone-tree walk, the XML corpus view's read window, and every reader's XML
+parse routed through nltk.xmlsec. The real corpora are read as documented.
 Nothing is mocked."""
 
 import io
@@ -350,9 +350,29 @@ class TestXMLCorpusView:
         with pytest.raises(Exception) as exc:
             reader.xml("bomb.xml")
         assert type(exc.value).__name__ == "EntitiesForbidden"
+        with pytest.raises(ValueError, match="nesting depth"):
+            reader.xml("deep.xml")
         with pytest.raises(Exception) as exc:
             list(reader.words("bomb.xml"))
         assert type(exc.value).__name__ == "EntitiesForbidden"
+
+    def test_every_xml_reader_parses_through_xmlsec(self):
+        import nltk.xmlsec
+        from nltk.corpus.reader import (
+            bnc,
+            childes,
+            nombank,
+            propbank,
+            semcor,
+            senseval,
+            xmldocs,
+        )
+
+        for module in (bnc, childes, nombank, propbank, semcor, senseval, xmldocs):
+            for name in ("safe_parse", "safe_fromstring"):
+                fn = getattr(module, name, None)
+                if fn is not None:
+                    assert fn.__module__ == "nltk.xmlsec", (module.__name__, name)
 
     def test_the_real_xml_corpora_read_as_documented(self):
         _needs(
