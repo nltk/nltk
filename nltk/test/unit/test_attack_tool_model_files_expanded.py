@@ -1507,11 +1507,16 @@ def _real_segmenter_install():
     return None
 
 
-def _configure_java(monkeypatch):
+def _configure_real_tool(monkeypatch):
+    """A real run uses the REAL ``nltk.data.path``, so isolate the process-wide
+    scratch cache: the ``staging_tempdir()`` the wrapper allocates under that
+    path is released on teardown instead of being handed to a later test that
+    sandboxes a single throwaway root and expects its scratch file inside it."""
     jdk = "/Users/alvas/nltk_tools/jdk/jdk-21.0.12.1+1/Contents/Home"
     if not os.environ.get("JAVA_HOME") and os.path.isdir(jdk):
         monkeypatch.setenv("JAVA_HOME", jdk)
     monkeypatch.setattr(internals, "_java_bin", None)
+    monkeypatch.setattr(nltk.data, "_STAGING_TEMPDIR", None, raising=False)
 
 
 def _private_staging_copy(staging, source, mode=0o600):
@@ -1533,7 +1538,7 @@ def test_real_stanford_tagger_private_copy_tags_and_tamperable_copy_is_refused(
     if install is None:
         pytest.skip("no Stanford POS tagger install inside a data root")
     jar, stock = install
-    _configure_java(monkeypatch)
+    _configure_real_tool(monkeypatch)
     staging = nltk.data.make_staging_dir(prefix="nltk_modelfiles_", cleanup=True)
     model = _private_staging_copy(staging, stock)
     try:
@@ -1568,7 +1573,7 @@ def test_real_stanford_segmenter_segments_through_the_guards(monkeypatch):
     if install is None:
         pytest.skip("no Stanford segmenter install inside a data root")
     jar, data = install
-    _configure_java(monkeypatch)
+    _configure_real_tool(monkeypatch)
     digest = hashlib.sha256(pathlib.Path(jar).read_bytes()).hexdigest()
     monkeypatch.setenv("NLTK_SEGMENTER_ALLOW_SHA256", digest)
     sentence = "".join(
