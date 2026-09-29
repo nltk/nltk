@@ -255,7 +255,7 @@ def test_stanford_tokenizer_input_file_staged_in_data_root(
     assert staged.startswith(os.path.realpath(str(root)) + os.sep)
 
 
-# --- StanfordSegmenter model-file guards: require_private + max_bytes -----------
+# === StanfordSegmenter model-file guards: require_private + max_bytes ===
 # The primary model/dict are files the JVM loads whole and parses, so they get the
 # same tamper/size guards as any tool model (parity with the POS tagger).
 

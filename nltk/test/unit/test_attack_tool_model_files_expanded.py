@@ -532,7 +532,7 @@ def test_crf_guard_removed_lets_the_outside_model_load(crf, monkeypatch):
     assert [word for word, _ in tagger.tag(_SENT)] == _SENT
 
 
-# --- CRFTagger.train: the native WRITE sink --------------------------------------
+# === CRFTagger.train: the native WRITE sink ===
 
 
 def test_crf_train_outside_destination_is_refused_and_not_created(crf):
@@ -998,7 +998,7 @@ def test_segmenter_mutating_pathlike_file_is_frozen(segmenter, slot):
     assert segmenter.planted not in [_fspath(a) for a in segmenter.sink["cmd"]]
 
 
-# --- the Sihan corpora dict: a DIRECTORY the JVM reads files from ----------------
+# === the Sihan corpora dict: a DIRECTORY the JVM reads files from ===
 
 
 def _ww_dir(s, name, mode=0o777):
@@ -1178,7 +1178,7 @@ def test_segmenter_sihan_private_check_removed_lets_the_tamperable_dir_through(
     assert _argv_value(segmenter.sink["cmd"], "-sighanCorporaDict") == tamperable
 
 
-# --- options=: one comma-joined argv element with path-valued entries -----------
+# === options=: one comma-joined argv element with path-valued entries ===
 
 
 @pytest.mark.parametrize(

@@ -72,10 +72,9 @@ _MAX_LINK_HOPS = 40  # ELOOP-style bound on symlink chains
 #: needed.
 MAX_TOOL_MODEL_BYTES = 512 * 1024 * 1024
 
-#: Ceiling on the entries :func:`validate_tool_dir` audits when asked for a
-#: private directory. A model directory a tool reads (the segmenter's Sihan
-#: corpora dir) holds a few dozen files, so a tree far beyond that is not one and
-#: is refused rather than walked without bound (CWE-400).
+#: Ceiling on the entries :func:`validate_tool_dir` audits for a private
+#: directory. A data directory an external tool reads holds at most a few
+#: hundred files; a far larger tree is refused, not walked unbounded (CWE-400).
 MAX_TOOL_DIR_ENTRIES = 10000
 
 # The child PATH resolves NOTHING: a single absolute, root-domain directory with
@@ -1099,15 +1098,16 @@ def validate_tool_dir(path_input, context="NLTK tool", *, require_private=False)
     NUL, option-shaped, URL, ``..``, NTFS stream, drive-relative, Windows device)
     run before containment.
 
-    With ``require_private`` the directory is one a tool READS model data from
-    (the segmenter's Sihan corpora dir), so it must exist and be a real
-    directory rather than a symlink or a Windows junction, and everything
-    beneath it must be a regular file or a subdirectory (no symlink, junction,
-    FIFO, socket or device). On POSIX it and everything beneath it must also be
-    private: owned by the caller or root with no group/world write bit.
-    Otherwise another local user could plant or swap the files the tool then
-    parses (CWE-426/CWE-732, and CWE-59 for a symlink). The walk runs on every
-    platform and is bounded by :data:`MAX_TOOL_DIR_ENTRIES`.
+    With ``require_private`` the directory is one an external tool READS its
+    data from (a model, dictionary or resource tree handed to a subprocess),
+    so it must exist and be a real directory rather than a symlink or a
+    Windows junction, and everything beneath it must be a regular file or a
+    subdirectory (no symlink, junction, FIFO, socket or device). On POSIX it
+    and everything beneath it must also be private: owned by the caller or
+    root with no group/world write bit. Otherwise another local user could
+    plant or swap the files the tool then parses (CWE-426/CWE-732, and CWE-59
+    for a symlink). The walk runs on every platform and is bounded by
+    :data:`MAX_TOOL_DIR_ENTRIES`.
     """
     text = _as_path_text(path_input, context, error=PermissionError)
     _reject_bad_name_syntax(text, context, error=PermissionError)
@@ -1145,11 +1145,9 @@ def _reject_tamperable_dir(raw, context):
         _refuse(raw, "is a junction, not the directory it names")
     if not stat.S_ISDIR(top.st_mode):
         _refuse(raw, "is not a directory")
-    # Owner/mode bits do not say who can write here off POSIX and NLTK does not
-    # assume a DACL check, so like the executable-trust layer the ownership
-    # audit stops at shape there. The bounded walk itself runs on every
-    # platform: a symlink or junction planted inside the tree, a non-regular
-    # entry and an oversized tree are refused the same way everywhere.
+    # Off POSIX the owner/mode bits do not say who can write and no DACL model
+    # is assumed, so ownership is audited on POSIX only; the bounded walk below
+    # (planted links or junctions, non-regular entries, size) runs everywhere.
     check_owner = os.name == "posix"
     if check_owner and not _private_stat(top):
         _refuse(raw, "is group/world-writable or not owned by you or root")
