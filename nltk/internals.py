@@ -7,6 +7,7 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import ast
 import fnmatch
 import locale
 import os
@@ -20,7 +21,12 @@ import warnings
 from xml.etree import ElementTree
 
 from nltk import redos
-from nltk.pathsec import _as_path_text, _reject_bad_name_syntax, validate_path
+from nltk.pathsec import (
+    _as_path_text,
+    _reject_bad_name_syntax,
+    safe_env,
+    validate_path,
+)
 from nltk.termsec import safe_print
 
 ##########################################################################
@@ -93,25 +99,37 @@ _JVM_INJECTING_ENV_VARS = frozenset(
     }
 )
 
-# Variables that redirect the dynamic loader of the child JVM (LD_PRELOAD,
-# LD_LIBRARY_PATH, LD_AUDIT on ELF; DYLD_INSERT_LIBRARIES et al. on macOS): an
-# uncontrolled library search path, CWE-427; stripped by name prefix.
+# Variables that redirect the dynamic loader or locale machinery of the child
+# JVM (LD_PRELOAD, LD_AUDIT, DYLD_INSERT_LIBRARIES, GCONV_PATH, ...): an
+# uncontrolled library search path, CWE-427; prefix families plus exact names.
 _LOADER_ENV_PREFIXES = ("LD_", "DYLD_")
+_LOADER_ENV_EXACT = frozenset({"GCONV_PATH", "LOCPATH", "NLSPATH", "IFS"})
+
+
+def _is_loader_env_var(name):
+    """True if *name* can steer the child's loader/locale and must be dropped."""
+    up = name.upper()
+    return up in _LOADER_ENV_EXACT or up.startswith(_LOADER_ENV_PREFIXES)
 
 
 def _java_child_env():
-    """Return os.environ minus the JVM-injecting variables, so the child JVM that
-    java() launches cannot pick up flags/classpath from JAVA_TOOL_OPTIONS et al.
-    (CWE-88), and minus the loader-redirect variables (LD_* / DYLD_*), so it
-    cannot be made to load a planted library either (CWE-427). Every NLTK JVM
-    launch is routed through java(), so this is the single place the child
-    environment is sanitised; everything else passes through unchanged."""
-    return {
+    """Return a sanitised environment for the child JVM that java() launches.
+
+    Drops the JVM-injecting vars (JAVA_TOOL_OPTIONS et al., CWE-88) AND the loader
+    family (LD_*, DYLD_*, GCONV_PATH, LOCPATH, NLSPATH, IFS) that could redirect
+    the dynamic linker or locale loader so it cannot be made to load a planted
+    library (CWE-427), then locks PATH to pathsec's non-writable value so the
+    child cannot resolve a planted helper by bare name (the JVM itself is
+    launched by absolute path). Benign identity vars (HOME, JAVA_HOME, ...) are
+    kept so the tools keep working. Every NLTK JVM launch routes through
+    java(), so this is the single place the child environment is scrubbed."""
+    env = {
         k: v
         for k, v in os.environ.items()
-        if k.upper() not in _JVM_INJECTING_ENV_VARS
-        and not k.upper().startswith(_LOADER_ENV_PREFIXES)
+        if k.upper() not in _JVM_INJECTING_ENV_VARS and not _is_loader_env_var(k)
     }
+    env["PATH"] = safe_env()["PATH"]
+    return env
 
 
 def _validate_java_options(options):
@@ -435,7 +453,8 @@ def java(
 
     # Resolve the JVM absolute-only before spawning: a bare "java" handed to
     # Popen is found by the OS search, which on Windows begins in the CWD
-    # (CWE-427), so java() never launches an unresolved name.
+    # (CWE-427), so java() never launches an unresolved name. The trust check
+    # on the resolved binary (GHSA-7mxv, CWE-426/427/732) is spawn_trusted's.
     if _java_bin is None:
         config_java()
     final_cmd = [_java_bin] if isinstance(_java_bin, str) else list(_java_bin)
@@ -557,12 +576,13 @@ def read_str(s, start_position):
         else:
             break
 
-    # Process it, using eval.  Strings with invalid escape sequences
-    # might raise ValueError.
+    # ast.literal_eval, never eval: it accepts only a literal, so the one quoted
+    # slice the regexes delimited cannot execute code; an invalid escape (a
+    # ValueError) or a malformed literal (a SyntaxError) is the caller's input.
     try:
-        return eval(s[start_position : match.end()]), match.end()
-    except ValueError as e:
-        raise ReadError("valid escape sequence", start_position) from e
+        return ast.literal_eval(s[start_position : match.end()]), match.end()
+    except (ValueError, SyntaxError) as e:
+        raise ReadError("valid string literal", start_position) from e
 
 
 _READ_INT_RE = redos.compile(r"-?\d+")
