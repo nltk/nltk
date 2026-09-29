@@ -1726,3 +1726,64 @@ def test_real_nltk_download_of_a_small_package_still_works(tmp_path, monkeypatch
         d.list(download_dir=str(target))
     assert_lines_clean(listing.getvalue())
     assert "[*] mwa_ppdb" in listing.getvalue()
+
+
+class TestStatusRefusesPlantedEntries:
+    """status() must report an install stale as soon as anything that is not a
+    regular file or a directory is planted in its tree. The size sum alone
+    misses a symlinked directory (never counted) and, on Windows, any link
+    (lstat size 0), which is how the dangling-link check went green there."""
+
+    def _tiny(self, box):
+        root, outside, dl, server = box
+        entries = [("tiny/", b""), ("tiny/words.txt", WORDS)]
+        assert install(server, dl, "tiny", entries)[0] is True
+        assert self._status(box) == downloader.Downloader.INSTALLED
+        return dl / "corpora" / "tiny", outside
+
+    @staticmethod
+    def _status(box):
+        # a fresh Downloader each time: status() caches per instance by design
+        root, outside, dl, server = box
+        d = downloader.Downloader(
+            server_index_url=server.url("/index.xml"), download_dir=str(dl)
+        )
+        return d.status("tiny", str(dl))
+
+    def test_a_symlinked_directory_inside_the_install_is_stale(self, box):
+        tree, outside = self._tiny(box)
+        if not hasattr(os, "symlink"):
+            pytest.skip("no symlinks")
+        try:
+            os.symlink(str(outside), str(tree / "linkdir"), target_is_directory=True)
+        except OSError:
+            pytest.skip("cannot create symlinks here")
+        assert self._status(box) == downloader.Downloader.STALE
+
+    def test_a_symlinked_file_inside_the_install_is_stale(self, box):
+        tree, outside = self._tiny(box)
+        if not hasattr(os, "symlink"):
+            pytest.skip("no symlinks")
+        (outside / "real.txt").write_bytes(b"x")
+        try:
+            os.symlink(str(outside / "real.txt"), str(tree / "alias.txt"))
+        except OSError:
+            pytest.skip("cannot create symlinks here")
+        assert self._status(box) == downloader.Downloader.STALE
+
+    @pytest.mark.skipif(not hasattr(os, "mkfifo"), reason="FIFOs are POSIX")
+    def test_a_fifo_inside_the_install_is_stale(self, box):
+        tree, _outside = self._tiny(box)
+        os.mkfifo(str(tree / "pipe"))
+        assert self._status(box) == downloader.Downloader.STALE
+
+    def test_an_extra_regular_file_is_still_stale_by_size(self, box):
+        tree, _outside = self._tiny(box)
+        (tree / "extra.txt").write_bytes(b"more")
+        assert self._status(box) == downloader.Downloader.STALE
+
+    def test_an_empty_subdirectory_does_not_change_the_verdict(self, box):
+        # a directory carries no size; a real install may hold one
+        tree, _outside = self._tiny(box)
+        (tree / "empty").mkdir()
+        assert self._status(box) == downloader.Downloader.INSTALLED

@@ -1468,13 +1468,24 @@ class Downloader:
             if not os.path.isdir(unzipdir):
                 return self.STALE
 
-            # lstat: a symlink planted in the tree counts as itself, not as its
-            # target, and a dangling one marks the install stale, not a crash.
-            unzipped_size = sum(
-                os.lstat(os.path.join(d, f)).st_size
-                for d, _, files in os.walk(unzipdir)
-                for f in files
-            )
+            # A link, junction or special entry planted in the tree is never
+            # part of an install, so it is stale outright (on Windows a link's
+            # lstat size is 0, so the size sum alone would not see it).
+            unzipped_size = 0
+            for d, dirs, files in os.walk(unzipdir):
+                for name in dirs + files:
+                    try:
+                        st = os.lstat(os.path.join(d, name))
+                    except OSError:
+                        return self.STALE
+                    if (
+                        stat.S_ISLNK(st.st_mode)
+                        or getattr(st, "st_reparse_tag", 0)
+                        or not (stat.S_ISREG(st.st_mode) or stat.S_ISDIR(st.st_mode))
+                    ):
+                        return self.STALE
+                    if stat.S_ISREG(st.st_mode):
+                        unzipped_size += st.st_size
             if unzipped_size != info.unzipped_size:
                 return self.STALE
 
