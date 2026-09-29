@@ -10,6 +10,7 @@
 import ast
 import fnmatch
 import locale
+import operator
 import os
 import re
 import stat
@@ -545,11 +546,13 @@ def read_str(s, start_position):
     :rtype: tuple(str, int)
 
     :raise ReadError: If the ``_STRING_START_RE`` regex doesn't return a
-        match in ``s`` at ``start_position``, i.e., open quote. If the
-        ``_STRING_END_RE`` regex doesn't return a match in ``s`` at the
-        end of the first match, i.e., close quote.
-    :raise ValueError: If an invalid string (i.e., contains an invalid
-        escape sequence) is passed into the ``eval``.
+        match in ``s`` at ``start_position``, i.e., open quote (a negative
+        position never does). If the ``_STRING_END_RE`` regex doesn't return
+        a match in ``s`` at the end of the first match, i.e., close quote.
+        If the delimited text is not one valid string literal (an invalid
+        escape sequence, say).
+    :raise TypeError: If ``s`` is not a ``str`` or ``start_position`` is not
+        an integer.
 
     :Example:
 
@@ -558,6 +561,19 @@ def read_str(s, start_position):
     ('Hello', 7)
 
     """
+    if not isinstance(s, str):
+        raise TypeError(f"read_str expects a str, not {type(s).__name__}")
+    # An int index only: a negative one would clamp to 0 for the regex but
+    # slice from the end below, so it is refused as "no literal starts here".
+    try:
+        start_position = operator.index(start_position)
+    except TypeError:
+        raise TypeError(
+            f"start_position must be an int, not {type(start_position).__name__}"
+        ) from None
+    if start_position < 0:
+        raise ReadError("open quote", start_position)
+
     # Read the open quote, and any modifiers.
     m = _STRING_START_RE.match(s, start_position)
     if not m:
@@ -576,13 +592,19 @@ def read_str(s, start_position):
         else:
             break
 
+    # The base slice, so a str subclass overriding __getitem__ cannot hand a
+    # different text to the parser than the one the regexes delimited.
+    literal = str.__getitem__(s, slice(start_position, match.end()))
     # ast.literal_eval, never eval: it accepts only a literal, so the one quoted
     # slice the regexes delimited cannot execute code; an invalid escape (a
     # ValueError) or a malformed literal (a SyntaxError) is the caller's input.
     try:
-        return ast.literal_eval(s[start_position : match.end()]), match.end()
+        value = ast.literal_eval(literal)
     except (ValueError, SyntaxError) as e:
         raise ReadError("valid string literal", start_position) from e
+    if type(value) is not str:
+        raise ReadError("valid string literal", start_position)
+    return value, match.end()
 
 
 _READ_INT_RE = redos.compile(r"-?\d+")
