@@ -11,7 +11,7 @@
 import subprocess
 from collections import namedtuple
 
-from nltk.internals import find_binary
+from nltk.internals import find_binary_absolute
 from nltk.pathsec import TrustError, spawn_trusted
 
 
@@ -148,10 +148,10 @@ class AlignedSent:
         dot_string = self._to_dot().encode("utf8")
         output_format = "svg"
         try:
-            # Resolve to a trusted absolute path; find_binary refuses a
-            # CWD-relative match, so a planted ./dot cannot be run in place of
-            # the real Graphviz binary (CWE-426 / CWE-427).
-            dot_binary = find_binary("dot")
+            # Resolve to an absolute path with no '..' component; a CWD-relative
+            # match is refused, so a planted ./dot cannot be run in place of the
+            # real Graphviz binary (CWE-426 / CWE-427).
+            dot_binary = find_binary_absolute("dot")
         except LookupError as e:
             raise Exception("Cannot find the dot binary from Graphviz package") from e
         try:
