@@ -225,6 +225,12 @@ class TestDotMatrix:
 
         dg = DependencyGraph("John N 2\nloves V 0\nMary N 2")
         dg.nodes[1]["word"] = word
+        if NUL in word:
+            # a C string ends at NUL, so Graphviz would truncate the label:
+            # the word is refused outright instead of rendered
+            with pytest.raises(ValueError, match="NUL"):
+                dg.to_dot()
+            return
         dot = dg.to_dot()
         lines = dot.split("\n")
         # exactly the four node labels and three edge labels of the three-word
@@ -249,6 +255,10 @@ class TestDotMatrix:
         from nltk.translate.api import AlignedSent, Alignment
 
         sent = AlignedSent([word, "ok"], ["x", "y"], Alignment.fromstring("0-0 1-1"))
+        if NUL in word:
+            with pytest.raises(ValueError, match="NUL"):
+                sent._to_dot()
+            return
         dot = sent._to_dot()
         assert _unescaped_quotes(dot) % 2 == 0, dot
         assert "\r" not in dot and dot.count("\n") == dot.replace("\\n", "").count("\n")

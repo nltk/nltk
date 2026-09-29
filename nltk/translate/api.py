@@ -93,9 +93,14 @@ class AlignedSent:
         # labels so a word carrying a quote or newline cannot break out and
         # corrupt the graph (CWE-116; graphviz has no code execution).
         def _dot_escape(text):
+            # Judge and escape the real characters (a str subclass, or what
+            # another object renders to, could lie); a NUL ends a C string, so
+            # Graphviz would drop the rest of the label: refused, not rendered.
+            text = str.__str__(text if isinstance(text, str) else str(text))
+            if "\x00" in text:
+                raise ValueError("AlignedSent labels cannot contain NUL: %r" % text)
             return (
-                str(text)
-                .replace("\\", "\\\\")
+                text.replace("\\", "\\\\")
                 .replace('"', '\\"')
                 .replace("\n", "\\n")
                 .replace("\r", "\\r")
