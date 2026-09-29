@@ -34,6 +34,7 @@ to a local file.
 
 import atexit
 import codecs
+import errno
 import functools
 import os
 import pickle
@@ -1224,10 +1225,21 @@ def find(resource_name, paths=None):
 
     # Evidence that the *package* exists but the specific entry does not.
     _package_present_but_entry_missing = []
+    # Archives that exist but this account may not read (EACCES/EPERM), as
+    # (archive, search-path entry) pairs, so a permission problem is reported
+    # as one instead of being folded into "not found" (#3928).
+    _found_but_unreadable = []
 
     def _note_near_miss(where):
         if where not in _package_present_but_entry_missing:
             _package_present_but_entry_missing.append(where)
+
+    def _note_unreadable(where, root):
+        if (where, root) not in _found_but_unreadable:
+            _found_but_unreadable.append((where, root))
+
+    def _access_denied(exc):
+        return exc.errno in (errno.EACCES, errno.EPERM)
 
     # Check each item in our path
     for path_ in paths:
@@ -1235,6 +1247,12 @@ def find(resource_name, paths=None):
         if path_ and (os.path.isfile(path_) and path_.endswith(".zip")):
             try:
                 return ZipFilePathPointer(path_, resource_name)
+            except PermissionError as e:
+                if _access_denied(e):
+                    _note_unreadable(path_, os.path.dirname(path_))
+                else:
+                    _note_near_miss(path_)
+                continue
             except OSError:
                 # resource not in zipfile
                 _note_near_miss(path_)
@@ -1270,6 +1288,12 @@ def find(resource_name, paths=None):
                 if os.path.exists(p):
                     try:
                         return ZipFilePathPointer(p, zipentry)
+                    except PermissionError as e:
+                        if _access_denied(e):
+                            _note_unreadable(p, path_ or os.path.dirname(p))
+                        else:
+                            _note_near_miss(p)
+                        continue
                     except OSError:
                         # resource not in zipfile
                         _note_near_miss(p)
@@ -1284,8 +1308,11 @@ def find(resource_name, paths=None):
             modified_name = "/".join(pieces[:i] + [pieces[i] + ".zip"] + pieces[i:])
             try:
                 return find(modified_name, paths)
-            except LookupError:
-                pass
+            except LookupError as e:
+                # Keep a "found but unreadable" verdict from the zip-name retry
+                # so the message names the archive instead of just "not found".
+                for pair in getattr(e, "_nltk_found_but_unreadable", ()):
+                    _note_unreadable(*pair)
 
     # Identify the package (i.e. the .zip file) to download.
     parts = resource_name.split("/")
@@ -1331,6 +1358,22 @@ def find(resource_name, paths=None):
 
     msg += f"\n  Attempted to load '{resource_name}'\n"
 
+    if _found_but_unreadable:
+        msg += "\n  Found but could not read (permission denied):" + "".join(
+            "\n    - %r" % where for where, _ in _found_but_unreadable
+        )
+        roots = []
+        for _, root in _found_but_unreadable:
+            if root not in roots:
+                roots.append(root)
+        msg += (
+            "\n  The data was probably installed by another account (for example"
+            "\n  as root while building a container image). Make it readable to"
+            "\n  this account, e.g.:"
+            + "".join("\n    chmod -R a+rX %r" % root for root in roots)
+            + "\n"
+        )
+
     if _package_present_but_entry_missing:
         msg += "\n  Package was found in:" + "".join(
             "\n    - %r" % d for d in _package_present_but_entry_missing
@@ -1339,7 +1382,11 @@ def find(resource_name, paths=None):
     msg += "\n  Searched in:" + "".join("\n    - %r" % d for d in paths)
     sep = "*" * 70
     resource_not_found = f"\n{sep}\n{msg}\n{sep}\n"
-    raise LookupError(resource_not_found)
+    exc = LookupError(resource_not_found)
+    if _found_but_unreadable:
+        # Carried, not printed: the zip-name retry above reads it back.
+        exc._nltk_found_but_unreadable = tuple(_found_but_unreadable)
+    raise exc
 
 
 def retrieve(resource_url, filename=None, verbose=True):
