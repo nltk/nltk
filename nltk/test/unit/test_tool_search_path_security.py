@@ -1759,6 +1759,197 @@ def _resolve(location=None, env_vars=("PROVER9",)):
     )
 
 
+def _marker_stub(directory, name, marker):
+    """A planted binary that records that it ran: it appends to *marker*, so a
+    launch is visible even when the wrapper errors on its output afterwards."""
+    path = Path(directory) / name
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        f"#!/bin/sh\nprintf '%s\\n' {name} >> '{marker}'\necho PWNED\nexit 0\n",
+        encoding="utf-8",
+    )
+    path.chmod(path.stat().st_mode | stat.S_IEXEC)
+    return str(path)
+
+
+class TestAdvisoryProofOfConcept:
+    """GHSA-cc5r-64rf-75hg, literally: an executable ./prover9 (and ./mace4) in
+    the current directory, ``p = Prover9(); p.config_prover9(binary_location='.')``,
+    then a later ``prove()`` (``build_model()`` for Mace) would Popen it from the
+    CWD. The sink itself (configure, then run, judged by a marker the decoys
+    write) is phase 6 of the advisory probe ``ghsa_cc5r_64rf_75hg``, with its
+    teeth in ``test_advisory_probes``. Pinned here: the root cause the advisory
+    states (the raw finder still yields ``./prover9`` for a truthy relative
+    ``path_to_bin``, so the fix is the absolute-only gate in front of every
+    wrapper), the helpers and siblings it names, and that with an install
+    configured every form yields only the install. The planted files record
+    when they run: the marker is never written and no spawn receives a CWD path."""
+
+    NAMES = ("prover9", "mace4", "prooftrans", "interpformat", "megam", "tadm")
+    FORMS = (".", "./", "./prover9", "sub/prover9")
+    # the forms the raw finder still honours as a CWD path: '.' itself has no
+    # directory part, so develop's bare-name test already refuses it there
+    TRUTHY = ("./", "./prover9", "sub/prover9")
+
+    @pytest.fixture
+    def poc(self, private_dir, monkeypatch):
+        """The advisory's directory under $HOME (a private chain: on POSIX the
+        spawn layer would run a same-user file there, so the config-time gate
+        is the guard under test), nothing reachable through the environment, and
+        a record of every target handed to the spawn and every Popen made."""
+        from types import SimpleNamespace
+
+        from nltk.classify import megam, tadm
+        from nltk.inference import prover9 as prover9_module
+
+        box = private_dir / "cwd"
+        marker = private_dir / "ran"
+        for name in self.NAMES:
+            _marker_stub(box, name, marker)
+            _marker_stub(box / "sub", name, marker)
+        empty = private_dir / "empty"
+        empty.mkdir()
+        for var in ALL_ENV_VARS:
+            monkeypatch.delenv(var, raising=False)
+        monkeypatch.setenv("PATH", _scrubbed_path(empty))
+        monkeypatch.chdir(box)
+        handed, launched = [], []
+        real_spawn, real_popen = pathsec.spawn_trusted, pathsec.subprocess.Popen
+
+        def spawn_spy(target, args=(), **kwargs):
+            handed.append(os.fspath(target))
+            return real_spawn(target, args, **kwargs)
+
+        def popen_spy(argv, *args, **kwargs):
+            launched.append(kwargs.get("executable") or argv[0])
+            return real_popen(argv, *args, **kwargs)
+
+        for module in (prover9_module, megam, tadm):
+            monkeypatch.setattr(module, "spawn_trusted", spawn_spy)
+        monkeypatch.setattr(pathsec.subprocess, "Popen", popen_spy)
+        return SimpleNamespace(box=box, marker=marker, handed=handed, launched=launched)
+
+    @staticmethod
+    def _judge(poc):
+        """The verdict: nothing ran from the CWD and no CWD path reached the
+        spawn (relative, or absolute inside the box)."""
+        assert not poc.marker.exists(), poc.marker.read_text()
+        for target in poc.handed + poc.launched:
+            assert os.path.isabs(target) and not _inside(target, poc.box), target
+
+    @staticmethod
+    def _theorem():
+        from nltk.sem import Expression
+
+        goal = Expression.fromstring("mortal(socrates)")
+        assumptions = [
+            Expression.fromstring("man(socrates)"),
+            Expression.fromstring("all x.(man(x) -> mortal(x))"),
+        ]
+        return goal, assumptions
+
+    def test_the_truthy_relative_path_to_bin_still_disables_the_bare_name_guard(
+        self, poc
+    ):
+        # the advisory's runtime confirmation, kept as the teeth of the fix: the
+        # raw finder honours a truthy relative path_to_bin as a CWD path while
+        # the bare name is refused; the absolute-only gate refuses every form
+        names = ["prover9", "prover9.exe"]  # what config_prover9 passes
+        for form in self.TRUTHY:
+            got = internals.find_binary("prover9", path_to_bin=form, binary_names=names)
+            assert not os.path.isabs(got) and _inside(got, poc.box), (form, got)
+        with pytest.raises(LookupError):
+            internals.find_binary("prover9", binary_names=names)
+        with pytest.raises(LookupError):  # '.' is bare to the raw finder too
+            internals.find_binary("prover9", path_to_bin=".", binary_names=names)
+        for form in self.FORMS:
+            with pytest.raises(LookupError):
+                internals.find_binary_absolute(
+                    "prover9", path_to_bin=form, binary_names=names
+                )
+        # the suggested fix criterion: only an os.path.isabs() result of the
+        # raw iterator is acceptable, and with nothing configured there is none
+        for form in self.TRUTHY:
+            raw = list(
+                internals.find_binary_iter(
+                    "prover9", path_to_bin=form, binary_names=names
+                )
+            )
+            assert raw and not any(os.path.isabs(m) for m in raw), (form, raw)
+        self._judge(poc)
+
+    def test_helpers_and_siblings_named_by_the_advisory_are_refused(self, poc):
+        from nltk.classify import megam, tadm
+        from nltk.inference.mace import Mace, MaceCommand
+        from nltk.inference.prover9 import Prover9
+
+        # prooftrans and interpformat resolve through the same helper the
+        # advisory traces for mace4; with only CWD decoys they are refused
+        try:
+            Prover9()._call_prooftrans("x")
+        except LookupError:
+            pass
+        try:
+            MaceCommand(None, [], model_builder=Mace())._call_interpformat(
+                "x", ["cooked"]
+            )
+        except LookupError:
+            pass
+        # megam and tadm: the same config entry, then the call that would run
+        # the configured binary (call_* re-resolves bare when none is set)
+        for form in self.FORMS:
+            with pytest.raises(LookupError):
+                megam.config_megam(form.replace("prover9", "megam"))
+            assert megam._megam_bin is None
+            with pytest.raises(LookupError):
+                tadm.config_tadm(form.replace("prover9", "tadm"))
+            assert tadm._tadm_bin is None
+        for call in (lambda: megam.call_megam(["-h"]), lambda: tadm.call_tadm(["-h"])):
+            try:
+                call()
+            except (LookupError, OSError):
+                pass
+        self._judge(poc)
+
+    def test_with_an_install_configured_the_poc_forms_yield_only_the_install(
+        self, poc, private_dir, monkeypatch
+    ):
+        from nltk.inference.mace import Mace
+        from nltk.inference.prover9 import Prover9, Prover9Command
+
+        install = private_dir / "install"
+        legit = _marker_stub(install, "prover9", private_dir / "legit_ran")
+        monkeypatch.setenv("PROVER9", str(install))
+        goal, assumptions = self._theorem()
+        for form in self.FORMS:
+            # the suggested fix criterion: the first os.path.isabs() result of
+            # the raw iterator, which is the install, is what is configured
+            raw_first_abs = next(
+                m
+                for m in internals.find_binary_iter(
+                    "prover9",
+                    path_to_bin=form,
+                    env_vars=["PROVER9"],
+                    binary_names=["prover9", "prover9.exe"],
+                )
+                if os.path.isabs(m)
+            )
+            for tool in (Prover9(), Mace()):
+                tool.config_prover9(binary_location=form)
+                assert _same(tool._prover9_bin, legit), (form, tool._prover9_bin)
+                assert _same(tool._prover9_bin, raw_first_abs)
+                assert _same(tool._binary_location, install)
+            if os.name == "posix":
+                p = Prover9()
+                p.config_prover9(binary_location=form)
+                assert Prover9Command(goal, assumptions, prover=p).prove() is True
+        self._judge(poc)
+        if os.name == "posix":
+            assert (private_dir / "legit_ran").read_text().split() == ["prover9"] * len(
+                self.FORMS
+            )
+
+
 class TestBeyondTheReview:
     """Attacks past the adversarial review's list, each judged by which binary
     resolved or reached the spawn: a bytes location whose decode() lies, a
