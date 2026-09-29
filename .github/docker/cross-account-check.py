@@ -25,6 +25,17 @@ assert WordNetLemmatizer().lemmatize("bearings") == "bearing"
 assert "the" in stopwords.words("english")
 assert wordnet.synset("dog.n.01").definition()
 assert "cane" in wordnet.synset("dog.n.01").lemma_names("ita")  # omw-2.0
+# omw-1.4, which the reporter installs, read through its own reader
+from nltk.corpus.reader import CorpusReader
+from nltk.corpus.reader.wordnet import WordNetCorpusReader
+from nltk.corpus.util import LazyCorpusLoader
+
+omw14 = LazyCorpusLoader(
+    "omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"
+)
+assert len(omw14.fileids()) == 31, omw14.fileids()
+wn14 = WordNetCorpusReader(nltk.data.find("corpora/wordnet"), omw14)
+assert "cane" in wn14.synset("dog.n.01").lemma_names("ita")  # omw-1.4
 # The startup idiom, pointed at the shared root: judged installed by the
 # extracted files without touching the network or the private archive.
 for package in ("wordnet", "omw-1.4", "omw-2.0", "stopwords"):
