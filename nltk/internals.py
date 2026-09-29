@@ -100,11 +100,13 @@ _JVM_INJECTING_ENV_VARS = frozenset(
     }
 )
 
-# Variables that redirect the dynamic loader or locale machinery of the child
-# JVM (LD_PRELOAD, LD_AUDIT, DYLD_INSERT_LIBRARIES, GCONV_PATH, ...): an
-# uncontrolled library search path, CWE-427; prefix families plus exact names.
-_LOADER_ENV_PREFIXES = ("LD_", "DYLD_")
-_LOADER_ENV_EXACT = frozenset({"GCONV_PATH", "LOCPATH", "NLSPATH", "IFS"})
+# Variables that redirect the child JVM's dynamic loader or locale machinery
+# (CWE-427), by family (glibc/Solaris, macOS, AIX, IRIX/Tru64, glibc tunables
+# and malloc hooks) plus the exact AIX/HP-UX/glibc search-path names and IFS.
+_LOADER_ENV_PREFIXES = ("LD_", "DYLD_", "LDR_", "_RLD_", "GLIBC_", "MALLOC_")
+_LOADER_ENV_EXACT = frozenset(
+    {"LIBPATH", "SHLIB_PATH", "GCONV_PATH", "LOCPATH", "NLSPATH", "IFS"}
+)
 
 
 def _is_loader_env_var(name):
@@ -113,22 +115,32 @@ def _is_loader_env_var(name):
     return up in _LOADER_ENV_EXACT or up.startswith(_LOADER_ENV_PREFIXES)
 
 
-def _java_child_env():
+def _java_child_env(environ=None):
     """Return a sanitised environment for the child JVM that java() launches.
 
     Drops the JVM-injecting vars (JAVA_TOOL_OPTIONS et al., CWE-88) AND the loader
-    family (LD_*, DYLD_*, GCONV_PATH, LOCPATH, NLSPATH, IFS) that could redirect
-    the dynamic linker or locale loader so it cannot be made to load a planted
-    library (CWE-427), then locks PATH to pathsec's non-writable value so the
+    family (LD_*, DYLD_*, LDR_*, _RLD_*, GLIBC_*, MALLOC_*, LIBPATH, SHLIB_PATH,
+    GCONV_PATH, LOCPATH, NLSPATH, IFS) that could redirect the dynamic linker or
+    locale loader so it cannot be made to load a planted library (CWE-427), in
+    any letter case, then locks PATH to pathsec's non-writable value so the
     child cannot resolve a planted helper by bare name (the JVM itself is
     launched by absolute path). Benign identity vars (HOME, JAVA_HOME, ...) are
-    kept so the tools keep working. Every NLTK JVM launch routes through
-    java(), so this is the single place the child environment is scrubbed."""
-    env = {
-        k: v
-        for k, v in os.environ.items()
-        if k.upper() not in _JVM_INJECTING_ENV_VARS and not _is_loader_env_var(k)
-    }
+    kept so the tools keep working. A name or value the OS could not hold
+    (empty, ``=`` in the name, a NUL, a non-str) is dropped rather than handed
+    to the spawn. Every NLTK JVM launch routes through java(), so this is the
+    single place the child environment is scrubbed; ``environ`` defaults to
+    ``os.environ`` and exists so a substituted mapping can be checked."""
+    if environ is None:
+        environ = os.environ
+    env = {}
+    for k, v in environ.items():
+        if not (isinstance(k, str) and isinstance(v, str)):
+            continue
+        if not k or "=" in k or "\x00" in k or "\x00" in v:
+            continue
+        if k.upper() in _JVM_INJECTING_ENV_VARS or _is_loader_env_var(k):
+            continue
+        env[k] = v
     env["PATH"] = safe_env()["PATH"]
     return env
 
