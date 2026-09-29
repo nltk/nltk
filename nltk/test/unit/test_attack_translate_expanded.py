@@ -228,26 +228,42 @@ class TestReprAndStr:
 
 class TestReprSvg:
     @pytest.mark.skipif(os.name != "posix", reason="a shell script stand-in for dot")
-    def test_the_dot_text_reaches_the_binary_escaped(self, tmp_path, monkeypatch):
-        """A real executable named dot on a private directory in PATH; it
-        returns exactly what it was fed, so the SVG hook's output shows the
-        DOT text Graphviz would receive, hostile word already escaped."""
-        bindir = tmp_path / "bin"
+    def test_the_dot_text_reaches_the_binary_escaped(self, monkeypatch):
+        """A real executable named dot on a private directory in PATH (under
+        the home, not /tmp: the trusted spawn refuses a world-writable
+        ancestor by design); it returns exactly what it was fed, so the SVG
+        hook's output shows the DOT text Graphviz would receive, hostile word
+        already escaped."""
+        import shutil
+        import uuid
+        from pathlib import Path
+
+        from nltk import pathsec
+
+        home = Path.home()
+        if not pathsec.is_private_dir(str(home)):
+            pytest.skip(
+                "the home directory is not private, so no stand-in can be trusted"
+            )
+        bindir = home / f".nltk_dot_stub_{os.getpid()}_{uuid.uuid4().hex[:8]}"
         bindir.mkdir(mode=0o700)
-        stub = bindir / "dot"
-        stub.write_text(
-            "#!/bin/sh\nexec /bin/cat\n"
-        )  # the trusted spawn hands it a PATH that resolves nothing
-        stub.chmod(stub.stat().st_mode | stat.S_IXUSR)
-        monkeypatch.setenv("PATH", str(bindir))
-        monkeypatch.chdir(tmp_path)
-        sent = AlignedSent(
-            ['x"] ; evil [label="', "ok"], ["y"], Alignment.fromstring("0-0")
-        )
-        out = sent._repr_svg_()
-        assert out == sent._to_dot()
-        assert 'x\\"] ; evil [label=\\"' in out
-        _check_dot(out, ['x"] ; evil [label="', "ok"], ["y"], edges=1)
+        try:
+            stub = bindir / "dot"
+            stub.write_text(
+                "#!/bin/sh\nexec /bin/cat\n"
+            )  # the trusted spawn hands it a PATH that resolves nothing
+            stub.chmod(0o700)
+            monkeypatch.setenv("PATH", str(bindir))
+            monkeypatch.chdir(bindir)
+            sent = AlignedSent(
+                ['x"] ; evil [label="', "ok"], ["y"], Alignment.fromstring("0-0")
+            )
+            out = sent._repr_svg_()
+            assert out == sent._to_dot()
+            assert 'x\\"] ; evil [label=\\"' in out
+            _check_dot(out, ['x"] ; evil [label="', "ok"], ["y"], edges=1)
+        finally:
+            shutil.rmtree(bindir, ignore_errors=True)
 
 
 class TestFunctional:
