@@ -495,6 +495,26 @@ class TokenSequence:
         del self.__dict__["self"]
 
 
+_SMOOTH_WINDOWS = ("flat", "hanning", "hamming", "bartlett", "blackman")
+
+
+def _window_name(window):
+    """The requested window as a plain ``str`` from :data:`_SMOOTH_WINDOWS`.
+
+    A ``str`` subclass can lie to ``in`` and ``==`` through ``__eq__`` and
+    ``__hash__`` while its real characters name something else, so the
+    allowlist judges the characters ``str.__str__`` materialises, which no
+    subclass can override, and the caller only ever resolves that plain name.
+    """
+    if isinstance(window, str):
+        name = str.__str__(window)
+        if type(name) is str and name in _SMOOTH_WINDOWS:
+            return name
+    raise ValueError(
+        "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
+    )
+
+
 # Pasted from the SciPy cookbook: https://www.scipy.org/Cookbook/SignalSmooth
 def smooth(x, window_len=11, window="flat"):
     """smooth the data using a window with requested size.
@@ -534,20 +554,22 @@ def smooth(x, window_len=11, window="flat"):
     if window_len < 3:
         return x
 
-    if window not in ["flat", "hanning", "hamming", "bartlett", "blackman"]:
-        raise ValueError(
-            "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
-        )
+    name = _window_name(window)
 
     s = numpy.r_[2 * x[0] - x[window_len:1:-1], x, 2 * x[-1] - x[-1:-window_len:-1]]
 
     # print(len(s))
-    if window == "flat":  # moving average
+    if name == "flat":  # moving average
         w = numpy.ones(window_len, "d")
     else:
-        # The window name was allowlisted above; look it up by attribute rather
-        # than building source for eval, so no string can ever become code here.
-        w = getattr(numpy, window)(window_len)
+        # A fixed table keyed by the materialised plain name: no eval, no string
+        # interpolation and no attribute lookup on a caller-supplied object.
+        w = {
+            "hanning": numpy.hanning,
+            "hamming": numpy.hamming,
+            "bartlett": numpy.bartlett,
+            "blackman": numpy.blackman,
+        }[name](window_len)
 
     y = numpy.convolve(w / w.sum(), s, mode="same")
 

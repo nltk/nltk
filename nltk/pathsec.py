@@ -72,6 +72,11 @@ _MAX_LINK_HOPS = 40  # ELOOP-style bound on symlink chains
 #: needed.
 MAX_TOOL_MODEL_BYTES = 512 * 1024 * 1024
 
+#: Ceiling on the entries :func:`validate_tool_dir` audits for a private
+#: directory. A data directory an external tool reads holds at most a few
+#: hundred files; a far larger tree is refused, not walked unbounded (CWE-400).
+MAX_TOOL_DIR_ENTRIES = 10000
+
 # The child PATH resolves NOTHING: a single absolute, root-domain directory with
 # no executables. It denies bare-name command lookup (a trusted binary is run by
 # absolute path) and is NOT empty (an empty PATH element is the CWD; see safe_env).
@@ -109,6 +114,14 @@ def _private_stat(st):
     if st.st_uid not in (os.geteuid(), 0):
         return False
     return not (st.st_mode & (stat.S_IWGRP | stat.S_IWOTH))
+
+
+def _is_junction(st):
+    """Windows: the ``lstat`` result is a directory junction. NTFS reports one
+    as a directory rather than a symlink, so ``S_ISLNK`` misses it and only the
+    reparse tag tells it apart from the directory it names."""
+    tag = getattr(stat, "IO_REPARSE_TAG_MOUNT_POINT", None)
+    return tag is not None and getattr(st, "st_reparse_tag", 0) == tag
 
 
 def is_private_dir(path):
@@ -676,17 +689,47 @@ def _reject_colliding_members(members, context="zip member"):
     """
     import unicodedata
 
-    seen = {}
+    def _refuse(first, second, why):
+        raise ValueError(
+            f"Security Violation [{context}]: members {first!r} and {second!r} "
+            f"{why}, so one would silently overwrite the other (resource "
+            "poisoning)."
+        )
+
+    # Keyed the way the hardened extractor writes: a backslash is a separator
+    # and empty or "." parts vanish, so "a//b" and "a/./b" are "a/b" as well.
+    seen, parents = {}, {}
     for name in members:
         text = name.filename if hasattr(name, "filename") else str(name)
-        key = unicodedata.normalize("NFC", text).casefold()
-        if key in seen and seen[key] != text:
-            raise ValueError(
-                f"Security Violation [{context}]: members {seen[key]!r} and "
-                f"{text!r} collide on a case-insensitive or normalizing filesystem, "
-                f"so one would silently overwrite the other (resource poisoning)."
-            )
-        seen[key] = text
+        parts = [p for p in text.replace("\\", "/").split("/") if p not in ("", ".")]
+        if not parts:
+            continue  # an empty name is refused by the extractor itself
+        key = unicodedata.normalize("NFC", "/".join(parts)).casefold()
+        is_dir = text.endswith("/")
+        if key in seen:
+            other, other_is_dir = seen[key]
+            if other != text:
+                _refuse(
+                    other,
+                    text,
+                    "collide on a case-insensitive or normalizing filesystem",
+                )
+            if not (is_dir and other_is_dir):
+                # zipfile resolves both to the LAST entry, while a reviewer's
+                # tool may show the first: a duplicate file is ambiguous.
+                _refuse(other, text, "are the same file listed twice")
+        seen[key] = (text, is_dir)
+        for depth in range(1, len(parts)):
+            parents.setdefault("/".join(parts[:depth]), text)
+    # A file that is also a parent directory of another member: one of the two
+    # fails half way through an extraction that has already written files.
+    folded = {
+        unicodedata.normalize("NFC", parent).casefold(): member
+        for parent, member in parents.items()
+    }
+    for key, (text, is_dir) in seen.items():
+        if not is_dir and key in folded:
+            _refuse(text, folded[key], "are a file and a directory of one name")
 
 
 def _reject_url_shaped(raw, context):
@@ -980,7 +1023,8 @@ def _reject_tamperable(st, raw, context, require_private):
         raise PermissionError(
             f"Security Violation [{context}]: file {raw!r} is group/world-writable "
             f"or not owned by you or root; another local user could plant or swap "
-            f"the model content the tool then parses (CWE-426/CWE-732)."
+            f"the model content the tool then parses (CWE-426/CWE-732). Remove the "
+            f"group/world write bits (chmod go-w) or copy it somewhere private."
         )
 
 
@@ -1073,7 +1117,7 @@ def _reject_unsafe_open(
         os.close(fd)
 
 
-def validate_tool_dir(path_input, context="NLTK tool"):
+def validate_tool_dir(path_input, context="NLTK tool", *, require_private=False):
     """Validate a *directory* a tool or NLTK itself will write model files into.
 
     The file-shaped physical checks in :func:`validate_tool_path` do not apply
@@ -1083,14 +1127,79 @@ def validate_tool_dir(path_input, context="NLTK tool"):
     frozen ``__fspath__``, never a re-read one) and the same name refusals (blank,
     NUL, option-shaped, URL, ``..``, NTFS stream, drive-relative, Windows device)
     run before containment.
+
+    With ``require_private`` the directory is one an external tool READS its
+    data from (a model, dictionary or resource tree handed to a subprocess),
+    so it must exist and be a real directory rather than a symlink or a
+    Windows junction, and everything beneath it must be a regular file or a
+    subdirectory (no symlink, junction, FIFO, socket or device). On POSIX it
+    and everything beneath it must also be private: owned by the caller or
+    root with no group/world write bit. Otherwise another local user could
+    plant or swap the files the tool then parses (CWE-426/CWE-732, and CWE-59
+    for a symlink). The walk runs on every platform and is bounded by
+    :data:`MAX_TOOL_DIR_ENTRIES`.
     """
     text = _as_path_text(path_input, context, error=PermissionError)
     _reject_bad_name_syntax(text, context, error=PermissionError)
     _reject_url_shaped(text, context)
     validate_path(text, context=context)
+    if require_private:
+        _reject_tamperable_dir(text, context)
     # Returned for the same reason as validate_tool_path: the caller must build
     # from the checked string, not re-read a value that can resolve differently.
     return text
+
+
+def _reject_tamperable_dir(raw, context):
+    """Refuse a directory a tool reads model data from unless it is a real,
+    private directory tree (see :func:`validate_tool_dir`). ``raw`` has already
+    passed containment; this adds the physical and ownership checks."""
+    if not ENFORCE:
+        return
+
+    def _refuse(path, why):
+        raise PermissionError(
+            f"Security Violation [{context}]: {path!r} {why}; another local user "
+            "could plant or swap the model data the tool then parses "
+            "(CWE-426/CWE-732)."
+        )
+
+    leaf = raw.rstrip("/\\") or raw
+    try:
+        top = os.lstat(leaf)
+    except FileNotFoundError:
+        _refuse(raw, "does not exist")
+    if stat.S_ISLNK(top.st_mode):
+        _refuse(raw, "is a symlink, not the directory it names")
+    if _is_junction(top):
+        _refuse(raw, "is a junction, not the directory it names")
+    if not stat.S_ISDIR(top.st_mode):
+        _refuse(raw, "is not a directory")
+    # Off POSIX the owner/mode bits do not say who can write and no DACL model
+    # is assumed, so ownership is audited on POSIX only; the bounded walk below
+    # (planted links or junctions, non-regular entries, size) runs everywhere.
+    check_owner = os.name == "posix"
+    if check_owner and not _private_stat(top):
+        _refuse(raw, "is group/world-writable or not owned by you or root")
+    seen = 0
+    for dirpath, dirnames, filenames in os.walk(leaf, followlinks=False):
+        for name in dirnames + filenames:
+            seen += 1
+            if seen > MAX_TOOL_DIR_ENTRIES:
+                _refuse(raw, f"holds over {MAX_TOOL_DIR_ENTRIES} entries, too many")
+            entry = os.path.join(dirpath, name)
+            try:
+                st = os.lstat(entry)
+            except FileNotFoundError:
+                _refuse(entry, "vanished while the directory was being audited")
+            if stat.S_ISLNK(st.st_mode):
+                _refuse(entry, "is a symlink inside the tool directory")
+            if _is_junction(st):
+                _refuse(entry, "is a junction inside the tool directory")
+            if not (stat.S_ISREG(st.st_mode) or stat.S_ISDIR(st.st_mode)):
+                _refuse(entry, "is not a regular file or directory")
+            if check_owner and not _private_stat(st):
+                _refuse(entry, "is group/world-writable or not owned by you or root")
 
 
 def open_package_resource(
@@ -2029,6 +2138,12 @@ class ZipFile(zipfile.ZipFile):
 
     def extract(self, member, path=None, pwd=None):
         validate_zip_archive(self, path or os.getcwd(), specific_member=member)
+        # A caller extracting member by member (the downloader does) never
+        # reaches extractall's archive-wide collision check, so run it here,
+        # once per archive state.
+        if getattr(self, "_collisions_checked", None) != len(self.filelist):
+            _reject_colliding_members(self.filelist, "pathsec.ZipFile")
+            self._collisions_checked = len(self.filelist)
         self._extract_root = os.path.abspath(path or os.getcwd())
         return super().extract(member, path, pwd)
 
@@ -2054,8 +2169,6 @@ class ZipFile(zipfile.ZipFile):
         file/symlink at the target is refused too. On a platform without dir_fd
         support this falls back to the stdlib extractor.
         """
-        import shutil as _shutil
-
         # extract()/extractall() pass member NAMES (strings); resolve to a
         # ZipInfo so the hardened walk below (and its hardlink guard) engages
         # instead of silently falling back to the stdlib extractor (CWE-59).
@@ -2065,9 +2178,10 @@ class ZipFile(zipfile.ZipFile):
             except KeyError:
                 return super()._extract_member(member, targetpath, pwd)
 
+        # Directory members take the same walk: the stdlib's makedirs/mkdir
+        # would follow a component swapped for a symlink after validation.
         if (
             getattr(member, "filename", None) is None
-            or member.is_dir()
             or os.open not in os.supports_dir_fd
             or not getattr(os, "O_NOFOLLOW", 0)
         ):
@@ -2084,58 +2198,93 @@ class ZipFile(zipfile.ZipFile):
             root = os.path.dirname(os.path.abspath(targetpath))
             rel = os.path.relpath(os.path.abspath(targetpath), root)
             parts = [p for p in rel.split(os.sep) if p not in ("", os.curdir)]
+        if not parts and member.is_dir():
+            # "./" names the extraction base itself; the stdlib creates it.
+            os.makedirs(root, exist_ok=True)
+            return root
         if not parts or os.pardir in parts:
             raise PermissionError(
                 f"Security Violation [pathsec.ZipFile]: refusing member path "
                 f"{member.filename!r}"
             )
-        *dirs, leaf = parts
+        if member.is_dir():
+            dirs, leaf = parts, None
+        else:
+            *dirs, leaf = parts
         written = os.path.join(root, *parts)
 
-        # The extraction base (the trusted destination) may not exist yet; the
-        # stdlib extractor makedirs it, so create it before anchoring dir_fd.
-        os.makedirs(root, exist_ok=True)
-        dir_fd = os.open(root, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
+        # Open the member first, as the stdlib does: a bomb, a bad password or
+        # an unsupported method is then refused before any file exists.
+        source = None if leaf is None else self.open(member, pwd=pwd)
         try:
-            for component in dirs:
-                try:
-                    os.mkdir(component, 0o755, dir_fd=dir_fd)
-                except FileExistsError:
-                    pass
-                nxt = os.open(
-                    component,
-                    os.O_RDONLY | os.O_NOFOLLOW | getattr(os, "O_DIRECTORY", 0),
-                    dir_fd=dir_fd,
-                )
-                os.close(dir_fd)
-                dir_fd = nxt
-            flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW
+            # The extraction base (the trusted destination) may not exist yet;
+            # the stdlib extractor makedirs it, so create it before dir_fd.
+            os.makedirs(root, exist_ok=True)
+            dir_fd = os.open(root, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
             try:
-                leaf_fd = os.open(leaf, flags, 0o644, dir_fd=dir_fd)
-            except FileExistsError:
-                info = os.lstat(leaf, dir_fd=dir_fd)
-                if not stat.S_ISREG(info.st_mode):
-                    raise PermissionError(
-                        f"Security Violation [pathsec.ZipFile]: refusing to "
-                        f"extract onto non-regular file {leaf!r}"
+                for component in dirs:
+                    try:
+                        os.mkdir(component, 0o755, dir_fd=dir_fd)
+                    except FileExistsError:
+                        pass
+                    nxt = os.open(
+                        component,
+                        os.O_RDONLY | os.O_NOFOLLOW | getattr(os, "O_DIRECTORY", 0),
+                        dir_fd=dir_fd,
                     )
-                if info.st_nlink > 1:
-                    raise PermissionError(
-                        f"Security Violation [pathsec.ZipFile]: refusing "
-                        f"multiply-linked file {leaf!r} (st_nlink="
-                        f"{info.st_nlink}); a hardlink may alias an "
-                        "outside-root inode (CWE-59)"
-                    )
-                # Confirmed regular and single-linked: unlink then re-create
-                # with O_EXCL so re-extraction replaces the entry instead of
-                # truncating through a swapped-in alias.
-                os.unlink(leaf, dir_fd=dir_fd)
-                leaf_fd = os.open(leaf, flags, 0o644, dir_fd=dir_fd)
+                    os.close(dir_fd)
+                    dir_fd = nxt
+                if leaf is not None:
+                    self._write_leaf(leaf, dir_fd, source)
+            finally:
+                os.close(dir_fd)
         finally:
-            os.close(dir_fd)
-        with os.fdopen(leaf_fd, "wb") as sink, self.open(member, pwd=pwd) as source:
-            _shutil.copyfileobj(source, sink)
+            if source is not None:
+                source.close()
         return written
+
+    @staticmethod
+    def _write_leaf(leaf, dir_fd, source):
+        """Create *leaf* under *dir_fd* with O_EXCL | O_NOFOLLOW and copy
+        *source* into it; a copy that fails removes the file it created."""
+        import shutil as _shutil
+
+        flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW
+        try:
+            leaf_fd = os.open(leaf, flags, 0o644, dir_fd=dir_fd)
+        except FileExistsError:
+            info = os.lstat(leaf, dir_fd=dir_fd)
+            if not stat.S_ISREG(info.st_mode):
+                raise PermissionError(
+                    f"Security Violation [pathsec.ZipFile]: refusing to "
+                    f"extract onto non-regular file {leaf!r}"
+                )
+            if info.st_nlink > 1:
+                raise PermissionError(
+                    f"Security Violation [pathsec.ZipFile]: refusing "
+                    f"multiply-linked file {leaf!r} (st_nlink="
+                    f"{info.st_nlink}); a hardlink may alias an "
+                    "outside-root inode (CWE-59)"
+                )
+            # Confirmed regular and single-linked: unlink then re-create
+            # with O_EXCL so re-extraction replaces the entry instead of
+            # truncating through a swapped-in alias.
+            os.unlink(leaf, dir_fd=dir_fd)
+            leaf_fd = os.open(leaf, flags, 0o644, dir_fd=dir_fd)
+        with os.fdopen(leaf_fd, "wb") as sink:
+            try:
+                _shutil.copyfileobj(source, sink)
+            except BaseException:
+                # Remove the partial file, but only while the name is still the
+                # inode created above: never unlink something swapped in.
+                try:
+                    if os.path.samestat(
+                        os.fstat(sink.fileno()), os.lstat(leaf, dir_fd=dir_fd)
+                    ):
+                        os.unlink(leaf, dir_fd=dir_fd)
+                except OSError:
+                    pass
+                raise
 
     def read(self, name, pwd=None):
         # Not the raw one-shot super().read() (bounded only by the attacker-declared

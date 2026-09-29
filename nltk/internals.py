@@ -7,8 +7,10 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import ast
 import fnmatch
 import locale
+import operator
 import os
 import re
 import stat
@@ -98,17 +100,13 @@ _JVM_INJECTING_ENV_VARS = frozenset(
     }
 )
 
-# Variables that redirect the dynamic loader of the child JVM (LD_PRELOAD,
-# LD_LIBRARY_PATH, LD_AUDIT on ELF; DYLD_INSERT_LIBRARIES et al. on macOS): an
-# uncontrolled library search path, CWE-427; stripped by name prefix.
-_LOADER_ENV_PREFIXES = ("LD_", "DYLD_")
-
-
-# Loader / interpreter env vars that redirect the child's dynamic linker or
-# locale machinery (LD_PRELOAD, DYLD_INSERT_LIBRARIES, GCONV_PATH, ...). Prefix
-# families plus exact names; stripped from the child JVM env (CWE-426, GHSA-7mxv).
-_LOADER_ENV_PREFIXES = ("LD_", "DYLD_")
-_LOADER_ENV_EXACT = frozenset({"GCONV_PATH", "LOCPATH", "NLSPATH", "IFS"})
+# Variables that redirect the child JVM's dynamic loader or locale machinery
+# (CWE-427), by family (glibc/Solaris, macOS, AIX, IRIX/Tru64, glibc tunables
+# and malloc hooks) plus the exact AIX/HP-UX/glibc search-path names and IFS.
+_LOADER_ENV_PREFIXES = ("LD_", "DYLD_", "LDR_", "_RLD_", "GLIBC_", "MALLOC_")
+_LOADER_ENV_EXACT = frozenset(
+    {"LIBPATH", "SHLIB_PATH", "GCONV_PATH", "LOCPATH", "NLSPATH", "IFS"}
+)
 
 
 def _is_loader_env_var(name):
@@ -117,22 +115,32 @@ def _is_loader_env_var(name):
     return up in _LOADER_ENV_EXACT or up.startswith(_LOADER_ENV_PREFIXES)
 
 
-def _java_child_env():
+def _java_child_env(environ=None):
     """Return a sanitised environment for the child JVM that java() launches.
 
     Drops the JVM-injecting vars (JAVA_TOOL_OPTIONS et al., CWE-88) AND the loader
-    family (LD_*, DYLD_*, GCONV_PATH, LOCPATH, NLSPATH, IFS) that could redirect
-    the dynamic linker or locale loader so it cannot be made to load a planted
-    library (CWE-427), then locks PATH to pathsec's non-writable value so the
+    family (LD_*, DYLD_*, LDR_*, _RLD_*, GLIBC_*, MALLOC_*, LIBPATH, SHLIB_PATH,
+    GCONV_PATH, LOCPATH, NLSPATH, IFS) that could redirect the dynamic linker or
+    locale loader so it cannot be made to load a planted library (CWE-427), in
+    any letter case, then locks PATH to pathsec's non-writable value so the
     child cannot resolve a planted helper by bare name (the JVM itself is
     launched by absolute path). Benign identity vars (HOME, JAVA_HOME, ...) are
-    kept so the tools keep working. Every NLTK JVM launch routes through
-    java(), so this is the single place the child environment is scrubbed."""
-    env = {
-        k: v
-        for k, v in os.environ.items()
-        if k.upper() not in _JVM_INJECTING_ENV_VARS and not _is_loader_env_var(k)
-    }
+    kept so the tools keep working. A name or value the OS could not hold
+    (empty, ``=`` in the name, a NUL, a non-str) is dropped rather than handed
+    to the spawn. Every NLTK JVM launch routes through java(), so this is the
+    single place the child environment is scrubbed; ``environ`` defaults to
+    ``os.environ`` and exists so a substituted mapping can be checked."""
+    if environ is None:
+        environ = os.environ
+    env = {}
+    for k, v in environ.items():
+        if not (isinstance(k, str) and isinstance(v, str)):
+            continue
+        if not k or "=" in k or "\x00" in k or "\x00" in v:
+            continue
+        if k.upper() in _JVM_INJECTING_ENV_VARS or _is_loader_env_var(k):
+            continue
+        env[k] = v
     env["PATH"] = safe_env()["PATH"]
     return env
 
@@ -550,11 +558,13 @@ def read_str(s, start_position):
     :rtype: tuple(str, int)
 
     :raise ReadError: If the ``_STRING_START_RE`` regex doesn't return a
-        match in ``s`` at ``start_position``, i.e., open quote. If the
-        ``_STRING_END_RE`` regex doesn't return a match in ``s`` at the
-        end of the first match, i.e., close quote.
-    :raise ValueError: If an invalid string (i.e., contains an invalid
-        escape sequence) is passed into the ``eval``.
+        match in ``s`` at ``start_position``, i.e., open quote (a negative
+        position never does). If the ``_STRING_END_RE`` regex doesn't return
+        a match in ``s`` at the end of the first match, i.e., close quote.
+        If the delimited text is not one valid string literal (an invalid
+        escape sequence, say).
+    :raise TypeError: If ``s`` is not a ``str`` or ``start_position`` is not
+        an integer.
 
     :Example:
 
@@ -563,6 +573,19 @@ def read_str(s, start_position):
     ('Hello', 7)
 
     """
+    if not isinstance(s, str):
+        raise TypeError(f"read_str expects a str, not {type(s).__name__}")
+    # An int index only: a negative one would clamp to 0 for the regex but
+    # slice from the end below, so it is refused as "no literal starts here".
+    try:
+        start_position = operator.index(start_position)
+    except TypeError:
+        raise TypeError(
+            f"start_position must be an int, not {type(start_position).__name__}"
+        ) from None
+    if start_position < 0:
+        raise ReadError("open quote", start_position)
+
     # Read the open quote, and any modifiers.
     m = _STRING_START_RE.match(s, start_position)
     if not m:
@@ -581,15 +604,19 @@ def read_str(s, start_position):
         else:
             break
 
-    # Process it, using eval on exactly the one string literal the regexes
-    # delimited (no prefix that could make it an f-string is admitted by
-    # _STRING_START_RE). An invalid escape raises ValueError and a literal that
-    # is not valid Python (a raw newline inside the quotes, a ``ur`` prefix)
-    # raises SyntaxError; both are the caller's malformed input, not ours.
+    # The base slice, so a str subclass overriding __getitem__ cannot hand a
+    # different text to the parser than the one the regexes delimited.
+    literal = str.__getitem__(s, slice(start_position, match.end()))
+    # ast.literal_eval, never eval: it accepts only a literal, so the one quoted
+    # slice the regexes delimited cannot execute code; an invalid escape (a
+    # ValueError) or a malformed literal (a SyntaxError) is the caller's input.
     try:
-        return eval(s[start_position : match.end()]), match.end()
+        value = ast.literal_eval(literal)
     except (ValueError, SyntaxError) as e:
         raise ReadError("valid string literal", start_position) from e
+    if type(value) is not str:
+        raise ReadError("valid string literal", start_position)
+    return value, match.end()
 
 
 _READ_INT_RE = redos.compile(r"-?\d+")
