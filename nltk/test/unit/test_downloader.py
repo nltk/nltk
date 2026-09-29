@@ -1,12 +1,21 @@
 import hashlib
+import http.server
+import io
+import ipaddress
 import os
 import shutil
+import stat
+import threading
 import unittest
 import unittest.mock
 import xml.etree.ElementTree as ET
+import zipfile
 
-from nltk import download
-from nltk.downloader import Downloader, Package, build_index
+import pytest
+
+import nltk.data
+from nltk import download, pathsec
+from nltk.downloader import Downloader, ErrorMessage, Package, build_index
 
 
 class TestPackageFromXmlInjection(unittest.TestCase):
@@ -184,6 +193,7 @@ def test_download_package_uses_scoped_pathsec_open(tmp_path):
             "wb",
             context="Downloader._download_package",
             required_root=download_dir,
+            perm=0o644,
         )
 
         validate_path_mock.assert_any_call(
@@ -196,3 +206,89 @@ def test_download_package_uses_scoped_pathsec_open(tmp_path):
 
         # Sanity check: the PR-specific path scoping does not change builtins.open.
         assert open is __builtins__["open"]
+
+
+@pytest.mark.skipif(os.name != "posix", reason="file permission bits are POSIX-only")
+def test_download_package_archive_is_readable_by_other_users(tmp_path, monkeypatch):
+    """Regression test for #3928.
+
+    3.10.3 wrote the downloaded archive owner-only (0600), so a package
+    installed by one account (root at ``docker build``, ``sudo python -m
+    nltk.downloader``) could not be read by another (the runtime user), and a
+    package that is never unzipped (wordnet, omw-1.4, ...) was then reported as
+    "not found". Drive the real ``_download_package`` against a real loopback
+    HTTP server serving a real zip and check the archive it leaves behind has
+    the group/other read bits and no group/other write bit.
+    """
+    buf = io.BytesIO()
+    with zipfile.ZipFile(buf, "w") as zf:
+        zf.writestr("dummy/a.txt", "hello")
+    blob = buf.getvalue()
+
+    class Handler(http.server.BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.send_header("Content-Type", "application/zip")
+            self.send_header("Content-Length", str(len(blob)))
+            self.end_headers()
+            self.wfile.write(blob)
+
+        def log_message(self, *args):
+            pass
+
+    # The SSRF guard refuses loopback; allow exactly 127.0.0.1 for this server.
+    real = pathsec._ip_is_forbidden
+    loopback = ipaddress.ip_address("127.0.0.1")
+    monkeypatch.setattr(
+        pathsec, "_ip_is_forbidden", lambda ip: False if ip == loopback else real(ip)
+    )
+    for var in (
+        "http_proxy",
+        "https_proxy",
+        "HTTP_PROXY",
+        "HTTPS_PROXY",
+        "all_proxy",
+        "ALL_PROXY",
+    ):
+        monkeypatch.delenv(var, raising=False)
+
+    download_dir = str(tmp_path / "download")
+    os.makedirs(download_dir)
+    httpd = http.server.ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+    httpd.daemon_threads = True
+    thread = threading.Thread(
+        target=httpd.serve_forever, kwargs={"poll_interval": 0.05}, daemon=True
+    )
+    thread.start()
+    old_umask = os.umask(0o022)
+    try:
+        info = Package(
+            id="dummy",
+            url=f"http://127.0.0.1:{httpd.server_address[1]}/dummy.zip",
+            subdir="corpora",
+            size=len(blob),
+            unzipped_size=5,
+            checksum=hashlib.md5(blob).hexdigest(),
+            unzip=False,
+        )
+        info.sha256_checksum = hashlib.sha256(blob).hexdigest()
+        messages = list(
+            Downloader(download_dir=download_dir)._download_package(
+                info, download_dir, force=True
+            )
+        )
+    finally:
+        os.umask(old_umask)
+        httpd.shutdown()
+        httpd.server_close()
+        thread.join(10)
+
+    errors = [m.message for m in messages if isinstance(m, ErrorMessage)]
+    assert not errors, errors
+    archive = os.path.join(download_dir, "corpora", "dummy.zip")
+    mode = stat.S_IMODE(os.stat(archive).st_mode)
+    assert mode & 0o044 == 0o044, oct(mode)
+    assert mode & 0o022 == 0, oct(mode)
+    # ...and that archive is what a never-unzipped corpus is read from.
+    pointer = nltk.data.find("corpora/dummy/", paths=[download_dir])
+    assert pointer.join("a.txt").open().read() == b"hello"

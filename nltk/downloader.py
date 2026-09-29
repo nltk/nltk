@@ -1186,11 +1186,15 @@ class Downloader:
                         if isinstance(infile, io.BufferedIOBase)
                         else infile.read
                     )
+                    # 0644: a package archive is public content in a shared data
+                    # root, readable by other accounts like the extractor's 0644/0755
+                    # files; pathsec.open's O_NOFOLLOW/nlink/fd checks are unchanged.
                     with pathsec_open(
                         tmp_filepath,
                         "wb",
                         context="Downloader._download_package",
                         required_root=download_dir,
+                        perm=0o644,
                     ) as outfile:
                         num_blocks = max(1, declared / (1024 * 16))
                         # Never ask for, or write, a byte past the declared size:

@@ -159,6 +159,20 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo chmod -R go-w /usr/lib/jvm
 
+      - name: Data installed by root must be readable by the runner (Linux, #3928)
+        # Root installs the packages (docker build, sudo python -m nltk.downloader)
+        # and the unprivileged runner reads them; wordnet is never unzipped, so
+        # this exercises the archive's own mode bits, not the extracted files.
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo "$(which python)" -m nltk.downloader -d /usr/local/share/nltk_data wordnet stopwords
+          ls -la /usr/local/share/nltk_data/corpora
+          test -r /usr/local/share/nltk_data/corpora/wordnet.zip
+          test -r /usr/local/share/nltk_data/corpora/stopwords.zip
+          NLTK_DATA=/usr/local/share/nltk_data python -c "from nltk.stem import WordNetLemmatizer; assert WordNetLemmatizer().lemmatize('bearings') == 'bearing'; from nltk.corpus import stopwords; assert 'the' in stopwords.words('english'); print('root-installed data is readable by', __import__('getpass').getuser())"
+
       - name: Ensure minimal NLTK data for cache
         shell: bash
         run: |
