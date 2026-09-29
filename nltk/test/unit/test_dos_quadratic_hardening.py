@@ -174,18 +174,21 @@ class TestRedosCompileDoSMatrix:
         with pytest.raises(ValueError):
             redos.compile(pat)
 
-    @pytest.mark.parametrize(
-        "pat",
-        [
-            "(?:a)" * 15000,  # 15k non-capturing groups: linear, accepted
-            "a|" * 40000 + "a",  # big alternation: linear, under length cap
-            "(?=a)" * 15000,  # lookahead repeat: linear
-            "(?>a)" * 15000,  # atomic repeat: linear
-        ],
-    )
-    def test_linear_shape_is_accepted_and_bounded_by_length(self, pat):
+    # Keyed by a short label: pytest puts the parametrized id into the
+    # PYTEST_CURRENT_TEST environment variable, and a 100 KB pattern as the
+    # id overflows the 32767-character limit Windows puts on one variable.
+    LINEAR_SHAPES = {
+        "non-capturing-15k": lambda: "(?:a)" * 15000,  # linear, accepted
+        "alternation-40k": lambda: "a|" * 40000 + "a",  # linear, under length cap
+        "lookahead-15k": lambda: "(?=a)" * 15000,  # linear
+        "atomic-15k": lambda: "(?>a)" * 15000,  # linear
+    }
+
+    @pytest.mark.parametrize("shape", sorted(LINEAR_SHAPES))
+    def test_linear_shape_is_accepted_and_bounded_by_length(self, shape):
         from nltk import redos
 
+        pat = self.LINEAR_SHAPES[shape]()
         redos.check_pattern(pat)  # must not raise (not a compile bomb)
 
     def test_non_capturing_compile_scales_linearly(self):

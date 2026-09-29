@@ -241,6 +241,9 @@ def _target_name(node):
 
 
 def check_file(path, relpath):
+    # _REVIEWED is keyed with forward slashes; os.path.relpath yields
+    # backslashes on Windows, so normalise before the lookup.
+    relpath = relpath.replace("\\", "/")
     with open(path, encoding="utf-8") as fh:
         try:
             tree = ast.parse(fh.read(), filename=path)
