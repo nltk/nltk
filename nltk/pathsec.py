@@ -1888,20 +1888,7 @@ def _reject_link_or_special_by_name(raw_path, context):
         )
 
 
-def _check_perm(perm, context):
-    """Refuse a ``perm`` that could hand another account write access or a
-    privilege bit: an ``int`` within ``0..0o777`` with no group/world write bit
-    and no setuid/setgid/sticky bit is the only shape ``pathsec.open`` creates.
-    """
-    if type(perm) is not int or not 0 <= perm <= 0o777 or perm & 0o022:
-        raise ValueError(
-            f"Security Violation [{context}]: perm must be an int within 0..0o777 "
-            f"with no group/world write bit (a pathsec-created file is never "
-            f"writable by another account), got {perm!r}"
-        )
-
-
-def _hardened_open(raw_path, mode, context, required_root, perm=0o600, **kwargs):
+def _hardened_open(raw_path, mode, context, required_root, **kwargs):
     """Open ``raw_path`` for read *or* write, closing the symlink-swap TOCTOU and
     the hardlink escape that a path-only ``validate_path`` cannot.
 
@@ -1922,16 +1909,10 @@ def _hardened_open(raw_path, mode, context, required_root, perm=0o600, **kwargs)
        re-resolving the string) so a swapped intermediate directory symlink that
        redirected the open to an outside inode is still caught.
 
-    A newly created file is given ``perm`` (default ``0600``, always masked by the
-    process umask) so a write into a shared temp dir is not left group-/world-
-    readable (CWE-377/378). A caller publishing shared, non-secret content into
-    a shared data root (the downloader's package archives, #3928) passes
-    ``perm=0o644``; ``perm`` is consulted only when the open creates the file,
-    and :func:`_check_perm` refuses any group/world write bit or setuid/setgid/
-    sticky bit, so no ``perm`` can make the file writable by another account.
-    POSIX only; callers fall back to :func:`builtins.open` elsewhere.
+    A newly created file is given ``0600`` permissions so a write into a shared
+    temp dir is not left group-/world-readable (CWE-377/378). POSIX only;
+    callers fall back to :func:`builtins.open` elsewhere.
     """
-    _check_perm(perm, context)
     flags = (
         _os_open_flags(mode)
         | getattr(os, "O_NOFOLLOW", 0)
@@ -1943,10 +1924,10 @@ def _hardened_open(raw_path, mode, context, required_root, perm=0o600, **kwargs)
     truncate_after = bool(flags & os.O_TRUNC)
     flags &= ~os.O_TRUNC
     try:
-        # perm is only consulted when O_CREAT is in flags (write/append/x modes).
+        # 0o600 is only consulted when O_CREAT is in flags (write/append/x modes).
         # O_NONBLOCK keeps a planted FIFO from blocking the open until a peer
         # appears; it is cleared again below once the inode is known to be a file.
-        fd = os.open(raw_path, flags, perm)
+        fd = os.open(raw_path, flags, 0o600)
     except OSError as e:
         if e.errno in (errno.ELOOP, errno.EMLINK):
             raise PermissionError(
@@ -2008,21 +1989,8 @@ def _hardened_open(raw_path, mode, context, required_root, perm=0o600, **kwargs)
 _hardened_read_open = _hardened_open
 
 
-def open(
-    file, mode="r", *, context="pathsec.open", required_root=None, perm=0o600, **kwargs
-):
-    """Secure wrapper for builtins.open.
-
-    ``perm`` is the mode given to a file this call creates (default ``0600``,
-    masked by the umask, so a fresh file is private to the writer). Pass
-    ``perm=0o644`` only for shared, non-secret content written into a shared
-    data root, such as a downloaded package archive (#3928). It may never carry
-    a group/world write bit or a setuid/setgid/sticky bit (``ValueError``); it
-    is ignored for read modes, for an existing file and for an integer
-    descriptor, and off POSIX (or with ``ENFORCE`` off) :func:`builtins.open`
-    applies the umask to ``0666`` as it always did.
-    """
-    _check_perm(perm, context)
+def open(file, mode="r", *, context="pathsec.open", required_root=None, **kwargs):
+    """Secure wrapper for builtins.open."""
     # 1. Allow file descriptors (integers) to pass through, matching original logic
     if isinstance(file, int):
         validate_path(file, context=context, required_root=required_root)
@@ -2069,11 +2037,6 @@ def open(
         # FileNotFoundError) on a genuine open failure. We must NOT fall back to
         # builtins.open on OSError -- retrying the raw path would follow a symlink
         # the hardened open deliberately refused, reopening the TOCTOU leak.
-        # The default perm is not forwarded, so every caller that does not set
-        # it keeps the exact call shape it had, including the teeth test that
-        # stands a bare opener in for _hardened_open to prove the probe bites.
-        if perm != 0o600:
-            kwargs["perm"] = perm
         return _hardened_open(raw_path, mode, context, required_root, **kwargs)
     if ENFORCE:
         # No O_NOFOLLOW off POSIX: apply the same inode policy by name, so a

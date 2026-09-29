@@ -53,7 +53,7 @@ def test_find_names_an_archive_it_cannot_read(tmp_path, monkeypatch):
     (installed by root at image build time), ``find()`` used to fold the
     ``PermissionError`` into a plain "Resource not found" with a download hint.
     It must still raise ``LookupError`` (a later search root may hold a readable
-    copy) but name the archive and say how to make it readable.
+    copy) but name the archive and say how to get a readable install: extract.
     """
     root = tmp_path / "nltk_data"
     corpora = root / "corpora"
@@ -78,7 +78,10 @@ def test_find_names_an_archive_it_cannot_read(tmp_path, monkeypatch):
             assert f"Attempted to load '{name}'" in s
             assert "Found but could not read (permission denied):" in s
             assert f"- {str(archive)!r}" in s
-            assert f"chmod -R a+rX {str(root)!r}" in s
+            # the archive stays private by design: the remedy is extraction
+            assert f"python -m nltk.downloader --extract -d {str(root)!r} x" in s
+            assert "nltk.download('x', extract=True)" in s
+            assert "chmod -R a+rX" not in s
             assert f"- {str(root)!r}" in s.split("Searched in:")[1]
     finally:
         os.chmod(archive, 0o644)

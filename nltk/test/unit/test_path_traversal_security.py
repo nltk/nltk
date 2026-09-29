@@ -20,7 +20,6 @@ double-decode bug would regress, so they are asserted to resolve in-root.
 """
 
 import os
-import stat
 import tempfile
 
 import pytest
@@ -281,96 +280,6 @@ class TestPathsecSymlinkHardening:
         assert P.open(p, required_root=root).read() == "HELLO"
         # created file must not be group/world readable (CWE-377/378)
         assert (os.stat(p).st_mode & 0o077) == 0
-
-    def test_perm_shares_read_bits_only_and_default_stays_private(self, monkeypatch):
-        """#3928: a caller may publish non-secret content (a downloaded package
-        archive) as 0644; the default stays 0600, the umask still applies, and
-        ``perm`` never touches an existing file or a read."""
-        P, base, root, outside = self._roots(monkeypatch)
-        old_umask = os.umask(0o022)
-        try:
-            shared = os.path.join(root, "shared.zip")
-            with P.open(shared, "wb", required_root=root, perm=0o644) as fh:
-                fh.write(b"PK")
-            assert stat.S_IMODE(os.stat(shared).st_mode) == 0o644
-            private = os.path.join(root, "private.json")
-            with P.open(private, "w", required_root=root) as fh:
-                fh.write("{}")
-            assert (os.stat(private).st_mode & 0o077) == 0
-            with P.open(private, "r", required_root=root, perm=0o644) as fh:
-                assert fh.read() == "{}"
-            with P.open(private, "a", required_root=root, perm=0o644) as fh:
-                fh.write("")
-            with P.open(private, "w", required_root=root, perm=0o644) as fh:
-                fh.write("{}")
-            assert (os.stat(private).st_mode & 0o077) == 0
-            os.umask(0o077)
-            masked = os.path.join(root, "masked.zip")
-            with P.open(masked, "wb", required_root=root, perm=0o644) as fh:
-                fh.write(b"PK")
-            assert stat.S_IMODE(os.stat(masked).st_mode) == 0o600
-        finally:
-            os.umask(old_umask)
-
-    @pytest.mark.parametrize(
-        "bad",
-        [
-            0o4644,
-            0o2644,
-            0o1644,
-            0o7777,
-            0o1000,
-            -1,
-            0o666,
-            0o664,
-            0o646,
-            0o622,
-            0o602,
-            0o620,
-            True,
-            "644",
-            644.0,
-            None,
-        ],
-    )
-    def test_perm_refuses_write_bits_privilege_bits_and_non_ints(
-        self, monkeypatch, bad
-    ):
-        # A pathsec-created file is never writable by another account and never
-        # carries setuid/setgid/sticky, whatever a caller asks for.
-        P, base, root, outside = self._roots(monkeypatch)
-        p = os.path.join(root, "x.bin")
-        with pytest.raises(ValueError, match="perm"):
-            P.open(p, "wb", required_root=root, perm=bad)
-        assert not os.path.exists(p)
-        # refused for reads too: the guard is on the argument, not the mode
-        with pytest.raises(ValueError, match="perm"):
-            P.open(p, "rb", required_root=root, perm=bad)
-
-    def test_perm_does_not_relax_symlink_hardlink_or_special_file_refusals(
-        self, monkeypatch
-    ):
-        P, base, root, outside = self._roots(monkeypatch)
-        victim = os.path.join(outside, "victim")
-        open(victim, "w").write("ORIG")
-        link = os.path.join(root, "pkg.zip")
-        os.symlink(victim, link)
-        with pytest.raises((ValueError, PermissionError)):
-            P.open(link, "wb", required_root=root, perm=0o644)
-        assert open(victim).read() == "ORIG"
-        fifo = os.path.join(root, "fifo.zip")
-        os.mkfifo(fifo)
-        with pytest.raises(PermissionError):
-            P.open(fifo, "wb", required_root=root, perm=0o644)
-        hard = os.path.join(root, "hard.zip")
-        try:
-            os.link(victim, hard)  # in-root name, outside-root inode
-        except OSError:
-            pytest.skip("cross-dir hardlink not permitted here")
-        monkeypatch.setattr(P, "validate_path", lambda *a, **k: None)
-        with pytest.raises(PermissionError):
-            P.open(hard, "wb", required_root=root, perm=0o644)
-        assert open(victim).read() == "ORIG"
 
     def test_static_symlink_to_outside_is_refused_read_and_write(self, monkeypatch):
         P, base, root, outside = self._roots(monkeypatch)

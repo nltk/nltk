@@ -1367,11 +1367,17 @@ def find(resource_name, paths=None):
             if root not in roots:
                 roots.append(root)
         msg += (
-            "\n  The data was probably installed by another account (for example"
-            "\n  as root while building a container image). Make it readable to"
-            "\n  this account, e.g.:"
-            + "".join("\n    chmod -R a+rX %r" % root for root in roots)
-            + "\n"
+            "\n  A downloaded archive is private to the account that installed it"
+            "\n  (mode 0600), so an install made by another account (for example"
+            "\n  as root while building a container image) must be extracted: the"
+            "\n  extracted files are readable by every account and are found"
+            "\n  before the archive. Re-run the download with extraction, e.g.:"
+            + "".join(
+                "\n    python -m nltk.downloader --extract -d %r %s"
+                % (root, resource_zipname)
+                for root in roots
+            )
+            + "\n  or nltk.download(%r, extract=True)\n" % resource_zipname
         )
 
     if _package_present_but_entry_missing:

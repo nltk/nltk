@@ -31,6 +31,8 @@ import ipaddress
 import os
 import socket
 import stat
+import subprocess
+import sys
 import threading
 import time
 import tracemalloc
@@ -2026,3 +2028,119 @@ class TestDeclaredUnzippedSize:
         )
         assert any(isinstance(m, downloader.ErrorMessage) for m in messages)
         assert bytes_on_disk(str(dl / "corpora" / "tiny")) == 0
+
+
+# ===========================================================================
+# 12. A private archive (0600) serves other accounts through extraction (#3928)
+# ===========================================================================
+POSIX_NON_ROOT = pytest.mark.skipif(
+    os.name != "posix" or os.geteuid() == 0,
+    reason="needs POSIX permission bits and an account that mode 000 stops",
+)
+
+
+def _mode(path):
+    return stat.S_IMODE(os.lstat(path).st_mode)
+
+
+@contextlib.contextmanager
+def _umask(value):
+    old = os.umask(value)
+    try:
+        yield
+    finally:
+        os.umask(old)
+
+
+class TestExtractOption:
+    """The downloaded archive stays private to the installing account (0600,
+    the CWE-377/378 guard); an install another account must read is extracted,
+    and the extracted files are what that account is served."""
+
+    @POSIX_NON_ROOT
+    def test_extract_unpacks_a_package_the_index_leaves_zipped(self, box, monkeypatch):
+        root, outside, dl, server = box
+        index = serve_packages(server, [("tiny", tiny_package(), {"unzip": "0"})])
+        monkeypatch.setattr(nltk.data, "path", [str(dl)])
+        with _umask(0o022):
+            result, text = run_download(index, dl, "tiny", quiet=True, extract=True)
+        assert result is True, text
+        archive = dl / "corpora" / "tiny.zip"
+        unpacked = dl / "corpora" / "tiny"
+        assert _mode(archive) == 0o600
+        assert _mode(unpacked) == 0o755 and _mode(unpacked / "words.txt") == 0o644
+        found = nltk.data.find("corpora/tiny/words.txt")
+        assert isinstance(found, nltk.data.FileSystemPathPointer)
+        with found.open() as fh:
+            assert fh.read() == WORDS
+
+        # Now as the account that did not install it: the archive is closed to
+        # it, the extracted files are served, and the startup idiom
+        # nltk.download('tiny') reports it installed instead of failing.
+        os.chmod(archive, 0)
+        try:
+            assert not os.access(archive, os.R_OK)
+            found = nltk.data.find("corpora/tiny/words.txt")
+            assert isinstance(found, nltk.data.FileSystemPathPointer)
+            d = downloader.Downloader(server_index_url=index, download_dir=str(dl))
+            assert d.status("tiny") == downloader.Downloader.INSTALLED
+            result, text = run_download(index, dl, "tiny", quiet=True)
+            assert result is True, text
+            assert _mode(archive) == 0 and tree(unpacked)  # nothing rewritten
+        finally:
+            os.chmod(archive, 0o600)
+
+    @POSIX_NON_ROOT
+    def test_without_extract_the_index_decides_and_the_other_account_is_told(
+        self, box, monkeypatch
+    ):
+        root, outside, dl, server = box
+        index = serve_packages(server, [("tiny", tiny_package(), {"unzip": "0"})])
+        monkeypatch.setattr(nltk.data, "path", [str(dl)])
+        with _umask(0o022):
+            result, text = run_download(index, dl, "tiny", quiet=True)
+        assert result is True, text
+        archive = dl / "corpora" / "tiny.zip"
+        assert _mode(archive) == 0o600 and not (dl / "corpora" / "tiny").exists()
+        assert isinstance(
+            nltk.data.find("corpora/tiny/words.txt"), nltk.data.ZipFilePathPointer
+        )
+        os.chmod(archive, 0)
+        try:
+            with pytest.raises(LookupError) as exc:
+                nltk.data.find("corpora/tiny/words.txt")
+            s = str(exc.value)
+            assert "Found but could not read (permission denied):" in s
+            assert f"python -m nltk.downloader --extract -d {str(dl)!r} tiny" in s
+            assert "nltk.download('tiny', extract=True)" in s
+            assert "chmod -R a+rX" not in s  # the archive stays private by design
+            d = downloader.Downloader(server_index_url=index, download_dir=str(dl))
+            # unusable to this account and nothing extracted: not installed
+            assert d.status("tiny") == downloader.Downloader.NOT_INSTALLED
+        finally:
+            os.chmod(archive, 0o600)
+
+    def test_extract_keeps_every_extraction_guard(self, box, monkeypatch):
+        """extract=True goes through the same hardened extractor: a member that
+        escapes its package directory is refused exactly as for unzip='1'."""
+        root, outside, dl, server = box
+        blob = make_zip([("tiny/", b""), ("other/escape.txt", b"x")])
+        index = serve_packages(server, [("tiny", blob, {"unzip": "0"})])
+        result, text = run_download(index, dl, "tiny", quiet=True, extract=True)
+        assert result is False
+        assert not (dl / "corpora" / "other").exists()
+        assert not (dl / "corpora" / "tiny" / "escape.txt").exists()
+
+    def test_the_cli_exposes_extract(self):
+        completed = subprocess.run(
+            [sys.executable, "-m", "nltk.downloader", "--help"],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            env={
+                **os.environ,
+                "PYTHONPATH": os.path.dirname(os.path.dirname(nltk.__file__)),
+            },
+        )
+        assert completed.returncode == 0, completed.stderr
+        assert "-x, --extract" in completed.stdout
