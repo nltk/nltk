@@ -164,6 +164,7 @@ import itertools
 import ntpath
 import os
 import posixpath
+import stat
 import subprocess
 import sys
 import textwrap
@@ -183,6 +184,38 @@ from nltk.pathsec import urlopen, validate_path
 from nltk.termsec import safe_print, sanitize_terminal
 from nltk.util import acyclic_breadth_first
 from nltk.xmlsec import parse as safe_parse
+
+# Ceilings on what the data server may hand us (CWE-400): the declared package
+# size comes from the same server, so it is capped too (the largest real package
+# is under 100 MB), and the index (under 100 KB in reality) is read bounded.
+MAX_PACKAGE_BYTES = 1024 * 1024 * 1024
+MAX_INDEX_BYTES = 64 * 1024 * 1024
+
+
+def _bounded_body(stream, limit, what):
+    """Read *stream* in full, refusing (ValueError) once it exceeds *limit*
+    bytes, and return the bytes read as a file object for a parser."""
+    import io
+
+    chunks, total = [], 0
+    try:
+        while True:
+            block = stream.read(1024 * 64)
+            if not block:
+                break
+            total += len(block)
+            if total > limit:
+                raise ValueError(
+                    f"The {what} is larger than {limit} bytes; refusing to read "
+                    "an unbounded response (CWE-400)"
+                )
+            chunks.append(block)
+    finally:
+        close = getattr(stream, "close", None)
+        if close is not None:
+            close()
+    return io.BytesIO(b"".join(chunks))
+
 
 # urllib2 = nltk.internals.import_from_stdlib('urllib2')
 
@@ -940,6 +973,18 @@ class Downloader:
                 yield StartDownloadMessage(info)
                 yield ProgressMessage(5)
 
+                # The declared size bounds the body below, and it comes from the
+                # same server, so cap it too: nothing is fetched for a package
+                # that claims more than MAX_PACKAGE_BYTES.
+                if not 0 <= int(info.size) <= MAX_PACKAGE_BYTES:
+                    yield ErrorMessage(
+                        info,
+                        f"Refusing to download {info.id!r}: the index declares "
+                        f"{info.size} bytes, outside the 0 to {MAX_PACKAGE_BYTES} "
+                        "byte range a package may have (CWE-400)",
+                    )
+                    return
+
                 try:
                     infile = urlopen(info.url)
                     with pathsec_open(
@@ -949,9 +994,17 @@ class Downloader:
                         required_root=download_dir,
                     ) as outfile:
                         num_blocks = max(1, info.size / (1024 * 16))
+                        # Stop once the body passes the declared size plus a
+                        # slack, so a hostile server cannot fill the disk; the
+                        # size check below then rejects and removes it (CWE-400).
+                        max_download_bytes = int(info.size) + 1024 * 1024
+                        bytes_read = 0
                         for block in itertools.count():
                             s = infile.read(1024 * 16)
                             if not s:
+                                break
+                            bytes_read += len(s)
+                            if bytes_read > max_download_bytes:
                                 break
                             outfile.write(s)
                             if block % 2 == 0:
@@ -1083,9 +1136,12 @@ class Downloader:
         else:
             # Define a helper function for displaying output:
             def show(s, prefix2=""):
+                # s may embed server-supplied names (package id / filename /
+                # collection id) or a server error message; neutralise any
+                # terminal control sequences before writing to the terminal.
                 print_to(
                     textwrap.fill(
-                        s,
+                        sanitize_terminal(s),
                         initial_indent=prefix + prefix2,
                         subsequent_indent=prefix + prefix2 + " " * 4,
                     )
@@ -1284,9 +1340,12 @@ class Downloader:
         # If a URL was specified, then update our URL.
         self._url = url or self._url
 
-        # Download the index file.
+        # Download the index file, bounded: a server streaming an endless
+        # index would otherwise be read whole into memory before parsing.
         self._index = nltk.internals.ElementWrapper(
-            safe_parse(urlopen(self._url)).getroot()
+            safe_parse(
+                _bounded_body(urlopen(self._url), MAX_INDEX_BYTES, "data index")
+            ).getroot()
         )
         self._index_timestamp = time.time()
 
@@ -1310,7 +1369,7 @@ class Downloader:
                 else:
                     safe_print(
                         "removing collection member with no package: {}".format(
-                            child_id
+                            sanitize_terminal(child_id)  # server-supplied ref
                         )
                     )
                     del collection.children[i]
@@ -2781,6 +2840,21 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None):
             error = _validate_member(member, root_abs)
             if error is not None:
                 yield ErrorMessage(filename, f"{error} (during extraction)")
+                return
+            # Defense in depth if a stdlib extractor is used: a pre-existing
+            # multiply-linked target would let the write follow the hardlink
+            # and alias an outside-root inode (CWE-59), so refuse it.
+            target_abs = os.path.normpath(os.path.join(root_abs, member))
+            try:
+                tstat = os.lstat(target_abs)
+            except OSError:
+                tstat = None
+            if tstat is not None and stat.S_ISREG(tstat.st_mode) and tstat.st_nlink > 1:
+                yield ErrorMessage(
+                    filename,
+                    f"Multiply-linked target blocked: {member!r} "
+                    "(hardlink may alias outside-root inode, CWE-59)",
+                )
                 return
             try:
                 zf.extract(member, root_abs)
