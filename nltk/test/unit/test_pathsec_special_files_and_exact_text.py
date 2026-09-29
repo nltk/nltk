@@ -76,14 +76,24 @@ class TestValidatePathUsesExactCharacters:
 
     def test_non_str_pointer_is_taken_from_its_path_attribute(self, pathsec_sandbox):
         root, outside = pathsec_sandbox
-        # a pointer-like object is validated on .path, as pathsec.open opens it
-        assert pathsec._exact_path_text(_LyingPathAttr("x", str(root / "a"))) == str(
-            root / "a"
-        )
-        validate_path(_LyingPathAttr(str(outside / "pwn"), str(root / "a")))
-        # and the same object is refused when .path itself escapes
-        with pytest.raises(PermissionError):
-            validate_path(_LyingPathAttr(str(root / "a"), str(outside / "pwn")))
+
+        class PointerOnly:
+            """A dataset-style pointer: a path attribute and no __fspath__."""
+
+            def __init__(self, path):
+                self.path = path
+
+        # validated on .path, which is also what pathsec.open opens
+        assert pathsec._exact_path_text(PointerOnly(str(root / "a"))) == str(root / "a")
+        validate_path(PointerOnly(str(root / "a")))
+        with pytest.raises(PermissionError, match="Unauthorized path"):
+            validate_path(PointerOnly(str(outside / "pwn")))
+        # an object answering __fspath__ with a different name is never
+        # validated on its path attribute: it is refused as two-faced
+        with pytest.raises(PermissionError, match="two different files"):
+            pathsec._exact_path_text(
+                _LyingPathAttr(str(outside / "pwn"), str(root / "a"))
+            )
 
     def test_required_root_is_read_exactly_too(self, pathsec_sandbox):
         root, outside = pathsec_sandbox
@@ -114,11 +124,79 @@ class TestValidatePathUsesExactCharacters:
         develop, without that guard, the same call created outside/pwn.)"""
         root, outside = pathsec_sandbox
         lying = _LyingStr(str(outside / "pwn"), str(root / "ok"))
-        monkeypatch.setattr(pathsec, "_exact_path_text", lambda v: str(v))
+        monkeypatch.setattr(
+            pathsec, "_exact_path_text", lambda value, context="NLTK": str(value)
+        )
         validate_path(lying, context="test")  # old behaviour: not refused
         monkeypatch.undo()
         with pytest.raises(PermissionError):
             validate_path(lying, context="test")
+
+    def test_non_str_object_is_validated_on_its_fspath(self, pathsec_sandbox):
+        """A stdlib sink opens os.fspath(obj); a lying __str__ must not matter."""
+        root, outside = pathsec_sandbox
+
+        class LyingStr:
+            def __str__(self):
+                return str(root / "ok")
+
+            def __fspath__(self):
+                return str(outside / "pwn")
+
+        with pytest.raises(PermissionError, match="Unauthorized path"):
+            validate_path(LyingStr(), context="test")
+
+    def test_object_whose_path_and_fspath_disagree_is_refused(self, pathsec_sandbox):
+        """.path in-root, __fspath__ outside: validated on one face and opened
+        on the other before; now refused as ambiguous, by validate_path and by
+        pathsec.open alike."""
+        root, outside = pathsec_sandbox
+
+        class TwoFaced:
+            path = str(root / "ok")
+
+            def __fspath__(self):
+                return str(outside / "pwn")
+
+        with pytest.raises(PermissionError, match="two different files"):
+            validate_path(TwoFaced(), context="test")
+        with pytest.raises(PermissionError, match="two different files"):
+            pathsec.open(TwoFaced(), "rb")
+        assert os.listdir(str(outside)) == []
+
+    def test_honest_path_objects_still_pass(self, pathsec_sandbox):
+        import pathlib
+
+        root, outside = pathsec_sandbox
+        target = str(root / "ok.txt")
+        with open(target, "w", encoding="utf8") as f:
+            f.write("x")
+
+        class Honest:
+            path = target
+
+            def __fspath__(self):
+                return target
+
+        class BytesPath:
+            def __fspath__(self):
+                return target.encode()
+
+        validate_path(pathlib.Path(target), context="test")
+        validate_path(Honest(), context="test")
+        validate_path(BytesPath(), context="test")
+        with pathsec.open(Honest(), "rb") as f:
+            assert f.read() == b"x"
+        with pathsec.open(pathlib.Path(target), "rb") as f:
+            assert f.read() == b"x"
+
+    def test_fspath_returning_garbage_is_refused(self, pathsec_sandbox):
+        class Garbage:
+            def __fspath__(self):
+                return 42
+
+        with pytest.raises(PermissionError, match="not a filesystem path"):
+            validate_path(Garbage(), context="test")
 
     def test_plain_and_pointer_paths_unchanged(self, pathsec_sandbox):
         from nltk.data import FileSystemPathPointer

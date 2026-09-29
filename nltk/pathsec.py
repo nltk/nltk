@@ -444,20 +444,41 @@ def _get_allowed_roots():
     return roots
 
 
-def _exact_path_text(value):
+def _exact_path_text(value, context="NLTK"):
     """The characters a native open would see for ``value``, as an exact str.
 
     A ``str`` subclass can override ``__str__`` (or carry a ``path`` attribute)
     to show one path while ``shelve``, ``sqlite3`` or ``os.open`` use its real
     characters, so a check that trusted ``str(value)`` validated one file and
     let another be opened. ``str.__str__`` ignores every override. A non-str
-    value with a ``path`` attribute (a zip or dataset pointer) is taken from
-    that attribute, as :func:`open` does before opening it.
+    object is read through ``__fspath__`` when it has one, since that is what a
+    native open uses; if it also carries a ``path`` attribute naming something
+    else, the object is refused outright rather than validated on one face and
+    opened on the other. A pointer with only a ``path`` attribute (a dataset
+    pointer) is taken from that attribute, as :func:`open` does.
     """
     if isinstance(value, str):
         return str.__str__(value)
-    if isinstance(getattr(value, "path", None), str):
-        return str.__str__(value.path)
+    shown = getattr(value, "path", None)
+    shown = str.__str__(shown) if isinstance(shown, str) else None
+    if hasattr(value, "__fspath__"):
+        try:
+            real = os.fspath(value)
+        except TypeError as exc:
+            raise PermissionError(
+                f"Security Violation [{context}]: {value!r} is not a filesystem path"
+            ) from exc
+        if isinstance(real, bytes):
+            real = os.fsdecode(real)
+        real = str.__str__(real)
+        if shown is not None and shown != real:
+            raise PermissionError(
+                f"Security Violation [{context}]: path object names two different "
+                f"files ({shown!r} via .path, {real!r} via __fspath__); refusing it"
+            )
+        return real
+    if shown is not None:
+        return shown
     return str(value)
 
 
@@ -481,7 +502,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
     if isinstance(path_input, int) or not path_input:
         return
     try:
-        raw = _exact_path_text(path_input)
+        raw = _exact_path_text(path_input, context)
 
         # A NUL byte truncates a path in every C filesystem API and can never be
         # legitimate; refuse it explicitly (Path.resolve() surfaces it only on some
@@ -557,7 +578,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
         # LAYER 1: Scoped Sandbox (PR #3528 Integration)
         # This resolves both target and root to block symlink-based escapes.
         if required_root:
-            root_raw = _exact_path_text(required_root)
+            root_raw = _exact_path_text(required_root, context)
             scoped_root = Path(root_raw).resolve()
             if not (target == scoped_root or target.is_relative_to(scoped_root)):
                 # Raise ValueError to match NLTK's historical CorpusReader error type
@@ -1863,6 +1884,10 @@ def open(file, mode="r", *, context="pathsec.open", required_root=None, **kwargs
     if type(file) not in (str, bytes) and isinstance(
         getattr(file, "path", None), (str, bytes)
     ):
+        # A non-str object that also answers __fspath__ with a different name
+        # would be opened here on .path and elsewhere on __fspath__; refuse it.
+        if not isinstance(file, str) and hasattr(file, "__fspath__"):
+            _exact_path_text(file, context)
         file = file.path
 
     # 2. Force extraction of the real path from PathLike objects
