@@ -768,11 +768,15 @@ class Downloader:
                     self.PARTIAL: "P",
                     self.NOT_INSTALLED: " ",
                 }[status]
+                # The name is escaped as one line before it is wrapped, so an
+                # entity-form line break shows as an escape instead of moving
+                # the text after it; ids from the index are checked by fromxml.
                 name = textwrap.fill(
-                    "-" * 27 + (info.name or info.id), 75, subsequent_indent=27 * " "
+                    "-" * 27
+                    + sanitize_terminal(info.name or info.id, single_line=True),
+                    75,
+                    subsequent_indent=27 * " ",
                 )[27:]
-                # Only the wrap's own line breaks survive, and bidi nesting is
-                # balanced per displayed line; index ids are checked by fromxml.
                 name = _one_line_each(name)
                 safe_print("  [{}] {} {}".format(prefix, info.id.ljust(20, "."), name))
                 lines += len(name.split("\n"))  # for more_prompt
@@ -1298,13 +1302,13 @@ class Downloader:
         else:
             # Define a helper function for displaying output:
             def show(s, prefix2=""):
-                # s may embed server-supplied names or a server error message:
-                # neutralise control sequences, then check each wrapped line on
-                # its own so bidi nesting cannot span two displayed lines.
+                # A message is one logical line: flatten its line breaks here,
+                # not by relying on fill's default (an entity-form LF from the
+                # index survives XML parsing), then check each wrapped line.
                 print_to(
                     _one_line_each(
                         textwrap.fill(
-                            sanitize_terminal(s),
+                            sanitize_terminal(s).replace("\n", " "),
                             initial_indent=prefix + prefix2,
                             subsequent_indent=prefix + prefix2 + " " * 4,
                         )
@@ -1806,7 +1810,9 @@ class DownloaderShell:
                 safe_print("Will update following packages (o=ok; x=cancel)")
                 for pid, pname in stale_packages:
                     name = textwrap.fill(
-                        "-" * 27 + (pname), 75, subsequent_indent=27 * " "
+                        "-" * 27 + sanitize_terminal(pname, single_line=True),
+                        75,
+                        subsequent_indent=27 * " ",
                     )[27:]
                     name = _one_line_each(name)
                     safe_print("  [ ] {} {}".format(pid.ljust(20, "."), name))

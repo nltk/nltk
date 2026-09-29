@@ -1013,6 +1013,129 @@ class TestTerminal:
         assert_lines_clean(err.getvalue())
 
 
+# A numeric character reference is exempt from XML attribute-value
+# normalisation, so the entity form of a line break reaches Python as the real
+# character, unlike a literal one, which the parser turns into a space.
+ENTITY_BREAKS = {
+    "lf-dec": ("&#10;", "\n"),
+    "lf-hex": ("&#xA;", "\n"),
+    "lf-hex-lower": ("&#x0a;", "\n"),
+    "cr": ("&#13;", "\r"),
+    "crlf": ("&#13;&#10;", "\r\n"),
+    "tab": ("&#9;", "\t"),
+    "nel-hex": ("&#x85;", NEL),
+    "nel-dec": ("&#133;", NEL),
+    "ls": ("&#x2028;", LS),
+    "ps": ("&#x2029;", PS),
+}
+FORGED = "FORGED-SECOND-PART"
+
+
+def entity_index(package_id="good", name="Good", collection_id="col", refs=("good",)):
+    """An index written by hand, so each entity reaches the parser verbatim."""
+    items = "".join(f'<item ref="{ref}"/>' for ref in refs)
+    return (
+        '<?xml version="1.0" encoding="utf-8"?><nltk_data><packages>'
+        f'<package id="{package_id}" name="{name}" subdir="corpora" '
+        'url="http://127.0.0.1/p.zip" size="1" unzipped_size="1" '
+        'checksum="0" sha256_checksum="0"/></packages><collections>'
+        f'<collection id="{collection_id}" name="C">{items}</collection>'
+        "</collections></nltk_data>"
+    ).encode()
+
+
+def assert_no_forged_line(text):
+    for line in text.split("\n"):
+        assert not line.lstrip().startswith(FORGED), repr(text)
+    assert_lines_clean(text)
+
+
+class TestEntityFormLineBreaks:
+    @pytest.mark.parametrize("label", sorted(ENTITY_BREAKS))
+    def test_a_dangling_ref_prints_one_prefixed_line(self, box, label):
+        # the review's reproduction, for every line-break entity
+        root, outside, dl, server = box
+        entity, raw = ENTITY_BREAKS[label]
+        refs = ("good", f"evilrefFIRST-LINE{entity}{FORGED}", f"two{entity}{FORGED}")
+        server.body("/index.xml", entity_index(refs=refs))
+        d = downloader.Downloader(
+            server_index_url=server.url("/index.xml"), download_dir=str(dl)
+        )
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            d._update_index()
+        lines = [line for line in out.getvalue().split("\n") if line]
+        assert len(lines) == 2, lines
+        assert all(
+            line.startswith("removing collection member with no package: ")
+            for line in lines
+        ), lines
+        assert_no_forged_line(out.getvalue())
+        assert [c.id for c in d._collections["col"].children] == ["good"]
+
+    @pytest.mark.parametrize("label", sorted(ENTITY_BREAKS))
+    def test_a_package_name_forges_no_list_line(self, box, label):
+        root, outside, dl, server = box
+        entity, raw = ENTITY_BREAKS[label]
+        name = f"Good FIRST{entity}{FORGED} " + "wrap " * 12 + f"x{entity}{FORGED}"
+        server.body("/index.xml", entity_index(name=name))
+        d = downloader.Downloader(
+            server_index_url=server.url("/index.xml"), download_dir=str(dl)
+        )
+        d._update_index()
+        assert raw in d._packages["good"].name  # the entity really survived
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            d.list(download_dir=str(dl))
+        assert_no_forged_line(out.getvalue())
+        rows = [line for line in out.getvalue().split("\n") if line.startswith("  [")]
+        assert len(rows) == 2, rows  # the package and the collection
+
+    @pytest.mark.parametrize("label", sorted(ENTITY_BREAKS))
+    @pytest.mark.parametrize("field", ["package_id", "collection_id"])
+    def test_an_id_holding_one_is_refused_and_forges_nothing(self, box, label, field):
+        root, outside, dl, server = box
+        entity, raw = ENTITY_BREAKS[label]
+        kw = {field: f"x{entity}{FORGED}"}
+        if field == "package_id":
+            kw["refs"] = (kw["package_id"],)
+        server.body("/index.xml", entity_index(**kw))
+        d = downloader.Downloader(
+            server_index_url=server.url("/index.xml"), download_dir=str(dl)
+        )
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out):
+            with pytest.raises(ValueError, match="CWE-150"):
+                d.list(download_dir=str(dl))
+            assert d.download("good", download_dir=str(dl), print_error_to=err) is False
+        assert_no_forged_line(out.getvalue() + err.getvalue())
+
+    @pytest.mark.parametrize("label", sorted(ENTITY_BREAKS))
+    def test_show_keeps_every_line_behind_its_prefix(self, box, label):
+        root, outside, dl, server = box
+        entity, raw = ENTITY_BREAKS[label]
+        server.body("/index.xml", entity_index())
+        d = downloader.Downloader(
+            server_index_url=server.url("/index.xml"), download_dir=str(dl)
+        )
+        err = io.StringIO()
+        # a caller-supplied id quoted back in the error, and a package object
+        # whose id holds the parsed character, both through show()
+        d.download(f"missing{raw}{FORGED}", download_dir=str(dl), print_error_to=err)
+        package = downloader.Package(
+            id="prog",
+            url=server.url("/nope.zip"),
+            subdir="corpora",
+            size=1,
+            unzipped_size=1,
+        )
+        package.id = f"prog{raw}{FORGED}"
+        d.download(package, download_dir=str(dl), print_error_to=err)
+        text = err.getvalue()
+        assert_no_forged_line(text)
+        assert all(line.startswith("[nltk_data] ") for line in text.split("\n") if line)
+
+
 # ===========================================================================
 # 4. Extraction through the real downloader
 # ===========================================================================
