@@ -700,19 +700,15 @@ class TransitionParser(ParserI):
 
                     if y_pred in self._match_transition:
                         strTransition = self._match_transition[y_pred]
-                        baseTransition = strTransition.split(":")[0]
+                        # Split on the first colon only: a relation label may
+                        # itself carry one (Universal Dependencies "nmod:poss").
+                        baseTransition, _, relation = strTransition.partition(":")
 
                         if baseTransition == Transition.LEFT_ARC:
-                            if (
-                                operation.left_arc(conf, strTransition.split(":")[1])
-                                != -1
-                            ):
+                            if operation.left_arc(conf, relation) != -1:
                                 break
                         elif baseTransition == Transition.RIGHT_ARC:
-                            if (
-                                operation.right_arc(conf, strTransition.split(":")[1])
-                                != -1
-                            ):
+                            if operation.right_arc(conf, relation) != -1:
                                 break
                         elif baseTransition == Transition.REDUCE:
                             if operation.reduce(conf) != -1:

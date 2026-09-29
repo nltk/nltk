@@ -319,3 +319,166 @@ class TestConsolidationFindings:
         dot = dg.to_dot()
         assert 'x\\"] ; evil [label=\\"' in dot and "safe" not in dot
         assert _no_unescaped_breakout(dot)
+
+
+# === 7. DependencyGraph.to_conll: the rows MaltParser trains on ===
+CONLL_STYLE_FIELDS = {
+    3: ("word", "tag", "head"),
+    4: ("word", "tag", "head", "rel"),
+    10: ("i", "word", "lemma", "ctag", "tag", "feats", "head", "rel"),
+}
+CONLL_ROWS = (
+    "1\tJohn\tJohn\tNNP\tNNP\t_\t2\tnsubj\t_\t_\n"
+    "2\tsees\tsee\tVBZ\tVBZ\t_\t0\tROOT\t_\t_\n"
+    "3\tMary\tMary\tNNP\tNNP\t_\t2\tdobj\t_\t_\n"
+)
+
+
+def _conll_graph():
+    from nltk.parse.dependencygraph import DependencyGraph
+
+    return DependencyGraph(CONLL_ROWS, top_relation_label="ROOT")
+
+
+class TestConllOutputInjection:
+    def test_a_benign_graph_renders_every_style_exactly(self):
+        dg = _conll_graph()
+        assert dg.to_conll(10) == CONLL_ROWS
+        assert dg.to_conll(4) == (
+            "John\tNNP\t2\tnsubj\nsees\tVBZ\t0\tROOT\nMary\tNNP\t2\tdobj\n"
+        )
+        assert dg.to_conll(3) == "John\tNNP\t2\nsees\tVBZ\t0\nMary\tNNP\t2\n"
+
+    @pytest.mark.parametrize("text", BENIGN)
+    def test_benign_content_builds_one_row_per_node(self, text):
+        for field in ("word", "lemma", "ctag", "tag", "feats", "rel"):
+            dg = _conll_graph()
+            dg.nodes[1][field] = text
+            for style, fields in CONLL_STYLE_FIELDS.items():
+                rows = dg.to_conll(style).split("\n")
+                assert rows[-1] == "" and len(rows) == 4
+                columns = len(fields) + (2 if style == 10 else 0)
+                assert all(row.count("\t") == columns - 1 for row in rows[:3])
+
+    @pytest.mark.parametrize("bad", UNSAFE)
+    @pytest.mark.parametrize(
+        "field", ["word", "lemma", "ctag", "tag", "feats", "head", "rel"]
+    )
+    def test_an_unsafe_character_in_an_emitted_field_is_refused(self, field, bad):
+        _all_refused_classes_covered()
+        for style, fields in CONLL_STYLE_FIELDS.items():
+            dg = _conll_graph()
+            dg.nodes[1][field] = "2" + bad + "9" if field == "head" else "a" + bad + "b"
+            if field in fields:
+                with pytest.raises(ValueError, match="to_conll"):
+                    dg.to_conll(style)
+            else:
+                # a field this style never writes cannot inject into it
+                assert dg.to_conll(style) == _conll_graph().to_conll(style)
+
+    def test_an_injected_row_never_reaches_the_output(self):
+        dg = _conll_graph()
+        dg.nodes[1]["word"] = "John\t_\tNNP\tNNP\t_\t2\tnsubj\t_\t_\n9\tEVIL"
+        for style in CONLL_STYLE_FIELDS:
+            with pytest.raises(ValueError, match="to_conll"):
+                dg.to_conll(style)
+
+    def test_a_lying_str_subclass_is_judged_on_its_real_characters(self):
+        dg = _conll_graph()
+        dg.nodes[1]["word"] = _LyingIter("Jo\thn")
+        with pytest.raises(ValueError, match="to_conll"):
+            dg.to_conll(10)
+
+    def test_a_lying_format_writes_the_real_characters(self):
+        class LyingFormat(str):
+            def __format__(self, spec):
+                return "x\t9\tINJECTED\n"
+
+        dg = _conll_graph()
+        dg.nodes[1]["word"] = LyingFormat("John")
+        assert dg.to_conll(10) == CONLL_ROWS
+
+    def test_an_object_rendering_to_a_lying_subclass_is_judged_on_its_real_text(self):
+        class Renders:
+            def __str__(self):
+                return _LyingIter("Jo\nhn")
+
+        assert has_line_unsafe_char(Renders()) is True
+        dg = _conll_graph()
+        dg.nodes[1]["word"] = Renders()
+        with pytest.raises(ValueError, match="to_conll"):
+            dg.to_conll(4)
+
+    def test_malt_train_refuses_before_writing_any_file(self, tmp_path):
+        from nltk.parse.malt import MaltParser
+
+        parser = _min(MaltParser, _working_dir=str(tmp_path))
+        bad = _conll_graph()
+        bad.nodes[1]["word"] = "John\t_\tNNP\tNNP\t_\t2\tnsubj\t_\t_\n9\tEVIL"
+        with pytest.raises(ValueError, match="to_conll"):
+            parser.train([_conll_graph(), bad])
+        assert list(tmp_path.iterdir()) == []
+
+
+class TestLineUnsafeFastPath:
+    def test_the_printable_fast_path_agrees_with_the_category_rule_everywhere(self):
+        refused = {"Cc", "Cs", "Zl", "Zp"}
+        wrong = [
+            hex(cp)
+            for cp in range(0x110000)
+            if has_line_unsafe_char(chr(cp))
+            != (unicodedata.category(chr(cp)) in refused)
+        ]
+        assert wrong == []
+
+    def test_allow_tab_still_exempts_only_the_tab(self):
+        assert has_line_unsafe_char("a\tb", allow_tab=True) is False
+        assert has_line_unsafe_char("a\tb") is True
+        assert has_line_unsafe_char("a\t\nb", allow_tab=True) is True
+
+
+class TestDotEscapeOfRenderedValues:
+    def test_a_value_rendering_to_a_lying_subclass_is_escaped_from_its_real_text(self):
+        from nltk.parse.dependencygraph import DependencyGraph
+
+        class LyingReplace(str):
+            def replace(self, old, new, count=-1):
+                return str.__str__(self)  # refuses to escape anything
+
+        class Renders:
+            def __str__(self):
+                return LyingReplace('x"] ; evil [label="')
+
+        dg = DependencyGraph("John N 2\nloves V 0\nMary N 2")
+        dg.nodes[1]["word"] = Renders()
+        dot = dg.to_dot()
+        assert 'x\\"] ; evil [label=\\"' in dot
+        assert _no_unescaped_breakout(dot)
+
+
+class TestTransitionParserLabels:
+    def test_a_colon_in_a_relation_label_survives_training_and_parsing(
+        self, pathsec_sandbox
+    ):
+        numpy = pytest.importorskip("numpy")
+        pytest.importorskip("sklearn")
+        from nltk.parse.dependencygraph import DependencyGraph
+        from nltk.parse.transitionparser import TransitionParser
+
+        rows = (
+            "1\tthe\t_\tDT\tDT\t_\t2\tnmod:det\t_\t_\n"
+            "2\tdog\t_\tNN\tNN\t_\t3\tnmod:nsubj\t_\t_\n"
+            "3\tsleeps\t_\tVBZ\tVBZ\t_\t0\tROOT\t_\t_\n"
+        )
+        gold = DependencyGraph(rows, top_relation_label="ROOT")
+        model = pathsec_sandbox.root / "ud.model"
+        for algorithm in ("arc-standard", "arc-eager"):
+            numpy.random.seed(0)
+            parser = TransitionParser(algorithm)
+            parser.train([gold] * 4, str(model), verbose=False)
+            learned = set(parser._match_transition.values())
+            assert {"LEFTARC:nmod:det", "LEFTARC:nmod:nsubj"} <= learned, learned
+            (parsed,) = parser.parse([gold], str(model))
+            rels = {node["rel"] for node in parsed.nodes.values() if node["rel"]}
+            assert rels and rels <= {"nmod:det", "nmod:nsubj", "ROOT"}, rels
+            assert "nmod" not in rels

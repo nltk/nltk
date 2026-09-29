@@ -335,8 +335,14 @@ def has_line_unsafe_char(token, allow_tab=False):
             (b < 0x20 or b == 0x7F) and not (allow_tab and b == 0x09) for b in token
         )
     # Judge the real characters: a str subclass can lie in __iter__ and
-    # __contains__, and str.__str__ copies the text out without consulting it.
-    text = str.__str__(token) if isinstance(token, str) else str(token)
+    # __contains__ (and str() of another object may hand back such a subclass),
+    # and str.__str__ copies the text out without consulting it.
+    text = str.__str__(token if isinstance(token, str) else str(token))
+    # str.isprintable is false for every Cc / Cs / Zl / Zp character (and for
+    # some safe ones, which fall through to the category rule), so a printable
+    # token is safe by the same rule at a fraction of the per-character cost.
+    if text.isprintable():
+        return False
     return any(
         unicodedata.category(ch) in _LINE_UNSAFE_CATEGORIES
         and not (allow_tab and ch == "\t")
