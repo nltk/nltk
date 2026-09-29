@@ -91,3 +91,75 @@ def test_find_names_an_archive_it_cannot_read(tmp_path, monkeypatch):
     with pytest.raises(LookupError) as exc:
         nltk.data.find("corpora/y/")
     assert "could not read" not in str(exc.value)
+
+
+@pytest.mark.skipif(
+    os.name != "posix" or os.geteuid() == 0,
+    reason="needs POSIX permission bits and an account the mode bits stop",
+)
+def test_find_refuses_a_data_root_another_account_can_write_to(tmp_path, monkeypatch):
+    """A directory another account can write to is not a data root, whatever the
+    mode of the files in it: a planted archive or file there would be loaded as
+    trusted data. ``find()`` refuses the root (or the writable directory on the
+    way to the resource), warns, names it in the ``LookupError`` with the remedy,
+    keeps searching later roots, and does nothing different with enforcement off.
+    """
+    root = tmp_path / "nltk_data"
+    corpora = root / "corpora" / "x"
+    corpora.mkdir(parents=True)
+    (corpora / "a.txt").write_text("hello")
+    archive_root = tmp_path / "zips"
+    archive_root.mkdir()
+    with zipfile.ZipFile(archive_root / "x.zip", "w") as zf:
+        zf.writestr("x/a.txt", "hello")
+    monkeypatch.setattr(nltk.data, "path", [str(root)])
+    monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None)
+    assert isinstance(
+        nltk.data.find("corpora/x/a.txt"), nltk.data.FileSystemPathPointer
+    )
+
+    def refused(where, name="corpora/x/a.txt"):
+        with pytest.warns(RuntimeWarning, match="writable by other accounts"):
+            with pytest.raises(LookupError) as exc:
+                nltk.data.find(name)
+        s = str(exc.value)
+        assert "Refused, writable by other accounts" in s
+        assert f"- {str(where)!r}" in s and f"chmod go-w {str(where)!r}" in s
+        return s
+
+    for where, mode in ((root, 0o777), (root / "corpora", 0o775), (corpora, 0o1777)):
+        old = os.stat(where).st_mode & 0o7777
+        os.chmod(where, mode)
+        try:
+            refused(where)
+        finally:
+            os.chmod(where, old)
+    assert isinstance(
+        nltk.data.find("corpora/x/a.txt"), nltk.data.FileSystemPathPointer
+    )
+
+    # a zip search-path entry inside a writable directory is refused too
+    monkeypatch.setattr(nltk.data, "path", [str(archive_root / "x.zip")])
+    os.chmod(archive_root, 0o777)
+    try:
+        refused(archive_root, "x/a.txt")
+    finally:
+        os.chmod(archive_root, 0o755)
+    assert isinstance(nltk.data.find("x/a.txt"), nltk.data.ZipFilePathPointer)
+
+    # a later private root still serves while the first is refused
+    private = tmp_path / "private_root" / "corpora" / "x"
+    private.mkdir(parents=True)
+    (private / "a.txt").write_text("private")
+    monkeypatch.setattr(nltk.data, "path", [str(root), str(tmp_path / "private_root")])
+    os.chmod(root, 0o777)
+    try:
+        with pytest.warns(RuntimeWarning, match="writable by other accounts"):
+            found = nltk.data.find("corpora/x/a.txt")
+        assert str(found.path).startswith(str(tmp_path / "private_root"))
+        # enforcement off keeps the historical behaviour
+        monkeypatch.setattr(pathsec, "ENFORCE", False)
+        found = nltk.data.find("corpora/x/a.txt")
+        assert str(found.path).startswith(str(root))
+    finally:
+        os.chmod(root, 0o755)

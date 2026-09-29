@@ -45,6 +45,7 @@ import sys
 import tempfile
 import textwrap
 import urllib.request
+import warnings
 from abc import ABCMeta, abstractmethod
 from gzip import WRITE as GZ_WRITE
 from gzip import GzipFile
@@ -1241,10 +1242,54 @@ def find(resource_name, paths=None):
     def _access_denied(exc):
         return exc.errno in (errno.EACCES, errno.EPERM)
 
+    # Directories another account can write to, refused as data roots: a file
+    # planted there would be loaded as trusted data, whatever its mode says.
+    _refused_writable = []
+
+    def _note_refused(where):
+        if where not in _refused_writable:
+            _refused_writable.append(where)
+            warnings.warn(
+                "NLTK will not read data from %r: it is writable by other "
+                "accounts, so a planted file there would be loaded as trusted "
+                "data. Make it private to its owner (chmod go-w)." % (where,),
+                RuntimeWarning,
+                stacklevel=3,
+            )
+
+    def _writable_by_others(root, below=None):
+        """The first existing directory from *root* down to the one holding
+        *below* that another account can write to, or None when each is private.
+        Judged like the downloader judges its download dir, on the directory
+        itself (not its ancestors), and only on POSIX under enforcement."""
+        from nltk import pathsec
+
+        if not pathsec.ENFORCE or os.name != "posix":
+            return None
+        if not pathsec.is_private_dir(root):
+            return root
+        if below is None:
+            return None
+        rel = os.path.relpath(os.path.dirname(below), root)
+        cur = root
+        for part in rel.split(os.sep):
+            if not part or part == os.curdir or part == os.pardir:
+                continue
+            cur = os.path.join(cur, part)
+            if not os.path.isdir(cur):
+                break
+            if not pathsec.is_private_dir(cur):
+                return cur
+        return None
+
     # Check each item in our path
     for path_ in paths:
         # Is the path item a zipfile?
         if path_ and (os.path.isfile(path_) and path_.endswith(".zip")):
+            unsafe = _writable_by_others(os.path.dirname(os.path.abspath(path_)))
+            if unsafe is not None:
+                _note_refused(unsafe)
+                continue
             try:
                 return ZipFilePathPointer(path_, resource_name)
             except PermissionError as e:
@@ -1260,9 +1305,20 @@ def find(resource_name, paths=None):
 
         # Is the path item a directory or is resource_name an absolute path?
         elif not path_ or os.path.isdir(path_):
+            if path_:
+                unsafe = _writable_by_others(path_)
+                if unsafe is not None:
+                    _note_refused(unsafe)
+                    continue
             if zipfile is None:
                 p = os.path.join(path_, url2pathname(resource_name))
                 if os.path.exists(p):
+                    unsafe = _writable_by_others(
+                        path_ or os.path.dirname(os.path.abspath(p)), p
+                    )
+                    if unsafe is not None:
+                        _note_refused(unsafe)
+                        continue
                     if p.endswith(".gz"):
                         return GzipFileSystemPathPointer(p)
                     else:
@@ -1286,6 +1342,12 @@ def find(resource_name, paths=None):
             else:
                 p = os.path.join(path_, url2pathname(zipfile))
                 if os.path.exists(p):
+                    unsafe = _writable_by_others(
+                        path_ or os.path.dirname(os.path.abspath(p)), p
+                    )
+                    if unsafe is not None:
+                        _note_refused(unsafe)
+                        continue
                     try:
                         return ZipFilePathPointer(p, zipentry)
                     except PermissionError as e:
@@ -1313,6 +1375,9 @@ def find(resource_name, paths=None):
                 # so the message names the archive instead of just "not found".
                 for pair in getattr(e, "_nltk_found_but_unreadable", ()):
                     _note_unreadable(*pair)
+                for where in getattr(e, "_nltk_refused_writable", ()):
+                    if where not in _refused_writable:
+                        _refused_writable.append(where)
 
     # Identify the package (i.e. the .zip file) to download.
     parts = resource_name.split("/")
@@ -1380,6 +1445,18 @@ def find(resource_name, paths=None):
             + "\n  or nltk.download(%r, extract=True)\n" % resource_zipname
         )
 
+    if _refused_writable:
+        msg += (
+            "\n  Refused, writable by other accounts (a file planted there"
+            + ("\n  would be loaded as trusted data):")
+            + "".join("\n    - %r" % d for d in _refused_writable)
+        )
+        msg += (
+            "\n  Make each one private to its owner, e.g.:"
+            + "".join("\n    chmod go-w %r" % d for d in _refused_writable)
+            + "\n"
+        )
+
     if _package_present_but_entry_missing:
         msg += "\n  Package was found in:" + "".join(
             "\n    - %r" % d for d in _package_present_but_entry_missing
@@ -1392,6 +1469,8 @@ def find(resource_name, paths=None):
     if _found_but_unreadable:
         # Carried, not printed: the zip-name retry above reads it back.
         exc._nltk_found_but_unreadable = tuple(_found_but_unreadable)
+    if _refused_writable:
+        exc._nltk_refused_writable = tuple(_refused_writable)
     raise exc
 
 
