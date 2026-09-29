@@ -271,10 +271,20 @@ class TestRogueFilesInADataRoot:
         )
         assert reader.words() == ["alpha", "beta"]
 
-    def test_escaping_member_names_are_refused(self, rogue_root):
+    def test_escaping_member_names_stay_inside_the_archive(self, rogue_root):
+        """A member named with '..' is bytes inside the archive and nothing more
+        (test_pathsec_sweep_tag documents the same); find() refuses the name,
+        an absolute member name is not found, and a plain member still reads."""
         archive = str(rogue_root / "corpora" / "rogue.zip")
-        with pytest.raises(ValueError, match=r"\.\."):
-            nltk.data.ZipFilePathPointer(archive, "../escape.txt")
+        before = sorted(os.listdir(rogue_root)) + sorted(os.listdir(rogue_root.parent))
+        pointer = nltk.data.ZipFilePathPointer(archive, "../escape.txt")
+        with pointer.open() as fh:
+            assert fh.read() == b"escaped"
+        assert (
+            sorted(os.listdir(rogue_root)) + sorted(os.listdir(rogue_root.parent))
+            == before
+        )
+        assert not (rogue_root.parent / "escape.txt").exists()
         with pytest.raises(OSError):
             nltk.data.ZipFilePathPointer(archive, "/abs.txt")
         with pytest.raises((ValueError, LookupError)):
