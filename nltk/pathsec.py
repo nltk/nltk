@@ -689,17 +689,47 @@ def _reject_colliding_members(members, context="zip member"):
     """
     import unicodedata
 
-    seen = {}
+    def _refuse(first, second, why):
+        raise ValueError(
+            f"Security Violation [{context}]: members {first!r} and {second!r} "
+            f"{why}, so one would silently overwrite the other (resource "
+            "poisoning)."
+        )
+
+    # Keyed the way the hardened extractor writes: a backslash is a separator
+    # and empty or "." parts vanish, so "a//b" and "a/./b" are "a/b" as well.
+    seen, parents = {}, {}
     for name in members:
         text = name.filename if hasattr(name, "filename") else str(name)
-        key = unicodedata.normalize("NFC", text).casefold()
-        if key in seen and seen[key] != text:
-            raise ValueError(
-                f"Security Violation [{context}]: members {seen[key]!r} and "
-                f"{text!r} collide on a case-insensitive or normalizing filesystem, "
-                f"so one would silently overwrite the other (resource poisoning)."
-            )
-        seen[key] = text
+        parts = [p for p in text.replace("\\", "/").split("/") if p not in ("", ".")]
+        if not parts:
+            continue  # an empty name is refused by the extractor itself
+        key = unicodedata.normalize("NFC", "/".join(parts)).casefold()
+        is_dir = text.endswith("/")
+        if key in seen:
+            other, other_is_dir = seen[key]
+            if other != text:
+                _refuse(
+                    other,
+                    text,
+                    "collide on a case-insensitive or normalizing filesystem",
+                )
+            if not (is_dir and other_is_dir):
+                # zipfile resolves both to the LAST entry, while a reviewer's
+                # tool may show the first: a duplicate file is ambiguous.
+                _refuse(other, text, "are the same file listed twice")
+        seen[key] = (text, is_dir)
+        for depth in range(1, len(parts)):
+            parents.setdefault("/".join(parts[:depth]), text)
+    # A file that is also a parent directory of another member: one of the two
+    # fails half way through an extraction that has already written files.
+    folded = {
+        unicodedata.normalize("NFC", parent).casefold(): member
+        for parent, member in parents.items()
+    }
+    for key, (text, is_dir) in seen.items():
+        if not is_dir and key in folded:
+            _refuse(text, folded[key], "are a file and a directory of one name")
 
 
 def _reject_url_shaped(raw, context):
@@ -2108,6 +2138,12 @@ class ZipFile(zipfile.ZipFile):
 
     def extract(self, member, path=None, pwd=None):
         validate_zip_archive(self, path or os.getcwd(), specific_member=member)
+        # A caller extracting member by member (the downloader does) never
+        # reaches extractall's archive-wide collision check, so run it here,
+        # once per archive state.
+        if getattr(self, "_collisions_checked", None) != len(self.filelist):
+            _reject_colliding_members(self.filelist, "pathsec.ZipFile")
+            self._collisions_checked = len(self.filelist)
         self._extract_root = os.path.abspath(path or os.getcwd())
         return super().extract(member, path, pwd)
 
@@ -2133,8 +2169,6 @@ class ZipFile(zipfile.ZipFile):
         file/symlink at the target is refused too. On a platform without dir_fd
         support this falls back to the stdlib extractor.
         """
-        import shutil as _shutil
-
         # extract()/extractall() pass member NAMES (strings); resolve to a
         # ZipInfo so the hardened walk below (and its hardlink guard) engages
         # instead of silently falling back to the stdlib extractor (CWE-59).
@@ -2144,9 +2178,10 @@ class ZipFile(zipfile.ZipFile):
             except KeyError:
                 return super()._extract_member(member, targetpath, pwd)
 
+        # Directory members take the same walk: the stdlib's makedirs/mkdir
+        # would follow a component swapped for a symlink after validation.
         if (
             getattr(member, "filename", None) is None
-            or member.is_dir()
             or os.open not in os.supports_dir_fd
             or not getattr(os, "O_NOFOLLOW", 0)
         ):
@@ -2163,58 +2198,93 @@ class ZipFile(zipfile.ZipFile):
             root = os.path.dirname(os.path.abspath(targetpath))
             rel = os.path.relpath(os.path.abspath(targetpath), root)
             parts = [p for p in rel.split(os.sep) if p not in ("", os.curdir)]
+        if not parts and member.is_dir():
+            # "./" names the extraction base itself; the stdlib creates it.
+            os.makedirs(root, exist_ok=True)
+            return root
         if not parts or os.pardir in parts:
             raise PermissionError(
                 f"Security Violation [pathsec.ZipFile]: refusing member path "
                 f"{member.filename!r}"
             )
-        *dirs, leaf = parts
+        if member.is_dir():
+            dirs, leaf = parts, None
+        else:
+            *dirs, leaf = parts
         written = os.path.join(root, *parts)
 
-        # The extraction base (the trusted destination) may not exist yet; the
-        # stdlib extractor makedirs it, so create it before anchoring dir_fd.
-        os.makedirs(root, exist_ok=True)
-        dir_fd = os.open(root, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
+        # Open the member first, as the stdlib does: a bomb, a bad password or
+        # an unsupported method is then refused before any file exists.
+        source = None if leaf is None else self.open(member, pwd=pwd)
         try:
-            for component in dirs:
-                try:
-                    os.mkdir(component, 0o755, dir_fd=dir_fd)
-                except FileExistsError:
-                    pass
-                nxt = os.open(
-                    component,
-                    os.O_RDONLY | os.O_NOFOLLOW | getattr(os, "O_DIRECTORY", 0),
-                    dir_fd=dir_fd,
-                )
-                os.close(dir_fd)
-                dir_fd = nxt
-            flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW
+            # The extraction base (the trusted destination) may not exist yet;
+            # the stdlib extractor makedirs it, so create it before dir_fd.
+            os.makedirs(root, exist_ok=True)
+            dir_fd = os.open(root, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
             try:
-                leaf_fd = os.open(leaf, flags, 0o644, dir_fd=dir_fd)
-            except FileExistsError:
-                info = os.lstat(leaf, dir_fd=dir_fd)
-                if not stat.S_ISREG(info.st_mode):
-                    raise PermissionError(
-                        f"Security Violation [pathsec.ZipFile]: refusing to "
-                        f"extract onto non-regular file {leaf!r}"
+                for component in dirs:
+                    try:
+                        os.mkdir(component, 0o755, dir_fd=dir_fd)
+                    except FileExistsError:
+                        pass
+                    nxt = os.open(
+                        component,
+                        os.O_RDONLY | os.O_NOFOLLOW | getattr(os, "O_DIRECTORY", 0),
+                        dir_fd=dir_fd,
                     )
-                if info.st_nlink > 1:
-                    raise PermissionError(
-                        f"Security Violation [pathsec.ZipFile]: refusing "
-                        f"multiply-linked file {leaf!r} (st_nlink="
-                        f"{info.st_nlink}); a hardlink may alias an "
-                        "outside-root inode (CWE-59)"
-                    )
-                # Confirmed regular and single-linked: unlink then re-create
-                # with O_EXCL so re-extraction replaces the entry instead of
-                # truncating through a swapped-in alias.
-                os.unlink(leaf, dir_fd=dir_fd)
-                leaf_fd = os.open(leaf, flags, 0o644, dir_fd=dir_fd)
+                    os.close(dir_fd)
+                    dir_fd = nxt
+                if leaf is not None:
+                    self._write_leaf(leaf, dir_fd, source)
+            finally:
+                os.close(dir_fd)
         finally:
-            os.close(dir_fd)
-        with os.fdopen(leaf_fd, "wb") as sink, self.open(member, pwd=pwd) as source:
-            _shutil.copyfileobj(source, sink)
+            if source is not None:
+                source.close()
         return written
+
+    @staticmethod
+    def _write_leaf(leaf, dir_fd, source):
+        """Create *leaf* under *dir_fd* with O_EXCL | O_NOFOLLOW and copy
+        *source* into it; a copy that fails removes the file it created."""
+        import shutil as _shutil
+
+        flags = os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW
+        try:
+            leaf_fd = os.open(leaf, flags, 0o644, dir_fd=dir_fd)
+        except FileExistsError:
+            info = os.lstat(leaf, dir_fd=dir_fd)
+            if not stat.S_ISREG(info.st_mode):
+                raise PermissionError(
+                    f"Security Violation [pathsec.ZipFile]: refusing to "
+                    f"extract onto non-regular file {leaf!r}"
+                )
+            if info.st_nlink > 1:
+                raise PermissionError(
+                    f"Security Violation [pathsec.ZipFile]: refusing "
+                    f"multiply-linked file {leaf!r} (st_nlink="
+                    f"{info.st_nlink}); a hardlink may alias an "
+                    "outside-root inode (CWE-59)"
+                )
+            # Confirmed regular and single-linked: unlink then re-create
+            # with O_EXCL so re-extraction replaces the entry instead of
+            # truncating through a swapped-in alias.
+            os.unlink(leaf, dir_fd=dir_fd)
+            leaf_fd = os.open(leaf, flags, 0o644, dir_fd=dir_fd)
+        with os.fdopen(leaf_fd, "wb") as sink:
+            try:
+                _shutil.copyfileobj(source, sink)
+            except BaseException:
+                # Remove the partial file, but only while the name is still the
+                # inode created above: never unlink something swapped in.
+                try:
+                    if os.path.samestat(
+                        os.fstat(sink.fileno()), os.lstat(leaf, dir_fd=dir_fd)
+                    ):
+                        os.unlink(leaf, dir_fd=dir_fd)
+                except OSError:
+                    pass
+                raise
 
     def read(self, name, pwd=None):
         # Not the raw one-shot super().read() (bounded only by the attacker-declared
