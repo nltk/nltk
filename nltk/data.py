@@ -123,6 +123,11 @@ _NO_PROTOCOL_REF_ROOT = (
 # url2pathname may emit either separator (Windows rewrites "/"->"\\"); split on both.
 _PATH_COMPONENT_RE = redos.compile(r"[\\/]")
 
+# The exact line boundaries ``str.splitlines`` recognises (LF/CR/CRLF, vertical
+# and form feeds, the file/group/record separators, NEL, and the line/paragraph
+# separators); readline probes fresh input for one, ``splitlines`` still splits.
+_LINE_BOUNDARY_RE = redos.compile(r"[\n\r\v\f\x1c\x1d\x1e\x85\u2028\u2029]")
+
 
 def _normalized_path_escapes(name):
     """
@@ -1959,11 +1964,14 @@ class SeekableUnicodeStreamReader:
             return line
 
         readsize = size or 72
-        chars = ""
+        # Collect the spans in a list and join only when a line break shows up
+        # or at end of stream: growing a str in place copied it on every pass
+        # (the residual quadratic the j8g8 probe caught on Windows, CWE-407).
+        parts = []
 
         # If there's a remaining incomplete line in the buffer, add it.
         if self.linebuffer:
-            chars += self.linebuffer.pop()
+            parts.append(self.linebuffer.pop())
             self.linebuffer = None
 
         while True:
@@ -1975,23 +1983,29 @@ class SeekableUnicodeStreamReader:
             if new_chars and new_chars.endswith("\r"):
                 new_chars += self._read(1)
 
-            chars += new_chars
-            lines = chars.splitlines(True)
-            if len(lines) > 1:
-                line = lines[0]
-                self.linebuffer = lines[1:]
-                self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
-                self._rewind_checkpoint = startpos
-                break
-            elif len(lines) == 1:
-                line0withend = lines[0]
-                line0withoutend = lines[0].splitlines(False)[0]
-                if line0withend != line0withoutend:  # complete line
-                    line = line0withend
+            # Scan only the freshly read span (plus the previous span's last
+            # character, so a split CR LF stays intact) for a line break;
+            # ``splitlines`` still does the split, so lines stay byte identical.
+            tail = parts[-1][-1:] if parts else ""
+            parts.append(new_chars)
+            if _LINE_BOUNDARY_RE.search(tail + new_chars):
+                chars = "".join(parts)
+                lines = chars.splitlines(True)
+                if len(lines) > 1:
+                    line = lines[0]
+                    self.linebuffer = lines[1:]
+                    self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
+                    self._rewind_checkpoint = startpos
                     break
+                else:
+                    line0withend = lines[0]
+                    line0withoutend = lines[0].splitlines(False)[0]
+                    if line0withend != line0withoutend:  # complete line
+                        line = line0withend
+                        break
 
             if not new_chars or size is not None:
-                line = chars
+                line = "".join(parts)
                 break
 
             # Read successively larger blocks of text.
