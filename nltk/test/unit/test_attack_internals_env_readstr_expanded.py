@@ -33,6 +33,8 @@ _JVM_INJECTING = {
     "IBM_JAVA_OPTIONS": "-Xdump:tool:exec=touch /tmp/pwned",
     "OPENJ9_JAVA_OPTIONS": "-Xdump:tool:exec=touch /tmp/pwned",
     "CLASSPATH": "/evil",
+    # the launcher prints its debug trace on stdout, which the wrappers parse
+    "_JAVA_LAUNCHER_DEBUG": "1",
 }
 _LOADER = {
     "LD_PRELOAD": "/evil.so",
@@ -57,6 +59,8 @@ _LOADER = {
     "LOCPATH": "/evil/locale",
     "NLSPATH": "/evil/%N",
     "IFS": "x",
+    # the JDK adds it to java.library.path on macOS: a native-library redirect
+    "JAVA_LIBRARY_PATH": "/evil/jni",
 }
 _BENIGN = {
     "HOME": "/home/user",

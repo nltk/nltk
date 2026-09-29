@@ -88,7 +88,8 @@ _MODULE_LIST_RE = redos.compile(r"\A[A-Za-z0-9_.,-]+\Z")
 _UNSAFE_OPTION_CHARS = frozenset(" \t\r\n;|&$`<>(){}[]*?!'\"\\")
 
 # JVM env vars that inject flags (JAVA_TOOL_OPTIONS / _JAVA_OPTIONS / JDK_JAVA_OPTIONS
-# / IBM_JAVA_OPTIONS / OPENJ9_JAVA_OPTIONS) or classpath (CLASSPATH); stripped (CWE-88).
+# / IBM_JAVA_OPTIONS / OPENJ9_JAVA_OPTIONS), classpath (CLASSPATH) or launcher
+# debug output on stdout (_JAVA_LAUNCHER_DEBUG, which the wrappers parse); stripped (CWE-88).
 _JVM_INJECTING_ENV_VARS = frozenset(
     {
         "JAVA_TOOL_OPTIONS",
@@ -97,15 +98,25 @@ _JVM_INJECTING_ENV_VARS = frozenset(
         "IBM_JAVA_OPTIONS",
         "OPENJ9_JAVA_OPTIONS",
         "CLASSPATH",
+        "_JAVA_LAUNCHER_DEBUG",
     }
 )
 
 # Variables that redirect the child JVM's dynamic loader or locale machinery
 # (CWE-427), by family (glibc/Solaris, macOS, AIX, IRIX/Tru64, glibc tunables
-# and malloc hooks) plus the exact AIX/HP-UX/glibc search-path names and IFS.
+# and malloc hooks) plus the exact AIX/HP-UX/glibc search-path names, IFS and
+# JAVA_LIBRARY_PATH (the JDK adds it to java.library.path on macOS).
 _LOADER_ENV_PREFIXES = ("LD_", "DYLD_", "LDR_", "_RLD_", "GLIBC_", "MALLOC_")
 _LOADER_ENV_EXACT = frozenset(
-    {"LIBPATH", "SHLIB_PATH", "GCONV_PATH", "LOCPATH", "NLSPATH", "IFS"}
+    {
+        "LIBPATH",
+        "SHLIB_PATH",
+        "GCONV_PATH",
+        "LOCPATH",
+        "NLSPATH",
+        "IFS",
+        "JAVA_LIBRARY_PATH",
+    }
 )
 
 
