@@ -160,10 +160,12 @@ default: unzip or not?
 
 """
 import functools
+import http.client
 import itertools
 import ntpath
 import os
 import posixpath
+import shutil
 import stat
 import subprocess
 import sys
@@ -178,7 +180,7 @@ from xml.etree import ElementTree
 
 import nltk
 from nltk.data import _check_decompression_bomb
-from nltk.pathsec import ZipFile
+from nltk.pathsec import ZipFile, _reject_colliding_members
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import urlopen, validate_path
 from nltk.termsec import safe_print, sanitize_terminal
@@ -191,16 +193,32 @@ from nltk.xmlsec import parse as safe_parse
 MAX_PACKAGE_BYTES = 1024 * 1024 * 1024
 MAX_INDEX_BYTES = 64 * 1024 * 1024
 
+# A parsed tree costs about twenty times its bytes, and DTD default attributes
+# multiply that further, so the index structure is bounded too. The real index
+# has about 550 elements and 1,300 attributes, and no token near a megabyte.
+MAX_INDEX_ELEMENTS = 50_000
+MAX_INDEX_ATTRIBUTES = 100_000
+MAX_INDEX_TOKEN_BYTES = 1024 * 1024
 
-def _bounded_body(stream, limit, what):
+# Seconds a data server may stall a single socket read, and the most the whole
+# index read may take: a drip-fed index never trips the first on its own.
+NETWORK_TIMEOUT = 120
+INDEX_DEADLINE = 300
+
+
+def _bounded_body(stream, limit, what, deadline=None):
     """Read *stream* in full, refusing (ValueError) once it exceeds *limit*
-    bytes, and return the bytes read as a file object for a parser."""
+    bytes, or once the monotonic clock passes *deadline* when one is given,
+    and return the bytes read as a file object for a parser."""
     import io
 
+    # read1 hands back whatever one socket read produced, so the deadline is
+    # checked while a server drip feeds bytes instead of after a full block.
+    read = getattr(stream, "read1", None) or stream.read
     chunks, total = [], 0
     try:
         while True:
-            block = stream.read(1024 * 64)
+            block = read(1024 * 64)
             if not block:
                 break
             total += len(block)
@@ -210,11 +228,99 @@ def _bounded_body(stream, limit, what):
                     "an unbounded response (CWE-400)"
                 )
             chunks.append(block)
+            if deadline is not None and time.monotonic() > deadline:
+                raise ValueError(
+                    f"The {what} took longer than its time budget to arrive; "
+                    "refusing a drip-fed response (CWE-400)"
+                )
     finally:
         close = getattr(stream, "close", None)
         if close is not None:
             close()
     return io.BytesIO(b"".join(chunks))
+
+
+class _StopScan(Exception):
+    """Ends the structure scan early; the real parse then decides."""
+
+
+def _check_index_structure(data):
+    """Refuse an index whose parsed tree would dwarf its size (CWE-400).
+
+    Streams *data* through expat without building a tree and counts elements
+    and attributes, DTD defaults included, so no element count, attribute
+    count or single token beyond the ceilings above is ever materialised. An
+    entity declaration stops the scan: the real parser refuses it on its own.
+    """
+    from xml.parsers import expat
+
+    parser = expat.ParserCreate()
+    seen = {"elements": 0, "attributes": 0, "mark": 0}
+
+    def _too_many(what, limit):
+        raise ValueError(
+            f"The data index declares more than {limit} {what}; refusing to "
+            "build it (CWE-400)"
+        )
+
+    def _start(name, attrs):
+        seen["elements"] += 1
+        seen["attributes"] += len(attrs)
+        if seen["elements"] > MAX_INDEX_ELEMENTS:
+            _too_many("elements", MAX_INDEX_ELEMENTS)
+        if seen["attributes"] > MAX_INDEX_ATTRIBUTES:
+            _too_many("attributes", MAX_INDEX_ATTRIBUTES)
+        seen["mark"] = parser.CurrentByteIndex
+
+    def _progress(*_args):
+        seen["mark"] = parser.CurrentByteIndex
+
+    def _stop(*_args):
+        raise _StopScan
+
+    parser.StartElementHandler = _start
+    parser.EndElementHandler = _progress
+    parser.CharacterDataHandler = _progress
+    parser.CommentHandler = _progress
+    parser.ProcessingInstructionHandler = _progress
+    parser.EntityDeclHandler = _stop
+    parser.ExternalEntityRefHandler = _stop
+    step = 64 * 1024
+    try:
+        for offset in range(0, len(data), step):
+            parser.Parse(bytes(data[offset : offset + step]), False)
+            fed = min(offset + step, len(data))
+            if fed - seen["mark"] > MAX_INDEX_TOKEN_BYTES:
+                raise ValueError(
+                    f"The data index holds a token longer than "
+                    f"{MAX_INDEX_TOKEN_BYTES} bytes; refusing to build it "
+                    "(CWE-400)"
+                )
+        parser.Parse(b"", True)
+    except (_StopScan, expat.ExpatError):
+        # Entities are refused, and malformed input reported, by the parse
+        # that follows; neither builds more than this scan already counted.
+        pass
+
+
+def _refuse_unprintable(value, what):
+    """Refuse an index identifier holding anything a terminal would act on:
+    a control or line-break character, an unbalanced or overriding bidi
+    control, or an invisible format character (CWE-150 / CWE-1007)."""
+    text = str(value)
+    if sanitize_terminal(text, single_line=True) != text:
+        raise ValueError(
+            f"Invalid {what} {sanitize_terminal(repr(text))}: it holds control, "
+            "line-break, bidi or invisible characters (CWE-150)"
+        )
+
+
+def _one_line_each(text):
+    """Sanitise every line of *text* on its own, so no line break survives
+    inside one and bidi nesting is balanced per displayed line (CWE-150)."""
+    return "\n".join(
+        sanitize_terminal(line, single_line=True) for line in str(text).split("\n")
+    )
 
 
 # urllib2 = nltk.internals.import_from_stdlib('urllib2')
@@ -372,7 +478,12 @@ class Package:
             xml = safe_parse(xml)
         for key in xml.attrib:
             xml.attrib[key] = str(xml.attrib[key])
-        return Package(**xml.attrib)
+        package = Package(**xml.attrib)
+        # An index id or file name becomes a file on disk and a listed line,
+        # so one a terminal would act on is refused at the source (CWE-150).
+        _refuse_unprintable(package.id, "package id")
+        _refuse_unprintable(package.filename, "package file name")
+        return package
 
     def __lt__(self, other):
         return self.id < other.id
@@ -413,7 +524,9 @@ class Collection:
         for key in xml.attrib:
             xml.attrib[key] = str(xml.attrib[key])
         children = [child.get("ref") for child in xml.findall("item")]
-        return Collection(children=children, **xml.attrib)
+        collection = Collection(children=children, **xml.attrib)
+        _refuse_unprintable(collection.id, "collection id")
+        return collection
 
     def __lt__(self, other):
         return self.id < other.id
@@ -508,9 +621,12 @@ class ErrorMessage(DownloaderMessage):
     def __init__(self, package, message):
         self.package = package
         if isinstance(message, Exception):
-            self.message = str(message)
-        else:
-            self.message = message
+            message = str(message)
+        # The text can carry server-supplied names, member names or a raw HTTP
+        # reason phrase, and download() may re-raise it; neutralise it here.
+        if isinstance(message, str):
+            message = sanitize_terminal(message)
+        self.message = message
 
 
 class ProgressMessage(DownloaderMessage):
@@ -655,6 +771,9 @@ class Downloader:
                 name = textwrap.fill(
                     "-" * 27 + (info.name or info.id), 75, subsequent_indent=27 * " "
                 )[27:]
+                # Only the wrap's own line breaks survive, and bidi nesting is
+                # balanced per displayed line; index ids are checked by fromxml.
+                name = _one_line_each(name)
                 safe_print("  [{}] {} {}".format(prefix, info.id.ljust(20, "."), name))
                 lines += len(name.split("\n"))  # for more_prompt
                 if more_prompt and lines > 20:
@@ -705,7 +824,7 @@ class Downloader:
     # downloader in the gui can just kill the download thread anytime
     # it wants.
 
-    def incr_download(self, info_or_id, download_dir=None, force=False):
+    def incr_download(self, info_or_id, download_dir=None, force=False, _expanding=()):
         # If they didn't specify a download_dir, then use the default one.
         if download_dir is None:
             download_dir = self._download_dir
@@ -718,7 +837,7 @@ class Downloader:
 
         # If they gave us a list of ids, then download each one.
         if isinstance(info_or_id, (list, tuple)):
-            yield from self._download_list(info_or_id, download_dir, force)
+            yield from self._download_list(info_or_id, download_dir, force, _expanding)
             return
 
         # Look up the requested collection or package.
@@ -730,8 +849,14 @@ class Downloader:
 
         # Handle collections.
         if isinstance(info, Collection):
+            # A collection holding itself, directly or through another, would
+            # recurse without end; the outer expansion already covers it.
+            if info.id in _expanding:
+                return
             yield StartCollectionMessage(info)
-            yield from self.incr_download(info.children, download_dir, force)
+            yield from self.incr_download(
+                info.children, download_dir, force, (*_expanding, info.id)
+            )
             yield FinishCollectionMessage(info)
 
         # Handle Packages (delegate to a helper function).
@@ -744,7 +869,7 @@ class Downloader:
         else:
             return len(item.packages)
 
-    def _download_list(self, items, download_dir, force):
+    def _download_list(self, items, download_dir, force, _expanding=()):
         # Look up the requested items.
         for i in range(len(items)):
             try:
@@ -753,15 +878,16 @@ class Downloader:
                 yield ErrorMessage(items[i], e)
                 return
 
-        # Download each item, re-scaling their progress.
-        num_packages = sum(self._num_packages(item) for item in items)
+        # Download each item, re-scaling their progress. A list of collections
+        # holding no package at all must not divide by zero.
+        num_packages = max(1, sum(self._num_packages(item) for item in items))
         progress = 0
         for i, item in enumerate(items):
             if isinstance(item, Package):
                 delta = 1.0 / num_packages
             else:
                 delta = len(item.packages) / num_packages
-            for msg in self.incr_download(item, download_dir, force):
+            for msg in self.incr_download(item, download_dir, force, _expanding):
                 if isinstance(msg, ProgressMessage):
                     yield ProgressMessage(progress + msg.progress * delta)
                 else:
@@ -772,6 +898,14 @@ class Downloader:
     def _download_package(self, info, download_dir, force):
         yield StartPackageMessage(info)
         yield ProgressMessage(0)
+
+        # The file name becomes a directory entry that other tools list; one
+        # holding control, line-break or bidi characters is never created.
+        try:
+            _refuse_unprintable(info.filename, "package file name")
+        except ValueError as e:
+            yield ErrorMessage(info, e)
+            return
 
         filepath = os.path.join(download_dir, info.filename)
         tmp_filepath = filepath + ".tmp"
@@ -873,6 +1007,12 @@ class Downloader:
                 _safe_remove(path)
                 return
             if not os.path.isdir(path):
+                return
+            # os.walk lists a directory and descends into it later by path, so
+            # a subdirectory swapped for a symlink in between is followed and
+            # its target emptied; the fd-based rmtree pins each directory.
+            if shutil.rmtree.avoids_symlink_attacks:
+                shutil.rmtree(path, ignore_errors=True)
                 return
             for root, dirs, files in os.walk(path, topdown=False):
                 for name in files:
@@ -976,35 +1116,42 @@ class Downloader:
                 # The declared size bounds the body below, and it comes from the
                 # same server, so cap it too: nothing is fetched for a package
                 # that claims more than MAX_PACKAGE_BYTES.
-                if not 0 <= int(info.size) <= MAX_PACKAGE_BYTES:
+                try:
+                    declared = int(info.size)
+                except (TypeError, ValueError, OverflowError):
+                    declared = None
+                if declared is None or not 0 <= declared <= MAX_PACKAGE_BYTES:
                     yield ErrorMessage(
                         info,
                         f"Refusing to download {info.id!r}: the index declares "
-                        f"{info.size} bytes, outside the 0 to {MAX_PACKAGE_BYTES} "
-                        "byte range a package may have (CWE-400)",
+                        f"{info.size!r} bytes, outside the 0 to "
+                        f"{MAX_PACKAGE_BYTES} byte range a package may have "
+                        "(CWE-400)",
                     )
                     return
 
+                infile = None
                 try:
-                    infile = urlopen(info.url)
+                    infile = urlopen(info.url, timeout=NETWORK_TIMEOUT)
                     with pathsec_open(
                         tmp_filepath,
                         "wb",
                         context="Downloader._download_package",
                         required_root=download_dir,
                     ) as outfile:
-                        num_blocks = max(1, info.size / (1024 * 16))
-                        # Stop once the body passes the declared size plus a
-                        # slack, so a hostile server cannot fill the disk; the
-                        # size check below then rejects and removes it (CWE-400).
-                        max_download_bytes = int(info.size) + 1024 * 1024
+                        num_blocks = max(1, declared / (1024 * 16))
+                        # Never ask for, or write, a byte past the declared size:
+                        # one byte more already proves the body is not the
+                        # package, so a server cannot fill the disk (CWE-400).
                         bytes_read = 0
+                        overflow = False
                         for block in itertools.count():
-                            s = infile.read(1024 * 16)
+                            s = infile.read(min(1024 * 16, declared + 1 - bytes_read))
                             if not s:
                                 break
                             bytes_read += len(s)
-                            if bytes_read > max_download_bytes:
+                            if bytes_read > declared:
+                                overflow = True
                                 break
                             outfile.write(s)
                             if block % 2 == 0:
@@ -1013,13 +1160,22 @@ class Downloader:
                                     min(80, 5 + 75 * (block / num_blocks))
                                 )
                     infile.close()
+                    if overflow:
+                        _safe_remove(tmp_filepath)
+                        yield ErrorMessage(
+                            info,
+                            f"Integrity check failed for {info.id!r}: size "
+                            f"mismatch (the body runs past the declared "
+                            f"{declared} bytes)",
+                        )
+                        return
                     # --- CVE-2026-12261 fix (integrity before commit) ---
                     # Validate size and sha256 on the temp file BEFORE
                     # replacing the destination.  This closes the window
                     # where a tampered archive could be extracted while the
                     # integrity check was still deferred to status logic.
                     tmp_size = os.path.getsize(tmp_filepath)
-                    if tmp_size != int(info.size):
+                    if tmp_size != declared:
                         _safe_remove(tmp_filepath)
                         yield ErrorMessage(
                             info,
@@ -1057,7 +1213,10 @@ class Downloader:
                     )
                     os.replace(tmp_filepath, filepath)
                     self._status_cache.pop(info.id, None)
-                except OSError as e:
+                except (OSError, ValueError, http.client.HTTPException) as e:
+                    # A malformed status line, a truncated body or a refused URL
+                    # is a failed download, reported like any other, not a crash
+                    # that prints the server's raw text in a traceback.
                     _safe_remove(tmp_filepath)
                     yield ErrorMessage(
                         info,
@@ -1065,6 +1224,9 @@ class Downloader:
                         "\n  %s" % (info.id, info.url, e),
                     )
                     return
+                finally:
+                    if infile is not None:
+                        infile.close()
 
                 yield FinishDownloadMessage(info)
                 yield ProgressMessage(80)
@@ -1136,14 +1298,16 @@ class Downloader:
         else:
             # Define a helper function for displaying output:
             def show(s, prefix2=""):
-                # s may embed server-supplied names (package id / filename /
-                # collection id) or a server error message; neutralise any
-                # terminal control sequences before writing to the terminal.
+                # s may embed server-supplied names or a server error message:
+                # neutralise control sequences, then check each wrapped line on
+                # its own so bidi nesting cannot span two displayed lines.
                 print_to(
-                    textwrap.fill(
-                        sanitize_terminal(s),
-                        initial_indent=prefix + prefix2,
-                        subsequent_indent=prefix + prefix2 + " " * 4,
+                    _one_line_each(
+                        textwrap.fill(
+                            sanitize_terminal(s),
+                            initial_indent=prefix + prefix2,
+                            subsequent_indent=prefix + prefix2 + " " * 4,
+                        )
                     )
                 )
 
@@ -1300,8 +1464,10 @@ class Downloader:
             if not os.path.isdir(unzipdir):
                 return self.STALE
 
+            # lstat: a symlink planted in the tree counts as itself, not as its
+            # target, and a dangling one marks the install stale, not a crash.
             unzipped_size = sum(
-                os.stat(os.path.join(d, f)).st_size
+                os.lstat(os.path.join(d, f)).st_size
                 for d, _, files in os.walk(unzipdir)
                 for f in files
             )
@@ -1340,13 +1506,26 @@ class Downloader:
         # If a URL was specified, then update our URL.
         self._url = url or self._url
 
-        # Download the index file, bounded: a server streaming an endless
-        # index would otherwise be read whole into memory before parsing.
-        self._index = nltk.internals.ElementWrapper(
-            safe_parse(
-                _bounded_body(urlopen(self._url), MAX_INDEX_BYTES, "data index")
-            ).getroot()
-        )
+        # Download the index bounded in bytes and in time, and count its
+        # structure before a tree is built: an endless or drip-fed index, or
+        # one whose tree dwarfs its bytes, is refused (CWE-400).
+        try:
+            body = _bounded_body(
+                urlopen(self._url, timeout=NETWORK_TIMEOUT),
+                MAX_INDEX_BYTES,
+                "data index",
+                deadline=time.monotonic() + INDEX_DEADLINE,
+            )
+        except http.client.HTTPException as e:
+            # Its text is the server's raw status line or header; never let a
+            # traceback print that unsanitised (CWE-150).
+            raise ValueError(
+                "The data server sent a malformed response for the index: "
+                + sanitize_terminal(repr(e))
+            ) from None
+        with body.getbuffer() as view:
+            _check_index_structure(view)
+        self._index = nltk.internals.ElementWrapper(safe_parse(body).getroot())
         self._index_timestamp = time.time()
 
         # Build a dictionary of packages.
@@ -1360,19 +1539,24 @@ class Downloader:
         self._collections = {c.id: c for c in collections}
 
         # Replace identifiers with actual children in collection.children.
+        # The list is rebuilt, not edited while enumerated: deleting in place
+        # skipped the ref after each removed one, so a dangling ref survived.
         for collection in self._collections.values():
-            for i, child_id in enumerate(collection.children):
+            resolved = []
+            for child_id in collection.children:
                 if child_id in self._packages:
-                    collection.children[i] = self._packages[child_id]
+                    resolved.append(self._packages[child_id])
                 elif child_id in self._collections:
-                    collection.children[i] = self._collections[child_id]
+                    resolved.append(self._collections[child_id])
                 else:
+                    # single_line: a ref holding a line break cannot forge a line
                     safe_print(
                         "removing collection member with no package: {}".format(
                             sanitize_terminal(child_id)  # server-supplied ref
-                        )
+                        ),
+                        single_line=True,
                     )
-                    del collection.children[i]
+            collection.children[:] = resolved
 
         # Fill in collection.packages for each collection.
         # Use acyclic_breadth_first to safely traverse the collection graph,
@@ -1624,6 +1808,7 @@ class DownloaderShell:
                     name = textwrap.fill(
                         "-" * 27 + (pname), 75, subsequent_indent=27 * " "
                     )[27:]
+                    name = _one_line_each(name)
                     safe_print("  [ ] {} {}".format(pid.ljust(20, "."), name))
                 safe_print()
 
@@ -2727,14 +2912,35 @@ def _validate_member(member, root_abs):
     abs_prefix = os.path.normcase(root_abs).rstrip(os.sep) + os.sep
     target_abs = os.path.normcase(os.path.abspath(os.path.join(root_abs, member)))
     if not target_abs.startswith(abs_prefix):
-        return f"Zip Slip blocked: {member}"
+        return f"Zip Slip blocked: {member!r}"
 
     real_prefix = os.path.normcase(os.path.realpath(root_abs)).rstrip(os.sep) + os.sep
     target_real = os.path.normcase(os.path.realpath(os.path.join(root_abs, member)))
     if not target_real.startswith(real_prefix):
-        return f"Symlink escape blocked: {member}"
+        return f"Symlink escape blocked: {member!r}"
 
     return None
+
+
+def _member_shape_error(member, root_abs):
+    """Phase 1 refusal of a member that pathsec's extractor would refuse only
+    while writing, after earlier members are already on disk.
+
+    That extractor splits on a backslash on every platform and refuses any
+    ``..`` part, so ``tiny/../other/x`` (which passes the top-level ownership
+    check) and, on POSIX, ``tiny\\..\\x`` are refused here instead, before
+    anything is written; the backslash spelling is also checked for an escape
+    through a symlink (CWE-22 / CWE-59).
+    """
+    spelled = member.replace("\\", "/")
+    if os.pardir in spelled.split("/"):
+        return f"Parent reference blocked: {member!r}"
+    if spelled == member:
+        return None
+    error = _validate_member(spelled, root_abs)
+    if error is None:
+        return None
+    return f"{error} (as the extractor splits {member!r})"
 
 
 def _unzip_iter(filename, root, verbose=True, expected_root=None):
@@ -2783,6 +2989,15 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None):
         members = zf.namelist()
 
         # Phase 1 -- validate every member before touching the filesystem.
+
+        # Members are extracted one by one below, so names landing on one file
+        # (duplicates, case or normalisation twins, a file that is also a
+        # directory) are refused archive-wide here, before anything is written.
+        try:
+            _reject_colliding_members(members, "downloader.unzip")
+        except ValueError as e:
+            yield ErrorMessage(filename, str(e))
+            return
         has_violations = False
         for member in members:
             # --- CVE-2026-12261 fix (cross-package ownership check) ---
@@ -2803,7 +3018,9 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None):
                     has_violations = True
                     continue
             # -----------------------------------------------------------
-            error = _validate_member(member, root_abs)
+            error = _validate_member(member, root_abs) or _member_shape_error(
+                member, root_abs
+            )
             if error is not None:
                 yield ErrorMessage(filename, error)
                 has_violations = True
@@ -2827,7 +3044,9 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None):
             yield ErrorMessage(filename, f"Extraction error: {e}")
             return
 
-        for member in members:
+        # Each name once: a duplicate was refused above, and extracting a name
+        # twice would only rewrite the entry that getinfo() resolves it to.
+        for member in dict.fromkeys(members):
             if expected_root is not None:
                 top = member.replace("\\", "/").lstrip("/").split("/")[0]
                 if top != expected_root:
@@ -2837,29 +3056,36 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None):
                         f"is outside the owning package directory {expected_root!r}",
                     )
                     return
-            error = _validate_member(member, root_abs)
+            error = _validate_member(member, root_abs) or _member_shape_error(
+                member, root_abs
+            )
             if error is not None:
                 yield ErrorMessage(filename, f"{error} (during extraction)")
                 return
-            # Defense in depth if a stdlib extractor is used: a pre-existing
-            # multiply-linked target would let the write follow the hardlink
-            # and alias an outside-root inode (CWE-59), so refuse it.
-            target_abs = os.path.normpath(os.path.join(root_abs, member))
-            try:
-                tstat = os.lstat(target_abs)
-            except OSError:
-                tstat = None
-            if tstat is not None and stat.S_ISREG(tstat.st_mode) and tstat.st_nlink > 1:
-                yield ErrorMessage(
-                    filename,
-                    f"Multiply-linked target blocked: {member!r} "
-                    "(hardlink may alias outside-root inode, CWE-59)",
-                )
-                return
+            # A pre-existing multiply-linked target would let a stdlib write
+            # alias an outside-root inode (CWE-59); check it under both the
+            # platform spelling and the one the hardened extractor writes.
+            for spelling in dict.fromkeys((member, member.replace("\\", "/"))):
+                target_abs = os.path.normpath(os.path.join(root_abs, spelling))
+                try:
+                    tstat = os.lstat(target_abs)
+                except OSError:
+                    tstat = None
+                if (
+                    tstat is not None
+                    and stat.S_ISREG(tstat.st_mode)
+                    and tstat.st_nlink > 1
+                ):
+                    yield ErrorMessage(
+                        filename,
+                        f"Multiply-linked target blocked: {member!r} "
+                        "(hardlink may alias outside-root inode, CWE-59)",
+                    )
+                    return
             try:
                 zf.extract(member, root_abs)
             except Exception as e:
-                yield ErrorMessage(filename, f"Extraction error for {member}: {e}")
+                yield ErrorMessage(filename, f"Extraction error for {member!r}: {e}")
                 return
     except Exception as e:
         yield ErrorMessage(filename, f"Validation error: {e}")
