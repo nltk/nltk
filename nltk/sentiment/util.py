@@ -23,7 +23,7 @@ from nltk.corpus import CategorizedPlaintextCorpusReader
 from nltk.data import load
 from nltk.jsontags import safe_json_loads
 from nltk.pathsec import open as pathsec_open
-from nltk.termsec import safe_print
+from nltk.termsec import safe_print, sanitize_terminal
 from nltk.tokenize import PunktTokenizer
 from nltk.tokenize.casual import EMOTICON_RE
 
@@ -259,21 +259,28 @@ def output_markdown(filename, **kwargs):
     """
     Write the output of an analysis to a file.
     """
+
+    # Each key and value is one line of the report: a line break or control
+    # sequence inside one would add report lines of its own (CWE-93 / CWE-150),
+    # so every piece is written escaped onto its single line.
+    def line(value):
+        return sanitize_terminal(str(value), single_line=True)
+
     with pathsec_open(filename, "at", context="output_markdown") as outfile:
         text = "\n*** \n\n"
         text += "{} \n\n".format(time.strftime("%d/%m/%Y, %H:%M"))
         for k in sorted(kwargs):
             if isinstance(kwargs[k], dict):
                 dictionary = kwargs[k]
-                text += f"  - **{k}:**\n"
+                text += f"  - **{line(k)}:**\n"
                 for entry in sorted(dictionary):
-                    text += f"    - {entry}: {dictionary[entry]} \n"
+                    text += f"    - {line(entry)}: {line(dictionary[entry])} \n"
             elif isinstance(kwargs[k], list):
-                text += f"  - **{k}:**\n"
+                text += f"  - **{line(k)}:**\n"
                 for entry in kwargs[k]:
-                    text += f"    - {entry}\n"
+                    text += f"    - {line(entry)}\n"
             else:
-                text += f"  - **{k}:** {kwargs[k]} \n"
+                text += f"  - **{line(k)}:** {line(kwargs[k])} \n"
         outfile.write(text)
 
 
@@ -368,6 +375,7 @@ def json2csv_preprocess(
     ) as fp:
         import gzip
 
+        from nltk.csvsec import sanitize_csv_field
         from nltk.twitter.common import extract_fields
 
         if gzip_compress:
@@ -383,11 +391,15 @@ def json2csv_preprocess(
                 context="json2csv_preprocess",
             )
         writer = csv.writer(outf)
-        # write the list of fields as header
-        writer.writerow(fields)
+        # Every cell, header included, goes through the CSV sanitiser: a tweet
+        # beginning with = + - @ would otherwise reach a spreadsheet as a
+        # formula (CWE-1236), a control sequence a terminal (CWE-150).
+        writer.writerow([sanitize_csv_field(c) for c in fields])
 
         if remove_duplicates:
-            tweets_cache = []
+            # a set: the membership test below runs once per tweet, and a list
+            # made a large file quadratic (CWE-407)
+            tweets_cache = set()
         i = 0
         for line in fp:
             # Untrusted tweet line: bound size and nesting depth before parsing.
@@ -419,10 +431,10 @@ def json2csv_preprocess(
                     if row[fields.index("text")] in tweets_cache:
                         continue
                     else:
-                        tweets_cache.append(row[fields.index("text")])
+                        tweets_cache.add(row[fields.index("text")])
             except ValueError:
                 pass
-            writer.writerow(row)
+            writer.writerow([sanitize_csv_field(c) for c in row])
             i += 1
             if limit and i >= limit:
                 break
