@@ -117,6 +117,14 @@ def _private_stat(st):
     return not (st.st_mode & (stat.S_IWGRP | stat.S_IWOTH))
 
 
+def _is_junction(st):
+    """Windows: the ``lstat`` result is a directory junction. NTFS reports one
+    as a directory rather than a symlink, so ``S_ISLNK`` misses it and only the
+    reparse tag tells it apart from the directory it names."""
+    tag = getattr(stat, "IO_REPARSE_TAG_MOUNT_POINT", None)
+    return tag is not None and getattr(st, "st_reparse_tag", 0) == tag
+
+
 def is_private_dir(path):
     """Return True if *path* is a directory safe to trust as a data root: another
     *unprivileged local user* cannot plant files in it.
@@ -1050,11 +1058,13 @@ def validate_tool_dir(path_input, context="NLTK tool", *, require_private=False)
 
     With ``require_private`` the directory is one a tool READS model data from
     (the segmenter's Sihan corpora dir), so it must exist and be a real
-    directory rather than a symlink, and on POSIX it and everything beneath it
-    must be private: owned by the caller or root with no group/world write bit,
-    holding only regular files and subdirectories. Otherwise another local user
-    could plant or swap the files the tool then parses (CWE-426/CWE-732, and
-    CWE-59 for a symlink). The audit is bounded by :data:`MAX_TOOL_DIR_ENTRIES`.
+    directory rather than a symlink or a Windows junction, and everything
+    beneath it must be a regular file or a subdirectory (no symlink, junction,
+    FIFO, socket or device). On POSIX it and everything beneath it must also be
+    private: owned by the caller or root with no group/world write bit.
+    Otherwise another local user could plant or swap the files the tool then
+    parses (CWE-426/CWE-732, and CWE-59 for a symlink). The walk runs on every
+    platform and is bounded by :data:`MAX_TOOL_DIR_ENTRIES`.
     """
     text = _as_path_text(path_input, context, error=PermissionError)
     _reject_bad_name_syntax(text, context, error=PermissionError)
@@ -1088,13 +1098,17 @@ def _reject_tamperable_dir(raw, context):
         _refuse(raw, "does not exist")
     if stat.S_ISLNK(top.st_mode):
         _refuse(raw, "is a symlink, not the directory it names")
+    if _is_junction(top):
+        _refuse(raw, "is a junction, not the directory it names")
     if not stat.S_ISDIR(top.st_mode):
         _refuse(raw, "is not a directory")
-    if os.name != "posix":
-        # Owner/mode bits do not say who can write here and NLTK does not assume
-        # a DACL check, so like the executable-trust layer this stops at shape.
-        return
-    if not _private_stat(top):
+    # Owner/mode bits do not say who can write here off POSIX and NLTK does not
+    # assume a DACL check, so like the executable-trust layer the ownership
+    # audit stops at shape there. The bounded walk itself runs on every
+    # platform: a symlink or junction planted inside the tree, a non-regular
+    # entry and an oversized tree are refused the same way everywhere.
+    check_owner = os.name == "posix"
+    if check_owner and not _private_stat(top):
         _refuse(raw, "is group/world-writable or not owned by you or root")
     seen = 0
     for dirpath, dirnames, filenames in os.walk(leaf, followlinks=False):
@@ -1109,9 +1123,11 @@ def _reject_tamperable_dir(raw, context):
                 _refuse(entry, "vanished while the directory was being audited")
             if stat.S_ISLNK(st.st_mode):
                 _refuse(entry, "is a symlink inside the tool directory")
+            if _is_junction(st):
+                _refuse(entry, "is a junction inside the tool directory")
             if not (stat.S_ISREG(st.st_mode) or stat.S_ISDIR(st.st_mode)):
                 _refuse(entry, "is not a regular file or directory")
-            if not _private_stat(st):
+            if check_owner and not _private_stat(st):
                 _refuse(entry, "is group/world-writable or not owned by you or root")
 
 
