@@ -945,6 +945,48 @@ def test_8fx7_stepping_parser_probe_has_teeth(monkeypatch):
     assert probe()[0] == probes.FIXED
 
 
+@pytest.mark.skipif(os.name != "posix", reason="the planted decoys are shell scripts")
+def test_relative_binary_location_probe_sink_phase_has_teeth(monkeypatch):
+    """The advisory's sink (phase 6), run on its own because the probe's earlier
+    phases would flip first under the same neutering. With the pre-fix resolver
+    behind config_prover9 the advisory's line configures ./prover9 verbatim:
+    the phase must report the decoy HELD, and nothing may have run, because
+    the POSIX spawn layer still refuses that relative spelling. With the same
+    pre-fix resolver handing back the normalised absolute CWD path instead
+    (what a caller's abspath() would make of it) the real spawn layer runs the
+    same-user file: the phase must report it EXECUTED, from the marker the
+    decoy writes. So the config-time gate is load-bearing. Recovers on undo."""
+    from nltk import internals
+    from nltk.inference import prover9 as prover9_module
+    from nltk.test.unit.security_probes import ghsa_cc5r_64rf_75hg as cc5r
+
+    assert cc5r._sink_alone()[0] == probes.FIXED
+
+    _neuter_relative_binary_guard(monkeypatch, (prover9_module,))
+    status, evidence = cc5r._sink_alone()
+    assert status == probes.VULNERABLE, evidence
+    assert evidence.startswith("Prover9.prove() after config_prover9('./')"), evidence
+    assert "held the CWD decoy './prover9'" in evidence, evidence
+    assert "executed" not in evidence, evidence
+
+    def absolutised(name, path_to_bin=None, **kwargs):
+        return os.path.abspath(internals.find_binary(name, path_to_bin, **kwargs))
+
+    monkeypatch.setattr(prover9_module, "find_binary_absolute", absolutised)
+    status, evidence = cc5r._sink_alone()
+    assert status == probes.VULNERABLE, evidence
+    assert evidence.startswith("Prover9.prove() after config_prover9('./')"), evidence
+    assert "executed the CWD decoy" in evidence, evidence
+    assert evidence.rstrip("'").endswith(os.sep + "prover9"), evidence
+
+    monkeypatch.undo()
+    assert cc5r._sink_alone()[0] == probes.FIXED
+    assert (
+        "sinks never held or executed a decoy"
+        in probes.PROBES["GHSA-cc5r-64rf-75hg"]()[1]
+    )
+
+
 @pytest.mark.parametrize("modname, label", _RELATIVE_BINARY_MODULES)
 def test_relative_binary_location_probe_covers_each_tool(monkeypatch, modname, label):
     # neuter one tool's resolver only (each module binds it by name): the

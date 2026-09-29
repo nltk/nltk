@@ -4,6 +4,7 @@ via a relative binary location (CWE-426, CWE-427)"""
 
 import os
 import pathlib
+import shlex
 import shutil
 import stat
 import tempfile
@@ -45,11 +46,17 @@ class _LyingStr(str):
         return False
 
 
-def _plant(directory, relpath):
+def _plant(directory, relpath, marker=None):
+    """An executable decoy; given a *marker* file it also appends its own path
+    there when it runs, so a launch is visible even if the caller discards
+    the decoy's output or errors on it afterwards."""
     path = os.path.join(directory, relpath)
     os.makedirs(os.path.dirname(path), exist_ok=True)
+    record = ""
+    if marker is not None:
+        record = f"printf '%s\\n' {shlex.quote(path)} >> {shlex.quote(marker)}\n"
     with open(path, "w", encoding="utf-8") as fh:
-        fh.write("#!/bin/sh\necho PWNED\n")
+        fh.write("#!/bin/sh\n" + record + "echo PWNED\n")
     os.chmod(path, os.stat(path).st_mode | stat.S_IEXEC)
     return path
 
@@ -251,6 +258,120 @@ def _leak(label, form, resolved, box, expected=None):
     return None
 
 
+_SINK_NAMES = ("prover9", "mace4", "prooftrans", "interpformat")
+
+
+def _plant_sinks(box, marker):
+    """The binaries the prover9/mace4 sinks would run, planted as recording
+    decoys in the CWD and in a subdirectory of it."""
+    for name in _SINK_NAMES:
+        _plant(box, name, marker)
+        _plant(os.path.join(box, "sub"), name, marker)
+
+
+def _sink_phase(box, marker):
+    """Phase 6, the advisory's sink itself. Prover9 and Mace are configured
+    with each relative form and then RUN (``prove()`` and ``build_model()``,
+    the calls that would have spawned the configured binary), with nothing
+    reachable through the environment. Returns (VULNERABLE evidence or None,
+    refusals). Judged by the marker the decoys write when they run and by the
+    binary the tool holds afterwards, never by whether a call raised: on a host
+    with a real install on the default search list the install runs instead.
+    """
+    from nltk.inference.mace import Mace, MaceCommand
+    from nltk.inference.prover9 import Prover9, Prover9Command
+    from nltk.sem import Expression
+
+    goal = Expression.fromstring("mortal(socrates)")
+    assumptions = [
+        Expression.fromstring("man(socrates)"),
+        Expression.fromstring("all x.(man(x) -> mortal(x))"),
+    ]
+    sinks = (
+        (
+            "Prover9",
+            "prove",
+            Prover9,
+            lambda tool: Prover9Command(goal, assumptions, prover=tool).prove(),
+            ("_prover9_bin",),
+        ),
+        (
+            "Mace",
+            "build_model",
+            Mace,
+            lambda tool: MaceCommand(
+                goal, assumptions, model_builder=tool
+            ).build_model(),
+            ("_prover9_bin", "_mace4_bin"),
+        ),
+    )
+    if os.path.exists(marker):
+        os.remove(marker)
+    refused = 0
+    for label, sink, cls, run, held in sinks:
+        for form in _relative_forms("prover9", box):
+            tool = cls()
+            try:
+                tool.config_prover9(form)
+            except LookupError:
+                refused += 1
+            try:
+                run(tool)
+            except LookupError:
+                refused += 1
+            except Exception:
+                # anything else is only acceptable once we know nothing ran
+                if not os.path.exists(marker):
+                    raise
+            where = f"{label}.{sink}() after config_prover9({form!r})"
+            if os.path.exists(marker):
+                with open(marker, encoding="utf-8") as fh:
+                    ran = fh.read().split()
+                return f"{where} executed the CWD decoy {ran[-1]!r}", refused
+            for attr in held:
+                chosen = getattr(tool, attr, None)
+                if chosen is None:
+                    continue
+                if not os.path.isabs(chosen) or _inside(chosen, box):
+                    return f"{where} held the CWD decoy {chosen!r}", refused
+    return None, refused
+
+
+def _sink_alone():
+    """The sink phase by itself, in a CWD of recording decoys under $HOME with
+    nothing reachable through the environment; (status, evidence) like the
+    probe. The teeth tests use it because the probe's earlier phases would
+    flip first under the same neutering."""
+    home = os.path.expanduser("~")
+    box = tempfile.mkdtemp(prefix=".nltk_cc5r_sink_", dir=home)
+    empty = tempfile.mkdtemp(prefix=".nltk_cc5r_path_", dir=home)
+    marker = os.path.join(empty, "ran")
+    _plant_sinks(box, marker)
+    saved_env = {var: os.environ.get(var) for var in _TOOL_ENV + ("PATH",)}
+    old_cwd = os.getcwd()
+    try:
+        for var in _TOOL_ENV:
+            os.environ.pop(var, None)
+        os.environ["PATH"] = _scrubbed_path(empty)
+        os.chdir(box)
+        verdict, refused = _sink_phase(box, marker)
+        if verdict:
+            return VULNERABLE, verdict
+        return (
+            FIXED,
+            f"{refused} refusals; the prover9/mace4 sinks never held or executed a decoy",
+        )
+    finally:
+        os.chdir(old_cwd)
+        for var, value in saved_env.items():
+            if value is None:
+                os.environ.pop(var, None)
+            else:
+                os.environ[var] = value
+        shutil.rmtree(box, ignore_errors=True)
+        shutil.rmtree(empty, ignore_errors=True)
+
+
 @probe("GHSA-cc5r-64rf-75hg")
 def _relative_binary_location():
     """Plant decoy binaries in a temporary CWD and configure each tool with every
@@ -261,9 +382,11 @@ def _relative_binary_location():
     refused or resolve to that install, never to a decoy), then with the env
     var itself pointing through ``..`` at the decoy directory (the same rule),
     then with PATH pointing through ``..`` at the decoy directory and no
-    location given (a PATH walk must not take the decoy either), and finally
+    location given (a PATH walk must not take the decoy either), then
     (POSIX) with the install made world-writable: java() must refuse to launch
-    it even though config_java() accepted its location.
+    it even though config_java() accepted its location, and finally the
+    advisory's sink: Prover9 and Mace configured with each relative form and
+    then run, judged by the marker the decoys write when they execute.
 
     Before the fix these entry points forwarded the location to ``find_binary``,
     which honours an explicit relative path, so the tool's spawn would have run
@@ -284,6 +407,7 @@ def _relative_binary_location():
     empty = os.path.join(legit, "empty")
     os.makedirs(empty)
     scrubbed = _scrubbed_path(empty)
+    marker = os.path.join(legit, "ran")  # written only by the phase-6 decoys
     tools = _entry_points(legit)
     for _, _, _, plant, _ in tools:
         plant(box)
@@ -390,12 +514,24 @@ def _relative_binary_location():
                     f"java() launched {internals._java_bin!r} out of the "
                     f"world-writable directory {legit!r}: {launched[0]!r}",
                 )
+        # phase 6: the advisory's sink. Prover9 and Mace are configured with
+        # each relative form and then run; the decoys record when they execute
+        for var in _TOOL_ENV:
+            os.environ.pop(var, None)
+        os.environ["PATH"] = scrubbed
+        internals._java_bin = None
+        _plant_sinks(box, marker)
+        verdict, sunk = _sink_phase(box, marker)
+        if verdict:
+            return VULNERABLE, verdict
+        refused += sunk
         return (
             FIXED,
             f"{refused} relative locations refused across {len(tools)} entry "
             "points; with an install configured every form resolved to it and "
             "never to a CWD decoy, a PATH climbing into the decoy directory was "
-            "refused, and a world-writable install was refused at launch",
+            "refused, a world-writable install was refused at launch, and the "
+            "prover9/mace4 sinks never held or executed a decoy",
         )
     finally:
         os.chdir(old_cwd)
