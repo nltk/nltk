@@ -458,6 +458,44 @@ def _get_allowed_roots():
     return roots
 
 
+def _exact_path_text(value, context="NLTK"):
+    """The characters a native open would see for ``value``, as an exact str.
+
+    A ``str`` subclass can override ``__str__`` (or carry a ``path`` attribute)
+    to show one path while ``shelve``, ``sqlite3`` or ``os.open`` use its real
+    characters, so a check that trusted ``str(value)`` validated one file and
+    let another be opened. ``str.__str__`` ignores every override. A non-str
+    object is read through ``__fspath__`` when it has one, since that is what a
+    native open uses; if it also carries a ``path`` attribute naming something
+    else, the object is refused outright rather than validated on one face and
+    opened on the other. A pointer with only a ``path`` attribute (a dataset
+    pointer) is taken from that attribute, as :func:`open` does.
+    """
+    if isinstance(value, str):
+        return str.__str__(value)
+    shown = getattr(value, "path", None)
+    shown = str.__str__(shown) if isinstance(shown, str) else None
+    if hasattr(value, "__fspath__"):
+        try:
+            real = os.fspath(value)
+        except TypeError as exc:
+            raise PermissionError(
+                f"Security Violation [{context}]: {value!r} is not a filesystem path"
+            ) from exc
+        if isinstance(real, bytes):
+            real = os.fsdecode(real)
+        real = str.__str__(real)
+        if shown is not None and shown != real:
+            raise PermissionError(
+                f"Security Violation [{context}]: path object names two different "
+                f"files ({shown!r} via .path, {real!r} via __fspath__); refusing it"
+            )
+        return real
+    if shown is not None:
+        return shown
+    return str(value)
+
+
 def validate_path(path_input, context="NLTK", required_root=None):
     """
     Ensures file access is restricted to allowed data directories.
@@ -478,7 +516,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
     if isinstance(path_input, int) or not path_input:
         return
     try:
-        raw = path_input.path if hasattr(path_input, "path") else str(path_input)
+        raw = _exact_path_text(path_input, context)
 
         # A NUL byte truncates a path in every C filesystem API and can never be
         # legitimate; refuse it explicitly (Path.resolve() surfaces it only on some
@@ -554,11 +592,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
         # LAYER 1: Scoped Sandbox (PR #3528 Integration)
         # This resolves both target and root to block symlink-based escapes.
         if required_root:
-            root_raw = (
-                required_root.path
-                if hasattr(required_root, "path")
-                else str(required_root)
-            )
+            root_raw = _exact_path_text(required_root, context)
             scoped_root = Path(root_raw).resolve()
             if not (target == scoped_root or target.is_relative_to(scoped_root)):
                 # Raise ValueError to match NLTK's historical CorpusReader error type
@@ -991,6 +1025,15 @@ def _reject_unsafe_open(
         if not stat.S_ISREG(st.st_mode):
             raise PermissionError(
                 f"Security Violation [{context}]: path {raw!r} is not a " "regular file"
+            )
+        # The same hardlink refusal the POSIX branch applies through fstat:
+        # st_nlink is reported on Windows too, so an in-root alias of an
+        # outside inode is turned away on every platform, read or write.
+        if st.st_nlink > 1:
+            raise PermissionError(
+                f"Security Violation [{context}]: refusing multiply-linked file "
+                f"{raw!r} (st_nlink={st.st_nlink}); a hardlink names an inode that "
+                "may live outside the sandbox (CWE-59)"
             )
         _reject_oversize(st, raw, context, max_bytes)
         _reject_tamperable(st, raw, context, require_private)
@@ -1766,6 +1809,48 @@ def _os_open_flags(mode):
     return access | creat
 
 
+def _is_special_file(st):
+    """True for a FIFO, socket or device inode: never data, and a FIFO blocks."""
+    mode = st.st_mode
+    return (
+        stat.S_ISFIFO(mode)
+        or stat.S_ISSOCK(mode)
+        or stat.S_ISCHR(mode)
+        or stat.S_ISBLK(mode)
+    )
+
+
+def _reject_link_or_special_by_name(raw_path, context):
+    """The hardened open's inode policy, checked by name for non-POSIX opens.
+
+    Without ``O_NOFOLLOW`` the fallback open would follow a symlink planted at
+    the final component, read or write through a hardlink to an outside inode,
+    or open a device such as ``NUL``. ``lstat`` sees the link itself, so each of
+    those is refused before the open; a name that does not exist yet (an output
+    file about to be created) has nothing to check.
+    """
+    try:
+        st = os.lstat(raw_path)
+    except OSError:
+        return
+    if stat.S_ISLNK(st.st_mode):
+        raise PermissionError(
+            f"Security Violation [{context}]: refusing to follow a symlink at "
+            f"{raw_path!r} (CWE-59)"
+        )
+    if _is_special_file(st):
+        raise PermissionError(
+            f"Security Violation [{context}]: {raw_path!r} is a FIFO, socket or "
+            "device, not data; refusing to open it"
+        )
+    if stat.S_ISREG(st.st_mode) and st.st_nlink > 1:
+        raise PermissionError(
+            f"Security Violation [{context}]: refusing multiply-linked file "
+            f"{raw_path!r} (st_nlink={st.st_nlink}); a hardlink can point at an "
+            "outside-root inode (CWE-59)"
+        )
+
+
 def _hardened_open(raw_path, mode, context, required_root, **kwargs):
     """Open ``raw_path`` for read *or* write, closing the symlink-swap TOCTOU and
     the hardlink escape that a path-only ``validate_path`` cannot.
@@ -1795,6 +1880,7 @@ def _hardened_open(raw_path, mode, context, required_root, **kwargs):
         _os_open_flags(mode)
         | getattr(os, "O_NOFOLLOW", 0)
         | getattr(os, "O_CLOEXEC", 0)
+        | getattr(os, "O_NONBLOCK", 0)
     )
     # Defer O_TRUNC until after the hardlink/realpath checks: truncating at open
     # time would zero a hardlinked outside-root target before st_nlink refuses it.
@@ -1802,6 +1888,8 @@ def _hardened_open(raw_path, mode, context, required_root, **kwargs):
     flags &= ~os.O_TRUNC
     try:
         # 0o600 is only consulted when O_CREAT is in flags (write/append/x modes).
+        # O_NONBLOCK keeps a planted FIFO from blocking the open until a peer
+        # appears; it is cleared again below once the inode is known to be a file.
         fd = os.open(raw_path, flags, 0o600)
     except OSError as e:
         if e.errno in (errno.ELOOP, errno.EMLINK):
@@ -1809,9 +1897,26 @@ def _hardened_open(raw_path, mode, context, required_root, **kwargs):
                 f"Security Violation [pathsec.open]: refusing to follow a symlink "
                 f"at open time for {raw_path!r} (TOCTOU guard, CWE-59)"
             ) from e
+        if e.errno in _REFUSING_ERRNOS:
+            raise PermissionError(
+                f"Security Violation [pathsec.open]: {raw_path!r} is a socket or "
+                "other special file, not data; refusing to open it"
+            ) from e
         raise
     try:
         st = os.fstat(fd)
+        if _is_special_file(st):
+            raise PermissionError(
+                f"Security Violation [pathsec.open]: {raw_path!r} is a FIFO, socket "
+                "or device, not data; reading it could block forever or reach a "
+                "device (CWE-59)"
+            )
+        if hasattr(os, "O_NONBLOCK"):
+            import fcntl
+
+            fcntl.fcntl(
+                fd, fcntl.F_SETFL, fcntl.fcntl(fd, fcntl.F_GETFL) & ~os.O_NONBLOCK
+            )
         if st.st_nlink > 1:
             raise PermissionError(
                 f"Security Violation [pathsec.open]: refusing multiply-linked file "
@@ -1860,6 +1965,10 @@ def open(file, mode="r", *, context="pathsec.open", required_root=None, **kwargs
     if type(file) not in (str, bytes) and isinstance(
         getattr(file, "path", None), (str, bytes)
     ):
+        # A non-str object that also answers __fspath__ with a different name
+        # would be opened here on .path and elsewhere on __fspath__; refuse it.
+        if not isinstance(file, str) and hasattr(file, "__fspath__"):
+            _exact_path_text(file, context)
         file = file.path
 
     # 2. Force extraction of the real path from PathLike objects
@@ -1892,6 +2001,11 @@ def open(file, mode="r", *, context="pathsec.open", required_root=None, **kwargs
         # builtins.open on OSError -- retrying the raw path would follow a symlink
         # the hardened open deliberately refused, reopening the TOCTOU leak.
         return _hardened_open(raw_path, mode, context, required_root, **kwargs)
+    if ENFORCE:
+        # No O_NOFOLLOW off POSIX: apply the same inode policy by name, so a
+        # planted link or device is refused there too (not race-free, but never
+        # weaker than a plain open that follows it).
+        _reject_link_or_special_by_name(raw_path, context)
     return builtins.open(raw_path, mode=mode, **kwargs)
 
 
