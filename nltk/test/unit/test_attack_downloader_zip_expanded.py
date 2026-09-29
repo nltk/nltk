@@ -23,6 +23,7 @@ never replaced. Control and bidi characters are built with chr().
 """
 
 import contextlib
+import gc
 import hashlib
 import http.server
 import io
@@ -378,17 +379,45 @@ def assert_lines_clean(text, expected_lines=None):
         assert len([line for line in lines if line]) == expected_lines, lines
 
 
+_snapshot = None
+
+
 def traced_peak(fn):
-    """Run *fn* under tracemalloc; return (outcome, peak bytes)."""
+    """Run *fn* under tracemalloc; return (outcome, peak bytes).
+
+    Garbage left by earlier tests is collected first, so a finaliser it would
+    otherwise run inside the traced window is not charged to *fn*, and tracing
+    must not already be running. A peak past one MiB keeps a snapshot so
+    ``where`` can say which lines allocated it.
+    """
+    global _snapshot
+    gc.collect()
+    assert not tracemalloc.is_tracing(), "an earlier test left tracemalloc running"
     tracemalloc.start()
     try:
         try:
             outcome = fn()
         except Exception as exc:  # the outcome IS the refusal
             outcome = exc
-        return outcome, tracemalloc.get_traced_memory()[1]
+        peak = tracemalloc.get_traced_memory()[1]
+        _snapshot = tracemalloc.take_snapshot() if peak > 1024 * 1024 else None
+        return outcome, peak
     finally:
         tracemalloc.stop()
+
+
+def where(peak, note=""):
+    """An assertion message naming the largest allocation sites of the last peak."""
+    text = f"peak {peak} bytes"
+    if note:
+        text += f" ({note})"
+    if _snapshot is not None:
+        top = _snapshot.statistics("lineno")[:5]
+        text += "; largest: " + "; ".join(
+            f"{stat.size} B at {stat.traceback[0].filename}:{stat.traceback[0].lineno}"
+            for stat in top
+        )
+    return text
 
 
 WORDS = b"alpha\nbeta\ngamma\n"
@@ -429,7 +458,7 @@ class TestPackageBody:
         server.stream("/pkgs/tiny.zip", b"Z" * 65536, cap=8 * 1024 * 1024)
         info, messages, peak = self._drive(server.url("/index.xml"), dl, "tiny")
         assert any(isinstance(m, downloader.ErrorMessage) for m in messages)
-        assert peak <= len(blob), f"{peak} bytes reached disk for a {len(blob)}"
+        assert peak <= len(blob), where(peak, f"bytes reached disk for a {len(blob)}")
         self._nothing_committed(dl, info)
 
     @pytest.mark.parametrize(
@@ -453,7 +482,7 @@ class TestPackageBody:
         server.body("/pkgs/tiny.zip", body)
         info, messages, peak = self._drive(server.url("/index.xml"), dl, "tiny")
         assert any(isinstance(m, downloader.ErrorMessage) for m in messages)
-        assert peak <= len(blob)
+        assert peak <= len(blob), where(peak)
         self._nothing_committed(dl, info)
 
     def test_a_body_cut_short_of_its_content_length_is_a_reported_failure(self, box):
@@ -568,7 +597,7 @@ class TestIndex:
         server.stream("/index.xml", b"<x>" * 21845, cap=cap)
         outcome, peak = traced_peak(lambda: self._load(server.url("/index.xml"), dl))
         assert isinstance(outcome, ValueError) and "larger than" in str(outcome)
-        assert peak <= downloader.MAX_INDEX_BYTES + 16 * 1024 * 1024, peak
+        assert peak <= downloader.MAX_INDEX_BYTES + 16 * 1024 * 1024, where(peak)
 
     def test_an_oversized_index_with_a_content_length_is_refused(self, box):
         root, outside, dl, server = box
@@ -608,7 +637,7 @@ class TestIndex:
         server.body("/index.xml", body)
         outcome, peak = traced_peak(lambda: self._load(server.url("/index.xml"), dl))
         assert isinstance(outcome, ValueError), outcome
-        assert peak < 8 * 1024 * 1024, peak
+        assert peak < 8 * 1024 * 1024, where(peak)
 
     def test_an_external_entity_does_not_read_a_local_file(self, box):
         root, outside, dl, server = box
@@ -634,7 +663,7 @@ class TestIndex:
         server.body("/index.xml", body)
         outcome, peak = traced_peak(lambda: self._load(server.url("/index.xml"), dl))
         assert isinstance(outcome, ValueError), outcome
-        assert peak < 4 * len(body), f"peak {peak} for a {len(body)} byte index"
+        assert peak < 4 * len(body), where(peak, f"for a {len(body)} byte index")
 
     def test_an_attribute_flood_in_one_tag_is_refused_small(self, box):
         root, outside, dl, server = box
@@ -643,7 +672,7 @@ class TestIndex:
         server.body("/index.xml", body)
         outcome, peak = traced_peak(lambda: self._load(server.url("/index.xml"), dl))
         assert isinstance(outcome, ValueError), outcome
-        assert peak < 4 * len(body), f"peak {peak} for a {len(body)} byte index"
+        assert peak < 4 * len(body), where(peak, f"for a {len(body)} byte index")
 
     def test_dtd_default_attributes_cannot_multiply_the_tree(self, box):
         # No entity is declared, so an entity filter lets this through: every
@@ -658,7 +687,7 @@ class TestIndex:
         server.body("/index.xml", body)
         outcome, peak = traced_peak(lambda: self._load(server.url("/index.xml"), dl))
         assert isinstance(outcome, ValueError), outcome
-        assert peak < 2 * 1024 * 1024, f"peak {peak} for a {len(body)} byte index"
+        assert peak < 2 * 1024 * 1024, where(peak, f"for a {len(body)} byte index")
 
     def test_an_index_shaped_like_the_real_one_at_ten_times_its_size_loads(self, box):
         root, outside, dl, server = box
@@ -795,7 +824,7 @@ class TestIndex:
         server.body("/flood.xml", flood)
         outcome, peak = traced_peak(lambda: self._load(server.url("/flood.xml"), dl))
         assert isinstance(outcome, ValueError), outcome
-        assert peak < 4 * len(flood), peak
+        assert peak < 4 * len(flood), where(peak)
 
     def test_self_and_mutually_referential_collections_download_bounded(self, box):
         root, outside, dl, server = box
@@ -1843,7 +1872,7 @@ class TestIndexThroughXmlsec:
         outcome, peak = traced_peak(lambda: self._load(server.url("/index.xml"), dl))
         assert isinstance(outcome, ValueError), outcome
         assert "expanded names" in str(outcome)
-        assert peak < 8 * 1024 * 1024, f"peak {peak} for a {len(body)} byte index"
+        assert peak < 8 * 1024 * 1024, where(peak, f"for a {len(body)} byte index")
 
     def test_dtd_defaults_are_refused_by_xmlsec_when_the_index_scan_is_blind(
         self, box, monkeypatch
@@ -1857,7 +1886,7 @@ class TestIndexThroughXmlsec:
         outcome, peak = traced_peak(lambda: self._load(server.url("/index.xml"), dl))
         assert isinstance(outcome, ValueError), outcome
         assert type(outcome).__name__ == "StructureForbidden"
-        assert peak < 2 * 1024 * 1024, f"peak {peak} for a {len(body)} byte index"
+        assert peak < 2 * 1024 * 1024, where(peak, f"for a {len(body)} byte index")
 
     def test_a_real_shaped_index_passes_both_layers(self, box):
         root, outside, dl, server = box
