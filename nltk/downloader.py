@@ -668,6 +668,17 @@ class SelectDownloadDirMessage(DownloaderMessage):
 ######################################################################
 
 
+def _not_ours(st):
+    """True when an installed entry, by its stat, is owned by neither this
+    account nor root, or carries a group or world write bit: another account
+    could have rewritten it in place, same name and same size. POSIX only."""
+    if os.name != "posix":
+        return False
+    if st.st_uid not in (os.geteuid(), 0):
+        return True
+    return bool(st.st_mode & (stat.S_IWGRP | stat.S_IWOTH))
+
+
 def _shared_install(download_dir):
     """True when a download is evidently for other accounts too: made as root,
     or into a directory outside the installing account's home (a system or
@@ -1598,6 +1609,7 @@ class Downloader:
                     or getattr(st, "st_reparse_tag", 0)
                     or not (stat.S_ISREG(st.st_mode) or stat.S_ISDIR(st.st_mode))
                     or (stat.S_ISREG(st.st_mode) and st.st_nlink > 1)
+                    or _not_ours(st)
                 ):
                     return self.STALE
                 if stat.S_ISREG(st.st_mode):

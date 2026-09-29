@@ -1250,9 +1250,10 @@ def find(resource_name, paths=None):
         if where not in _refused_writable:
             _refused_writable.append(where)
             warnings.warn(
-                "NLTK will not read data from %r: it is writable by other "
-                "accounts, so a planted file there would be loaded as trusted "
-                "data. Make it private to its owner (chmod go-w)." % (where,),
+                "NLTK will not read data from %r: it is writable by, or owned "
+                "by, another account, so a planted or rewritten file would be "
+                "loaded as trusted data. Make it private to its owner "
+                "(chmod go-w)." % (where,),
                 RuntimeWarning,
                 stacklevel=3,
             )
@@ -1282,11 +1283,30 @@ def find(resource_name, paths=None):
                 return cur
         return None
 
+    def _file_not_ours(path):
+        """True when the resource file (or archive) at *path*, links followed,
+        is not owned by this account or root, or carries a group or world
+        write bit: a same-name, same-size substitute needs exactly that, and
+        neither find() nor status() verifies bytes. POSIX, under enforcement."""
+        from nltk import pathsec
+
+        if not pathsec.ENFORCE or os.name != "posix":
+            return False
+        try:
+            st = os.stat(path)
+        except OSError:
+            return False
+        if st.st_uid not in (os.geteuid(), 0):
+            return True
+        return bool(st.st_mode & (stat.S_IWGRP | stat.S_IWOTH))
+
     # Check each item in our path
     for path_ in paths:
         # Is the path item a zipfile?
         if path_ and (os.path.isfile(path_) and path_.endswith(".zip")):
             unsafe = _writable_by_others(os.path.dirname(os.path.abspath(path_)))
+            if unsafe is None and _file_not_ours(path_):
+                unsafe = path_
             if unsafe is not None:
                 _note_refused(unsafe)
                 continue
@@ -1316,6 +1336,8 @@ def find(resource_name, paths=None):
                     unsafe = _writable_by_others(
                         path_ or os.path.dirname(os.path.abspath(p)), p
                     )
+                    if unsafe is None and os.path.isfile(p) and _file_not_ours(p):
+                        unsafe = p
                     if unsafe is not None:
                         _note_refused(unsafe)
                         continue
@@ -1345,6 +1367,8 @@ def find(resource_name, paths=None):
                     unsafe = _writable_by_others(
                         path_ or os.path.dirname(os.path.abspath(p)), p
                     )
+                    if unsafe is None and _file_not_ours(p):
+                        unsafe = p
                     if unsafe is not None:
                         _note_refused(unsafe)
                         continue
@@ -1449,8 +1473,8 @@ def find(resource_name, paths=None):
 
     if _refused_writable:
         msg += (
-            "\n  Refused, writable by other accounts (a file planted there"
-            + ("\n  would be loaded as trusted data):")
+            "\n  Refused, writable by other accounts (a file planted or"
+            + ("\n  rewritten there would be loaded as trusted data):")
             + "".join("\n    - %r" % d for d in _refused_writable)
         )
         msg += (

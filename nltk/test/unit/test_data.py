@@ -119,7 +119,7 @@ def test_find_refuses_a_data_root_another_account_can_write_to(tmp_path, monkeyp
     )
 
     def refused(where, name="corpora/x/a.txt"):
-        with pytest.warns(RuntimeWarning, match="writable by other accounts"):
+        with pytest.warns(RuntimeWarning, match="writable by, or owned by"):
             with pytest.raises(LookupError) as exc:
                 nltk.data.find(name)
         s = str(exc.value)
@@ -154,7 +154,7 @@ def test_find_refuses_a_data_root_another_account_can_write_to(tmp_path, monkeyp
     monkeypatch.setattr(nltk.data, "path", [str(root), str(tmp_path / "private_root")])
     os.chmod(root, 0o777)
     try:
-        with pytest.warns(RuntimeWarning, match="writable by other accounts"):
+        with pytest.warns(RuntimeWarning, match="writable by, or owned by"):
             found = nltk.data.find("corpora/x/a.txt")
         assert str(found.path).startswith(str(tmp_path / "private_root"))
         # enforcement off keeps the historical behaviour
@@ -316,7 +316,7 @@ def test_find_judges_a_symlinked_root_by_its_target(tmp_path, monkeypatch):
     )
     os.chmod(target, 0o777)
     try:
-        with pytest.warns(RuntimeWarning, match="writable by other accounts"):
+        with pytest.warns(RuntimeWarning, match="writable by, or owned by"):
             with pytest.raises(LookupError) as exc:
                 nltk.data.find("corpora/x/a.txt")
         assert "Refused, writable by other accounts" in str(exc.value)
@@ -325,3 +325,64 @@ def test_find_judges_a_symlinked_root_by_its_target(tmp_path, monkeypatch):
     assert isinstance(
         nltk.data.find("corpora/x/a.txt"), nltk.data.FileSystemPathPointer
     )
+
+
+@pytest.mark.skipif(
+    os.name != "posix" or os.geteuid() == 0,
+    reason="needs POSIX permission bits and an account the mode bits stop",
+)
+def test_find_refuses_a_resource_file_another_account_can_write(tmp_path, monkeypatch):
+    """A same-name, same-size substitute is undetectable by content (neither
+    find() nor status() verifies bytes), so it is stopped at the only place it
+    can be: write access. A resource file, an archive, or a zip search-path
+    entry that other accounts can write to is refused and named, whatever its
+    directory's mode; the owner's own rewrite of a private file is trusted."""
+    root = tmp_path / "nltk_data"
+    (root / "corpora" / "x").mkdir(parents=True)
+    target = root / "corpora" / "x" / "a.txt"
+    target.write_text("genuine!")
+    with zipfile.ZipFile(root / "corpora" / "y.zip", "w") as zf:
+        zf.writestr("y/a.txt", "hello")
+    zroot = tmp_path / "zips"
+    zroot.mkdir()
+    with zipfile.ZipFile(zroot / "z.zip", "w") as zf:
+        zf.writestr("z/a.txt", "hello")
+    monkeypatch.setattr(nltk.data, "path", [str(root)])
+    monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None)
+
+    def refused(name, where):
+        with pytest.warns(RuntimeWarning, match="writable by, or owned by"):
+            with pytest.raises(LookupError) as exc:
+                nltk.data.find(name)
+        text = str(exc.value)
+        assert "Refused, writable by other accounts" in text
+        assert f"- {str(where)!r}" in text and f"chmod go-w {str(where)!r}" in text
+
+    assert isinstance(
+        nltk.data.find("corpora/x/a.txt"), nltk.data.FileSystemPathPointer
+    )
+    # the owner's own same-size rewrite of a private file is its own business
+    target.write_text("PLANTED!")
+    with nltk.data.find("corpora/x/a.txt").open() as fh:
+        assert fh.read() == b"PLANTED!"
+    for mode in (0o666, 0o664, 0o646):
+        os.chmod(target, mode)
+        refused("corpora/x/a.txt", target)
+    os.chmod(target, 0o644)
+    assert isinstance(
+        nltk.data.find("corpora/x/a.txt"), nltk.data.FileSystemPathPointer
+    )
+
+    archive = root / "corpora" / "y.zip"
+    assert isinstance(nltk.data.find("corpora/y/a.txt"), nltk.data.ZipFilePathPointer)
+    os.chmod(archive, 0o666)
+    refused("corpora/y/a.txt", archive)
+    os.chmod(archive, 0o644)
+    assert isinstance(nltk.data.find("corpora/y/a.txt"), nltk.data.ZipFilePathPointer)
+
+    monkeypatch.setattr(nltk.data, "path", [str(zroot / "z.zip")])
+    assert isinstance(nltk.data.find("z/a.txt"), nltk.data.ZipFilePathPointer)
+    os.chmod(zroot / "z.zip", 0o666)
+    refused("z/a.txt", zroot / "z.zip")
+    os.chmod(zroot / "z.zip", 0o644)
+    assert isinstance(nltk.data.find("z/a.txt"), nltk.data.ZipFilePathPointer)

@@ -2371,6 +2371,56 @@ class TestExtractRouteAttackMatrix:
         assert b.read_bytes() == b"BBBBBB" and a.read_bytes() == b"AAAAAA"
         assert a.stat().st_nlink == 1 and b.stat().st_nlink == 1
 
+    @pytest.mark.skipif(
+        os.name != "posix" or os.geteuid() == 0,
+        reason="needs POSIX permission bits and an account the mode bits stop",
+    )
+    def test_a_package_file_writable_by_others_is_stale_and_restored(
+        self, box, monkeypatch
+    ):
+        """A same-size rewrite by another account needs a file it can write:
+        such a file makes the install stale, find() refuses it, and the next
+        download restores it private to its owner with the package bytes."""
+        root, outside, dl, server = box
+        blob = make_zip([("h/", b""), ("h/a.txt", b"genuine!")])
+        index = serve_packages(server, [("h", blob, {"unzip": "0"})])
+        result, text = run_download(index, dl, "h", quiet=True, extract=True)
+        assert result is True, text
+        a = dl / "corpora" / "h" / "a.txt"
+        a.write_bytes(b"PLANTED!")  # same name, same size
+        os.chmod(a, 0o666)
+        d = downloader.Downloader(server_index_url=index, download_dir=str(dl))
+        assert d.status("h") == downloader.Downloader.STALE
+        monkeypatch.setattr(nltk.data, "path", [str(dl)])
+        # the planted file is refused; the private archive beside it, which
+        # only the installer can read, then serves the genuine bytes
+        with pytest.warns(RuntimeWarning, match="writable by, or owned by"):
+            found = nltk.data.find("corpora/h/a.txt")
+        assert isinstance(found, nltk.data.ZipFilePathPointer)
+        with found.open() as fh:
+            assert fh.read() == b"genuine!"
+        os.chmod(dl / "corpora" / "h.zip", 0)  # as the account that did not install
+        try:
+            with pytest.warns(RuntimeWarning, match="writable by, or owned by"):
+                with pytest.raises(LookupError) as exc:
+                    nltk.data.find("corpora/h/a.txt")
+            assert "Refused, writable" in str(exc.value)
+            assert "Found but could not read" in str(exc.value)
+        finally:
+            os.chmod(dl / "corpora" / "h.zip", 0o600)
+        result, text = run_download(index, dl, "h", quiet=True, extract=True)
+        assert result is True, text
+        assert a.read_bytes() == b"genuine!" and _mode(a) == 0o644
+        assert (
+            downloader.Downloader(server_index_url=index, download_dir=str(dl)).status(
+                "h"
+            )
+            == downloader.Downloader.INSTALLED
+        )
+        assert isinstance(
+            nltk.data.find("corpora/h/a.txt"), nltk.data.FileSystemPathPointer
+        )
+
     def test_a_rogue_extra_file_at_the_target_is_never_deleted_but_reported(
         self, box, monkeypatch
     ):
