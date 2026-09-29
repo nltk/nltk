@@ -179,6 +179,25 @@ class TestByNameLinkCheckForNonPosixOpens:
         with pytest.raises(PermissionError, match="FIFO"):
             pathsec._reject_link_or_special_by_name(fifo, "test")
 
+    def test_non_posix_tool_path_branch_refuses_a_hardlink(
+        self, pathsec_sandbox, monkeypatch
+    ):
+        """The tool-path open check has a stat-only branch off POSIX; it must
+        refuse a multiply-linked file like the fstat branch does (the weka -l
+        read of a hardlinked model was accepted on Windows without it)."""
+        root, _ = pathsec_sandbox
+        real = str(root / "model.bin")
+        with open(real, "wb") as f:
+            f.write(b"m")
+        hard = str(root / "alias.bin")
+        os.link(real, hard)
+        monkeypatch.setattr(pathsec.os, "name", "nt")
+        with pytest.raises(PermissionError, match="multiply-linked"):
+            pathsec._reject_unsafe_open(hard, "test", must_exist=True)
+        os.unlink(hard)
+        pathsec._reject_unsafe_open(real, "test", must_exist=True)  # single link passes
+        pathsec._reject_unsafe_open(str(root / "absent"), "test", must_exist=False)
+
     def test_non_posix_open_branch_is_wired_to_it(self):
         """The fallback branch cannot be forced on a POSIX interpreter (pathlib
         refuses a foreign flavour), so the wiring is pinned from the source: the

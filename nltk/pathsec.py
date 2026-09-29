@@ -990,6 +990,15 @@ def _reject_unsafe_open(
             raise PermissionError(
                 f"Security Violation [{context}]: path {raw!r} is not a " "regular file"
             )
+        # The same hardlink refusal the POSIX branch applies through fstat:
+        # st_nlink is reported on Windows too, so an in-root alias of an
+        # outside inode is turned away on every platform, read or write.
+        if st.st_nlink > 1:
+            raise PermissionError(
+                f"Security Violation [{context}]: refusing multiply-linked file "
+                f"{raw!r} (st_nlink={st.st_nlink}); a hardlink names an inode that "
+                "may live outside the sandbox (CWE-59)"
+            )
         _reject_oversize(st, raw, context, max_bytes)
         _reject_tamperable(st, raw, context, require_private)
         return
