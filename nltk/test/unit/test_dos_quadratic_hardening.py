@@ -285,7 +285,7 @@ class TestReadlineLinear:
 
 
 class TestXMLCorpusViewDepth:
-    def _view(self, xml, tagspec, count_only=False):
+    def _view(self, xml, tagspec):
         # The corpus file must live inside a registered data root: on Linux
         # mkdtemp() lands in /tmp, which pathsec does not trust (on macOS the
         # private temp dir is a root, which hides the difference).
@@ -301,12 +301,7 @@ class TestXMLCorpusViewDepth:
             path = os.path.join(d, "corpus.xml")
             with open(path, "w", encoding="utf-8") as fh:
                 fh.write(xml)
-            view = XMLCorpusView(FileSystemPathPointer(path), tagspec)
-            if count_only:
-                # timing path: iterate rather than list(), whose len() walks
-                # the file a second time
-                return sum(1 for _ in view)
-            return list(view)
+            return list(XMLCorpusView(FileSystemPathPointer(path), tagspec))
         finally:
             undo()
             shutil.rmtree(d, ignore_errors=True)
@@ -314,9 +309,6 @@ class TestXMLCorpusViewDepth:
     def _nested(self, depth):
         # non-matching tagspec forces the full descent
         return self._view("<a>" * depth + "x" + "</a>" * depth, "zzz")
-
-    def _descend(self, depth):
-        return self._view("<a>" * depth + "x" + "</a>" * depth, "zzz", count_only=True)
 
     def test_deeply_nested_xml_is_refused(self):
         from nltk.corpus.reader.xmldocs import MAX_XML_DEPTH
@@ -336,17 +328,60 @@ class TestXMLCorpusViewDepth:
         got = self._view("<doc><s>hi</s><s>bye</s></doc>", ".*/s")
         assert len(got) == 2
 
+    def _rebuild_work(self, depth):
+        # Characters of root-to-node path that read_block hands the tagspec
+        # over the whole file: the work the per-tag rebuild does, counted
+        # rather than timed, so the measure is load- and platform-invariant.
+        import shutil
+
+        from nltk.corpus.reader.xmldocs import XMLCorpusView
+        from nltk.data import FileSystemPathPointer
+        from nltk.test.unit.security_probes._base import register_data_root
+
+        class PathMeter:
+            chars = 0
+
+            def match(self, path):
+                self.chars += len(path)
+                return None
+
+        d = tempfile.mkdtemp()
+        undo = register_data_root(d)
+        try:
+            path = os.path.join(d, "corpus.xml")
+            with open(path, "w", encoding="utf-8") as fh:
+                fh.write("<a>" * depth + "x" + "</a>" * depth)
+            pointer = FileSystemPathPointer(path)
+            meter = PathMeter()
+            stream = pointer.open("utf8")
+            try:
+                XMLCorpusView(pointer, "zzz").read_block(stream, tagspec=meter)
+            finally:
+                stream.close()
+            return meter.chars
+        finally:
+            undo()
+            shutil.rmtree(d, ignore_errors=True)
+
     def test_depth_bound_has_teeth(self, monkeypatch):
         # With the bound lifted the per-tag path rebuild is what the attacker
-        # gets: the descent must scale quadratically in the nesting depth.
+        # gets: the path work must scale quadratically in the nesting depth
+        # (sum of 2k-1 for k up to d is d**2, so 4x depth is 16x work).
         import nltk.corpus.reader.xmldocs as xmldocs
 
         monkeypatch.setattr(xmldocs, "MAX_XML_DEPTH", 10**9)
         assert self._nested(6000) == []  # accepted once the bound is gone
-        # The per-tag piece scan and tagspec match are a linear floor under the
-        # quadratic path rebuild (profiled: str.join is over half the time at
-        # depth 6000), so the mixed scaling is 8x to 10x, against 4x if linear.
-        _assert_quadratic(self._descend, 4000, 16000, reps=1, factor=6.0)
+        small, big = self._rebuild_work(1000), self._rebuild_work(4000)
+        assert small == 1000**2 and big == 4000**2, (small, big)
+        assert big / small >= QUADRATIC_RATIO
+
+    def test_path_work_meter_reads_the_real_walk(self):
+        # Under the bound the meter sees the same d**2 work, which pins that
+        # the negative control above measures read_block and not a stand-in.
+        from nltk.corpus.reader.xmldocs import MAX_XML_DEPTH
+
+        depth = MAX_XML_DEPTH // 2
+        assert self._rebuild_work(depth) == depth**2
 
 
 # --- #53pg: WordNet hypernym walkers refuse a cyclic graph -------------------

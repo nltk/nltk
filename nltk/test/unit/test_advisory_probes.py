@@ -847,6 +847,8 @@ def test_cj8f_xml_depth_probe_has_teeth(monkeypatch):
     status, evidence = probe()
     assert status == probes.VULNERABLE, evidence
     assert "no depth bound" in evidence
+    # the rebuild hands the tagspec d**2 characters: exactly 16.0x for 4x depth
+    assert "scales 16.0x" in evidence, evidence
 
     monkeypatch.undo()
     assert probe()[0] == probes.FIXED
