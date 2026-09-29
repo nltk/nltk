@@ -46,10 +46,13 @@ the JVM resolves itself, like ``validate_model_resource`` allows.
 import glob
 import hashlib
 import inspect
+import json
 import os
 import pathlib
 import shutil
 import socket
+import stat
+import sys
 import tempfile
 from types import SimpleNamespace
 
@@ -68,7 +71,31 @@ ESC = chr(0x1B)
 DEL = chr(0x7F)
 VT = chr(0x0B)
 FF = chr(0x0C)
-PASSWD = "/etc/passwd"
+
+
+def _system_file():
+    """An absolute, real file outside every data root on THIS platform:
+    ``/etc/passwd`` on POSIX, the ``hosts`` file (or ``win.ini``) under
+    ``%SystemRoot%`` on Windows. It must exist here, because a wrapper that
+    looks its model up before guarding it (``find_file``) reports a missing
+    file as a lookup failure and never reaches the containment refusal the
+    vector pins, and a rooted POSIX path on Windows is refused for its shape
+    (drive-relative) rather than for being outside the root."""
+    candidates = ["/etc/passwd"]
+    system_root = os.environ.get("SystemRoot")
+    if system_root:
+        candidates.append(
+            os.path.join(system_root, "System32", "drivers", "etc", "hosts")
+        )
+        candidates.append(os.path.join(system_root, "win.ini"))
+    for candidate in candidates:
+        if os.path.isfile(candidate):
+            return candidate
+    return sys.executable
+
+
+SYSTEM_FILE = _system_file()
+SYSTEM_FILE_DIR, SYSTEM_FILE_NAME = os.path.split(SYSTEM_FILE)
 ZH = "".join(chr(c) for c in (0x4E2D, 0x6587))  # two CJK characters
 
 
@@ -245,7 +272,7 @@ def _through_symlinked_dir(c, leaf):
 
 
 _CRF_SECURITY_REFUSED = [
-    pytest.param(lambda c: PASSWD, id="absolute-system-file"),
+    pytest.param(lambda c: SYSTEM_FILE, id="absolute-system-file"),
     pytest.param(lambda c: c.planted, id="valid-model-outside-root"),
     pytest.param(lambda c: _traversal(c, "planted.crf"), id="dotdot-traversal"),
     pytest.param(
@@ -283,13 +310,13 @@ _CRF_SECURITY_REFUSED = [
     pytest.param(lambda c: "/dev/fd/0", id="device-fd0", marks=POSIX_ONLY),
     pytest.param(lambda c: c.root, id="directory"),
     pytest.param(lambda c: c.good + NUL, id="nul-suffix"),
-    pytest.param(lambda c: c.good + NUL + PASSWD, id="nul-splice"),
+    pytest.param(lambda c: c.good + NUL + SYSTEM_FILE, id="nul-splice"),
     pytest.param(lambda c: os.path.join(c.root, "g\n.crf"), id="lf-in-name"),
     pytest.param(lambda c: os.path.join(c.root, "g\r.crf"), id="cr-in-name"),
     pytest.param(lambda c: os.path.join(c.root, "g\t.crf"), id="tab-in-name"),
     pytest.param(lambda c: os.path.join(c.root, "g" + VT + ".crf"), id="vt-in-name"),
     pytest.param(lambda c: os.path.join(c.root, "g" + FF + ".crf"), id="ff-in-name"),
-    pytest.param(lambda c: "file://" + PASSWD, id="url-file-outside"),
+    pytest.param(lambda c: "file://" + SYSTEM_FILE, id="url-file-outside"),
     pytest.param(lambda c: "file://" + c.good, id="url-file-in-root"),
     pytest.param(lambda c: "http://evil/m.crf", id="url-http"),
     pytest.param(lambda c: "jar:file:///x!/m", id="url-jar"),
@@ -304,7 +331,7 @@ _CRF_SECURITY_REFUSED = [
     pytest.param(lambda c: "", id="empty"),
     pytest.param(lambda c: "   ", id="whitespace-only"),
     pytest.param(lambda c: "-model", id="option-shaped"),
-    pytest.param(lambda c: "-model=" + PASSWD, id="option-shaped-with-value"),
+    pytest.param(lambda c: "-model=" + SYSTEM_FILE, id="option-shaped-with-value"),
     pytest.param(lambda c: "good.crf", id="relative-bare-name-cwd-not-a-root"),
     pytest.param(lambda c: None, id="none"),
     pytest.param(lambda c: [c.good], id="list"),
@@ -465,7 +492,7 @@ def test_crf_mutating_fspath_is_frozen_at_the_real_sink(crf):
 
 
 def test_crf_mutating_fspath_to_system_file_is_frozen(crf):
-    obj = _MutatingPath(crf.good, PASSWD)
+    obj = _MutatingPath(crf.good, SYSTEM_FILE)
     tagger = crf.cls()
     tagger.set_model_file(obj)
     assert obj.calls == 1 and tagger._model_file == crf.good
@@ -602,7 +629,7 @@ def _tag(s, model, env=None):
 
 
 _STANFORD_SECURITY_REFUSED = [
-    pytest.param(lambda s: PASSWD, id="absolute-system-file"),
+    pytest.param(lambda s: SYSTEM_FILE, id="absolute-system-file"),
     pytest.param(lambda s: s.planted, id="planted-outside-root"),
     pytest.param(lambda s: _traversal(s, "planted.tagger"), id="dotdot-traversal"),
     pytest.param(
@@ -652,7 +679,8 @@ _STANFORD_SECURITY_REFUSED = [
     ),
     pytest.param(lambda s: _LyingStr(s.planted), id="lying-str-outside"),
     pytest.param(
-        lambda s: s.monkeypatch.setenv("STANFORD_MODELS", "/etc") or "passwd",
+        lambda s: s.monkeypatch.setenv("STANFORD_MODELS", SYSTEM_FILE_DIR)
+        or SYSTEM_FILE_NAME,
         id="env-search-path-outside-root-bare-name",
     ),
     pytest.param(
@@ -677,7 +705,7 @@ _STANFORD_NEVER_FOUND = [
     pytest.param(lambda s: s.root, id="directory"),
     pytest.param(lambda s: "/dev/null", id="device", marks=POSIX_ONLY),
     pytest.param(lambda s: s.model + NUL, id="nul"),
-    pytest.param(lambda s: "file://" + PASSWD, id="url"),
+    pytest.param(lambda s: "file://" + SYSTEM_FILE, id="url"),
     pytest.param(lambda s: "//srv/share/m.tagger", id="unc"),
     pytest.param(lambda s: "~/x.tagger", id="tilde"),
     pytest.param(lambda s: "", id="empty"),
@@ -857,7 +885,7 @@ def _segment(s, model=_UNSET, dictionary=None, sihan=None, options=None):
 
 _SEG_FILE_VECTORS = [
     pytest.param(lambda s, n: s.planted, id="planted-outside-root"),
-    pytest.param(lambda s, n: PASSWD, id="absolute-system-file"),
+    pytest.param(lambda s, n: SYSTEM_FILE, id="absolute-system-file"),
     pytest.param(lambda s, n: _traversal(s, "planted.gz"), id="dotdot-traversal"),
     pytest.param(
         lambda s, n: _symlink(s, f"l_out_{n}.gz", s.planted),
@@ -878,7 +906,7 @@ _SEG_FILE_VECTORS = [
     pytest.param(lambda s, n: s.root, id="directory"),
     pytest.param(lambda s, n: s.model + NUL, id="nul"),
     pytest.param(lambda s, n: os.path.join(s.root, "t\t.gz"), id="tab-in-name"),
-    pytest.param(lambda s, n: "file://" + PASSWD, id="url"),
+    pytest.param(lambda s, n: "file://" + SYSTEM_FILE, id="url"),
     pytest.param(lambda s, n: "//srv/share/m.gz", id="unc"),
     pytest.param(lambda s, n: "~/pku.gz", id="tilde"),
     pytest.param(lambda s, n: "-loadClassifier", id="option-shaped"),
@@ -1035,7 +1063,7 @@ _SIHAN_REFUSED = [
     ),
     pytest.param(
         lambda s: _dir_with(
-            s, "d_link", lambda d: os.symlink(PASSWD, os.path.join(d, "f"))
+            s, "d_link", lambda d: os.symlink(SYSTEM_FILE, os.path.join(d, "f"))
         ),
         id="symlink-inside",
         marks=POSIX_ONLY,
@@ -1160,9 +1188,9 @@ def test_segmenter_sihan_private_check_removed_lets_the_tamperable_dir_through(
         pytest.param(lambda s: _LyingStr(s.planted), id="lying-str-outside"),
         pytest.param(lambda s: pathlib.Path(s.planted), id="pathlib-outside"),
         pytest.param(lambda s: s.planted.encode(), id="bytes-outside"),
-        pytest.param(lambda s: PASSWD, id="absolute-system-file"),
+        pytest.param(lambda s: SYSTEM_FILE, id="absolute-system-file"),
         pytest.param(lambda s: _traversal(s, "planted.gz"), id="dotdot-traversal"),
-        pytest.param(lambda s: "file://" + PASSWD, id="url"),
+        pytest.param(lambda s: "file://" + SYSTEM_FILE, id="url"),
         pytest.param(lambda s: "~/x.gz", id="tilde"),
         pytest.param(
             lambda s: _MutatingPath(s.planted, s.dictionary),
@@ -1220,7 +1248,10 @@ def test_segmenter_benign_option_path_reaches_the_jvm_as_the_checked_str(
     with pytest.raises(_ReachedJVM):
         _segment(segmenter, options={"serDictionary": obj})
     options = _argv_value(segmenter.sink["cmd"], "-options")
-    assert options == f'serDictionary="{segmenter.dictionary}"'
+    # The wrapper JSON-encodes every value (a Windows path reaches the JVM with
+    # its backslashes escaped); the property is that the encoded value is the
+    # CHECKED str and nothing else, so compare against that same encoding.
+    assert options == f"serDictionary={json.dumps(segmenter.dictionary)}"
     if isinstance(obj, _MutatingPath):
         assert obj.calls == 1
 
@@ -1245,7 +1276,8 @@ def test_segmenter_option_guard_removed_lets_the_lying_str_reach_the_jvm(segment
     )
     with pytest.raises(_ReachedJVM):
         _segment(segmenter, options={"serDictionary": _LyingStr(segmenter.planted)})
-    assert segmenter.planted in _argv_value(segmenter.sink["cmd"], "-options")
+    options = _argv_value(segmenter.sink["cmd"], "-options")
+    assert options == f"serDictionary={json.dumps(segmenter.planted)}"
 
 
 def test_segmenter_option_materialisation_is_pinned_in_source():
@@ -1325,7 +1357,7 @@ def test_tool_dir_without_require_private_keeps_the_old_contract(tool_dir):
             marks=POSIX_ONLY,
         ),
         pytest.param(
-            lambda d: (os.symlink(PASSWD, os.path.join(d.good, "lnk")), d.good)[1],
+            lambda d: (os.symlink(SYSTEM_FILE, os.path.join(d.good, "lnk")), d.good)[1],
             "symlink inside",
             id="symlink-inside",
             marks=POSIX_ONLY,
@@ -1362,6 +1394,77 @@ def test_tool_dir_entry_cap_is_enforced(tool_dir):
     tool_dir.monkeypatch.setattr(pathsec, "MAX_TOOL_DIR_ENTRIES", 2)
     with pytest.raises(PermissionError, match="too many"):
         pathsec.validate_tool_dir(tool_dir.good, context="t", require_private=True)
+
+
+def test_tool_dir_walk_and_entry_cap_run_off_posix(tool_dir):
+    """The walk is not a POSIX-only audit: with ``os.name`` reporting another
+    platform the ownership checks step aside, but the entry cap and the shape
+    checks still run, so an oversized tree is refused everywhere. The audit is
+    called directly because the name-syntax layer in front of it is (rightly)
+    platform-specific too."""
+    tool_dir.monkeypatch.setattr(os, "name", "nt")
+    tool_dir.monkeypatch.setattr(pathsec, "MAX_TOOL_DIR_ENTRIES", 2)
+    with pytest.raises(PermissionError, match="too many"):
+        pathsec._reject_tamperable_dir(tool_dir.good, "t")
+
+
+@POSIX_ONLY
+def test_tool_dir_ownership_audit_is_posix_only_documented_residual(tool_dir):
+    """Documented residual: off POSIX the owner/mode bits do not say who can
+    write, so only the shape of the tree is audited there and a mode that
+    POSIX refuses passes. The same tree, same call, is refused on POSIX."""
+    os.chmod(tool_dir.good, 0o777)
+    with pytest.raises(PermissionError, match="group/world-writable"):
+        pathsec._reject_tamperable_dir(tool_dir.good, "t")
+    tool_dir.monkeypatch.setattr(os, "name", "nt")
+    assert pathsec._reject_tamperable_dir(tool_dir.good, "t") is None
+
+
+def test_is_junction_reads_the_reparse_tag(monkeypatch):
+    """The helper keys on the mount-point reparse tag alone: a plain entry
+    (tag 0, or no tag attribute at all) is never a junction."""
+    tag = 0xA0000003  # IO_REPARSE_TAG_MOUNT_POINT
+    monkeypatch.setattr(stat, "IO_REPARSE_TAG_MOUNT_POINT", tag, raising=False)
+    assert pathsec._is_junction(SimpleNamespace(st_reparse_tag=tag))
+    assert not pathsec._is_junction(SimpleNamespace(st_reparse_tag=0))
+    assert not pathsec._is_junction(SimpleNamespace(st_mode=stat.S_IFDIR))
+
+
+WINDOWS_ONLY = pytest.mark.skipif(
+    os.name != "nt", reason="directory junctions are NTFS"
+)
+
+
+def _junction(target, link):
+    import _winapi
+
+    _winapi.CreateJunction(target, link)
+    return link
+
+
+@WINDOWS_ONLY
+@pytest.mark.parametrize(
+    ("plant", "why"),
+    [
+        pytest.param(
+            lambda d: _junction(d.good, os.path.join(d.root, "jnc")),
+            "is a junction",
+            id="junction-leaf",
+        ),
+        pytest.param(
+            lambda d: (_junction(d.outside, os.path.join(d.good, "jnc")), d.good)[1],
+            "junction inside",
+            id="junction-inside",
+        ),
+    ],
+)
+def test_tool_dir_require_private_refuses_junctions(tool_dir, plant, why):
+    """Windows: a directory junction is the NTFS analogue of a symlink to a
+    directory, and ``os.lstat`` reports it as a directory, so the audit reads
+    the reparse tag. A junction leaf and one planted inside are both refused."""
+    with pytest.raises(PermissionError, match=why) as info:
+        pathsec.validate_tool_dir(plant(tool_dir), context="t", require_private=True)
+    assert _is_security(info.value)
 
 
 # =========================================================================== #
