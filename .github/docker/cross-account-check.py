@@ -7,7 +7,10 @@ import stat
 import sys
 
 root = "/usr/local/lib/nltk_data"
-zips = [os.path.join(root, "corpora", name) for name in ("wordnet.zip", "omw-1.4.zip")]
+zips = [
+    os.path.join(root, "corpora", name)
+    for name in ("wordnet.zip", "omw-1.4.zip", "omw-2.0.zip")
+]
 for path in zips:
     mode = stat.S_IMODE(os.stat(path).st_mode)
     assert mode == 0o600, (path, oct(mode))
@@ -21,10 +24,10 @@ from nltk.stem import WordNetLemmatizer
 assert WordNetLemmatizer().lemmatize("bearings") == "bearing"
 assert "the" in stopwords.words("english")
 assert wordnet.synset("dog.n.01").definition()
-assert "cane" in wordnet.synset("dog.n.01").lemma_names("ita")  # omw-1.4
+assert "cane" in wordnet.synset("dog.n.01").lemma_names("ita")  # omw-2.0
 # The startup idiom, pointed at the shared root: judged installed by the
 # extracted files without touching the network or the private archive.
-for package in ("wordnet", "omw-1.4", "stopwords"):
+for package in ("wordnet", "omw-1.4", "omw-2.0", "stopwords"):
     assert nltk.download(package, download_dir=root, quiet=True), package
 print(
     "root-installed data serves",

@@ -9,6 +9,8 @@ RUN pip install --no-cache-dir /src
 RUN python -m nltk.downloader -d /usr/local/lib/nltk_data stopwords
 RUN python -m nltk.downloader -d /usr/local/lib/nltk_data wordnet
 RUN python -m nltk.downloader -d /usr/local/lib/nltk_data omw-1.4
+# the multilingual wordnet the default reader loads for lemma_names(lang)
+RUN python -m nltk.downloader -d /usr/local/lib/nltk_data omw-2.0
 RUN ls -la /usr/local/lib/nltk_data/corpora
 RUN useradd -m appuser
 USER appuser
