@@ -39,11 +39,11 @@ import time
 
 #: A block whose CPU time is at least this share of its wall time is judged on
 #: CPU time; below it the block was mostly waiting and the wall clock applies.
-#: A quarter tolerates the 4x contention a 3-core runner shows under xdist
-#: (0.20 s of CPU took 0.55 s of wall there), the same margin the child hard
-#: deadline assumes; a call site that knows its sink computes can declare it
-#: with ``cpu_bound=True`` and skip the heuristic altogether.
-CPU_BOUND_SHARE = 0.25
+#: Under xdist a 3-core runner stretched 0.20 s of CPU to 0.55 s of wall, under
+#: this share, so a call site that knows its sink computes declares it with
+#: ``cpu_bound=True`` and skips the heuristic; the share itself stays at a half
+#: so no undeclared block is judged more leniently than before.
+CPU_BOUND_SHARE = 0.5
 
 #: A scaling factor at or above this reads as super-linear (quadratic ~16x);
 #: a linear sink stays near 4x, so the gap is wide on any machine.

@@ -27,10 +27,10 @@ def test_cpu_time_is_the_work_and_the_charge_rule_is_deterministic():
     # Windows can lose between its CPU clock and the spin's end
     cpu, wall = timing.cpu_and_wall(lambda: (spin(0.2), time.sleep(0.1)))
     assert 0.15 <= cpu <= 0.35 and wall >= cpu + 0.05, (cpu, wall)
-    # the rule itself, on fixed numbers: a quarter of the wall time on the CPU
-    # is still judged as work (4x contention), less is judged as waiting
-    assert timing.charge(0.30, 1.0) == 0.30
-    assert timing.charge(0.20, 1.0) == 1.0
+    # the rule itself, on fixed numbers: half the wall time on the CPU is
+    # judged as work, less is judged as waiting, a declaration overrides
+    assert timing.charge(0.60, 1.0) == 0.60
+    assert timing.charge(0.40, 1.0) == 1.0
     assert timing.charge(0.20, 1.0, cpu_bound=True) == 0.20
     assert timing.charge(0.90, 1.0, cpu_bound=False) == 1.0
 
