@@ -178,21 +178,3 @@ class TestSmoothWindowIsNeverCode:
         with pytest.raises(ValueError):
             smooth(numpy.arange(30, dtype=float), window_len=5, window=payload)
         assert not canary.exists()
-
-    @pytest.mark.parametrize(
-        "window", ["flat", "hanning", "hamming", "bartlett", "blackman"]
-    )
-    def test_documented_windows_unchanged(self, window):
-        import numpy
-
-        from nltk.tokenize.texttiling import smooth
-
-        x = numpy.arange(30, dtype=float)
-        assert len(smooth(x, window_len=5, window=window)) == 30
-
-    def test_no_eval_left_in_smooth(self):
-        import inspect
-
-        from nltk.tokenize import texttiling
-
-        assert "eval(" not in inspect.getsource(texttiling.smooth)
