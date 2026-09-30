@@ -274,7 +274,18 @@ def _screen(data):
             chunk = data[offset : offset + max(1, min(_STEP, room))]
             offset += len(chunk)
             if text:
-                fed += len(chunk.encode("utf-8"))
+                encoded = chunk.encode("utf-8")
+                if len(encoded) > room:
+                    # The slice counted characters and the ceiling counts bytes:
+                    # keep the longest prefix within room, at least one whole
+                    # character, so a multibyte token is cut where an ASCII one is.
+                    cut = room
+                    while cut > 0 and (encoded[cut] & 0xC0) == 0x80:
+                        cut -= 1
+                    kept = encoded[:cut].decode("utf-8") if cut else chunk[0]
+                    offset -= len(chunk) - len(kept)
+                    chunk, encoded = kept, kept.encode("utf-8")
+                fed += len(encoded)
                 parser.Parse(chunk, False)
             else:
                 chunk = bytes(chunk)

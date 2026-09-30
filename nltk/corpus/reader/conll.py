@@ -402,15 +402,26 @@ class ConllCorpusReader(CorpusReader):
             rolesets = [None] * len(predicates)
 
         instances = ConllSRLInstanceList(tree)
-        # Map each word index to the first spanlist (in order) that has a
-        # 'V'/'C-V' span covering it, so a predicate picks its spanlist with
-        # one dict lookup instead of rescanning every spanlist per predicate.
+        # Map each word index to the first spanlist (in order) whose V or C-V
+        # span covers it, sweeping each column once: a predicate then picks its
+        # spanlist with one lookup instead of rescanning every spanlist.
         wordnum_to_spanlist = {}
         for spanlist in spanlists:
+            if len(wordnum_to_spanlist) == len(grid):
+                break  # every word already has its spanlist
+            # A column of nested full-width spans would cost every span times
+            # every word if each span were expanded; the sweep counts open
+            # spans per word instead, so a column costs its words plus its spans.
+            opens = [0] * (len(grid) + 1)
             for (start, end), tag in spanlist:
                 if tag in ("V", "C-V"):
-                    for covered in range(start, end):
-                        wordnum_to_spanlist.setdefault(covered, spanlist)
+                    opens[start] += 1
+                    opens[end] -= 1
+            covered = 0
+            for wordnum, delta in enumerate(opens):
+                covered += delta
+                if covered > 0:
+                    wordnum_to_spanlist.setdefault(wordnum, spanlist)
         for wordnum, predicate in enumerate(predicates):
             if predicate == "-":
                 continue
@@ -482,12 +493,23 @@ class ConllSRLInstance:
         """A list of the words in the sentence containing this
            instance."""
 
-        # Fill in the self.verb and self.arguments values.
+        # Fill in the self.verb and self.arguments values. The verb words come
+        # from one sweep over the sentence: expanding every verb span would cost
+        # spans times words on crafted input whose verb spans overlap.
+        opens = [0] * (
+            max([len(self.words)] + [end for (_, end), _ in tagged_spans]) + 1
+        )
         for (start, end), tag in tagged_spans:
             if tag in ("V", "C-V"):
-                self.verb += list(range(start, end))
+                opens[start] += 1
+                opens[end] -= 1
             else:
                 self.arguments.append(((start, end), tag))
+        covered = 0
+        for wordnum, delta in enumerate(opens[:-1]):
+            covered += delta
+            if covered > 0:
+                self.verb.append(wordnum)
 
     def __repr__(self):
         # Originally, its:
