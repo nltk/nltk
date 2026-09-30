@@ -214,7 +214,9 @@ def sanitize_terminal(text, *, single_line=False):
     hyperlinks, OSC-52 clipboard writes, and terminal query/answerback sequences
     that would otherwise inject a reply into stdin). Bidi overrides and any
     unbalanced OR crossed directional nesting are escaped to defeat Trojan-Source
-    reordering (CVE-2021-42574); balanced Arabic/Hebrew bidi passes through. Line
+    reordering (CVE-2021-42574); the nesting is judged both as written and with
+    the always-escaped overrides removed, so the pop that closed an override can
+    never stay live on its own. Balanced Arabic/Hebrew bidi passes through. Line
     and paragraph separators, deprecated/interlinear format controls, the invisible
     zero-width smuggling characters (soft hyphen, invisible math operators), the
     Unicode Tags block, lone surrogates (which would otherwise crash the write) and

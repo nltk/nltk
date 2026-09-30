@@ -609,25 +609,28 @@ class TestNumericBombs:
 _WRAPPERS = {
     "bare": ("", ""),
     "lre": (LRE, PDF),
-    "rle": (chr(0x202B), PDF),
+    "rle": (RLE, PDF),
     "lri": (LRI, PDI),
     "rli": (RLI, PDI),
     "fsi": (FSI, PDI),
 }
-_OVERRIDES = {"lro": chr(0x202D), "rlo": RLO}
-_OVERRIDE_CASES = {}
-for _wn, (_open, _close) in _WRAPPERS.items():
-    for _on, _ov in _OVERRIDES.items():
-        _OVERRIDE_CASES[f"{_wn}-{_on}-closed"] = (
-            _open + "a" + _ov + "evil" + PDF + "b" + _close
-        )
-        _OVERRIDE_CASES[f"{_wn}-{_on}-open"] = _open + "a" + _ov + "evil" + _close
-        _OVERRIDE_CASES[f"{_wn}-{_on}-twice"] = (
-            _open + _ov + "x" + _ov + "y" + PDF + PDF + _close
-        )
-        _OVERRIDE_CASES[f"{_wn}-{_on}-after-balanced"] = (
-            _open + LRE + "ok" + PDF + _ov + "evil" + PDF + _close
-        )
+_OVERRIDES = {"lro": LRO, "rlo": RLO}
+
+
+def _override_cases():
+    cases = {}
+    for wn, (open_, close) in _WRAPPERS.items():
+        for on, ov in _OVERRIDES.items():
+            cases[f"{wn}-{on}-closed"] = open_ + "a" + ov + "evil" + PDF + "b" + close
+            cases[f"{wn}-{on}-open"] = open_ + "a" + ov + "evil" + close
+            cases[f"{wn}-{on}-twice"] = open_ + ov + "x" + ov + "y" + PDF + PDF + close
+            cases[f"{wn}-{on}-after-balanced"] = (
+                open_ + LRE + "ok" + PDF + ov + "evil" + PDF + close
+            )
+    return cases
+
+
+_OVERRIDE_CASES = _override_cases()
 
 
 class TestOverrideCloserNeverSurvives:
