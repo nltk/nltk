@@ -402,20 +402,20 @@ class ConllCorpusReader(CorpusReader):
             rolesets = [None] * len(predicates)
 
         instances = ConllSRLInstanceList(tree)
+        # Map each word index to the first spanlist (in order) that has a
+        # 'V'/'C-V' span covering it, so a predicate picks its spanlist with
+        # one dict lookup instead of rescanning every spanlist per predicate.
+        wordnum_to_spanlist = {}
+        for spanlist in spanlists:
+            for (start, end), tag in spanlist:
+                if tag in ("V", "C-V"):
+                    for covered in range(start, end):
+                        wordnum_to_spanlist.setdefault(covered, spanlist)
         for wordnum, predicate in enumerate(predicates):
             if predicate == "-":
                 continue
-            # Decide which spanlist to use.  Don't assume that they're
-            # sorted in the same order as the predicates (even though
-            # they usually are).
-            for spanlist in spanlists:
-                for (start, end), tag in spanlist:
-                    if wordnum in range(start, end) and tag in ("V", "C-V"):
-                        break
-                else:
-                    continue
-                break
-            else:
+            spanlist = wordnum_to_spanlist.get(wordnum)
+            if spanlist is None:
                 raise ValueError("No srl column found for %r" % predicate)
             instances.append(
                 ConllSRLInstance(tree, wordnum, predicate, rolesets[wordnum], spanlist)

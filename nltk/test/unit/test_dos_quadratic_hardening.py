@@ -302,6 +302,46 @@ class TestXMLCorpusViewDepth:
         depth = MAX_XML_DEPTH // 2
         assert self._rebuild_work(depth) == depth**2
 
+    # --- with #3933: the view's tag walk and nltk.xmlsec's tree bound together ---
+    def _shallow_match_deep_subtree(self, depth):
+        # the matched element sits at depth 2; its subtree is `depth` deep
+        return self._view(
+            "<doc><e>" + "<a>" * depth + "x" + "</a>" * depth + "</e></doc>", "doc/e"
+        )
+
+    def test_a_subtree_under_both_bounds_parses(self):
+        got = self._shallow_match_deep_subtree(300)
+        assert len(got) == 1 and got[0].tag == "e"
+
+    def test_a_subtree_between_the_two_bounds_is_refused_by_the_view(self):
+        from nltk.corpus.reader.xmldocs import MAX_XML_DEPTH
+        from nltk.xmlsec import MAX_DEPTH
+
+        assert MAX_XML_DEPTH < MAX_DEPTH  # the stricter bound applies first
+        with pytest.raises(ValueError, match="nesting depth"):
+            self._shallow_match_deep_subtree((MAX_XML_DEPTH + MAX_DEPTH) // 2)
+
+    def test_a_subtree_past_both_bounds_is_refused_in_bounded_time(self):
+        from nltk.xmlsec import MAX_DEPTH
+
+        started = time.perf_counter()
+        with pytest.raises(ValueError, match="nesting depth"):
+            self._shallow_match_deep_subtree(MAX_DEPTH * 20)
+        assert time.perf_counter() - started < 30
+
+    def test_with_the_view_bound_lifted_xmlsec_still_refuses_the_tree(
+        self, monkeypatch
+    ):
+        # defence in depth: were the view's walk bound ever lifted, the element
+        # it hands over is still parsed through nltk.xmlsec, which refuses it
+        import nltk.corpus.reader.xmldocs as xmldocs
+        from nltk.xmlsec import MAX_DEPTH, StructureForbidden
+
+        monkeypatch.setattr(xmldocs, "MAX_XML_DEPTH", 10**9)
+        with pytest.raises(StructureForbidden, match="nesting depth"):
+            self._shallow_match_deep_subtree(MAX_DEPTH + 10)
+        assert len(self._shallow_match_deep_subtree(MAX_DEPTH - 10)) == 1
+
 
 # --- #53pg: WordNet hypernym walkers refuse a cyclic graph -------------------
 
