@@ -358,9 +358,15 @@ class NKJPCorpus_Segmentation_View(XMLCorpusView):
         # xml preprocessing
         self.xml_tool = XML_Tool(filename, "ann_segmentation.xml")
         # base class init
-        XMLCorpusView.__init__(
-            self, self.xml_tool.build_preprocessed_file(), self.tagspec
-        )
+        # The scratch copy exists once build_preprocessed_file() returns, so a
+        # failure inside the base constructor must not leave it behind.
+        try:
+            XMLCorpusView.__init__(
+                self, self.xml_tool.build_preprocessed_file(), self.tagspec
+            )
+        except BaseException:
+            self.xml_tool.remove_preprocessed_file()
+            raise
 
     def get_segm_id(self, example_word):
         return example_word.split("(")[1].split(",")[0]
@@ -410,9 +416,11 @@ class NKJPCorpus_Segmentation_View(XMLCorpusView):
             self.close()
             self.xml_tool.remove_preprocessed_file()
             return sentences
-        except Exception as e:
+        except BaseException:
+            # Clean up on any exit and re-raise the real error (a parse error,
+            # a pathsec refusal, ...) instead of masking it as a bare Exception.
             self.xml_tool.remove_preprocessed_file()
-            raise Exception from e
+            raise
 
     def handle_elt(self, elt, context):
         ret = []
@@ -437,9 +445,15 @@ class NKJPCorpus_Text_View(XMLCorpusView):
         # xml preprocessing
         self.xml_tool = XML_Tool(filename, "text.xml")
         # base class init
-        XMLCorpusView.__init__(
-            self, self.xml_tool.build_preprocessed_file(), self.tagspec
-        )
+        # The scratch copy exists once build_preprocessed_file() returns, so a
+        # failure inside the base constructor must not leave it behind.
+        try:
+            XMLCorpusView.__init__(
+                self, self.xml_tool.build_preprocessed_file(), self.tagspec
+            )
+        except BaseException:
+            self.xml_tool.remove_preprocessed_file()
+            raise
 
     def handle_query(self):
         try:
@@ -448,9 +462,11 @@ class NKJPCorpus_Text_View(XMLCorpusView):
             self.close()
             self.xml_tool.remove_preprocessed_file()
             return x
-        except Exception as e:
+        except BaseException:
+            # Clean up on any exit and re-raise the real error (a parse error,
+            # a pathsec refusal, ...) instead of masking it as a bare Exception.
             self.xml_tool.remove_preprocessed_file()
-            raise Exception from e
+            raise
 
     def read_block(self, stream, tagspec=None, elt_handler=None):
         """
@@ -488,9 +504,15 @@ class NKJPCorpus_Morph_View(XMLCorpusView):
         self.tags = kwargs.pop("tags", None)
         self.tagspec = ".*/seg/fs"
         self.xml_tool = XML_Tool(filename, "ann_morphosyntax.xml")
-        XMLCorpusView.__init__(
-            self, self.xml_tool.build_preprocessed_file(), self.tagspec
-        )
+        # The scratch copy exists once build_preprocessed_file() returns, so a
+        # failure inside the base constructor must not leave it behind.
+        try:
+            XMLCorpusView.__init__(
+                self, self.xml_tool.build_preprocessed_file(), self.tagspec
+            )
+        except BaseException:
+            self.xml_tool.remove_preprocessed_file()
+            raise
 
     def handle_query(self):
         try:
@@ -506,9 +528,11 @@ class NKJPCorpus_Morph_View(XMLCorpusView):
             self.close()
             self.xml_tool.remove_preprocessed_file()
             return words
-        except Exception as e:
+        except BaseException:
+            # Clean up on any exit and re-raise the real error (a parse error,
+            # a pathsec refusal, ...) instead of masking it as a bare Exception.
             self.xml_tool.remove_preprocessed_file()
-            raise Exception from e
+            raise
 
     def handle_elt(self, elt, context):
         word = ""

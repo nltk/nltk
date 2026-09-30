@@ -409,3 +409,164 @@ def test_preprocessing_preserves_existing_scratch_file(tmp_path, cleanup_before_
             assert stream.read() == b"another reader's data"
     finally:
         os.remove(tool.write_file)
+
+
+def _scratch_files():
+    from nltk.data import staging_tempdir
+
+    return sorted(f for f in os.listdir(staging_tempdir()) if f.startswith("nkjp-"))
+
+
+@pytest.mark.parametrize("method", ["raw", "words", "sents"])
+def test_view_constructor_failure_removes_the_scratch_copy(
+    tmp_path, monkeypatch, method
+):
+    """The scratch copy exists as soon as build_preprocessed_file() returns, and
+    XMLCorpusView.__init__ then reads it (encoding detection, size). A failure
+    there used to leave the copy in the staging dir for the life of the process,
+    because only handle_query() cleaned up; a 250 KB first line that makes the
+    encoding-detection regex hit its time limit is a real trigger."""
+    from nltk.corpus.reader.xmldocs import XMLCorpusView
+
+    def broken(self, fileid):
+        raise OSError("encoding detection failed")
+
+    monkeypatch.setattr(XMLCorpusView, "_detect_encoding", broken)
+    reader = _reader(_build_corpus(tmp_path))
+    with pytest.raises(OSError, match="encoding detection failed"):
+        getattr(reader, method)()
+    assert _scratch_files() == []
+
+
+def test_handle_query_error_keeps_its_type_and_removes_the_scratch(tmp_path):
+    """A parse error while reading the scratch copy must surface as the parser's
+    own error, not a bare Exception, and the copy must be gone afterwards."""
+    root = _build_corpus(tmp_path)
+    (root / "sample" / "text.xml").write_text(
+        '<?xml version="1.0"?><TEI><text><body><div><ab xml:id="ab_1">open',
+        encoding="utf-8",
+    )
+    with pytest.raises(Exception) as exc:
+        _reader(root).raw()
+    assert type(exc.value) is not Exception, type(exc.value)
+    assert _scratch_files() == []
+
+
+@pytest.mark.parametrize("variant", ["bom", "crlf", "bom+crlf", "no-final-newline"])
+def test_bom_and_crlf_text_reads_the_same_words(tmp_path, variant):
+    """Byte-exact preprocessing: a UTF-8 BOM and CR LF line ends are legitimate
+    and must survive the line-based strip unchanged."""
+    text = _TEXT
+    if "crlf" in variant:
+        text = text.replace("\n", "\r\n")
+    if "bom" in variant:
+        text = "\ufeff" + text
+    if variant == "no-final-newline":
+        text = text.rstrip("\n")
+    root = _build_corpus(tmp_path)
+    (root / "sample" / "text.xml").write_text(text, encoding="utf-8")
+    reader = _reader(root)
+    assert reader.raw() == ["Zażółć gęślą jaźń."]
+    assert reader.words() == ["Zażółć", "gęślą", "jaźń"]
+
+
+@pytest.mark.parametrize("bomb", ["billion-laughs", "external-entity"])
+def test_entity_bombs_in_text_xml_are_refused_without_expansion(tmp_path, bomb):
+    """The scratch copy is parsed through the same guarded XML route as every
+    corpus file: an entity declaration is refused (CWE-776/611), nothing is
+    expanded or read from outside, and no scratch copy is left behind."""
+    if bomb == "billion-laughs":
+        entities = '<!ENTITY lol "lol">' + "".join(
+            '<!ENTITY lol%d "%s">' % (i, "&lol%d;" % (i - 1) * 10) for i in range(2, 9)
+        )
+        body = "&lol8;"
+    else:
+        entities = '<!ENTITY xxe SYSTEM "file:///etc/passwd">'
+        body = "&xxe;"
+    root = _build_corpus(tmp_path)
+    (root / "sample" / "text.xml").write_text(
+        '<?xml version="1.0"?><!DOCTYPE t [%s]>' % entities
+        + '<TEI><text><body><div><ab xml:id="ab_1">%s</ab></div></body></text></TEI>'
+        % body,
+        encoding="utf-8",
+    )
+    with pytest.raises(Exception) as exc:
+        _reader(root).raw()
+    assert "root:" not in str(exc.value) and "lol" * 100 not in str(exc.value)
+    assert _scratch_files() == []
+
+
+def test_concurrent_reads_leave_no_scratch_files(tmp_path):
+    """Eight threads reading the same sample at once: every read succeeds (the
+    names are unique per instance) and the staging dir ends empty."""
+    import threading
+
+    reader = _reader(_build_corpus(tmp_path))
+    errors = []
+
+    def work():
+        try:
+            for _ in range(3):
+                assert reader.raw() == ["Zażółć gęślą jaźń."]
+                assert reader.words() == ["Zażółć", "gęślą", "jaźń"]
+        except Exception as exc:  # noqa: BLE001
+            errors.append(repr(exc))
+
+    threads = [threading.Thread(target=work) for _ in range(8)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+    assert errors == []
+    assert _scratch_files() == []
+
+
+@pytest.mark.parametrize("plant", ["symlink", "directory"])
+def test_a_plant_at_the_scratch_name_is_refused_and_untouched(tmp_path, plant):
+    """ "xb" is O_CREAT|O_EXCL behind pathsec: a symlink or a directory already
+    at the scratch name is refused, never followed, written or removed."""
+    victim = tmp_path / "victim.txt"
+    victim.write_text("KEEP")
+    tool = _xml_tool(_build_corpus(tmp_path))
+    if plant == "symlink":
+        try:
+            os.symlink(victim, tool.write_file)
+        except (OSError, NotImplementedError):
+            pytest.skip("symlinks not supported on this platform")
+    else:
+        os.mkdir(tool.write_file)
+    try:
+        with pytest.raises((OSError, ValueError)):
+            tool.build_preprocessed_file()
+        tool.remove_preprocessed_file()
+        assert os.path.lexists(tool.write_file)
+        assert victim.read_text() == "KEEP"
+    finally:
+        if plant == "symlink":
+            os.unlink(tool.write_file)
+        else:
+            os.rmdir(tool.write_file)
+
+
+@posix_only
+def test_scratch_dir_is_reallocated_once_it_stops_being_private(tmp_path):
+    """A staging dir that has become group/world-writable is squattable
+    (CWE-377): staging_tempdir() must hand out a fresh 0700 dir and the reader
+    must keep working through it."""
+    import stat
+
+    from nltk.data import staging_tempdir
+
+    reader = _reader(_build_corpus(tmp_path))
+    reader.raw()
+    old = staging_tempdir()
+    os.chmod(old, 0o777)
+    try:
+        new = staging_tempdir()
+        assert new != old and stat.S_IMODE(os.stat(new).st_mode) == 0o700
+        assert reader.raw() == ["Zażółć gęślą jaźń."]
+        assert (
+            os.path.dirname(_xml_tool(_build_corpus(tmp_path / "b")).write_file) == new
+        )
+    finally:
+        os.chmod(old, 0o700)
