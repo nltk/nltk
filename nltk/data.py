@@ -123,10 +123,23 @@ _NO_PROTOCOL_REF_ROOT = (
 # url2pathname may emit either separator (Windows rewrites "/"->"\\"); split on both.
 _PATH_COMPONENT_RE = redos.compile(r"[\\/]")
 
-# The exact line boundaries ``str.splitlines`` recognises (LF/CR/CRLF, vertical
-# and form feeds, the file/group/record separators, NEL, and the line/paragraph
-# separators); readline probes fresh input for one, ``splitlines`` still splits.
-_LINE_BOUNDARY_RE = redos.compile(r"[\n\r\v\f\x1c\x1d\x1e\x85\u2028\u2029]")
+
+#: readline re-splits a buffer up to this many characters on every pass without
+#: first asking whether the fresh span holds a boundary; past it, it asks.
+_SPLIT_DIRECTLY_BELOW = 8192
+
+
+def _has_line_boundary(text):
+    """True when *text* holds a line boundary ``str.splitlines`` recognises.
+
+    readline asks this of each freshly read span before it re-splits the
+    buffer. ``splitlines`` is the definition readline splits by, so asking it
+    keeps the two in lockstep for every boundary (LF, CR, CR LF, the vertical
+    and form feeds, the file, group and record separators, NEL and the line
+    and paragraph separators). It runs in C and is linear in the span, with no
+    regex: a timed regex here cost several times the rest of readline.
+    """
+    return bool(text) and text.splitlines() != [text]
 
 
 def _normalized_path_escapes(name):
@@ -1968,10 +1981,12 @@ class SeekableUnicodeStreamReader:
         # or at end of stream: growing a str in place copied it on every pass
         # (the residual quadratic the j8g8 probe caught on Windows, CWE-407).
         parts = []
+        buffered = 0  # characters collected in parts
 
         # If there's a remaining incomplete line in the buffer, add it.
         if self.linebuffer:
             parts.append(self.linebuffer.pop())
+            buffered = len(parts[0])
             self.linebuffer = None
 
         while True:
@@ -1983,12 +1998,18 @@ class SeekableUnicodeStreamReader:
             if new_chars and new_chars.endswith("\r"):
                 new_chars += self._read(1)
 
-            # Scan only the freshly read span (plus the previous span's last
-            # character, so a split CR LF stays intact) for a line break;
-            # ``splitlines`` still does the split, so lines stay byte identical.
+            # While the buffer is small, split it directly, as readline always
+            # did: the passes to reach the bound are few (the read size doubles)
+            # and each is bounded. Past it, scan only the freshly read span (plus
+            # the previous span's last character, so a split CR LF stays intact)
+            # for a line break before splitting, so a long line stays linear.
+            # ``splitlines`` does the split either way: lines stay byte identical.
             tail = parts[-1][-1:] if parts else ""
             parts.append(new_chars)
-            if _LINE_BOUNDARY_RE.search(tail + new_chars):
+            buffered += len(new_chars)
+            if buffered <= _SPLIT_DIRECTLY_BELOW or _has_line_boundary(
+                tail + new_chars
+            ):
                 chars = "".join(parts)
                 lines = chars.splitlines(True)
                 if len(lines) > 1:
@@ -1997,7 +2018,7 @@ class SeekableUnicodeStreamReader:
                     self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
                     self._rewind_checkpoint = startpos
                     break
-                else:
+                elif len(lines) == 1:
                     line0withend = lines[0]
                     line0withoutend = lines[0].splitlines(False)[0]
                     if line0withend != line0withoutend:  # complete line

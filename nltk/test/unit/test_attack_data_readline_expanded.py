@@ -200,3 +200,199 @@ class TestRealCorpora:
         assert len(brown.sents()) == 57340
         assert len(treebank.parsed_sents()) == 3914
         assert treebank.words()[:3] == ["Pierre", "Vinken", ","]
+
+
+class _HistoricalReader(SeekableUnicodeStreamReader):
+    """readline exactly as it was before GHSA-j8g8 was fixed: it re-split the
+    whole buffer on every block (quadratic on one long line) but was fast on
+    ordinary short lines. Kept as the reference for byte-identical output and
+    for the per-line cost ordinary files must not exceed."""
+
+    def readline(self, size=None):
+        if self.linebuffer and len(self.linebuffer) > 1:
+            line = self.linebuffer.pop(0)
+            self._rewind_numchars += len(line)
+            return line
+        readsize = size or 72
+        chars = ""
+        if self.linebuffer:
+            chars += self.linebuffer.pop()
+            self.linebuffer = None
+        while True:
+            startpos = self.stream.tell() - len(self.bytebuffer)
+            new_chars = self._read(readsize)
+            if new_chars and new_chars.endswith("\r"):
+                new_chars += self._read(1)
+            chars += new_chars
+            lines = chars.splitlines(True)
+            if len(lines) > 1:
+                line = lines[0]
+                self.linebuffer = lines[1:]
+                self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
+                self._rewind_checkpoint = startpos
+                break
+            elif len(lines) == 1:
+                line0withend = lines[0]
+                line0withoutend = lines[0].splitlines(False)[0]
+                if line0withend != line0withoutend:
+                    line = line0withend
+                    break
+            if not new_chars or size is not None:
+                line = chars
+                break
+            if readsize < 8000:
+                readsize *= 2
+        return line
+
+
+def _all_lines(reader_cls, data, encoding="utf-8", size=None):
+    r = reader_cls(io.BytesIO(data), encoding)
+    out = []
+    while True:
+        line = r.readline(size) if size else r.readline()
+        if not line:
+            return out
+        out.append(line)
+
+
+class TestBoundaryCheck:
+    """The boundary check readline runs on each fresh span agrees with
+    str.splitlines on every code point and on every mix, costs no regex, and
+    keeps ordinary files as fast as the historical readline."""
+
+    BOUNDARY_SET = frozenset(
+        [
+            "\n",
+            "\r",
+            "\v",
+            "\f",
+            chr(0x1C),
+            chr(0x1D),
+            chr(0x1E),
+            chr(0x85),
+            chr(0x2028),
+            chr(0x2029),
+        ]
+    )
+
+    def test_agrees_with_splitlines_on_every_code_point(self):
+        from nltk.data import _has_line_boundary
+
+        wrong = [
+            hex(cp)
+            for cp in range(0x110000)
+            if _has_line_boundary(chr(cp)) != (chr(cp) in self.BOUNDARY_SET)
+        ]
+        assert wrong == []
+
+    @pytest.mark.parametrize("seed", range(10))
+    def test_agrees_on_random_mixes_and_edges(self, seed):
+        from nltk.data import _has_line_boundary
+
+        rng = random.Random(seed)
+        alphabet = ["a", " ", chr(0x200D), chr(0xA0)] + sorted(self.BOUNDARY_SET)
+        for _ in range(3000):
+            s = "".join(rng.choice(alphabet) for _ in range(rng.randint(0, 12)))
+            assert _has_line_boundary(s) == (not self.BOUNDARY_SET.isdisjoint(s)), repr(
+                s
+            )
+        assert _has_line_boundary("") is False
+        assert (
+            _has_line_boundary("\r\n") is True
+            and _has_line_boundary("x" * 9000) is False
+        )
+
+    def test_readline_uses_no_regex(self):
+        import inspect
+
+        import nltk.data as data
+
+        src = inspect.getsource(data.SeekableUnicodeStreamReader.readline)
+        assert "redos" not in src and ".search(" not in src and "_RE" not in src
+
+    @pytest.mark.parametrize("seed", range(6))
+    def test_output_is_byte_identical_to_the_historical_readline(self, seed):
+        rng = random.Random(seed)
+        pieces = []
+        for _ in range(rng.randint(50, 400)):
+            pieces.append(
+                "".join(rng.choice("ab cé") for _ in range(rng.randint(0, 300)))
+            )
+            pieces.append(rng.choice(BOUNDARIES + ["", "\r", "\r\n"]))
+        data = "".join(pieces).encode("utf-8")
+        assert _all_lines(SeekableUnicodeStreamReader, data) == _all_lines(
+            _HistoricalReader, data
+        )
+        assert _all_lines(SeekableUnicodeStreamReader, data, size=50) == _all_lines(
+            _HistoricalReader, data, size=50
+        )
+
+    def test_ordinary_lines_cost_no_more_than_the_historical_readline(self):
+        # One file of ordinary short lines, read whole by both implementations,
+        # best of five: the fixed readline must stay within twice the historical
+        # per-line cost (the timed-regex version ran at about five times it).
+        data = (
+            "the quick brown fox jumps over the lazy dog, again and again\n" * 60000
+        ).encode()
+
+        def cost(cls):
+            best = float("inf")
+            for _ in range(5):
+                started = time.perf_counter()
+                _all_lines(cls, data)
+                best = min(best, time.perf_counter() - started)
+            return best
+
+        historical, current = cost(_HistoricalReader), cost(SeekableUnicodeStreamReader)
+        assert current <= 2.0 * historical, (current, historical, current / historical)
+
+
+class TestSplitDirectlyBound:
+    """readline splits a small buffer directly and asks the boundary check only
+    past _SPLIT_DIRECTLY_BELOW; lines of every length around that switch, with
+    every boundary and a CR LF straddling it, come back exactly as
+    str.splitlines gives them."""
+
+    @pytest.mark.parametrize("delta", [-73, -2, -1, 0, 1, 2, 73, 8000])
+    @pytest.mark.parametrize("boundary", ["\n", "\r", "\r\n", chr(0x2028), chr(0x85)])
+    def test_lines_around_the_switch(self, delta, boundary):
+        from nltk.data import _SPLIT_DIRECTLY_BELOW
+
+        n = _SPLIT_DIRECTLY_BELOW + delta
+        text = "a" * n + boundary + "b" * (n // 2) + boundary + "tail"
+        data = text.encode("utf-8")
+        assert _all_lines(SeekableUnicodeStreamReader, data) == text.splitlines(True)
+        assert _all_lines(SeekableUnicodeStreamReader, data) == _all_lines(
+            _HistoricalReader, data
+        )
+
+    def test_a_cr_lf_straddling_every_block_edge_past_the_switch(self):
+        from nltk.data import _SPLIT_DIRECTLY_BELOW
+
+        for n in range(_SPLIT_DIRECTLY_BELOW - 20, _SPLIT_DIRECTLY_BELOW + 20):
+            text = "a" * n + "\r\n" + "b\r\n"
+            assert _all_lines(SeekableUnicodeStreamReader, text.encode()) == [
+                "a" * n + "\r\n",
+                "b\r\n",
+            ]
+
+    def test_the_switch_keeps_one_long_line_linear(self):
+        def op(n):
+            SeekableUnicodeStreamReader(io.BytesIO(b"a" * n), "utf-8").readline()
+
+        _assert_subquadratic(op, 400_000, 1_600_000)
+
+    def test_forcing_every_block_to_split_goes_quadratic(self, monkeypatch):
+        # the teeth: a check that reports a boundary everywhere makes readline
+        # re-split the whole growing buffer on every pass past the switch
+        import nltk.data as data
+        from nltk.test.unit.test_quadratic_dos import _elapsed
+
+        monkeypatch.setattr(data, "_has_line_boundary", lambda text: True)
+
+        def op(n):
+            SeekableUnicodeStreamReader(io.BytesIO(b"a" * n), "utf-8").readline()
+
+        small = min(_elapsed(lambda: op(300_000)) for _ in range(2))
+        big = min(_elapsed(lambda: op(1_200_000)) for _ in range(2))
+        assert big / max(small, 1e-3) > 8, (small, big)
