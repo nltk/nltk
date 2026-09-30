@@ -570,3 +570,33 @@ def test_scratch_dir_is_reallocated_once_it_stops_being_private(tmp_path):
         )
     finally:
         os.chmod(old, 0o700)
+
+
+@pytest.mark.parametrize("method", ["raw", "words", "sents"])
+def test_handle_query_closes_the_stream_before_cleanup(tmp_path, monkeypatch, method):
+    """Windows refuses to remove an open file and remove_preprocessed_file()
+    tolerates that refusal, so a read that fails while the view's stream is still
+    open left the scratch copy behind there (seen on the Windows CI cell): every
+    exit must close the stream first. Checked at the os.remove call itself."""
+    from nltk.corpus.reader.nkjp import NKJPCorpus_Text_View
+    from nltk.corpus.reader.xmldocs import XMLCorpusView
+
+    views = []
+
+    def failing_read_block(self, stream, tagspec=None, elt_handler=None):
+        views.append(self)
+        raise ValueError("parse failed while the stream is open")
+
+    real_remove = os.remove
+
+    def checked_remove(path):
+        assert all(view._stream is None for view in views), path
+        return real_remove(path)
+
+    monkeypatch.setattr(XMLCorpusView, "read_block", failing_read_block)
+    monkeypatch.setattr(NKJPCorpus_Text_View, "read_block", failing_read_block)
+    monkeypatch.setattr(os, "remove", checked_remove)
+    with pytest.raises(ValueError, match="stream is open"):
+        getattr(_reader(_build_corpus(tmp_path)), method)()
+    assert views and all(view._stream is None for view in views)
+    assert _scratch_files() == []

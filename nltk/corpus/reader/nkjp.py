@@ -417,8 +417,9 @@ class NKJPCorpus_Segmentation_View(XMLCorpusView):
             self.xml_tool.remove_preprocessed_file()
             return sentences
         except BaseException:
-            # Clean up on any exit and re-raise the real error (a parse error,
-            # a pathsec refusal, ...) instead of masking it as a bare Exception.
+            # Close the stream before removing the scratch copy (Windows refuses
+            # to remove an open file) and re-raise the real error unmasked.
+            self.close()
             self.xml_tool.remove_preprocessed_file()
             raise
 
@@ -463,8 +464,9 @@ class NKJPCorpus_Text_View(XMLCorpusView):
             self.xml_tool.remove_preprocessed_file()
             return x
         except BaseException:
-            # Clean up on any exit and re-raise the real error (a parse error,
-            # a pathsec refusal, ...) instead of masking it as a bare Exception.
+            # Close the stream before removing the scratch copy (Windows refuses
+            # to remove an open file) and re-raise the real error unmasked.
+            self.close()
             self.xml_tool.remove_preprocessed_file()
             raise
 
@@ -529,8 +531,9 @@ class NKJPCorpus_Morph_View(XMLCorpusView):
             self.xml_tool.remove_preprocessed_file()
             return words
         except BaseException:
-            # Clean up on any exit and re-raise the real error (a parse error,
-            # a pathsec refusal, ...) instead of masking it as a bare Exception.
+            # Close the stream before removing the scratch copy (Windows refuses
+            # to remove an open file) and re-raise the real error unmasked.
+            self.close()
             self.xml_tool.remove_preprocessed_file()
             raise
 
