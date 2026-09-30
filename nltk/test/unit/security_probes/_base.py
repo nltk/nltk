@@ -68,16 +68,34 @@ def within_budget(func, budget=DOS_BUDGET, repeats=3):
     return best < budget, best
 
 
+def cpu_timed(func, *args):
+    """CPU seconds this process spent in ``func``: descheduling does not count."""
+    start = time.process_time()
+    func(*args)
+    return time.process_time() - start
+
+
 def scaling_ratio(op, small, big, reps=3, noise_floor=0.1):
     """Fastest-of-``reps`` ``op(big)`` over ``op(small)`` (``big`` == 4*``small``).
 
     A load-invariant scaling factor, mirroring the DoS regression harness: a
     linear sink is ~4x, a pre-patch O(n**2) sink ~16x. The floor is
-    multiplicative so a sub-second quadratic is not hidden by additive slack,
-    and each side is a min-of-``reps`` to shed a transient scheduler stall.
+    multiplicative so a sub-second quadratic is not hidden by additive slack.
+
+    Both sides are measured in process CPU time, not wall time: a loaded
+    runner that deschedules the interpreter stretches the wall clock but not
+    the work, and one such stall across the three cheap small runs halved a
+    16x quadratic to 7.8x on a macOS 3.14 runner (the r53h teeth flipped
+    FIXED). The small and big runs alternate so that a burst of load cannot
+    land on one side only, and the cheap small side gets ``reps`` extra runs;
+    each side keeps its minimum.
     """
-    t_small = min(timed(op, small) for _ in range(reps))
-    t_big = min(timed(op, big) for _ in range(reps))
+    t_small = t_big = float("inf")
+    for _ in range(reps):
+        t_small = min(t_small, cpu_timed(op, small))
+        t_big = min(t_big, cpu_timed(op, big))
+    for _ in range(reps):
+        t_small = min(t_small, cpu_timed(op, small))
     return t_big / max(t_small, noise_floor)
 
 

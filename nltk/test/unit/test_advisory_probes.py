@@ -788,6 +788,25 @@ def test_r53h_front_mutation_probe_has_teeth():
     assert probe()[0] == probes.FIXED
 
 
+def test_scaling_ratio_counts_only_the_time_the_process_runs():
+    """A run the runner deschedules must not deflate the ratio: here the small
+    side does 0.12 s of CPU work and then sleeps 0.25 s beside it, which on the
+    wall clock reads as a 1.3x ratio for a linear op (the way one stall halved
+    the r53h teeth's 16x to 7.8x on a loaded macOS runner). Measured in process
+    CPU time the op reads as the linear 4x it is."""
+    import time
+
+    def op(n):
+        deadline = time.process_time() + n / 1_000_000
+        while time.process_time() < deadline:
+            pass
+        if n == 120_000:
+            time.sleep(0.25)
+
+    ratio = _base.scaling_ratio(op, 120_000, 480_000)
+    assert 3.0 <= ratio <= 5.5, ratio
+
+
 def _neuter_relative_binary_guard(monkeypatch, modules):
     # put the pre-fix resolver back (plain find_binary honours an explicit
     # relative path) behind the given entry-point modules only
