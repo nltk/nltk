@@ -349,6 +349,29 @@ class TestDepthAndTokens:
         outcome, _ = peak_of(backend.parse, io.BytesIO(doc.encode()))
         assert isinstance(outcome, backend.StructureForbidden), outcome
 
+    @pytest.mark.parametrize(
+        "kind",
+        [
+            "attribute-value",
+            "comment",
+            "pi",
+            "doctype-literal",
+            "subset-comment",
+            "element-name",
+        ],
+    )
+    @pytest.mark.parametrize("over", [1, 10, 1000, 64 * 1024 - 1])
+    def test_a_token_one_byte_past_the_ceiling_is_refused(self, backend, kind, over):
+        # The feed is cut where a pending token would pass the ceiling, so the
+        # refusal is exact on every expat: before that cut, an expat without
+        # reparse deferral (before 2.6, e.g. Python 3.9's 2.2.8 and some 3.10
+        # builds) completed a token up to one 64 KiB chunk longer unseen.
+        doc = token_doc(kind, backend.MAX_TOKEN_BYTES + over)
+        with pytest.raises(backend.StructureForbidden, match="markup token"):
+            backend.fromstring(doc)
+        with pytest.raises(backend.StructureForbidden, match="markup token"):
+            backend.parse(io.BytesIO(doc.encode()))
+
     @pytest.mark.parametrize("kind", ["attribute-value", "comment", "element-name"])
     def test_a_token_under_the_ceiling_parses(self, backend, kind):
         doc = token_doc(kind, backend.MAX_TOKEN_BYTES - 4096)
