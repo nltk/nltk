@@ -104,8 +104,8 @@ def deep_doc(depth):
     return "<a>" * depth + "</a>" * depth
 
 
-def token_doc(kind, size):
-    filler = "x" * size
+def token_doc(kind, size, char="x"):
+    filler = char * size
     return {
         "attribute-value": f'<a b="{filler}"/>',
         "comment": f"<a><!--{filler}--></a>",
@@ -371,6 +371,30 @@ class TestDepthAndTokens:
             backend.fromstring(doc)
         with pytest.raises(backend.StructureForbidden, match="markup token"):
             backend.parse(io.BytesIO(doc.encode()))
+
+    @pytest.mark.parametrize("kind", ["attribute-value", "comment", "pi"])
+    @pytest.mark.parametrize("width", [2, 3, 4])
+    @pytest.mark.parametrize("over", [1, 1000, 64 * 1024 - 1])
+    def test_a_multibyte_token_past_the_ceiling_is_refused(
+        self, backend, kind, width, over
+    ):
+        # The ceiling counts bytes while a str is sliced in characters: the
+        # text feed must be cut at the byte, or an expat without reparse
+        # deferral completes a token up to a chunk longer, exactly as before
+        char = {2: chr(0xE9), 3: chr(0x4E2D), 4: chr(0x1F600)}[width]
+        doc = token_doc(kind, -(-(backend.MAX_TOKEN_BYTES + over) // width), char)
+        with pytest.raises(backend.StructureForbidden, match="markup token"):
+            backend.fromstring(doc)
+        with pytest.raises(backend.StructureForbidden, match="markup token"):
+            backend.parse(io.BytesIO(doc.encode()))
+
+    @pytest.mark.parametrize("kind", ["attribute-value", "comment", "pi"])
+    @pytest.mark.parametrize("width", [2, 3, 4])
+    def test_a_multibyte_token_under_the_ceiling_parses(self, backend, kind, width):
+        char = {2: chr(0xE9), 3: chr(0x4E2D), 4: chr(0x1F600)}[width]
+        doc = token_doc(kind, (backend.MAX_TOKEN_BYTES - 4096) // width, char)
+        assert backend.fromstring(doc) is not None
+        assert backend.parse(io.BytesIO(doc.encode())).getroot() is not None
 
     @pytest.mark.parametrize("kind", ["attribute-value", "comment", "element-name"])
     def test_a_token_under_the_ceiling_parses(self, backend, kind):
