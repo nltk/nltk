@@ -252,7 +252,12 @@ def _escape_scan(text, single_line):
     be proven equivalent to it, code point by code point.
     """
     allowed = frozenset() if single_line else _ALLOWED_CONTROLS
-    bidi_ok = _bidi_is_balanced(text)
+    # The nesting must balance as written AND once the always-escaped overrides
+    # are gone: otherwise the PDF that closed an override survives as a stray
+    # pop (an attack in its own right) and the output is not a fixed point.
+    bidi_ok = _bidi_is_balanced(text) and _bidi_is_balanced(
+        "".join(c for c in text if c in _BIDI_ALL and c not in _BIDI_OVERRIDES)
+    )
     result = []
     for char in text:
         codepoint = ord(char)

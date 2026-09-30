@@ -600,3 +600,49 @@ class TestNumericBombs:
 
         with pytest.raises(TypeError):
             safe_print("a", "b", sep=12345)
+
+
+# === An override is always escaped: the pop that closed it must not survive ===
+# Every override, alone or inside every embedding and isolate, with and without
+# its own PDF, nested once and twice: the output holds no live control and is a
+# fixed point. Balanced embeddings and isolates with no override stay unchanged.
+_WRAPPERS = {
+    "bare": ("", ""),
+    "lre": (LRE, PDF),
+    "rle": (chr(0x202B), PDF),
+    "lri": (LRI, PDI),
+    "rli": (RLI, PDI),
+    "fsi": (FSI, PDI),
+}
+_OVERRIDES = {"lro": chr(0x202D), "rlo": RLO}
+_OVERRIDE_CASES = {}
+for _wn, (_open, _close) in _WRAPPERS.items():
+    for _on, _ov in _OVERRIDES.items():
+        _OVERRIDE_CASES[f"{_wn}-{_on}-closed"] = (
+            _open + "a" + _ov + "evil" + PDF + "b" + _close
+        )
+        _OVERRIDE_CASES[f"{_wn}-{_on}-open"] = _open + "a" + _ov + "evil" + _close
+        _OVERRIDE_CASES[f"{_wn}-{_on}-twice"] = (
+            _open + _ov + "x" + _ov + "y" + PDF + PDF + _close
+        )
+        _OVERRIDE_CASES[f"{_wn}-{_on}-after-balanced"] = (
+            _open + LRE + "ok" + PDF + _ov + "evil" + PDF + _close
+        )
+
+
+class TestOverrideCloserNeverSurvives:
+    @pytest.mark.parametrize("name", sorted(_OVERRIDE_CASES))
+    def test_no_live_control_and_a_fixed_point(self, name):
+        payload = _OVERRIDE_CASES[name]
+        once = sanitize_terminal(payload)
+        assert not _has_live_control(once), f"{name}: {once!r}"
+        assert sanitize_terminal(once) == once
+        assert sanitize_terminal(payload, single_line=True) == once
+        cell = sanitize_csv_field("x" + payload)
+        assert not _has_live_control(cell)
+
+    @pytest.mark.parametrize("name", sorted(_WRAPPERS))
+    def test_balanced_wrappers_without_an_override_are_unchanged(self, name):
+        open_, close = _WRAPPERS[name]
+        text = "a" + open_ + "inner" + close + "b"
+        assert sanitize_terminal(text) == text
