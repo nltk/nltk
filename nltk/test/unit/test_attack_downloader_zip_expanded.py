@@ -45,6 +45,7 @@ import nltk
 import nltk.data
 from nltk import downloader, pathsec
 from nltk.termsec import sanitize_terminal
+from nltk.test.unit import timing
 
 ESC = chr(0x1B)
 BEL = chr(0x07)
@@ -574,9 +575,8 @@ class TestPackageBody:
         attrs = package_attrs("tiny", blob, server.url("/pkgs/tiny.zip"))
         server.body("/index.xml", make_index([attrs]))
         server.stall("/pkgs/tiny.zip", length=len(blob), head=blob[:10])
-        started = time.monotonic()
-        result, output = run_download(server.url("/index.xml"), dl, "tiny")
-        assert time.monotonic() - started < 8
+        with timing.budget(8, "the download"):
+            result, output = run_download(server.url("/index.xml"), dl, "tiny")
         assert result is False
         assert not os.path.exists(os.path.join(str(dl), "corpora", "tiny.zip"))
         assert not os.path.exists(os.path.join(str(dl), "corpora", "tiny.zip.tmp"))
@@ -611,19 +611,17 @@ class TestIndex:
         monkeypatch.setattr(downloader, "INDEX_DEADLINE", 1.0)
         body = make_index([]) + b" " * 300  # about 20 s at this drip
         server.drip("/index.xml", body, delay=0.05)
-        started = time.monotonic()
-        with pytest.raises(ValueError, match="time budget"):
+        with timing.budget(6, "the index load"), pytest.raises(
+            ValueError, match="time budget"
+        ):
             self._load(server.url("/index.xml"), dl)
-        assert time.monotonic() - started < 6
 
     def test_a_stalled_index_times_out(self, box, monkeypatch):
         root, outside, dl, server = box
         monkeypatch.setattr(downloader, "NETWORK_TIMEOUT", 1)
         server.stall("/index.xml", length=5000, head=b"<?xml")
-        started = time.monotonic()
-        with pytest.raises((OSError, ValueError)):
+        with timing.budget(8, "the index load"), pytest.raises((OSError, ValueError)):
             self._load(server.url("/index.xml"), dl)
-        assert time.monotonic() - started < 8
 
     def test_an_entity_bomb_is_refused_without_expanding(self, box):
         root, outside, dl, server = box
@@ -1907,11 +1905,9 @@ class TestDripFedPackage:
         attrs = package_attrs("tiny", blob, server.url("/pkgs/tiny.zip"))
         server.body("/index.xml", make_index([attrs]))
         server.drip("/pkgs/tiny.zip", blob, delay=0.05)  # over 10 s at this drip
-        started = time.monotonic()
-        result, output = run_download(server.url("/index.xml"), dl, "tiny")
-        elapsed = time.monotonic() - started
+        with timing.budget(8, "the drip, which needs a total deadline"):
+            result, output = run_download(server.url("/index.xml"), dl, "tiny")
         assert result is False, output
-        assert elapsed < 8, f"the drip ran {elapsed:.1f} s: no total deadline"
         assert "time budget" in output
         assert not os.path.exists(os.path.join(str(dl), "corpora", "tiny.zip"))
         assert not os.path.exists(os.path.join(str(dl), "corpora", "tiny.zip.tmp"))

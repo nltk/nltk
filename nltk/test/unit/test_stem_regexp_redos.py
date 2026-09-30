@@ -25,6 +25,8 @@ import sys
 
 import pytest
 
+from nltk.test.unit import timing
+
 _EVIL = r"(a+)+$"
 _BAIT = "a" * 34 + "!"
 _LIMIT = 20
@@ -153,7 +155,6 @@ def test_benign_large_token_still_stems_fast():
     from nltk.stem.regexp import RegexpStemmer
 
     stemmer = RegexpStemmer(r"ing$", min=4)
-    start = time.perf_counter()
     # A long benign token: the suffix strip is linear and correct.
-    assert stemmer.stem("a" * 100000 + "ing") == "a" * 100000
-    assert time.perf_counter() - start < 2.0
+    with timing.budget(2.0):
+        assert stemmer.stem("a" * 100000 + "ing") == "a" * 100000

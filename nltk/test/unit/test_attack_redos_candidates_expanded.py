@@ -129,6 +129,7 @@ import sys, re, time
 import nltk.redos as _R
 _R.DEFAULT_TIMEOUT = 0.5
 from nltk import redos
+from nltk.test.unit import timing
 
 def report(name, verdict, detail=""):
     print("CASE|%s|%s|%s" % (name, verdict, detail))
@@ -438,23 +439,20 @@ class TestBenignStillWorks:
         # A tight wall-clock bound: an ordinary pattern must resolve well inside a
         # second, so a regression that made it backtrack would fail here rather
         # than merely slow the suite.
-        start = time.perf_counter()
-        for _ in range(200):
-            redos.compile(r"^-?[0-9]+(\.[0-9]+)?$").search("-3.14159")
-        assert time.perf_counter() - start < 2.0
+        with timing.budget(2.0):
+            for _ in range(200):
+                redos.compile(r"^-?[0-9]+(\.[0-9]+)?$").search("-3.14159")
 
     def test_legitimate_large_but_safe_input_processes(self):
         # A large, benign corpus-sized input must still process linearly and fast.
-        start = time.perf_counter()
-        hits = redos.compile(r"\w+").findall("word " * 200000)
+        with timing.budget(3.0):
+            hits = redos.compile(r"\w+").findall("word " * 200000)
         assert len(hits) == 200000
-        assert time.perf_counter() - start < 3.0
 
     def test_large_safe_split_is_linear(self):
-        start = time.perf_counter()
-        parts = redos.compile(r"\s+").split("a " * 100000)
+        with timing.budget(3.0):
+            parts = redos.compile(r"\s+").split("a " * 100000)
         assert len(parts) == 100001
-        assert time.perf_counter() - start < 3.0
 
     def test_benign_caller_sinks_still_correct(self):
         from nltk.stem import RegexpStemmer

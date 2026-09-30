@@ -13,12 +13,12 @@ import hashlib
 import io
 import os
 import random
-import time
 import tracemalloc
 
 import pytest
 
 from nltk.data import SeekableUnicodeStreamReader
+from nltk.test.unit import timing
 from nltk.test.unit.test_quadratic_dos import _assert_subquadratic
 
 MiB = 1024 * 1024
@@ -131,17 +131,16 @@ class TestBounded:
         size = 32 * MiB
         data = b"a" * size + b"\nrest\n"
         tracemalloc.start()
-        started = time.perf_counter()
-        try:
-            r = _reader(data)
-            line = r.readline()
-            peak = tracemalloc.get_traced_memory()[1]
-        finally:
-            tracemalloc.stop()
-        elapsed = time.perf_counter() - started
+        with timing.budget(30, "one oversized line") as clock:
+            try:
+                r = _reader(data)
+                line = r.readline()
+                peak = tracemalloc.get_traced_memory()[1]
+            finally:
+                tracemalloc.stop()
+        elapsed = clock.charged
         assert len(line) == size + 1 and line.endswith("\n")
         assert r.readline() == "rest\n"
-        assert elapsed < 30, elapsed
         assert (
             peak < 8 * size
         ), peak  # the spans, their join and the line, never a quadratic copy chain
@@ -331,14 +330,15 @@ class TestBoundaryCheck:
         # One file of ordinary short lines, read whole by both implementations,
         # best of five: the fixed readline must stay within twice the historical
         # per-line cost (the timed-regex version ran at about five times it).
+        # Process CPU time, on a file big enough to take a few tenths of a
+        # second: a busy runner stretches the wall clock, not the work, and
+        # Windows reports CPU time in 15.6 ms steps (a 60k-line file read 2.5x).
         data = (
-            "the quick brown fox jumps over the lazy dog, again and again\n" * 60000
+            "the quick brown fox jumps over the lazy dog, again and again\n" * 240000
         ).encode()
 
         def elapsed(cls):
-            started = time.perf_counter()
-            _all_lines(cls, data)
-            return time.perf_counter() - started
+            return timing.charged(_all_lines, cls, data)
 
         # alternate the two, so a load change during the test cannot favour
         # whichever implementation happened to run second
@@ -411,16 +411,17 @@ class TestSplitDirectlyBound:
         # the teeth: a check that reports a boundary everywhere makes readline
         # re-split the whole growing buffer on every pass past the switch
         import nltk.data as data
-        from nltk.test.unit.test_quadratic_dos import _elapsed
 
         monkeypatch.setattr(data, "_has_line_boundary", lambda text: True)
 
         def op(n):
             SeekableUnicodeStreamReader(io.BytesIO(b"a" * n), "utf-8").readline()
 
-        small = min(_elapsed(lambda: op(300_000)) for _ in range(2))
-        big = min(_elapsed(lambda: op(1_200_000)) for _ in range(2))
-        assert big / max(small, 1e-3) > 8, (small, big)
+        # runs of a few tenths of a second under the suite's timing rule: a
+        # 300k run took 18 ms on a Windows runner and 20 ms on a macOS one,
+        # inside timer granularity and xdist noise, and the quadratic read 7.4x
+        ratio = timing.scaling_ratio(op, 900_000, 3_600_000, reps=2)
+        assert ratio > 8, ratio
 
 
 def _trace(reader_cls, data, encoding="utf-8", sizes=(None,) * 60, errors="strict"):

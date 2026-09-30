@@ -22,7 +22,6 @@ import pathlib
 import shutil
 import socket  # noqa: F401
 import tempfile
-import time
 
 FIXED = "FIXED"
 VULNERABLE = "VULNERABLE"
@@ -49,82 +48,30 @@ def probe(ghsa):
     return register
 
 
+from nltk.test.unit import timing
+
+CPU_BOUND_SHARE = timing.CPU_BOUND_SHARE
+QUADRATIC_RATIO = timing.QUADRATIC_RATIO
+timed_both = timing.cpu_and_wall
+scaling_ratio = timing.scaling_ratio
+
+
 def timed(func, *args):
-    start = time.perf_counter()
-    func(*args)
-    return time.perf_counter() - start
+    """Seconds charged to ``func(*args)`` by the suite's timing rule: CPU time
+    when it computed, wall time when it waited (see nltk.test.unit.timing)."""
+    return timing.charged(func, *args)
 
 
-def within_budget(func, budget=DOS_BUDGET, repeats=3):
-    """Fastest of ``repeats`` runs of ``func``; ``(ok, seconds)``, ok if under budget.
+def within_budget(func, budget=None, repeats=3):
+    """Fastest of ``repeats`` charged runs of ``func``; ``(ok, seconds)``, ok if under.
 
-    Absolute wall-clock, not a doubling ratio: a pre-patch quadratic ran for
-    tens of seconds on these payloads while the fixed code is milliseconds, so a
-    generous budget separates them cleanly. Min-of-k because one sample on a
-    loaded CI runner is noise -- a tight ratio there produced a false
-    VULNERABLE. Contention only adds time, so the minimum is closest to truth.
+    ``budget`` defaults to the module's ``DOS_BUDGET`` as it stands when the
+    probe runs. Min-of-k because one run on a loaded runner is noise; contention
+    only adds time, so the minimum is closest to the code's own cost.
     """
-    best = min(timed(func) for _ in range(repeats))
-    return best < budget, best
-
-
-def timed_both(func, *args):
-    """(CPU seconds, wall seconds) this process spent in ``func``.
-
-    CPU time is what the interpreter actually worked: descheduling by a loaded
-    runner stretches only the wall clock. A ``func`` that sleeps, blocks on
-    I/O or waits on a child process spends wall time but almost no CPU time.
-    """
-    cpu_start, wall_start = time.process_time(), time.perf_counter()
-    func(*args)
-    return time.process_time() - cpu_start, time.perf_counter() - wall_start
-
-
-#: An op whose big run spends less than this share of its wall time on the CPU
-#: is mostly waiting, and its cost is judged on the wall clock instead.
-CPU_BOUND_SHARE = 0.5
-
-
-def scaling_ratio(op, small, big, reps=3, noise_floor=0.1):
-    """Fastest-of-``reps`` ``op(big)`` over ``op(small)`` (``big`` == 4*``small``).
-
-    A load-invariant scaling factor, mirroring the DoS regression harness: a
-    linear sink is ~4x, a pre-patch O(n**2) sink ~16x. The floor is
-    multiplicative so a sub-second quadratic is not hidden by additive slack.
-
-    A CPU-bound op is judged in process CPU time: a loaded runner that
-    deschedules the interpreter stretches the wall clock but not the work, and
-    one such stall across the three cheap small runs halved a 16x quadratic to
-    7.8x on a macOS 3.14 runner (the r53h teeth flipped FIXED). CPU time is
-    blind to an op that mostly waits (sleep, blocking I/O, a child process
-    doing the work), so such an op is judged on the wall clock as before, and
-    the higher of the two ratios is kept so the fallback can only tighten.
-    The small and big runs alternate so a burst of load cannot land on one
-    side only, and the cheap small side gets ``reps`` extra runs; each side
-    keeps its minimum on both clocks.
-    """
-    inf = float("inf")
-    cpu, wall = {small: inf, big: inf}, {small: inf, big: inf}
-
-    def run(n):
-        cpu_seconds, wall_seconds = timed_both(op, n)
-        cpu[n] = min(cpu[n], cpu_seconds)
-        wall[n] = min(wall[n], wall_seconds)
-
-    for _ in range(reps):
-        run(small)
-        run(big)
-    for _ in range(reps):
-        run(small)
-    cpu_ratio = cpu[big] / max(cpu[small], noise_floor)
-    if cpu[big] < CPU_BOUND_SHARE * wall[big]:
-        return max(cpu_ratio, wall[big] / max(wall[small], noise_floor))
-    return cpu_ratio
-
-
-#: A scaling factor at or above this reads as super-linear (quadratic ~16x);
-#: a linear sink stays near 4x, so the gap is wide on any machine.
-QUADRATIC_RATIO = 8.0
+    if budget is None:
+        budget = DOS_BUDGET
+    return timing.within_budget(func, budget, repeats)
 
 
 def read_source(dotted_module):
