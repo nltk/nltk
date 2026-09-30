@@ -22,8 +22,11 @@ def spin(seconds):
 
 
 def test_cpu_time_is_the_work_and_the_charge_rule_is_deterministic():
-    cpu, wall = timing.cpu_and_wall(lambda: (spin(0.2), time.sleep(0.05)))
-    assert 0.15 <= cpu <= 0.35 and wall >= cpu + 0.04, (cpu, wall)
+    # the sleep beside the work must show in the wall clock and not in CPU
+    # time; a 0.1 s sleep leaves a 0.05 s margin over the two 15.6 ms ticks
+    # Windows can lose between its CPU clock and the spin's end
+    cpu, wall = timing.cpu_and_wall(lambda: (spin(0.2), time.sleep(0.1)))
+    assert 0.15 <= cpu <= 0.35 and wall >= cpu + 0.05, (cpu, wall)
     # the rule itself, on fixed numbers: a quarter of the wall time on the CPU
     # is still judged as work (4x contention), less is judged as waiting
     assert timing.charge(0.30, 1.0) == 0.30
