@@ -13,14 +13,6 @@ Corpus reader for corpora whose documents are xml files.
 
 import codecs
 
-# Parse untrusted corpus XML with defusedxml, which forbids the custom-entity
-# definitions used by XML entity-expansion (Billion Laughs, CWE-776) attacks
-# while leaving ordinary XML (including the standard &amp; &lt; ... entities)
-# unaffected. See issue #3545 / PR #3544, which applied the same guard to the
-# downloader's remote index.
-from defusedxml.ElementTree import fromstring as safe_fromstring
-from defusedxml.ElementTree import parse as safe_parse
-
 from nltk import redos
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import *
@@ -29,6 +21,14 @@ from nltk.internals import ElementWrapper
 from nltk.pathsec import open as pathsec_open
 from nltk.termsec import safe_print
 from nltk.tokenize import WordPunctTokenizer
+
+# Parse untrusted corpus XML through nltk.xmlsec, which forbids the custom-entity
+# definitions used by XML entity-expansion (Billion Laughs, CWE-776) attacks
+# while leaving ordinary XML (including the standard &amp; &lt; ... entities)
+# unaffected. See issue #3545 / PR #3544, which applied the same guard to the
+# downloader's remote index.
+from nltk.xmlsec import fromstring as safe_fromstring
+from nltk.xmlsec import parse as safe_parse
 
 
 class XMLCorpusReader(CorpusReader):
@@ -50,7 +50,7 @@ class XMLCorpusReader(CorpusReader):
             fileid = self._fileids[0]
         if not isinstance(fileid, str):
             raise TypeError("Expected a single file identifier string")
-        # Read the XML in using defusedxml's ElementTree.
+        # Read the XML in through nltk.xmlsec: entities refused, tree bounded.
         with self.abspath(fileid).open() as fp:
             elt = safe_parse(fp).getroot()
         # If requested, wrap it.
@@ -294,10 +294,11 @@ class XMLCorpusView(StreamBackedCorpusView):
 
         if isinstance(stream, SeekableUnicodeStreamReader):
             startpos = stream.tell()
+        read_size = self._BLOCK_SIZE
         while True:
             # Read a block and add it to the fragment.
             block_start = len(fragment)
-            xml_block = stream.read(self._BLOCK_SIZE)
+            xml_block = stream.read(read_size)
             fragment += xml_block
             for offset, ch in enumerate(xml_block):
                 if ch == "<":
@@ -336,8 +337,10 @@ class XMLCorpusView(StreamBackedCorpusView):
                         stream.seek(-(len(fragment) - last_open_bracket), 1)
                     return fragment[:last_open_bracket]
 
-            # Otherwise, read another block. (i.e., return to the
-            # top of the loop.)
+            # Grow the read window exponentially before the next block so the
+            # whole-buffer match/search re-scans stay O(log n) passes, as in
+            # read_sexpr_block; return paths seek back so the over-read is safe.
+            read_size *= 2
 
     def read_block(self, stream, tagspec=None, elt_handler=None):
         """
