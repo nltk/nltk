@@ -335,15 +335,20 @@ class TestBoundaryCheck:
             "the quick brown fox jumps over the lazy dog, again and again\n" * 60000
         ).encode()
 
-        def cost(cls):
-            best = float("inf")
-            for _ in range(5):
-                started = time.perf_counter()
-                _all_lines(cls, data)
-                best = min(best, time.perf_counter() - started)
-            return best
+        def elapsed(cls):
+            started = time.perf_counter()
+            _all_lines(cls, data)
+            return time.perf_counter() - started
 
-        historical, current = cost(_HistoricalReader), cost(SeekableUnicodeStreamReader)
+        # alternate the two, so a load change during the test cannot favour
+        # whichever implementation happened to run second
+        best = dict.fromkeys(
+            (_HistoricalReader, SeekableUnicodeStreamReader), float("inf")
+        )
+        for _ in range(5):
+            for cls in best:
+                best[cls] = min(best[cls], elapsed(cls))
+        historical, current = best[_HistoricalReader], best[SeekableUnicodeStreamReader]
         assert current <= 2.0 * historical, (current, historical, current / historical)
 
 
@@ -375,6 +380,26 @@ class TestSplitDirectlyBound:
                 "a" * n + "\r\n",
                 "b\r\n",
             ]
+
+    def test_a_carried_complete_line_past_the_switch_reads_no_further(self):
+        # The line buffer can hand readline one complete line longer than the
+        # switch. The previous span's last character is what lets the boundary
+        # check see its end: without it readline pulls the whole next line first.
+        from nltk.data import _SPLIT_DIRECTLY_BELOW
+
+        before = sum(72 * 2**k for k in range(7))  # read before the 9216 span
+        first = "a" * (before + 10) + "\n"
+        second = "b" * (9216 - 12) + "\n"  # fills the rest of that span exactly
+        assert len(second) > _SPLIT_DIRECTLY_BELOW
+        third = "c" * (4 * _SPLIT_DIRECTLY_BELOW) + "\n"
+        stream = io.BytesIO((first + second + third).encode("utf-8"))
+        reader = SeekableUnicodeStreamReader(stream, "utf-8")
+        assert reader.readline() == first
+        assert reader.linebuffer == [second]
+        position = stream.tell()
+        assert reader.readline() == second
+        assert stream.tell() - position < len(third)
+        assert reader.readline() == third
 
     def test_the_switch_keeps_one_long_line_linear(self):
         def op(n):

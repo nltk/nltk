@@ -132,12 +132,16 @@ _SPLIT_DIRECTLY_BELOW = 8192
 def _has_line_boundary(text):
     """True when *text* holds a line boundary ``str.splitlines`` recognises.
 
-    readline asks this of each freshly read span before it re-splits the
-    buffer. ``splitlines`` is the definition readline splits by, so asking it
-    keeps the two in lockstep for every boundary (LF, CR, CR LF, the vertical
-    and form feeds, the file, group and record separators, NEL and the line
-    and paragraph separators). It runs in C and is linear in the span, with no
-    regex: a timed regex here cost several times the rest of readline.
+    readline asks this of each freshly read span, prefixed with the previous
+    span's last character, before it re-splits a buffer past the bound. The
+    prefix is for a complete line the line buffer carried over: that line ends
+    in a boundary, and without the prefix readline would pull the whole next
+    line before returning it. ``splitlines`` is the definition readline splits
+    by, so asking it keeps the two in lockstep for every boundary (LF, CR,
+    CR LF, the vertical and form feeds, the file, group and record separators,
+    NEL and the line and paragraph separators). It runs in C and is linear in
+    the span, with no regex: a timed regex here cost several times the rest of
+    readline.
     """
     return bool(text) and text.splitlines() != [text]
 
@@ -1998,12 +2002,9 @@ class SeekableUnicodeStreamReader:
             if new_chars and new_chars.endswith("\r"):
                 new_chars += self._read(1)
 
-            # While the buffer is small, split it directly, as readline always
-            # did: the passes to reach the bound are few (the read size doubles)
-            # and each is bounded. Past it, scan only the freshly read span (plus
-            # the previous span's last character, so a split CR LF stays intact)
-            # for a line break before splitting, so a long line stays linear.
-            # ``splitlines`` does the split either way: lines stay byte identical.
+            # Below the bound, split directly as readline always did (few, bounded
+            # passes). Past it, split only once the fresh span, prefixed with the
+            # previous span's last character, holds a boundary: see _has_line_boundary.
             tail = parts[-1][-1:] if parts else ""
             parts.append(new_chars)
             buffered += len(new_chars)
