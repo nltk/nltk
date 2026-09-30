@@ -7,7 +7,6 @@
 
 import functools
 import os
-import tempfile
 
 from nltk import redos
 from nltk.corpus.reader.util import concat
@@ -110,21 +109,18 @@ class NKJPCorpusReader(XMLCorpusReader):
         """
         from nltk.pathsec import validate_path
 
-        # ``str(self.root)`` is the original (un-normalised) constructor
-        # argument; abspath() gives the platform-native absolute root that
-        # ``os.path.join`` expects (the old substring/concatenation logic
-        # duplicated the root on Windows, where the separators differ).
+        # ``str(self.root)`` is the original (un-normalised) constructor argument;
+        # abspath() gives the platform-native absolute root ``os.path.join``
+        # expects (the old substring logic duplicated the root on Windows).
         root = os.path.abspath(str(self.root))
         fileid = str(fileid)
         if os.path.isabs(fileid):
             result = fileid
         else:
             result = os.path.join(root, fileid)
-        # Symlink-aware containment: validate_path() resolves both the
-        # candidate path and the root (``Path(...).resolve()``) before
-        # comparing, and raises ValueError if the resolved path leaves the
-        # corpus root -- unlike os.path.abspath(), which does not follow
-        # symlinks, so an in-root symlink could otherwise point outside.
+        # Symlink-aware containment: validate_path() resolves the candidate path
+        # and the root before comparing and raises ValueError if it leaves the
+        # corpus root, so an in-root symlink pointing outside is refused.
         validate_path(result, context="NKJPCorpusReader", required_root=self.root)
         return result
 
@@ -280,44 +276,70 @@ class XML_Tool:
         # Imported here: nltk.data imports the corpus package.
         from nltk.data import staging_tempdir
 
-        self.write_file = tempfile.NamedTemporaryFile(
-            delete=False, dir=staging_tempdir()
-        )
+        # A unique temp file created inside staging_tempdir() (the shared
+        # per-process scratch dir under a data root), so concurrent readers never
+        # collide and the tempfile never lands in world-writable temp (CWE-377/378).
+        name = f"nkjp-{os.getpid()}-{os.urandom(8).hex()}.xml"
+        self.write_file = os.path.join(staging_tempdir(), name)
+        self._owns_scratch = False
 
     def build_preprocessed_file(self):
         try:
-            # Open through pathsec (containment + O_NOFOLLOW / hardlink guards)
-            # so the root-derived source file cannot escape the corpus root
-            # (CWE-59, GHSA-p4rw class).
+            # Read the source and write the namespace-stripped copy in binary
+            # through pathsec: both get containment + O_NOFOLLOW / hardlink guards
+            # (CWE-22/59), and "xb" is O_CREAT|O_EXCL so it cannot clobber a plant.
             from nltk.pathsec import open as pathsec_open
 
-            fr = pathsec_open(
-                self.read_file, context="NKJPCorpusReader", required_root=self._root
-            )
-            fw = self.write_file
-            line = " "
-            while len(line):
-                line = fr.readline()
-                x = redos.split(r"nkjp:[^ ]* ", line)  # in all files
-                ret = " ".join(x)
-                x = redos.split("<nkjp:paren>", ret)  # in ann_segmentation.xml
-                ret = " ".join(x)
-                x = redos.split("</nkjp:paren>", ret)  # in ann_segmentation.xml
-                ret = " ".join(x)
-                x = redos.split("<choice>", ret)  # in ann_segmentation.xml
-                ret = " ".join(x)
-                x = redos.split("</choice>", ret)  # in ann_segmentation.xml
-                ret = " ".join(x)
-                fw.write(ret)
-            fr.close()
-            fw.close()
-            return self.write_file.name
-        except Exception as e:
+            with pathsec_open(
+                self.read_file,
+                "rb",
+                context="NKJPCorpusReader",
+                required_root=self._root,
+            ) as fr, pathsec_open(
+                self.write_file,
+                "xb",
+                context="NKJPCorpusReader",
+                required_root=os.path.dirname(self.write_file),
+            ) as fw:
+                self._owns_scratch = True
+                # Decode/encode UTF-8 explicitly to match the NKJP TEI examples, stay
+                # locale-independent, and keep the XML bytes exact.
+                line = b" "
+                while len(line):
+                    line = fr.readline()
+                    text = line.decode("utf-8")
+                    x = redos.split(r"nkjp:[^ ]* ", text)  # in all files
+                    ret = " ".join(x)
+                    x = redos.split("<nkjp:paren>", ret)  # in ann_segmentation.xml
+                    ret = " ".join(x)
+                    x = redos.split("</nkjp:paren>", ret)  # in ann_segmentation.xml
+                    ret = " ".join(x)
+                    x = redos.split("<choice>", ret)  # in ann_segmentation.xml
+                    ret = " ".join(x)
+                    x = redos.split("</choice>", ret)  # in ann_segmentation.xml
+                    ret = " ".join(x)
+                    fw.write(ret.encode("utf-8"))
+            return self.write_file
+        except BaseException:
+            # Re-raise the real error (a pathsec refusal, UnicodeDecodeError, ...)
+            # instead of masking it as a bare Exception, and clean up on any exit.
             self.remove_preprocessed_file()
-            raise Exception from e
+            raise
 
     def remove_preprocessed_file(self):
-        os.remove(self.write_file.name)
+        # Remove only our own scratch file (never a directory tree); tolerate a
+        # missing or never-created file so cleanup is idempotent and never masks
+        # the real error.
+        if not self._owns_scratch:
+            return
+        try:
+            os.remove(self.write_file)
+        except FileNotFoundError:
+            self._owns_scratch = False
+        except OSError:
+            pass
+        else:
+            self._owns_scratch = False
 
 
 class NKJPCorpus_Segmentation_View(XMLCorpusView):
@@ -336,9 +358,15 @@ class NKJPCorpus_Segmentation_View(XMLCorpusView):
         # xml preprocessing
         self.xml_tool = XML_Tool(filename, "ann_segmentation.xml")
         # base class init
-        XMLCorpusView.__init__(
-            self, self.xml_tool.build_preprocessed_file(), self.tagspec
-        )
+        # The scratch copy exists once build_preprocessed_file() returns, so a
+        # failure inside the base constructor must not leave it behind.
+        try:
+            XMLCorpusView.__init__(
+                self, self.xml_tool.build_preprocessed_file(), self.tagspec
+            )
+        except BaseException:
+            self.xml_tool.remove_preprocessed_file()
+            raise
 
     def get_segm_id(self, example_word):
         return example_word.split("(")[1].split(",")[0]
@@ -388,9 +416,12 @@ class NKJPCorpus_Segmentation_View(XMLCorpusView):
             self.close()
             self.xml_tool.remove_preprocessed_file()
             return sentences
-        except Exception as e:
+        except BaseException:
+            # Close the stream before removing the scratch copy (Windows refuses
+            # to remove an open file) and re-raise the real error unmasked.
+            self.close()
             self.xml_tool.remove_preprocessed_file()
-            raise Exception from e
+            raise
 
     def handle_elt(self, elt, context):
         ret = []
@@ -415,9 +446,15 @@ class NKJPCorpus_Text_View(XMLCorpusView):
         # xml preprocessing
         self.xml_tool = XML_Tool(filename, "text.xml")
         # base class init
-        XMLCorpusView.__init__(
-            self, self.xml_tool.build_preprocessed_file(), self.tagspec
-        )
+        # The scratch copy exists once build_preprocessed_file() returns, so a
+        # failure inside the base constructor must not leave it behind.
+        try:
+            XMLCorpusView.__init__(
+                self, self.xml_tool.build_preprocessed_file(), self.tagspec
+            )
+        except BaseException:
+            self.xml_tool.remove_preprocessed_file()
+            raise
 
     def handle_query(self):
         try:
@@ -426,9 +463,12 @@ class NKJPCorpus_Text_View(XMLCorpusView):
             self.close()
             self.xml_tool.remove_preprocessed_file()
             return x
-        except Exception as e:
+        except BaseException:
+            # Close the stream before removing the scratch copy (Windows refuses
+            # to remove an open file) and re-raise the real error unmasked.
+            self.close()
             self.xml_tool.remove_preprocessed_file()
-            raise Exception from e
+            raise
 
     def read_block(self, stream, tagspec=None, elt_handler=None):
         """
@@ -466,9 +506,15 @@ class NKJPCorpus_Morph_View(XMLCorpusView):
         self.tags = kwargs.pop("tags", None)
         self.tagspec = ".*/seg/fs"
         self.xml_tool = XML_Tool(filename, "ann_morphosyntax.xml")
-        XMLCorpusView.__init__(
-            self, self.xml_tool.build_preprocessed_file(), self.tagspec
-        )
+        # The scratch copy exists once build_preprocessed_file() returns, so a
+        # failure inside the base constructor must not leave it behind.
+        try:
+            XMLCorpusView.__init__(
+                self, self.xml_tool.build_preprocessed_file(), self.tagspec
+            )
+        except BaseException:
+            self.xml_tool.remove_preprocessed_file()
+            raise
 
     def handle_query(self):
         try:
@@ -484,9 +530,12 @@ class NKJPCorpus_Morph_View(XMLCorpusView):
             self.close()
             self.xml_tool.remove_preprocessed_file()
             return words
-        except Exception as e:
+        except BaseException:
+            # Close the stream before removing the scratch copy (Windows refuses
+            # to remove an open file) and re-raise the real error unmasked.
+            self.close()
             self.xml_tool.remove_preprocessed_file()
-            raise Exception from e
+            raise
 
     def handle_elt(self, elt, context):
         word = ""
