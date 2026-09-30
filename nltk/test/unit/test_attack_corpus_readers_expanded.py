@@ -147,6 +147,65 @@ class TestConllSRLPredicateRescan:
         monkeypatch.undo()
         assert probe()[0] == probes.FIXED
 
+    def test_nested_full_width_verb_spans_stay_linear(self, tmp_path):
+        # one predicate whose column opens n verb spans on the first word and
+        # closes them all on the last: expanding each span costs n * n
+        reader = _srl_reader(tmp_path)
+
+        def grid(n):
+            rows = []
+            for i in range(n):
+                cell = (
+                    "(V" * n + "*" if i == 0 else ("*" + ")" * n if i == n - 1 else "*")
+                )
+                rows.append(["w", "NN", "*", "verb.01", "p" if i == 0 else "-", cell])
+            return rows
+
+        got = reader._get_srl_instances(grid(40), False)
+        assert _same_instances(got, _reference_srl_instances(reader, grid(40)))
+        assert got[0].verb == list(range(40))
+        assert len(got[0].tagged_spans) == 40
+        grids = {500: grid(500), 2000: grid(2000)}
+        _assert_subquadratic(
+            lambda n: reader._get_srl_instances(grids[n], False), 500, 2000
+        )
+
+    def test_overlapping_verb_spans_index_each_word_once(self, tmp_path):
+        reader = _srl_reader(tmp_path)
+        # two verb spans over the same words, closed together on word b, then
+        # an argument and a continuation: every verb word is indexed once
+        rows = [
+            ["a", "NN", "*", "verb.01", "p", "(V(V*"],
+            ["b", "NN", "*", "-", "-", "*))"],
+            ["c", "NN", "*", "-", "-", "(A1*)"],
+            ["d", "NN", "*", "-", "-", "(C-V*)"],
+            ["e", "NN", "*", "-", "-", "*"],
+        ]
+        (inst,) = reader._get_srl_instances(rows, False)
+        assert sorted(inst.tagged_spans) == [
+            ((0, 2), "V"),
+            ((0, 2), "V"),
+            ((2, 3), "A1"),
+            ((3, 4), "C-V"),
+        ]
+        assert inst.verb == [0, 1, 3]
+        assert inst.arguments == [((2, 3), "A1")]
+        assert inst.verb_head == 0
+
+    def test_many_full_width_verb_spans_agree_with_the_reference(self, tmp_path):
+        reader = _srl_reader(tmp_path)
+        n = 60
+        rows = []
+        for i in range(n):
+            row = ["w", "NN", "*", "verb.01", "p"]
+            row += [
+                "(V*" if i == 0 else ("*)" if i == n - 1 else "*") for _ in range(n)
+            ]
+            rows.append(row)
+        got = reader._get_srl_instances(rows, False)
+        assert _same_instances(got, _reference_srl_instances(reader, rows))
+        assert all(i.tagged_spans is got[0].tagged_spans for i in got)
+
     def test_real_conll_corpora_read_as_documented(self):
         _needs("corpora/conll2000", "corpora/conll2002")
         from nltk.corpus import conll2000, conll2002
