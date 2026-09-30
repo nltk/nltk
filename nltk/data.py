@@ -123,10 +123,27 @@ _NO_PROTOCOL_REF_ROOT = (
 # url2pathname may emit either separator (Windows rewrites "/"->"\\"); split on both.
 _PATH_COMPONENT_RE = redos.compile(r"[\\/]")
 
-# The exact line boundaries ``str.splitlines`` recognises (LF/CR/CRLF, vertical
-# and form feeds, the file/group/record separators, NEL, and the line/paragraph
-# separators); readline probes fresh input for one, ``splitlines`` still splits.
-_LINE_BOUNDARY_RE = redos.compile(r"[\n\r\v\f\x1c\x1d\x1e\x85\u2028\u2029]")
+
+#: readline re-splits a buffer up to this many characters on every pass without
+#: first asking whether the fresh span holds a boundary; past it, it asks.
+_SPLIT_DIRECTLY_BELOW = 8192
+
+
+def _has_line_boundary(text):
+    """True when *text* holds a line boundary ``str.splitlines`` recognises.
+
+    readline asks this of each freshly read span, prefixed with the previous
+    span's last character, before it re-splits a buffer past the bound. The
+    prefix is for a complete line the line buffer carried over: that line ends
+    in a boundary, and without the prefix readline would pull the whole next
+    line before returning it. ``splitlines`` is the definition readline splits
+    by, so asking it keeps the two in lockstep for every boundary (LF, CR,
+    CR LF, the vertical and form feeds, the file, group and record separators,
+    NEL and the line and paragraph separators). It runs in C and is linear in
+    the span, with no regex: a timed regex here cost several times the rest of
+    readline.
+    """
+    return bool(text) and text.splitlines() != [text]
 
 
 def _normalized_path_escapes(name):
@@ -1968,10 +1985,12 @@ class SeekableUnicodeStreamReader:
         # or at end of stream: growing a str in place copied it on every pass
         # (the residual quadratic the j8g8 probe caught on Windows, CWE-407).
         parts = []
+        buffered = 0  # characters collected in parts
 
         # If there's a remaining incomplete line in the buffer, add it.
         if self.linebuffer:
             parts.append(self.linebuffer.pop())
+            buffered = len(parts[0])
             self.linebuffer = None
 
         while True:
@@ -1983,12 +2002,15 @@ class SeekableUnicodeStreamReader:
             if new_chars and new_chars.endswith("\r"):
                 new_chars += self._read(1)
 
-            # Scan only the freshly read span (plus the previous span's last
-            # character, so a split CR LF stays intact) for a line break;
-            # ``splitlines`` still does the split, so lines stay byte identical.
+            # Below the bound, split directly as readline always did (few, bounded
+            # passes). Past it, split only once the fresh span, prefixed with the
+            # previous span's last character, holds a boundary: see _has_line_boundary.
             tail = parts[-1][-1:] if parts else ""
             parts.append(new_chars)
-            if _LINE_BOUNDARY_RE.search(tail + new_chars):
+            buffered += len(new_chars)
+            if buffered <= _SPLIT_DIRECTLY_BELOW or _has_line_boundary(
+                tail + new_chars
+            ):
                 chars = "".join(parts)
                 lines = chars.splitlines(True)
                 if len(lines) > 1:
@@ -1997,7 +2019,7 @@ class SeekableUnicodeStreamReader:
                     self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
                     self._rewind_checkpoint = startpos
                     break
-                else:
+                elif len(lines) == 1:
                     line0withend = lines[0]
                     line0withoutend = lines[0].splitlines(False)[0]
                     if line0withend != line0withoutend:  # complete line
@@ -2128,6 +2150,10 @@ class SeekableUnicodeStreamReader:
             bytes that will be needed to move forward by ``offset`` chars.
             Defaults to ``offset``.
         """
+        if offset < 0:
+            # the backtracking loop below never reaches a negative count and
+            # would spin forever: the caller's bookkeeping has gone wrong
+            raise ValueError("Negative offsets are not supported")
         if est_bytes is None:
             est_bytes = offset
         bytes = b""
