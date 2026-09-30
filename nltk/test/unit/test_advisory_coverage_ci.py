@@ -54,9 +54,10 @@ _HEADERS = {
 # NB: Canonical GHSA IDs use hyphens, while probe filenames use underscores because
 # Python module names cannot contain hyphens; do not copy filenames here.
 _CLOSED_WITH_PROBE = {
-    # Draft advisory carrying a regression probe ahead of publication; the
-    # unauthenticated API does not list a draft, so it is named here until then.
+    # Draft advisories carrying a regression probe ahead of publication; the
+    # unauthenticated API does not list a draft, so each is named here until then.
     "GHSA-j8g8-j4j7-8j54",
+    "GHSA-v8f3-6phw-6mh9",
     "GHSA-4489-j4f3-2g8q",
     "GHSA-9ffx-rrgx-mhgx",
     "GHSA-pcm8-fqjx-rvx8",

@@ -144,9 +144,9 @@ MAX_ATTRIBUTES = 20_000_000
 #: Deepest element nesting (real data nests 26 levels; libxml2 refuses 256).
 MAX_DEPTH = 1_000
 #: Longest single markup token: a tag with its attributes, a comment, a
-#: processing instruction or a DOCTYPE literal (real data: 756 bytes).  It is
-#: measured at 64 KiB feed boundaries, so a token is refused once it runs
-#: more than one chunk past this; text and CDATA runs are not tokens.
+#: processing instruction or a DOCTYPE literal (real data: 756 bytes).  The
+#: feed is cut where a pending token would pass it, so a token one byte over
+#: is refused on every expat version; text and CDATA runs are not tokens.
 MAX_TOKEN_BYTES = 1024 * 1024
 #: Most bytes of attribute entries, attribute values and distinct expanded
 #: names the tree may hold per input byte (real data: 1.02).
@@ -263,11 +263,29 @@ def _screen(data):
     if len(data) > 4 * min(MAX_ELEMENTS, MAX_ATTRIBUTES):
         _arm()
     mark = 0
+    offset, end = 0, len(data)
     try:
-        for offset in range(0, len(data), _STEP):
-            chunk = data[offset : offset + _STEP]
+        while offset < end:
+            # Feed no further than the point where the markup token expat still
+            # holds would pass the ceiling, so the check below fires exactly
+            # there: an expat without reparse deferral (before 2.6) otherwise
+            # completes a slightly longer token inside the next chunk unseen.
+            room = MAX_TOKEN_BYTES + 1 - (fed - mark)
+            chunk = data[offset : offset + max(1, min(_STEP, room))]
+            offset += len(chunk)
             if text:
-                fed += len(chunk.encode("utf-8"))
+                encoded = chunk.encode("utf-8")
+                if len(encoded) > room:
+                    # The slice counted characters and the ceiling counts bytes:
+                    # keep the longest prefix within room, at least one whole
+                    # character, so a multibyte token is cut where an ASCII one is.
+                    cut = room
+                    while cut > 0 and (encoded[cut] & 0xC0) == 0x80:
+                        cut -= 1
+                    kept = encoded[:cut].decode("utf-8") if cut else chunk[0]
+                    offset -= len(chunk) - len(kept)
+                    chunk, encoded = kept, kept.encode("utf-8")
+                fed += len(encoded)
                 parser.Parse(chunk, False)
             else:
                 chunk = bytes(chunk)
