@@ -13,6 +13,7 @@ import os
 
 from nltk.sem import Expression
 from nltk.sem.logic import MAX_SIMPLIFY_SIZE, _exceeds_size
+from nltk.test.unit import timing
 
 from . import _mp_ctx
 
@@ -74,15 +75,11 @@ def test_simplify_bounds_exponential_blowup():
     or hanging the suite.
     """
     ctx = _mp_ctx()
-    proc = ctx.Process(target=_blowup_worker)
-    proc.start()
-    proc.join(30)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(_blowup_worker, (), budget=30, context=ctx)
+    if not run.within_budget:
         raise AssertionError(
             "simplify() did not terminate: exponential beta-reduction regressed"
         )
     assert (
-        proc.exitcode == 0
-    ), f"expected a ValueError from the size cap (exit {proc.exitcode})"
+        run.exitcode == 0
+    ), f"expected a ValueError from the size cap (exit {run.exitcode})"

@@ -16,6 +16,7 @@ import traceback
 
 import pytest
 
+from nltk.test.unit import timing
 from nltk.text import TOKENSEARCH_TIMEOUT, Text, TokenSearcher
 
 from . import _mp_ctx
@@ -105,13 +106,9 @@ def test_findall_star_query_is_linear():
     n = 200_000
     deadline = 30
     ctx = _mp_ctx()
-    proc = ctx.Process(target=_star_query_worker, args=(n,))
-    proc.start()
-    proc.join(deadline)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(_star_query_worker, (n,), budget=deadline, context=ctx)
+    if not run.within_budget:
         raise AssertionError(
             "TokenSearcher.findall did not finish in time: quadratic scan regressed"
         )
-    assert proc.exitcode == 0, f"worker failed (exit {proc.exitcode})"
+    assert run.exitcode == 0, f"worker failed (exit {run.exitcode})"

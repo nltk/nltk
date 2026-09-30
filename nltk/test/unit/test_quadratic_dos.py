@@ -89,7 +89,11 @@ def _assert_subquadratic(op, small, big, factor=8.0, noise_floor=0.1, reps=3):
     measurement is the suite's shared one: CPU time for a CPU-bound op, the wall
     clock for one that waits, small and big runs alternating, minimum kept.
     """
-    timing.assert_subquadratic(op, small, big, factor, noise_floor, reps)
+    # every op here computes (parsers, regexes, tokenizers), so its CPU time is
+    # its cost, declared rather than left to the share heuristic
+    timing.assert_subquadratic(
+        op, small, big, factor, noise_floor, reps, cpu_bound=True
+    )
 
 
 # ==========================================================================

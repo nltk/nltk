@@ -18,6 +18,7 @@ import os
 
 from nltk.sem import Valuation
 from nltk.sem.evaluate import read_valuation
+from nltk.test.unit import timing
 
 from . import _mp_ctx
 
@@ -56,16 +57,12 @@ def _parse_worker():
 def test_long_separator_run_parses_in_linear_time():
     """A long '=' run must split in linear time, not quadratic (ReDoS)."""
     ctx = _mp_ctx()
-    proc = ctx.Process(target=_parse_worker)
-    proc.start()
-    proc.join(_TIMEOUT)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(_parse_worker, (), budget=_TIMEOUT, context=ctx)
+    if not run.within_budget:
         raise AssertionError(
             "valuation parsing did not finish in time -> quadratic ReDoS (CWE-1333)"
         )
-    assert proc.exitcode == 0, f"worker failed (exit code {proc.exitcode})"
+    assert run.exitcode == 0, f"worker failed (exit code {run.exitcode})"
 
 
 # Many separate long '=' runs across many lines: the per-line split must stay
@@ -84,16 +81,14 @@ def _parse_multiline_worker():
 def test_many_separator_runs_parse_in_linear_time():
     """Many hostile '=' runs (one per line) must all stay linear."""
     ctx = _mp_ctx()
-    proc = ctx.Process(target=_parse_multiline_worker)
-    proc.start()
-    proc.join(_TIMEOUT)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(
+        _parse_multiline_worker, (), budget=_TIMEOUT, context=ctx
+    )
+    if not run.within_budget:
         raise AssertionError(
             "multi-line valuation parsing did not finish in time -> quadratic ReDoS"
         )
-    assert proc.exitcode == 0, f"worker failed (exit code {proc.exitcode})"
+    assert run.exitcode == 0, f"worker failed (exit code {run.exitcode})"
 
 
 def test_valuation_split_routes_through_redos():

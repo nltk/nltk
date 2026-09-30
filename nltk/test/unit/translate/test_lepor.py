@@ -18,6 +18,7 @@ import os
 import random
 import traceback
 
+from nltk.test.unit import timing
 from nltk.translate.lepor import alignment
 
 from .. import _mp_ctx
@@ -75,13 +76,9 @@ def test_alignment_is_linear_not_quadratic():
     n = 120_000
     deadline = 30
     ctx = _mp_ctx()
-    proc = ctx.Process(target=_alignment_worker, args=(n,))
-    proc.start()
-    proc.join(deadline)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(_alignment_worker, (n,), budget=deadline, context=ctx)
+    if not run.within_budget:
         raise AssertionError(
             "alignment() did not finish in time: quadratic blow-up regressed"
         )
-    assert proc.exitcode == 0, f"alignment() worker failed (exit {proc.exitcode})"
+    assert run.exitcode == 0, f"alignment() worker failed (exit {run.exitcode})"

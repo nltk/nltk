@@ -68,6 +68,8 @@ from collections import namedtuple
 
 import pytest
 
+from nltk.test.unit import timing
+
 # Head-room over redos.DEFAULT_TIMEOUT (5.0s) plus a ~10s cold NLTK import on a
 # loaded machine. A guarded child that does not finish inside this really hung.
 GUARDED_BUDGET = 30.0
@@ -105,24 +107,24 @@ def _run_child(code, budget):
     """
     env = dict(os.environ)
     env["PYTHONPATH"] = os.pathsep.join(sys.path)
-    try:
-        proc = subprocess.run(
-            [sys.executable, "-c", code],
-            capture_output=True,
-            text=True,
-            timeout=budget,
-            env=env,
-        )
-    except subprocess.TimeoutExpired as exc:
-        out = exc.stdout or ""
-        err = exc.stderr or ""
-        if isinstance(out, bytes):
-            out = out.decode("utf-8", "replace")
-        if isinstance(err, bytes):
-            err = err.decode("utf-8", "replace")
-        return _ChildResult(True, None, _parse_cases(out), out, err)
+    # The budget bounds the child's charged time (its CPU when it computed,
+    # its wall time when it waited, see nltk.test.unit.timing); a child still
+    # running at the hard deadline is a hang, killed, with no output kept.
+    proc, run = timing.run_subprocess(
+        [sys.executable, "-c", code],
+        budget,
+        capture_output=True,
+        text=True,
+        env=env,
+    )
+    if proc is None:
+        return _ChildResult(True, None, {}, "", "")
     return _ChildResult(
-        False, proc.returncode, _parse_cases(proc.stdout), proc.stdout, proc.stderr
+        not run.within_budget,
+        proc.returncode,
+        _parse_cases(proc.stdout),
+        proc.stdout,
+        proc.stderr,
     )
 
 

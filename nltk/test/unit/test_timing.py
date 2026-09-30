@@ -21,10 +21,15 @@ def spin(seconds):
         pass
 
 
-def test_a_cpu_bound_block_is_charged_its_cpu_time_not_a_stall_beside_it():
+def test_cpu_time_is_the_work_and_the_charge_rule_is_deterministic():
     cpu, wall = timing.cpu_and_wall(lambda: (spin(0.2), time.sleep(0.05)))
-    assert 0.15 <= cpu <= 0.35, cpu
-    assert timing.charge(cpu, wall) == cpu
+    assert 0.15 <= cpu <= 0.35 and wall >= cpu + 0.04, (cpu, wall)
+    # the rule itself, on fixed numbers: a quarter of the wall time on the CPU
+    # is still judged as work (4x contention), less is judged as waiting
+    assert timing.charge(0.30, 1.0) == 0.30
+    assert timing.charge(0.20, 1.0) == 1.0
+    assert timing.charge(0.20, 1.0, cpu_bound=True) == 0.20
+    assert timing.charge(0.90, 1.0, cpu_bound=False) == 1.0
 
 
 def test_a_waiting_block_is_charged_its_wall_time():
@@ -33,13 +38,25 @@ def test_a_waiting_block_is_charged_its_wall_time():
     assert timing.charge(cpu, wall) == wall
 
 
-def test_budget_passes_a_fast_block_that_was_descheduled_beside_its_work():
-    # a stall shorter than the work, the shape a loaded runner injects: the
-    # wall clock is over budget, the charged CPU time is not
-    with timing.budget(0.45) as measured:
+def test_budget_passes_a_declared_cpu_block_whatever_the_stall_beside_it():
+    # a stall of the kind a loaded runner injects: the wall clock is over
+    # budget, the charged CPU time of the declared computing block is not
+    with timing.budget(0.45, cpu_bound=True) as measured:
         spin(0.3)
         time.sleep(0.2)
     assert measured.charged == measured.cpu < 0.45 < measured.wall
+
+
+def test_the_wall_ceiling_bounds_a_wait_even_for_a_declared_cpu_block():
+    assert timing.hard_deadline_for(0.01) == 60.0
+    assert timing.hard_deadline_for(30) == 120.0
+    # the ceiling check on fixed numbers, through the same assertion the
+    # context manager makes (its wall must stay under the ceiling)
+    clock = timing.budget(0.5, cpu_bound=True)
+    clock.__enter__()
+    clock._wall -= timing.hard_deadline_for(0.5)  # as if 60 s had passed
+    with pytest.raises(AssertionError, match="budget 0.5s"):
+        clock.__exit__(None, None, None)
 
 
 def test_a_stall_longer_than_the_work_is_treated_as_waiting():

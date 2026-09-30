@@ -12,6 +12,7 @@ producing identical output for any tree in Chomsky Normal Form.
 
 import os
 
+from nltk.test.unit import timing
 from nltk.tree import Tree
 from nltk.tree.transforms import chomsky_normal_form, un_chomsky_normal_form
 
@@ -93,13 +94,9 @@ def test_un_chomsky_is_linear_not_quadratic():
     n = 20_000
     deadline = 30
     ctx = _mp_ctx()
-    proc = ctx.Process(target=_un_chomsky_worker, args=(n,))
-    proc.start()
-    proc.join(deadline)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(_un_chomsky_worker, (n,), budget=deadline, context=ctx)
+    if not run.within_budget:
         raise AssertionError(
             "un_chomsky_normal_form did not finish in time: quadratic blow-up regressed"
         )
-    assert proc.exitcode == 0, f"worker failed (exit {proc.exitcode})"
+    assert run.exitcode == 0, f"worker failed (exit {run.exitcode})"

@@ -18,6 +18,7 @@ import os
 
 import pytest
 
+from nltk.test.unit import timing
 from nltk.util import MAX_EVERYGRAMS_DEFAULT_LEN, everygrams
 
 from . import _mp_ctx
@@ -104,17 +105,13 @@ def _everygrams_worker():
 def test_oversized_default_does_not_allocate():
     """everygrams(long_seq) with the default max_len must be refused, not run."""
     ctx = _mp_ctx()
-    proc = ctx.Process(target=_everygrams_worker)
-    proc.start()
-    proc.join(_TIMEOUT)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(_everygrams_worker, (), budget=_TIMEOUT, context=ctx)
+    if not run.within_budget:
         raise AssertionError(
             "everygrams() did not return quickly -> unbounded O(n**3) allocation (DoS)"
         )
-    assert proc.exitcode == _EXIT_REFUSED, (
+    assert run.exitcode == _EXIT_REFUSED, (
         "everygrams() with the default max_len over a long sequence was not "
-        f"refused before allocating (worker exit code {proc.exitcode}); "
+        f"refused before allocating (worker exit code {run.exitcode}); "
         "expected a fast ValueError"
     )

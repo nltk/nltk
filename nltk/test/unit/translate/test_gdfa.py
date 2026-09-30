@@ -7,6 +7,7 @@ import sys
 import traceback
 import unittest
 
+from nltk.test.unit import timing
 from nltk.translate.gdfa import grow_diag_final_and
 
 from .. import _mp_ctx
@@ -186,13 +187,9 @@ def test_gdfa_cost_independent_of_lengths():
     test instead of pinning a core for the rest of the suite.
     """
     ctx = _mp_ctx()
-    proc = ctx.Process(target=_gdfa_worker, args=(50_000,))
-    proc.start()
-    proc.join(30)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(_gdfa_worker, (50_000,), budget=30, context=ctx)
+    if not run.within_budget:
         raise AssertionError(
             "grow_diag_final_and did not finish in time: O(srclen*trglen) regressed"
         )
-    assert proc.exitcode == 0, f"worker failed (exit {proc.exitcode})"
+    assert run.exitcode == 0, f"worker failed (exit {run.exitcode})"

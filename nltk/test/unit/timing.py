@@ -39,7 +39,11 @@ import time
 
 #: A block whose CPU time is at least this share of its wall time is judged on
 #: CPU time; below it the block was mostly waiting and the wall clock applies.
-CPU_BOUND_SHARE = 0.5
+#: A quarter tolerates the 4x contention a 3-core runner shows under xdist
+#: (0.20 s of CPU took 0.55 s of wall there), the same margin the child hard
+#: deadline assumes; a call site that knows its sink computes can declare it
+#: with ``cpu_bound=True`` and skip the heuristic altogether.
+CPU_BOUND_SHARE = 0.25
 
 #: A scaling factor at or above this reads as super-linear (quadratic ~16x);
 #: a linear sink stays near 4x, so the gap is wide on any machine.
@@ -53,16 +57,21 @@ def cpu_and_wall(func, *args, **kwargs):
     return time.process_time() - cpu_start, time.perf_counter() - wall_start
 
 
-def charge(cpu_seconds, wall_seconds):
-    """The seconds charged to a block: CPU when CPU-bound, wall otherwise."""
-    if cpu_seconds >= CPU_BOUND_SHARE * wall_seconds:
-        return cpu_seconds
-    return wall_seconds
+def charge(cpu_seconds, wall_seconds, cpu_bound=None):
+    """The seconds charged to a block: CPU when CPU-bound, wall otherwise.
+
+    ``cpu_bound`` declares it (True: the sink computes, so its CPU time is its
+    cost; False: it waits, so the wall clock is); ``None`` decides by the share
+    of wall time the block spent on the CPU.
+    """
+    if cpu_bound is None:
+        cpu_bound = cpu_seconds >= CPU_BOUND_SHARE * wall_seconds
+    return cpu_seconds if cpu_bound else wall_seconds
 
 
-def charged(func, *args, **kwargs):
+def charged(func, *args, cpu_bound=None, **kwargs):
     """Seconds charged to one call of ``func``."""
-    return charge(*cpu_and_wall(func, *args, **kwargs))
+    return charge(*cpu_and_wall(func, *args, **kwargs), cpu_bound=cpu_bound)
 
 
 class budget:
@@ -70,11 +79,13 @@ class budget:
 
     The check runs only when the block completed (an exception the block
     raised propagates unchanged). ``cpu``, ``wall`` and ``charged`` hold the
-    measurement afterwards, for messages.
+    measurement afterwards, for messages. Whatever clock is charged, a block
+    whose wall time passed ``hard_deadline_for(seconds)`` fails too: CPU time
+    bounds the work, and that ceiling bounds a wait no runner load explains.
     """
 
-    def __init__(self, seconds, what="the block"):
-        self.seconds, self.what = seconds, what
+    def __init__(self, seconds, what="the block", cpu_bound=None):
+        self.seconds, self.what, self.cpu_bound = seconds, what, cpu_bound
         self.cpu = self.wall = self.charged = None
 
     def __enter__(self):
@@ -84,9 +95,11 @@ class budget:
     def __exit__(self, exc_type, exc, tb):
         self.cpu = time.process_time() - self._cpu
         self.wall = time.perf_counter() - self._wall
-        self.charged = charge(self.cpu, self.wall)
+        self.charged = charge(self.cpu, self.wall, self.cpu_bound)
         if exc_type is None:
-            assert self.charged < self.seconds, (
+            assert self.charged < self.seconds and self.wall < hard_deadline_for(
+                self.seconds
+            ), (
                 f"{self.what} took {self.charged:.2f}s charged "
                 f"({self.cpu:.2f}s CPU, {self.wall:.2f}s wall), "
                 f"budget {self.seconds}s"
@@ -94,17 +107,20 @@ class budget:
         return False
 
 
-def within_budget(func, seconds, repeats=3):
+def within_budget(func, seconds, repeats=3, cpu_bound=None):
     """``(ok, seconds)``: the fastest of ``repeats`` charged runs, ok if under.
 
     Min-of-k because one run on a loaded runner is noise; contention only adds
-    time, so the minimum is closest to the code's own cost.
+    time, so the minimum is closest to the code's own cost. A run whose wall
+    time passed ``hard_deadline_for(seconds)`` is never ok.
     """
-    best = min(charged(func) for _ in range(repeats))
-    return best < seconds, best
+    runs = [cpu_and_wall(func) for _ in range(repeats)]
+    best = min(charge(cpu, wall, cpu_bound) for cpu, wall in runs)
+    ceiling = hard_deadline_for(seconds)
+    return best < seconds and min(wall for _, wall in runs) < ceiling, best
 
 
-def scaling_ratio(op, small, big, reps=3, noise_floor=0.1):
+def scaling_ratio(op, small, big, reps=3, noise_floor=0.1, cpu_bound=None):
     """Fastest-of-``reps`` ``op(big)`` over ``op(small)`` (``big`` == 4*``small``).
 
     A load-invariant scaling factor: a linear sink is ~4x, a pre-patch O(n**2)
@@ -114,6 +130,7 @@ def scaling_ratio(op, small, big, reps=3, noise_floor=0.1):
     extra runs, and each side keeps its minimum on both clocks. A CPU-bound op
     is judged in CPU time; an op that mostly waits is judged on the wall clock
     and the higher of the two ratios is kept, so the fallback only tightens.
+    ``cpu_bound`` declares the op's kind and skips the heuristic.
     """
     inf = float("inf")
     cpu, wall = {small: inf, big: inf}, {small: inf, big: inf}
@@ -129,16 +146,21 @@ def scaling_ratio(op, small, big, reps=3, noise_floor=0.1):
     for _ in range(reps):
         run(small)
     cpu_ratio = cpu[big] / max(cpu[small], noise_floor)
-    if cpu[big] < CPU_BOUND_SHARE * wall[big]:
-        return max(cpu_ratio, wall[big] / max(wall[small], noise_floor))
+    wall_ratio = wall[big] / max(wall[small], noise_floor)
+    if cpu_bound is True:
+        return cpu_ratio
+    if cpu_bound is False or cpu[big] < CPU_BOUND_SHARE * wall[big]:
+        return max(cpu_ratio, wall_ratio)
     return cpu_ratio
 
 
 def assert_subquadratic(
-    op, small, big, factor=QUADRATIC_RATIO, noise_floor=0.1, reps=3
+    op, small, big, factor=QUADRATIC_RATIO, noise_floor=0.1, reps=3, cpu_bound=None
 ):
     """Assert ``op(big)`` (big == 4*small) costs under ``factor`` times ``op(small)``."""
-    ratio = scaling_ratio(op, small, big, reps=reps, noise_floor=noise_floor)
+    ratio = scaling_ratio(
+        op, small, big, reps=reps, noise_floor=noise_floor, cpu_bound=cpu_bound
+    )
     assert ratio < factor, (small, big, ratio)
 
 
@@ -187,10 +209,10 @@ class ChildRun:
     """What happened to a child: whether it finished, its exit code, and the
     CPU, wall and charged seconds; ``within_budget`` is the verdict."""
 
-    def __init__(self, finished, exitcode, cpu, wall, budget):
+    def __init__(self, finished, exitcode, cpu, wall, budget, cpu_bound=None):
         self.finished, self.exitcode, self.budget = finished, exitcode, budget
         self.cpu, self.wall = cpu, wall
-        self.charged = charge(cpu, wall) if cpu is not None else wall
+        self.charged = charge(cpu, wall, cpu_bound) if cpu is not None else wall
         self.within_budget = finished and self.charged < budget
 
     def __repr__(self):
@@ -202,7 +224,9 @@ class ChildRun:
         )
 
 
-def run_in_process(target, args=(), *, budget, hard_deadline=None, context=None):
+def run_in_process(
+    target, args=(), *, budget, hard_deadline=None, context=None, cpu_bound=None
+):
     """Run ``target(*args)`` in a child process and judge it against ``budget``.
 
     The child is joined until ``hard_deadline`` (``hard_deadline_for(budget)``
@@ -240,10 +264,10 @@ def run_in_process(target, args=(), *, budget, hard_deadline=None, context=None)
         children_after = _children_cpu_seconds()
         if children_before is not None and children_after is not None:
             cpu = children_after - children_before
-    return ChildRun(True, proc.exitcode, cpu, wall, budget)
+    return ChildRun(True, proc.exitcode, cpu, wall, budget, cpu_bound)
 
 
-def finishes_within(seconds, fn, hard_deadline=None):
+def finishes_within(seconds, fn, hard_deadline=None, cpu_bound=None):
     """Run ``fn`` on a daemon thread; ``(finished, exception, charged)``.
 
     ``finished`` is True when ``fn`` returned or raised with less than
@@ -266,11 +290,13 @@ def finishes_within(seconds, fn, hard_deadline=None):
     cpu_start, wall_start = time.process_time(), time.perf_counter()
     threading.Thread(target=run, daemon=True).start()
     returned = done.wait(hard_deadline)
-    charged = charge(time.process_time() - cpu_start, time.perf_counter() - wall_start)
+    charged = charge(
+        time.process_time() - cpu_start, time.perf_counter() - wall_start, cpu_bound
+    )
     return returned and charged < seconds, outcome.get("exc"), charged
 
 
-def run_subprocess(cmd, budget, hard_deadline=None, **kwargs):
+def run_subprocess(cmd, budget, hard_deadline=None, cpu_bound=None, **kwargs):
     """``subprocess.run(cmd, ...)`` judged against ``budget`` like a child.
 
     Returns ``(completed, run)``: ``completed`` is the ``CompletedProcess`` or
@@ -293,4 +319,4 @@ def run_subprocess(cmd, budget, hard_deadline=None, **kwargs):
     cpu = None
     if children_before is not None and children_after is not None:
         cpu = children_after - children_before
-    return completed, ChildRun(True, completed.returncode, cpu, wall, budget)
+    return completed, ChildRun(True, completed.returncode, cpu, wall, budget, cpu_bound)

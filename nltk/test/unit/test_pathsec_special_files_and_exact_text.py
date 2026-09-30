@@ -21,13 +21,12 @@ it took), not from the exception alone.
 
 import os
 import socket
-import threading
-import time
 
 import pytest
 
 import nltk.pathsec as pathsec
 from nltk.pathsec import validate_path
+from nltk.test.unit import timing
 
 SECURITY = (PermissionError, ValueError)
 
@@ -212,20 +211,9 @@ class TestValidatePathUsesExactCharacters:
 
 
 def _finishes_within(seconds, fn):
-    done, out = threading.Event(), {}
-
-    def run():
-        try:
-            out["v"] = fn()
-        except BaseException as exc:
-            out["e"] = exc
-        finally:
-            done.set()
-
-    started = time.monotonic()
-    threading.Thread(target=run, daemon=True).start()
-    finished = done.wait(seconds)
-    return finished, out.get("e"), time.monotonic() - started
+    """``(finished, exception, seconds charged)`` for ``fn`` run on a thread,
+    judged by the time charged to it (see nltk.test.unit.timing)."""
+    return timing.finishes_within(seconds, fn)
 
 
 class TestByNameLinkCheckForNonPosixOpens:
