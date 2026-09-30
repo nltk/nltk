@@ -36,7 +36,6 @@ to specify the tokenization conventions when building a `CorpusReader`.
 """
 
 from nltk.tokenize.api import StringTokenizer, TokenizerI
-from nltk.tokenize.util import regexp_span_tokenize, string_span_tokenize
 
 
 class SpaceTokenizer(StringTokenizer):
@@ -121,12 +120,21 @@ class LineTokenizer(TokenizerI):
                 lines.pop()
         return lines
 
-    # discard-eof not implemented
     def span_tokenize(self, s):
-        if self._blanklines == "keep":
-            yield from string_span_tokenize(s, "\n")
-        else:
-            yield from regexp_span_tokenize(s, r"\n(\s+\n)*")
+        # Walk the same line breaks tokenize() splits on, so every span slices
+        # back to exactly the token tokenize() returns, in every blanklines mode.
+        spans = []
+        start = 0
+        for line_with_end in s.splitlines(True):
+            line = line_with_end.splitlines()[0]
+            spans.append((start, start + len(line)))
+            start += len(line_with_end)
+        if self._blanklines == "discard":
+            spans = [(a, b) for a, b in spans if s[a:b].rstrip()]
+        elif self._blanklines == "discard-eof":
+            if spans and not s[spans[-1][0] : spans[-1][1]].strip():
+                spans.pop()
+        yield from spans
 
 
 ######################################################################
