@@ -1002,3 +1002,18 @@ def test_wr3g_zip_hardlink_probe_has_teeth():
     finally:
         pathsec.ZipFile._extract_member = real
     assert probe()[0] == probes.FIXED
+
+
+def test_j8g8_reparse_probe_has_teeth(monkeypatch):
+    """Report a line boundary in every block; readline then re-splits the whole
+    growing buffer each pass (the pre-fix O(n^2)) and the probe flips."""
+    import nltk.data as data
+
+    probe = probes.PROBES["GHSA-j8g8-j4j7-8j54"]
+    assert probe()[0] == probes.FIXED
+
+    monkeypatch.setattr(data, "_has_line_boundary", lambda text: True)
+    status, detail = probe()
+    assert status == probes.VULNERABLE, detail  # the measured ratio, for the CI log
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED

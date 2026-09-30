@@ -178,7 +178,6 @@
 - Louis Tiao
 - Steven Tomcavage
 - Tiago Tresoldi
-- UnbearableFate
 - Marcus Uneson
 - Yu Usami
 - Petro Verkhogliad
@@ -192,6 +191,7 @@
 - Patrick Ye
 - Geraldine Sim Wei Ying
 - Jason Yoder
+- Mingzhe Yu (UnbearableFate)
 - Thomas Zieglier
 - 0ssifrage
 - ducki13

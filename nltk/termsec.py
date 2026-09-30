@@ -214,7 +214,9 @@ def sanitize_terminal(text, *, single_line=False):
     hyperlinks, OSC-52 clipboard writes, and terminal query/answerback sequences
     that would otherwise inject a reply into stdin). Bidi overrides and any
     unbalanced OR crossed directional nesting are escaped to defeat Trojan-Source
-    reordering (CVE-2021-42574); balanced Arabic/Hebrew bidi passes through. Line
+    reordering (CVE-2021-42574); the nesting is judged both as written and with
+    the always-escaped overrides removed, so the pop that closed an override can
+    never stay live on its own. Balanced Arabic/Hebrew bidi passes through. Line
     and paragraph separators, deprecated/interlinear format controls, the invisible
     zero-width smuggling characters (soft hyphen, invisible math operators), the
     Unicode Tags block, lone surrogates (which would otherwise crash the write) and
@@ -252,7 +254,12 @@ def _escape_scan(text, single_line):
     be proven equivalent to it, code point by code point.
     """
     allowed = frozenset() if single_line else _ALLOWED_CONTROLS
-    bidi_ok = _bidi_is_balanced(text)
+    # The nesting must balance as written AND once the always-escaped overrides
+    # are gone: otherwise the PDF that closed an override survives as a stray
+    # pop (an attack in its own right) and the output is not a fixed point.
+    bidi_ok = _bidi_is_balanced(text) and _bidi_is_balanced(
+        "".join(c for c in text if c in _BIDI_ALL and c not in _BIDI_OVERRIDES)
+    )
     result = []
     for char in text:
         codepoint = ord(char)
