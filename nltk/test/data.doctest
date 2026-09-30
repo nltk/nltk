@@ -236,9 +236,9 @@ the cache, then the cached copy will be returned.  This behavior can
 be seen by the trace output generated when verbose=True:
 
     >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg', verbose=True)
-    <<Loading nltk:grammars/book_grammars/feat0.fcfg>>
+    <<Loading resource>>
     >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg', verbose=True)
-    <<Using cached copy of nltk:grammars/book_grammars/feat0.fcfg>>
+    <<Using cached copy of resource (format=fcfg)>>
 
 If you wish to load a resource from its source, bypassing the cache,
 use the ``cache=False`` argument to `nltk.data.load()`.  This can be
@@ -246,7 +246,7 @@ useful, for example, if the resource is loaded from a local file, and
 you are actively editing that file:
 
     >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg',cache=False,verbose=True)
-    <<Loading nltk:grammars/book_grammars/feat0.fcfg>>
+    <<Loading resource>>
 
 The cache *no longer* uses weak references.  A resource will not be
 automatically expunged from the cache when no more objects are using
@@ -257,7 +257,7 @@ However, the object remains cached:
     >>> del feat0
     >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg',
     ...                        verbose=True)
-    <<Using cached copy of nltk:grammars/book_grammars/feat0.fcfg>>
+    <<Using cached copy of resource (format=fcfg)>>
 
 You can clear the entire contents of the cache, using
 `nltk.data.clear_cache()`:

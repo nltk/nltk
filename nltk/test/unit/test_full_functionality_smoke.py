@@ -507,13 +507,6 @@ def test_chat80_restricted_shelf_blocks_a_pickle_gadget(restricted_sandbox):
     db = os.path.join(staging, "evil")
     with shelve.open(db, "n") as shelf:
         shelf["x"] = _Gadget()
-    # Satisfy the pre-existing ".db" access check (see the val_load note) so the
-    # read reaches the unpickler under test.
-    if not os.path.exists(db + ".db"):
-        try:
-            os.link(db, db + ".db")
-        except OSError:
-            pass
 
     shelf = _restricted_shelve_open(db)
     try:
@@ -539,14 +532,8 @@ def test_chat80_val_load_preexisting_valuation_limitation(tmp_path, monkeypatch)
     _authorize_tmp_root(tmp_path, monkeypatch)
     db = str(tmp_path / "borders_val2")
     _skip_without_data(lambda: chat80.val_dump([chat80.borders], db))
-    # Satisfy the stale ".db" access check so we reach the Valuation rebuild, the
-    # step that raises (not the pathsec guard, which the in-root path passes).
-    created = next(iter(tmp_path.glob("borders_val2*")), None)
-    if created is not None and not os.path.exists(db + ".db"):
-        try:
-            os.link(str(created), db + ".db")
-        except OSError:
-            pass
+    # val_load now opens the store directly (no stale ".db" access gate) and
+    # reaches the Valuation rebuild, the step that raises.
     with pytest.raises(ValueError, match="Unrecognized value for symbol"):
         chat80.val_load(db)
 

@@ -40,6 +40,7 @@ from nltk.metrics import (
     TrigramAssocMeasures,
 )
 from nltk.probability import FreqDist
+from nltk.termsec import safe_print
 from nltk.util import ngrams
 
 
@@ -379,9 +380,9 @@ def demo(scorer=None, compare_scorer=None):
             ranks_from_scores(cf.score_ngrams(scorer)),
             ranks_from_scores(cf.score_ngrams(compare_scorer)),
         )
-        print(file)
-        print("\t", [" ".join(tup) for tup in cf.nbest(scorer, 15)])
-        print(f"\t Correlation to {compare_scorer.__name__}: {corr:0.4f}")
+        safe_print(file)
+        safe_print("\t", [" ".join(tup) for tup in cf.nbest(scorer, 15)])
+        safe_print(f"\t Correlation to {compare_scorer.__name__}: {corr:0.4f}")
 
 
 # Slows down loading too much

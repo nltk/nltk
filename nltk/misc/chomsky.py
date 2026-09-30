@@ -119,6 +119,8 @@ import random
 import textwrap
 from itertools import chain, islice
 
+from nltk.termsec import safe_print
+
 
 def generate_chomsky(times=5, line_length=72):
     parts = []
@@ -127,7 +129,7 @@ def generate_chomsky(times=5, line_length=72):
         random.shuffle(phraselist)
         parts.append(phraselist)
     output = chain.from_iterable(islice(zip(*parts), 0, times))
-    print(textwrap.fill(" ".join(output), line_length))
+    safe_print(textwrap.fill(" ".join(output), line_length))
 
 
 if __name__ == "__main__":

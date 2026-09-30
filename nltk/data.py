@@ -124,6 +124,28 @@ _NO_PROTOCOL_REF_ROOT = (
 _PATH_COMPONENT_RE = redos.compile(r"[\\/]")
 
 
+#: readline re-splits a buffer up to this many characters on every pass without
+#: first asking whether the fresh span holds a boundary; past it, it asks.
+_SPLIT_DIRECTLY_BELOW = 8192
+
+
+def _has_line_boundary(text):
+    """True when *text* holds a line boundary ``str.splitlines`` recognises.
+
+    readline asks this of each freshly read span, prefixed with the previous
+    span's last character, before it re-splits a buffer past the bound. The
+    prefix is for a complete line the line buffer carried over: that line ends
+    in a boundary, and without the prefix readline would pull the whole next
+    line before returning it. ``splitlines`` is the definition readline splits
+    by, so asking it keeps the two in lockstep for every boundary (LF, CR,
+    CR LF, the vertical and form feeds, the file, group and record separators,
+    NEL and the line and paragraph separators). It runs in C and is linear in
+    the span, with no regex: a timed regex here cost several times the rest of
+    readline.
+    """
+    return bool(text) and text.splitlines() != [text]
+
+
 def _normalized_path_escapes(name):
     """
     Return True if :func:`url2pathname` would rewrite *name* into a path that
@@ -231,6 +253,7 @@ except ImportError:
 
 from nltk import grammar, sem
 from nltk.internals import deprecated
+from nltk.termsec import safe_print
 
 textwrap_indent = functools.partial(textwrap.indent, prefix="  ")
 
@@ -1363,7 +1386,7 @@ def retrieve(resource_url, filename=None, verbose=True):
         raise ValueError("File %r already exists!" % filename)
 
     if verbose:
-        print(f"Retrieving {resource_url!r}, saving to {filename!r}")
+        safe_print(f"Retrieving {resource_url!r}, saving to {filename!r}")
 
     # Open the input & output streams.
     infile = _open(resource_url)
@@ -1577,14 +1600,14 @@ def load(
         resource_val = _resource_cache.get((resource_url, format))
         if resource_val is not None:
             if verbose:
-                print(f"<<Using cached copy of {resource_url}>>")
+                safe_print(f"<<Using cached copy of resource (format={format})>>")
             return resource_val
 
     protocol, path_ = split_resource_url(resource_url)
 
     if path_[-7:] == ".pickle":
         if verbose:
-            print(f"<<Loading pickle-free alternative to {resource_url}>>")
+            safe_print("<<Loading pickle-free alternative>>")
         fil = os.path.split(path_[:-7])[-1]
         if path_.startswith("tokenizers/punkt"):
             return switch_punkt(fil)
@@ -1597,7 +1620,7 @@ def load(
 
     # Let the user know what's going on.
     if verbose:
-        print(f"<<Loading {resource_url}>>")
+        safe_print("<<Loading resource>>")
 
     # Load the resource.
     opened_resource = _open(resource_url)
@@ -1700,7 +1723,7 @@ def show_cfg(resource_url, escape="##"):
             continue
         if redos.match("^$", l):
             continue
-        print(l)
+        safe_print(l)
 
 
 def clear_cache():
@@ -1958,11 +1981,16 @@ class SeekableUnicodeStreamReader:
             return line
 
         readsize = size or 72
-        chars = ""
+        # Collect the spans in a list and join only when a line break shows up
+        # or at end of stream: growing a str in place copied it on every pass
+        # (the residual quadratic the j8g8 probe caught on Windows, CWE-407).
+        parts = []
+        buffered = 0  # characters collected in parts
 
         # If there's a remaining incomplete line in the buffer, add it.
         if self.linebuffer:
-            chars += self.linebuffer.pop()
+            parts.append(self.linebuffer.pop())
+            buffered = len(parts[0])
             self.linebuffer = None
 
         while True:
@@ -1974,23 +2002,32 @@ class SeekableUnicodeStreamReader:
             if new_chars and new_chars.endswith("\r"):
                 new_chars += self._read(1)
 
-            chars += new_chars
-            lines = chars.splitlines(True)
-            if len(lines) > 1:
-                line = lines[0]
-                self.linebuffer = lines[1:]
-                self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
-                self._rewind_checkpoint = startpos
-                break
-            elif len(lines) == 1:
-                line0withend = lines[0]
-                line0withoutend = lines[0].splitlines(False)[0]
-                if line0withend != line0withoutend:  # complete line
-                    line = line0withend
+            # Below the bound, split directly as readline always did (few, bounded
+            # passes). Past it, split only once the fresh span, prefixed with the
+            # previous span's last character, holds a boundary: see _has_line_boundary.
+            tail = parts[-1][-1:] if parts else ""
+            parts.append(new_chars)
+            buffered += len(new_chars)
+            if buffered <= _SPLIT_DIRECTLY_BELOW or _has_line_boundary(
+                tail + new_chars
+            ):
+                chars = "".join(parts)
+                lines = chars.splitlines(True)
+                if len(lines) > 1:
+                    line = lines[0]
+                    self.linebuffer = lines[1:]
+                    self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
+                    self._rewind_checkpoint = startpos
                     break
+                elif len(lines) == 1:
+                    line0withend = lines[0]
+                    line0withoutend = lines[0].splitlines(False)[0]
+                    if line0withend != line0withoutend:  # complete line
+                        line = line0withend
+                        break
 
             if not new_chars or size is not None:
-                line = chars
+                line = "".join(parts)
                 break
 
             # Read successively larger blocks of text.
@@ -2113,6 +2150,10 @@ class SeekableUnicodeStreamReader:
             bytes that will be needed to move forward by ``offset`` chars.
             Defaults to ``offset``.
         """
+        if offset < 0:
+            # the backtracking loop below never reaches a negative count and
+            # would spin forever: the caller's bookkeeping has gone wrong
+            raise ValueError("Negative offsets are not supported")
         if est_bytes is None:
             est_bytes = offset
         bytes = b""

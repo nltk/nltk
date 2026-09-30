@@ -32,6 +32,7 @@ from nltk import redos
 from nltk.collections import *
 from nltk.internals import deprecated, raise_unorderable_types, slice_bounds
 from nltk.pathsec import open as _secure_open
+from nltk.termsec import safe_print, sanitize_terminal
 
 # Maximum recursion depth for graph traversal functions.
 # 500 is well above the longest legitimate WordNet chain (~20 edges)
@@ -50,7 +51,7 @@ def usage(obj):
     if not isinstance(obj, type):
         obj = obj.__class__
 
-    print(f"{obj.__name__} supports the following operations:")
+    safe_print(f"{obj.__name__} supports the following operations:")
     for name, method in sorted(pydoc.allmethods(obj).items()):
         if name.startswith("_"):
             continue
@@ -73,7 +74,7 @@ def usage(obj):
         elif args and args[0] == "self":
             name = f"self.{name}"
             args.pop(0)
-        print(
+        safe_print(
             textwrap.fill(
                 f"{name}({', '.join(args)})",
                 initial_indent="  - ",
@@ -131,7 +132,7 @@ def print_string(s, width=70):
     :param width: the display width
     :type width: int
     """
-    print("\n".join(textwrap.wrap(s, width=width)))
+    safe_print("\n".join(textwrap.wrap(s, width=width)))
 
 
 def tokenwrap(tokens, separator=" ", width=70):
@@ -218,7 +219,9 @@ def re_show(regexp, string, left="{", right="}"):
     """
     # regexp and string are both caller-supplied, so a catastrophically
     # backtracking pattern hangs the process (CWE-1333). redos.compile bounds it.
-    print(redos.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip()))
+    safe_print(
+        redos.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip())
+    )
 
 
 ##########################################################################
@@ -337,9 +340,9 @@ def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
                     else:
                         if verbose:
                             warnings.warn(
-                                f"Discarded redundant search for {child} at depth {depth + 1}",
+                                f"Discarded redundant search for {sanitize_terminal(child)} at depth {depth + 1}",
                                 stacklevel=2,
-                            )
+                            )  # unsafe-print ok: node text sanitised; depth is an int
                     edge = (node, child)
                     if edge not in edges:
                         yield edge
@@ -469,10 +472,10 @@ def acyclic_breadth_first(tree, children=iter, maxdepth=-1, verbose=False):
                     elif verbose:
                         warnings.warn(
                             "Discarded redundant search for {} at depth {}".format(
-                                child, depth + 1
+                                sanitize_terminal(child), depth + 1
                             ),
                             stacklevel=2,
-                        )
+                        )  # unsafe-print ok: node text sanitised; depth is an int
             except TypeError:
                 pass
 
@@ -546,10 +549,10 @@ def acyclic_depth_first(
                     if verbose:
                         warnings.warn(
                             "Discarded redundant search for {} at depth {}".format(
-                                child, depth - 1
+                                sanitize_terminal(child), depth - 1
                             ),
                             stacklevel=3,
-                        )
+                        )  # unsafe-print ok: node text sanitised; depth is an int
                     if cut_mark:
                         out_tree += [f"Cycle({child},{depth - 1},{cut_mark})"]
         except TypeError:
@@ -632,10 +635,10 @@ def acyclic_branches_depth_first(
                     if verbose:
                         warnings.warn(
                             "Discarded redundant search for {} at depth {}".format(
-                                child, depth - 1
+                                sanitize_terminal(child), depth - 1
                             ),
                             stacklevel=3,
-                        )
+                        )  # unsafe-print ok: node text sanitised; depth is an int
                     if cut_mark:
                         out_tree += [f"Cycle({child},{depth - 1},{cut_mark})"]
         except TypeError:
@@ -684,10 +687,10 @@ def acyclic_dic2tree(node, dic, depth=-1, traversed=None, verbose=False):
                     if verbose:
                         warnings.warn(
                             "Discarded redundant search for {} at depth {}".format(
-                                child, depth - 1
+                                sanitize_terminal(child), depth - 1
                             ),
                             stacklevel=3,
-                        )
+                        )  # unsafe-print ok: node text sanitised; depth is an int
         except TypeError:
             pass
     return out_tree
@@ -1375,7 +1378,12 @@ def set_proxy(proxy, user=None, password=""):
 ######################################################################
 
 
-def elementtree_indent(elem, level=0):
+#: Bound recursion over nested XML so a deeply nested element raises ValueError
+#: instead of an uncaught RecursionError (CWE-674).
+MAX_XML_INDENT_DEPTH = 500
+
+
+def elementtree_indent(elem, level=0, max_depth=None):
     """
     Recursive function to indent an ElementTree._ElementInterface
     used for pretty printing. Run indent on elem and then output
@@ -1388,13 +1396,19 @@ def elementtree_indent(elem, level=0):
     :rtype:   ElementTree._ElementInterface
     :return:  Contents of elem indented to reflect its structure
     """
-
+    if max_depth is None:
+        max_depth = MAX_XML_INDENT_DEPTH
+    if level > max_depth:
+        raise ValueError(
+            f"XML nesting depth exceeds MAX_XML_INDENT_DEPTH ({max_depth}); "
+            "the input may be adversarially deep."
+        )
     i = "\n" + level * "  "
     if len(elem):
         if not elem.text or not elem.text.strip():
             elem.text = i + "  "
         for elem in elem:
-            elementtree_indent(elem, level + 1)
+            elementtree_indent(elem, level + 1, max_depth)
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
     else:

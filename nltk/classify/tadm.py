@@ -9,8 +9,9 @@ import math
 import numbers
 import sys
 
-from nltk.internals import find_binary
+from nltk.internals import find_binary_absolute
 from nltk.pathsec import TrustError, spawn_trusted
+from nltk.termsec import safe_print
 
 try:
     import numpy
@@ -22,7 +23,9 @@ _tadm_bin = None
 
 def config_tadm(bin=None):
     global _tadm_bin
-    _tadm_bin = find_binary(
+    # Accept only an absolute binary: a relative ``bin`` resolves against the CWD
+    # and would be executed from there (untrusted search path, CWE-426/CWE-427).
+    _tadm_bin = find_binary_absolute(
         "tadm", bin, env_vars=["TADM"], binary_names=["tadm"], url="http://tadm.sf.net"
     )
 
@@ -110,8 +113,8 @@ def call_tadm(args):
 
     # Check the return code.
     if p.returncode != 0:
-        print()
-        print(stderr)
+        safe_print()
+        safe_print(stderr)
         raise OSError("tadm command failed!")
 
 
@@ -134,10 +137,10 @@ def encoding_demo():
     ]
     encoding = TadmEventMaxentFeatureEncoding.train(tokens)
     write_tadm_file(tokens, encoding, sys.stdout)
-    print()
+    safe_print()
     for i in range(encoding.length()):
-        print("%s --> %d" % (encoding.describe(i), i))
-    print()
+        safe_print("%s --> %d" % (encoding.describe(i), i))
+    safe_print()
 
 
 if __name__ == "__main__":

@@ -123,8 +123,8 @@ current directory.
 
 """
 
+import dbm
 import io
-import os
 import re
 import shelve
 import sys
@@ -134,6 +134,41 @@ from nltk import redos
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.picklesec import RestrictedUnpickler
+from nltk.termsec import safe_print, sanitize_terminal
+
+# shelve picks a dbm backend at runtime (gnu/ndbm/dumb/sqlite3) and sqlite writes
+# rollback/WAL sidecars, so a store path spawns several derived backing files;
+# every candidate name is checked, not just the base the caller passed.
+_STORE_SIDECAR_SUFFIXES = (
+    "",
+    ".db",
+    ".dir",
+    ".dat",
+    ".bak",
+    "-journal",
+    "-wal",
+    "-shm",
+)
+
+
+def _refuse_symlinked_store(base, context):
+    """Refuse a symlink or hardlink planted at any backing name of a store.
+
+    ``validate_path`` checks where the store PATH resolves, but shelve/dbm and
+    sqlite reopen derived sidecar names by path, so a symlink pre-planted at one
+    of those redirects the real open outside the sandbox (CWE-59, GHSA-7j4p).
+    Each name that already exists is opened through :func:`nltk.pathsec.open`,
+    which adds ``O_NOFOLLOW`` (refusing a symlink at the final component) and
+    rejects a multiply-linked file, then closed; a name that does not yet exist
+    is left for shelve/sqlite to create. Nothing is created here, so the dbm
+    backend that ``shelve`` selects on reload is never confused by a stray file.
+    """
+    for suffix in _STORE_SIDECAR_SUFFIXES:
+        try:
+            handle = pathsec_open(base + suffix, "rb", context=context)
+        except FileNotFoundError:
+            continue
+        handle.close()
 
 
 def _restricted_shelve_open(db, flag="r"):
@@ -148,6 +183,9 @@ def _restricted_shelve_open(db, flag="r"):
     global while allowing plain containers) loads legitimate data and refuses
     the gadget.
     """
+    # Reject a symlink/hardlink at any derived backing name before shelve reopens
+    # it by path, so O_NOFOLLOW guards the open validate_path alone cannot.
+    _refuse_symlinked_store(db, context="chat80._restricted_shelve_open")
     inner = shelve.open(db, flag)
 
     class _RestrictedShelf:
@@ -481,6 +519,9 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
     # which creates/opens it. Validate it before any file is created so an
     # out-of-sandbox target is refused up front (GHSA-8mgp-746c-j5xp).
     validate_path(dbname, context="chat80.cities2table")
+    # Reject a symlink/hardlink at the db or its journal/WAL sidecars before
+    # sqlite reopens them by path (O_NOFOLLOW, GHSA-7j4p).
+    _refuse_symlinked_store(dbname, context="chat80.cities2table")
     records = _str2records(filename, rel_name)
     connection = sqlite3.connect(dbname)
     cur = connection.cursor()
@@ -494,11 +535,33 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
     for t in records:
         cur.execute("insert into %s values (?,?,?)" % table_name, t)
         if verbose:
-            print("inserting values into %s: " % table_name, t)
+            safe_print("inserting values into %s: " % table_name, t)
     connection.commit()
     if verbose:
-        print("Committing update to %s" % dbname)
+        safe_print("Committing update to %s" % dbname)
     cur.close()
+
+
+# PRAGMAs that move sqlite's temporary files to a caller-named directory.
+_DIRECTORY_PRAGMAS = frozenset({"temp_store_directory", "data_store_directory"})
+
+
+def _sql_query_authorizer(action, arg1, arg2, db_name, trigger):
+    """sqlite authorizer for :func:`sql_query`: refuse statements naming a file.
+
+    ``ATTACH`` (which ``VACUUM INTO`` is also routed through) opens or creates
+    whatever path the SQL text names, and the directory pragmas redirect
+    sqlite's temporary files, so a query text could reach a file outside the
+    one store that was validated (CWE-73). Every other statement is left to
+    sqlite, so the query surface is otherwise unchanged.
+    """
+    import sqlite3
+
+    if action in (sqlite3.SQLITE_ATTACH, sqlite3.SQLITE_DETACH):
+        return sqlite3.SQLITE_DENY
+    if action == sqlite3.SQLITE_PRAGMA and str(arg1).lower() in _DIRECTORY_PRAGMAS:
+        return sqlite3.SQLITE_DENY
+    return sqlite3.SQLITE_OK
 
 
 def sql_query(dbname, query):
@@ -509,18 +572,37 @@ def sql_query(dbname, query):
     :param query: SQL query
     :type rel_name: str
     """
+    import os
     import sqlite3
 
     try:
         path = nltk.data.find(dbname)
-        connection = sqlite3.connect(str(path))
+        # find() bounds the resource NAME to a data root; only a plain file on
+        # disk can be handed to sqlite, never a zip entry or dataset pointer
+        # whose string form sqlite would create or open as a fresh path.
+        if not isinstance(path, nltk.data.FileSystemPathPointer) or os.path.isdir(
+            path.path
+        ):
+            raise ValueError(
+                "%s is not an uncompressed database file on disk"
+                % sanitize_terminal(str(path))
+            )
+        db_path = path.path
+        # The file BEHIND the name is validated here: the resolved target must
+        # sit in a data root, and neither the store nor a sqlite sidecar may be
+        # a link or special file that the by-path open would follow (GHSA-xv54).
+        validate_path(db_path, context="chat80.sql_query")
+        _refuse_symlinked_store(db_path, context="chat80.sql_query")
+        connection = sqlite3.connect(db_path)
+        connection.set_authorizer(_sql_query_authorizer)
         cur = connection.cursor()
         return cur.execute(query)
     except (ValueError, sqlite3.OperationalError):
         import warnings
 
         warnings.warn(
-            "Make sure the database file %s is installed and uncompressed." % dbname
+            "Make sure the database file %s is installed and uncompressed."
+            % sanitize_terminal(dbname)
         )
         raise
 
@@ -677,6 +759,9 @@ def val_dump(rels, db):
     # backing files. Validate before any work so an out-of-sandbox target is
     # refused up front (GHSA-8mgp-746c-j5xp).
     validate_path(db, context="chat80.val_dump")
+    # Reject a symlink/hardlink at any derived backing name before shelve creates
+    # the store by path (O_NOFOLLOW, GHSA-7j4p).
+    _refuse_symlinked_store(db, context="chat80.val_dump")
     concepts = process_bundle(rels).values()
     valuation = make_valuation(concepts, read=True)
     db_out = shelve.open(db, "n")
@@ -698,17 +783,21 @@ def val_load(db):
     # backing files. Validate before touching the filesystem so an
     # out-of-sandbox target is refused up front (GHSA-8mgp-746c-j5xp).
     validate_path(db, context="chat80.val_load")
-    dbname = db + ".db"
-
-    if not os.access(dbname, os.R_OK):
-        sys.exit("Cannot read file: %s" % dbname)
-    else:
+    # No os.access() gate: it follows a symlink at the derived .db name and its
+    # suffix assumes one dbm backend. _restricted_shelve_open opens each backing
+    # name with O_NOFOLLOW (GHSA-7j4p); a store it cannot open is reported the
+    # way the gate used to, with the caller's name neutralised for the terminal.
+    try:
         db_in = _restricted_shelve_open(db)
-        from nltk.sem import Valuation
+    except (OSError, *dbm.error) as e:
+        # the whole line is neutralised: the backend's message can quote the
+        # caller's name too, and both reach the terminal
+        sys.exit(sanitize_terminal("Cannot read file: {} ({})".format(db + ".db", e)))
+    from nltk.sem import Valuation
 
-        val = Valuation(db_in.items())
-        #        val.read(db_in.items())
-        return val
+    val = Valuation(db_in.items())
+    #        val.read(db_in.items())
+    return val
 
 
 # def alpha(str):
@@ -874,17 +963,15 @@ Valuation object for use in the NLTK semantics package.
         # write the valuation to a persistent database
         if options.verbose:
             outdb = options.outdb + ".db"
-            print("Dumping a valuation to %s" % outdb)
+            safe_print("Dumping a valuation to %s" % outdb)
         val_dump(rels, options.outdb)
         sys.exit(0)
     else:
         # try to read in a valuation from a database
         if options.indb is not None:
-            dbname = options.indb + ".db"
-            if not os.access(dbname, os.R_OK):
-                sys.exit("Cannot read file: %s" % dbname)
-            else:
-                valuation = val_load(options.indb)
+            # No os.access() gate: it follows a symlink at the derived .db name.
+            # val_load validates the path and opens each backing name O_NOFOLLOW.
+            valuation = val_load(options.indb)
         # we need to create the valuation from scratch
         else:
             # build some concepts
@@ -894,35 +981,35 @@ Valuation object for use in the NLTK semantics package.
             if options.vocab:
                 items = sorted((c.arity, c.prefLabel) for c in concepts)
                 for arity, label in items:
-                    print(label, arity)
+                    safe_print(label, arity)
                 sys.exit(0)
             # show all the concepts
             if options.concepts:
                 for c in concepts:
-                    print(c)
-                    print()
+                    safe_print(c)
+                    safe_print()
             if options.label:
-                print(concept_map[options.label])
+                safe_print(concept_map[options.label])
                 sys.exit(0)
             else:
                 # turn the concepts into a Valuation
                 if options.lex:
                     if options.verbose:
-                        print("Writing out lexical rules")
+                        safe_print("Writing out lexical rules")
                     make_valuation(concepts, lexicon=True)
                 else:
                     valuation = make_valuation(concepts, read=True)
-                    print(valuation)
+                    safe_print(valuation)
 
 
 def sql_demo():
     """
     Print out every row from the 'city.db' database.
     """
-    print()
-    print("Using SQL to extract rows from 'city.db' RDB.")
+    safe_print()
+    safe_print("Using SQL to extract rows from 'city.db' RDB.")
     for row in sql_query("corpora/city_database/city.db", "SELECT * FROM city_table"):
-        print(row)
+        safe_print(row)
 
 
 if __name__ == "__main__":
