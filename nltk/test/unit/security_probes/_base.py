@@ -68,11 +68,21 @@ def within_budget(func, budget=DOS_BUDGET, repeats=3):
     return best < budget, best
 
 
-def cpu_timed(func, *args):
-    """CPU seconds this process spent in ``func``: descheduling does not count."""
-    start = time.process_time()
+def timed_both(func, *args):
+    """(CPU seconds, wall seconds) this process spent in ``func``.
+
+    CPU time is what the interpreter actually worked: descheduling by a loaded
+    runner stretches only the wall clock. A ``func`` that sleeps, blocks on
+    I/O or waits on a child process spends wall time but almost no CPU time.
+    """
+    cpu_start, wall_start = time.process_time(), time.perf_counter()
     func(*args)
-    return time.process_time() - start
+    return time.process_time() - cpu_start, time.perf_counter() - wall_start
+
+
+#: An op whose big run spends less than this share of its wall time on the CPU
+#: is mostly waiting, and its cost is judged on the wall clock instead.
+CPU_BOUND_SHARE = 0.5
 
 
 def scaling_ratio(op, small, big, reps=3, noise_floor=0.1):
@@ -82,21 +92,34 @@ def scaling_ratio(op, small, big, reps=3, noise_floor=0.1):
     linear sink is ~4x, a pre-patch O(n**2) sink ~16x. The floor is
     multiplicative so a sub-second quadratic is not hidden by additive slack.
 
-    Both sides are measured in process CPU time, not wall time: a loaded
-    runner that deschedules the interpreter stretches the wall clock but not
-    the work, and one such stall across the three cheap small runs halved a
-    16x quadratic to 7.8x on a macOS 3.14 runner (the r53h teeth flipped
-    FIXED). The small and big runs alternate so that a burst of load cannot
-    land on one side only, and the cheap small side gets ``reps`` extra runs;
-    each side keeps its minimum.
+    A CPU-bound op is judged in process CPU time: a loaded runner that
+    deschedules the interpreter stretches the wall clock but not the work, and
+    one such stall across the three cheap small runs halved a 16x quadratic to
+    7.8x on a macOS 3.14 runner (the r53h teeth flipped FIXED). CPU time is
+    blind to an op that mostly waits (sleep, blocking I/O, a child process
+    doing the work), so such an op is judged on the wall clock as before, and
+    the higher of the two ratios is kept so the fallback can only tighten.
+    The small and big runs alternate so a burst of load cannot land on one
+    side only, and the cheap small side gets ``reps`` extra runs; each side
+    keeps its minimum on both clocks.
     """
-    t_small = t_big = float("inf")
+    inf = float("inf")
+    cpu, wall = {small: inf, big: inf}, {small: inf, big: inf}
+
+    def run(n):
+        cpu_seconds, wall_seconds = timed_both(op, n)
+        cpu[n] = min(cpu[n], cpu_seconds)
+        wall[n] = min(wall[n], wall_seconds)
+
     for _ in range(reps):
-        t_small = min(t_small, cpu_timed(op, small))
-        t_big = min(t_big, cpu_timed(op, big))
+        run(small)
+        run(big)
     for _ in range(reps):
-        t_small = min(t_small, cpu_timed(op, small))
-    return t_big / max(t_small, noise_floor)
+        run(small)
+    cpu_ratio = cpu[big] / max(cpu[small], noise_floor)
+    if cpu[big] < CPU_BOUND_SHARE * wall[big]:
+        return max(cpu_ratio, wall[big] / max(wall[small], noise_floor))
+    return cpu_ratio
 
 
 #: A scaling factor at or above this reads as super-linear (quadratic ~16x);
