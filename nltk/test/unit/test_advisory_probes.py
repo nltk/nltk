@@ -810,13 +810,20 @@ def test_scaling_ratio_counts_only_the_time_the_process_runs():
 def test_scaling_ratio_still_sees_a_sink_that_waits_instead_of_computing():
     """CPU time is blind to a sink that sleeps, blocks on I/O or waits on a
     child process: on CPU time alone an op that sleeps n squared read 0.0x.
-    Such an op is judged on the wall clock and must still read quadratic."""
+    Such an op is judged on the wall clock and must still read quadratic.
+
+    The sleeps are sized for a busy runner, not a quiet one: under xdist on
+    the 3-core macOS runner every 30 ms sleep woke after about 115 ms and a
+    16x op read 4.2x. With one sleep of s at the small size and 16 s at the
+    big one, a late wake-up of o per call gives (16 s + o) / (s + o), so the
+    0.3 s small sleep here still reads 8.5x when every wake-up is 0.3 s late.
+    """
     import time
 
     def op(n):
-        time.sleep(0.03 * (n / 1000) ** 2)
+        time.sleep(0.3 * (n / 1000) ** 2)
 
-    ratio = _base.scaling_ratio(op, 1000, 4000, noise_floor=0.02)
+    ratio = _base.scaling_ratio(op, 1000, 4000)
     assert ratio >= _base.QUADRATIC_RATIO, ratio
 
 
