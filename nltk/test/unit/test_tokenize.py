@@ -1074,7 +1074,7 @@ class TestTokenize:
             (10, 11),
         ]
 
-    @pytest.mark.parametrize("blanklines", ["keep", "discard"])
+    @pytest.mark.parametrize("blanklines", ["keep", "discard", "discard-eof"])
     def test_line_tokenizer_span_tokenize(self, blanklines: str) -> None:
         text = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
         tokenizer = LineTokenizer(blanklines=blanklines)
