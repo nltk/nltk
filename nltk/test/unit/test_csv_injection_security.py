@@ -16,54 +16,6 @@ import csv
 import json
 import os
 
-import pytest
-
-from nltk.termsec import sanitize_csv_field
-
-
-class TestSanitizeCsvField:
-    @pytest.mark.parametrize(
-        "payload",
-        [
-            '=cmd|"/c calc"!A1',
-            "=1+1",
-            '=HYPERLINK("http://evil","x")',
-            "+cmd",
-            "-cmd|'/c calc'",
-            "@SUM(1+1)",
-            "  =leading_space_formula",
-            "\t=leading_tab_formula",
-            "=2+5+cmd|' /C calc'!A0",
-        ],
-    )
-    def test_formula_leads_are_neutralised(self, payload):
-        out = sanitize_csv_field(payload)
-        assert out.startswith("'"), (payload, out)
-        # the apostrophe is the only thing prepended; the text itself is intact.
-        assert out == "'" + payload
-
-    @pytest.mark.parametrize("number", ["-5", "+3.2", "-1e5", "42", "-0.0", "3.14"])
-    def test_genuine_numbers_keep_their_sign(self, number):
-        # A leading - / + on a real number is not a formula; do not corrupt it.
-        assert sanitize_csv_field(number) == number
-
-    @pytest.mark.parametrize(
-        "benign", ["hello world", "RT @user: hi", "normal tweet", "", "café ☕"]
-    )
-    def test_benign_text_is_unchanged(self, benign):
-        assert sanitize_csv_field(benign) == benign
-
-    def test_embedded_control_sequence_is_escaped(self):
-        out = sanitize_csv_field("\x1b[2J\x07wipe")
-        assert "\x1b" not in out and "\x07" not in out
-
-    def test_non_string_values_pass_through(self):
-        # None/int/bool cannot carry a control sequence or a formula lead, and the
-        # csv writer renders them safely (None as an empty cell); leave them be.
-        assert sanitize_csv_field(None) is None
-        assert sanitize_csv_field(12345) == 12345
-        assert sanitize_csv_field(True) is True
-
 
 def _write_tweets(tmp_path, tweets):
     infile = os.path.join(tmp_path, "tweets.json")

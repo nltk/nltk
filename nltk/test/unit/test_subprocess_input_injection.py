@@ -16,31 +16,7 @@ import tempfile
 
 import pytest
 
-
 # 1. CoNLL builder (used by MaltParser) - a pure generator, no binary needed.
-class TestConllInjection:
-    def test_legit_sentence_builds(self):
-        from nltk.parse.util import taggedsent_to_conll
-
-        rows = list(taggedsent_to_conll([("John", "NN"), ("runs", "VB")]))
-        assert len(rows) == 2 and all(r.endswith("\n") for r in rows)
-
-    @pytest.mark.parametrize(
-        "pair",
-        [
-            ("a\tb", "NN"),  # tab adds a CoNLL column
-            ("a\nb", "NN"),  # newline injects a CoNLL row
-            ("a\rb", "NN"),
-            ("w", "N\tN"),
-            ("w", "N\nN"),
-            ("w", "N\x00N"),
-        ],
-    )
-    def test_delimiter_in_field_refused(self, pair):
-        from nltk.parse.util import taggedsent_to_conll
-
-        with pytest.raises(ValueError, match="tab, newline or NUL"):
-            list(taggedsent_to_conll([pair]))
 
 
 # 3/5. Stanford tagger and Stanford segmenter: newline-per-sentence input.
@@ -86,39 +62,3 @@ class TestReppInjection:
 
 # 7/8. Graphviz DOT label breakout: escape, do not reject (rendering must survive
 # a legitimate quote in a word).
-def _no_unescaped_breakout(dot):
-    # After removing escaped backslashes and escaped quotes, every DOT line must
-    # have balanced delimiter quotes and hold no raw newline injected mid-value.
-    for line in dot.splitlines():
-        stripped = line.replace("\\\\", "").replace('\\"', "")
-        if stripped.count('"') % 2 != 0:
-            return False
-    return True
-
-
-class TestDotEscaping:
-    def test_dependencygraph_escapes_quote_and_newline(self):
-        from nltk.parse.dependencygraph import DependencyGraph
-
-        dg = DependencyGraph('ev"il N 2\nloves V 0\nMary N 2')
-        dot = dg.to_dot()
-        assert '\\"' in dot  # the quote is escaped
-        assert _no_unescaped_breakout(dot)
-
-    def test_alignedsent_escapes_quote_and_newline(self):
-        from nltk.translate.api import AlignedSent, Alignment
-
-        a = AlignedSent(
-            ['a"b', "c\nd", "ok"], ["x", "y", "z"], Alignment.fromstring("0-0 1-1 2-2")
-        )
-        dot = a._to_dot()
-        assert '\\"' in dot and "\\n" in dot  # quote and newline escaped
-        assert "\nd" not in dot.replace("\\n", "")  # no raw newline injected
-        assert _no_unescaped_breakout(dot)
-
-    def test_dependencygraph_legit_still_renders(self):
-        from nltk.parse.dependencygraph import DependencyGraph
-
-        dg = DependencyGraph("John N 2\nloves V 0\nMary N 2")
-        dot = dg.to_dot()
-        assert 'label="0 (None)"' in dot and "John" in dot

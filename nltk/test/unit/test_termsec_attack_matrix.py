@@ -197,6 +197,47 @@ LEGIT = {
 }
 
 
+# Payloads carried over from #3850's terminal and CSV matrices when its copies
+# of these tests were folded in here; each is a variant the named entries above
+# did not spell out (8-bit and BEL-terminated forms, cursor and erase controls,
+# DEL, form feed, and literal bidi deceptions).
+EXTRA_ATTACKS = [
+    "\x1b[1;1H",
+    "\x1b[2K",
+    "\x1b[?25l",
+    "\x1b]0;pwned\x07",
+    "\x1b]8;;https://evil.example\x07click\x1b]8;;\x07",
+    "\x1bPq\x1b\\",
+    "\x9b2J",
+    "\x9d0;title\x07",
+    "\x90payload",
+    "\x07",
+    "\x08\x08\x08\x08\x08\x08\x08\x08\x08\x08overwrite",
+    "line1\rSPOOF",
+    "\x0cformfeed",
+    "\x7fdel",
+    "\u202eif(admin)",
+    "\u202dgpj.evil\u202c",
+    "a\u2067b",
+    "a\u2069b",
+    "a\u202ab",
+    "a\u202cb",
+    'access="user";\u2067 admin\u202e only\u2069',
+]
+EXTRA_LEGIT = [
+    "café ☕ résumé",
+    "مرحبا",
+    "שלום",
+    "emoji 😀🎉 😀",
+    "tabs\tand\nnewlines",
+    "RT @user: normal tweet #nlp",
+    "user \u2066مرحبا\u2069 posted",
+    "x \u202bשלום\u202c y",
+]
+ATTACKS.update({f"from-3850-{i:02d}": p for i, p in enumerate(EXTRA_ATTACKS)})
+LEGIT.update({f"from-3850-{i:02d}": p for i, p in enumerate(EXTRA_LEGIT)})
+
+
 class TestDetectorHasTeeth:
     """The detector must flag a raw dangerous char and clear legitimate text, or
     the neutralisation assertions below would pass vacuously."""
@@ -286,9 +327,54 @@ class TestCsvInjection:
         # float() accepts these but a spreadsheet would not treat them as a number
         assert sanitize_csv_field(bad).startswith("'")
 
-    @pytest.mark.parametrize("num", ["-3.5", "+2", "-1e5", "+1.2E10", "0", "3.14"])
+    @pytest.mark.parametrize(
+        "num",
+        [
+            "-3.5",
+            "+2",
+            "-1e5",
+            "+1.2E10",
+            "0",
+            "3.14",
+            "+3.14",
+            "+3.2",
+            "-0.0",
+            "-42",
+            "-5",
+            "42",
+        ],
+    )
     def test_genuine_number_kept(self, num):
         assert sanitize_csv_field(num) == num
+
+    @pytest.mark.parametrize(
+        "payload",
+        [
+            "=1+1",
+            "=cmd|'/c calc'!A1",
+            '=HYPERLINK("http://evil","x")',
+            "@SUM(1+1)*cmd",
+            "+cmd",
+            "-cmd|'/c calc'",
+            "\t=leading_tab",
+            "  =leading_space",
+            "=2+5+cmd|' /C calc'!A0",
+            '=cmd|"/c calc"!A1',
+            "@SUM(1+1)",
+            "  =leading_space_formula",
+            "\t=leading_tab_formula",
+        ],
+    )
+    def test_real_world_formula_payloads_defused(self, payload):
+        # carried over from #3850: the apostrophe is the only thing prepended
+        out = sanitize_csv_field(payload)
+        assert out.startswith("'") and out == "'" + payload
+
+    @pytest.mark.parametrize(
+        "text", ["hello world", "RT @user: hi", "normal tweet", "", "café ☕"]
+    )
+    def test_benign_cells_unchanged(self, text):
+        assert sanitize_csv_field(text) == text
 
     def test_exact_safe_primitives_pass_with_type_preserved(self):
         # str() of an EXACT int/float/bool/None cannot carry a payload, so the
