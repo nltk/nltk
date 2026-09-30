@@ -2150,6 +2150,10 @@ class SeekableUnicodeStreamReader:
             bytes that will be needed to move forward by ``offset`` chars.
             Defaults to ``offset``.
         """
+        if offset < 0:
+            # the backtracking loop below never reaches a negative count and
+            # would spin forever: the caller's bookkeeping has gone wrong
+            raise ValueError("Negative offsets are not supported")
         if est_bytes is None:
             est_bytes = offset
         bytes = b""

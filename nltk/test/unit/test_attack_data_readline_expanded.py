@@ -421,3 +421,280 @@ class TestSplitDirectlyBound:
         small = min(_elapsed(lambda: op(300_000)) for _ in range(2))
         big = min(_elapsed(lambda: op(1_200_000)) for _ in range(2))
         assert big / max(small, 1e-3) > 8, (small, big)
+
+
+def _trace(reader_cls, data, encoding="utf-8", sizes=(None,) * 60, errors="strict"):
+    """Every line and the tell() after it, or the decode error that ended the read."""
+    stream = data if hasattr(data, "read") else io.BytesIO(data)
+    r = reader_cls(stream, encoding, errors)
+    out = []
+    for size in sizes:
+        try:
+            line = r.readline(size)
+        except UnicodeDecodeError as e:
+            out.append(("UnicodeDecodeError", e.start, e.end))
+            break
+        out.append((line, r.tell()))
+        if not line:
+            break
+    return out
+
+
+def _assert_same_trace(data, **kw):
+    # a stream object can be consumed once, so a factory hands out a fresh one
+    make = data if callable(data) else (lambda: data)
+    historical = _trace(_HistoricalReader, make(), **kw)
+    current = _trace(SeekableUnicodeStreamReader, make(), **kw)
+    assert current == historical, (
+        current[: len(historical)][-1:],
+        historical[: len(current)][-1:],
+    )
+
+
+# chars read before the 9216-character span: 72, 144, ..., 4608 (the read size
+# doubles until it reaches 8000, so the span after these is 72 * 128)
+_BEFORE_LAST_SPAN = sum(72 * 2**k for k in range(7))
+
+
+def _carried(term):
+    """A file whose second line, ending in *term*, fills the last span exactly.
+
+    readline then hands that complete line, longer than the switch, over in the
+    line buffer. The exact length depends on the boundary, so search around it
+    and return None when no length reaches the carried state.
+    """
+    first = "a" * (_BEFORE_LAST_SPAN + 10) + "\n"
+    third = "c" * (4 * 8192) + "\n"
+    for extra in range(-3, 4):
+        second = "b" * (9216 - 12 - len(term) + 1 + extra) + term
+        r = _reader((first + second + third).encode("utf-8"))
+        assert r.readline() == first
+        if r.linebuffer == [second] and len(second) > 8192:
+            return first, second, third
+    return None
+
+
+class _ShortReadStream(io.RawIOBase):
+    """A real raw stream that hands out at most *chunk* bytes per read (a pipe or
+    socket does this), so every read the reader makes can come back short."""
+
+    def __init__(self, data, chunk, seed=None):
+        self._data = io.BytesIO(data)
+        self._chunk = chunk
+        self._rng = random.Random(seed) if seed is not None else None
+
+    def readable(self):
+        return True
+
+    def seekable(self):
+        return True
+
+    def readinto(self, buffer):
+        most = self._chunk if self._rng is None else self._rng.randint(1, self._chunk)
+        got = self._data.read(min(len(buffer), most))
+        buffer[: len(got)] = got
+        return len(got)
+
+    def seek(self, offset, whence=0):
+        return self._data.seek(offset, whence)
+
+    def tell(self):
+        return self._data.tell()
+
+
+class TestCarriedLines:
+    """A complete line the line buffer hands to the next readline call, longer
+    than the switch, with every boundary and at end of stream: readline must
+    return it without reading on, and lines and tell() must match the
+    historical reader."""
+
+    @pytest.mark.parametrize("term", [b for b in BOUNDARIES if b != "\r"])
+    def test_every_boundary_reads_no_further(self, term):
+        # a carried complete line can end in a bare CR only at end of stream:
+        # a CR inside a span makes readline read one more character, so the
+        # span never ends there (test_at_end_of_stream covers that case)
+        first, second, third = _carried(term)
+        data = (first + second + third).encode("utf-8")
+        r = _reader(data)
+        assert r.readline() == first
+        position = r.stream.tell()
+        assert r.readline() == second
+        assert r.stream.tell() - position < len(third)
+        _assert_same_trace(data)
+
+    @pytest.mark.parametrize("encoding", ["utf-8", "utf-16"])
+    @pytest.mark.parametrize(
+        "tail", ["b" * 9000 + "\r", "b" * 9204 + "\n", "b" * 9000, "b" * 9204 + "\r\n"]
+    )
+    def test_at_end_of_stream(self, tail, encoding):
+        first = "a" * (_BEFORE_LAST_SPAN + 10) + "\n"
+        _assert_same_trace((first + tail).encode(encoding), encoding=encoding)
+
+    def test_seek_and_tell_land_inside_the_carried_line(self):
+        # readline must split on the span that holds the boundary: splitting
+        # later leaves a negative rewind count behind, and tell() then loops
+        # forever instead of failing (the no-prefix variant did exactly that)
+        first, second, third = _carried("\n")
+        data = (first + second + third + "tail\n").encode("utf-8")
+        results = []
+        for cls in (_HistoricalReader, SeekableUnicodeStreamReader):
+            r = cls(io.BytesIO(data), "utf-8")
+            assert r.readline() == first
+            position = r.tell()
+            r.seek(position)
+            again = r.readline()
+            r2 = cls(io.BytesIO(data), "utf-8")
+            r2.readline()
+            r2.readline()
+            inside = r2.tell()
+            r2.seek(inside)
+            results.append((position, again, inside, r2.readline(), r2.tell()))
+        assert results[0] == results[1]
+        assert results[1][1] == second and results[1][3] == third
+
+    def test_a_negative_rewind_count_raises_instead_of_looping(self):
+        r = _reader(b"abc\ndef\nghi\n")
+        assert r.readline() == "abc\n"
+        assert r._rewind_numchars >= 0
+        r._rewind_numchars = -1
+        with pytest.raises(ValueError):
+            r.tell()
+
+    def test_iteration_discard_and_char_seek_after_the_carried_line(self):
+        first, second, third = _carried("\n")
+        text = first + second + third + "tail\n"
+        data = text.encode("utf-8")
+        assert list(_reader(data)) == text.splitlines(True)
+        results = []
+        for cls in (_HistoricalReader, SeekableUnicodeStreamReader):
+            r = cls(io.BytesIO(data), "utf-8")
+            r.readline()
+            r.discard_line()
+            r.char_seek_forward(5)
+            results.append((r.readline(), r.tell(), r.readline(), r.tell()))
+        assert results[0] == results[1]
+
+
+class TestReadShapesAroundTheSwitch:
+    """size arguments, encodings, decode errors and short reads placed at and
+    around the split bound and the span edges, judged against the historical
+    reader on lines and tell() alike."""
+
+    @pytest.mark.parametrize("size", [8191, 8192, 8193, 9215, 9216, 9217, 20000, 10**6])
+    @pytest.mark.parametrize("shape", ["long", "short", "mixed"])
+    def test_size_calls_straddling_the_switch(self, size, shape):
+        rng = random.Random(size)
+        if shape == "long":
+            text = "x" * 30000 + "\n" + "y" * 100 + "\n"
+        elif shape == "short":
+            text = "".join(
+                "w" * rng.randint(0, 80) + rng.choice(BOUNDARIES) for _ in range(500)
+            )
+        else:
+            text = "".join(
+                "w" * rng.choice([0, 10, 8000, 8192, 9000, 20000])
+                + rng.choice(BOUNDARIES)
+                for _ in range(30)
+            )
+        data = text.encode("utf-8")
+        _assert_same_trace(data, sizes=(size,) * 60)
+        _assert_same_trace(data, sizes=(size, None) * 30)
+
+    @pytest.mark.parametrize(
+        "encoding",
+        [
+            "utf-16",
+            "utf-16-le",
+            "utf-16-be",
+            "utf-32",
+            "utf-32-le",
+            "utf-32-be",
+            "utf-8-sig",
+        ],
+    )
+    @pytest.mark.parametrize("n", [10, 71, 72, 73, 8191, 8192, 8193, 9215, 9216, 9217])
+    def test_wide_and_bom_encodings_with_cr_lf_at_every_edge(self, encoding, n):
+        # after a CR readline reads one more byte, which in a wide encoding is
+        # half a code unit: the reader must still see the LF and split alike
+        text = (
+            "a" * n + "\r\n" + "b" * n + "\r" + "c" * 20 + "\r\n" + "d" * 20000 + "\n"
+        )
+        _assert_same_trace(text.encode(encoding), encoding=encoding)
+
+    @pytest.mark.parametrize(
+        "at", [8190, 8191, 8192, 8193, 9215, 9216, 9217, 18359, 18360]
+    )
+    @pytest.mark.parametrize("errors", ["strict", "replace", "ignore"])
+    def test_a_decode_error_at_the_switch(self, at, errors):
+        bad = b"a" * at + b"\xff" + b"a" * 100 + b"\n" + b"rest\n"
+        _assert_same_trace(bad, errors=errors)
+        truncated = b"a" * at + "é".encode()[:1] + b"\n" + b"rest\n"
+        _assert_same_trace(truncated, errors=errors)
+
+    @pytest.mark.parametrize(
+        "chunk, lengths, pieces",
+        [
+            (1, [0, 10, 100, 8191, 8192, 8193], 6),
+            (7, [0, 10, 8000, 8191, 8192, 8193, 20000], 12),
+            (100, [0, 10, 8000, 8191, 8192, 8193, 20000], 12),
+        ],
+    )
+    def test_a_stream_that_returns_short_reads(self, chunk, lengths, pieces):
+        # one byte per read makes the historical oracle and the tell() check
+        # quadratic per line, so that case keeps its lines at the switch edges
+        rng = random.Random(chunk)
+        text = "".join(
+            "w" * rng.choice(lengths) + rng.choice(BOUNDARIES) for _ in range(pieces)
+        )
+        data = text.encode("utf-8")
+        _assert_same_trace(lambda: _ShortReadStream(data, chunk))
+        _assert_same_trace(lambda: _ShortReadStream(data, chunk, seed=chunk))
+        wide = text.encode("utf-16")
+        _assert_same_trace(lambda: _ShortReadStream(wide, chunk), encoding="utf-16")
+        assert _all_lines(SeekableUnicodeStreamReader, data) == text.splitlines(True)
+
+    @pytest.mark.parametrize("term", BOUNDARIES)
+    def test_a_file_of_only_boundaries_past_the_switch(self, term):
+        text = term * 20000
+        data = text.encode("utf-8")
+        assert _all_lines(SeekableUnicodeStreamReader, data) == text.splitlines(True)
+        _assert_same_trace(data, sizes=(None,) * 20100)
+
+    def test_mixed_boundaries_only(self):
+        rng = random.Random(30000)
+        text = "".join(rng.choice(BOUNDARIES) for _ in range(30000))
+        data = text.encode("utf-8")
+        assert _all_lines(SeekableUnicodeStreamReader, data) == text.splitlines(True)
+        _assert_same_trace(data, sizes=(None,) * 30100)
+
+    def test_short_lines_then_one_long_line_stay_linear(self):
+        prefix = b"short line\n" * 1000
+
+        def op(n):
+            r = _reader(prefix + b"a" * n)
+            while r.readline():
+                pass
+
+        _assert_subquadratic(op, 400_000, 1_600_000)
+
+    @pytest.mark.parametrize("seed", range(40))
+    def test_random_traces_with_the_readers_own_tell_check(self, seed):
+        # DEBUG makes tell() re-decode the stream at the position it computed
+        # and compare it with the line buffer: the reader checks itself
+        rng = random.Random(seed)
+        pieces = []
+        for _ in range(rng.randint(1, 10)):
+            pieces.append(
+                rng.choice("xyz")
+                * rng.choice(
+                    [0, 1, 71, 72, 73, 8191, 8192, 8193, 9215, 9216, 9217, 20000]
+                )
+            )
+            pieces.append(rng.choice(BOUNDARIES))
+        text = "".join(pieces)
+        sizes = [
+            rng.choice([None, None, 1, 50, 72, 8192, 9000, 20000]) for _ in range(30)
+        ]
+        assert SeekableUnicodeStreamReader.DEBUG
+        for encoding in ("utf-8", "utf-16"):
+            _assert_same_trace(text.encode(encoding), encoding=encoding, sizes=sizes)
