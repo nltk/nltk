@@ -4,7 +4,7 @@ behind ``word_tokenize``. The quote-restore loop drew the matched quotes with
 ``list.pop(0)``, O(n) per token, so text with many quotes cost O(n**2)
 (200000 quotes ran past 45 s).
 
-The fix draws them from a ``deque`` with ``popleft`` (O(1)).
+The fix draws them through a forward iterator (O(1) per quote).
 """
 
 from ._base import FIXED, QUADRATIC_RATIO, VULNERABLE, probe, scaling_ratio

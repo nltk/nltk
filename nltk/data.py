@@ -123,6 +123,11 @@ _NO_PROTOCOL_REF_ROOT = (
 # url2pathname may emit either separator (Windows rewrites "/"->"\\"); split on both.
 _PATH_COMPONENT_RE = redos.compile(r"[\\/]")
 
+# The exact line boundaries ``str.splitlines`` recognises (LF/CR/CRLF, vertical
+# and form feeds, the file/group/record separators, NEL, and the line/paragraph
+# separators); readline probes fresh input for one, ``splitlines`` still splits.
+_LINE_BOUNDARY_RE = redos.compile(r"[\n\r\v\f\x1c\x1d\x1e\x85\u2028\u2029]")
+
 
 def _normalized_path_escapes(name):
     """
@@ -1940,10 +1945,6 @@ class SeekableUnicodeStreamReader:
         else:
             self.stream.readline()
 
-    #: Characters at which ``str.splitlines`` breaks; used to detect a line end
-    #: in the newly read block without rescanning the whole growing buffer.
-    _LINEBREAK_CHARS = frozenset("\n\r\v\f\x1c\x1d\x1e\x85\u2028\u2029")
-
     def readline(self, size=None):
         """
         Read a line of text, decode it using this reader's encoding,
@@ -1963,19 +1964,15 @@ class SeekableUnicodeStreamReader:
             return line
 
         readsize = size or 72
-        # Collect the blocks in a list and join only when a line break shows up
-        # or at end of stream: growing one str in place copies it on every pass
-        # on allocators that cannot extend in place (Windows), another O(N**2).
+        # Collect the spans in a list and join only when a line break shows up
+        # or at end of stream: growing a str in place copied it on every pass
+        # (the residual quadratic the j8g8 probe caught on Windows, CWE-407).
         parts = []
 
-        # If there's a remaining incomplete line in the buffer, add it. It may
-        # itself carry a line break (a complete buffered line), so remember that
-        # so the first pass re-splits even if the new block has no break.
-        buffered_break = False
+        # If there's a remaining incomplete line in the buffer, add it.
         if self.linebuffer:
             parts.append(self.linebuffer.pop())
             self.linebuffer = None
-            buffered_break = not self._LINEBREAK_CHARS.isdisjoint(parts[0])
 
         while True:
             startpos = self.stream.tell() - len(self.bytebuffer)
@@ -1986,12 +1983,12 @@ class SeekableUnicodeStreamReader:
             if new_chars and new_chars.endswith("\r"):
                 new_chars += self._read(1)
 
+            # Scan only the freshly read span (plus the previous span's last
+            # character, so a split CR LF stays intact) for a line break;
+            # ``splitlines`` still does the split, so lines stay byte identical.
+            tail = parts[-1][-1:] if parts else ""
             parts.append(new_chars)
-            # Only re-split when a line break is present in the new block (or was
-            # carried in by the buffered prefix); an unterminated line has none, so
-            # re-splitting the whole growing buffer every pass would be O(N**2).
-            if buffered_break or not self._LINEBREAK_CHARS.isdisjoint(new_chars):
-                buffered_break = False
+            if _LINE_BOUNDARY_RE.search(tail + new_chars):
                 chars = "".join(parts)
                 lines = chars.splitlines(True)
                 if len(lines) > 1:
@@ -2000,7 +1997,7 @@ class SeekableUnicodeStreamReader:
                     self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
                     self._rewind_checkpoint = startpos
                     break
-                elif len(lines) == 1:
+                else:
                     line0withend = lines[0]
                     line0withoutend = lines[0].splitlines(False)[0]
                     if line0withend != line0withoutend:  # complete line

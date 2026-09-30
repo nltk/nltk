@@ -19,7 +19,6 @@ and available at http://www.cis.upenn.edu/~treebank/tokenizer.sed.
 
 import re
 import warnings
-from collections import deque
 from collections.abc import Iterator
 from typing import List, Tuple
 
@@ -203,14 +202,14 @@ class TreebankWordTokenizer(TokenizerI):
         # treated as starting quotes).
         if ('"' in text) or ("''" in text):
             # Find double quotes and converted quotes
-            # A deque keeps popleft() O(1); a list.pop(0) here is O(n) per token,
-            # so text with many quotes made span_tokenize O(n**2) (CWE-407).
-            matched = deque(m.group() for m in redos.finditer(r"``|'{2}|\"", text))
+            matched = [m.group() for m in redos.finditer(r"``|'{2}|\"", text)]
 
-            # Replace converted quotes back to double quotes
+            # Replace converted quotes back to double quotes. Draw matches from a
+            # forward iterator so the comprehension stays linear (CWE-407); popping
+            # index 0 off a list per token was quadratic.
+            mit = iter(matched)
             tokens = [
-                matched.popleft() if tok in ['"', "``", "''"] else tok
-                for tok in raw_tokens
+                next(mit) if tok in ['"', "``", "''"] else tok for tok in raw_tokens
             ]
         else:
             tokens = raw_tokens

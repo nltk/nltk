@@ -3,8 +3,9 @@
 ``str.splitlines`` over the whole growing buffer, so a single unterminated
 corpus line of N characters cost O(N**2) (an 8 MB line took 14 s).
 
-The fix re-splits only when the new block (or the buffered prefix) carries a
-line break and grows the buffer through a list of parts, so the read is linear.
+The fix looks for a line break only in the freshly read block (plus the
+previous block's last character) and grows the buffer through a list of parts,
+so the read is linear. The same sink is probed as GHSA-j8g8-j4j7-8j54.
 """
 
 import io

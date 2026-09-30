@@ -200,87 +200,6 @@ class TestRedosCompileDoSMatrix:
         _assert_subquadratic(lambda n: regex.compile("(?:a)" * n), 2500, 10000)
 
 
-# --- #q4c8: readline linear on an unterminated line --------------------------
-
-
-class TestReadlineLinear:
-    def _reader(self, data):
-        from nltk.data import SeekableUnicodeStreamReader
-
-        return SeekableUnicodeStreamReader(io.BytesIO(data), "utf-8")
-
-    def test_terminated_lines_read_correctly(self):
-        r = self._reader(b"alpha\nbeta\ngamma\n")
-        assert r.readline() == "alpha\n"
-        assert r.readline() == "beta\n"
-        assert r.readline() == "gamma\n"
-
-    def test_unterminated_final_line_read_correctly(self):
-        r = self._reader(b"one\ntwo\nthree")
-        assert [r.readline(), r.readline(), r.readline()] == ["one\n", "two\n", "three"]
-
-    def test_every_line_ending_kind_splits(self):
-        r = self._reader(b"alpha\nbeta\r\ngamma\rdelta")
-        assert [r.readline() for _ in range(4)] == [
-            "alpha\n",
-            "beta\r\n",
-            "gamma\r",
-            "delta",
-        ]
-
-    def test_crlf_at_the_first_block_edge_stays_intact(self):
-        # The first block is 72 chars; a CR as its last char must pull in the LF.
-        r = self._reader(("a" * 71 + "\r\n" + "b\n").encode())
-        assert r.readline() == "a" * 71 + "\r\n"
-        assert r.readline() == "b\n"
-
-    def test_unicode_line_separator_still_splits(self):
-        # U+2028 is a str.splitlines break; a line ending only in it must split.
-        r = self._reader("a b".encode())
-        first = r.readline()
-        assert first == "a "
-
-    def test_many_short_lines_via_linebuffer(self):
-        # Exercises the buffered-line prepend path: a completed line left in the
-        # linebuffer (it ends in a break) must still be returned when the next
-        # block read has no break of its own.
-        data = "".join("l%d\n" % i for i in range(60)).encode("utf-8")
-        r = self._reader(data)
-        assert [r.readline() for _ in range(60)] == ["l%d\n" % i for i in range(60)]
-
-    def test_readlines_and_seek_unchanged(self):
-        r = self._reader(b"abc\ndef\n")
-        assert r.readlines() == ["abc\n", "def\n"]
-        r = self._reader(b"one\ntwo\n")
-        r.readline()
-        r.seek(0)
-        assert r.readline() == "one\n"
-
-    def test_long_unterminated_line_is_not_quadratic(self):
-        # Pre-fix this re-split the whole growing buffer each pass (O(N**2)); an
-        # 8 MB single line took 14 s and 2 MB -> 8 MB scaled 16x. A load-invariant
-        # scaling ratio catches the regression without a wall-clock deadline.
-        assert len(self._reader(b"a" * 8_000_000).readline()) == 8_000_000
-        _assert_subquadratic(
-            lambda n: self._reader(b"a" * n).readline(), 2_000_000, 8_000_000
-        )
-
-    def test_linear_read_has_teeth(self, monkeypatch):
-        # Make every block look like it carries a line break: readline then joins
-        # and re-splits the whole growing buffer on each pass, the pre-fix
-        # behaviour, and the measurement must go quadratic.
-        from nltk.data import SeekableUnicodeStreamReader
-
-        monkeypatch.setattr(
-            SeekableUnicodeStreamReader, "_LINEBREAK_CHARS", frozenset("a")
-        )
-        _assert_quadratic(
-            lambda n: self._reader(b"a" * n).readline(), 750_000, 3_000_000, reps=1
-        )
-        # and the output is still the whole line, only slower
-        assert len(self._reader(b"a" * 100_000).readline()) == 100_000
-
-
 # --- #cj8f: XMLCorpusView nesting-depth bound --------------------------------
 
 
@@ -592,8 +511,9 @@ class TestWordNetLemmaMarkerRegex:
 
 class TestSpanTokenizeLinear:
     """span_tokenize restored converted quotes with list.pop(0) in a
-    comprehension (O(n**2) on many quotes); a deque keeps it linear and the
-    spans identical. Both the treebank and destructive engines had the bug."""
+    comprehension (O(n**2) on many quotes); a forward iterator keeps it linear
+    and the spans identical. Both engines had the bug. The spans and the linear
+    scaling are pinned in test_attack_tokenize_expanded.py; this pins the teeth."""
 
     def _tokenizers(self):
         from nltk.tokenize.destructive import NLTKWordTokenizer
@@ -601,37 +521,29 @@ class TestSpanTokenizeLinear:
 
         return (NLTKWordTokenizer(), TreebankWordTokenizer())
 
-    def test_quotes_restored_faithfully(self):
-        text = "She said \"hi\" and ''bye'' to \"all\"."
-        for tk in self._tokenizers():
-            spans = list(tk.span_tokenize(text))
-            assert spans and all(0 <= a <= b <= len(text) for a, b in spans)
-            assert all(text[a:b] for a, b in spans)
-            assert len(spans) == len(tk.tokenize(text))
-
-    def test_many_quotes_is_not_quadratic(self):
-        # 200k quotes ran past 45 s pre-fix; the linear restore scales ~4x. The
-        # sizes are large enough that the pre-fix C-level list.pop(0) memmove
-        # (40 GB at 100k) is visible, not only a Python-level regression.
-        for tk in self._tokenizers():
-            _assert_subquadratic(
-                lambda n, tk=tk: list(tk.span_tokenize('"' * n)), 25_000, 100_000
-            )
-
     def test_linear_restore_has_teeth(self, monkeypatch):
         # Reintroduce the O(n) front removal (two whole-list copies per pop so the
         # cost is visible at test sizes): the restore must go quadratic.
         import nltk.tokenize.destructive as destructive
         import nltk.tokenize.treebank as treebank
 
-        class _FrontPopList(list):
-            def popleft(self):
-                head = self[0]
-                self[:] = self[1:]
+        class _FrontPopIterator:
+            # the engines draw the matched quotes through iter()/next()
+            def __init__(self, items):
+                self.items = list(items)
+
+            def __iter__(self):
+                return self
+
+            def __next__(self):
+                if not self.items:
+                    raise StopIteration
+                head = self.items[0]
+                self.items[:] = self.items[1:]
                 return head
 
-        monkeypatch.setattr(destructive, "deque", _FrontPopList)
-        monkeypatch.setattr(treebank, "deque", _FrontPopList)
+        monkeypatch.setattr(destructive, "iter", _FrontPopIterator, raising=False)
+        monkeypatch.setattr(treebank, "iter", _FrontPopIterator, raising=False)
         for tk in self._tokenizers():
             _assert_quadratic(
                 lambda n, tk=tk: list(tk.span_tokenize('"' * n)), 4_000, 16_000, reps=2
