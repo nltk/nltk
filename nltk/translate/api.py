@@ -13,6 +13,7 @@ from collections import namedtuple
 
 from nltk.internals import find_binary_absolute
 from nltk.pathsec import TrustError, spawn_trusted
+from nltk.termsec import sanitize_terminal
 
 
 class AlignedSent:
@@ -53,7 +54,6 @@ class AlignedSent:
         if alignment is None:
             self.alignment = Alignment([])
         else:
-            assert type(alignment) is Alignment
             self.alignment = alignment
 
     @property
@@ -79,8 +79,10 @@ class AlignedSent:
 
         :rtype: str
         """
-        words = "[%s]" % (", ".join("'%s'" % w for w in self._words))
-        mots = "[%s]" % (", ".join("'%s'" % w for w in self._mots))
+        # repr() of each word, not a bare '%s': a word carrying a quote, a line
+        # break or a terminal control sequence is shown escaped (CWE-150).
+        words = "[%s]" % (", ".join(repr(w) for w in self._words))
+        mots = "[%s]" % (", ".join(repr(w) for w in self._mots))
 
         return f"AlignedSent({words}, {mots}, {self._alignment!r})"
 
@@ -116,11 +118,13 @@ class AlignedSent:
         s += "".join([f'"{w}_source" [label="{w}"] \n' for w in words])
         s += "".join([f'"{w}_target" [label="{w}"] \n' for w in mots])
 
-        # Alignment
+        # Alignment; a pair whose target is None is an unaligned source word,
+        # which _check_alignment admits and which draws no edge.
         s += "".join(
             [
                 f'"{words[u]}_source" -- "{mots[v]}_target" \n'
                 for u, v in self._alignment
+                if v is not None
             ]
         )
 
@@ -186,9 +190,9 @@ class AlignedSent:
 
         :rtype: str
         """
-        source = " ".join(self._words)[:20] + "..."
-        target = " ".join(self._mots)[:20] + "..."
-        return f"<AlignedSent: '{source}' -> '{target}'>"
+        source = sanitize_terminal(" ".join(self._words)[:20], single_line=True)
+        target = sanitize_terminal(" ".join(self._mots)[:20], single_line=True)
+        return f"<AlignedSent: '{source}...' -> '{target}...'>"
 
     def invert(self):
         """
@@ -269,7 +273,9 @@ class Alignment(frozenset):
         """
         Return an Alignment object, being the inverted mapping.
         """
-        return Alignment(((p[1], p[0]) + p[2:]) for p in self)
+        # A pair whose target is None (an unaligned source word) has no
+        # inverse: it is dropped rather than becoming a None source index.
+        return Alignment(((p[1], p[0]) + p[2:]) for p in self if p[1] is not None)
 
     def range(self, positions=None):
         """
@@ -338,8 +344,13 @@ def _check_alignment(num_words, num_mots, alignment):
     :raise IndexError: if alignment falls outside the sentence
     """
 
-    assert type(alignment) is Alignment
-
+    # An explicit check, not an assert: python -O strips asserts, and an
+    # alignment that is not an Alignment or points outside the sentence must
+    # be refused there too, before it indexes the word lists.
+    if type(alignment) is not Alignment:
+        raise TypeError(
+            "alignment must be an Alignment, not %s" % type(alignment).__name__
+        )
     if not all(0 <= pair[0] < num_words for pair in alignment):
         raise IndexError("Alignment is outside boundary of words")
     if not all(pair[1] is None or 0 <= pair[1] < num_mots for pair in alignment):
