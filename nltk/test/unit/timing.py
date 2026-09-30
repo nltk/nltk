@@ -34,6 +34,7 @@ CPU time in 15.6 ms steps, so a measured run should take a few tenths of a
 second, and the scaling helpers keep a multiplicative noise floor for that.
 """
 
+import threading
 import time
 
 #: A block whose CPU time is at least this share of its wall time is judged on
@@ -139,3 +140,157 @@ def assert_subquadratic(
     """Assert ``op(big)`` (big == 4*small) costs under ``factor`` times ``op(small)``."""
     ratio = scaling_ratio(op, small, big, reps=reps, noise_floor=noise_floor)
     assert ratio < factor, (small, big, ratio)
+
+
+# ---------------------------------------------------------------------------
+# Work done in a child process or on a thread
+# ---------------------------------------------------------------------------
+# A hang detector runs the sink in a child and joins it with a deadline. The
+# same rule applies: the child is charged its own CPU time when it computed and
+# its wall time when it waited, and only a child that is still running at a
+# generous hard deadline is a hang. The budget the test names stays the same
+# number; it now bounds the work rather than the runner's queue.
+
+
+def hard_deadline_for(budget):
+    """The wall-clock deadline after which a child is a hang, not merely slow."""
+    return max(4.0 * budget, 60.0)
+
+
+def _children_cpu_seconds():
+    """CPU seconds of every reaped child so far, or ``None`` where unknown."""
+    try:
+        import resource
+    except ImportError:  # Windows
+        return None
+    usage = resource.getrusage(resource.RUSAGE_CHILDREN)
+    return usage.ru_utime + usage.ru_stime
+
+
+def _child_main(target, args, report_q):
+    """Run ``target(*args)`` in the child and report its (CPU, wall) seconds.
+
+    The deltas bracket the call itself: a spawned child first imports the
+    test module and with it nltk, several CPU seconds that are the runner's
+    cost, not the sink's. ``sys.exit`` inside the target still reports.
+    """
+    cpu_start, wall_start = time.process_time(), time.perf_counter()
+    try:
+        target(*args)
+    finally:
+        report_q.put(
+            (time.process_time() - cpu_start, time.perf_counter() - wall_start)
+        )
+
+
+class ChildRun:
+    """What happened to a child: whether it finished, its exit code, and the
+    CPU, wall and charged seconds; ``within_budget`` is the verdict."""
+
+    def __init__(self, finished, exitcode, cpu, wall, budget):
+        self.finished, self.exitcode, self.budget = finished, exitcode, budget
+        self.cpu, self.wall = cpu, wall
+        self.charged = charge(cpu, wall) if cpu is not None else wall
+        self.within_budget = finished and self.charged < budget
+
+    def __repr__(self):
+        cpu = "unknown" if self.cpu is None else f"{self.cpu:.2f}s"
+        return (
+            f"ChildRun(finished={self.finished}, exit={self.exitcode}, "
+            f"cpu={cpu}, wall={self.wall:.2f}s, charged={self.charged:.2f}s, "
+            f"budget={self.budget}s)"
+        )
+
+
+def run_in_process(target, args=(), *, budget, hard_deadline=None, context=None):
+    """Run ``target(*args)`` in a child process and judge it against ``budget``.
+
+    The child is joined until ``hard_deadline`` (``hard_deadline_for(budget)``
+    by default), then terminated: a child still running then is a hang and
+    ``finished`` is False. A child that returned is charged the CPU and wall
+    seconds of the call itself, which it reports back at exit (``sys.exit``
+    included) with interpreter startup and imports excluded; where the report
+    is missing it is charged the reaped children's CPU time, or its wall time
+    where neither is known. ``within_budget`` is True when that charge is under
+    ``budget``. ``args`` may carry the caller's own result queue as before.
+    """
+    if context is None:
+        from nltk.test.unit import _mp_ctx
+
+        context = _mp_ctx()
+    if hard_deadline is None:
+        hard_deadline = hard_deadline_for(budget)
+    report_q = context.Queue()
+    proc = context.Process(target=_child_main, args=(target, args, report_q))
+    children_before = _children_cpu_seconds()
+    started = time.perf_counter()
+    proc.start()
+    proc.join(hard_deadline)
+    if proc.is_alive():
+        proc.terminate()
+        proc.join()
+        return ChildRun(
+            False, proc.exitcode, None, time.perf_counter() - started, budget
+        )
+    wall = time.perf_counter() - started
+    try:
+        cpu, wall = report_q.get(timeout=1.0)  # the call itself, startup excluded
+    except Exception:  # noqa: BLE001  (the child left by os._exit or crashed)
+        cpu = None
+        children_after = _children_cpu_seconds()
+        if children_before is not None and children_after is not None:
+            cpu = children_after - children_before
+    return ChildRun(True, proc.exitcode, cpu, wall, budget)
+
+
+def finishes_within(seconds, fn, hard_deadline=None):
+    """Run ``fn`` on a daemon thread; ``(finished, exception, charged)``.
+
+    ``finished`` is True when ``fn`` returned or raised with less than
+    ``seconds`` charged to it: the process CPU time it accumulated when it
+    computed (the caller only waits), or its wall time when it waited. A
+    thread still running at ``hard_deadline`` is a hang and reads False.
+    """
+    if hard_deadline is None:
+        hard_deadline = hard_deadline_for(seconds)
+    done, outcome = threading.Event(), {}
+
+    def run():
+        try:
+            outcome["value"] = fn()
+        except BaseException as exc:  # noqa: BLE001  (handed to the caller)
+            outcome["exc"] = exc
+        finally:
+            done.set()
+
+    cpu_start, wall_start = time.process_time(), time.perf_counter()
+    threading.Thread(target=run, daemon=True).start()
+    returned = done.wait(hard_deadline)
+    charged = charge(time.process_time() - cpu_start, time.perf_counter() - wall_start)
+    return returned and charged < seconds, outcome.get("exc"), charged
+
+
+def run_subprocess(cmd, budget, hard_deadline=None, **kwargs):
+    """``subprocess.run(cmd, ...)`` judged against ``budget`` like a child.
+
+    Returns ``(completed, run)``: ``completed`` is the ``CompletedProcess`` or
+    ``None`` when the command was still running at ``hard_deadline`` (a hang,
+    killed), and ``run`` is a :class:`ChildRun` charging the reaped children's
+    CPU time where the platform reports it and the wall time otherwise.
+    """
+    import subprocess
+
+    if hard_deadline is None:
+        hard_deadline = hard_deadline_for(budget)
+    children_before = _children_cpu_seconds()
+    started = time.perf_counter()
+    try:
+        completed = subprocess.run(cmd, timeout=hard_deadline, **kwargs)
+    except subprocess.TimeoutExpired:
+        return None, ChildRun(False, None, None, time.perf_counter() - started, budget)
+    wall = time.perf_counter() - started
+    children_after = _children_cpu_seconds()
+    cpu = None
+    if children_before is not None and children_after is not None:
+        cpu = children_after - children_before
+    return completed, ChildRun(True, completed.returncode, cpu, wall, budget)

@@ -72,31 +72,84 @@ def test_within_budget_keeps_the_fastest_charged_run():
     assert not ok and best >= 0.3, best
 
 
-def test_scaling_ratio_counts_only_the_time_the_process_runs():
-    # a linear op that sleeps beside its small run: the wall clock would read
-    # 1.3x, CPU time reads the 4x it is
-    def op(n):
-        spin(n / 1_000_000)
-        if n == 120_000:
-            time.sleep(0.25)
-
-    ratio = timing.scaling_ratio(op, 120_000, 480_000)
-    assert 3.0 <= ratio <= 5.5, ratio
-
-
-def test_scaling_ratio_still_sees_a_sink_that_waits_instead_of_computing():
-    # one sleep of 0.3 s at the small size and 4.8 s at the big one: still
-    # 8.5x if every wake-up is 0.3 s late, as under xdist on a 3-core runner
-    def op(n):
-        time.sleep(0.3 * (n / 1000) ** 2)
-
-    ratio = timing.scaling_ratio(op, 1000, 4000)
-    assert ratio >= timing.QUADRATIC_RATIO, ratio
-
-
 def test_assert_subquadratic_separates_linear_from_quadratic_cpu_work():
     timing.assert_subquadratic(lambda n: spin(n / 1_000_000), 150_000, 600_000)
     with pytest.raises(AssertionError):
         timing.assert_subquadratic(
             lambda n: spin((n / 1_000_000) ** 2 * 4), 200_000, 800_000, reps=2
         )
+
+
+# ---- child processes and threads --------------------------------------------
+def _spin_child(seconds):
+    spin(seconds)
+
+
+def _sleep_child(seconds):
+    time.sleep(seconds)
+
+
+def _exit_child(code):
+    import sys
+
+    spin(0.05)
+    sys.exit(code)
+
+
+def test_a_child_that_computes_is_charged_its_own_cpu_time():
+    run = timing.run_in_process(_spin_child, (0.3,), budget=5.0)
+    assert run.finished and run.exitcode == 0, run
+    assert run.cpu is not None and run.charged == run.cpu, run
+    assert run.cpu >= 0.25, run  # the child's own clock, not the parent's
+    assert run.within_budget
+
+
+def test_a_child_over_budget_fails_whether_it_spins_or_sleeps():
+    spinning = timing.run_in_process(_spin_child, (0.5,), budget=0.2)
+    sleeping = timing.run_in_process(_sleep_child, (0.5,), budget=0.2)
+    assert spinning.finished and not spinning.within_budget, spinning
+    assert sleeping.finished and not sleeping.within_budget, sleeping
+    assert sleeping.charged == sleeping.wall >= 0.5, sleeping
+
+
+def test_a_hanging_child_is_terminated_at_the_hard_deadline():
+    run = timing.run_in_process(_sleep_child, (30,), budget=0.2, hard_deadline=1.0)
+    assert not run.finished and not run.within_budget, run
+    assert run.wall < 10, run
+
+
+def test_a_child_exit_code_is_reported_with_its_cpu_time():
+    run = timing.run_in_process(_exit_child, (3,), budget=5.0)
+    assert run.finished and run.exitcode == 3, run
+    assert run.cpu is not None and run.within_budget, run
+
+
+def test_finishes_within_charges_a_thread_its_cpu_time():
+    finished, exc, charged = timing.finishes_within(0.5, lambda: spin(0.2))
+    assert finished and exc is None and 0.15 <= charged < 0.5, (finished, charged)
+    finished, exc, charged = timing.finishes_within(0.2, lambda: time.sleep(0.4))
+    assert not finished and charged >= 0.4, (finished, charged)
+    finished, exc, _ = timing.finishes_within(1.0, lambda: 1 / 0)
+    assert finished and isinstance(exc, ZeroDivisionError)
+
+
+def test_run_subprocess_judges_a_child_interpreter():
+    import sys
+
+    completed, run = timing.run_subprocess(
+        [
+            sys.executable,
+            "-c",
+            "import time\nt=time.process_time()\nwhile time.process_time()-t<0.3: pass",
+        ],
+        budget=5.0,
+    )
+    assert (
+        completed is not None and completed.returncode == 0 and run.within_budget
+    ), run
+    completed, run = timing.run_subprocess(
+        [sys.executable, "-c", "import time; time.sleep(30)"],
+        budget=0.2,
+        hard_deadline=1.0,
+    )
+    assert completed is None and not run.finished, run

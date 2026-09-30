@@ -417,10 +417,10 @@ class TestSplitDirectlyBound:
         def op(n):
             SeekableUnicodeStreamReader(io.BytesIO(b"a" * n), "utf-8").readline()
 
-        # runs of a few tenths of a second under the suite's timing rule: a
-        # 300k run took 18 ms on a Windows runner and 20 ms on a macOS one,
-        # inside timer granularity and xdist noise, and the quadratic read 7.4x
-        ratio = timing.scaling_ratio(op, 900_000, 3_600_000, reps=2)
+        # runs that clear the helper's 0.1 s floor on the fastest runner: a
+        # 300k run took 18 ms on Windows and 20 ms on macOS, and a 900k one
+        # 40 ms of CPU on ubuntu, where the floored quadratic read 6.1x
+        ratio = timing.scaling_ratio(op, 1_800_000, 7_200_000, reps=2)
         assert ratio > 8, ratio
 
 

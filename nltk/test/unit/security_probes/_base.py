@@ -50,24 +50,46 @@ def probe(ghsa):
 
 from nltk.test.unit import timing
 
+#: An op whose big run spends less than this share of its wall time on the CPU
+#: is mostly waiting, and its cost is judged on the wall clock instead.
 CPU_BOUND_SHARE = timing.CPU_BOUND_SHARE
+#: A scaling factor at or above this reads as super-linear (quadratic ~16x);
+#: a linear sink stays near 4x, so the gap is wide on any machine.
 QUADRATIC_RATIO = timing.QUADRATIC_RATIO
+#: (CPU seconds, wall seconds) spent in a call. CPU time is what the
+#: interpreter actually worked: descheduling by a loaded runner stretches only
+#: the wall clock; a call that sleeps or waits on a child spends almost none.
 timed_both = timing.cpu_and_wall
+#: Fastest-of-reps op(big) over op(small), big == 4*small: a load-invariant
+#: scaling factor, ~4x for a linear sink and ~16x for a pre-patch O(n**2) one.
+#: One wall-clock stall across the three cheap small runs once halved a 16x
+#: quadratic to 7.8x on a macOS 3.14 runner (the r53h teeth flipped FIXED),
+#: which is why it is measured in CPU time, alternating, with the wall clock
+#: kept for an op that mostly waits; see nltk.test.unit.timing.scaling_ratio.
 scaling_ratio = timing.scaling_ratio
 
 
 def timed(func, *args):
-    """Seconds charged to ``func(*args)`` by the suite's timing rule: CPU time
-    when it computed, wall time when it waited (see nltk.test.unit.timing)."""
+    """Seconds charged to ``func(*args)``.
+
+    Historically the wall clock; now the suite's shared rule in
+    :mod:`nltk.test.unit.timing`: CPU time when the call computed, wall time
+    when it waited, so a loaded runner cannot inflate a probe's measurement.
+    """
     return timing.charged(func, *args)
 
 
 def within_budget(func, budget=None, repeats=3):
-    """Fastest of ``repeats`` charged runs of ``func``; ``(ok, seconds)``, ok if under.
+    """Fastest of ``repeats`` runs of ``func``; ``(ok, seconds)``, ok if under budget.
 
-    ``budget`` defaults to the module's ``DOS_BUDGET`` as it stands when the
-    probe runs. Min-of-k because one run on a loaded runner is noise; contention
-    only adds time, so the minimum is closest to the code's own cost.
+    Absolute budget, not a doubling ratio: a pre-patch quadratic ran for
+    tens of seconds on these payloads while the fixed code is milliseconds, so a
+    generous budget separates them cleanly. Min-of-k because one sample on a
+    loaded CI runner is noise, and a tight ratio there produced a false
+    VULNERABLE. Contention only adds time, so the minimum is closest to truth.
+    The seconds are the ones :mod:`nltk.test.unit.timing` charges: CPU time
+    when the run computed, wall time when it waited. ``budget`` defaults to the
+    module's ``DOS_BUDGET`` as it stands when the probe runs.
     """
     if budget is None:
         budget = DOS_BUDGET

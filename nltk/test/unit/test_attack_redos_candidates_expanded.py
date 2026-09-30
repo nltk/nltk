@@ -48,6 +48,7 @@ import pytest
 
 from nltk import redos
 from nltk.redos import MAX_NESTING_DEPTH, MAX_PATTERN_LENGTH, MAX_REPEAT_PRODUCT
+from nltk.test.unit import timing
 
 # ==========================================================================
 # Subprocess plumbing (a genuine hang -> TimeoutExpired -> test failure)
@@ -129,7 +130,6 @@ import sys, re, time
 import nltk.redos as _R
 _R.DEFAULT_TIMEOUT = 0.5
 from nltk import redos
-from nltk.test.unit import timing
 
 def report(name, verdict, detail=""):
     print("CASE|%s|%s|%s" % (name, verdict, detail))
