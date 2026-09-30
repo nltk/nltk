@@ -340,10 +340,9 @@ class TestModelFileCollision:
     def test_zip_context_cannot_be_injected_by_archive_name(
         self, tmp_path, monkeypatch
     ):
-        # Name the archive with a FAKE marker; extracting a traversal member is still
-        # refused, and the REAL '[ZipAudit]' context leads the message: an attacker
-        # cannot inject or move the marker via the filename (the context param at the
-        # call site is a fixed literal, never attacker data).
+        # Name the archive with a FAKE marker; a traversal member is still refused
+        # and the REAL '[ZipAudit]' context leads the message, so the marker cannot
+        # be injected via the filename (the call-site context is a fixed literal).
         monkeypatch.setattr(_pathsec, "ENFORCE", True)
         mal = tmp_path / "Security Violation [pwn].zip"
         with zipfile.ZipFile(mal, "w") as zf:
@@ -435,4 +434,71 @@ class TestHostilePathObjects:
         with pytest.raises(REFUSALS):
             validate_tool_dir(
                 _EvilStr(os.path.join(restricted_sandbox, "..", "..", "etc"))
+            )
+
+
+# ==========================================================================
+# pathsec.open in text mode must get the SAME guards as binary
+# ==========================================================================
+_READ_MODES = [("rb", {}), ("r", {"encoding": "utf-8"})]
+
+
+class TestPathsecOpenTextModeGuards:
+    """A text-mode read (``mode="r"`` / ``encoding=``) must not be a hole in the
+    sandbox.  The hardened opener is chosen by enforcement + POSIX, never by the
+    mode, and ``_os_open_flags`` ignores the ``b`` character, so ``O_NOFOLLOW``,
+    the ``st_nlink`` hardlink check and containment run identically for ``"r"``
+    and ``"rb"``.  Pinning that stops a refactor quietly reintroducing a
+    text-vs-binary asymmetry (the NKJP #2416 reader reads UTF-8 text this way)."""
+
+    def test_benign_text_returns_str_binary_returns_bytes(self, restricted_sandbox):
+        path = _regular_file(restricted_sandbox, "ok.txt")
+        with _pathsec.open(
+            path,
+            "r",
+            context="t",
+            required_root=str(restricted_sandbox),
+            encoding="utf-8",
+        ) as fh:
+            assert isinstance(fh.read(), str)
+        with _pathsec.open(
+            path, "rb", context="t", required_root=str(restricted_sandbox)
+        ) as fh:
+            assert isinstance(fh.read(), bytes)
+
+    @POSIX_ONLY
+    @pytest.mark.parametrize(("mode", "kw"), _READ_MODES)
+    def test_leaf_symlink_to_outside_refused_in_both_modes(
+        self, pathsec_sandbox, mode, kw
+    ):
+        root, outside = pathsec_sandbox
+        secret = os.path.join(str(outside), "secret")
+        with open(secret, "w") as fh:
+            fh.write("TOP SECRET")
+        link = os.path.join(str(root), "leak.txt")
+        os.symlink(secret, link)
+        with pytest.raises(REFUSALS):
+            _pathsec.open(link, mode, context="t", required_root=str(root), **kw)
+
+    @POSIX_ONLY
+    @pytest.mark.parametrize(("mode", "kw"), _READ_MODES)
+    def test_hardlink_to_outside_refused_in_both_modes(self, pathsec_sandbox, mode, kw):
+        root, outside = pathsec_sandbox
+        secret = os.path.join(str(outside), "secret")
+        with open(secret, "w") as fh:
+            fh.write("TOP SECRET")
+        link = os.path.join(str(root), "hard.txt")
+        try:
+            os.link(secret, link)
+        except (OSError, AttributeError):
+            pytest.skip("hardlinks not supported on this platform")
+        with pytest.raises(REFUSALS):
+            _pathsec.open(link, mode, context="t", required_root=str(root), **kw)
+
+    @pytest.mark.parametrize(("mode", "kw"), _READ_MODES)
+    def test_traversal_refused_in_both_modes(self, restricted_sandbox, mode, kw):
+        evil = os.path.join(str(restricted_sandbox), "..", "x")
+        with pytest.raises(REFUSALS):
+            _pathsec.open(
+                evil, mode, context="t", required_root=str(restricted_sandbox), **kw
             )

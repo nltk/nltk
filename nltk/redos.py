@@ -578,8 +578,15 @@ def source_of(pattern):
     )
 
 
-def reharden(pattern, flags=0):
+def reharden(pattern, flags=None):
     """Re-derive a fresh, wall-clock-capped :class:`TimedPattern` from ``pattern``'s
     SOURCE, discarding any existing wrapper. Unlike :func:`compile`, an incoming
-    ``TimedPattern`` is never returned as-is, so a disabled cap cannot survive."""
+    ``TimedPattern`` is never returned as-is, so a disabled cap cannot survive.
+
+    A compiled pattern's own flags travel with its source unless ``flags`` says
+    otherwise: rebuilt without them, a ``re.VERBOSE`` or ``re.IGNORECASE``
+    pattern silently matched nothing (extract_rels lost every relation the
+    documented ROLES pattern finds)."""
+    if flags is None:
+        flags = getattr(pattern, "flags", 0)
     return compile(source_of(pattern), flags)
