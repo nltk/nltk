@@ -1004,20 +1004,16 @@ def test_wr3g_zip_hardlink_probe_has_teeth():
     assert probe()[0] == probes.FIXED
 
 
-def test_j8g8_reparse_probe_has_teeth():
-    """Force the line-boundary search to match every block; readline then re-splits
-    the whole growing buffer each pass (the pre-fix O(n^2)) and the probe flips."""
+def test_j8g8_reparse_probe_has_teeth(monkeypatch):
+    """Report a line boundary in every block; readline then re-splits the whole
+    growing buffer each pass (the pre-fix O(n^2)) and the probe flips."""
     import nltk.data as data
-    from nltk import redos
 
     probe = probes.PROBES["GHSA-j8g8-j4j7-8j54"]
     assert probe()[0] == probes.FIXED
 
-    real = data._LINE_BOUNDARY_RE
-    try:
-        data._LINE_BOUNDARY_RE = redos.compile("x?")  # matches empty everywhere
-        status, detail = probe()
-        assert status == probes.VULNERABLE, detail  # the measured ratio, for the CI log
-    finally:
-        data._LINE_BOUNDARY_RE = real
+    monkeypatch.setattr(data, "_has_line_boundary", lambda text: True)
+    status, detail = probe()
+    assert status == probes.VULNERABLE, detail  # the measured ratio, for the CI log
+    monkeypatch.undo()
     assert probe()[0] == probes.FIXED
