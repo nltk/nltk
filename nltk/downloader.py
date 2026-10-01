@@ -220,6 +220,20 @@ PACKAGE_DEADLINE_CEILING = 2 * 60 * 60
 MAX_UNZIPPED_BYTES = 8 * 1024 * 1024 * 1024
 UNZIPPED_SIZE_SLACK = 1024 * 1024
 
+# Packages this NLTK no longer reads, each with the package that replaced it
+# when the pickles were dropped (CVE-2024-39705): loading the old package's
+# resources is redirected to the new one (nltk.data.load). Asking for the old
+# package installs the new one too (#3394), so code written for the old name,
+# and a collection such as "popular" or "book" that still lists it, gets what
+# the loaders read. The map is one way: a successor never brings the pickles.
+_SUCCESSORS = {
+    "punkt": "punkt_tab",
+    "averaged_perceptron_tagger": "averaged_perceptron_tagger_eng",
+    "averaged_perceptron_tagger_ru": "averaged_perceptron_tagger_rus",
+    "maxent_ne_chunker": "maxent_ne_chunker_tab",
+    "maxent_treebank_pos_tagger": "maxent_treebank_pos_tagger_tab",
+}
+
 
 def _package_deadline(declared):
     """Seconds a package body of *declared* bytes may take to arrive."""
@@ -848,7 +862,9 @@ class Downloader:
     # downloader in the gui can just kill the download thread anytime
     # it wants.
 
-    def incr_download(self, info_or_id, download_dir=None, force=False, _expanding=()):
+    def incr_download(
+        self, info_or_id, download_dir=None, force=False, _expanding=None
+    ):
         # If they didn't specify a download_dir, then use the default one.
         if download_dir is None:
             download_dir = self._download_dir
@@ -858,6 +874,21 @@ class Downloader:
         # for NLTK data; authorize that specific directory so the reads/writes
         # below pass the pathsec sandbox (CWE-73, GHSA-p4rw follow-up).
         _authorize_data_dir(download_dir)
+
+        # The caller's own request, not a collection or list being expanded:
+        # download it, then the successor of every package it reached that
+        # this NLTK no longer reads (#3394), into the same directory through
+        # the same checks. Nothing is looked up before the request runs, so a
+        # failing index is fetched once, as before.
+        if _expanding is None:
+            reached = []
+            for msg in self.incr_download(info_or_id, download_dir, force, ()):
+                if isinstance(msg, StartPackageMessage):
+                    reached.append(msg.package.id)
+                yield msg
+            for successor in self._successors(reached):
+                yield from self.incr_download(successor, download_dir, force, ())
+            return
 
         # If they gave us a list of ids, then download each one.
         if isinstance(info_or_id, (list, tuple)):
@@ -886,6 +917,22 @@ class Downloader:
         # Handle Packages (delegate to a helper function).
         else:
             yield from self._download_package(info, download_dir, force)
+
+    def _successors(self, reached):
+        """The index's package for the successor of each package id in
+        *reached*, unless *reached* holds that successor already. Only the
+        index already loaded is consulted and only a package entry counts: a
+        mirror without the successor, or an index naming a collection there,
+        adds nothing and fetches nothing."""
+        found, seen = [], set(reached)
+        for pid in reached:
+            new = _SUCCESSORS.get(pid) if isinstance(pid, str) else None
+            package = self._packages.get(new)
+            if new in seen or not isinstance(package, Package):
+                continue
+            seen.add(new)
+            found.append(package)
+        return found
 
     def _num_packages(self, item):
         if isinstance(item, Package):
@@ -1359,15 +1406,6 @@ class Downloader:
             return True
 
         else:
-            # Fix for Issue #3394: Redirect or append 'punkt_tab' when 'punkt' is requested.
-            if isinstance(info_or_id, str) and info_or_id == "punkt":
-                info_or_id = ["punkt", "punkt_tab"]
-            elif (
-                isinstance(info_or_id, list)
-                and "punkt" in info_or_id
-                and "punkt_tab" not in info_or_id
-            ):
-                info_or_id.append("punkt_tab")
             # Define a helper function for displaying output:
             def show(s, prefix2=""):
                 # A message is one logical line: flatten its line breaks here,
