@@ -13,11 +13,11 @@ import csv
 import gzip
 import json
 import os
-import time
 
 import pytest
 
 from nltk.sentiment.util import json2csv_preprocess, output_markdown
+from nltk.test.unit import timing
 
 ESC = chr(0x1B)
 BEL = chr(0x07)
@@ -191,15 +191,13 @@ class TestInputBounds:
         out = os.path.join(restricted_sandbox, "out.csv")
         texts = [f"tweet number {i % 100}" for i in range(40000)]
         _write_tweets(src, texts)
-        started = time.perf_counter()
-        json2csv_preprocess(src, out, ["id", "text"])
-        elapsed = time.perf_counter() - started
+        with timing.budget(20, "json2csv_preprocess"):
+            json2csv_preprocess(src, out, ["id", "text"])
         rows = _read_csv(out)
         assert len(rows) == 101, len(rows)  # header + one per distinct text
         assert [r[1] for r in rows[1:]] == [
             f"tweet number {i}" for i in range(100)
         ]  # first occurrence order
-        assert elapsed < 20, elapsed
 
 
 class TestPreprocessingStillWorks:

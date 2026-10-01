@@ -22,12 +22,12 @@ import os
 import socket
 import sqlite3
 import stat
-import threading
 
 import pytest
 
 import nltk.data
 from nltk.sem import chat80
+from nltk.test.unit import timing
 
 CANARY = "SQLQUERY_OUTSIDE_CANARY"
 SECURITY = (PermissionError, ValueError)
@@ -197,21 +197,11 @@ def test_hardlink_at_a_sidecar_name_is_refused(staged):
 
 
 def _finishes_within(seconds, fn):
-    """Run ``fn`` on a thread; True if it returned or raised within ``seconds``."""
-    done = threading.Event()
-    outcome = {}
-
-    def run():
-        try:
-            fn()
-        except BaseException as exc:  # recorded, re-raised by the caller
-            outcome["exc"] = exc
-        finally:
-            done.set()
-
-    threading.Thread(target=run, daemon=True).start()
-    finished = done.wait(seconds)
-    return finished, outcome.get("exc")
+    """Run ``fn`` on a thread; True if it returned or raised within ``seconds``
+    of the time charged to it (CPU time when it computed, wall time when it
+    waited, see nltk.test.unit.timing); the exception, if any, is returned."""
+    finished, exc, _charged = timing.finishes_within(seconds, fn)
+    return finished, exc
 
 
 @pytest.mark.skipif(not hasattr(os, "mkfifo"), reason="no FIFOs on this platform")

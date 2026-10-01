@@ -17,13 +17,13 @@ Nothing about the containment check itself is mocked.
 
 import os
 import socket
-import threading
 
 import pytest
 
 import nltk.classify.weka as weka_module
 import nltk.pathsec as pathsec
 from nltk.classify.weka import ARFF_Formatter, WekaClassifier
+from nltk.test.unit import timing
 
 FEATS = [({"a": 1}, "pos"), ({"a": 0}, "neg")]
 REFUSED = (PermissionError, ValueError)
@@ -242,19 +242,11 @@ class TestSpecialAndOversizedFiles:
         root, outside = pathsec_sandbox
         fifo = str(root / "pipe.model")
         os.mkfifo(fifo)
-        done, out = threading.Event(), {}
-
-        def run():
-            try:
-                _assert_never_reaches_jvm(fifo, jvm_spy)
-            except BaseException as exc:
-                out["e"] = exc
-            finally:
-                done.set()
-
-        threading.Thread(target=run, daemon=True).start()
-        assert done.wait(10), "the model-path check blocked on a FIFO"
-        assert "e" not in out, out.get("e")
+        finished, exc, _charged = timing.finishes_within(
+            10, lambda: _assert_never_reaches_jvm(fifo, jvm_spy)
+        )
+        assert finished, "the model-path check blocked on a FIFO"
+        assert exc is None, exc
 
     @pytest.mark.skipif(
         os.name != "posix" or not hasattr(socket, "AF_UNIX"), reason="POSIX only"

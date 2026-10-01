@@ -21,6 +21,7 @@ import time
 
 import pytest
 
+from nltk.test.unit import timing
 from nltk.tokenize.texttiling import TextTilingTokenizer
 
 from . import _mp_ctx
@@ -66,9 +67,9 @@ def _tokenizer():
 def _mark_worker(result_q):
     try:
         tt = _tokenizer()
-        start = time.perf_counter()
+        start = time.process_time()
         result = tt._mark_paragraph_breaks(_CRAFTED_TEXT)
-        result_q.put(("ok", result, time.perf_counter() - start))
+        result_q.put(("ok", result, time.process_time() - start))
     except BaseException as exc:  # surface to the parent process
         result_q.put(("error", repr(exc), 0.0))
 
@@ -78,12 +79,12 @@ def _tokenize_worker(result_q):
         # A whitespace blob has no paragraph breaks, so tokenize() legitimately
         # raises ValueError after the (now linear) scan. Either outcome means the
         # call terminated rather than hanging.
-        start = time.perf_counter()
+        start = time.process_time()
         try:
             _tokenizer().tokenize(_CRAFTED_TEXT)
         except ValueError:
             pass
-        result_q.put(("ok", "terminated", time.perf_counter() - start))
+        result_q.put(("ok", "terminated", time.process_time() - start))
     except BaseException as exc:
         result_q.put(("error", repr(exc), 0.0))
 
@@ -99,12 +100,10 @@ def _run_in_process(target):
     """
     ctx = _mp_ctx()
     result_q = ctx.Queue()
-    proc = ctx.Process(target=target, args=(result_q,))
-    proc.start()
-    proc.join(_TIMEOUT)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(
+        target, (result_q,), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         return False, None, None, None
     try:
         status, payload, op_elapsed = result_q.get_nowait()

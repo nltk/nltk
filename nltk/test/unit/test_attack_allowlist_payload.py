@@ -26,6 +26,7 @@ from nltk.tag import DefaultTagger, RegexpTagger, UnigramTagger
 from nltk.tag.brill import BrillTagger, Pos, Word
 from nltk.tbl import demo
 from nltk.tbl.rule import Rule
+from nltk.test.unit import timing
 
 # A pattern the ``regex`` engine's optimiser does NOT collapse to linear time:
 # an alternation of identical branches still backtracks exponentially, so it is
@@ -172,22 +173,25 @@ _CHILD = textwrap.dedent(
 )
 
 
-def _run_child(pickle_path, mode, cap, bait, wall_timeout):
+def _run_child(pickle_path, mode, cap, bait, wall_timeout, hang_expected=False):
     """Run the child on ``pickle_path``; return (timed_out, stdout)."""
     # Import the CURRENT checkout in the child without splicing the whole runtime
     # sys.path (cwd / user-site / site-packages) into PYTHONPATH; see _child_env.
     env = _child_env()
-    try:
-        proc = subprocess.run(
-            [sys.executable, "-c", _CHILD, str(pickle_path), mode, str(cap), bait],
-            capture_output=True,
-            text=True,
-            timeout=wall_timeout,
-            env=env,
-        )
-        return False, proc.stdout.strip()
-    except subprocess.TimeoutExpired:
+    # The guarded child is charged its CPU time (see nltk.test.unit.timing); a
+    # teeth run that expects the hang keeps the wall clock as its deadline.
+    proc, run = timing.run_subprocess(
+        [sys.executable, "-c", _CHILD, str(pickle_path), mode, str(cap), bait],
+        wall_timeout,
+        hard_deadline=wall_timeout if hang_expected else None,
+        cpu_bound=not hang_expected,
+        capture_output=True,
+        text=True,
+        env=env,
+    )
+    if proc is None or not run.within_budget:
         return True, ""
+    return False, proc.stdout.strip()
 
 
 @pytest.mark.parametrize(
@@ -217,7 +221,9 @@ def test_redos_teeth_unbounded_loader_hangs(pathsec_sandbox):
     with open(path, "wb") as fh:
         fh.write(_payload_raw_pattern())
     # Cap is irrelevant to the unbounded child (it never wraps in a TimedPattern).
-    timed_out, out = _run_child(path, "unbounded", cap=1.0, bait=BAIT, wall_timeout=8)
+    timed_out, out = _run_child(
+        path, "unbounded", cap=1.0, bait=BAIT, wall_timeout=8, hang_expected=True
+    )
     assert timed_out, (
         "the unbounded reference loader unexpectedly returned "
         f"({out!r}); the bait was not catastrophic enough to prove teeth"
