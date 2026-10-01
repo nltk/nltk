@@ -35,13 +35,14 @@ import time
 
 import pytest
 
+from nltk.test.unit import timing
+
 QUADRATIC_RATIO = 8.0
 
 
 def _elapsed(fn):
-    start = time.perf_counter()
-    fn()
-    return time.perf_counter() - start
+    """CPU seconds charged to ``fn``, which computes (nltk.test.unit.timing)."""
+    return timing.charged(fn, cpu_bound=True)
 
 
 def _scaling_ratio(op, small, big, reps=3, noise_floor=0.1):
@@ -49,9 +50,16 @@ def _scaling_ratio(op, small, big, reps=3, noise_floor=0.1):
 
     The floor is multiplicative so a sub-second quadratic is not hidden by
     additive slack; each side is a min-of-``reps`` to shed a transient stall.
+    Every op here computes, so the runs are charged their CPU time and the
+    small and big runs alternate, with the cheap small side run ``reps`` more
+    times, as nltk.test.unit.timing.scaling_ratio does; the floors are kept.
     """
-    t_small = min(_elapsed(lambda: op(small)) for _ in range(reps))
-    t_big = min(_elapsed(lambda: op(big)) for _ in range(reps))
+    t_small = t_big = float("inf")
+    for _ in range(reps):
+        t_small = min(t_small, _elapsed(lambda: op(small)))
+        t_big = min(t_big, _elapsed(lambda: op(big)))
+    for _ in range(reps):
+        t_small = min(t_small, _elapsed(lambda: op(small)))
     return t_big / max(t_small, noise_floor), t_small, t_big
 
 
@@ -324,10 +332,10 @@ class TestXMLCorpusViewDepth:
     def test_a_subtree_past_both_bounds_is_refused_in_bounded_time(self):
         from nltk.xmlsec import MAX_DEPTH
 
-        started = time.perf_counter()
-        with pytest.raises(ValueError, match="nesting depth"):
+        with timing.budget(30, cpu_bound=True), pytest.raises(
+            ValueError, match="nesting depth"
+        ):
             self._shallow_match_deep_subtree(MAX_DEPTH * 20)
-        assert time.perf_counter() - started < 30
 
     def test_with_the_view_bound_lifted_xmlsec_still_refuses_the_tree(
         self, monkeypatch

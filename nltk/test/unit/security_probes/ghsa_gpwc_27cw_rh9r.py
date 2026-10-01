@@ -40,7 +40,12 @@ def _legality_onset_reversal():
     # a fast runner; the linear loop at 40000 chars is ~0.05 s.
     small, big = 10_000, 40_000  # big == 4 * small
     ratio = scaling_ratio(
-        lambda n: tokenizer.tokenize("a" * n), small, big, reps=2, noise_floor=0.02
+        lambda n: tokenizer.tokenize("a" * n),
+        small,
+        big,
+        reps=2,
+        noise_floor=0.02,
+        cpu_bound=True,  # the sink computes
     )
     detail = "%s; loop scales %.1fx over 4x input (%d->%d chars)" % (
         cap_note,

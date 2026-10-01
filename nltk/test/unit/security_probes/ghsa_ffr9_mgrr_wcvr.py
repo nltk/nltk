@@ -29,7 +29,14 @@ def _span_tokenize_quote_restore():
         def op(n, tokenizer=tokenizer):
             list(tokenizer.span_tokenize('"' * n))
 
-        ratio = scaling_ratio(op, small, big, reps=2, noise_floor=0.02)
+        ratio = scaling_ratio(
+            op,
+            small,
+            big,
+            reps=2,
+            noise_floor=0.02,
+            cpu_bound=True,  # the sink computes
+        )
         findings.append(f"{type(tokenizer).__name__} {ratio:.1f}x")
         if ratio >= QUADRATIC_RATIO:
             return (
