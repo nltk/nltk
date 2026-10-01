@@ -84,6 +84,14 @@ class WordnNetDemo(unittest.TestCase):
             sorted(S("fall.v.12").root_hypernyms()), [S("act.v.01"), S("fall.v.17")]
         )
 
+        synset = S("dog.n.01")
+        paths = synset.hypernym_paths()
+        self.assertEqual(synset.max_depth(), max(len(path) for path in paths) - 1)
+        self.assertEqual(synset.min_depth(), min(len(path) for path in paths) - 1)
+        expected_roots = list(dict.fromkeys(path[0] for path in paths))
+        self.assertEqual(synset.root_hypernyms(), expected_roots)
+        self.assertIsNot(paths[0], synset.hypernym_paths()[0])
+
     def test_derivationally_related_forms(self):
         # Test `derivationally_related_forms()`
         self.assertEqual(
