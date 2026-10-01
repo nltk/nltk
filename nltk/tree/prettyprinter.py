@@ -81,7 +81,17 @@ class TreePrettyPrinter:
             else:
                 # this deals with empty nodes (frontier non-terminals)
                 # and multiple/mixed terminals under non-terminals.
-                tree = tree.copy(True)
+                # The leaves of a plain, mutable copy become indices below;
+                # the highlighted nodes are carried over to it by position.
+                marked = [
+                    pos
+                    for pos in tree.treepositions()
+                    if highlight
+                    and isinstance(tree[pos], Tree)
+                    and tree[pos] in highlight
+                ]
+                tree = Tree.convert(tree)
+                highlight = [tree[pos] for pos in marked] + list(highlight)
                 sentence = []
                 for a in tree.subtrees():
                     if len(a) == 0:
