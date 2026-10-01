@@ -33,15 +33,20 @@ import time
 import pytest
 
 from nltk import redos
+from nltk.test.unit import timing
 
 
 def _elapsed(fn):
-    start = time.perf_counter()
-    try:
-        fn()
-    except Exception:
-        pass
-    return time.perf_counter() - start
+    """Seconds charged to ``fn`` by the suite's timing rule; an exception
+    from ``fn`` ends the measurement instead of the test."""
+
+    def swallow():
+        try:
+            fn()
+        except Exception:
+            pass
+
+    return timing.charged(swallow)
 
 
 # ==========================================================================

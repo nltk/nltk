@@ -273,7 +273,7 @@ def test_duplicate_keys_last_value_wins_tagged_decoder():
 def test_unicode_escapes_parse_as_inert_data():
     assert safe_json_loads(r'"café"') == "café"
     assert safe_json_loads('"a\\u0000b"') == "a\x00b"  # escaped NUL is data
-    assert safe_json_loads('"x\\u202ey"') == "x‮y"  # RTL override, inert
+    assert safe_json_loads('"x\\u202ey"') == "x\u202ey"  # RTL override, inert
     assert isinstance(safe_json_loads(r'"\ud800"'), str)  # lone surrogate, inert
     # A surrogate pair escape composes to one astral code point.
     assert safe_json_loads(r'"😀"') == "\U0001f600"
@@ -281,7 +281,7 @@ def test_unicode_escapes_parse_as_inert_data():
     assert safe_json_loads('{"k": "猫"}') == {"k": "猫"}
 
 
-@pytest.mark.parametrize("payload", [r'"\x41"', r'"\U0001F600"', '﻿{"a":1}'])
+@pytest.mark.parametrize("payload", [r'"\x41"', r'"\U0001F600"', '\ufeff{"a":1}'])
 def test_invalid_unicode_forms_refused_not_crashed(payload):
     with pytest.raises(ValueError):
         safe_json_loads(payload)

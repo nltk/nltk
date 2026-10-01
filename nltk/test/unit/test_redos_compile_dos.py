@@ -17,6 +17,7 @@ import regex
 
 from nltk import redos
 from nltk.redos import _UNSET, MAX_NESTING_DEPTH, MAX_PATTERN_LENGTH, TimedPattern
+from nltk.test.unit import timing
 
 # ---------------------------------------------------------------------------
 # Compile-time bombs are refused up front (in-process; the guard rejects before
@@ -228,24 +229,31 @@ def test_reharden_legit_pattern_recaps_it():
 _BOMB = "'a' * 8_000_000"  # 8 MB literal: raw regex.compile is many seconds
 
 
-def _run(code, wall):
+def _run(code, wall, hang_expected=False):
     import os
 
     env = dict(os.environ, PYTHONPATH=os.pathsep.join(sys.path))
-    return subprocess.run(
+    # a guarded child is charged its CPU time (see nltk.test.unit.timing); the
+    # teeth that expects the raw compile to hang keeps the wall clock deadline
+    proc, run = timing.run_subprocess(
         [sys.executable, "-c", code],
+        wall,
+        hard_deadline=wall if hang_expected else None,
+        cpu_bound=not hang_expected,
         capture_output=True,
         text=True,
-        timeout=wall,
         env=env,
     )
+    if proc is None or not run.within_budget:
+        raise subprocess.TimeoutExpired([sys.executable, "-c", code], wall)
+    return proc
 
 
 def test_teeth_raw_compile_hangs_past_the_wall_clock():
     # A child importing only ``regex`` (fast) proves the raw compile is a real DoS.
     code = f"import regex; regex.compile({_BOMB}); print('COMPILED')"
     with pytest.raises(subprocess.TimeoutExpired):
-        _run(code, wall=8)
+        _run(code, wall=8, hang_expected=True)
 
 
 def test_teeth_guarded_compile_refuses_instantly():
