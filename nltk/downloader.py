@@ -1066,6 +1066,11 @@ class Downloader:
                 _safe_remove(path)
                 return
             if not os.path.isdir(path):
+                # A file or special entry standing where the package directory
+                # belongs is stale state like a link: removed, so the extraction
+                # that follows has its directory instead of failing on ENOTDIR.
+                if os.path.lexists(path):
+                    _safe_remove(path)
                 return
             # os.walk lists a directory and descends into it later by path, so
             # a subdirectory swapped for a symlink in between is followed and
@@ -1589,7 +1594,18 @@ class Downloader:
 
     def _unzipped_status(self, info, unzipdir):
         """The install state of a package's extracted directory."""
-        if not os.path.isdir(unzipdir):
+        # The directory itself is judged first, by lstat: a link standing
+        # where the package directory belongs, or a directory another
+        # account owns or can write to, is stale whatever it holds.
+        try:
+            top = os.lstat(unzipdir)
+        except OSError:
+            return self.STALE
+        if (
+            not stat.S_ISDIR(top.st_mode)
+            or getattr(top, "st_reparse_tag", 0)
+            or _not_ours(top)
+        ):
             return self.STALE
 
         # A link, junction or special entry planted in the tree is never
