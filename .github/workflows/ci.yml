@@ -35,12 +35,13 @@ jobs:
       pull-requests: read
     outputs:
       code: ${{ steps.filter.outputs.code }}
-      timit: ${{ steps.filter.outputs.timit }}
+      pygame: ${{ steps.pygame.outputs.touched }}
     steps:
       - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
         id: filter
         with:
+          list-files: json
           filters: |
             code:
               - '**/*.py'
@@ -48,12 +49,26 @@ jobs:
               - 'setup.py'
               - '.github/workflows/**'
               - 'tools/github_actions/**'
-            timit:
-              - 'nltk/corpus/reader/timit.py'
-              - 'nltk/test/unit/test_corpus_reader_hardening.py'
-              - 'nltk/test/unit/conftest.py'
-              - 'nltk/test/conftest.py'
-              - '.github/workflows/ci.yml'
+            nltk_py:
+              - 'nltk/**/*.py'
+      # The pygame playback job runs only when a changed NLTK module references pygame.
+      - name: Check whether changed modules use pygame
+        id: pygame
+        env:
+          FILES: ${{ steps.filter.outputs.nltk_py_files }}
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib
+          files = json.loads(os.environ["FILES"] or "[]")
+          touched = any(
+              "pygame" in pathlib.Path(f).read_text(encoding="utf-8")
+              for f in files
+              if pathlib.Path(f).is_file()
+          )
+          print("Changed modules using pygame:", touched)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"touched={str(touched).lower()}\n")
+          PY
 
   pre-commit:
     name: pre-commit
@@ -108,7 +123,7 @@ jobs:
   timit_playback:
     name: TIMIT pygame playback
     needs: [changes]
-    if: needs.changes.outputs.timit == 'true'
+    if: needs.changes.outputs.pygame == 'true'
     runs-on: ubuntu-latest
     env:
       SDL_AUDIODRIVER: dummy
