@@ -1330,3 +1330,41 @@ class TestRelextractInRelationLookahead:  # sem/relextract.py in_demo IN pattern
 
     def test_pre_fix_pattern_has_teeth(self):
         _trips_backstop(_PRE_FIX["in_relation"], "match", "in " * 60000 + "ing")
+
+
+class TestToktokStripPatternLeadingRun:  # toktok.py RSTRIP (not applied by tokenize)
+    def test_tokenize_unchanged_and_linear_on_a_tab_run(self):
+        from nltk.tokenize import ToktokTokenizer
+
+        tok = ToktokTokenizer()
+        assert tok.tokenize("a\t\tb") == ["a", "&#9;", "&#9;", "b"]
+        _assert_subquadratic(lambda n: tok.tokenize("\t" * n + "a"), 40000, 160000)
+
+    def test_rstrip_space_run_is_linear(self):
+        from nltk.tokenize import ToktokTokenizer
+
+        rx, repl = ToktokTokenizer.RSTRIP
+        _assert_subquadratic(lambda n: rx.sub(repl, " " * n + "a"), 40000, 160000)
+
+    def test_shipped_pattern_matches_the_pre_fix_pattern(self):
+        from nltk.tokenize import ToktokTokenizer
+
+        shipped = ToktokTokenizer.RSTRIP[0].pattern
+        assert shipped != _PRE_FIX["rstrip"]
+        texts = [
+            "",
+            "a",
+            " ",
+            "a ",
+            "a  \n",
+            "a\t\n",
+            " a ",
+            "a b  ",
+            "\n",
+            " \n ",
+            "a" + " " * 30,
+        ]
+        _same_results(_PRE_FIX["rstrip"], shipped, "sub", texts)
+
+    def test_pre_fix_pattern_has_teeth(self):
+        _trips_backstop(_PRE_FIX["rstrip"], "sub", " " * 80000 + "a")
