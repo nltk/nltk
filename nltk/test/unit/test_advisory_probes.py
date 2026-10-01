@@ -854,15 +854,8 @@ def test_r53h_front_mutation_probe_has_teeth():
 
 def _pre_fix_ccg_parser(compile=re.compile):
     """The CCG category parser as it stood before the cursor rewrite, copied
-    verbatim: every step re-sliced the remaining tail and NEXTPRIM_RE and
-    APP_RE captured it with a trailing (.*). Returns its augParseCategory.
-
-    The regexes are compiled by ``compile``, the standard library by default:
-    the parser as it stood before #3753 routed them through redos, whose 7 to
-    11 us of per-call overhead is unrelated to the advisory and, two calls per
-    operator, masks the tail copies at the sizes the cap allows (the verbatim
-    redos form read 8.0x to 8.7x on the ubuntu runners, this form 11.8x to
-    14.1x; the fixed parser 3.9x to 4.5x either way)."""
+    verbatim, its regexes compiled by ``compile`` (the standard library, as
+    before they were routed through redos). Returns its augParseCategory."""
     from nltk.ccg import lexicon
 
     old_nextprim_re = compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)""")
@@ -931,9 +924,7 @@ def _pre_fix_ccg_parser(compile=re.compile):
 
 
 def _uncapped_ccg_parser():
-    """The fixed cursor parser with only its MAX_PARSE_LEN refusal removed (the
-    bracket scanner it calls keeps its own); the probe's over-cap chain carries
-    no bracket, so this is the fixed parser with the cap gone and nothing else."""
+    """The fixed cursor parser with only its MAX_PARSE_LEN refusal removed."""
     from nltk.ccg import lexicon
 
     def uncapped_augParseCategory(
@@ -978,9 +969,7 @@ def _uncapped_ccg_parser():
 
 
 def test_89p3_cap_removed_probe_has_teeth():
-    """Only the cap removed: the fixed linear parser without its MAX_PARSE_LEN
-    refusal. Both scaling legs read linear, so the probe can flip VULNERABLE only
-    through its cap leg, and must."""
+    """Only the cap removed: the probe must flip VULNERABLE through its cap leg."""
     from nltk.ccg import lexicon
 
     probe = probes.PROBES["GHSA-89p3-fcch-88ph"]
@@ -998,12 +987,8 @@ def test_89p3_cap_removed_probe_has_teeth():
 
 
 def test_89p3_tail_reslice_probe_has_teeth():
-    """Only the linear parse removed: the pre-fix parser, verbatim, behind the
-    MAX_PARSE_LEN refusal it lacked, so the cap leg passes and the probe can flip
-    VULNERABLE only through a scaling leg; it must, and as quadratic. Measured
-    on the hosted runners (nltk/nltk PR #3944), this parser reads 11.1x to
-    14.1x on the probe's flat leg and 8.6x to 18.9x on its nested leg, the
-    fixed parser 3.9x to 4.2x on both."""
+    """Only the linear parse removed: the pre-fix parser behind the cap it
+    lacked, so the probe must flip VULNERABLE through a scaling leg."""
     from nltk.ccg import lexicon
 
     probe = probes.PROBES["GHSA-89p3-fcch-88ph"]

@@ -17,10 +17,23 @@ from ._base import (
 FLAT_SMALL = 12499
 FLAT_BIG = 4 * FLAT_SMALL
 
+#: Entries of the flat chain in the lexicon the op parses: one entry's small run
+#: sat at the 0.1 s floor on the macOS and Windows runners, where the ratio
+#: degenerates into a budget on the big run; see flat_lexicon.
+FLAT_ENTRIES = 3
+
+
+def flat_lexicon(n):
+    """A lexicon of FLAT_ENTRIES words, each a flat chain of ``n`` applications."""
+    chain = "S" + "/S" * n
+    words = ("w", "v", "u", "t", "s", "r")[:FLAT_ENTRIES]
+    return ":- S\n" + "".join(word + " => " + chain + "\n" for word in words)
+
+
 #: Bracket depth of the nested leg. The pre-fix parser re-sliced the bracketed
 #: text per character and did so again at every level, so the depth sets the
-#: work per character; 60 lifts the fixed parser's small run off the floor.
-NESTING = 60
+#: work per character; 80 keeps the fixed parser's small run off the floor.
+NESTING = 80
 
 
 def _nested_lexicon(chars):
@@ -35,32 +48,21 @@ def _nested_lexicon(chars):
 
 @probe("GHSA-89p3-fcch-88ph")
 def _ccg_lexicon_quadratic_parse():
-    """Parse the two shapes the tail re-slicing made quadratic, confirm each
-    parse stays linear, then confirm an over-cap category is refused.
+    """Parse the two shapes the tail re-slicing made quadratic, a flat chain
+    and a primitive inside NESTING brackets, confirm each parse stays linear
+    over a 4x input, then confirm an over-cap category is refused.
 
     Pre-fix, matchBrackets/nextCategory/augParseCategory resliced the remaining
     tail (and NEXTPRIM_RE/APP_RE captured it with a trailing ``(.*)``) on every
     step, so parsing a chain of length n copied O(n) characters n times: O(n**2).
-    The fix threads an integer cursor instead, so the scaling factor for a 4x
-    longer input stays near linear. VULNERABLE if either shape is super-linear.
-
-    Both legs stay under MAX_PARSE_LEN, so the pre-fix parser's quadratic work
-    is bounded by the cap and competes with its own per-step cost; measured on
-    the hosted runners (nltk/nltk PR #3944), the pre-fix parser reads 11x to
-    14x on the flat leg and 9x to 19x on the nested leg, the fixed parser 3.9x
-    to 4.2x on both. The flat leg is the advisory's own chain and the stable
-    signal; the nested leg wraps one primitive in NESTING brackets, where the
-    pre-fix matchBrackets copied its tail once per character at every level,
-    and covers the bracket scanner the flat leg never enters.
+    The fix threads an integer cursor instead. VULNERABLE if either shape is
+    super-linear or the cap does not hold.
     """
     from nltk.ccg import lexicon
     from nltk.ccg.lexicon import MAX_PARSE_LEN, fromstring
 
-    def lex(n):
-        return ":- S\nw => S" + "/S" * n + "\n"
-
     def op(n):
-        return fromstring(lex(n))
+        return fromstring(flat_lexicon(n))
 
     ratio = scaling_ratio(op, FLAT_SMALL, FLAT_BIG, cpu_bound=True)  # computes
     if ratio >= QUADRATIC_RATIO:

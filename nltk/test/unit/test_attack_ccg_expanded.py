@@ -44,7 +44,12 @@ from nltk.ccg.lexicon import (
 from nltk.sem.logic import Expression, LogicalExpressionException
 from nltk.termsec import sanitize_terminal
 from nltk.test.unit import timing
-from nltk.test.unit.security_probes.ghsa_89p3_fcch_88ph import FLAT_BIG, FLAT_SMALL
+from nltk.test.unit.security_probes.ghsa_89p3_fcch_88ph import (
+    FLAT_BIG,
+    FLAT_ENTRIES,
+    FLAT_SMALL,
+    flat_lexicon,
+)
 from nltk.tree import Tree
 
 NUL = chr(0)
@@ -142,16 +147,21 @@ def _rows(text):
 
 class TestFlatChainScaling:
     def test_probe_shape_at_the_probe_sizes_is_linear(self):
-        # The input and sizes the probe measures, through the same helper:
-        # the cursor parser reads ~4x, the tail re-slicer it replaced 11x to 14x
+        # The lexicon and sizes the probe measures, through the same helper:
+        # the cursor parser reads ~4x, the tail re-slicer it replaced 11x to 15x
         ratio = timing.scaling_ratio(
-            lambda n: fromstring(_chain(n)), FLAT_SMALL, FLAT_BIG, cpu_bound=True
+            lambda n: fromstring(flat_lexicon(n)),
+            FLAT_SMALL,
+            FLAT_BIG,
+            cpu_bound=True,
         )
         assert ratio < timing.QUADRATIC_RATIO, ratio
 
     def test_probe_shape_is_a_real_parse(self):
-        cat = fromstring(_chain(FLAT_BIG)).categories("w")[0].categ()
-        assert _applications(cat) == FLAT_BIG
+        lex = fromstring(flat_lexicon(FLAT_BIG))
+        assert len(lex._entries) == FLAT_ENTRIES
+        for word in lex._entries:
+            assert _applications(lex.categories(word)[0].categ()) == FLAT_BIG
 
     def test_backward_and_modal_operators_are_linear(self):
         timing.assert_subquadratic(
@@ -1061,12 +1071,8 @@ _CORPUS_SEMANTICS = [
 
 
 class _Corpus:
-    """Random lexicon text from the grammar and its neighbourhood: primitives
-    with and without subscripts, nests to depth 12, both slashes with every
-    modifier combination, variables, families, unknown and lower-case and
-    digit-bearing and accented names, empty and malformed subscripts, doubled
-    and spaced and foreign operators, embedded line breaks and tabs, trailing
-    garbage, semantics blocks, comments and odd separators."""
+    """Random category and lexicon text from the grammar and its neighbourhood,
+    valid and malformed alike, for the old-versus-new equivalence check."""
 
     def __init__(self, seed):
         self.rng = random.Random(seed)
@@ -1257,6 +1263,354 @@ class TestDifferentialGeneratedCorpus:
 
 
 # ==========================================================================
+# Differential audit: complete, valid CCG inputs, short and long, with repeats
+# ==========================================================================
+
+# An English fragment using every construct of the lexicon syntax at once:
+# features, families built on families, several categories per word, modality
+# and variable-direction slashes, conjunction over var, a relativiser, comments.
+_COMPLETE_FRAGMENT = r"""
+    # primitives; S is the start
+    :- S, NP, N, PP, VP
+
+    Det :: NP[sg]/N[sg]
+    DetPl :: NP[pl]/N[pl]
+    Pro :: NP
+    IV :: S\NP
+    TV :: (S\NP)/NP
+    DTV :: TV/NP
+    Modal :: (S\NP)/VP
+    Adv :: (S\NP)\(S\NP)
+    Prep :: (NP\NP)/NP
+    Conj :: var\.,var/.,var
+    Rel :: (N[sg]\N[sg])/(S/NP)
+
+    the => Det
+    the => DetPl
+    a => Det
+    every => Det
+    I => Pro
+    you => Pro
+    we => Pro
+
+    chef => N[sg]
+    chefs => N[pl]
+    cake => N[sg]
+    cakes => N[pl]
+    dough => N[sg]
+    knife => N[sg]
+
+    bake => TV
+    bakes => TV
+    eat => TV
+    eats => TV
+    sleep => IV
+    sleeps => IV
+    give => DTV
+    gives => DTV
+    will => Modal
+    might => Modal
+    cook => VP/NP
+    eat => VP/NP
+
+    quickly => Adv
+    with => Prep
+    and => Conj
+    which => Rel
+    that => Rel
+    that => Det
+    well => (S\_NP)/(S\_NP)
+"""
+
+# The same constructs with a lambda term on every word
+_COMPLETE_SEMANTIC_FRAGMENT = r"""
+    :- S, NP, N
+    Det :: NP[sg]/N[sg]
+    Pro :: NP
+    IV :: S\NP
+    TV :: (S\NP)/NP
+    the => Det {\P Q.exists x.(P(x) & Q(x))}
+    a => Det {\P Q.exists x.(P(x) & Q(x))}
+    I => Pro {me}
+    chef => N[sg] {\x.chef(x)}
+    cake => N[sg] {\x.cake(x)}
+    sleeps => IV {\x.sleep(x)}
+    bakes => TV {\x y.bake(y,x)}
+    eat => TV {\x y.eat(y,x)}
+    and => var\.,var/.,var {\x y.(x & y)}
+"""
+
+# Sentences over the fragment and the derivations the real chart finds under
+# each rule set (measured, both parsers agreeing); 0 where nothing closes
+_COMPLETE_SENTENCES = [
+    "the chef bakes the cake",
+    "I eat the cake",
+    "the chefs eat the cakes",
+    "we will cook the dough",
+    "the chef gives the chef the cake",
+    "the chef eats the cake which I bake",
+    "I bake and eat the cake",
+    "the chef sleeps quickly",
+    "the chef eats the cake with the knife",
+    "every chef might eat a cake",
+    "the chef and the chef sleep",
+    "you sleep well",
+    "chef the bakes",
+    "the chefs sleeps",
+    "the cake",
+    "eats",
+]
+_RULE_SETS = {
+    "default": chart.DefaultRuleSet,
+    "application": chart.ApplicationRuleSet,
+    "application+composition": chart.ApplicationRuleSet + chart.CompositionRuleSet,
+    "application+composition+substitution": chart.ApplicationRuleSet
+    + chart.CompositionRuleSet
+    + chart.SubstitutionRuleSet,
+    "application+composition+substitution+type-raising": chart.ApplicationRuleSet
+    + chart.CompositionRuleSet
+    + chart.SubstitutionRuleSet
+    + chart.TypeRaiseRuleSet,
+}
+_COMPLETE_COUNTS = {
+    "default": [2, 7, 2, 19, 4, 11, 7, 1, 2, 5, 1, 0, 0, 1, 0, 0],
+    "application": [1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0],
+    "application+composition": [2, 2, 2, 5, 4, 0, 2, 1, 2, 5, 1, 0, 0, 1, 0, 0],
+    "application+composition+substitution": [
+        2,
+        2,
+        2,
+        5,
+        4,
+        0,
+        2,
+        1,
+        2,
+        5,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+    ],
+    "application+composition+substitution+type-raising": [
+        2,
+        7,
+        2,
+        19,
+        4,
+        11,
+        7,
+        1,
+        2,
+        5,
+        1,
+        0,
+        0,
+        1,
+        0,
+        0,
+    ],
+}
+
+
+# A CCGbank-style fragment: verb-form features on embedded clauses (S[b],
+# S[to], S[pss], S[em]), control, passive, questions, relatives, adjuncts
+_CCGBANK_STYLE_FRAGMENT = r"""
+    :- S, NP, N, PP
+    the => NP/N
+    a => NP/N
+    company => N
+    shares => N
+    shares => NP
+    investors => NP
+    Smith => NP
+    bought => (S\NP)/NP
+    rose => S\NP
+    fell => S\NP
+    said => (S\NP)/S[em]
+    plans => (S\NP)/(S[to]\NP)
+    plan => (S\NP)/(S[to]\NP)
+    were => (S\NP)/(S[pss]\NP)
+    buy => (S[b]\NP)/NP
+    bought => S[pss]\NP
+    to => (S[to]\NP)/(S[b]\NP)
+    that => S[em]/S
+    that => (NP\NP)/(S\NP)
+    that => (NP\NP)/(S/NP)
+    by => ((S[pss]\NP)\(S[pss]\NP))/NP
+    did => (S/(S[b]\NP))/NP
+    sharply => (S\NP)\(S\NP)
+    yesterday => (S\NP)\(S\NP)
+    in => ((S\NP)\(S\NP))/NP
+    in => (NP\NP)/NP
+    and => var\.,var/.,var
+"""
+_CCGBANK_SENTENCES = [
+    "the company bought the shares",
+    "shares rose sharply",
+    "Smith said that the shares rose",
+    "the company plans to buy shares",
+    "shares were bought by the company",
+    "did the company buy shares",
+    "the shares that the company bought rose",
+    "the company that bought shares rose",
+    "investors and the company bought shares",
+    "the company bought shares in the company yesterday",
+    "Smith said that investors plan to buy shares",
+    "the company bought and investors bought shares",
+    "company the bought",
+    "shares were buy",
+    "the company plans buy shares",
+    "rose",
+]
+_CCGBANK_COUNTS = {
+    "default": [7, 1, 12, 19, 6, 4, 8, 20, 4, 110, 635, 8, 0, 0, 0, 0],
+    "application": [1, 1, 1, 1, 1, 1, 0, 2, 1, 2, 1, 1, 0, 0, 0, 0],
+    "application+composition": [2, 1, 2, 5, 2, 4, 0, 8, 1, 6, 10, 1, 0, 0, 0, 0],
+}
+
+
+def _long_lexicon(copies, extra_words):
+    """The complete fragment declared ``copies`` times over, then ``extra_words``
+    nouns and verbs on its families: a long, valid lexicon with repeats."""
+    kinds = ("N[sg]", "N[pl]", "TV", "IV")
+    extra = "".join(
+        _name(i).lower() + " => " + kinds[i % 4] + "\n" for i in range(extra_words)
+    )
+    return _COMPLETE_FRAGMENT * copies + extra
+
+
+class TestDifferentialCompleteGrammars:
+    def test_complete_fragment_parses_identically(self):
+        lex = _both_lexicons(_COMPLETE_FRAGMENT)
+        assert lex._primitives == ["S", "NP", "N", "PP", "VP"]
+        assert sorted(lex._families) == sorted(
+            "Det DetPl Pro IV TV DTV Modal Adv Prep Conj Rel".split()
+        )
+        assert len(lex._entries) == 29
+        assert [str(c) for c in lex.categories("the")] == [
+            "(NP['sg']/N['sg'])",
+            "(NP['pl']/N['pl'])",
+        ]
+        assert [str(c) for c in lex.categories("that")] == [
+            "((N['sg']\\N['sg'])/(S/NP))",
+            "(NP['sg']/N['sg'])",
+        ]
+        assert str(lex.categories("gives")[0]) == "(((S\\NP)/NP)/NP)"
+        assert str(lex.categories("and")[0]) == "((_var0\\.,_var0)/.,_var0)"
+        assert lex.categories("well")[0].categ().dir().is_forward()
+
+    @pytest.mark.parametrize("rules", list(_RULE_SETS), ids=list(_RULE_SETS))
+    def test_complete_fragment_sentences_parse_alike_under_every_rule_set(self, rules):
+        lex = _both_lexicons(_COMPLETE_FRAGMENT)
+        parser = _DifferentialChartParser(lex, _RULE_SETS[rules])
+        counts = [len(list(parser.parse(s.split()))) for s in _COMPLETE_SENTENCES]
+        assert counts == _COMPLETE_COUNTS[rules]
+
+    def test_complete_fragment_derivation_as_the_chart_prints_it(self):
+        lex = _both_lexicons(_COMPLETE_FRAGMENT)
+        parser = _DifferentialChartParser(lex, chart.DefaultRuleSet)
+        parses = list(parser.parse("I bake and eat the cake".split()))
+        rows = _rows(_derivation_text(parses[0]))
+        assert rows[0] == "I bake and eat the cake"
+        assert rows[1] == (
+            "NP ((S\\NP)/NP) ((_var0\\.,_var0)/.,_var0) ((S\\NP)/NP) "
+            "(NP['sg']/N['sg']) N['sg']"
+        )
+        assert rows[-1] == "S"
+
+    def test_complete_semantic_fragment_parses_alike_with_its_lambda_terms(self):
+        lex = _both_lexicons(_COMPLETE_SEMANTIC_FRAGMENT, include_semantics=True)
+        parser = _DifferentialChartParser(lex, chart.DefaultRuleSet)
+        expected = {
+            "the chef sleeps": (1, "sleep(\\P.exists x.(chef(x) & P(x)))"),
+            "I eat the cake": (7, "eat(me,\\P.exists x.(cake(x) & P(x)))"),
+            "the chef bakes a cake": (
+                2,
+                "bake(\\P.exists x.(chef(x) & P(x)),\\Q.exists y.(cake(y) & Q(y)))",
+            ),
+        }
+        for sentence, (count, semantics) in expected.items():
+            parses = list(parser.parse(sentence.split()))
+            assert len(parses) == count, sentence
+            assert {str(p.label()[0].semantics()) for p in parses} == {semantics}
+
+    def test_ccgbank_style_fragment_parses_identically(self):
+        lex = _both_lexicons(_CCGBANK_STYLE_FRAGMENT)
+        assert lex._primitives == ["S", "NP", "N", "PP"]
+        assert len(lex._entries) == 22
+        assert [str(c) for c in lex.categories("that")] == [
+            "(S['em']/S)",
+            "((NP\\NP)/(S\\NP))",
+            "((NP\\NP)/(S/NP))",
+        ]
+        assert str(lex.categories("by")[0]) == "(((S['pss']\\NP)\\(S['pss']\\NP))/NP)"
+        assert str(lex.categories("did")[0]) == "((S/(S['b']\\NP))/NP)"
+
+    @pytest.mark.parametrize("rules", list(_CCGBANK_COUNTS), ids=list(_CCGBANK_COUNTS))
+    def test_ccgbank_style_sentences_parse_alike(self, rules):
+        lex = _both_lexicons(_CCGBANK_STYLE_FRAGMENT)
+        parser = _DifferentialChartParser(lex, _RULE_SETS[rules])
+        counts = [len(list(parser.parse(s.split()))) for s in _CCGBANK_SENTENCES]
+        assert counts == _CCGBANK_COUNTS[rules]
+
+    def test_ccgbank_style_derivations_as_the_chart_prints_them(self):
+        lex = _both_lexicons(_CCGBANK_STYLE_FRAGMENT)
+        parser = _DifferentialChartParser(lex, chart.DefaultRuleSet)
+        passive = _rows(
+            _derivation_text(
+                list(parser.parse("shares were bought by the company".split()))[0]
+            )
+        )
+        assert passive[0] == "shares were bought by the company"
+        assert passive[1] == (
+            "NP ((S\\NP)/(S['pss']\\NP)) (S['pss']\\NP) "
+            "(((S['pss']\\NP)\\(S['pss']\\NP))/NP) (NP/N) N"
+        )
+        assert [row for row in passive if isinstance(row, str)][2:] == [
+            "NP",
+            "((S['pss']\\NP)\\(S['pss']\\NP))",
+            "(S['pss']\\NP)",
+            "(S\\NP)",
+            "S",
+        ]
+        question = _rows(
+            _derivation_text(
+                list(parser.parse("did the company buy shares".split()))[0]
+            )
+        )
+        assert question[1] == "((S/(S['b']\\NP))/NP) (NP/N) N ((S['b']\\NP)/NP) NP"
+        assert [row for row in question if isinstance(row, str)][2:] == [
+            "NP",
+            "(S/(S['b']\\NP))",
+            "(S['b']\\NP)",
+            "S",
+        ]
+
+    @pytest.mark.parametrize("copies, extra_words", [(3, 300), (5, 1000)])
+    def test_long_lexicon_with_repeats_parses_identically(self, copies, extra_words):
+        lex = _both_lexicons(_long_lexicon(copies, extra_words))
+        # every repeated declaration is kept, in order, on both parsers
+        assert lex._primitives == ["S", "NP", "N", "PP", "VP"] * copies
+        assert lex._old_twin._primitives == lex._primitives
+        assert str(lex.start()) == "S"
+        assert len(lex._entries) == 29 + extra_words
+        assert len(lex.categories("the")) == 2 * copies
+        assert [str(c) for c in lex.categories("sleeps")] == ["(S\\NP)"] * copies
+        assert [str(c) for c in lex.categories("pa")] == ["N['sg']"]
+        # repeated identical entries leave the chart's derivations as they were
+        for rules, counts in (("default", [1, 2, 1]), ("application", [1, 1, 1])):
+            parser = _DifferentialChartParser(lex, _RULE_SETS[rules])
+            found = [
+                len(list(parser.parse(s.split())))
+                for s in ("the chef sleeps", "the chef bakes the cake", "the pa sleeps")
+            ]
+            assert found == counts, (rules, found)
+
+
+# ==========================================================================
 # The two points where the fixed parser departs from the oracle, pinned
 # ==========================================================================
 
@@ -1277,6 +1631,22 @@ class TestDeparturesFromThePreFixParser:
             _old_fromstring(":- S, VP, PP\nw => VP\n/PP\n")
         with pytest.raises(AttributeError):
             fromstring(":- S, VP, PP\nw => VP\n/PP\n")
+
+    def test_repeated_primitive_declarations_keep_the_list_and_parse_alike(self):
+        # The set is an index for the membership test only: the lexicon's list
+        # keeps every declaration, repeats and order included, as on develop
+        text = (
+            ":- S, NP, S, N\n:- NP\nDet :: NP/N\nthe => Det\ncake => N\n"
+            "sleeps => S\\NP\n"
+        )
+        lex = _both_lexicons(text)  # compares _primitives as data too
+        assert lex._primitives == ["S", "NP", "S", "N", "NP"]
+        assert lex._old_twin._primitives == ["S", "NP", "S", "N", "NP"]
+        assert str(lex.start()) == "S"
+        assert [str(c) for c in lex.categories("the")] == ["(NP/N)"]
+        parser = _DifferentialChartParser(lex, chart.DefaultRuleSet)
+        parses = list(parser.parse("the cake sleeps".split()))
+        assert len(parses) == 1 and _rows(_derivation_text(parses[0]))[-1] == "S"
 
     def test_the_cap_is_the_only_size_departure(self):
         # Exactly MAX_PARSE_LEN: both parse, identically
