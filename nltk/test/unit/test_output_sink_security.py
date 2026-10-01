@@ -4,11 +4,12 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-"""Untrusted data reaches several output sinks besides the terminal print sites:
-concordance/similar output of a loaded (possibly hostile) corpus, the WordNet
-browser's served HTML (CWE-79), the downloader's Unzipping status line, and the
-Jupyter tree SVG. These tests drive the real code paths (no mocks) and confirm a
-control sequence or markup payload cannot survive to the sink."""
+"""The Jupyter tree SVG is an output sink reached by untrusted labels (a tree
+built from a hostile corpus): every <text> node must carry the label XML-escaped,
+never raw markup (CWE-79). The real svgling renderer runs; nothing is mocked.
+The concordance sink this file once pinned is driven by
+test_print_routing_end_to_end.py; the terminal and CSV matrices are in
+test_termsec_attack_matrix.py and test_csv_injection_security.py."""
 
 import re
 
