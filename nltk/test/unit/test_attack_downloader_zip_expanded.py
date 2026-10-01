@@ -31,6 +31,8 @@ import ipaddress
 import os
 import socket
 import stat
+import subprocess
+import sys
 import threading
 import time
 import tracemalloc
@@ -1345,12 +1347,18 @@ class TestUnzip:
         assert result is True, output
         assert (dl / "corpora" / "tiny" / "words.txt").read_bytes() == WORDS
 
-    def test_re_extraction_over_a_multiply_linked_file_is_refused(self, box):
+    def test_re_extraction_never_writes_through_a_multiply_linked_file(self, box):
+        """A hardlink to another file standing where a package file belongs is
+        never written through: it is stale state (a second name for someone
+        else's bytes, whatever its size), so the entry is unlinked and the
+        package file written afresh, and the other file keeps its bytes and
+        its mtime. The extractor itself refuses to write through such an
+        entry when no cleanup precedes it (the pre-planted matrix below)."""
         root, outside, dl, server = box
         entries = [("tiny/", b""), ("tiny/words.txt", WORDS)]
         assert install(server, dl, "tiny", entries)[0] is True
         secret = outside / "secret.txt"
-        secret.write_bytes(WORDS)  # same size and bytes: the tree still looks installed
+        secret.write_bytes(WORDS)  # same size and bytes: the size sum still matches
         placed = dl / "corpora" / "tiny" / "words.txt"
         placed.unlink()
         try:
@@ -1358,10 +1366,16 @@ class TestUnzip:
         except OSError:
             pytest.skip("cannot hardlink across these directories")
         secret_before = secret.stat()
+        d = downloader.Downloader(
+            server_index_url=server.url("/index.xml"), download_dir=str(dl)
+        )
+        assert d.status("tiny") == downloader.Downloader.STALE
         result, output = run_download(server.url("/index.xml"), dl, "tiny", force=True)
-        assert result is False
+        assert result is True, output
         assert secret.read_bytes() == WORDS
         assert secret.stat().st_mtime_ns == secret_before.st_mtime_ns
+        assert secret.stat().st_nlink == 1 and placed.stat().st_nlink == 1
+        assert placed.read_bytes() == WORDS and not os.path.samefile(secret, placed)
 
     @needs_symlink
     def test_stale_cleanup_does_not_follow_a_subdir_swapped_for_a_symlink(
@@ -2022,3 +2036,412 @@ class TestDeclaredUnzippedSize:
         )
         assert any(isinstance(m, downloader.ErrorMessage) for m in messages)
         assert bytes_on_disk(str(dl / "corpora" / "tiny")) == 0
+
+
+# ===========================================================================
+# 12. A private archive (0600) serves other accounts through extraction (#3928)
+# ===========================================================================
+POSIX_NON_ROOT = pytest.mark.skipif(
+    os.name != "posix" or os.geteuid() == 0,
+    reason="needs POSIX permission bits and an account that mode 000 stops",
+)
+
+
+def _mode(path):
+    return stat.S_IMODE(os.lstat(path).st_mode)
+
+
+@contextlib.contextmanager
+def _umask(value):
+    old = os.umask(value)
+    try:
+        yield
+    finally:
+        os.umask(old)
+
+
+class TestExtractOption:
+    """The downloaded archive stays private to the installing account (0600,
+    the CWE-377/378 guard); an install another account must read is extracted,
+    and the extracted files are what that account is served."""
+
+    @POSIX_NON_ROOT
+    def test_extract_unpacks_a_package_the_index_leaves_zipped(self, box, monkeypatch):
+        root, outside, dl, server = box
+        index = serve_packages(server, [("tiny", tiny_package(), {"unzip": "0"})])
+        monkeypatch.setattr(nltk.data, "path", [str(dl)])
+        with _umask(0o022):
+            result, text = run_download(index, dl, "tiny", quiet=True, extract=True)
+        assert result is True, text
+        archive = dl / "corpora" / "tiny.zip"
+        unpacked = dl / "corpora" / "tiny"
+        assert _mode(archive) == 0o600
+        assert _mode(unpacked) == 0o755 and _mode(unpacked / "words.txt") == 0o644
+        found = nltk.data.find("corpora/tiny/words.txt")
+        assert isinstance(found, nltk.data.FileSystemPathPointer)
+        with found.open() as fh:
+            assert fh.read() == WORDS
+
+        # Now as the account that did not install it: the archive is closed to
+        # it, the extracted files are served, and the startup idiom
+        # nltk.download('tiny') reports it installed instead of failing.
+        os.chmod(archive, 0)
+        try:
+            assert not os.access(archive, os.R_OK)
+            found = nltk.data.find("corpora/tiny/words.txt")
+            assert isinstance(found, nltk.data.FileSystemPathPointer)
+            d = downloader.Downloader(server_index_url=index, download_dir=str(dl))
+            assert d.status("tiny") == downloader.Downloader.INSTALLED
+            result, text = run_download(index, dl, "tiny", quiet=True)
+            assert result is True, text
+            assert _mode(archive) == 0 and tree(unpacked)  # nothing rewritten
+        finally:
+            os.chmod(archive, 0o600)
+
+    @POSIX_NON_ROOT
+    def test_no_extract_keeps_the_index_choice_and_the_other_account_is_told(
+        self, box, monkeypatch
+    ):
+        root, outside, dl, server = box
+        index = serve_packages(server, [("tiny", tiny_package(), {"unzip": "0"})])
+        monkeypatch.setattr(nltk.data, "path", [str(dl)])
+        with _umask(0o022):
+            result, text = run_download(index, dl, "tiny", quiet=True, extract=False)
+        assert result is True, text
+        archive = dl / "corpora" / "tiny.zip"
+        assert _mode(archive) == 0o600 and not (dl / "corpora" / "tiny").exists()
+        assert isinstance(
+            nltk.data.find("corpora/tiny/words.txt"), nltk.data.ZipFilePathPointer
+        )
+        os.chmod(archive, 0)
+        try:
+            with pytest.raises(LookupError) as exc:
+                nltk.data.find("corpora/tiny/words.txt")
+            s = str(exc.value)
+            assert "Found but could not read (permission denied):" in s
+            assert f"python -m nltk.downloader --extract -d {str(dl)!r} tiny" in s
+            assert "nltk.download('tiny', extract=True)" in s
+            assert "chmod -R a+rX" not in s  # the archive stays private by design
+            d = downloader.Downloader(server_index_url=index, download_dir=str(dl))
+            # unusable to this account and nothing extracted: not installed
+            assert d.status("tiny") == downloader.Downloader.NOT_INSTALLED
+        finally:
+            os.chmod(archive, 0o600)
+
+    def test_extract_keeps_every_extraction_guard(self, box, monkeypatch):
+        """extract=True goes through the same hardened extractor: a member that
+        escapes its package directory is refused exactly as for unzip='1'."""
+        root, outside, dl, server = box
+        blob = make_zip([("tiny/", b""), ("other/escape.txt", b"x")])
+        index = serve_packages(server, [("tiny", blob, {"unzip": "0"})])
+        result, text = run_download(index, dl, "tiny", quiet=True, extract=True)
+        assert result is False
+        assert not (dl / "corpora" / "other").exists()
+        assert not (dl / "corpora" / "tiny" / "escape.txt").exists()
+
+    @POSIX_NON_ROOT
+    def test_extraction_is_automatic_for_a_shared_install(self, box, monkeypatch):
+        """Made as root, or into a directory outside the installing account's
+        home, a download is evidently for other accounts too and is extracted
+        without being asked; inside the home the index's choice stands."""
+        root, outside, dl, server = box
+        shared = downloader._shared_install
+        monkeypatch.setenv("HOME", str(root))
+        assert shared(str(dl)) is False  # under this account's home
+        assert shared(str(root)) is False
+        monkeypatch.setenv("HOME", str(outside))
+        assert shared(str(dl)) is True  # a system or image location
+        real_geteuid = os.geteuid
+        monkeypatch.setattr(os, "geteuid", lambda: 0)
+        monkeypatch.setenv("HOME", str(root))
+        assert shared(str(dl)) is True  # root installs for everyone
+        monkeypatch.setattr(os, "geteuid", real_geteuid)
+        monkeypatch.setattr(nltk.data, "path", [str(dl)])
+
+        index = serve_packages(server, [("tiny", tiny_package(), {"unzip": "0"})])
+        monkeypatch.setenv("HOME", str(root))
+        result, text = run_download(index, dl, "tiny", quiet=True)
+        assert result is True, text
+        assert not (dl / "corpora" / "tiny").exists()  # the index's choice
+        result, text = run_download(index, dl, "tiny", quiet=True, force=True)
+        monkeypatch.setenv("HOME", str(outside))
+        result, text = run_download(index, dl, "tiny", quiet=True, force=True)
+        assert result is True, text
+        assert (dl / "corpora" / "tiny" / "words.txt").is_file()  # extracted
+        assert _mode(dl / "corpora" / "tiny.zip") == 0o600
+
+    def test_the_cli_exposes_extract(self):
+        completed = subprocess.run(
+            [sys.executable, "-m", "nltk.downloader", "--help"],
+            capture_output=True,
+            text=True,
+            timeout=120,
+            env={
+                **os.environ,
+                "PYTHONPATH": os.path.dirname(os.path.dirname(nltk.__file__)),
+            },
+        )
+        assert completed.returncode == 0, completed.stderr
+        assert (
+            "-x, --extract" in completed.stdout and "--no-extract" in completed.stdout
+        )
+
+
+# ===========================================================================
+# 13. The extraction route itself: hostile members and hostile target state
+# ===========================================================================
+def _symlink_member(name, target):
+    info = zipfile.ZipInfo(name)
+    info.external_attr = 0o120777 << 16
+    info.create_system = 3
+    return (info, target.encode())
+
+
+def _big_member(name, size):
+    info = zipfile.ZipInfo(name)
+    info.compress_type = zipfile.ZIP_DEFLATED
+    return (info, b"\0" * size)
+
+
+def _links_under(path):
+    return [
+        os.path.join(top, name)
+        for top, dirs, files in os.walk(path)
+        for name in dirs + files
+        if os.path.islink(os.path.join(top, name))
+    ]
+
+
+HOSTILE_ARCHIVES = {
+    "zip-slip": [("h/", b""), ("h/../../escape.txt", b"x"), ("h/ok.txt", b"ok")],
+    "absolute-member": [("h/", b""), ("/tmp/escape.txt", b"x"), ("h/ok.txt", b"ok")],
+    "symlink-then-file-through-it": [
+        ("h/", b""),
+        _symlink_member("h/esc", ".."),
+        ("h/esc/escape.txt", b"x"),
+    ],
+    "member-outside-the-package": [("h/", b""), ("other/x.txt", b"x")],
+    "colliding-members": [("h/", b""), ("h/a.txt", b"first"), ("h/a.txt", b"second")],
+    "case-colliding-members": [("h/", b""), ("h/A.txt", b"1"), ("h/a.txt", b"2")],
+    "bomb-member-accurate-size": [
+        ("h/", b""),
+        _big_member("h/z.bin", 64 * 1024 * 1024),
+    ],
+}
+
+
+class TestExtractRouteAttackMatrix:
+    """extract=True (and the automatic extraction of a shared install) goes
+    through the one hardened extractor: every hostile archive is refused with
+    nothing written outside the package directory, no link created, and a
+    benign package still extracts and serves."""
+
+    @pytest.mark.parametrize("shape", sorted(HOSTILE_ARCHIVES), ids=str)
+    def test_hostile_archive_is_refused_and_writes_nothing_outside(self, box, shape):
+        root, outside, dl, server = box
+        before = sorted(os.listdir(outside)) + sorted(os.listdir(root))
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")  # duplicate names are deliberate
+            blob = make_zip(HOSTILE_ARCHIVES[shape])
+        index = serve_packages(server, [("h", blob, {"unzip": "0"})])
+        result, text = run_download(index, dl, "h", quiet=True, extract=True)
+        assert result is False, text
+        assert not (dl / "corpora" / "h" / "ok.txt").exists()
+        assert not (dl / "corpora" / "other").exists()
+        assert not _links_under(str(dl))
+        assert sorted(os.listdir(outside)) + sorted(os.listdir(root)) == before
+        assert not os.path.exists("/tmp/escape.txt")
+
+    def test_a_bomb_the_index_lies_about_is_refused_by_the_declared_size(self, box):
+        root, outside, dl, server = box
+        blob = make_zip([("h/", b""), _big_member("h/z.bin", 64 * 1024 * 1024)])
+        index = serve_packages(
+            server, [("h", blob, {"unzip": "0", "unzipped_size": "10"})]
+        )
+        result, text = run_download(index, dl, "h", quiet=True, extract=True)
+        assert result is False and not (dl / "corpora" / "h" / "z.bin").exists()
+
+    def test_a_symlink_member_becomes_a_plain_file_never_a_link(self, box):
+        root, outside, dl, server = box
+        blob = make_zip(
+            [("h/", b""), _symlink_member("h/link", str(outside)), ("h/ok.txt", b"ok")]
+        )
+        index = serve_packages(server, [("h", blob, {"unzip": "0"})])
+        result, text = run_download(index, dl, "h", quiet=True, extract=True)
+        assert result is True, text
+        link = dl / "corpora" / "h" / "link"
+        assert link.is_file() and not link.is_symlink()
+        assert not _links_under(str(dl))
+
+    def test_a_nested_archive_is_a_plain_member_not_extracted(self, box):
+        root, outside, dl, server = box
+        inner = make_zip([("../../escape.txt", b"x")])
+        blob = make_zip([("h/", b""), ("h/inner.zip", inner)])
+        index = serve_packages(server, [("h", blob, {"unzip": "0"})])
+        result, text = run_download(index, dl, "h", quiet=True, extract=True)
+        assert result is True, text
+        assert (dl / "corpora" / "h" / "inner.zip").is_file()
+        assert sorted(os.listdir(dl / "corpora" / "h")) == ["inner.zip"]
+        assert (
+            not (root / "escape.txt").exists() and not (outside / "escape.txt").exists()
+        )
+
+    def test_many_members_extract_in_bounded_time(self, box):
+        root, outside, dl, server = box
+        blob = make_zip([("h/", b"")] + [(f"h/f{i}.txt", b"x") for i in range(3000)])
+        index = serve_packages(server, [("h", blob, {"unzip": "0"})])
+        with timing.budget(60, "extracting 3000 members"):
+            result, text = run_download(index, dl, "h", quiet=True, extract=True)
+        assert result is True, text
+        assert len(os.listdir(dl / "corpora" / "h")) == 3000
+
+    @pytest.mark.skipif(os.name != "posix", reason="symlinks and hardlinks as on POSIX")
+    def test_pre_planted_links_at_the_target_never_reach_their_victims(self, box):
+        """A link planted where the extractor will write, before the archive is
+        there (refused) and next to an archive already downloaded (stale state:
+        the link entry itself is removed, never followed, and the package is
+        re-extracted), leaves the victim untouched and no link behind."""
+        root, outside, dl, server = box
+        corpora = dl / "corpora"
+        corpora.mkdir(exist_ok=True)
+        victim = outside / "victim.txt"
+
+        def plant(pid, kind):
+            target = corpora / pid
+            if kind == "dir-symlink":
+                os.symlink(str(outside), str(target))
+            else:
+                target.mkdir(exist_ok=True)
+                victim.write_text("VICTIM")
+                if kind == "file-symlink":
+                    os.symlink(str(victim), str(target / "ok.txt"))
+                else:
+                    try:
+                        os.link(str(victim), str(target / "ok.txt"))
+                    except OSError:
+                        pytest.skip("cross-dir hardlink not permitted here")
+
+        for kind in ("dir-symlink", "file-symlink", "file-hardlink"):
+            pid = kind.replace("-", "")
+            blob = make_zip([(f"{pid}/", b""), (f"{pid}/ok.txt", b"ATTACK")])
+            index = serve_packages(server, [(pid, blob, {"unzip": "0"})])
+            # 1. nothing downloaded yet: the planted entry is met and refused
+            plant(pid, kind)
+            result, text = run_download(index, dl, pid, quiet=True, extract=True)
+            assert result is False, (kind, text)
+            assert not (outside / "ok.txt").exists()
+            if kind != "dir-symlink":
+                assert victim.read_text() == "VICTIM"
+            # 2. the archive is now on disk, so the planted entry is stale
+            #    state: cleaned as an entry, never followed, then re-extracted
+            result, text = run_download(index, dl, pid, quiet=True, extract=True)
+            assert result is True, (kind, text)
+            written = corpora / pid / "ok.txt"
+            assert written.is_file() and not written.is_symlink(), kind
+            assert written.read_bytes() == b"ATTACK", kind
+            assert os.stat(written).st_nlink == 1, kind
+            if kind != "dir-symlink":
+                assert victim.read_text() == "VICTIM"
+            assert not (outside / "ok.txt").exists()
+            assert not _links_under(str(dl))
+
+    @pytest.mark.skipif(os.name != "posix", reason="hardlinks as on POSIX")
+    def test_a_same_size_hardlink_between_two_package_files_is_stale(self, box):
+        """Two package files of the same size where one is replaced by a second
+        name for the other keep the size sum intact; the install is stale all
+        the same and re-extraction restores two distinct files."""
+        root, outside, dl, server = box
+        blob = make_zip([("h/", b""), ("h/a.txt", b"AAAAAA"), ("h/b.txt", b"BBBBBB")])
+        index = serve_packages(server, [("h", blob, {"unzip": "0"})])
+        result, text = run_download(index, dl, "h", quiet=True, extract=True)
+        assert result is True, text
+        a, b = dl / "corpora" / "h" / "a.txt", dl / "corpora" / "h" / "b.txt"
+        b.unlink()
+        os.link(str(a), str(b))
+        assert b.read_bytes() == b"AAAAAA"
+        d = downloader.Downloader(server_index_url=index, download_dir=str(dl))
+        assert d.status("h") == downloader.Downloader.STALE
+        result, text = run_download(index, dl, "h", quiet=True, extract=True)
+        assert result is True, text
+        assert b.read_bytes() == b"BBBBBB" and a.read_bytes() == b"AAAAAA"
+        assert a.stat().st_nlink == 1 and b.stat().st_nlink == 1
+
+    @pytest.mark.skipif(
+        os.name != "posix" or os.geteuid() == 0,
+        reason="needs POSIX permission bits and an account the mode bits stop",
+    )
+    def test_a_package_file_writable_by_others_is_stale_and_restored(
+        self, box, monkeypatch
+    ):
+        """A same-size rewrite by another account needs a file it can write:
+        such a file makes the install stale, find() refuses it, and the next
+        download restores it private to its owner with the package bytes."""
+        root, outside, dl, server = box
+        blob = make_zip([("h/", b""), ("h/a.txt", b"genuine!")])
+        index = serve_packages(server, [("h", blob, {"unzip": "0"})])
+        result, text = run_download(index, dl, "h", quiet=True, extract=True)
+        assert result is True, text
+        a = dl / "corpora" / "h" / "a.txt"
+        a.write_bytes(b"PLANTED!")  # same name, same size
+        os.chmod(a, 0o666)
+        d = downloader.Downloader(server_index_url=index, download_dir=str(dl))
+        assert d.status("h") == downloader.Downloader.STALE
+        monkeypatch.setattr(nltk.data, "path", [str(dl)])
+        # the planted file is refused; the private archive beside it, which
+        # only the installer can read, then serves the genuine bytes
+        with pytest.warns(RuntimeWarning, match="writable by, or owned by"):
+            found = nltk.data.find("corpora/h/a.txt")
+        assert isinstance(found, nltk.data.ZipFilePathPointer)
+        with found.open() as fh:
+            assert fh.read() == b"genuine!"
+        os.chmod(dl / "corpora" / "h.zip", 0)  # as the account that did not install
+        try:
+            with pytest.warns(RuntimeWarning, match="writable by, or owned by"):
+                with pytest.raises(LookupError) as exc:
+                    nltk.data.find("corpora/h/a.txt")
+            assert "Refused, writable" in str(exc.value)
+            assert "Found but could not read" in str(exc.value)
+        finally:
+            os.chmod(dl / "corpora" / "h.zip", 0o600)
+        result, text = run_download(index, dl, "h", quiet=True, extract=True)
+        assert result is True, text
+        assert a.read_bytes() == b"genuine!" and _mode(a) == 0o644
+        assert (
+            downloader.Downloader(server_index_url=index, download_dir=str(dl)).status(
+                "h"
+            )
+            == downloader.Downloader.INSTALLED
+        )
+        assert isinstance(
+            nltk.data.find("corpora/h/a.txt"), nltk.data.FileSystemPathPointer
+        )
+
+    def test_a_rogue_extra_file_at_the_target_is_never_deleted_but_reported(
+        self, box, monkeypatch
+    ):
+        root, outside, dl, server = box
+        blob = make_zip([("h/", b""), ("h/ok.txt", b"ok")])
+        index = serve_packages(server, [("h", blob, {"unzip": "0"})])
+        target = dl / "corpora" / "h"
+        target.mkdir(parents=True)
+        (target / "rogue.pickle").write_bytes(b"\x80\x04.")
+        result, text = run_download(index, dl, "h", quiet=True, extract=True)
+        assert result is False and "out of date" in text
+        assert (target / "rogue.pickle").exists() and (
+            target / "ok.txt"
+        ).read_bytes() == b"ok"
+        d = downloader.Downloader(server_index_url=index, download_dir=str(dl))
+        assert d.status("h") == downloader.Downloader.STALE
+        monkeypatch.setattr(nltk.data, "path", [str(dl)])
+        assert isinstance(
+            nltk.data.find("corpora/h/ok.txt"), nltk.data.FileSystemPathPointer
+        )
+
+    def test_a_benign_package_extracts_and_serves(self, box, monkeypatch):
+        root, outside, dl, server = box
+        index = serve_packages(server, [("tiny", tiny_package(), {"unzip": "0"})])
+        result, text = run_download(index, dl, "tiny", quiet=True, extract=True)
+        assert result is True, text
+        monkeypatch.setattr(nltk.data, "path", [str(dl)])
+        with nltk.data.find("corpora/tiny/words.txt").open() as fh:
+            assert fh.read() == WORDS

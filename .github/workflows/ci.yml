@@ -159,6 +159,20 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo chmod -R go-w /usr/lib/jvm
 
+      - name: Data installed by root must serve the runner through extraction (Linux, #3928)
+        # Root installs the packages (docker build, sudo python -m nltk.downloader)
+        # with the reporter's unchanged command: a root install extracts on its
+        # own, the archive stays private to root (0600), the runner reads files.
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo "$(which python)" -m nltk.downloader -d /usr/local/share/nltk_data wordnet stopwords
+          ls -la /usr/local/share/nltk_data/corpora
+          test ! -r /usr/local/share/nltk_data/corpora/wordnet.zip
+          test -r /usr/local/share/nltk_data/corpora/wordnet/data.noun
+          NLTK_DATA=/usr/local/share/nltk_data python -c "from nltk.stem import WordNetLemmatizer; assert WordNetLemmatizer().lemmatize('bearings') == 'bearing'; from nltk.corpus import stopwords; assert 'the' in stopwords.words('english'); import nltk; assert nltk.download('wordnet', quiet=True); print('root-installed data serves', __import__('getpass').getuser(), 'through the extracted files')"
+
       - name: Ensure minimal NLTK data for cache
         shell: bash
         run: |
@@ -356,6 +370,24 @@ jobs:
           else
             pytest --numprocesses auto -rsx --doctest-modules nltk
           fi
+
+  docker-cross-account:
+    name: Docker root build, appuser runtime (#3928)
+    # The reporter's shape run for real: a python:3.11-slim image built from
+    # this checkout downloads the data as root and runs as an unprivileged
+    # user that must be served the extracted files, never the private archive.
+    needs: [changes]
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the image from this checkout and run it as appuser
+        run: |
+          set -euo pipefail
+          docker build -t nltk-3928 -f .github/docker/cross-account.Dockerfile .
+          docker run --rm nltk-3928
 
   advisory-coverage:
     name: Advisory coverage (GitHub)
