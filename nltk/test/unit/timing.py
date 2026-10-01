@@ -193,6 +193,34 @@ def _children_cpu_seconds():
     return usage.ru_utime + usage.ru_stime
 
 
+def _process_cpu_seconds(process):
+    """CPU seconds a finished ``subprocess.Popen`` spent, read from its process
+    handle on Windows (kernel plus user time, kept until the handle closes), or
+    ``None`` where the handle or the call is not available."""
+    handle = getattr(process, "_handle", None)
+    if handle is None:
+        return None
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        times = [wintypes.FILETIME() for _ in range(4)]
+        kernel32.GetProcessTimes.argtypes = [wintypes.HANDLE] + [
+            ctypes.POINTER(wintypes.FILETIME)
+        ] * 4
+        kernel32.GetProcessTimes.restype = wintypes.BOOL
+        if not kernel32.GetProcessTimes(int(handle), *map(ctypes.byref, times)):
+            return None
+    except (AttributeError, OSError, TypeError, ValueError):
+        return None  # not Windows, or the handle cannot be queried
+    kernel, user = times[2], times[3]
+    # a FILETIME counts 100 ns intervals in two 32 bit halves
+    return sum(
+        ((t.dwHighDateTime << 32) | t.dwLowDateTime) / 1e7 for t in (kernel, user)
+    )
+
+
 def _child_main(target, args, report_q):
     """Run ``target(*args)`` in the child and report its (CPU, wall) seconds.
 
@@ -305,22 +333,41 @@ def run_subprocess(cmd, budget, hard_deadline=None, cpu_bound=None, **kwargs):
 
     Returns ``(completed, run)``: ``completed`` is the ``CompletedProcess`` or
     ``None`` when the command was still running at ``hard_deadline`` (a hang,
-    killed), and ``run`` is a :class:`ChildRun` charging the reaped children's
-    CPU time where the platform reports it and the wall time otherwise.
+    killed), and ``run`` is a :class:`ChildRun` charging the child's CPU time:
+    the reaped children's clock where the platform keeps one, the process
+    handle's own times on Windows (which keeps no such clock, so a child used
+    to be charged its wall time there, interpreter start-up and imports under a
+    loaded runner included), and the wall time where neither can be read.
+    ``capture_output``, ``input`` and ``check`` work as in ``subprocess.run``.
     """
     import subprocess
 
     if hard_deadline is None:
         hard_deadline = hard_deadline_for(budget)
+    if kwargs.pop("capture_output", False):
+        kwargs["stdout"] = kwargs["stderr"] = subprocess.PIPE
+    check = kwargs.pop("check", False)
+    stdin_data = kwargs.pop("input", None)
+    if stdin_data is not None:
+        kwargs["stdin"] = subprocess.PIPE
     children_before = _children_cpu_seconds()
     started = time.perf_counter()
-    try:
-        completed = subprocess.run(cmd, timeout=hard_deadline, **kwargs)
-    except subprocess.TimeoutExpired:
-        return None, ChildRun(False, None, None, time.perf_counter() - started, budget)
-    wall = time.perf_counter() - started
-    children_after = _children_cpu_seconds()
-    cpu = None
-    if children_before is not None and children_after is not None:
-        cpu = children_after - children_before
+    with subprocess.Popen(cmd, **kwargs) as process:
+        try:
+            out, err = process.communicate(stdin_data, timeout=hard_deadline)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait()
+            return None, ChildRun(
+                False, None, None, time.perf_counter() - started, budget
+            )
+        wall = time.perf_counter() - started
+        children_after = _children_cpu_seconds()
+        if children_before is not None and children_after is not None:
+            cpu = children_after - children_before
+        else:
+            cpu = _process_cpu_seconds(process)  # the handle is still open here
+    completed = subprocess.CompletedProcess(process.args, process.returncode, out, err)
+    if check:
+        completed.check_returncode()
     return completed, ChildRun(True, completed.returncode, cpu, wall, budget, cpu_bound)
