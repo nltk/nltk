@@ -1299,3 +1299,34 @@ class TestValuationLeadingWhitespaceRuns:  # sem/evaluate.py, the three splitter
         _trips_backstop(_PRE_FIX["val_split"], "split", " " * 20000 + "a=>b")
         _trips_backstop(_PRE_FIX["element_split"], "split", " " * 60000 + "a,")
         _trips_backstop(_PRE_FIX["tuples"], "findall", " " * 60000 + "(a", re.VERBOSE)
+
+
+class TestRelextractInRelationLookahead:  # sem/relextract.py in_demo IN pattern
+    def test_benign_matches_unchanged(self):
+        from nltk.sem.relextract import _IN_RE
+
+        assert _IN_RE.match("based in") is not None
+        assert _IN_RE.match("a company in the") is not None
+        assert _IN_RE.match("in the making") is None
+        assert _IN_RE.match("within") is None
+
+    def test_many_in_before_an_ing_is_linear(self):
+        from nltk.sem.relextract import _IN_RE
+
+        _assert_subquadratic(
+            lambda n: _IN_RE.match("in " * (n // 3) + "ing"), 40000, 160000
+        )
+
+    def test_shipped_pattern_matches_the_pre_fix_pattern(self):
+        from nltk.sem.relextract import _IN_RE
+
+        assert _IN_RE.pattern != _PRE_FIX["in_relation"]
+        texts = [
+            "", "in", "in ing", "in x ing", "a in b", "in in", "bin", "in\ting", "going in",
+            "in in ing", "x in y ing z", "in ing in", "inn in", "in-in", "in " * 10 + "ing",
+            "in " * 10 + "x", "ing in", "in ing" * 3,
+        ]  # fmt: skip
+        _same_results(_PRE_FIX["in_relation"], _IN_RE.pattern, "match", texts)
+
+    def test_pre_fix_pattern_has_teeth(self):
+        _trips_backstop(_PRE_FIX["in_relation"], "match", "in " * 60000 + "ing")
