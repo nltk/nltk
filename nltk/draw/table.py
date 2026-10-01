@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Table widget
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -1153,11 +1153,11 @@ def demo():
         for synset in wordnet.synsets(word):
             try:
                 hyper_def = synset.hypernyms()[0].definition()
-            except:
+            except Exception:
                 hyper_def = "*none*"
             try:
                 hypo_def = synset.hypernyms()[0].definition()
-            except:
+            except Exception:
                 hypo_def = "*none*"
             table.append([word, synset.definition(), hyper_def, hypo_def])
 

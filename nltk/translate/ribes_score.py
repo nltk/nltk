@@ -1,6 +1,6 @@
 # Natural Language Toolkit: RIBES Score
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Contributors: Katsuhito Sudoh, Liling Tan, Kasramvd, J.F.Sebastian
 #               Mark Byers, ekhumoro, P. Ortiz
 # URL: <https://www.nltk.org/>
@@ -8,7 +8,7 @@
 """RIBES score implementation"""
 
 import math
-from itertools import islice
+from itertools import combinations, islice
 
 from nltk.util import choose, ngrams
 
@@ -46,6 +46,9 @@ def sentence_ribes(references, hypothesis, alpha=0.25, beta=0.10):
     :return: The best ribes score from one of the references.
     :rtype: float
     """
+    if not references or not hypothesis:
+        return 0.0
+
     best_ribes = -1.0
     # Calculates RIBES for each reference and returns the best score.
     for reference in references:
@@ -99,7 +102,7 @@ def corpus_ribes(list_of_references, hypotheses, alpha=0.25, beta=0.10):
     >>> list_of_references = [[ref1a, ref1b, ref1c], [ref2a]]
     >>> hypotheses = [hyp1, hyp2]
     >>> round(corpus_ribes(list_of_references, hypotheses),4)
-    0.3597
+    0.633
 
     :param references: a corpus of lists of reference sentences, w.r.t. hypotheses
     :type references: list(list(list(str)))
@@ -112,6 +115,13 @@ def corpus_ribes(list_of_references, hypotheses, alpha=0.25, beta=0.10):
     :return: The best ribes score from one of the references.
     :rtype: float
     """
+    if not hypotheses:
+        return 0.0
+    if len(list_of_references) != len(hypotheses):
+        raise ValueError(
+            "The number of reference sets must match the number of hypotheses."
+        )
+
     corpus_best_ribes = 0.0
     # Iterate through each hypothesis and their corresponding references.
     for references, hypothesis in zip(list_of_references, hypotheses):
@@ -145,6 +155,16 @@ def position_of_ngram(ngram, sentence):
         # Returns the index of the word when ngram matches.
         if ngram == sublist:
             return i
+
+
+#: Maximum reference/hypothesis length accepted by :func:`word_rank_alignment`.
+#: The alignment search is super-linear in sentence length; the earlier
+#: memoisation fix bounds its *memory*, but when an attacker controls BOTH
+#: sequences with low-cardinality tokens the per-position window loop still runs
+#: to ``len(reference)`` (it never hits the one-to-one early break), so time
+#: stays O(n^2)-O(n^3) (CWE-407). Real MT sentences are far shorter than this
+#: cap; raise it for genuinely long sequences.
+MAX_ALIGNMENT_LEN = 2000
 
 
 def word_rank_alignment(reference, hypothesis, character_based=False):
@@ -182,17 +202,69 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
     :param hypothesis: a hypothesis sentence
     :type hypothesis: list(str)
     """
+    if max(len(reference), len(hypothesis)) > MAX_ALIGNMENT_LEN:
+        raise ValueError(
+            f"word_rank_alignment: sequence length exceeds MAX_ALIGNMENT_LEN "
+            f"({MAX_ALIGNMENT_LEN}); the alignment search is super-linear in "
+            "sentence length (CWE-407). Raise "
+            "nltk.translate.ribes_score.MAX_ALIGNMENT_LEN for longer sequences."
+        )
     worder = []
     hyp_len = len(hypothesis)
-    # Stores a list of possible ngrams from the reference sentence.
-    # This is used for matching context window later in the algorithm.
-    ref_ngrams = []
-    hyp_ngrams = []
-    for n in range(1, len(reference) + 1):
-        for ng in ngrams(reference, n):
-            ref_ngrams.append(ng)
-        for ng in ngrams(hypothesis, n):
-            hyp_ngrams.append(ng)
+    # Count how many times an n-gram occurs as a (possibly overlapping)
+    # contiguous subsequence, on demand and memoised. The previous version
+    # eagerly materialised every n-gram for n = 1..len(reference) -- O(L^2)
+    # tuples whose sizes sum to O(L^3) memory -- and then called ``list.count``
+    # (an O(L^2) scan) for every context window, giving up to O(L^4) time: a
+    # remote CPU/memory DoS on attacker-supplied token lists (CWE-407).
+    # ``list.count`` over that full n-gram list is exactly the number of
+    # contiguous occurrences of the n-gram in the sequence, which we compute
+    # here in O(len(sequence)) with Knuth-Morris-Pratt and cache, so each
+    # distinct n-gram is counted once and the eager, quadratic-sized n-gram
+    # lists are no longer built (only the individual context-window tuples the
+    # loop already created are used).
+    ngram_count_cache = {}
+
+    def count_ngram(sequence, seq_id, ngram):
+        # Memoise by (seq_id, ngram); this needs the n-gram (hence its tokens)
+        # to be hashable. ``list.count`` only relied on equality, so fall back
+        # to an uncached count for unhashable tokens to keep the same input
+        # types working (KMP below also only uses ==).
+        key = (seq_id, ngram)
+        try:
+            cached = ngram_count_cache.get(key)
+        except TypeError:
+            key = None
+            cached = None
+        if cached is not None:
+            return cached
+        m = len(ngram)
+        count = 0
+        if 0 < m <= len(sequence):
+            # KMP prefix function of the pattern (the n-gram).
+            prefix = [0] * m
+            k = 0
+            for j in range(1, m):
+                while k and ngram[j] != ngram[k]:
+                    k = prefix[k - 1]
+                if ngram[j] == ngram[k]:
+                    k += 1
+                prefix[j] = k
+            # Scan the sequence, counting overlapping matches (as ``ngrams``
+            # enumerates every window, ``list.count`` counts overlaps too).
+            k = 0
+            for token in sequence:
+                while k and token != ngram[k]:
+                    k = prefix[k - 1]
+                if token == ngram[k]:
+                    k += 1
+                    if k == m:
+                        count += 1
+                        k = prefix[k - 1]
+        if key is not None:
+            ngram_count_cache[key] = count
+        return count
+
     for i, h_word in enumerate(hypothesis):
         # If word is not in the reference, continue.
         if h_word not in reference:
@@ -202,13 +274,23 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
         elif hypothesis.count(h_word) == reference.count(h_word) == 1:
             worder.append(reference.index(h_word))
         else:
-            max_window_size = max(i, hyp_len - i + 1)
+            # A context window longer than the reference can never occur in it
+            # (its reference count is 0), so it can never satisfy the
+            # match-once test below -- cap the search there. This is
+            # behaviour-preserving (it only drops windows that could never
+            # match) and bounds the otherwise super-linear scan when the
+            # hypothesis is much longer than the reference (CWE-407).
+            max_window_size = min(max(i, hyp_len - i + 1), len(reference))
             for window in range(1, max_window_size):
                 if i + window < hyp_len:  # If searching the right context is possible.
                     # Retrieve the right context window.
                     right_context_ngram = tuple(islice(hypothesis, i, i + window + 1))
-                    num_times_in_ref = ref_ngrams.count(right_context_ngram)
-                    num_times_in_hyp = hyp_ngrams.count(right_context_ngram)
+                    num_times_in_ref = count_ngram(
+                        reference, "ref", right_context_ngram
+                    )
+                    num_times_in_hyp = count_ngram(
+                        hypothesis, "hyp", right_context_ngram
+                    )
                     # If ngram appears only once in both ref and hyp.
                     if num_times_in_ref == num_times_in_hyp == 1:
                         # Find the position of ngram that matched the reference.
@@ -218,8 +300,10 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
                 if window <= i:  # If searching the left context is possible.
                     # Retrieve the left context window.
                     left_context_ngram = tuple(islice(hypothesis, i - window, i + 1))
-                    num_times_in_ref = ref_ngrams.count(left_context_ngram)
-                    num_times_in_hyp = hyp_ngrams.count(left_context_ngram)
+                    num_times_in_ref = count_ngram(reference, "ref", left_context_ngram)
+                    num_times_in_hyp = count_ngram(
+                        hypothesis, "hyp", left_context_ngram
+                    )
                     if num_times_in_ref == num_times_in_hyp == 1:
                         # Find the position of ngram that matched the reference.
                         pos = position_of_ngram(left_context_ngram, reference)
@@ -260,9 +344,12 @@ def kendall_tau(worder, normalize=True):
 
         tau = 2 * num_increasing_pairs / num_possible_pairs -1
 
-    Note that the no. of increasing pairs can be discontinuous in the *worder*
-    list and each each increasing sequence can be tabulated as choose(len(seq), 2)
-    no. of increasing pairs, e.g.
+    An increasing pair is any pair of positions i < j in the *worder* list with
+    worder[i] < worder[j], as in the official RIBES script. The two ranks do not
+    need to be adjacent in the list or consecutive integers. In the example
+    below there are 6 increasing pairs within [7, 8, 9, 10], 15 within
+    [0, 1, 2, 3, 4, 5] and none across the two runs, so 21 of the
+    choose(11, 2) = 55 pairs are increasing:
 
         >>> worder = [7, 8, 9, 10, 6, 0, 1, 2, 3, 4, 5]
         >>> number_possible_pairs = choose(len(worder), 2)
@@ -270,6 +357,15 @@ def kendall_tau(worder, normalize=True):
         -0.236
         >>> round(kendall_tau(worder),3)
         0.382
+
+    In the (H1, R1) example from the paper, 'Bob hit John yesterday' against
+    'John hit Bob yesterday', the ranks are [2, 1, 0, 3] and the pairs (2, 3),
+    (1, 3) and (0, 3) are increasing, so 3 of the 6 pairs are increasing:
+
+        >>> kendall_tau([2, 1, 0, 3], normalize=False)
+        0.0
+        >>> kendall_tau([2, 1, 0, 3])
+        0.5
 
     :param worder: The worder list output from word_rank_alignment
     :type worder: list(int)
@@ -285,10 +381,11 @@ def kendall_tau(worder, normalize=True):
     if worder_len < 2:
         tau = -1
     else:
-        # Extract the groups of increasing/monotonic sequences.
-        increasing_sequences = find_increasing_sequences(worder)
-        # Calculate no. of increasing_pairs in *worder* list.
-        num_increasing_pairs = sum(choose(len(seq), 2) for seq in increasing_sequences)
+        # Count the pairs of positions i < j with worder[i] < worder[j]. Every
+        # such pair counts, not only pairs inside a run of consecutive ranks.
+        num_increasing_pairs = sum(
+            1 for earlier, later in combinations(worder, 2) if earlier < later
+        )
         # Calculate no. of possible pairs.
         num_possible_pairs = choose(worder_len, 2)
         # Kendall's Tau computation.

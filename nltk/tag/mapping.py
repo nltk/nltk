@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tagset Mapping
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Nathan Schneider <nathan@cmu.edu>
 #         Steven Bird <stevenbird1@gmail.com>
 # URL: <https://www.nltk.org/>
@@ -91,28 +91,34 @@ def tagset_mapping(source, target):
 
     if source not in _MAPPINGS or target not in _MAPPINGS[source]:
         if target == "universal":
-            _load_universal_map(source)
-            # Added the new Russian National Corpus mappings because the
-            # Russian model for nltk.pos_tag() uses it.
-            _MAPPINGS["ru-rnc-new"]["universal"] = {
-                "A": "ADJ",
-                "A-PRO": "PRON",
-                "ADV": "ADV",
-                "ADV-PRO": "PRON",
-                "ANUM": "ADJ",
-                "CONJ": "CONJ",
-                "INTJ": "X",
-                "NONLEX": ".",
-                "NUM": "NUM",
-                "PARENTH": "PRT",
-                "PART": "PRT",
-                "PR": "ADP",
-                "PRAEDIC": "PRT",
-                "PRAEDIC-PRO": "PRON",
-                "S": "NOUN",
-                "S-PRO": "PRON",
-                "V": "VERB",
-            }
+            if source == "ru-rnc-new":
+                # ru-rnc-new.map is not shipped in the universal_tagset data package,
+                # so avoid _load_universal_map("ru-rnc-new") and use the embedded mapping.
+                # Ensure unknown tags map to 'X' (same behavior as _load_universal_map()).
+                _MAPPINGS[source][target].default_factory = lambda: "X"
+                _MAPPINGS[source][target].update(
+                    {
+                        "A": "ADJ",
+                        "A-PRO": "PRON",
+                        "ADV": "ADV",
+                        "ADV-PRO": "PRON",
+                        "ANUM": "ADJ",
+                        "CONJ": "CONJ",
+                        "INTJ": "X",
+                        "NONLEX": ".",
+                        "NUM": "NUM",
+                        "PARENTH": "PRT",
+                        "PART": "PRT",
+                        "PR": "ADP",
+                        "PRAEDIC": "PRT",
+                        "PRAEDIC-PRO": "PRON",
+                        "S": "NOUN",
+                        "S-PRO": "PRON",
+                        "V": "VERB",
+                    }
+                )
+            else:
+                _load_universal_map(source)
 
     return _MAPPINGS[source][target]
 

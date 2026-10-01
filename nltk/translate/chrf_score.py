@@ -1,15 +1,15 @@
 # Natural Language Toolkit: ChrF score
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Authors: Maja Popovic
 # Contributors: Liling Tan, Aleš Tamchyna (Memsource)
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """ChrF score implementation"""
-import re
 from collections import Counter, defaultdict
 
+from nltk import redos
 from nltk.util import ngrams
 
 
@@ -104,7 +104,7 @@ def _preprocess(sent, ignore_whitespace):
         sent = " ".join(sent)
 
     if ignore_whitespace:
-        sent = re.sub(r"\s+", "", sent)
+        sent = redos.sub(r"\s+", "", sent)
     return sent
 
 

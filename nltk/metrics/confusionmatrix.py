@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Confusion Matrices
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Tom Aarsen <>
@@ -8,6 +8,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk.probability import FreqDist
+from nltk.termsec import safe_print
 
 
 class ConfusionMatrix:
@@ -60,25 +61,73 @@ class ConfusionMatrix:
         # Construct a value->index dictionary
         indices = {val: i for (i, val) in enumerate(values)}
 
-        # Make a confusion matrix table.
-        confusion = [[0 for _ in values] for _ in values]
+        # Make a sparse confusion matrix: a dict mapping each observed
+        # (reference index, test index) pair to its count. A dense V x V table
+        # would allocate V**2 cells even when only a few pairs occur, so an
+        # all-distinct input (V == number of items) costs O(V**2) memory and
+        # OOM-kills the worker (CWE-770; CVE-2026-12839). The sparse map costs
+        # only as much as the observed pairs.
+        # Row totals (count per reference index) are accumulated here in the
+        # same single pass. ``sort_by_count`` orders labels by their row total,
+        # so caching them keeps that lookup O(1); recomputing a total by
+        # scanning the sparse map on each call would make the sort O(V * nnz),
+        # i.e. quadratic again for a large all-distinct input.
+        # Column totals (count per test index) are accumulated alongside the row
+        # totals so ``precision`` -- a full-column sum -- is O(1) instead of an
+        # O(V) scan; ``evaluate`` calls it once per label, so the scan made the
+        # report O(V**2) on an all-distinct matrix even though the constructor
+        # itself is O(n) (CWE-770; residual to CVE-2026-12839).
+        confusion = {}
+        row_totals = {}
+        col_totals = {}
         max_conf = 0  # Maximum confusion
         for w, g in zip(reference, test):
-            confusion[indices[w]][indices[g]] += 1
-            max_conf = max(max_conf, confusion[indices[w]][indices[g]])
+            i = indices[w]
+            j = indices[g]
+            pair = (i, j)
+            count = confusion.get(pair, 0) + 1
+            confusion[pair] = count
+            row_totals[i] = row_totals.get(i, 0) + 1
+            col_totals[j] = col_totals.get(j, 0) + 1
+            if count > max_conf:
+                max_conf = count
 
         #: A list of all values in ``reference`` or ``test``.
         self._values = values
         #: A dictionary mapping values in ``self._values`` to their indices.
         self._indices = indices
-        #: The confusion matrix itself (as a list of lists of counts).
+        #: The confusion matrix itself, as a sparse dict mapping each observed
+        #: ``(reference index, test index)`` pair to its count.
         self._confusion = confusion
+        #: Cached per-reference-row totals, keyed by reference index, so
+        #: ``sort_by_count`` lookups are O(1) (see ``_row_total``).
+        self._row_totals = row_totals
+        #: Cached per-test-column totals, keyed by test index, so ``precision``
+        #: is O(1) (see ``_col_total``).
+        self._col_totals = col_totals
         #: The greatest count in ``self._confusion`` (used for printing).
         self._max_conf = max_conf
         #: The total number of values in the confusion matrix.
         self._total = len(reference)
         #: The number of correct (on-diagonal) values in the matrix.
-        self._correct = sum(confusion[i][i] for i in range(len(values)))
+        self._correct = sum(c for (i, j), c in confusion.items() if i == j)
+
+    def _row_total(self, i):
+        """Total count in row ``i`` (alignments from reference value ``i``).
+
+        Read from the cache built once in ``__init__`` (a single O(nnz) pass),
+        so ``sort_by_count`` can order all labels in O(V log V) rather than
+        rescanning the sparse map per label (O(V * nnz), quadratic for a large
+        all-distinct input).
+        """
+        return self._row_totals.get(i, 0)
+
+    def _col_total(self, j):
+        """Total count in column ``j`` (predictions of test value ``j``).
+
+        Cached like ``_row_total`` so ``precision`` is O(1) (see __init__).
+        """
+        return self._col_totals.get(j, 0)
 
     def __getitem__(self, li_lj_tuple):
         """
@@ -89,7 +138,7 @@ class ConfusionMatrix:
         (li, lj) = li_lj_tuple
         i = self._indices[li]
         j = self._indices[lj]
-        return self._confusion[i][j]
+        return self._confusion.get((i, j), 0)
 
     def __repr__(self):
         return f"<ConfusionMatrix: {self._correct}/{self._total} correct>"
@@ -122,9 +171,7 @@ class ConfusionMatrix:
 
         values = self._values
         if sort_by_count:
-            values = sorted(
-                values, key=lambda v: -sum(self._confusion[self._indices[v]])
-            )
+            values = sorted(values, key=lambda v: -self._row_total(self._indices[v]))
 
         if truncate:
             values = values[:truncate]
@@ -167,12 +214,13 @@ class ConfusionMatrix:
             s += value_format % val
             for lj in values:
                 j = self._indices[lj]
-                if confusion[i][j] == 0:
+                count = confusion.get((i, j), 0)
+                if count == 0:
                     s += zerostr
                 elif show_percents:
-                    s += entry_format % (100.0 * confusion[i][j] / self._total)
+                    s += entry_format % (100.0 * count / self._total)
                 else:
-                    s += entry_format % confusion[i][j]
+                    s += entry_format % count
                 if i == j:
                     prevspace = s.rfind(" ")
                     s = s[:prevspace] + "<" + s[prevspace + 1 :] + ">"
@@ -216,8 +264,9 @@ class ConfusionMatrix:
         """
         # Number of times `value` was correct, and also predicted
         TP = self[value, value]
-        # Number of times `value` was correct
-        TP_FN = sum(self[value, pred_value] for pred_value in self._values)
+        # Number of times `value` was correct == total of value's row (cached
+        # O(1); the per-label scan made evaluate() O(V**2), see __init__).
+        TP_FN = self._row_total(self._indices[value])
         if TP_FN == 0:
             return 0.0
         return TP / TP_FN
@@ -238,8 +287,9 @@ class ConfusionMatrix:
         """
         # Number of times `value` was correct, and also predicted
         TP = self[value, value]
-        # Number of times `value` was predicted
-        TP_FP = sum(self[real_value, value] for real_value in self._values)
+        # Number of times `value` was predicted == total of value's column
+        # (cached O(1); the per-label scan made evaluate() O(V**2), see __init__).
+        TP_FP = self._col_total(self._indices[value])
         if TP_FP == 0:
             return 0.0
         return TP / TP_FP
@@ -311,7 +361,7 @@ class ConfusionMatrix:
 
         # Apply keyword parameters
         if sort_by_count:
-            tags = sorted(tags, key=lambda v: -sum(self._confusion[self._indices[v]]))
+            tags = sorted(tags, key=lambda v: -self._row_total(self._indices[v]))
         if truncate:
             tags = tags[:truncate]
 
@@ -338,13 +388,13 @@ class ConfusionMatrix:
 def demo():
     reference = "DET NN VB DET JJ NN NN IN DET NN".split()
     test = "DET VB VB DET NN NN NN IN DET NN".split()
-    print("Reference =", reference)
-    print("Test    =", test)
-    print("Confusion matrix:")
-    print(ConfusionMatrix(reference, test))
-    print(ConfusionMatrix(reference, test).pretty_format(sort_by_count=True))
+    safe_print("Reference =", reference)
+    safe_print("Test    =", test)
+    safe_print("Confusion matrix:")
+    safe_print(ConfusionMatrix(reference, test))
+    safe_print(ConfusionMatrix(reference, test).pretty_format(sort_by_count=True))
 
-    print(ConfusionMatrix(reference, test).recall("VB"))
+    safe_print(ConfusionMatrix(reference, test).recall("VB"))
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chunk parsing API
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Eric Kafe <kafe.eric@gmail.com> (tab-format models)
 # URL: <https://www.nltk.org/>
@@ -12,18 +12,23 @@ Named entity chunker
 
 import os
 import re
-from xml.etree import ElementTree as ET
 
+from nltk import redos
+from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_tool_dir
 from nltk.tag import ClassifierBasedTagger, pos_tag
+from nltk.xmlsec import parse as safe_parse
 
 try:
     from nltk.classify import MaxentClassifier
+    from nltk.classify.maxent import save_maxent_params
 except ImportError:
     pass
 
 from nltk.chunk.api import ChunkParserI
 from nltk.chunk.util import ChunkScore
-from nltk.data import find
+from nltk.data import find, make_staging_dir
+from nltk.termsec import safe_print
 from nltk.tokenize import word_tokenize
 from nltk.tree import Tree
 
@@ -168,7 +173,7 @@ class NEChunkParser(ChunkParserI):
         for child in sent:
             if isinstance(child, Tree):
                 if len(child) == 0:
-                    print("Warning -- empty chunk in sentence")
+                    safe_print("Warning; empty chunk in sentence")
                     continue
                 toks.append((child[0], f"B-{child.label()}"))
                 for tok in child[1:]:
@@ -179,11 +184,11 @@ class NEChunkParser(ChunkParserI):
 
 
 def shape(word):
-    if re.match(r"[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$", word, re.UNICODE):
+    if redos.match(r"[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$", word, re.UNICODE):
         return "number"
-    elif re.match(r"\W+$", word, re.UNICODE):
+    elif redos.match(r"\W+$", word, re.UNICODE):
         return "punct"
-    elif re.match(r"\w+$", word, re.UNICODE):
+    elif redos.match(r"\w+$", word, re.UNICODE):
         if word.istitle():
             return "upcase"
         elif word.islower():
@@ -227,13 +232,15 @@ def load_ace_data(roots, fmt="binary", skip_bnews=True):
 
 
 def load_ace_file(textfile, fmt):
-    print(f"  - {os.path.split(textfile)[1]}")
+    safe_print(f"  - {os.path.split(textfile)[1]}")
     annfile = textfile + ".tmx.rdc.xml"
 
-    # Read the xml file, and get a list of entities
+    # Read the xml file, and get a list of entities. These ACE paths are walked
+    # from a corpus root, so keep them inside the allowed data roots; a
+    # symlinked .sgm/.xml must not resolve outside (CWE-59, GHSA-7qj2).
     entities = []
-    with open(annfile) as infile:
-        xml = ET.parse(infile).getroot()
+    with pathsec_open(annfile, context="load_ace_file") as infile:
+        xml = safe_parse(infile).getroot()
     for entity in xml.findall("document/entity"):
         typ = entity.find("entity_type").text
         for mention in entity.findall("entity_mention"):
@@ -244,22 +251,22 @@ def load_ace_file(textfile, fmt):
             entities.append((s, e, typ))
 
     # Read the text file, and mark the entities.
-    with open(textfile) as infile:
+    with pathsec_open(textfile, context="load_ace_file") as infile:
         text = infile.read()
 
     # Strip XML tags, since they don't count towards the indices
-    text = re.sub("<(?!/?TEXT)[^>]+>", "", text)
+    text = redos.sub("<(?!/?TEXT)[^>]+>", "", text)
 
     # Blank out anything before/after <TEXT>
     def subfunc(m):
         return " " * (m.end() - m.start() - 6)
 
-    text = re.sub(r"[\s\S]*<TEXT>", subfunc, text)
-    text = re.sub(r"</TEXT>[\s\S]*", "", text)
+    text = redos.sub(r"[\s\S]*<TEXT>", subfunc, text)
+    text = redos.sub(r"</TEXT>[\s\S]*", "", text)
 
     # Simplify quotes
-    text = re.sub("``", ' "', text)
-    text = re.sub("''", '" ', text)
+    text = redos.sub("``", ' "', text)
+    text = redos.sub("''", '" ', text)
 
     entity_types = {typ for (s, e, typ) in entities}
 
@@ -306,12 +313,12 @@ def cmp_chunks(correct, guessed):
     for (w, ct), (w, gt) in zip(correct, guessed):
         if ct == gt == "O":
             if not ellipsis:
-                print(f"  {ct:15} {gt:15} {w}")
-                print("  {:15} {:15} {2}".format("...", "...", "..."))
+                safe_print(f"  {ct:15} {gt:15} {w}")
+                safe_print("  {:15} {:15} {}".format("...", "...", "..."))
                 ellipsis = True
         else:
             ellipsis = False
-            print(f"  {ct:15} {gt:15} {w}")
+            safe_print(f"  {ct:15} {gt:15} {w}")
 
 
 # ======================================================================================
@@ -323,9 +330,9 @@ class Maxent_NE_Chunker(NEChunkParser):
     """
 
     def __init__(self, fmt="multiclass"):
-        from nltk.data import find
 
         self._fmt = fmt
+        self._save_dir = None
         self._tab_dir = find(f"chunkers/maxent_ne_chunker_tab/english_ace_{fmt}/")
         self.load_params()
 
@@ -338,8 +345,44 @@ class Maxent_NE_Chunker(NEChunkParser):
         )
         self._tagger = NEChunkParserTagger(classifier=mc)
 
-    def save_params(self):
-        from nltk.classify.maxent import save_maxent_params
+    @property
+    def save_dir(self) -> str:
+        """This chunker's private directory for saved model artifacts.
+
+        Created lazily on first use with an unpredictable name and mode 0700, so
+        (unlike the old guessable ``/tmp/...``) another local user cannot
+        pre-create or symlink it to redirect or read the write (CWE-377/378).
+        The same directory is reused across calls, so a chunker's saved
+        artifacts share one known, private location.
+        """
+        if self._save_dir is None:
+            self._save_dir = make_staging_dir(prefix=f"nltk_ne_chunker_{self._fmt}_")
+        return self._save_dir
+
+    def save_params(self, tab_dir: str | None = None) -> str:
+        """Write the trained maxent parameters as tab files.
+
+        The old default was a *guessable* name in the shared, world-writable
+        system temp (``/tmp/english_ace_<fmt>/``). That is a threat by itself: on
+        a multi-user host another user can pre-create or symlink that exact path
+        to redirect or read the write (CWE-377/378), and pathsec refuses a
+        shared-temp destination anyway (so it would not even work). Default
+        instead to this chunker's :attr:`save_dir`; a private (mode 0700),
+        unpredictably-named directory that no other user can pre-plant. A caller
+        may still pass an explicit ``tab_dir``; it is validated against the NLTK
+        data sandbox before the parameter files are written, so an outside path
+        is refused (GHSA-8mgp-746c-j5xp).
+
+        :param tab_dir: destination directory; defaults to :attr:`save_dir`.
+        :type tab_dir: str or None
+        :return: the directory the parameter files were written to.
+        :rtype: str
+        """
+        # Validate the destination before touching anything else, so the guard
+        # is the first thing a caller-supplied path meets.
+        if tab_dir is None:
+            tab_dir = self.save_dir
+        validate_tool_dir(tab_dir, context="Maxent_NE_Chunker.save_params")
 
         classif = self._tagger._classifier
         ecg = classif._encoding
@@ -347,8 +390,8 @@ class Maxent_NE_Chunker(NEChunkParser):
         mpg = ecg._mapping
         lab = ecg._labels
         aon = ecg._alwayson
-        fmt = self._fmt
-        save_maxent_params(wgt, mpg, lab, aon, tab_dir=f"/tmp/english_ace_{fmt}/")
+        save_maxent_params(wgt, mpg, lab, aon, tab_dir=tab_dir)
+        return tab_dir
 
 
 def build_model(fmt="multiclass"):
@@ -392,10 +435,11 @@ def build_model(fmt="binary"):
             cmp_chunks(correct, guess)
     print(chunkscore)
 
-    outfilename = f"/tmp/ne_chunker_{fmt}.pickle"
+    outdir = make_staging_dir(prefix=f"nltk_ne_chunker_{fmt}_")
+    outfilename = f"{outdir}/ne_chunker_{fmt}.pickle"
     print(f"Saving chunker to {outfilename}...")
 
-    with open(outfilename, "wb") as outfile:
+    with pathsec_open(outfilename, "wb", context="build_model") as outfile:
         pickle.dump(cp, outfile, -1)
 
     return cp

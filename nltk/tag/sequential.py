@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Sequential Backoff Taggers
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 #         Tiago Tresoldi <tresoldi@users.sf.net> (original affix tagger)
@@ -18,14 +18,14 @@ consulted instead.  Any SequentialBackoffTagger may serve as a
 backoff tagger for any other SequentialBackoffTagger.
 """
 import ast
-import re
 from abc import abstractmethod
 from typing import List, Optional, Tuple
 
-from nltk import jsontags
+from nltk import jsontags, redos
 from nltk.classify import NaiveBayesClassifier
 from nltk.probability import ConditionalFreqDist
 from nltk.tag.api import FeaturesetTaggerI, TaggerI
+from nltk.termsec import safe_print
 
 
 ######################################################################
@@ -205,8 +205,8 @@ class ContextTagger(SequentialBackoffTagger):
             size = len(self._context_to_tag)
             backoff = 100 - (hit_count * 100.0) / token_count
             pruning = 100 - (size * 100.0) / len(fd.conditions())
-            print("[Trained Unigram tagger:", end=" ")
-            print(
+            safe_print("[Trained Unigram tagger:", end=" ")
+            safe_print(
                 "size={}, backoff={:.2f}%, pruning={:.2f}%]".format(
                     size, backoff, pruning
                 )
@@ -533,14 +533,16 @@ class RegexpTagger(SequentialBackoffTagger):
 
     json_tag = "nltk.tag.sequential.RegexpTagger"
 
-    def __init__(
-        self, regexps: List[Tuple[str, str]], backoff: Optional[TaggerI] = None
-    ):
+    def __init__(self, regexps: list[tuple[str, str]], backoff: TaggerI | None = None):
         super().__init__(backoff)
         self._regexps = []
         for regexp, tag in regexps:
             try:
-                self._regexps.append((re.compile(regexp), tag))
+                # ``regexp`` is caller-supplied and matched against every token,
+                # so compile it through ``redos``: a crafted pattern would
+                # otherwise backtrack catastrophically on an adversarial token
+                # and hang the tagger (CWE-1333). See ``nltk/redos.py``.
+                self._regexps.append((redos.compile(regexp), tag))
             except Exception as e:
                 raise Exception(
                     f"Invalid RegexpTagger regexp: {e}\n- regexp: {regexp!r}\n- tag: {tag!r}"
@@ -556,7 +558,9 @@ class RegexpTagger(SequentialBackoffTagger):
 
     def choose_tag(self, tokens, index, history):
         for regexp, tag in self._regexps:
-            if re.match(regexp, tokens[index]):
+            # ``regexp`` is a ``redos.TimedPattern``; its ``match`` applies the
+            # wall-clock timeout (a bare ``re.match(pattern, ...)`` would not).
+            if regexp.match(tokens[index]):
                 return tag
         return None
 
@@ -663,7 +667,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
 
         classifier_corpus = []
         if verbose:
-            print("Constructing training corpus for classifier.")
+            safe_print("Constructing training corpus for classifier.")
 
         for sentence in tagged_corpus:
             history = []
@@ -674,7 +678,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
                 history.append(tags[index])
 
         if verbose:
-            print(f"Training classifier ({len(classifier_corpus)} instances)")
+            safe_print(f"Training classifier ({len(classifier_corpus)} instances)")
         self._classifier = classifier_builder(classifier_corpus)
 
     def __repr__(self):
@@ -723,15 +727,15 @@ class ClassifierBasedPOSTagger(ClassifierBasedTagger):
             prevtag = history[index - 1]
             prevprevtag = history[index - 2]
 
-        if re.match(r"[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$", word):
+        if redos.match(r"[0-9]+(\.[0-9]*)?|[0-9]*\.[0-9]+$", word):
             shape = "number"
-        elif re.match(r"\W+$", word):
+        elif redos.match(r"\W+$", word):
             shape = "punct"
-        elif re.match("[A-Z][a-z]+$", word):
+        elif redos.match("[A-Z][a-z]+$", word):
             shape = "upcase"
-        elif re.match("[a-z]+$", word):
+        elif redos.match("[a-z]+$", word):
             shape = "downcase"
-        elif re.match(r"\w+$", word):
+        elif redos.match(r"\w+$", word):
             shape = "mixedcase"
         else:
             shape = "other"

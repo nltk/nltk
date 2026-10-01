@@ -1,6 +1,6 @@
 # Natural Language Toolkit: IBM Model 4
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Tah Wei Hoon <hoon.tw@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -276,7 +276,7 @@ class IBMModel4(IBMModel):
                 "A target sentence is too long ("
                 + str(max_m)
                 + " words). Results may be less accurate."
-            )
+            )  # unsafe-print ok: literal text with a numeric vocabulary or length bound
 
         for dj in range(1, max_m):
             self.head_distortion_table[dj] = defaultdict(

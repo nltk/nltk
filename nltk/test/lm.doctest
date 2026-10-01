@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2025 NLTK Project
+.. Copyright (C) 2001-2026 NLTK Project
 .. For license information, see LICENSE.TXT
 
 .. -*- coding: utf-8 -*-
@@ -62,10 +62,11 @@ https://github.com/nltk/nltk/issues/367#issuecomment-14646110
 
 For doctest to work we have to sort the vocabulary keys.
 
+    >>> import math
     >>> V_keys = sorted(V)
-    >>> round(sum(lm.score(w, ("b",)) for w in V_keys), 6)
+    >>> round(math.fsum(lm.score(w, ("b",)) for w in V_keys), 6)
     1.0
-    >>> round(sum(lm.score(w, ("a",)) for w in V_keys), 6)
+    >>> round(math.fsum(lm.score(w, ("a",)) for w in V_keys), 6)
     1.0
 
     >>> [lm.score(w, ("b",)) for w in V_keys]

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: CONLL Corpus Reader
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
@@ -273,7 +273,20 @@ class ConllCorpusReader(CorpusReader):
             if chunk_tag == "O":
                 state, chunk_type = "O", ""
             else:
-                (state, chunk_type) = chunk_tag.split("-")
+                # A tag that is neither "O" nor a well-formed "<B|I>-<type>"
+                # would otherwise raise a cryptic "not enough values to unpack"
+                # error, or be silently mishandled, and abort iteration over the
+                # whole corpus; validate the IOB shape and fail with a clear,
+                # catchable message instead. ``split("-", 1)`` keeps chunk types
+                # that legitimately contain a hyphen (e.g. "B-NP-SBJ").
+                parts = chunk_tag.split("-", 1)
+                state = parts[0]
+                chunk_type = parts[1] if len(parts) == 2 else ""
+                if state not in ("B", "I") or not chunk_type:
+                    raise ValueError(
+                        f"Malformed chunk tag {chunk_tag!r}: expected 'O' or "
+                        "'<B|I>-<type>' (e.g. 'B-NP')"
+                    )
             # If it's a chunk we don't care about, treat it as O.
             if chunk_types is not None and chunk_type not in chunk_types:
                 state = "O"
@@ -310,7 +323,15 @@ class ConllCorpusReader(CorpusReader):
                 pos_tag = "-LRB-"
             if pos_tag == ")":
                 pos_tag = "-RRB-"
-            (left, right) = parse_tag.split("*")
+            # A parse tag missing its '*' word placeholder would otherwise raise
+            # a cryptic unpacking error that aborts the whole-corpus iteration.
+            parts = parse_tag.split("*")
+            if len(parts) != 2:
+                raise ValueError(
+                    f"Malformed parse tag {parse_tag!r}: expected exactly one "
+                    "'*' word placeholder (e.g. '(NP*' or '*)')"
+                )
+            (left, right) = parts
             right = right.count(")") * ")"  # only keep ')'.
             treestr += f"{left} ({pos_tag} {word}) {right}"
         try:
@@ -351,7 +372,15 @@ class ConllCorpusReader(CorpusReader):
             spanlist = []
             stack = []
             for wordnum, srl_tag in enumerate(col):
-                (left, right) = srl_tag.split("*")
+                # A SRL tag missing its '*' word placeholder would otherwise
+                # raise a cryptic unpacking error that aborts the whole corpus.
+                parts = srl_tag.split("*")
+                if len(parts) != 2:
+                    raise ValueError(
+                        f"Malformed SRL tag {srl_tag!r}: expected exactly one "
+                        "'*' word placeholder (e.g. '(A0*' or '*)')"
+                    )
+                (left, right) = parts
                 for tag in left.split("("):
                     if tag:
                         stack.append((tag, wordnum))
@@ -373,20 +402,31 @@ class ConllCorpusReader(CorpusReader):
             rolesets = [None] * len(predicates)
 
         instances = ConllSRLInstanceList(tree)
+        # Map each word index to the first spanlist (in order) whose V or C-V
+        # span covers it, sweeping each column once: a predicate then picks its
+        # spanlist with one lookup instead of rescanning every spanlist.
+        wordnum_to_spanlist = {}
+        for spanlist in spanlists:
+            if len(wordnum_to_spanlist) == len(grid):
+                break  # every word already has its spanlist
+            # A column of nested full-width spans would cost every span times
+            # every word if each span were expanded; the sweep counts open
+            # spans per word instead, so a column costs its words plus its spans.
+            opens = [0] * (len(grid) + 1)
+            for (start, end), tag in spanlist:
+                if tag in ("V", "C-V"):
+                    opens[start] += 1
+                    opens[end] -= 1
+            covered = 0
+            for wordnum, delta in enumerate(opens):
+                covered += delta
+                if covered > 0:
+                    wordnum_to_spanlist.setdefault(wordnum, spanlist)
         for wordnum, predicate in enumerate(predicates):
             if predicate == "-":
                 continue
-            # Decide which spanlist to use.  Don't assume that they're
-            # sorted in the same order as the predicates (even though
-            # they usually are).
-            for spanlist in spanlists:
-                for (start, end), tag in spanlist:
-                    if wordnum in range(start, end) and tag in ("V", "C-V"):
-                        break
-                else:
-                    continue
-                break
-            else:
+            spanlist = wordnum_to_spanlist.get(wordnum)
+            if spanlist is None:
                 raise ValueError("No srl column found for %r" % predicate)
             instances.append(
                 ConllSRLInstance(tree, wordnum, predicate, rolesets[wordnum], spanlist)
@@ -453,12 +493,23 @@ class ConllSRLInstance:
         """A list of the words in the sentence containing this
            instance."""
 
-        # Fill in the self.verb and self.arguments values.
+        # Fill in the self.verb and self.arguments values. The verb words come
+        # from one sweep over the sentence: expanding every verb span would cost
+        # spans times words on crafted input whose verb spans overlap.
+        opens = [0] * (
+            max([len(self.words)] + [end for (_, end), _ in tagged_spans]) + 1
+        )
         for (start, end), tag in tagged_spans:
             if tag in ("V", "C-V"):
-                self.verb += list(range(start, end))
+                opens[start] += 1
+                opens[end] -= 1
             else:
                 self.arguments.append(((start, end), tag))
+        covered = 0
+        for wordnum, delta in enumerate(opens[:-1]):
+            covered += delta
+            if covered > 0:
+                self.verb.append(wordnum)
 
     def __repr__(self):
         # Originally, its:

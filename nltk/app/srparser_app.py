@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Shift-Reduce Parser Application
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -653,7 +653,7 @@ class ShiftReduceApp:
                 width=75,
                 font="fixed",
             )
-        except:
+        except Exception:
             ShowText(
                 self._top,
                 "Help: Shift-Reduce Parser Application",
@@ -668,7 +668,7 @@ class ShiftReduceApp:
             from tkinter.messagebox import Message
 
             Message(message=ABOUT, title=TITLE).show()
-        except:
+        except Exception:
             ShowText(self._top, TITLE, ABOUT)
 
     def edit_grammar(self, *e):

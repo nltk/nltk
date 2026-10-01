@@ -2,7 +2,7 @@
 #
 # Setup script for the Natural Language Toolkit
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: NLTK Team <nltk.team@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -24,6 +24,21 @@ import os
 version_file = os.path.join(os.path.dirname(__file__), "nltk", "VERSION")
 with open(version_file) as fh:
     nltk_version = fh.read().strip()
+
+# Use README.md as the long description shown on PyPI. Fall back to a short
+# blurb if it is unavailable, so a build can never fail on a missing README.
+_short_description = (
+    "The Natural Language Toolkit (NLTK) is a Python package for "
+    "natural language processing."
+)
+readme_file = os.path.join(os.path.dirname(__file__), "README.md")
+try:
+    with open(readme_file, encoding="utf-8") as fh:
+        long_description = fh.read()
+    long_description_content_type = "text/markdown"
+except OSError:
+    long_description = _short_description
+    long_description_content_type = "text/plain"
 
 # setuptools
 from setuptools import find_packages, setup
@@ -65,9 +80,8 @@ setup(
         "Source Code": "https://github.com/nltk/nltk",
         "Issue Tracker": "https://github.com/nltk/nltk/issues",
     },
-    long_description="""\
-The Natural Language Toolkit (NLTK) is a Python package for
-natural language processing.  NLTK requires Python 3.10, 3.11, 3.12, 3.13, or 3.14.""",
+    long_description=long_description,
+    long_description_content_type=long_description_content_type,
     license="Apache License, Version 2.0",
     keywords=[
         "NLP",
@@ -113,6 +127,7 @@ natural language processing.  NLTK requires Python 3.10, 3.11, 3.12, 3.13, or 3.
     package_data={"nltk": ["test/*.doctest", "VERSION"]},
     python_requires=">=3.10",
     install_requires=[
+        "defusedxml",
         "click",
         "joblib",
         "regex>=2021.8.3",

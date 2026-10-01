@@ -1,4 +1,11 @@
-from nltk.translate.ribes_score import corpus_ribes, word_rank_alignment
+import pytest
+
+from nltk.translate.ribes_score import (
+    corpus_ribes,
+    kendall_tau,
+    sentence_ribes,
+    word_rank_alignment,
+)
 
 
 def test_ribes_empty_worder():  # worder as in word order
@@ -12,6 +19,26 @@ def test_ribes_empty_worder():  # worder as in word order
     list_of_refs = [[ref]]
     hypotheses = [hyp]
     assert corpus_ribes(list_of_refs, hypotheses) == 0.0
+
+
+def test_ribes_empty_hypothesis():
+    refs = [["a"], ["b"]]
+
+    assert sentence_ribes(refs, []) == 0.0
+    assert corpus_ribes([refs], [[]]) == 0.0
+
+
+def test_ribes_empty_references():
+    assert sentence_ribes([], ["a"]) == 0.0
+
+
+def test_ribes_empty_corpus():
+    assert corpus_ribes([], []) == 0.0
+
+
+def test_ribes_rejects_mismatched_corpus_lengths():
+    with pytest.raises(ValueError, match="number of reference sets"):
+        corpus_ribes([[["a"]]], [["a"], ["b"]])
 
 
 def test_ribes_one_worder():
@@ -153,7 +180,7 @@ def test_ribes():
 
     score = corpus_ribes(list_of_refs, hypotheses)
 
-    assert round(score, 4) == 0.3597
+    assert round(score, 4) == 0.633
 
 
 def test_no_zero_div():
@@ -243,4 +270,52 @@ def test_no_zero_div():
 
     score = corpus_ribes(list_of_refs, hypotheses)
 
-    assert round(score, 4) == 0.1688
+    assert round(score, 4) == 0.4421
+
+
+def test_word_rank_alignment_unhashable_tokens():
+    # Tokens need not be hashable: word_rank_alignment must still work when
+    # tokens are e.g. lists (the previous list.count implementation relied only
+    # on equality). Regression for the memoisation introduced with the KMP
+    # rewrite, which must fall back to an uncached count for unhashable tokens
+    # rather than raise TypeError.
+    ref = [["b"], ["a"], ["b"], ["a"]]
+    hyp = [["a"], ["b"], ["a"], ["b"]]
+    # Should not raise; result matches the equivalent hashable (string) tokens.
+    assert word_rank_alignment(ref, hyp) == word_rank_alignment(
+        ["b", "a", "b", "a"], ["a", "b", "a", "b"]
+    )
+
+
+def test_kendall_tau_counts_all_increasing_pairs():
+    # (H1, R1) from Isozaki et al. 2010. "Bob hit John yesterday" against
+    # "John hit Bob yesterday" gives the ranks [2, 1, 0, 3]. The pairs (2, 3),
+    # (1, 3) and (0, 3) are increasing, so tau = 2 * 3 / 6 - 1 = 0.0 and the
+    # normalised score is 0.5. The ranks 2 and 3 are not adjacent in the list,
+    # so this used to be scored as if no pair were increasing.
+    assert kendall_tau([2, 1, 0, 3], normalize=False) == 0.0
+    assert kendall_tau([2, 1, 0, 3]) == 0.5
+
+
+def test_kendall_tau_increasing_ranks_with_gaps():
+    # Words in the right order are fully ordered even when their ranks are not
+    # consecutive integers.
+    assert kendall_tau([0, 2]) == 1.0
+    assert kendall_tau([0, 2, 4, 6]) == 1.0
+    # 4 of the 6 pairs are increasing.
+    assert kendall_tau([1, 0, 3, 2]) == pytest.approx(2 / 3)
+
+
+def test_kendall_tau_extremes():
+    assert kendall_tau([0, 1, 2, 3]) == 1.0
+    assert kendall_tau([0, 1, 2, 3], normalize=False) == 1.0
+    assert kendall_tau([3, 2, 1, 0]) == 0.0
+    assert kendall_tau([3, 2, 1, 0], normalize=False) == -1.0
+
+
+def test_ribes_paper_h1_example():
+    # NKT is 0.5, the unigram precision is 1.0 and there is no brevity penalty,
+    # so the sentence level RIBES is 0.5.
+    ref = "John hit Bob yesterday".split()
+    hyp = "Bob hit John yesterday".split()
+    assert sentence_ribes([ref], hyp) == 0.5

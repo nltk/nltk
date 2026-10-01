@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Recursive Descent Parser Application
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -708,7 +708,7 @@ class RecursiveDescentApp:
             from tkinter.messagebox import Message
 
             Message(message=ABOUT, title=TITLE).show()
-        except:
+        except Exception:
             ShowText(self._top, TITLE, ABOUT)
 
     def help(self, *e):
@@ -722,7 +722,7 @@ class RecursiveDescentApp:
                 width=75,
                 font="fixed",
             )
-        except:
+        except Exception:
             ShowText(
                 self._top,
                 "Help: Recursive Descent Parser Application",

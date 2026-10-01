@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Text Segmentation Metrics
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         David Doukhan <david.doukhan@gmail.com>
@@ -45,6 +45,11 @@ try:
 except ImportError:
     pass
 
+#: Longest segmentation ``ghd`` accepts. Its DP is O(n_ref_boundaries *
+#: n_hyp_boundaries); an all-boundary input makes both O(len), i.e. O(len**2)
+#: time and memory (CWE-770). ``windowdiff``/``pk`` scan once so need no cap.
+MAX_GHD_INPUT_LEN = 10_000
+
 
 def windowdiff(seg1, seg2, k, boundary="1", weighted=False):
     """
@@ -52,6 +57,19 @@ def windowdiff(seg1, seg2, k, boundary="1", weighted=False):
     segmentation is any sequence over a vocabulary of two items
     (e.g. "0", "1"), where the specified boundary value is used to
     mark the edge of a segmentation.
+
+    From Pevzner & Hearst (2002), the WindowDiff metric is defined as::
+
+        WindowDiff(ref, hyp, k) =
+            1 / (N - k) * sum_{i=1}^{N-k} (
+                |b(ref, i, i+k) - b(hyp, i, i+k)| > 0
+            )
+
+    where ``b(seg, i, j)`` counts the number of boundaries in ``seg``
+    between positions ``i`` and ``j``, and ``N = len(seg)``.
+
+    The weighted variant sums the absolute differences instead
+    of thresholding at 1.
 
         >>> s1 = "000100000010"
         >>> s2 = "000010000100"
@@ -78,13 +96,26 @@ def windowdiff(seg1, seg2, k, boundary="1", weighted=False):
 
     if len(seg1) != len(seg2):
         raise ValueError("Segmentations have unequal length")
+    if k < 0:
+        raise ValueError("Window width k should not be negative")
     if k > len(seg1):
         raise ValueError(
             "Window width k should be smaller or equal than segmentation lengths"
         )
     wd = 0
+    # Maintain the boundary counts for the sliding window incrementally rather
+    # than recomputing seg[i:i+k].count(boundary) from scratch at every position
+    # (which is O(k) per step and makes the metric O(n*k) -- quadratic when the
+    # window k is proportional to the segmentation length).
+    count1 = seg1[:k].count(boundary)
+    count2 = seg2[:k].count(boundary)
     for i in range(len(seg1) - k + 1):
-        ndiff = abs(seg1[i : i + k].count(boundary) - seg2[i : i + k].count(boundary))
+        if i > 0:
+            # The window moved one position right in seg1 and seg2: drop index
+            # i-1 and add index i+k-1.
+            count1 += (seg1[i + k - 1] == boundary) - (seg1[i - 1] == boundary)
+            count2 += (seg2[i + k - 1] == boundary) - (seg2[i - 1] == boundary)
+        ndiff = abs(count1 - count2)
         if weighted:
             wd += ndiff
         else:
@@ -164,6 +195,12 @@ def ghd(ref, hyp, ins_cost=2.0, del_cost=2.0, shift_cost_coeff=1.0, boundary="1"
     :rtype: float
     """
 
+    if len(ref) > MAX_GHD_INPUT_LEN or len(hyp) > MAX_GHD_INPUT_LEN:
+        raise ValueError(
+            f"Segmentation longer than {MAX_GHD_INPUT_LEN} is rejected: ghd is "
+            "quadratic in the number of boundaries (CWE-770)."
+        )
+
     ref_idx = [i for (i, val) in enumerate(ref) if val == boundary]
     hyp_idx = [i for (i, val) in enumerate(hyp) if val == boundary]
 
@@ -210,13 +247,32 @@ def pk(ref, hyp, k=None, boundary="1"):
     :rtype: float
     """
 
+    if len(ref) != len(hyp):
+        raise ValueError("Segmentations have unequal length")
     if k is None:
-        k = int(round(len(ref) / (ref.count(boundary) * 2.0)))
+        # Half the average reference segment length. A boundary-free reference
+        # has a count of 0, which would make this an uncaught ZeroDivisionError
+        # (CWE-369); treat it as a single segment (count >= 1) so the metric is
+        # still computed instead of crashing.
+        k = int(round(len(ref) / (max(ref.count(boundary), 1) * 2.0)))
+    if k < 0:
+        raise ValueError("Window width k should not be negative")
 
     err = 0
+    # Maintain the boundary counts for the sliding window incrementally rather
+    # than recomputing ref/hyp[i:i+k].count(boundary) from scratch at every
+    # position (which is O(k) per step and makes the metric O(n*k) -- quadratic,
+    # since k is ~ half the average segment length).
+    ref_count = ref[:k].count(boundary)
+    hyp_count = hyp[:k].count(boundary)
     for i in range(len(ref) - k + 1):
-        r = ref[i : i + k].count(boundary) > 0
-        h = hyp[i : i + k].count(boundary) > 0
+        if i > 0:
+            # The window moved one position right in ref and hyp: drop index
+            # i-1 and add index i+k-1.
+            ref_count += (ref[i + k - 1] == boundary) - (ref[i - 1] == boundary)
+            hyp_count += (hyp[i + k - 1] == boundary) - (hyp[i - 1] == boundary)
+        r = ref_count > 0
+        h = hyp_count > 0
         if r != h:
             err += 1
     return err / (len(ref) - k + 1.0)

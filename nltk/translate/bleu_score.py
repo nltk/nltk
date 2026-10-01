@@ -1,6 +1,6 @@
 # Natural Language Toolkit: BLEU Score
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Authors: Chin Yee Lee, Hengfeng Li, Ruxin Hou, Calvin Tanujaya Lim
 # Contributors: Björn Mattsson, Dmitrijs Milajevs, Liling Tan
 # URL: <https://www.nltk.org/>
@@ -223,7 +223,7 @@ def corpus_bleu(
 
     try:
         weights[0][0]
-    except:
+    except (TypeError, IndexError):
         weights = [weights]
     max_weight_length = max(len(weight) for weight in weights)
 
@@ -574,7 +574,9 @@ class SmoothingFunction:
                     "Consider using lower n-gram order or use "
                     "SmoothingFunction()"
                 ).format(i + 1)
-                warnings.warn(_msg)
+                warnings.warn(
+                    _msg
+                )  # unsafe-print ok: literal text with a numeric n-gram order
                 # When numerator==0 where denonminator==0 or !=0, the result
                 # for the precision score should be equal to 0 or undefined.
                 # Due to BLEU geometric mean computation in logarithm space,

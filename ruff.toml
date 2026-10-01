@@ -1,0 +1,19 @@
+target-version = "py310"
+
+[lint]
+# Default rules (E, F) with project-specific ignores.
+ignore = [
+    "E402",   # module-level import not at top (NLTK uses conditional/lazy imports)
+    "E721",   # type comparison using == (some intentional in NLTK)
+    "E731",   # lambda assignment (pervasive in NLTK, safe to keep)
+    "E741",   # ambiguous variable name (l, I, O are common in NLP code)
+    "F401",   # unused import (many intentional re-exports and interactive imports)
+    "F403",   # star import used (NLTK __init__.py pattern)
+    "F405",   # name may be undefined from star import (consequence of F403)
+    "F821",   # undefined name (pre-existing issues in legacy code)
+    "F841",   # local variable assigned but never used (many intentional)
+]
+
+[lint.per-file-ignores]
+# Test files may have additional patterns
+"nltk/test/**" = ["F811"]

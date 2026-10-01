@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Trevor Cohn <tacohn@csse.unimelb.edu.au>
@@ -68,6 +68,7 @@ argument.  This differs from the conventions used by Python's
 
 import re
 
+from nltk import redos
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import regexp_span_tokenize
 
@@ -117,7 +118,12 @@ class RegexpTokenizer(TokenizerI):
 
     def _check_regexp(self):
         if self._regexp is None:
-            self._regexp = re.compile(self._pattern, self._flags)
+            # ``pattern`` is caller-supplied, so compile it through ``redos``:
+            # a crafted pattern (e.g. ``(a+)+$``) would otherwise backtrack
+            # catastrophically and hang the process (CWE-1333). ``redos``
+            # compiles with the ``regex`` engine and bounds every match with a
+            # wall-clock timeout. See ``nltk/redos.py``.
+            self._regexp = redos.compile(self._pattern, self._flags)
 
     def tokenize(self, text):
         self._check_regexp()
@@ -140,7 +146,10 @@ class RegexpTokenizer(TokenizerI):
                 if not (self._discard_empty and left == right):
                     yield left, right
         else:
-            for m in re.finditer(self._regexp, text):
+            # ``self._regexp`` is a ``redos.TimedPattern``; call its own
+            # ``finditer`` so the wall-clock timeout is applied (a bare
+            # ``re.finditer(pattern, ...)`` would neither accept it nor bound it).
+            for m in self._regexp.finditer(text):
                 yield m.span()
 
     def __repr__(self):
@@ -177,7 +186,10 @@ class BlanklineTokenizer(RegexpTokenizer):
     """
 
     def __init__(self):
-        RegexpTokenizer.__init__(self, r"\s*\n\s*\n\s*", gaps=True)
+        # The leading run is taken only when no whitespace precedes it: split
+        # retried ``\s*`` from every position of a space run with no blank line
+        # after it, O(n**2) (CWE-407). No split ever began inside such a run.
+        RegexpTokenizer.__init__(self, r"(?:(?<!\s)\s*)?\n\s*\n\s*", gaps=True)
 
 
 class WordPunctTokenizer(RegexpTokenizer):

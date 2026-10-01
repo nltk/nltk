@@ -1,4 +1,4 @@
-.. Copyright (C) 2001-2025 NLTK Project
+.. Copyright (C) 2001-2026 NLTK Project
 .. For license information, see LICENSE.TXT
 
 ==========================================
@@ -159,3 +159,89 @@ Now test invalid scenarios
     Traceback (most recent call last):
     ...
     nltk.internals.ReadError: Expected close quote at 1
+
+=====================================================
+ _validate_java_options (CVE-2026-12841, CWE-88)
+=====================================================
+
+>>> from nltk.internals import _validate_java_options
+
+Safe JVM tuning flags are permitted (no exception raised):
+
+>>> _validate_java_options(["-Xmx512m"])
+>>> _validate_java_options(["-Xms128m"])
+>>> _validate_java_options(["-Xss4m"])
+
+The legacy short aliases (-mx / -ms / -ss) that Stanford and CoreNLP
+wrappers pass are equivalent and also permitted:
+
+>>> _validate_java_options(["-mx2g"])
+>>> _validate_java_options(["-ms128m"])
+>>> _validate_java_options(["-ss4m"])
+>>> _validate_java_options(["-verbose:gc"])
+>>> _validate_java_options(["-server"])
+>>> _validate_java_options(["-client"])
+>>> _validate_java_options(["-Xmx1g", "-server"])
+
+The filter is an allowlist, so ``-XX:`` and ``-D`` flags are refused even though
+they look innocuous: ``-XX:`` can name a file the JVM executes on error and
+``-D`` can redirect class loading or disarm the security manager. Pass a genuinely
+needed one through ``java(trusted_raw_options=...)``:
+
+>>> _validate_java_options(["-XX:+UseG1GC"])  # doctest: +ELLIPSIS
+Traceback (most recent call last):
+    ...
+ValueError: java_options contains a disallowed JVM/launcher flag: '-XX:+UseG1GC'...
+
+>>> _validate_java_options(["-Dsome.property=value"])  # doctest: +ELLIPSIS
+Traceback (most recent call last):
+    ...
+ValueError: java_options contains a disallowed JVM/launcher flag: '-Dsome.property=value'...
+
+A single bad flag rejects the whole list, even mixed with permitted ones:
+
+>>> _validate_java_options(["-Xmx1g", "-Dsome.key=val", "-server"])  # doctest: +ELLIPSIS
+Traceback (most recent call last):
+    ...
+ValueError: java_options contains a disallowed JVM/launcher flag: '-Dsome.key=val'...
+
+Agent-loading and JDWP flags are blocked:
+
+>>> _validate_java_options(["-agentlib:jdwp=transport=dt_socket,server=y"])  # doctest: +ELLIPSIS
+Traceback (most recent call last):
+    ...
+ValueError: java_options contains a disallowed JVM/launcher flag: '-agentlib:jdwp=transport=dt_socket,server=y'...
+
+>>> _validate_java_options(["-agentpath:/tmp/agent.so"])  # doctest: +ELLIPSIS
+Traceback (most recent call last):
+    ...
+ValueError: java_options contains a disallowed JVM/launcher flag: '-agentpath:/tmp/agent.so'...
+
+>>> _validate_java_options(["-javaagent:/tmp/agent.jar"])  # doctest: +ELLIPSIS
+Traceback (most recent call last):
+    ...
+ValueError: java_options contains a disallowed JVM/launcher flag: '-javaagent:/tmp/agent.jar'...
+
+>>> _validate_java_options(["-Xrunjdwp:transport=dt_socket"])  # doctest: +ELLIPSIS
+Traceback (most recent call last):
+    ...
+ValueError: java_options contains a disallowed JVM/launcher flag: '-Xrunjdwp:transport=dt_socket'...
+
+-jar and @argfile bypasses are also blocked:
+
+>>> _validate_java_options(["-jar", "/tmp/evil.jar"])  # doctest: +ELLIPSIS
+Traceback (most recent call last):
+    ...
+ValueError: java_options contains a disallowed JVM/launcher flag: '-jar'...
+
+>>> _validate_java_options(["@evil.args"])  # doctest: +ELLIPSIS
+Traceback (most recent call last):
+    ...
+ValueError: java_options contains a disallowed Java argument file reference: '@evil.args'...
+
+Matching is case-insensitive:
+
+>>> _validate_java_options(["-AGENTLIB:jdwp=transport=dt_socket"])  # doctest: +ELLIPSIS
+Traceback (most recent call last):
+    ...
+ValueError: java_options contains a disallowed JVM/launcher flag: '-AGENTLIB:jdwp=transport=dt_socket'...
