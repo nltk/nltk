@@ -27,6 +27,7 @@ machine and under any load. Every guard also has a negative control that
 neuters it in-process and asserts the measurement flips.
 """
 
+import functools
 import io
 import os
 import random
@@ -36,36 +37,17 @@ import time
 import pytest
 
 from nltk.test.unit import timing
+from nltk.test.unit.security_probes.ghsa_53pg_5qp8_mhvr import (
+    WALKERS,
+    _chain,
+    _node_class,
+)
 
-QUADRATIC_RATIO = 8.0
+QUADRATIC_RATIO = timing.QUADRATIC_RATIO
 
-
-def _elapsed(fn):
-    """CPU seconds charged to ``fn``, which computes (nltk.test.unit.timing)."""
-    return timing.charged(fn, cpu_bound=True)
-
-
-def _scaling_ratio(op, small, big, reps=3, noise_floor=0.1):
-    """Fastest-of-``reps`` ``op(big)`` over ``op(small)`` (big == 4*small).
-
-    The floor is multiplicative so a sub-second quadratic is not hidden by
-    additive slack; each side is a min-of-``reps`` to shed a transient stall.
-    Every op here computes, so the runs are charged their CPU time and the
-    small and big runs alternate, with the cheap small side run ``reps`` more
-    times, as nltk.test.unit.timing.scaling_ratio does; the floors are kept.
-    """
-    t_small = t_big = float("inf")
-    for _ in range(reps):
-        t_small = min(t_small, _elapsed(lambda: op(small)))
-        t_big = min(t_big, _elapsed(lambda: op(big)))
-    for _ in range(reps):
-        t_small = min(t_small, _elapsed(lambda: op(small)))
-    return t_big / max(t_small, noise_floor), t_small, t_big
-
-
-def _assert_subquadratic(op, small, big, reps=3):
-    ratio, t_small, t_big = _scaling_ratio(op, small, big, reps=reps)
-    assert ratio < QUADRATIC_RATIO, (small, big, t_small, t_big, ratio)
+# Every op here computes, so each side of a ratio is charged its CPU time; the
+# measurement itself is the suite's one rule in nltk.test.unit.timing.
+_assert_subquadratic = functools.partial(timing.assert_subquadratic, cpu_bound=True)
 
 
 def _assert_quadratic(op, small, big, reps=3, factor=QUADRATIC_RATIO, noise_floor=0.02):
@@ -75,10 +57,10 @@ def _assert_quadratic(op, small, big, reps=3, factor=QUADRATIC_RATIO, noise_floo
     sized to clear 20 ms even on a fast runner, and a floor of 0.1 s would
     hide a real 16x as 5x there.
     """
-    ratio, t_small, t_big = _scaling_ratio(
-        op, small, big, reps=reps, noise_floor=noise_floor
+    ratio = timing.scaling_ratio(
+        op, small, big, reps=reps, noise_floor=noise_floor, cpu_bound=True
     )
-    assert ratio >= factor, (small, big, t_small, t_big, ratio)
+    assert ratio >= factor, (small, big, ratio)
 
 
 # --- #32p6: redos capturing-group compile bound ------------------------------
@@ -352,40 +334,7 @@ class TestXMLCorpusViewDepth:
 
 
 # --- #53pg: WordNet hypernym walkers refuse a cyclic graph -------------------
-
-WALKERS = ("max_depth", "min_depth", "hypernym_paths", "hypernym_distances")
-
-
-def _synthetic_node_class():
-    """A synthetic Synset exposing only the hypernym accessors the walkers use,
-    so the graph shape is under the test's control and no corpus is needed."""
-    from nltk.corpus.reader.wordnet import Synset
-
-    class Node(Synset):
-        def __init__(self, name, up):
-            self._name = name
-            self._up = up
-
-        def hypernyms(self):
-            return self._up
-
-        def instance_hypernyms(self):
-            return []
-
-        def _hypernyms(self):
-            return self._up
-
-        def _instance_hypernyms(self):
-            return []
-
-    return Node
-
-
-def _chain(Node, length):
-    node = Node("root", [])
-    for i in range(length):
-        node = Node("n%d" % i, [node])
-    return node
+# WALKERS, _node_class and _chain are the GHSA-53pg probe's own, imported above.
 
 
 class TestWordNetHypernymCycle:
@@ -437,7 +386,7 @@ class TestWordNetHypernymCycle:
     def test_synthetic_cycle_and_deep_chain_refused(self, walker):
         # No corpus needed: a two-node cycle and a 2000-deep acyclic chain (over
         # the interpreter's recursion limit) are both refused with a ValueError.
-        Node = _synthetic_node_class()
+        Node = _node_class()
         a = Node("a", [])
         b = Node("b", [a])
         a._up = [b]
@@ -450,7 +399,7 @@ class TestWordNetHypernymCycle:
     def test_chain_under_the_cap_walks(self, walker):
         from nltk.corpus.reader.wordnet import _MAX_HYPERNYM_DEPTH
 
-        Node = _synthetic_node_class()
+        Node = _node_class()
         result = getattr(_chain(Node, _MAX_HYPERNYM_DEPTH - 1), walker)()
         assert result  # non-empty depth / paths / distances
 
@@ -459,7 +408,7 @@ class TestWordNetHypernymCycle:
         # Neuter the visit check and the cycle recurses until RecursionError.
         import nltk.corpus.reader.wordnet as wordnet
 
-        Node = _synthetic_node_class()
+        Node = _node_class()
         a = Node("a", [])
         b = Node("b", [a])
         a._up = [b]

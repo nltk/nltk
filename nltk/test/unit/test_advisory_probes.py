@@ -877,22 +877,6 @@ def test_relative_binary_location_probe_has_teeth(monkeypatch):
     assert probe()[0] == probes.FIXED
 
 
-def test_q4c8_readline_probe_has_teeth(monkeypatch):
-    """Make every block look like it carries a line break, so readline joins and
-    re-splits the whole growing buffer on each pass as it did before the fix."""
-    import nltk.data as data
-
-    probe = probes.PROBES["GHSA-q4c8-9gwf-255x"]
-    assert probe()[0] == probes.FIXED
-
-    # develop gates the re-split on _has_line_boundary (the timed regex is
-    # gone since #3938); a check that reports a boundary everywhere restores
-    # the pre-fix re-split of the whole growing buffer past the switch
-    monkeypatch.setattr(data, "_has_line_boundary", lambda text: True)
-    status, evidence = probe()
-    assert status == probes.VULNERABLE, evidence
-
-
 @pytest.mark.skipif(os.name != "posix", reason="POSIX ownership check")
 def test_relative_binary_location_probe_world_writable_phase_has_teeth(monkeypatch):
     """Neuter the spawn-time ownership check only: the finder still refuses
@@ -1189,12 +1173,18 @@ def test_wr3g_zip_hardlink_probe_has_teeth():
     assert probe()[0] == probes.FIXED
 
 
-def test_j8g8_reparse_probe_has_teeth(monkeypatch):
+@pytest.mark.parametrize("ghsa", ["GHSA-j8g8-j4j7-8j54", "GHSA-q4c8-9gwf-255x"])
+def test_readline_reparse_probe_has_teeth(ghsa, monkeypatch):
     """Report a line boundary in every block; readline then re-splits the whole
-    growing buffer each pass (the pre-fix O(n^2)) and the probe flips."""
+    growing buffer each pass (the pre-fix O(n^2)) and the probe flips.
+
+    develop gates the re-split on ``_has_line_boundary`` (the timed regex is
+    gone since #3938). GHSA-q4c8 is a second advisory on the same sink whose
+    probe is the GHSA-j8g8 measurement, so each registered id must flip here.
+    """
     import nltk.data as data
 
-    probe = probes.PROBES["GHSA-j8g8-j4j7-8j54"]
+    probe = probes.PROBES[ghsa]
     assert probe()[0] == probes.FIXED
 
     monkeypatch.setattr(data, "_has_line_boundary", lambda text: True)

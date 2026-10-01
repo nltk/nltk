@@ -5,33 +5,16 @@ corpus line of N characters cost O(N**2) (an 8 MB line took 14 s).
 
 The fix looks for a line break only in the freshly read block (plus the
 previous block's last character) and grows the buffer through a list of parts,
-so the read is linear. The same sink is probed as GHSA-j8g8-j4j7-8j54.
+so the read is linear. The same sink is probed as GHSA-j8g8-j4j7-8j54, and this
+probe is that one measurement (an unterminated line timed over a 4x input
+through the suite's scaling rule), so the two advisories cannot drift apart.
 """
 
-import io
-
-from ._base import FIXED, QUADRATIC_RATIO, VULNERABLE, probe, scaling_ratio
+from ._base import probe
+from .ghsa_j8g8_j4j7_8j54 import _readline_grow_and_reparse
 
 
 @probe("GHSA-q4c8-9gwf-255x")
 def _readline_unterminated_line():
-    """Read one unterminated line and measure how the time scales with its length.
-
-    A linear read scales ~4x for 4x input; the pre-fix whole-buffer re-split per
-    block scales ~16x and trips the quadratic ratio.
-    """
-    from nltk.data import SeekableUnicodeStreamReader
-
-    def op(n):
-        SeekableUnicodeStreamReader(io.BytesIO(b"a" * n), "utf-8").readline()
-
-    # Sized so a quadratic small side clears the (lowered) noise floor even on
-    # a fast runner, while a linear 3 MB read stays well under 0.2 s.
-    small, big = 750_000, 3_000_000  # big == 4 * small
-    ratio = scaling_ratio(
-        op, small, big, reps=2, noise_floor=0.02, cpu_bound=True  # the sink computes
-    )
-    detail = "readline scales %.1fx over 4x input (%d->%d chars)" % (ratio, small, big)
-    if ratio >= QUADRATIC_RATIO:
-        return VULNERABLE, "whole-buffer re-split per block: " + detail
-    return FIXED, "linear read: " + detail
+    """The GHSA-j8g8 readline measurement, registered for this advisory too."""
+    return _readline_grow_and_reparse()
