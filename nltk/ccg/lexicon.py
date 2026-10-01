@@ -21,6 +21,11 @@ from nltk.sem.logic import Expression
 #: uncaught RecursionError (CWE-674).  Configurable.
 MAX_PARSE_DEPTH = 500
 
+#: Maximum length of a single category string the parser will accept.
+#: A category longer than any real grammar is treated as adversarial input
+#: (defense in depth against quadratic parsing). Configurable.
+MAX_PARSE_LEN = 100_000
+
 # ------------
 # Regular expressions used for parsing components of the lexicon
 # ------------
@@ -28,14 +33,16 @@ MAX_PARSE_DEPTH = 500
 # Parses a primitive category and subscripts
 PRIM_RE = redos.compile(r"""([A-Za-z]+)(\[[A-Za-z,]+\])?""")
 
-# Separates the next primitive category from the remainder of the
-# string
-NEXTPRIM_RE = redos.compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)""")
+# Matches the next primitive category (name and optional subscript). The parser
+# threads a position cursor for the remainder, so no trailing group is captured;
+# a captured remainder made parsing quadratic in the category length.
+NEXTPRIM_RE = redos.compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)""")
 
-# Separates the next application operator from the remainder.
+# Matches the next application operator (slash and optional modality). The parser
+# threads a position cursor for the remainder, so no trailing group is captured.
 # The modifier slot also accepts `_`, marking a variable direction
 # (e.g. `(S\_NP)/(S\_NP)` for a polymorphic adverb).
-APP_RE = redos.compile(r"""([\\/])([.,_]?)([.,]?)(.*)""")
+APP_RE = redos.compile(r"""([\\/])([.,_]?)([.,]?)""")
 
 # Parses the definition of the right-hand side (rhs) of either a word or a family.
 # The identifier and the arrow alternative ``[-=]+>`` both match ``-``/``=``, so the
@@ -146,8 +153,13 @@ class CCGLexicon:
 # -----------
 
 
-def matchBrackets(string, _depth=0, max_depth=None):
-    """Separate the contents matching the first set of brackets from the rest of the input."""
+def matchBrackets(string, pos=0, _depth=0, max_depth=None):
+    """Separate the contents matching the first set of brackets from the rest of the input.
+
+    ``pos`` is the index of the opening bracket in ``string``. Returns the
+    bracketed substring (parentheses included) and the index just past its
+    closing bracket, threading a cursor instead of re-slicing the tail.
+    """
     if max_depth is None:
         max_depth = MAX_PARSE_DEPTH
     if _depth > max_depth:
@@ -157,26 +169,42 @@ def matchBrackets(string, _depth=0, max_depth=None):
             "adversarially deep. Raise "
             "nltk.ccg.lexicon.MAX_PARSE_DEPTH to allow it."
         )
-    rest = string[1:]
-    inside = "("
+    n = len(string)
+    if n - pos > MAX_PARSE_LEN:
+        raise ValueError(
+            f"CCG category length exceeds MAX_PARSE_LEN "
+            f"({MAX_PARSE_LEN}); the input may be "
+            "adversarially long. Raise "
+            "nltk.ccg.lexicon.MAX_PARSE_LEN to allow it."
+        )
+    inside = ["("]
+    i = pos + 1
 
-    while rest != "" and not rest.startswith(")"):
-        if rest.startswith("("):
-            (part, rest) = matchBrackets(rest, _depth + 1, max_depth)
-            inside = inside + part
+    while i < n and string[i] != ")":
+        if string[i] == "(":
+            (part, i) = matchBrackets(string, i, _depth + 1, max_depth)
+            inside.append(part)
         else:
-            inside = inside + rest[0]
-            rest = rest[1:]
-    if rest.startswith(")"):
-        return (inside + ")", rest[1:])
-    raise AssertionError("Unmatched bracket in string '" + string + "'")
+            inside.append(string[i])
+            i += 1
+    if i < n and string[i] == ")":
+        inside.append(")")
+        return ("".join(inside), i + 1)
+    raise AssertionError("Unmatched bracket in string '" + string[pos:] + "'")
 
 
-def nextCategory(string, _depth=0, max_depth=None):
-    """Separate the string for the next portion of the category from the rest of the string"""
-    if string.startswith("("):
-        return matchBrackets(string, _depth, max_depth)
-    return NEXTPRIM_RE.match(string).groups()
+def nextCategory(string, pos=0, _depth=0, max_depth=None):
+    """Separate the next portion of the category from the rest of the string.
+
+    Returns the next category substring and the index just past it in
+    ``string`` (a cursor), rather than the re-sliced tail.
+    """
+    if pos < len(string) and string[pos] == "(":
+        return matchBrackets(string, pos, _depth, max_depth)
+    m = NEXTPRIM_RE.match(string, pos)
+    if m is None:
+        m.groups()  # keep the original AttributeError on malformed input
+    return (m.group(1), m.end(1))
 
 
 def parseApplication(app):
@@ -233,7 +261,15 @@ def augParseCategory(line, primitives, families, var=None, _depth=0, max_depth=N
             "adversarially deep. Raise "
             "nltk.ccg.lexicon.MAX_PARSE_DEPTH to allow it."
         )
-    (cat_string, rest) = nextCategory(line, _depth, max_depth)
+    if len(line) > MAX_PARSE_LEN:
+        raise ValueError(
+            f"CCG category length exceeds MAX_PARSE_LEN "
+            f"({MAX_PARSE_LEN}); the input may be "
+            "adversarially long. Raise "
+            "nltk.ccg.lexicon.MAX_PARSE_LEN to allow it."
+        )
+    n = len(line)
+    (cat_string, pos) = nextCategory(line, 0, _depth, max_depth)
 
     if cat_string.startswith("("):
         (res, var) = augParseCategory(
@@ -244,12 +280,14 @@ def augParseCategory(line, primitives, families, var=None, _depth=0, max_depth=N
             PRIM_RE.match(cat_string).groups(), primitives, families, var
         )
 
-    while rest != "":
-        app = APP_RE.match(rest).groups()
-        direction = parseApplication(app[0:3])
-        rest = app[3]
+    while pos < n:
+        m = APP_RE.match(line, pos)
+        if m is None:
+            m.groups()  # keep the original AttributeError on malformed input
+        direction = parseApplication(m.group(1, 2, 3))
+        pos = m.end()
 
-        (cat_string, rest) = nextCategory(rest, _depth, max_depth)
+        (cat_string, pos) = nextCategory(line, pos, _depth, max_depth)
         if cat_string.startswith("("):
             (arg, var) = augParseCategory(
                 cat_string[1:-1],
