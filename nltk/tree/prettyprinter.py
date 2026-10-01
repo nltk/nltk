@@ -23,13 +23,11 @@ try:
 except ImportError:
     from cgi import escape
 
-from collections import defaultdict
-from operator import itemgetter
+from collections import OrderedDict, defaultdict
 
 from nltk import redos
 from nltk.termsec import safe_print
 from nltk.tree.tree import Tree
-from nltk.util import OrderedDict
 
 ANSICOLOR = {
     "black": 30,
@@ -150,8 +148,9 @@ class TreePrettyPrinter:
             add new row to level if no free row available.
             """
             candidates = [a for _, a in children[m]]
+            candidateset = set(candidates)
             minidx, maxidx = min(candidates), max(candidates)
-            leaves = tree[m].leaves()
+            leaves = leaves_of(m)
             center = scale * sum(leaves) // len(leaves)  # center of gravity
             if minidx < maxidx and not minidx < center < maxidx:
                 center = sum(candidates) // len(candidates)
@@ -181,18 +180,18 @@ class TreePrettyPrinter:
                         i = j = center + n
                         while j > minidx or i < maxidx:
                             if i < maxidx and (
-                                matrix[rowidx][i] is None or i in candidates
+                                matrix[rowidx][i] is None or i in candidateset
                             ):
                                 return rowidx, i
                             elif j > minidx and (
-                                matrix[rowidx][j] is None or j in candidates
+                                matrix[rowidx][j] is None or j in candidateset
                             ):
                                 return rowidx, j
                             i += scale
                             j -= scale
             raise ValueError(
                 "could not find a free cell for:\n%s\n%s"
-                "min=%d; max=%d" % (tree[m], minidx, maxidx, dumpmatrix())
+                "min=%d; max=%d" % (node_at[m], minidx, maxidx, dumpmatrix())
             )
 
         def dumpmatrix():
@@ -201,6 +200,12 @@ class TreePrettyPrinter:
                 "%2d: %s" % (n, " ".join(("%2r" % i)[:2] for i in row))
                 for n, row in enumerate(matrix)
             )
+
+        def leaves_of(a):
+            """The leaves under position ``a``, walked once per node."""
+            if a not in leaves_at:
+                leaves_at[a] = node_at[a].leaves()
+            return leaves_at[a]
 
         leaves = tree.leaves()
         if not all(isinstance(n, int) for n in leaves):
@@ -218,36 +223,41 @@ class TreePrettyPrinter:
         for a in tree.subtrees():
             a.sort(key=lambda n: min(n.leaves()) if isinstance(n, Tree) else n)
         scale = 2
-        crossed = set()
         # internal nodes and lexical nodes (no frontiers)
         positions = tree.treepositions()
+        # the node at each position, resolved once: a positional lookup
+        # on the tree walks its depth, and every node is consulted repeatedly
+        node_at = {}
+        for a in positions:
+            node_at[a] = tree if not a else node_at[a[:-1]][a[-1]]
+        leaves_at = {}
         maxdepth = max(map(len, positions)) + 1
         childcols = defaultdict(set)
         matrix = [[None] * (len(sentence) * scale)]
         nodes = {}
         ids = {a: n for n, a in enumerate(positions)}
         highlighted_nodes = {
-            n for a, n in ids.items() if not highlight or tree[a] in highlight
+            n for a, n in ids.items() if not highlight or node_at[a] in highlight
         }
         levels = {n: [] for n in range(maxdepth - 1)}
         terminals = []
         for a in positions:
-            node = tree[a]
+            node = node_at[a]
             if isinstance(node, Tree):
                 levels[maxdepth - node.height()].append(a)
             else:
                 terminals.append(a)
 
         for n in levels:
-            levels[n].sort(key=lambda n: max(tree[n].leaves()) - min(tree[n].leaves()))
+            levels[n].sort(key=lambda n: max(leaves_of(n)) - min(leaves_of(n)))
         terminals.sort()
         positions = set(positions)
 
         for m in terminals:
-            i = int(tree[m]) * scale
+            i = int(node_at[m]) * scale
             assert matrix[0][i] is None, (matrix[0][i], m, i)
             matrix[0][i] = ids[m]
-            nodes[ids[m]] = sentence[tree[m]]
+            nodes[ids[m]] = sentence[node_at[m]]
             if nodes[ids[m]] is None:
                 nodes[ids[m]] = "..."
                 highlighted_nodes.discard(ids[m])
@@ -264,21 +274,6 @@ class TreePrettyPrinter:
                 [vertline if a not in (corner, None) else None for a in matrix[-1]]
             )
             for m in nodesatdepth:  # [::-1]:
-                if n < maxdepth - 1 and childcols[m]:
-                    _, pivot = min(childcols[m], key=itemgetter(1))
-                    if {
-                        a[:-1]
-                        for row in matrix[:-1]
-                        for a in row[:pivot]
-                        if isinstance(a, tuple)
-                    } & {
-                        a[:-1]
-                        for row in matrix[:-1]
-                        for a in row[pivot:]
-                        if isinstance(a, tuple)
-                    }:
-                        crossed.add(m)
-
                 rowidx, i = findcell(m, matrix, startoflevel, childcols)
                 positions.remove(m)
 
@@ -289,17 +284,19 @@ class TreePrettyPrinter:
                 #         matrix[rowidx][i], m, str(tree), ' '.join(sentence))
                 # node itself
                 matrix[rowidx][i] = ids[m]
-                nodes[ids[m]] = tree[m]
+                nodes[ids[m]] = node_at[m]
                 # add column to the set of children for its parent
                 if len(m) > 0:
                     childcols[m[:-1]].add((rowidx, i))
         assert len(positions) == 0
 
-        # remove unused columns, right to left
-        for m in range(scale * len(sentence) - 1, -1, -1):
-            if not any(isinstance(row[m], (Tree, int)) for row in matrix):
-                for row in matrix:
-                    del row[m]
+        # remove unused columns
+        used = [
+            m
+            for m in range(scale * len(sentence))
+            if any(isinstance(row[m], (Tree, int)) for row in matrix)
+        ]
+        matrix = [[row[m] for m in used] for row in matrix]
 
         # remove unused rows, reverse
         matrix = [
@@ -315,16 +312,12 @@ class TreePrettyPrinter:
                 if isinstance(i, int) and i >= 0:
                     coords[i] = n, m
 
-        # move crossed edges last
-        positions = sorted(
-            (a for level in levels.values() for a in level),
-            key=lambda a: a[:-1] in crossed,
-        )
+        positions = [a for level in levels.values() for a in level]
 
         # collect edges from node to node
         edges = OrderedDict()
         for i in reversed(positions):
-            for j, _ in enumerate(tree[i]):
+            for j, _ in enumerate(node_at[i]):
                 edges[ids[i + (j,)]] = ids[i]
 
         return nodes, coords, edges, highlighted_nodes
@@ -440,12 +433,13 @@ class TreePrettyPrinter:
                         branchrow[j] = (rightcorner + (" " * b)).rjust(
                             maxnodewith[j], horzline
                         )
+                        branchcols = {a for _, a in childcols[n]}
                         for i in range(minchildcol[n] + 1, maxchildcol[n]):
-                            if i == col and any(a == i for _, a in childcols[n]):
+                            if i == col and i in branchcols:
                                 line = cross
                             elif i == col:
                                 line = bottom
-                            elif any(a == i for _, a in childcols[n]):
+                            elif i in branchcols:
                                 line = tee
                             else:
                                 line = horzline
