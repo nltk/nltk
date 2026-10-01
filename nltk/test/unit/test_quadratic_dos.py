@@ -1242,3 +1242,60 @@ class TestTextTilingParagraphBreakLeadingRun:  # texttiling._mark_paragraph_brea
 
     def test_pre_fix_pattern_has_teeth(self):
         _trips_backstop(_PRE_FIX["texttiling"], "finditer", " " * 80000 + "\n")
+
+
+class TestValuationLeadingWhitespaceRuns:  # sem/evaluate.py, the three splitters
+    def test_benign_parse_unchanged(self):
+        from nltk.sem.evaluate import read_valuation
+
+        val = dict(
+            read_valuation("a => b\ngirl => {g1, g2}\nchase => {(b1, g1), (b2, g1)}")
+        )
+        assert val["a"] == "b"
+        assert val["girl"] == {("g1",), ("g2",)}
+        assert val["chase"] == {("b1", "g1"), ("b2", "g1")}
+
+    def test_interior_space_run_before_the_separator_is_linear(self):
+        from nltk.sem.evaluate import read_valuation
+
+        _assert_subquadratic(
+            lambda n: read_valuation("a" + " " * n + "b => c"), 10000, 40000
+        )
+
+    def test_interior_space_run_before_a_comma_is_linear(self):
+        from nltk.sem.evaluate import read_valuation
+
+        _assert_subquadratic(
+            lambda n: read_valuation("s => {a" + " " * n + "b, c}"), 20000, 80000
+        )
+
+    def test_interior_space_run_before_an_open_tuple_is_linear(self):
+        from nltk.sem.evaluate import read_valuation
+
+        _assert_subquadratic(
+            lambda n: read_valuation("s => {(a, b)" + " " * n + "(c}"), 20000, 80000
+        )
+
+    def test_shipped_patterns_match_the_pre_fix_patterns(self):
+        from nltk.sem import evaluate as ev
+
+        for key, rx, op, texts in (
+            ("val_split", ev._VAL_SPLIT_RE, "split",
+             [">=> ==>a>>a", "a => b", "a=>b", "a ==> b", " => ", "a" + " " * 30 + "b=>c",
+              "a => b => c", "==>", "a =b> c", "a\t=>\nb"]),
+            ("element_split", ev._ELEMENT_SPLIT_RE, "split",
+             ["a\na,, ,a,a\t,a a", ",a,\n\ta\na,\n ,aaa", "a, b , c", ",", " , ", "a" + " " * 30 + "b,c",
+              "a,,b", " ,a, "]),
+            ("tuples", ev._TUPLES_RE, "findall",
+             ["(a) (b)", ",,((a\t(a\t )\t(\t\n\t)(\t )\n", "(( ( )\t(\n\t) (a\n,( )", "(a, b)" + " " * 30 + "(c",
+              " (a)  (b) ", "(a)(b)", "x (a) y", "( )"]),
+        ):  # fmt: skip
+            assert rx.pattern != _PRE_FIX[key]
+            _same_results(_PRE_FIX[key], rx.pattern, op, texts, rx.flags)
+
+    def test_pre_fix_patterns_have_teeth(self):
+        import re
+
+        _trips_backstop(_PRE_FIX["val_split"], "split", " " * 20000 + "a=>b")
+        _trips_backstop(_PRE_FIX["element_split"], "split", " " * 60000 + "a,")
+        _trips_backstop(_PRE_FIX["tuples"], "findall", " " * 60000 + "(a", re.VERBOSE)
