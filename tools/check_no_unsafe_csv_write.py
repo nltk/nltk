@@ -13,10 +13,10 @@ externally sourced rows (tweets in nltk.twitter.common / nltk.sentiment.util)
 must route every cell through ``nltk.termsec.sanitize_csv_field`` first.
 
 In the guarded modules a ``writer.writerow(...)`` / ``writerows(...)`` argument is
-accepted only when every cell is sanitised -- a ``[sanitize_csv_field(c) for c in
-...]`` comprehension -- or the row is a literal list/tuple of constants (a static
-header). Anything else is flagged; annotate a reviewed exception with a trailing
-``# unsafe-csv ok: <reason>``.
+accepted only when every cell is sanitised, that is a ``[sanitize_csv_field(c) for
+c in ...]`` comprehension, or when the row is a literal list/tuple of constants (a
+static header). Anything else is flagged; annotate a reviewed exception with a
+trailing ``# unsafe-csv ok: <reason>``.
 
 Usage: ``python tools/check_no_unsafe_csv_write.py`` (exit 1 on any violation).
 """
@@ -108,7 +108,7 @@ def main():
     if not violations:
         print("unsafe-csv guard: OK (every CSV cell routes through sanitize_csv_field)")
         return 0
-    print("unsafe-csv guard: FAILED -- untrusted data written to a CSV cell raw.")
+    print("unsafe-csv guard: FAILED, untrusted data written to a CSV cell raw.")
     print("Route each cell through nltk.termsec.sanitize_csv_field, e.g.")
     print("writer.writerow([sanitize_csv_field(c) for c in row]), or annotate a")
     print(f"reviewed exception with `{SUPPRESS_MARKER}: <reason>`. Offenders:\n")

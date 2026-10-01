@@ -95,7 +95,7 @@ def main():
     if not violations:
         print("bare-execution guard: OK (no un-annotated eval/exec/compile)")
         return 0
-    print("bare-execution guard: FAILED -- bare eval/exec/compile of a code string.")
+    print("bare-execution guard: FAILED, a bare eval/exec/compile of a code string.")
     print("Interpolating untrusted text into one is a code-injection primitive.")
     print(f"Fence and annotate a reviewed use with `{SUPPRESS_MARKER}: <reason>`.\n")
     for path, lineno, name, text in violations:

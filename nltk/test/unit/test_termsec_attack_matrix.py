@@ -208,10 +208,9 @@ LEGIT = {
 }
 
 
-# Payloads carried over from #3850's terminal and CSV matrices when its copies
-# of these tests were folded in here; each is a variant the named entries above
-# did not spell out (8-bit and BEL-terminated forms, cursor and erase controls,
-# DEL, form feed, and literal bidi deceptions).
+# Payloads carried over from #3850's terminal and CSV matrices when its copies of
+# these tests were folded in here: variants the named entries above did not spell
+# out (8-bit and BEL-terminated forms, cursor and erase controls, DEL, form feed).
 EXTRA_ATTACKS = [
     "\x1b[1;1H",
     "\x1b[2K",
