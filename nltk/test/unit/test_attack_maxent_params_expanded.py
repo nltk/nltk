@@ -1205,3 +1205,149 @@ class TestRealClassifierRoundTrip:
         classifier = MaxentClassifier.train(train, algorithm, trace=0, max_iter=2)
         assert classifier._encoding._alwayson is None
         _round_trip_exactly(classifier, restricted_sandbox, [f for f, _ in test])
+
+
+# ------------------------------------------------------------------------- #
+# Fidelity of the parameter files: what the real megam run on CI exposed
+# ------------------------------------------------------------------------- #
+class TestParameterFileFidelity:
+    """The first run of ``TestRealTools.test_real_megam`` on a runner with the
+    real tool reloaded a model that put every input on the same label. The
+    cause was the codec, not the tool: ``MaxentEncoder.tupdict2tab`` wrote an
+    int feature value 0 or 1 as ``repr-0``/``repr-1`` (its bool test aliased
+    them) and the decoder handed the token back as a string, so every
+    int-valued feature was dropped on reload and only the always-on weights
+    decided. A Windows cell exposed the second half: the saver wrote in the
+    locale encoding while the loader reads UTF-8. Both are pinned here with
+    no tool, on the same training set."""
+
+    def test_int_valued_training_data_round_trips_exactly(self, restricted_sandbox):
+        encoding = BinaryMaxentFeatureEncoding.train(TRAIN, alwayson_features=True)
+        classifier = MaxentClassifier.train(
+            TRAIN, "iis", trace=0, encoding=encoding, max_iter=20
+        )
+        featuresets = [dict(a=1, b=0, c=1), dict(a=0, b=1, c=1), dict(a=0, b=1, c=0)]
+        rebuilt = _round_trip_exactly(classifier, restricted_sandbox, featuresets)
+        for featureset in featuresets:
+            for label in classifier.labels():
+                seen = len(rebuilt._encoding.encode(featureset, label))
+                assert seen == len(encoding.encode(featureset, label)) == 4
+
+    def test_value_types_are_written_distinctly_and_restored(self, pathsec_sandbox):
+        mpg = {
+            ("s", "1", "L"): 0,
+            ("i", 1, "L"): 1,
+            ("t", True, "L"): 2,
+            ("z", 0, "L"): 3,
+            ("f", False, "L"): 4,
+            ("n", None, "L"): 5,
+            ("m", -3, "L"): 6,
+            ("big", 2, "L"): 7,
+            ("wordlen", 5, "L"): 8,
+        }
+        out = _save(str(pathsec_sandbox.root / "sv"), mpg=mpg, wgt=numpy.arange(9.0))
+        rows = pathlib.Path(out, "mapping.tab").read_text(encoding="utf-8").split("\n")
+        assert [row.split("\t")[1] for row in rows] == [
+            "1",
+            "repr-1",
+            "repr-True",
+            "repr-0",
+            "repr-False",
+            "repr-None",
+            "repr--3",
+            "repr-2",
+            "5",
+        ]
+        back = load_maxent_params(out)[1]
+        assert back == mpg
+        assert [type(key[1]) for key in back] == [type(key[1]) for key in mpg]
+
+    def test_a_file_the_old_encoder_wrote_with_int_values_now_reloads_as_ints(
+        self, pathsec_sandbox
+    ):
+        body = "a\trepr-1\tL\t0\nb\trepr-0\tL\t1\nwordlen\t7\tL\t2\n"
+        planted = _plant(pathsec_sandbox.root / "p", _with("mapping.tab", body))
+        mpg = load_maxent_params(str(planted))[1]
+        assert mpg == {("a", 1, "L"): 0, ("b", 0, "L"): 1, ("wordlen", 7, "L"): 2}
+        assert all(type(key[1]) is int for key in mpg)
+
+    @pytest.mark.parametrize(
+        "token",
+        ["repr-1_000", "repr- 7", "repr-" + chr(0x663), "repr-x", "repr-1.5", "repr-"],
+        ids=["underscore", "space", "arabic_digit", "word", "float", "empty"],
+    )
+    def test_decoder_restores_only_an_ascii_integer_literal(
+        self, pathsec_sandbox, token
+    ):
+        planted = _plant(
+            pathsec_sandbox.root / "p", _with("mapping.tab", "a\t" + token + "\tL\t0\n")
+        )
+        assert load_maxent_params(str(planted))[1] == {("a", token, "L"): 0}
+
+    def test_shipped_tab_artifacts_still_decode_row_for_row(self):
+        """The shipped tagger and chunker files carry only repr-None, repr-True
+        and repr-False tokens and bare-digit strings, so the int token changes
+        nothing for them: every row still becomes one key of the same type."""
+        from nltk.data import find, open_datafile
+
+        found = []
+        for resource in (
+            "taggers/maxent_treebank_pos_tagger_tab/english/",
+            "chunkers/maxent_ne_chunker_tab/english_ace_multiclass/",
+        ):
+            try:
+                tab_dir = find(resource)
+            except LookupError:
+                continue
+            found.append(resource)
+            with open_datafile(tab_dir, "mapping.tab") as fin:
+                rows = [line for line in fin if line.strip()]
+            mpg = load_maxent_params(tab_dir)[1]
+            assert len(mpg) == len(rows)
+            assert not any(
+                type(fval) is int and fname != "wordlen" for fname, fval, _ in mpg
+            )
+        if not found:
+            pytest.skip("neither maxent tab data package is installed")
+
+    def test_shipped_pos_tagger_still_tags(self):
+        from nltk.classify.maxent import maxent_pos_tagger
+
+        try:
+            tagger = maxent_pos_tagger()
+        except LookupError:
+            pytest.skip("maxent_treebank_pos_tagger_tab is not installed")
+        tagged = tagger.tag(["The", "cat", "sat", "on", "the", "mat", "."])
+        assert [tag for _, tag in tagged][:2] == ["DT", "NN"]
+        assert tagged[-1] == (".", ".")
+
+    def test_shipped_ne_chunker_still_chunks(self):
+        from nltk.chunk.named_entity import Maxent_NE_Chunker
+        from nltk.tree import Tree
+
+        try:
+            chunker = Maxent_NE_Chunker()
+        except LookupError:
+            pytest.skip("maxent_ne_chunker_tab is not installed")
+        tree = chunker.parse(
+            [("Barack", "NNP"), ("Obama", "NNP"), ("visited", "VBD"), ("Paris", "NNP")]
+        )
+        assert isinstance(tree, Tree)
+        assert any(isinstance(node, Tree) for node in tree)
+
+    @pytest.mark.parametrize(
+        "name",
+        ["caf" + chr(0xE9), chr(0x4E2D) + chr(0x6587), "a" + chr(0x200B) + "b"],
+        ids=["accent", "cjk", "zwsp"],
+    )
+    def test_saved_files_are_utf8_whatever_the_locale(self, pathsec_sandbox, name):
+        mpg = {(name, name, name): 0, ("shape", "up", "L2"): 1}
+        out = _save(
+            str(pathsec_sandbox.root / "sv"), mpg=mpg, lab=[name, "L2"], aon={name: 2}
+        )
+        for file_name in ("mapping.tab", "labels.txt", "alwayson.tab"):
+            raw = pathlib.Path(out, file_name).read_bytes()
+            assert name.encode("utf-8") in raw
+            raw.decode("utf-8")
+        wgt, back, lab, aon = load_maxent_params(out)
+        assert (back, lab, aon) == (mpg, [name, "L2"], {name: 2})

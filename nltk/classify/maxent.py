@@ -1685,22 +1685,23 @@ def save_maxent_params(wgt, mpg, lab, aon, tab_dir: str | None = None) -> str:
     # newline="" writes LF, not the platform default, so the tab files reload
     # cleanly on Windows (a default text write there emits CRLF, leaving a stray
     # \r on every reloaded token).
-    with pathsec_open(
-        f"{tab_dir}/weights.txt", "w", context="save_maxent_params", newline=""
-    ) as f:
-        f.write(f"{menc.list2txt(map(repr, wgt.tolist()))}")
-    with pathsec_open(
-        f"{tab_dir}/mapping.tab", "w", context="save_maxent_params", newline=""
-    ) as f:
-        f.write(f"{menc.tupdict2tab(mpg)}")
-    with pathsec_open(
-        f"{tab_dir}/labels.txt", "w", context="save_maxent_params", newline=""
-    ) as f:
-        f.write(f"{menc.list2txt(lab)}")
-    with pathsec_open(
-        f"{tab_dir}/alwayson.tab", "w", context="save_maxent_params", newline=""
-    ) as f:
-        f.write(f"{menc.ivdict2tab(aon)}")
+    # encoding="utf-8" because load_maxent_params reads the files as UTF-8; the
+    # locale default (cp1252 on Windows) cannot carry a non-ASCII feature name
+    # or writes bytes that the loader then cannot decode.
+    def _write(name, text):
+        with pathsec_open(
+            f"{tab_dir}/{name}",
+            "w",
+            context="save_maxent_params",
+            encoding="utf-8",
+            newline="",
+        ) as f:
+            f.write(text)
+
+    _write("weights.txt", menc.list2txt(map(repr, wgt.tolist())))
+    _write("mapping.tab", menc.tupdict2tab(mpg))
+    _write("labels.txt", menc.list2txt(lab))
+    _write("alwayson.tab", menc.ivdict2tab(aon))
     return tab_dir
 
 
