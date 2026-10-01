@@ -790,8 +790,10 @@ def test_r53h_front_mutation_probe_has_teeth():
 
 def _pre_fix_ccg_parser(compile=re.compile):
     """The CCG category parser as it stood before the cursor rewrite, copied
-    verbatim, its regexes compiled by ``compile`` (the standard library, as
-    before they were routed through redos). Returns its augParseCategory."""
+    verbatim: every step re-sliced the remaining tail and NEXTPRIM_RE and
+    APP_RE captured it with a trailing (.*). Its regexes are compiled by
+    ``compile`` (the standard library, as before they were routed through
+    redos). Returns its augParseCategory."""
     from nltk.ccg import lexicon
 
     old_nextprim_re = compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)""")
@@ -860,7 +862,9 @@ def _pre_fix_ccg_parser(compile=re.compile):
 
 
 def _uncapped_ccg_parser():
-    """The fixed cursor parser with only its MAX_PARSE_LEN refusal removed."""
+    """The fixed cursor parser with only augParseCategory's MAX_PARSE_LEN
+    refusal removed; matchBrackets keeps its own, which the probe's over-cap
+    chain, carrying no bracket, never reaches."""
     from nltk.ccg import lexicon
 
     def uncapped_augParseCategory(

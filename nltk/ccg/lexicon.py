@@ -46,8 +46,8 @@ PRIM_RE = redos.compile(r"""([A-Za-z]+)(\[[A-Za-z,]+\])?""")
 NEXTPRIM_RE = redos.compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)""")
 
 # Matches the next application operator (slash and optional modality); the three
-# validating groups are unchanged, the parser resumes at m.end(). The modifier
-# slot also accepts `_`, a variable direction (`(S\_NP)/(S\_NP)`, an adverb).
+# validating groups are unchanged, the parser resumes at m.end(). The modifier slot
+# also accepts `_`, a variable direction (`(S\_NP)/(S\_NP)`, a polymorphic adverb).
 APP_RE = redos.compile(r"""([\\/])([.,_]?)([.,]?)""")
 
 # Parses the definition of the right-hand side (rhs) of either a word or a family.

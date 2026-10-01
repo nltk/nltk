@@ -55,8 +55,9 @@ def _ccg_lexicon_quadratic_parse():
     Pre-fix, matchBrackets/nextCategory/augParseCategory resliced the remaining
     tail (and NEXTPRIM_RE/APP_RE captured it with a trailing ``(.*)``) on every
     step, so parsing a chain of length n copied O(n) characters n times: O(n**2).
-    The fix threads an integer cursor instead. VULNERABLE if either shape is
-    super-linear or the cap does not hold.
+    The fix threads an integer cursor instead. The nested leg exercises
+    matchBrackets, which the flat leg never enters. VULNERABLE if either shape
+    is super-linear or the cap does not hold.
     """
     from nltk.ccg import lexicon
     from nltk.ccg.lexicon import MAX_PARSE_LEN, fromstring
