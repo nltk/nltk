@@ -37,7 +37,8 @@ def test_cpu_time_is_the_work_and_the_charge_rule_is_deterministic():
 
 def test_a_waiting_block_is_charged_its_wall_time():
     cpu, wall = timing.cpu_and_wall(time.sleep, 0.2)
-    assert wall >= 0.2 and cpu < 0.1, (cpu, wall)
+    # Windows can return from a sleep a millisecond early on its coarse timer
+    assert wall >= 0.19 and cpu < 0.1, (cpu, wall)
     assert timing.charge(cpu, wall) == wall
 
 
@@ -89,7 +90,7 @@ def test_within_budget_keeps_the_fastest_charged_run():
     ok, best = timing.within_budget(lambda: spin(0.05), 0.5, cpu_bound=True)
     assert ok and 0.02 <= best <= 0.2, best
     ok, best = timing.within_budget(lambda: time.sleep(0.3), 0.2, repeats=1)
-    assert not ok and best >= 0.3, best
+    assert not ok and best >= 0.29, best
 
 
 def test_assert_subquadratic_separates_linear_from_quadratic_cpu_work():
@@ -146,7 +147,7 @@ def test_a_child_over_budget_fails_whether_it_spins_or_sleeps():
     sleeping = timing.run_in_process(_sleep_child, (0.5,), budget=0.2)
     assert spinning.finished and not spinning.within_budget, spinning
     assert sleeping.finished and not sleeping.within_budget, sleeping
-    assert sleeping.charged == sleeping.wall >= 0.5, sleeping
+    assert sleeping.charged == sleeping.wall >= 0.49, sleeping
 
 
 def test_a_hanging_child_is_terminated_at_the_hard_deadline():
@@ -167,7 +168,7 @@ def test_finishes_within_charges_a_thread_its_cpu_time():
     )
     assert finished and exc is None and 0.15 <= charged < 0.5, (finished, charged)
     finished, exc, charged = timing.finishes_within(0.2, lambda: time.sleep(0.4))
-    assert not finished and charged >= 0.4, (finished, charged)
+    assert not finished and charged >= 0.39, (finished, charged)
     finished, exc, _ = timing.finishes_within(1.0, lambda: 1 / 0)
     assert finished and isinstance(exc, ZeroDivisionError)
 
