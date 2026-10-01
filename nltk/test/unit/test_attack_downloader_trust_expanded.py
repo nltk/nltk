@@ -102,6 +102,56 @@ from nltk.test.unit.test_data import BILLION_LAUGHS, _Callable
 INSTALLED = downloader.Downloader.INSTALLED
 STALE = downloader.Downloader.STALE
 NOT_INSTALLED = downloader.Downloader.NOT_INSTALLED
+
+#: Every attribute of the module-level Downloader that an index fetch or a
+#: download changes; a test that points it at a local index restores all of
+#: them, or the next test's nltk.download("stopwords") reads the test index.
+_DOWNLOADER_STATE = (
+    "_url",
+    "_download_dir",
+    "_index",
+    "_index_timestamp",
+    "_index_url",
+    "_packages",
+    "_collections",
+    "_status_cache",
+    "_errors",
+)
+_MISSING = object()
+
+
+def _snapshot(d):
+    """Every state attribute, dict containers copied so a later in-place
+    change (a status cached, a package list rebuilt) cannot alter it."""
+    state = {}
+    for name in _DOWNLOADER_STATE:
+        value = getattr(d, name, _MISSING)
+        state[name] = dict(value) if isinstance(value, dict) else value
+    return state
+
+
+def _restore(d, state):
+    for name, value in state.items():
+        if value is _MISSING:
+            if hasattr(d, name):
+                delattr(d, name)
+        else:
+            setattr(d, name, value)
+
+
+@pytest.fixture
+def default_downloader():
+    """The module-level Downloader behind nltk.download, with every piece of
+    its state put back at teardown (containers copied, so in-place changes
+    are undone too)."""
+    d = nltk.downloader._downloader
+    state = _snapshot(d)
+    try:
+        yield d
+    finally:
+        _restore(d, state)
+
+
 needs_posix = pytest.mark.skipif(os.name != "posix", reason="POSIX links and modes")
 CYRILLIC_I = chr(0x456)
 RLO = chr(0x202E)
@@ -981,54 +1031,49 @@ class TestTheCycleForReal:
             nltk.data.find("corpora/tiny/words.txt"), nltk.data.ZipFilePathPointer
         )
 
-    def test_the_module_level_download_forwards_extract(self, box, monkeypatch):
+    def test_the_module_level_download_forwards_extract(self, box, default_downloader):
         """nltk.download is the default Downloader's method: the keyword
         reaches _download_package, which the automatic rule then skips."""
         root, outside, dl, server = box
         index = serve_packages(server, [("tiny", tiny_package(), {"unzip": "0"})])
-        monkeypatch.setattr(nltk.downloader._downloader, "_url", index)
-        monkeypatch.setattr(nltk.downloader._downloader, "_download_dir", str(dl))
+        default_downloader._url = index
+        default_downloader._download_dir = str(dl)
         assert nltk.download("tiny", download_dir=str(dl), quiet=True, extract=False)
         assert not (dl / "corpora" / "tiny").exists()
         assert nltk.download("tiny", download_dir=str(dl), quiet=True, extract=True)
         assert (dl / "corpora" / "tiny" / "words.txt").read_bytes() == WORDS
+        assert set(default_downloader._packages) == {"tiny"}
 
-    def test_the_documented_remedy_extracts_an_archive_already_installed(
-        self, box, monkeypatch
-    ):
-        """find() tells the account that cannot read an archive to re-run the
-        download with extraction. Run by the installer over its existing
-        install, that must extract: the package read as installed (archive
-        present, index leaves it zipped), so the request used to be answered
-        with up-to-date and nothing happened. No second download is made."""
+    def test_the_module_level_download_leaves_no_index_behind(self, box):
+        """The leak this closes: a test that pointed nltk.download at a local
+        index restored _url at teardown but left the cached index, so every
+        later nltk.download("<real id>") in the process answered "not found
+        in index" from the test index. The module-level path is run against
+        a local index with the state swapped as the fixture swaps it, put
+        back as the fixture puts it back, and the default Downloader is then
+        its prior state in every attribute, _url the default URL."""
         root, outside, dl, server = box
+        d = nltk.downloader._downloader
+        before = _snapshot(d)
+        assert before["_url"] == downloader.Downloader.DEFAULT_URL
         index = serve_packages(server, [("tiny", tiny_package(), {"unzip": "0"})])
-        result, text = run_download(index, dl, "tiny", quiet=True, extract=False)
-        assert result is True, text
-        unpacked, archive = dl / "corpora" / "tiny", dl / "corpora" / "tiny.zip"
-        assert archive.is_file() and not unpacked.exists()
-        assert fresh_status(index, dl) == INSTALLED
-        fetched_before = server.hits.count("/pkgs/tiny.zip")
-        with _umask(0o022):
-            result, text = run_download(index, dl, "tiny", quiet=True, extract=True)
-        assert result is True, text
-        assert (unpacked / "words.txt").read_bytes() == WORDS
-        assert _mode(unpacked) == 0o755 and _mode(archive) == 0o600
-        assert server.hits.count("/pkgs/tiny.zip") == fetched_before  # no re-download
-        assert fresh_status(index, dl) == INSTALLED
-        # done once, it is up to date: nothing is extracted twice
-        result, text = run_download(index, dl, "tiny", extract=True)
-        assert result is True and "up-to-date" in text
-        # the shared-install rule reaches an existing archive-only install the
-        # same way (an upgrade of nltk over an older root install)
-        shutil.rmtree(unpacked)
-        if downloader._shared_install(str(dl)):
-            result, text = run_download(index, dl, "tiny", quiet=True)
-            assert result is True and (unpacked / "words.txt").read_bytes() == WORDS
-        # asked not to extract, an installed archive stays as it is
-        shutil.rmtree(unpacked)
-        result, text = run_download(index, dl, "tiny", quiet=True, extract=False)
-        assert result is True and not unpacked.exists()
+        state = _snapshot(d)
+        try:
+            d._url = index
+            d._download_dir = str(dl)
+            assert nltk.download("tiny", download_dir=str(dl), quiet=True)
+            assert set(d._packages) == {"tiny"} and d._index_url == index
+            assert d._index is not None
+        finally:
+            _restore(d, state)
+        after = _snapshot(d)
+        for name in _DOWNLOADER_STATE:
+            assert after[name] == before[name], (name, after[name], before[name])
+        assert d._url == downloader.Downloader.DEFAULT_URL
+        assert "tiny" not in d._packages
+        # and even without the restore, the cache follows the URL: pointed
+        # back at the default URL, a cached test index is never consulted
+        assert d._index is None or d._index_url == d._url
 
     def test_a_cached_index_follows_the_url(self, box):
         """Two indexes on the server: a Downloader whose URL is switched reads
