@@ -490,6 +490,19 @@ KEYWORD_RULES = [
 # COVERAGE GAP in the ledger, NOT silently assumed covered.
 GUARD_TESTS = [
     (
+        "sanitize_terminal",
+        [
+            "test_termsec_*.py",
+            "test_trojan_source_security.py",
+            "test_print_injection_sinks.py",
+        ],
+    ),
+    ("sanitize_csv_field", ["test_csvsec_*.py", "test_csv_injection_security.py"]),
+    (
+        "_assert_safe_signature",
+        ["test_decorators_security.py", "test_attack_core_guards_expanded.py"],
+    ),
+    (
         "getattr/import",
         ["test_pickle_allowlist_security.py", "test_attack_allowlist_*.py"],
     ),
@@ -653,20 +666,10 @@ GUARD_TESTS = [
     ("cpython", []),  # inherited from Python upstream; no NLTK-level attack test
 ]
 
-# Guards whose implementation + attack tests live on the sibling PR #3850 (terminal
-# CWE-150 / bidi Trojan-Source CWE-1007 via termsec.sanitize_terminal, CSV formula
-# CWE-1236 via termsec.sanitize_csv_field, and the decorators-eval fence
-# _assert_safe_signature). They are absent from THIS branch's checkout, so a row
-# pointing at one is covered-on-#3850, not a #3753-local gap and NOT to be resolved
-# to some unrelated local test. Substring -> the proving artefact on #3850.
-CROSS_PR_GUARDS = [
-    (
-        "sanitize_terminal",
-        "PR #3850: test_terminal_output_attack_matrix.py + test_trojan_source_security.py",
-    ),
-    ("sanitize_csv_field", "PR #3850: test_terminal_output_attack_matrix.py"),
-    ("_assert_safe_signature", "PR #3850: decorators-eval fence tests"),
-]
+# Guards whose tests once lived only on a sibling PR (terminal sanitiser, CSV
+# field sanitiser, decorators-eval fence) merged into develop with #3914, #3915
+# and #3850, so GUARD_TESTS resolves them to files on disk; nothing is cross-PR.
+CROSS_PR_GUARDS = []
 
 PILLARS = {
     284: "Access Control",

@@ -2,9 +2,9 @@
 
 Companion to `SECURITY_LEDGER.md` for the output side of the codebase: every
 parameter channel of every print/write entry point introduced by the
-`nltk.termsec` / `nltk.csvsec` slice (PR #3914) and the sinks it feeds
-(PR #3915 and the remaining #3889 slices), checked methodically for known and
-unknown exploit classes.
+`nltk.termsec` / `nltk.csvsec` slice (PR #3914, merged) and the sinks it feeds
+(PR #3915 and #3850, both merged; #3889 is closed as superseded), checked
+methodically for known and unknown exploit classes.
 
 **Automatic re-verification:** `python tools/security_output_audit.py` runs
 both passes on demand: an AST inventory of every output sink in the package
@@ -145,17 +145,17 @@ harm; pinned where practical), **BY DESIGN** (documented, deliberate),
 | row dict keys | lookup vs written mismatch | BY DESIGN | keys ORIGINAL for lookup, values sanitized |
 | quoting=QUOTE_NONE | finding 1 | DEFENDED | test_dict_writer_refuses_quote_none |
 
-## F. Library-wide sinks (remaining #3889 slices)
+## F. Library-wide sinks (the former #3889 slices, state on develop as of 2026-10-01)
 
 | Sink | Plan | Status |
 |---|---|---|
-| 1407 print sites / 121 files | #3915 routes through safe_print (stub until #3914 merges) | PR OPEN |
-| downloader package-id/index prints | sanitize_terminal wiring, single_line for ids | PENDING |
-| twitter json2csv writers | csvsec wiring + .ref fixture updates | PENDING |
-| Text/ConcordanceIndex display | via #3915 routing | PR OPEN |
-| decorators eval (CWE-95) | eval-avoidance rewrite | PENDING |
-| jsontags giant int | follow-up after the int-bomb chokepoint | PENDING |
-| CI `no-unsafe-print` guard | forbid bare print on untrusted values | PENDING |
+| 1407 print sites / 121 files | routed through `safe_print` by #3915 (merged; `nltk.termsec` from #3914) | DEFENDED (123 modules import `safe_print`; `tools/check_unsafe_print.py` hook `no-unsafe-print`) |
+| downloader package-id/index prints | `sanitize_terminal` wiring, `single_line` for ids | DEFENDED (#3850 merged; test_termsec_attack_matrix.py downloader pins) |
+| twitter json2csv writers | `nltk.csvsec` writers (`sanitize_csv_field`) + `.ref` fixtures | DEFENDED (#3946 and #3850 merged; `tools/check_no_unsafe_csv_write.py` hook; test_csv_injection_security.py, test_csvsec_writer.py) |
+| Text/ConcordanceIndex display | via #3915 routing | DEFENDED (#3915 merged) |
+| decorators eval (CWE-95, CVE-2026-14727) | wrapper built from parameter kinds, identifier-only fence `_fenced_parameters` + `_assert_safe_signature` | DEFENDED (#3850 merged; test_decorators_security.py, test_attack_core_guards_expanded.py) |
+| jsontags giant int | int-bomb follow-up | BY DESIGN (`JSON_MAX_BYTES` bounds the document and the interpreter's `int_max_str_digits` default bounds each conversion; `tools/check_all_json_through_jsontags.py` keeps every load on that path) |
+| CI `no-unsafe-print` guard | forbid bare print on untrusted values | DEFENDED (`tools/check_unsafe_print.py` in `.pre-commit-config.yaml` on develop) |
 
 ## Standing verdicts (re-litigate only with new evidence)
 

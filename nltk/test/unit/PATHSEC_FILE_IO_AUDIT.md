@@ -88,8 +88,8 @@ gap, now closed · `TODO` under audit.
 | sem/util.py | `read_sents` caller-path read | GUARDED (pathsec_open) | test_pathsec_sweep_sem_util |
 | tbl/demo.py | pickle write/read, error_output, savefig | GUARDED (pathsec_open / validate_path) | test_pathsec_sweep_tbl |
 | metrics/agreement.py | `__main__` `-f` read | GUARDED (pathsec_open) | test_agreement_pathsec |
-| help.py | `json.load` tagset help | TODO | (none) |
-| stem/, translate/, misc/ | model/data I/O | TODO | (none) |
+| help.py | tagset help JSON | GUARDED (`open_datafile(find(...))` + `jsontags.safe_json_load`) | test_help_tagpattern_refusal, test_pathsec_sweep_deserialization, test_attack_json_loaders_expanded |
+| stem/, translate/, misc/ | model/data I/O | EXEMPT (no `open`/`pathsec_open`/`open_datafile` call in these packages; the line sweeps of 2026-09-23 and 2026-10-01 list no open/read/write line there, every model they use is passed in by the caller) | SINK_LEDGER.md |
 
 ### security modules
 | File | Sink | Verdict | Test |
@@ -140,9 +140,9 @@ Gadget battery (os.system, subprocess, eval/exec/import, scipy.io.mmwrite, sklea
 ## Test matrix (this PR)
 
 `test_pathsec.py` (core F2 + model save/load) · `test_pickle_allowlist_security.py`
-(exact allowlist + gadget battery) · `test_pathsec_sweep_{chunk,classify,parse,
-tokenize,sentiment_util,misc}.py` · plus (in flight) `…_tag`, `…_classify_extra`,
-`…_misc2`, `…_dataset_loading`, `…_deserialization`, `…_exempt_recheck`.
+(exact allowlist + gadget battery) · the eleven `test_pathsec_sweep_*.py` files on
+develop (`chunk`, `dataset_loading`, `deserialization`, `infra`, `sem_util`,
+`sentiment_util`, `tag`, `tbl`, `tokenize`, `transitionparser`, `wrappers`).
 
 Every attack test uses a genuinely-outside `$HOME` target (never a temp dir — the
 private system temp is an allowed root on macOS) with a negative control, and
@@ -163,18 +163,18 @@ this document. Every ATTACKED row was run against the real code path first.
 | internals.py | `java()` `Popen` | GUARDED (trusted-executable chokepoint, `resolve_trusted_executable`) | test_pathsec_trusted_exec, test_java_per_call_options_security |
 | internals.py | `find_file_iter` `Popen(["which", name])` | EXEMPT (locator, argv list, no shell; the found binary is validated by the trusted-exec chokepoint before any execution) | — |
 | tokenize/texttiling.py | `smooth(window=...)` `eval("numpy." + window + ...)` | ATTACKED, CONTAINED by the existing allowlist (injection payload refused, canary never created); GAP-FIXED as defense in depth: `getattr(numpy, window)` replaces `eval` | test_texttiling_security (TestSmoothWindowIsNeverCode) |
-| decorators.py | `eval(src, ...)` of source built from the decorated function's own signature | PENDING (code-derived, not data; eval-avoidance rewrite is the remaining #3889 slice, CWE-95) | — |
+| decorators.py | `eval(src, ...)` of source built from the decorated function's own signature | GAP-FIXED (#3850 merged: the wrapper source is built from parameter kinds, every token passes the identifier-only fence `_fenced_parameters` and `_assert_safe_signature`; CVE-2026-14727, CWE-95) | test_decorators_security, test_attack_core_guards_expanded |
 | corpus/reader/*.py (api, util, timit, wordnet, markdown, xmldocs, bcp47, cmudict, ieer, indian, ipipan, nombank, opinion_lexicon, pl196x, plaintext, ppattach, propbank, reviews, senseval, sinica_treebank, string_category, verbnet, wordlist, categorized_sents, comparative_sents, crubadan, nkjp) | `stream.read()/readline()` on streams already opened through `CorpusReader.open` -> `PathPointer.open` -> `pathsec.open`; `self.open(...)` definitions | GUARDED by construction (the open is the sandboxed one; reads consume its stream) | test_pathsec_sweep_dataset_loading, test_corpus_reader_pathsec |
 | corpus/reader/timit.py | `ossaudiodev.open("w")` + `dsp.write` | EXEMPT (audio device, no path) | — |
 | huggingface/dataset.py | `HFDatasetPathPointer.open` | EXEMPT (in-memory `StringIO`/`BytesIO` over the datasets cache; no caller path) | — |
 | sem/relextract.py | `sqlite3.connect(":memory:")` | EXEMPT (in-memory database) | — |
 | app/*.py, draw/util.py | `open(...)` / `outfile.write` | EXEMPT (Tk file dialogs, human in loop; re-checked) | — |
 | cli.py, cluster/*.py, parse/{chart,pchart,viterbi}.py, featstruct.py | `fin.readlines()`, `sys.stdin.readline()`, `sys.stderr.write` | EXEMPT (operator CLI input / interactive demos / constant diagnostics) | — |
-| twitter/*.py | `gzip.open` / `open` / `writerow` / `output.write` | EXEMPT for paths (operator ctor params); PENDING for cell content: `json2csv` writers route through `nltk.csvsec` once #3914 lands (CWE-1236) | — |
+| twitter/*.py | `gzip.open` / `open` / `writerow` / `output.write` | EXEMPT for paths (operator ctor params); GUARDED for cell content: the `json2csv` writers route every cell through `nltk.csvsec.sanitize_csv_field` (#3946 and #3850 merged, CWE-1236; `tools/check_no_unsafe_csv_write.py` hook) | test_csv_injection_security, test_csvsec_writer, test_attack_twitter_input_expanded |
 | picklesec.py, redos.py, jsontags.py, pathsec.py, termsec.py, csvsec.py | `pickle.dump`, `regex.compile`, `json.loads`, `os.open/stat`, `print` inside `safe_print`, `writerow` inside the safe csv writers | SECURITY MODULE INTERNALS (the guards themselves) | test_pickle_allowlist_security, test_redos_*, test_pathsec |
 | lazyimport.py, internals.py `__import__` | dynamic import of module names from code | EXEMPT (names are literals in the tree) | — |
 | __init__.py | `VERSION` read | EXEMPT (fixed `__file__`-relative resource) | — |
-| every `print(...)` / `sys.stdout.write` of untrusted values (1406 sites) | terminal control / bidi injection (CWE-150 / CVE-2021-42574) | PENDING here: routed through `nltk.termsec.safe_print` by #3915 (depends on #3914) | tools/security_output_audit.py |
+| every `print(...)` / `sys.stdout.write` of untrusted values (1406 sites) | terminal control / bidi injection (CWE-150 / CVE-2021-42574) | GUARDED (#3914 and #3915 merged: routed through `nltk.termsec.safe_print`; `tools/check_unsafe_print.py` hook keeps new prints routed) | test_termsec_security, test_termsec_attack_matrix, test_print_injection_sinks, tools/security_output_audit.py |
 | parse/corenlp.py | `requests.get(self.url ...)` | EXEMPT (the operator's own CoreNLP server URL from the constructor; not a data-controlled fetch) | test_corenlp_options_security |
 | parse/stanford.py, tokenize/stanford.py, tokenize/stanford_segmenter.py, tag/stanford.py, parse/malt.py | `input_file.write` / `os.unlink` on a `NamedTemporaryFile(dir=staging_tempdir())` handed to the JVM | EXEMPT (internal staged temp input, pinned under a data root; tool path through the trusted-exec chokepoint) | test_malt_stanford_pathsec, test_tokenize_stanford_pathsec |
 | tokenize/repp.py, sem/boxer.py | `shutil.rmtree(staging_dir)` | EXEMPT (removes the private staging dir the module itself created) | test_repp_security, test_boxer_security |
@@ -182,3 +182,26 @@ this document. Every ATTACKED row was run against the real code path first.
 | corpus/reader/bracket_parse.py, cluster/kmeans.py, cluster/util.py | `sys.stderr.write` / `stdout.write` of constant diagnostics | EXEMPT (no untrusted value in the message; routed with the rest of the prints by #3915) | — |
 | translate/phrase_based.py `extract`, parse/evaluate.py `eval`, sem/glue.py `compile`, tree/parsing.py and tree/tree.py `read()` in messages | name collisions with sink names | BENIGN (not sinks: phrase extraction, evaluation method, glue-formula compiler, error strings) | — |
 | util.py `readline` helper | line reads on a stream the caller already opened | GUARDED by construction (the open is the caller's sandboxed one) | — |
+
+### regex scan 2026-10-01 (every regex site: inventory, attacks, findings)
+
+An AST inventory of every regex-consuming site under `nltk/` (830 sites in 91
+modules; 570 static patterns, 260 built or received at run time; the only call
+into the engine itself is `nltk/redos.py:299`; `tools/check_all_regex_through_redos.py`
+reports 0 violations; all 22 caller-pattern APIs compile through `redos.compile`),
+then 149 timed attacks through `nltk.redos` with the input each structure
+implies, plus a re-measurement of all 29 entries of the #3895 re-anchoring
+allowlist. The full table is the scan comment on #3850. Twenty-four pattern
+rows on twenty develop sites read super-linear and are bounded on #3895. Six
+sites outside every open PR read super-linear and are fixed here and on PR
+#3947, each with a pre-fix oracle, a linear-scaling assertion through the
+public entry point and teeth (`test_quadratic_dos.py`, last section):
+
+| File | Site | Attack (4x ratio pre-fix) | Verdict |
+|---|---|---|---|
+| tokenize/destructive.py:92 | default `word_tokenize` final-period rule | `"a." + " " * n + "x"`, 16.7x (`word_tokenize` 16.0x) | GAP-FIXED (possessive class run, same spans) |
+| tokenize/regexp.py:189 | `BlanklineTokenizer` | `" " * n + "\na"`, 14.1x (`blankline_tokenize` 18.5x) | GAP-FIXED (optional leading run, taken only when no whitespace precedes it) |
+| tokenize/texttiling.py:303 | `_mark_paragraph_breaks` | `" " * n + "\n"`, 15.1x inside `MAX_TEXT_LEN` | GAP-FIXED (optional leading run) |
+| sem/evaluate.py:193-195 | `_VAL_SPLIT_RE`, `_ELEMENT_SPLIT_RE`, `_TUPLES_RE` | interior space run before `a=>`, `a,`, `(a`: 14.9x, 16.7x, 14.7x (`read_valuation` 16.1x) | GAP-FIXED (optional leading run on all three) |
+| sem/relextract.py:341 | `in_demo` relation filter | `"in " * k + "ing"`, 16.7x | GAP-FIXED (atomic group commits to the last `in`; hoisted to `_IN_RE`) |
+| tokenize/toktok.py:142 | `RSTRIP` (not applied by `tokenize`) | `" " * n + "a"`, 14.7x | GAP-FIXED (`(?<!\s)` lookbehind) |
