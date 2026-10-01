@@ -44,7 +44,12 @@ from nltk.ccg.lexicon import (
 from nltk.sem.logic import Expression, LogicalExpressionException
 from nltk.termsec import sanitize_terminal
 from nltk.test.unit import timing
-from nltk.test.unit.security_probes.ghsa_89p3_fcch_88ph import FLAT_BIG, FLAT_SMALL
+from nltk.test.unit.security_probes.ghsa_89p3_fcch_88ph import (
+    FLAT_BIG,
+    FLAT_ENTRIES,
+    FLAT_SMALL,
+    flat_lexicon,
+)
 from nltk.tree import Tree
 
 NUL = chr(0)
@@ -142,16 +147,21 @@ def _rows(text):
 
 class TestFlatChainScaling:
     def test_probe_shape_at_the_probe_sizes_is_linear(self):
-        # The input and sizes the probe measures, through the same helper:
-        # the cursor parser reads ~4x, the tail re-slicer it replaced 11x to 14x
+        # The lexicon and sizes the probe measures, through the same helper:
+        # the cursor parser reads ~4x, the tail re-slicer it replaced 11x to 15x
         ratio = timing.scaling_ratio(
-            lambda n: fromstring(_chain(n)), FLAT_SMALL, FLAT_BIG, cpu_bound=True
+            lambda n: fromstring(flat_lexicon(n)),
+            FLAT_SMALL,
+            FLAT_BIG,
+            cpu_bound=True,
         )
         assert ratio < timing.QUADRATIC_RATIO, ratio
 
     def test_probe_shape_is_a_real_parse(self):
-        cat = fromstring(_chain(FLAT_BIG)).categories("w")[0].categ()
-        assert _applications(cat) == FLAT_BIG
+        lex = fromstring(flat_lexicon(FLAT_BIG))
+        assert len(lex._entries) == FLAT_ENTRIES
+        for word in lex._entries:
+            assert _applications(lex.categories(word)[0].categ()) == FLAT_BIG
 
     def test_backward_and_modal_operators_are_linear(self):
         timing.assert_subquadratic(

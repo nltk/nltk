@@ -17,6 +17,26 @@ from ._base import (
 FLAT_SMALL = 12499
 FLAT_BIG = 4 * FLAT_SMALL
 
+#: Entries of the flat chain in the lexicon the op parses: one entry's small run
+#: sat at the 0.1 s floor on the macOS and Windows runners, where the ratio
+#: degenerates into a budget on the big run; see flat_lexicon.
+FLAT_ENTRIES = 3
+
+
+def flat_lexicon(n):
+    """A lexicon of FLAT_ENTRIES words, each a flat chain of ``n`` applications.
+
+    One entry's small run is 0.08 s to 0.11 s on the macOS and Windows runners,
+    at the 0.1 s floor, where the ratio degenerates into a 0.8 s budget on the
+    big run that a sibling xdist worker's 1.5x to 2x CPU-time inflation breaks
+    (9.0x read on Windows 3.14). Three entries lift the small run to 0.25 s to
+    0.33 s there; a linear parse reads the same 4x with one entry or three.
+    """
+    chain = "S" + "/S" * n
+    words = ("w", "v", "u", "t", "s", "r")[:FLAT_ENTRIES]
+    return ":- S\n" + "".join(word + " => " + chain + "\n" for word in words)
+
+
 #: Bracket depth of the nested leg. The pre-fix parser re-sliced the bracketed
 #: text per character and did so again at every level, so the depth sets the
 #: work per character; 60 lifts the fixed parser's small run off the floor.
@@ -47,20 +67,20 @@ def _ccg_lexicon_quadratic_parse():
     Both legs stay under MAX_PARSE_LEN, so the pre-fix parser's quadratic work
     is bounded by the cap and competes with its own per-step cost; measured on
     the hosted runners (nltk/nltk PR #3944), the pre-fix parser reads 11x to
-    14x on the flat leg and 9x to 19x on the nested leg, the fixed parser 3.9x
-    to 4.2x on both. The flat leg is the advisory's own chain and the stable
-    signal; the nested leg wraps one primitive in NESTING brackets, where the
-    pre-fix matchBrackets copied its tail once per character at every level,
-    and covers the bracket scanner the flat leg never enters.
+    15x on the flat leg and 9x to 19x on the nested leg, the fixed parser 3.2x
+    to 4.5x on both, with the cyclic GC on, off or frozen alike. The flat leg
+    is the advisory's own chain and the stable signal; the nested leg wraps one
+    primitive in NESTING brackets, where the pre-fix matchBrackets copied its
+    tail once per character at every level, and covers the bracket scanner the
+    flat leg never enters. Each leg's small run clears the 0.1 s floor on the
+    fastest runner, so each ratio is a ratio and a loaded runner's CPU-time
+    inflation cancels out of it (see FLAT_ENTRIES and NESTING).
     """
     from nltk.ccg import lexicon
     from nltk.ccg.lexicon import MAX_PARSE_LEN, fromstring
 
-    def lex(n):
-        return ":- S\nw => S" + "/S" * n + "\n"
-
     def op(n):
-        return fromstring(lex(n))
+        return fromstring(flat_lexicon(n))
 
     ratio = scaling_ratio(op, FLAT_SMALL, FLAT_BIG, cpu_bound=True)  # computes
     if ratio >= QUADRATIC_RATIO:
