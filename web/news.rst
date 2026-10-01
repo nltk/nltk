@@ -4,6 +4,39 @@ Release Notes
 2026
 ----
 
+NLTK 3.10.4 release: September 2026
+
+- Fix develop CI: register data roots for benign save/IO tests broken by pathsec hardening
+- Add tests covering already-merged pathsec/security guards
+- Harden nltk.tbl.demo model load/save through picklesec and pathsec
+- Harden malt and stanford parser wrappers: validate binary/model/IO paths and argv
+- Route corpus-reader scratch tempfiles through a data root and label framenet path refusals
+- Stage weka scratch files in a data root and validate the WEKAHOME jar path
+- Harden tagger model loads and tool paths (perceptron/crf/hunpos/stanford)
+- Harden stanford tokenizer/segmenter wrappers: validate jar/model paths and argv
+- Harden the VERSION read in nltk package init with pathsec.open_package_resource
+- Canonicalize obfuscated numeric IPv4 in the SSRF guard (CWE-918)
+- Stage boxer scratch input inside an nltk.data root
+- Add staging_tempdir and tighten data.py zip/staging guards
+- Pin maxent scratch files to a data root and validate scratch IO
+- Validate the NE chunker save_params destination through the tool-directory guard
+- Harden nltk.xmlsec.parse: read filename sources through pathsec.open
+- Harden downloader Package attributes and extraction against traversal/Zip-Slip
+- Harden path/resource/tool validation in nltk.pathsec
+- Deserialize chat80 shelve values through the restricted unpickler (RCE fix)
+- Bound RegexpStemmer's caller-supplied pattern against ReDoS
+- Refuse CWD-relative matches for bare names in find_file/find_dir (CWE-427)
+- Bound re_show's caller-supplied regex against ReDoS (CWE-1333)
+- Fix internals.doctest to match the hardened _validate_java_options allowlist
+- Harden pickle deserialization (picklesec) against arbitrary-code-execution gadgets
+- Bound decompression entry points in nltk (zip/gzip layers + pathsec.ZipFile + weka), CWE-409
+- Harden internals.java() (CWE-88): options, classpath, env, discovery; route MaltParser through it
+- Fix shared defaults in chat80 Concept
+- Fix Java wrappers decoding str output from java() (universal_newlines)
+- Stabilize multiprocessing test timeouts and context handling
+- Fix ARFF label injection in Weka classifier
+- Prevent infinite loop from cyclic collection indices
+
 NLTK 3.10.3 release: August 2026
 
 - docs: wrap Chat-80 HOWTO output
