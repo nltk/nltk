@@ -711,6 +711,34 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
 ######################################################################
 
 
+def _refuse_file_not_ours(stream, path):
+    """Return *stream*, or close it and refuse a resource file that another
+    account owns or can write to (group or world write bit), judged on the
+    opened descriptor so no swap after the check can change the verdict.
+    This is the verdict ``find()`` gives a file it is asked for directly,
+    carried to every read through a directory pointer (a corpus root) and
+    to the read itself, where a same-name substitute would land. POSIX,
+    under enforcement; root's files are trusted like this account's own."""
+    from nltk import pathsec
+
+    if not pathsec.ENFORCE or os.name != "posix":
+        return stream
+    try:
+        st = os.fstat(stream.fileno())
+    except (OSError, ValueError, AttributeError):
+        return stream
+    if stat.S_ISREG(st.st_mode) and (
+        st.st_uid not in (os.geteuid(), 0) or st.st_mode & (stat.S_IWGRP | stat.S_IWOTH)
+    ):
+        stream.close()
+        raise PermissionError(
+            "NLTK will not read %r: it is writable by, or owned by, another "
+            "account, so a planted or rewritten file would be loaded as trusted "
+            "data. Make it private to its owner (chmod go-w)." % (path,)
+        )
+    return stream
+
+
 class PathPointer(metaclass=ABCMeta):
     """
     An abstract base class for 'path pointers,' used by NLTK's data
@@ -784,7 +812,7 @@ class FileSystemPathPointer(PathPointer, str):
         Path validation is enforced by pathsec.open() which checks the
         resolved path against allowed NLTK data roots.
         """
-        stream = _secure_open(self._path, "rb")
+        stream = _refuse_file_not_ours(_secure_open(self._path, "rb"), self._path)
         if encoding is not None:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream
@@ -848,7 +876,7 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
     def open(self, encoding=None):
         # Validate the path via the sentinel (CWE-22 / CWE-73), then stream the handle
         # through _BoundedGzipFile so a bomb is capped without buffering it whole (CWE-409).
-        handle = _secure_open(self._path, "rb")
+        handle = _refuse_file_not_ours(_secure_open(self._path, "rb"), self._path)
         try:
             stream = _BoundedGzipFile._nltk_wrap_secure_fileobj(self._path, handle)
         except BaseException:
@@ -1303,6 +1331,11 @@ def find(resource_name, paths=None):
                 break
             if not pathsec.is_private_dir(cur):
                 return cur
+        # A resource that is itself a directory (a corpus root the readers
+        # open files under) is judged like the directories on the way to it.
+        resource = below.rstrip(os.sep)
+        if os.path.isdir(resource) and not pathsec.is_private_dir(resource):
+            return resource
         return None
 
     def _file_not_ours(path):
