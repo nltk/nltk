@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Combinatory Categorial Grammar
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -11,35 +11,51 @@ CCG Lexicons
 import re
 from collections import defaultdict
 
+from nltk import redos
 from nltk.ccg.api import CCGVar, Direction, FunctionalCategory, PrimitiveCategory
 from nltk.internals import deprecated
 from nltk.sem.logic import Expression
+
+#: Maximum nesting depth the recursive CCG lexicon parser will descend to.
+#: Beyond this it raises ValueError instead of letting Python raise an
+#: uncaught RecursionError (CWE-674).  Configurable.
+MAX_PARSE_DEPTH = 500
 
 # ------------
 # Regular expressions used for parsing components of the lexicon
 # ------------
 
 # Parses a primitive category and subscripts
-PRIM_RE = re.compile(r"""([A-Za-z]+)(\[[A-Za-z,]+\])?""")
+PRIM_RE = redos.compile(r"""([A-Za-z]+)(\[[A-Za-z,]+\])?""")
 
 # Separates the next primitive category from the remainder of the
 # string
-NEXTPRIM_RE = re.compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)""")
+NEXTPRIM_RE = redos.compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)""")
 
-# Separates the next application operator from the remainder
-APP_RE = re.compile(r"""([\\/])([.,]?)([.,]?)(.*)""")
+# Separates the next application operator from the remainder.
+# The modifier slot also accepts `_`, marking a variable direction
+# (e.g. `(S\_NP)/(S\_NP)` for a polymorphic adverb).
+APP_RE = redos.compile(r"""([\\/])([.,_]?)([.,]?)(.*)""")
 
-# Parses the definition of the right-hand side (rhs) of either a word or a family
-LEX_RE = re.compile(r"""([\S_]+)\s*(::|[-=]+>)\s*(.+)""", re.UNICODE)
+# Parses the definition of the right-hand side (rhs) of either a word or a family.
+# The identifier and the arrow alternative ``[-=]+>`` both match ``-``/``=``, so the
+# original ``([\S_]+)`` let the engine slide the identifier/arrow boundary across a
+# long ``-``/``=`` run while re-scanning for the absent ``>`` from every position --
+# quadratic in the line length (CWE-1333). Anchoring the identifier's last character
+# to be neither ``-`` nor ``=`` (``[^\s=-]``) fixes the boundary before any such run,
+# so the arrow is tried once: the parse is linear, the usual whitespace-separated
+# ``ident <sep> rhs`` form is unchanged, and the compact ``ident<sep>rhs`` form is
+# still accepted (and now splits sensibly, e.g. ``a-->b`` -> ``a``/``-->``/``b``).
+LEX_RE = redos.compile(r"""([\S_]*?[^\s=-])\s*(::|[-=]+>)\s*(.+)""", re.UNICODE)
 
 # Parses the right hand side that contains category and maybe semantic predicate
-RHS_RE = re.compile(r"""([^{}]*[^ {}])\s*(\{[^}]+\})?""", re.UNICODE)
+RHS_RE = redos.compile(r"""([^{}]*[^ {}])\s*(\{[^}]+\})?""", re.UNICODE)
 
 # Parses the semantic predicate
-SEMANTICS_RE = re.compile(r"""\{([^}]+)\}""", re.UNICODE)
+SEMANTICS_RE = redos.compile(r"""\{([^}]+)\}""", re.UNICODE)
 
 # Strips comments from a line
-COMMENTS_RE = re.compile("""([^#]*)(?:#.*)?""")
+COMMENTS_RE = redos.compile("""([^#]*)(?:#.*)?""")
 
 
 class Token:
@@ -130,17 +146,23 @@ class CCGLexicon:
 # -----------
 
 
-def matchBrackets(string):
-    """
-    Separate the contents matching the first set of brackets from the rest of
-    the input.
-    """
+def matchBrackets(string, _depth=0, max_depth=None):
+    """Separate the contents matching the first set of brackets from the rest of the input."""
+    if max_depth is None:
+        max_depth = MAX_PARSE_DEPTH
+    if _depth > max_depth:
+        raise ValueError(
+            f"CCG nesting depth exceeds MAX_PARSE_DEPTH "
+            f"({MAX_PARSE_DEPTH}); the input may be "
+            "adversarially deep. Raise "
+            "nltk.ccg.lexicon.MAX_PARSE_DEPTH to allow it."
+        )
     rest = string[1:]
     inside = "("
 
     while rest != "" and not rest.startswith(")"):
         if rest.startswith("("):
-            (part, rest) = matchBrackets(rest)
+            (part, rest) = matchBrackets(rest, _depth + 1, max_depth)
             inside = inside + part
         else:
             inside = inside + rest[0]
@@ -150,35 +172,27 @@ def matchBrackets(string):
     raise AssertionError("Unmatched bracket in string '" + string + "'")
 
 
-def nextCategory(string):
-    """
-    Separate the string for the next portion of the category from the rest
-    of the string
-    """
+def nextCategory(string, _depth=0, max_depth=None):
+    """Separate the string for the next portion of the category from the rest of the string"""
     if string.startswith("("):
-        return matchBrackets(string)
+        return matchBrackets(string, _depth, max_depth)
     return NEXTPRIM_RE.match(string).groups()
 
 
 def parseApplication(app):
-    """
-    Parse an application operator
-    """
+    """Parse an application operator"""
     return Direction(app[0], app[1:])
 
 
 def parseSubscripts(subscr):
-    """
-    Parse the subscripts for a primitive category
-    """
+    """Parse the subscripts for a primitive category"""
     if subscr:
         return subscr[1:-1].split(",")
     return []
 
 
 def parsePrimitiveCategory(chunks, primitives, families, var):
-    """
-    Parse a primitive category
+    """Parse a primitive category
 
     If the primitive is the special category 'var', replace it with the
     correct `CCGVar`.
@@ -206,16 +220,25 @@ def parsePrimitiveCategory(chunks, primitives, families, var):
     )
 
 
-def augParseCategory(line, primitives, families, var=None):
-    """
-    Parse a string representing a category, and returns a tuple with
+def augParseCategory(line, primitives, families, var=None, _depth=0, max_depth=None):
+    """Parse a string representing a category, and returns a tuple with
     (possibly) the CCG variable for the category
     """
-    (cat_string, rest) = nextCategory(line)
+    if max_depth is None:
+        max_depth = MAX_PARSE_DEPTH
+    if _depth > max_depth:
+        raise ValueError(
+            f"CCG nesting depth exceeds MAX_PARSE_DEPTH "
+            f"({MAX_PARSE_DEPTH}); the input may be "
+            "adversarially deep. Raise "
+            "nltk.ccg.lexicon.MAX_PARSE_DEPTH to allow it."
+        )
+    (cat_string, rest) = nextCategory(line, _depth, max_depth)
 
     if cat_string.startswith("("):
-        (res, var) = augParseCategory(cat_string[1:-1], primitives, families, var)
-
+        (res, var) = augParseCategory(
+            cat_string[1:-1], primitives, families, var, _depth + 1, max_depth
+        )
     else:
         (res, var) = parsePrimitiveCategory(
             PRIM_RE.match(cat_string).groups(), primitives, families, var
@@ -226,9 +249,16 @@ def augParseCategory(line, primitives, families, var=None):
         direction = parseApplication(app[0:3])
         rest = app[3]
 
-        (cat_string, rest) = nextCategory(rest)
+        (cat_string, rest) = nextCategory(rest, _depth, max_depth)
         if cat_string.startswith("("):
-            (arg, var) = augParseCategory(cat_string[1:-1], primitives, families, var)
+            (arg, var) = augParseCategory(
+                cat_string[1:-1],
+                primitives,
+                families,
+                var,
+                _depth + 1,
+                max_depth,
+            )
         else:
             (arg, var) = parsePrimitiveCategory(
                 PRIM_RE.match(cat_string).groups(), primitives, families, var
@@ -238,10 +268,10 @@ def augParseCategory(line, primitives, families, var=None):
     return (res, var)
 
 
-def fromstring(lex_str, include_semantics=False):
-    """
-    Convert string representation into a lexicon for CCGs.
-    """
+def fromstring(lex_str, include_semantics=False, max_depth=None):
+    """Convert string representation into a lexicon for CCGs."""
+    if max_depth is None:
+        max_depth = MAX_PARSE_DEPTH
     CCGVar.reset_id()
     primitives = []
     families = {}
@@ -263,7 +293,9 @@ def fromstring(lex_str, include_semantics=False):
             # Either a family definition, or a word definition
             (ident, sep, rhs) = LEX_RE.match(line).groups()
             (catstr, semantics_str) = RHS_RE.match(rhs).groups()
-            (cat, var) = augParseCategory(catstr, primitives, families)
+            (cat, var) = augParseCategory(
+                catstr, primitives, families, max_depth=max_depth
+            )
 
             if sep == "::":
                 # Family definition

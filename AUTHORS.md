@@ -191,6 +191,7 @@
 - Patrick Ye
 - Geraldine Sim Wei Ying
 - Jason Yoder
+- Mingzhe Yu (UnbearableFate)
 - Thomas Zieglier
 - 0ssifrage
 - ducki13
@@ -310,7 +311,17 @@
 - Peter de Blanc <https://github.com/pdeblanc>
 - Jose Cols <https://github.com/josecols>
 - Christopher Smith <https://github.com/smithct2>
+- scruge1 <https://github.com/scruge1>
 - Ryan Mannion <https://github.com/ryanamannion>
+- Peter Pollak <https://github.com/Syzygy2048/>
+- John Winstead <https://github.com/jhnwnstd/>
+- Bradley Erickson <https://github.com/13rac1>
+- Volodymyr Matsko <https://github.com/Lemm1>
+- Nicola <https://github.com/trinik15>
+- medisean <https://github.com/medisean>
+- tandede <https://github.com/tandede>
+- vzer200 <https://github.com/vzer200>
+- 区梓灏 <https://github.com/Nicholas022400701>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 

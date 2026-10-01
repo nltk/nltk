@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Twitter client
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Lorenzo Rubio <lrnzcig@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -14,6 +14,7 @@ from pathlib import Path
 import pytest
 
 from nltk.corpus import twitter_samples
+from nltk.data import open_datafile
 from nltk.twitter.common import json2csv, json2csv_entities
 
 
@@ -32,7 +33,9 @@ subdir = Path(__file__).parent / "files"
 
 @pytest.fixture
 def infile():
-    with open(twitter_samples.abspath("tweets.20150430-223406.json")) as infile:
+    with open_datafile(
+        twitter_samples.abspath("tweets.20150430-223406.json")
+    ) as infile:
         return [next(infile) for x in range(100)]
 
 

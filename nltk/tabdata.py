@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Encode/Decocode Data as Tab-files
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Eric Kafe <kafe.eric@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT

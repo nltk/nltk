@@ -1,6 +1,6 @@
 # Natural Language Toolkit: CFG visualization
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -46,7 +46,6 @@ Visualization tools for CFGs.
 #   - disconnect top & bottom -- right click
 #     - if connected to top & bottom, then disconnect
 
-import re
 from tkinter import (
     Button,
     Canvas,
@@ -60,6 +59,7 @@ from tkinter import (
     Toplevel,
 )
 
+from nltk import redos
 from nltk.draw.tree import TreeSegmentWidget, tree_to_treesegment
 from nltk.draw.util import (
     CanvasFrame,
@@ -69,6 +69,7 @@ from nltk.draw.util import (
     TextWidget,
 )
 from nltk.grammar import CFG, Nonterminal, _read_cfg_production, nonterminals
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 
 ######################################################################
@@ -160,16 +161,16 @@ class CFGEditor:
     # Regular expressions used by _analyze_line.  Precompile them, so
     # we can process the text faster.
     ARROW = SymbolWidget.SYMBOLS["rightarrow"]
-    _LHS_RE = re.compile(r"(^\s*\w+\s*)(->|(" + ARROW + "))")
-    _ARROW_RE = re.compile(r"\s*(->|(" + ARROW + r"))\s*")
-    _PRODUCTION_RE = re.compile(
+    _LHS_RE = redos.compile(r"(^\s*\w+\s*)(->|(" + ARROW + "))")
+    _ARROW_RE = redos.compile(r"\s*(->|(" + ARROW + r"))\s*")
+    _PRODUCTION_RE = redos.compile(
         r"(^\s*\w+\s*)"
         + "(->|("  # LHS
         + ARROW
         + r"))\s*"
         + r"((\w+|'[\w ]*'|\"[\w ]*\"|\|)\s*)*$"  # arrow
     )  # RHS
-    _TOKEN_RE = re.compile("\\w+|->|'[\\w ]+'|\"[\\w ]+\"|(" + ARROW + ")")
+    _TOKEN_RE = redos.compile("\\w+|->|'[\\w ]+'|\"[\\w ]+\"|(" + ARROW + ")")
     _BOLD = ("helvetica", -12, "bold")
 
     def __init__(self, parent, cfg=None, set_cfg_callback=None):
@@ -286,13 +287,13 @@ class CFGEditor:
                     continue
                 if () in prod_tuples[i - 1][1]:
                     continue
-                print(prod_tuples[i - 1][1])
-                print(prod_tuples[i][1])
+                safe_print(prod_tuples[i - 1][1])
+                safe_print(prod_tuples[i][1])
                 prod_tuples[i - 1][1].extend(prod_tuples[i][1])
                 del prod_tuples[i]
 
         for lhs, rhss in prod_tuples:
-            print(lhs, rhss)
+            safe_print(lhs, rhss)
             s = "%s ->" % lhs
             for rhs in rhss:
                 for elt in rhs:
@@ -479,8 +480,8 @@ class CFGEditor:
 
         # Get the text, normalize it, and split it into lines.
         text = self._textwidget.get("1.0", "end")
-        text = re.sub(self.ARROW, "->", text)
-        text = re.sub("\t", " ", text)
+        text = redos.sub(self.ARROW, "->", text)
+        text = redos.sub("\t", " ", text)
         lines = text.split("\n")
 
         # Convert each line to a CFG production
@@ -535,7 +536,7 @@ class CFGEditor:
     def _cancel(self, *e):
         try:
             self._reset()
-        except:
+        except Exception:
             pass
         self._destroy()
 
@@ -549,7 +550,7 @@ class CFGEditor:
                 width=75,
                 font="fixed",
             )
-        except:
+        except Exception:
             ShowText(
                 self._parent,
                 "Help: Chart Parser Demo",
@@ -683,7 +684,7 @@ class CFGDemo:
                     break
             else:
                 # Everything matched!
-                print("MATCH AT", i)
+                safe_print("MATCH AT", i)
 
     # //////////////////////////////////////////////////
     # Grammar
@@ -799,7 +800,7 @@ def demo():
     )
 
     def cb(grammar):
-        print(grammar)
+        safe_print(grammar)
 
     top = Tk()
     editor = CFGEditor(top, grammar, cb)

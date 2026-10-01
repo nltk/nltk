@@ -1,3 +1,101 @@
+Version 3.10.3 2026-08-12
+
+* docs: wrap Chat-80 HOWTO output
+* Sandbox Stanford JAR execution to nltk_data directories
+* Harden path-traversal / file-I/O sandbox: close write-side symlink TOCTOU + shared-temp squat, lock the cluster with a living audit (CWE-22/59/377)
+* Extend algorithmic-complexity DoS hardening: repo-wide sweep + two-string distances (CWE-407/CWE-400)
+* Bound unbounded-work DoS in parsers and grammar transforms (CWE-407/674/835)
+* fix(security): sandbox MaltParser's Java execution (CVE-2026-12252, CVE-2026-12841)
+* fix(security): trust the system temp dir only when it is private (CWE-377/CWE-378)
+* fix(security): validate corpus-reader roots against the data sandbox (CWE-73)
+* fix(security): validate per-call java() options and replace the -XX:/-D allowlist with a minimal one (CWE-88)
+* Additional security hardening (CWE-407, CWE-426, CWE-427, CWE-502, CWE-59, CWE-776, CWE-918)
+
+Thanks to the following contributors to 3.10.3: Mohammad Favas S, leduckhuong, Ziyu Lin, dougtrainer28-cmyk, Chaitanya Kadian, 0xRenSec, Arpit Jain, Jace, nguyencanhthuong, Liling Tan, medimedi, Eric Kafe.
+
+Version 3.10.2 2026-08-05
+
+* Remove inisec.py and document PYTHONSAFEPATH instead
+* Skip draft step in release workflow
+* Fix symlink escape in FramenetCorpusReader (CWE-59)
+* Guard tempfile.gettempdir() when building pathsec allowed roots
+* add tests for transitive_closure
+
+Thanks to the following contributors to 3.10.2:
+Litesh Ghute, Eric Kafe, Evan Kiefer, tarann26 and Rav Singh Chandan
+
+Version 3.10.1 2026-07-29
+
+* Expand `~` in env-var paths
+* Validate types after WordNet app pickle deserialization
+* Fix uncontrolled search path in HunposTagger
+* Use exact thirds in `masi_distance`
+* Avoid retaining bllip import exceptions
+* Fix `word_tokenize`: pad opening single quote before multi-letter words.
+* Implement `Tree.pformat_latex_forest`.
+* Prevent module hijacking in inline imports.
+* Fix ReDoS in TweetTokenizer URL and email regexes.
+
+Thanks to the following contributors to 3.10.1:
+Abhinav, Litesh Ghute, Eric Kafe, Eryk Kaźmierczak, Selim C.,
+Muhtasim Munif Fahim, Triniti K., and Tom Y. Mitich.
+
+Version 3.10.0 2026-06-11
+
+* Enforce the stricter `nltk.pathsec` security policy by default
+* Document the new security model and migration guidance
+* Harden resource loading against path traversal and SSRF/DNS-rebinding
+* Harden downloader path handling and block XML entity expansion
+* Close remaining corpus-reader security edge cases
+* Replace unsafe `exec()` usage in the utility CLI
+* Warn on unpickling user-provided pickles
+* Add HuggingFace datasets integration (`nltk.huggingface`)
+* Align TnT with Brants (2000) specifications
+* Fix PorterStemmer irregular-form lowercasing in NLTK mode
+* Fix TransitionParser sparse index dtype for scikit-learn 1.9
+* Fix TextCat tie handling
+* Fix WordNet object comparisons for incompatible types
+* Cache WordNet max depth lazily for `lch_similarity()`
+* Fix CCG variable direction, substitution, and type-raising bugs
+* Fix Jaro similarity for single-character and empty-string cases
+* Improve CI and release-maintenance workflows
+
+Thanks to the following contributors to 3.10.0:
+13rac1, alvations, bowiechen, devesh-2002, ekaf, elias-ba,
+haosenwang1018, HyperPS, ihitamandal, jancallewaert, jhnwnstd,
+JuanIMartinezB, Lemm1, LinZiyuu, Mr-Neutr0n, PastelStorm,
+scruge1, Syzygy2048, ylwango613, yzhaoinuw
+
+Version 3.9.4 2026-03-24
+
+* Support Python 3.14
+* Fix bug in Levenshtein distance when substitution_cost > 2
+* Fix bug in Treebank detokeniser re quote ordering
+* Fix bug in Jaro similarity for empty strings
+* Several security enhancements
+* Fix GHSA-rf74-v2fm-23pw: unbounded recursion in JSONTaggedDecoder
+* Implement TextTiling vocabulary introduction method (Hearst 1997)
+* Fix ALINE feature matrix errors and add comprehensive tests
+* Support multiple VerbNet versions, fix longid/shortid regex for VerbNet ids
+* Let downloader fallback to md5 when sha256 is unavailable
+* Several other minor bugfixes and code cleanups
+
+Thanks to the following contributors to 3.9.4:
+Min-Yen Kan, Eric Kafe, Emily Voss, bowiechen, Hrudhai01,
+jancallewaert, Mr-Neutr0n, pollak.peter89, ylwango613,
+
+Version 3.9.3 2026-02-21
+
+* Fix CVE-2025-14009: secure ZIP extraction in nltk.downloader (#3468)
+* Block path traversal/arbitrary reads in nltk.data for protocol-less refs (#3467)
+* Block path traversal/abs paths in corpus readers and FS pointers (#3479, #3480)
+* Validate external StanfordSegmenter JARs using SHA256 (#3477)
+* Add optional sandbox enforcement for filestring() (#3485)
+* Maintenance: downloader/zipped models, CI/tooling updates
+
+Thanks to the following contributors to 3.9.3:
+Chris Clauss, Eric Kafe, HyperPS, purificant, Shivansh-Game, Christopher Smith
+
 Version 3.9.2 2025-10-01
 
 * Update download checksums to use SHA256 in built index

@@ -1,6 +1,6 @@
 # Natural Language Toolkit (NLTK) Help
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Authors: Steven Bird <stevenbird1@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -9,11 +9,12 @@
 Provide structured access to documentation.
 """
 
-import json
-import re
 from textwrap import wrap
 
-from nltk.data import find
+from nltk import redos
+from nltk.data import find, open_datafile
+from nltk.jsontags import safe_json_load
+from nltk.termsec import safe_print
 
 
 def brown_tagset(tagpattern=None):
@@ -40,26 +41,35 @@ def _print_entries(tags, tagdict):
         examples = wrap(
             entry[1], width=75, initial_indent="    ", subsequent_indent="    "
         )
-        print("\n".join(defn + examples))
+        safe_print("\n".join(defn + examples))
 
 
 def _format_tagset(tagset, tagpattern=None):
     # Load tagset from json file.
-    tag_json_file = find(f"help/tagsets_json/PY3_json/{tagset}.json")
-    with open(tag_json_file) as fin:
-        tagdict = json.load(fin)
+    with open_datafile(find("help/tagsets_json/PY3_json/"), f"{tagset}.json") as fin:
+        # Bounded parse (size + nesting depth) so a tampered tagset file cannot
+        # crash the interpreter through the recursive C decoder.
+        tagdict = safe_json_load(fin, context="nltk.help._format_tagset")
 
     if not tagpattern:
         _print_entries(sorted(tagdict), tagdict)
     elif tagpattern in tagdict:
         _print_entries([tagpattern], tagdict)
     else:
-        tagpattern = re.compile(tagpattern)
-        tags = [tag for tag in sorted(tagdict) if tagpattern.match(tag)]
+        try:
+            compiled = redos.compile(tagpattern)
+        except (ValueError, redos.error) as exc:
+            # redos refuses an oversized/over-nested pattern; fail closed with a
+            # clear message (a ValueError, matching every other caller-controlled
+            # compile site) rather than silently degrading.
+            raise ValueError(
+                f"Invalid or oversized tag pattern {tagpattern!r}: {exc}"
+            ) from None
+        tags = [tag for tag in sorted(tagdict) if compiled.match(tag)]
         if tags:
             _print_entries(tags, tagdict)
         else:
-            print("No matching tags found.")
+            safe_print("No matching tags found.")
 
 
 if __name__ == "__main__":

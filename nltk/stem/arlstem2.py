@@ -1,7 +1,7 @@
 #
 # Natural Language Toolkit: ARLSTem Stemmer v2
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 #
 # Author: Kheireddine Abainia (x-programer) <k.abainia@gmail.com>
 # Algorithms: Kheireddine Abainia <k.abainia@gmail.com>
@@ -25,9 +25,10 @@ results showed that the new version considerably improves the under-stemming
 errors that are common to light stemmers. Both ARLSTem and ARLSTem2 can be run
 online and do not use any dictionary.
 """
-import re
 
+from nltk import redos
 from nltk.stem.api import StemmerI
+from nltk.termsec import safe_print
 
 
 class ARLSTem2(StemmerI):
@@ -49,9 +50,9 @@ class ARLSTem2(StemmerI):
 
     def __init__(self):
         # different Alif with hamza
-        self.re_hamzated_alif = re.compile(r"[\u0622\u0623\u0625]")
-        self.re_alifMaqsura = re.compile(r"[\u0649]")
-        self.re_diacritics = re.compile(r"[\u064B-\u065F]")
+        self.re_hamzated_alif = redos.compile(r"[\u0622\u0623\u0625]")
+        self.re_alifMaqsura = redos.compile(r"[\u0649]")
+        self.re_diacritics = redos.compile(r"[\u064B-\u065F]")
 
         # Alif Laam, Laam Laam, Fa Laam, Fa Ba
         self.pr2 = ["\u0627\u0644", "\u0644\u0644", "\u0641\u0644", "\u0641\u0628"]
@@ -145,7 +146,7 @@ class ARLSTem2(StemmerI):
                 return ps
             return token
         except ValueError as e:
-            print(e)
+            safe_print(e)
 
     def stem(self, token):
         # stem the input word
@@ -177,7 +178,7 @@ class ARLSTem2(StemmerI):
                     return token[1:]
             return token
         except ValueError as e:
-            print(e)
+            safe_print(e)
 
     def norm(self, token):
         """

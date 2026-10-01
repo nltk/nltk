@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Stemmers
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 #         Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
@@ -8,6 +8,7 @@
 # For license information, see LICENSE.TXT
 import re
 
+from nltk import redos
 from nltk.stem.api import StemmerI
 
 
@@ -40,9 +41,15 @@ class RegexpStemmer(StemmerI):
     """
 
     def __init__(self, regexp, min=0):
-        if not hasattr(regexp, "pattern"):
-            regexp = re.compile(regexp)
-        self._regexp = regexp
+        # ``regexp`` is documented "str or regexp" and is applied to caller
+        # text, so a catastrophically backtracking one hangs the process
+        # (CWE-1333). Route BOTH a string and a pre-compiled pattern through
+        # redos.compile: a raw stdlib pattern has no wall-clock bound, and the
+        # old ``hasattr(...,'pattern')`` guard let it through unhardened. This
+        # mirrors RegexpTokenizer/RegexpTagger. See ``nltk/redos.py``.
+        flags = getattr(regexp, "flags", 0)
+        pattern = getattr(regexp, "pattern", regexp)
+        self._regexp = redos.compile(pattern, flags)
         self._min = min
 
     def stem(self, word):

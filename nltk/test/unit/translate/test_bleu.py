@@ -6,7 +6,7 @@ import unittest
 
 import pytest
 
-from nltk.data import find
+from nltk.data import find, open_datafile
 from nltk.translate.bleu_score import (
     SmoothingFunction,
     brevity_penalty,
@@ -237,13 +237,13 @@ class TestBLEUvsMteval13a(unittest.TestCase):
 
         # Reads the BLEU scores from the `mteval-13a.output` file.
         # The order of the list corresponds to the order of the ngrams.
-        with open(mteval_output_file) as mteval_fin:
+        with open_datafile(mteval_output_file) as mteval_fin:
             # The numbers are located in the last 2nd line of the file.
             # The first and 2nd item in the list are the score and system names.
             mteval_bleu_scores = map(float, mteval_fin.readlines()[-2].split()[1:-1])
 
-        with open(ref_file, encoding="utf8") as ref_fin:
-            with open(hyp_file, encoding="utf8") as hyp_fin:
+        with open_datafile(ref_file, encoding="utf8") as ref_fin:
+            with open_datafile(hyp_file, encoding="utf8") as hyp_fin:
                 # Whitespace tokenize the file.
                 # Note: split() automatically strip().
                 hypothesis = list(map(lambda x: x.split(), hyp_fin))

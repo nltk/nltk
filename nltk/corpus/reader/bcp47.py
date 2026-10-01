@@ -5,11 +5,12 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import re
 from warnings import warn
-from xml.etree import ElementTree as et
 
+from nltk import redos
 from nltk.corpus.reader import CorpusReader
+from nltk.termsec import sanitize_terminal
+from nltk.xmlsec import parse as safe_parse
 
 
 class BCP47CorpusReader(CorpusReader):
@@ -37,7 +38,7 @@ class BCP47CorpusReader(CorpusReader):
             self.db = self.data_dict(fp.read().split("%%\n"))
         with self.open("cldr/common-subdivisions-en.xml") as fp:
             self.subdiv = self.subdiv_dict(
-                et.parse(fp).iterfind("localeDisplayNames/subdivisions/subdivision")
+                safe_parse(fp).iterfind("localeDisplayNames/subdivisions/subdivision")
             )
         self.morphology()
 
@@ -70,12 +71,12 @@ class BCP47CorpusReader(CorpusReader):
         up = "[A-Z]"
         alnum = "[a-zA-Z0-9]"
         self.format = {
-            "language": re.compile(f"{low*3}?"),
-            "extlang": re.compile(f"{low*3}"),
-            "script": re.compile(f"{up}{low*3}"),
-            "region": re.compile(f"({up*2})|({dig*3})"),
-            "variant": re.compile(f"{alnum*4}{(alnum+'?')*4}"),
-            "singleton": re.compile(f"{low}"),
+            "language": redos.compile(f"{low*3}?"),
+            "extlang": redos.compile(f"{low*3}"),
+            "script": redos.compile(f"{up}{low*3}"),
+            "region": redos.compile(f"({up*2})|({dig*3})"),
+            "variant": redos.compile(f"{alnum*4}{(alnum+'?')*4}"),
+            "singleton": redos.compile(f"{low}"),
         }
 
     def data_dict(self, records):
@@ -170,7 +171,7 @@ class BCP47CorpusReader(CorpusReader):
                         lang[label] = self.val2str(
                             self.db["deprecated"][label][subtag]["Description"]
                         )
-                        warn(note)
+                        warn(sanitize_terminal(note))
                         break
             if not found:
                 if subtag == "u" and subtags[0] == "sd":  # CLDR regional subdivisions
@@ -183,7 +184,7 @@ class BCP47CorpusReader(CorpusReader):
                     ext = f"{subtag}{''.join(['-'+ext for ext in subtags])}".lower()
                     if not self.format["singleton"].fullmatch(subtag):
                         ext = f"<Invalid extension: {ext}>"
-                        warn(ext)
+                        warn(sanitize_terminal(ext))
                 lang["extension"] = ext
                 subtags = []
         return lang
@@ -209,10 +210,10 @@ class BCP47CorpusReader(CorpusReader):
                     prefer = self.db["deprecated"][label][tag]["Preferred-Value"]
                     note += f", prefer {self.val2str(prefer)!r}"
             if val:
-                warn(note)
+                warn(sanitize_terminal(note))
                 return val
         try:
             return self.lang2str(self.parse_tag(tag))
-        except:
+        except Exception:
             warn(f"Tag {tag!r} was not recognized")
             return None

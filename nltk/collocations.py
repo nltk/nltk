@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Collocations and Association Measures
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -39,8 +39,8 @@ from nltk.metrics import (
     QuadgramAssocMeasures,
     TrigramAssocMeasures,
 )
-from nltk.metrics.spearman import ranks_from_scores, spearman_correlation
 from nltk.probability import FreqDist
+from nltk.termsec import safe_print
 from nltk.util import ngrams
 
 
@@ -380,26 +380,36 @@ def demo(scorer=None, compare_scorer=None):
             ranks_from_scores(cf.score_ngrams(scorer)),
             ranks_from_scores(cf.score_ngrams(compare_scorer)),
         )
-        print(file)
-        print("\t", [" ".join(tup) for tup in cf.nbest(scorer, 15)])
-        print(f"\t Correlation to {compare_scorer.__name__}: {corr:0.4f}")
+        safe_print(file)
+        safe_print("\t", [" ".join(tup) for tup in cf.nbest(scorer, 15)])
+        safe_print(f"\t Correlation to {compare_scorer.__name__}: {corr:0.4f}")
 
 
 # Slows down loading too much
 # bigram_measures = BigramAssocMeasures()
 # trigram_measures = TrigramAssocMeasures()
 
+# Command-line interface for demonstrating bigram collocations.
+#
+# Usage: python -m nltk.collocations [scorer] [compare_scorer]
+#
+# Demonstrates bigram collocations on the WebText corpus.
+# Defaults to likelihood_ratio and raw_freq if not specified.
+#
+# Available scorers:
+#   chi_sq, dice, fisher, jaccard, likelihood_ratio, mi_like,
+#   phi_sq, pmi, poisson_stirling, raw_freq, student_t
 if __name__ == "__main__":
     import sys
 
     from nltk.metrics import BigramAssocMeasures
 
     try:
-        scorer = eval("BigramAssocMeasures." + sys.argv[1])
+        scorer = getattr(BigramAssocMeasures, sys.argv[1], None)
     except IndexError:
         scorer = None
     try:
-        compare_scorer = eval("BigramAssocMeasures." + sys.argv[2])
+        compare_scorer = getattr(BigramAssocMeasures, sys.argv[2], None)
     except IndexError:
         compare_scorer = None
 

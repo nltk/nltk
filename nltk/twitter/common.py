@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Twitter client
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Lorenzo Rubio <lrnzcig@gmail.com>
 # URL: <https://www.nltk.org/>
@@ -12,9 +12,9 @@ the `twython` library to have been installed.
 """
 import csv
 import gzip
-import json
 
 from nltk.internals import deprecated
+from nltk.jsontags import safe_json_loads
 
 HIER_SEPARATOR = "."
 
@@ -123,7 +123,8 @@ def json2csv(
     writer.writerow(fields)
     # process the file
     for line in fp:
-        tweet = json.loads(line)
+        # Untrusted tweet line: bound size and nesting depth before parsing.
+        tweet = safe_json_loads(line, context="twitter.json2csv")
         row = extract_fields(tweet, fields)
         writer.writerow(row)
     outf.close()
@@ -137,9 +138,13 @@ def outf_writer_compat(outfile, encoding, errors, gzip_compress=False):
 
 def _outf_writer(outfile, encoding, errors, gzip_compress=False):
     if gzip_compress:
-        outf = gzip.open(outfile, "wt", newline="", encoding=encoding, errors=errors)
+        outf = gzip.open(
+            outfile, "wt", newline="", encoding=encoding, errors=errors
+        )  # sandboxed-open ok: operator output path
     else:
-        outf = open(outfile, "w", newline="", encoding=encoding, errors=errors)
+        outf = open(
+            outfile, "w", newline="", encoding=encoding, errors=errors
+        )  # sandboxed-open ok: operator output path
     writer = csv.writer(outf)
     return (writer, outf)
 
@@ -198,7 +203,8 @@ def json2csv_entities(
     header = get_header_field_list(main_fields, entity_type, entity_fields)
     writer.writerow(header)
     for line in tweets_file:
-        tweet = json.loads(line)
+        # Untrusted tweet line: bound size and nesting depth before parsing.
+        tweet = safe_json_loads(line, context="twitter.json2csv_entities")
         if _is_composed_key(entity_type):
             key, value = _get_key_value_composed(entity_type)
             object_json = _get_entity_recursive(tweet, key)

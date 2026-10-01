@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Plaintext Corpus Reader
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Nitin Madnani <nmadnani@umiacs.umd.edu>
@@ -87,7 +87,7 @@ class PlaintextCorpusReader(CorpusReader):
         if self._sent_tokenizer is None:
             try:
                 self._sent_tokenizer = PunktTokenizer()
-            except:
+            except Exception:
                 raise ValueError("No sentence tokenizer for this corpus")
 
         return concat(
@@ -107,7 +107,7 @@ class PlaintextCorpusReader(CorpusReader):
         if self._sent_tokenizer is None:
             try:
                 self._sent_tokenizer = PunktTokenizer()
-            except:
+            except Exception:
                 raise ValueError("No sentence tokenizer for this corpus")
 
         return concat(

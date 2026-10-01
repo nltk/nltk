@@ -107,7 +107,45 @@ The following is a short tutorial on the available transformations.
 
 """
 
+from collections import deque
+
+from nltk.termsec import safe_print
+from nltk.tree import tree as _tree
 from nltk.tree.tree import Tree
+
+
+def _binarised_depth(tree, factor):
+    """Nesting depth *tree* will have after binarisation, computed iteratively.
+
+    Binarising a node with n > 2 children hangs them off a chain of n - 2 new
+    nodes, so the transform turns WIDTH into DEPTH: a flat 3000-child node
+    becomes a 3000-deep spine, and the widths of nested nodes compound. The
+    depth is counted exactly as ``Tree.fromstring`` counts bracket nesting
+    (Tree levels on the deepest root-to-leaf path), with the child positions
+    the right- or left-factoring loop will produce.
+    """
+    depth = {}
+    stack = [(tree, False)]
+    while stack:
+        node, visited = stack.pop()
+        if not isinstance(node, Tree):
+            continue
+        if not visited:
+            stack.append((node, True))
+            stack.extend((child, False) for child in node)
+            continue
+        width = len(node)
+        deepest = 1
+        for position, child in enumerate(node):
+            if width > 2 and factor == "right":
+                levels = min(position + 1, width - 1)
+            elif width > 2:
+                levels = min(width - position, width - 1)
+            else:
+                levels = 1
+            deepest = max(deepest, levels + depth.get(id(child), 0))
+        depth[id(node)] = deepest
+    return depth.get(id(tree), 0)
 
 
 def chomsky_normal_form(
@@ -120,6 +158,19 @@ def chomsky_normal_form(
     # any subtree with a branching factor greater than 999 will be incorrectly truncated.
     if horzMarkov is None:
         horzMarkov = 999
+
+    # The recursive Tree methods (__str__, leaves, productions, deepcopy ...)
+    # rely on Tree.fromstring's MAX_TREE_DEPTH bound, which binarisation would
+    # silently break by turning width into depth (CWE-674); refuse up front,
+    # before the tree is mutated, on the exact post-transform depth.
+    binarised_depth = _binarised_depth(tree, factor)
+    if binarised_depth > _tree.MAX_TREE_DEPTH:
+        raise ValueError(
+            f"Binarising this tree would nest it {binarised_depth} levels deep, "
+            f"beyond MAX_TREE_DEPTH ({_tree.MAX_TREE_DEPTH}): a wide node becomes "
+            "a chain as deep as it is wide, which the recursive Tree methods "
+            "cannot walk. Raise nltk.tree.tree.MAX_TREE_DEPTH to allow it."
+        )
 
     # Traverse the tree depth-first keeping a list of ancestor nodes to the root.
     # I chose not to use the tree.treepositions() method since it requires
@@ -145,8 +196,14 @@ def chomsky_normal_form(
 
             # chomsky normal form factorization
             if len(node) > 2:
-                childNodes = [child.label() for child in node]
-                nodeCopy = node.copy()
+                childNodes = [
+                    str(child.label()) if isinstance(child, Tree) else str(child)
+                    for child in node
+                ]
+                # Consume children from the front in O(1) via a deque so the
+                # right-factoring loop stays linear (CWE-407 / CWE-400,
+                # GHSA-r53h-rw34-8h97).
+                nodeCopy = deque(node)
                 node[0:] = []  # delete the children
 
                 curNode = node
@@ -162,7 +219,7 @@ def chomsky_normal_form(
                             parentString,
                         )  # create new head
                         newNode = Tree(newHead, [])
-                        curNode[0:] = [nodeCopy.pop(0), newNode]
+                        curNode[0:] = [nodeCopy.popleft(), newNode]
                     else:
                         newHead = "{}{}<{}>{}".format(
                             originalNode,
@@ -183,47 +240,51 @@ def chomsky_normal_form(
 def un_chomsky_normal_form(
     tree, expandUnary=True, childChar="|", parentChar="^", unaryChar="+"
 ):
-    # Traverse the tree-depth first keeping a pointer to the parent for modification purposes.
-    nodeList = [(tree, [])]
-    while nodeList != []:
-        node, parent = nodeList.pop()
+    # Traverse the tree depth-first, collapsing artificial Chomsky-Normal-Form
+    # nodes (whose label contains ``childChar``) into their parent.
+    nodeList = [tree]
+    while nodeList:
+        node = nodeList.pop()
         if isinstance(node, Tree):
-            # if the node contains the 'childChar' character it means that
-            # it is an artificial node and can be removed, although we still need
-            # to move its children to its parent
-            childIndex = node.label().find(childChar)
-            if childIndex != -1:
-                nodeIndex = parent.index(node)
-                parent.remove(parent[nodeIndex])
-                # Generated node was on the left if the nodeIndex is 0 which
-                # means the grammar was left factored.  We must insert the children
-                # at the beginning of the parent's children
-                if nodeIndex == 0:
-                    parent.insert(0, node[0])
-                    parent.insert(1, node[1])
-                else:
-                    parent.extend([node[0], node[1]])
+            # Splice every artificial child up into ``node`` in a single
+            # left-to-right pass. Doing this incrementally with
+            # parent.index()/parent.remove() compared children by value via the
+            # recursive ``Tree.__eq__``, rescanning a child list that grows wide
+            # as nodes are spliced out -- quadratic over the artificial nodes,
+            # and worse with deep subtrees (CWE-407). Rebuilding the child list
+            # once, expanding artificial nodes in order, is linear.
+            if any(
+                isinstance(child, Tree) and child.label().find(childChar) != -1
+                for child in node
+            ):
+                newChildren = []
+                # Stack of pending children, kept in original left-to-right order
+                # by reversing before pushing.
+                stack = list(reversed(node))
+                while stack:
+                    child = stack.pop()
+                    if isinstance(child, Tree) and child.label().find(childChar) != -1:
+                        # Artificial node: replace it in place with its children.
+                        stack.extend(reversed(child))
+                    else:
+                        newChildren.append(child)
+                node[:] = newChildren
 
-                # parent is now the current node so the children of parent will be added to the agenda
-                node = parent
-            else:
-                parentIndex = node.label().find(parentChar)
-                if parentIndex != -1:
-                    # strip the node name of the parent annotation
-                    node.set_label(node.label()[:parentIndex])
+            parentIndex = node.label().find(parentChar)
+            if parentIndex != -1:
+                # strip the node name of the parent annotation
+                node.set_label(node.label()[:parentIndex])
 
-                # expand collapsed unary productions
-                if expandUnary == True:
-                    unaryIndex = node.label().find(unaryChar)
-                    if unaryIndex != -1:
-                        newNode = Tree(
-                            node.label()[unaryIndex + 1 :], [i for i in node]
-                        )
-                        node.set_label(node.label()[:unaryIndex])
-                        node[0:] = [newNode]
+            # expand collapsed unary productions
+            if expandUnary:
+                unaryIndex = node.label().find(unaryChar)
+                if unaryIndex != -1:
+                    newNode = Tree(node.label()[unaryIndex + 1 :], [i for i in node])
+                    node.set_label(node.label()[:unaryIndex])
+                    node[0:] = [newNode]
 
             for child in node:
-                nodeList.append((child, node))
+                nodeList.append(child)
 
 
 def collapse_unary(tree, collapsePOS=False, collapseRoot=False, joinChar="+"):
@@ -248,7 +309,7 @@ def collapse_unary(tree, collapsePOS=False, collapseRoot=False, joinChar="+"):
     :type  joinChar: str
     """
 
-    if collapseRoot == False and isinstance(tree, Tree) and len(tree) == 1:
+    if not collapseRoot and isinstance(tree, Tree) and len(tree) == 1:
         nodeList = [tree[0]]
     else:
         nodeList = [tree]
@@ -260,7 +321,7 @@ def collapse_unary(tree, collapsePOS=False, collapseRoot=False, joinChar="+"):
             if (
                 len(node) == 1
                 and isinstance(node[0], Tree)
-                and (collapsePOS == True or isinstance(node[0, 0], Tree))
+                and (collapsePOS or isinstance(node[0, 0], Tree))
             ):
                 node.set_label(node.label() + joinChar + node[0].label())
                 node[0:] = [child for child in node[0]]
@@ -324,9 +385,9 @@ def demo():
 
     # convert tree back to bracketed text
     sentence2 = original.pprint()
-    print(sentence)
-    print(sentence2)
-    print("Sentences the same? ", sentence == sentence2)
+    safe_print(sentence)
+    safe_print(sentence2)
+    safe_print("Sentences the same? ", sentence == sentence2)
 
     draw_trees(t, collapsedTree, cnfTree, parentTree, original)
 

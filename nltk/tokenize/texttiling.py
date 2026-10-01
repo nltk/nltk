@@ -1,22 +1,23 @@
 # Natural Language Toolkit: TextTiling
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: George Boutsioukis
 #
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import math
-import re
 
 try:
     import numpy
 except ImportError:
     pass
 
+from nltk import redos
 from nltk.tokenize.api import TokenizerI
 
-BLOCK_COMPARISON, VOCABULARY_INTRODUCTION = 0, 1
+BLOCK_COMPARISON = "block_comparison"
+VOCABULARY_INTRODUCTION = "vocabulary_introduction"
 LC, HC = 0, 1
 DEFAULT_SMOOTHING = [0]
 
@@ -80,10 +81,22 @@ class TextTilingTokenizer(TokenizerI):
         self.__dict__.update(locals())
         del self.__dict__["self"]
 
+    #: Maximum input length (characters) accepted by :meth:`tokenize`. The
+    #: block-comparison / vocabulary-introduction step is quadratic in the number
+    #: of pseudosentences, so a very large document is a CPU DoS (CWE-407). This
+    #: cap is generous (a ~150k-word document); raise it to segment larger texts.
+    MAX_TEXT_LEN = 1_000_000
+
     def tokenize(self, text):
         """Return a tokenized copy of *text*, where each "token" represents
         a separate topic."""
 
+        if len(text) > self.MAX_TEXT_LEN:
+            raise ValueError(
+                f"TextTilingTokenizer: input length exceeds MAX_TEXT_LEN "
+                f"({self.MAX_TEXT_LEN}); block comparison is quadratic in the "
+                "document size (CWE-407). Raise MAX_TEXT_LEN or segment the text."
+            )
         lowercase_text = text.lower()
         paragraph_breaks = self._mark_paragraph_breaks(text)
         text_length = len(lowercase_text)
@@ -92,7 +105,7 @@ class TextTilingTokenizer(TokenizerI):
 
         # Remove punctuation
         nopunct_text = "".join(
-            c for c in lowercase_text if re.match(r"[a-z\-' \n\t]", c)
+            c for c in lowercase_text if redos.match(r"[a-z\-' \n\t]", c)
         )
         nopunct_par_breaks = self._mark_paragraph_breaks(nopunct_text)
 
@@ -118,7 +131,7 @@ class TextTilingTokenizer(TokenizerI):
         if self.similarity_method == BLOCK_COMPARISON:
             gap_scores = self._block_comparison(tokseqs, token_table)
         elif self.similarity_method == VOCABULARY_INTRODUCTION:
-            raise NotImplementedError("Vocabulary introduction not implemented")
+            gap_scores = self._vocabulary_introduction(tokseqs)
         else:
             raise ValueError(
                 f"Similarity method {self.similarity_method} not recognized"
@@ -156,6 +169,83 @@ class TextTilingTokenizer(TokenizerI):
         if self.demo_mode:
             return gap_scores, smooth_scores, depth_scores, segment_boundaries
         return segmented_text
+
+    def _vocabulary_introduction(self, tokseqs):
+        """Compute gap scores using the Vocabulary Introduction method.
+
+        From Marti A. Hearst (1997) "TextTiling: Segmenting Text into
+        Multi-Paragraph Subtopic Passages", Computational Linguistics,
+        23(1), pp. 33-64. https://aclanthology.org/J97-1003.pdf
+
+        Section 3.2:
+
+        The idea behind this approach is that the introduction of a new
+        topic in a text is signaled by the distribution of new vocabulary
+        items. For each pseudosentence gap, we count the number of new
+        word types appearing on each side of the gap that have not been
+        seen in earlier pseudosentences on that side.
+
+        Schematically (adapted from Fig 3, Hearst 1997)::
+
+            pseudosentences:  [ s1 ] [ s2 ] [ s3 ] [ s4 ] [ s5 ] ...
+                                          ^
+                                       gap at i=2
+                                          |
+              left side of gap:  s1, s2   |   right side: s3, s4, s5, ...
+              (scan left->right)          |   (scan right->left)
+                                          |
+              new_L(i) = words in s_i     |   new_R(i) = words in s_{i+1}
+                not seen in s1..s_{i-1}   |   not seen in s_{i+2}..s_N
+
+        The score for each gap is::
+
+            score(i) = ( new_L(i) + new_R(i) ) / (2 * w)
+
+        where ``w`` is the pseudosentence size, so ``2 * w`` normalizes
+        by the maximum possible number of new word types across both
+        sides of the gap.
+
+        :param tokseqs: list of TokenSequence objects
+        :return: list of gap scores (length = len(tokseqs) - 1)
+        """
+        n = len(tokseqs)
+        if n < 2:
+            return []
+
+        # Extract the word type sets for each pseudosentence
+        tokseq_sets = [{token for token, _ in seq.wrdindex_list} for seq in tokseqs]
+
+        # Normalization factor (Section 3.2)
+        norm = self.w * 2
+
+        # Scan left-to-right: for each position i, count how many words
+        # in tokseq_sets[i] are new (not seen in any s_0..s_{i-1}).
+        new_left = []
+        seen_left = set()
+        for i in range(n):
+            new_count = len(tokseq_sets[i] - seen_left)
+            new_left.append(new_count)
+            seen_left |= tokseq_sets[i]
+
+        # Scan right-to-left: for each position i, count how many words
+        # in tokseq_sets[i] are new (not seen in any s_{i+1}..s_{N-1}).
+        new_right = [0] * n
+        seen_right = set()
+        for i in range(n - 1, -1, -1):
+            new_count = len(tokseq_sets[i] - seen_right)
+            new_right[i] = new_count
+            seen_right |= tokseq_sets[i]
+
+        # Score each gap between pseudosentence i and i+1.
+        # The left contribution comes from the pseudosentence just
+        # before the gap (new_left[i]), and the right contribution
+        # from the pseudosentence just after (new_right[i+1]).
+        gap_scores = []
+        for i in range(n - 1):
+            score = (new_left[i] + new_right[i + 1]) / norm
+            gap_scores.append(score)
+
+        return gap_scores
 
     def _block_comparison(self, tokseqs, token_table):
         """Implements the block comparison method"""
@@ -205,7 +295,12 @@ class TextTilingTokenizer(TokenizerI):
         """Identifies indented text or line breaks as the beginning of
         paragraphs"""
         MIN_PARAGRAPH = 100
-        pattern = re.compile("[ \t\r\f\v]*\n[ \t\r\f\v]*\n[ \t\r\f\v]*")
+        # Possessive quantifiers (regex module) prevent catastrophic backtracking
+        # (ReDoS, CWE-1333): with the plain greedy `re` pattern, finditer rescans
+        # a long horizontal-whitespace run with no blank line quadratically. The
+        # whitespace class does not overlap "\n", so making each run possessive is
+        # match-for-match identical while making the scan linear.
+        pattern = redos.compile(r"[ \t\r\f\v]*+\n[ \t\r\f\v]*+\n[ \t\r\f\v]*+")
         matches = pattern.finditer(text)
 
         last_break = 0
@@ -223,7 +318,7 @@ class TextTilingTokenizer(TokenizerI):
         "Divides the text into pseudosentences of fixed size"
         w = self.w
         wrdindex_list = []
-        matches = re.finditer(r"\w+", text)
+        matches = redos.finditer(r"\w+", text)
         for match in matches:
             wrdindex_list.append((match.group(), match.start()))
         return [
@@ -249,8 +344,8 @@ class TextTilingTokenizer(TokenizerI):
             for word, index in ts.wrdindex_list:
                 try:
                     while index > current_par_break:
-                        current_par_break = next(pb_iter)
                         current_par += 1
+                        current_par_break = next(pb_iter)
                 except StopIteration:
                     # hit bottom
                     pass
@@ -400,6 +495,26 @@ class TokenSequence:
         del self.__dict__["self"]
 
 
+_SMOOTH_WINDOWS = ("flat", "hanning", "hamming", "bartlett", "blackman")
+
+
+def _window_name(window):
+    """The requested window as a plain ``str`` from :data:`_SMOOTH_WINDOWS`.
+
+    A ``str`` subclass can lie to ``in`` and ``==`` through ``__eq__`` and
+    ``__hash__`` while its real characters name something else, so the
+    allowlist judges the characters ``str.__str__`` materialises, which no
+    subclass can override, and the caller only ever resolves that plain name.
+    """
+    if isinstance(window, str):
+        name = str.__str__(window)
+        if type(name) is str and name in _SMOOTH_WINDOWS:
+            return name
+    raise ValueError(
+        "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
+    )
+
+
 # Pasted from the SciPy cookbook: https://www.scipy.org/Cookbook/SignalSmooth
 def smooth(x, window_len=11, window="flat"):
     """smooth the data using a window with requested size.
@@ -429,41 +544,49 @@ def smooth(x, window_len=11, window="flat"):
     """
 
     if x.ndim != 1:
-        raise ValueError("smooth only accepts 1 dimension arrays.")
+        raise ValueError(f"smooth only accepts 1 dimension arrays, was {x.ndim}.")
 
     if x.size < window_len:
-        raise ValueError("Input vector needs to be bigger than window size.")
+        raise ValueError(
+            f"Input vector ({len(x)}) needs to be bigger than window size ({window_len})."
+        )
 
     if window_len < 3:
         return x
 
-    if window not in ["flat", "hanning", "hamming", "bartlett", "blackman"]:
-        raise ValueError(
-            "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
-        )
+    name = _window_name(window)
 
     s = numpy.r_[2 * x[0] - x[window_len:1:-1], x, 2 * x[-1] - x[-1:-window_len:-1]]
 
     # print(len(s))
-    if window == "flat":  # moving average
+    if name == "flat":  # moving average
         w = numpy.ones(window_len, "d")
     else:
-        w = eval("numpy." + window + "(window_len)")
+        # A fixed table keyed by the materialised plain name: no eval, no string
+        # interpolation and no attribute lookup on a caller-supplied object.
+        w = {
+            "hanning": numpy.hanning,
+            "hamming": numpy.hamming,
+            "bartlett": numpy.bartlett,
+            "blackman": numpy.blackman,
+        }[name](window_len)
 
     y = numpy.convolve(w / w.sum(), s, mode="same")
 
     return y[window_len - 1 : -window_len + 1]
 
 
-def demo(text=None):
+def demo(text=None, similarity_method=BLOCK_COMPARISON):
     from matplotlib import pylab
 
     from nltk.corpus import brown
 
-    tt = TextTilingTokenizer(demo_mode=True)
+    pylab.figure()
+    tt = TextTilingTokenizer(demo_mode=True, similarity_method=similarity_method)
     if text is None:
         text = brown.raw()[:10000]
     s, ss, d, b = tt.tokenize(text)
+    pylab.title(f"TextTiling: {similarity_method}")
     pylab.xlabel("Sentence Gap index")
     pylab.ylabel("Gap Scores")
     pylab.plot(range(len(s)), s, label="Gap Scores")

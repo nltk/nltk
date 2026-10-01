@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Dependency Grammars
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
 #
 # URL: <https://www.nltk.org/>
@@ -18,6 +18,7 @@ from nltk.grammar import (
 )
 from nltk.internals import raise_unorderable_types
 from nltk.parse.dependencygraph import DependencyGraph
+from nltk.termsec import safe_print
 
 #################################################################
 # Dependency Span
@@ -164,6 +165,14 @@ class ProjectiveDependencyParser:
     in the parse tree form a continuous substring of the input sequence.
     """
 
+    #: Maximum number of input tokens :meth:`parse` will accept. The Eisner-style
+    #: span-concatenation algorithm eagerly builds a dense ``(n+1)x(n+1)`` chart
+    #: (O(n^2) memory) and runs an unconditional triple loop over it (O(n^3)
+    #: time) regardless of the grammar, so an over-long token list pins a CPU core
+    #: and exhausts memory (CWE-407). ``parse`` raises ``ValueError`` beyond this
+    #: many tokens; raise it if you genuinely need to parse a longer sequence.
+    MAX_TOKENS = 500
+
     def __init__(self, dependency_grammar):
         """
         Create a new ProjectiveDependencyParser, from a word-to-word
@@ -184,7 +193,14 @@ class ProjectiveDependencyParser:
         :return: An iterator over parse trees.
         :rtype: iter(Tree)
         """
-        self._tokens = list(tokens)
+        self._tokens = tokens = list(tokens)
+        if len(self._tokens) > self.MAX_TOKENS:
+            raise ValueError(
+                f"Cannot parse {len(self._tokens)} tokens: exceeds MAX_TOKENS "
+                f"({self.MAX_TOKENS}). Projective dependency parsing builds an "
+                f"O(n^2) chart and runs an O(n^3) loop regardless of the grammar "
+                f"(CWE-407); raise MAX_TOKENS to allow a longer sequence."
+            )
         chart = []
         for i in range(0, len(self._tokens) + 1):
             chart.append([])
@@ -238,7 +254,7 @@ class ProjectiveDependencyParser:
         """
         spans = []
         if span1._start_index == span2._start_index:
-            print("Error: Mismatched spans - replace this with thrown error")
+            safe_print("Error: Mismatched spans - replace this with thrown error")
         if span1._start_index > span2._start_index:
             temp_span = span1
             span1 = span2
@@ -311,6 +327,13 @@ class ProbabilisticProjectiveDependencyParser:
 
     """
 
+    #: Maximum number of input tokens :meth:`parse` will accept. Decoding builds
+    #: a dense ``(n+1)x(n+1)`` chart (O(n^2) memory) and runs an O(n^3) span loop
+    #: regardless of the grammar, so an over-long token list pins a CPU core and
+    #: exhausts memory (CWE-407). ``parse`` raises ``ValueError`` beyond this many
+    #: tokens; raise it if you genuinely need to parse a longer sequence.
+    MAX_TOKENS = 500
+
     def __init__(self):
         """
         Create a new probabilistic dependency parser.  No additional
@@ -325,7 +348,14 @@ class ProbabilisticProjectiveDependencyParser:
         It returns the most probable parse derived from the parser's
         probabilistic dependency grammar.
         """
-        self._tokens = list(tokens)
+        self._tokens = tokens = list(tokens)
+        if len(self._tokens) > self.MAX_TOKENS:
+            raise ValueError(
+                f"Cannot parse {len(self._tokens)} tokens: exceeds MAX_TOKENS "
+                f"({self.MAX_TOKENS}). Projective dependency decoding builds an "
+                f"O(n^2) chart and runs an O(n^3) loop regardless of the grammar "
+                f"(CWE-407); raise MAX_TOKENS to allow a longer sequence."
+            )
         chart = []
         for i in range(0, len(self._tokens) + 1):
             chart.append([])
@@ -338,7 +368,7 @@ class ProbabilisticProjectiveDependencyParser:
                                 DependencySpan(i - 1, i, i - 1, [-1], [tag])
                             )
                     else:
-                        print(
+                        safe_print(
                             "No tag found for input token '%s', parse is impossible."
                             % tokens[i - 1]
                         )
@@ -397,7 +427,7 @@ class ProbabilisticProjectiveDependencyParser:
         """
         spans = []
         if span1._start_index == span2._start_index:
-            print("Error: Mismatched spans - replace this with thrown error")
+            safe_print("Error: Mismatched spans - replace this with thrown error")
         if span1._start_index > span2._start_index:
             temp_span = span1
             span1 = span2
@@ -632,11 +662,11 @@ def projective_rule_parse_demo():
     'cats' -> 'the'
     """
     )
-    print(grammar)
+    safe_print(grammar)
     pdp = ProjectiveDependencyParser(grammar)
     trees = pdp.parse(["the", "cats", "scratch", "the", "walls"])
     for tree in trees:
-        print(tree)
+        safe_print(tree)
 
 
 def arity_parse_demo():
@@ -646,10 +676,10 @@ def arity_parse_demo():
     head.  This can further constrain the number of possible parses
     created by a ``ProjectiveDependencyParser``.
     """
-    print()
-    print("A grammar with no arity constraints. Each DependencyProduction")
-    print("specifies a relationship between one head word and only one")
-    print("modifier word.")
+    safe_print()
+    safe_print("A grammar with no arity constraints. Each DependencyProduction")
+    safe_print("specifies a relationship between one head word and only one")
+    safe_print("modifier word.")
     grammar = DependencyGrammar.fromstring(
         """
     'fell' -> 'price' | 'stock'
@@ -658,21 +688,21 @@ def arity_parse_demo():
     'stock' -> 'the'
     """
     )
-    print(grammar)
+    safe_print(grammar)
 
-    print()
-    print("For the sentence 'The price of the stock fell', this grammar")
-    print("will produce the following three parses:")
+    safe_print()
+    safe_print("For the sentence 'The price of the stock fell', this grammar")
+    safe_print("will produce the following three parses:")
     pdp = ProjectiveDependencyParser(grammar)
     trees = pdp.parse(["the", "price", "of", "the", "stock", "fell"])
     for tree in trees:
-        print(tree)
+        safe_print(tree)
 
-    print()
-    print("By contrast, the following grammar contains a ")
-    print("DependencyProduction that specifies a relationship")
-    print("between a single head word, 'price', and two modifier")
-    print("words, 'of' and 'the'.")
+    safe_print()
+    safe_print("By contrast, the following grammar contains a ")
+    safe_print("DependencyProduction that specifies a relationship")
+    safe_print("between a single head word, 'price', and two modifier")
+    safe_print("words, 'of' and 'the'.")
     grammar = DependencyGrammar.fromstring(
         """
     'fell' -> 'price' | 'stock'
@@ -681,16 +711,16 @@ def arity_parse_demo():
     'stock' -> 'the'
     """
     )
-    print(grammar)
+    safe_print(grammar)
 
-    print()
-    print(
+    safe_print()
+    safe_print(
         "This constrains the number of possible parses to just one:"
     )  # unimplemented, soon to replace
     pdp = ProjectiveDependencyParser(grammar)
     trees = pdp.parse(["the", "price", "of", "the", "stock", "fell"])
     for tree in trees:
-        print(tree)
+        safe_print(tree)
 
 
 def projective_prob_parse_demo():
@@ -702,14 +732,14 @@ def projective_prob_parse_demo():
 
     graphs = [DependencyGraph(entry) for entry in conll_data2.split("\n\n") if entry]
     ppdp = ProbabilisticProjectiveDependencyParser()
-    print("Training Probabilistic Projective Dependency Parser...")
+    safe_print("Training Probabilistic Projective Dependency Parser...")
     ppdp.train(graphs)
 
     sent = ["Cathy", "zag", "hen", "wild", "zwaaien", "."]
-    print("Parsing '", " ".join(sent), "'...")
-    print("Parse:")
+    safe_print("Parsing '", " ".join(sent), "'...")
+    safe_print("Parse:")
     for tree in ppdp.parse(sent):
-        print(tree)
+        safe_print(tree)
 
 
 if __name__ == "__main__":

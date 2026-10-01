@@ -1,6 +1,6 @@
 # Natural Language Toolkit: ASCII visualization of NLTK trees
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Andreas van Cranenburgh <A.W.vanCranenburgh@uva.nl>
 #         Peter Ljunglöf <peter.ljunglof@gu.se>
 # URL: <https://www.nltk.org/>
@@ -17,7 +17,6 @@ Graph Algorithms and Applications, 10(2) 141--157 (2006)149.
 https://jgaa.info/accepted/2006/EschbachGuentherBecker2006.10.2.pdf
 """
 
-import re
 
 try:
     from html import escape
@@ -27,6 +26,8 @@ except ImportError:
 from collections import defaultdict
 from operator import itemgetter
 
+from nltk import redos
+from nltk.termsec import safe_print
 from nltk.tree.tree import Tree
 from nltk.util import OrderedDict
 
@@ -357,7 +358,7 @@ class TreePrettyPrinter:
         :param maxwidth: maximum number of characters before a label starts to
             wrap; pass None to disable.
         """
-        if abbreviate == True:
+        if abbreviate:
             abbreviate = 5
         if unicodelines:
             horzline = "\u2500"
@@ -392,7 +393,7 @@ class TreePrettyPrinter:
         maxchildcol = {}
         childcols = defaultdict(set)
         labels = {}
-        wrapre = re.compile(
+        wrapre = redos.compile(
             "(.{%d,%d}\\b\\W*|.{%d})" % (maxwidth - 4, maxwidth, maxwidth)
         )
         # collect labels and coordinates
@@ -591,24 +592,24 @@ def test():
     """Do some tree drawing tests."""
 
     def print_tree(n, tree, sentence=None, ansi=True, **xargs):
-        print()
-        print('{}: "{}"'.format(n, " ".join(sentence or tree.leaves())))
-        print(tree)
-        print()
+        safe_print()
+        safe_print('{}: "{}"'.format(n, " ".join(sentence or tree.leaves())))
+        safe_print(tree)
+        safe_print()
         drawtree = TreePrettyPrinter(tree, sentence)
         try:
-            print(drawtree.text(unicodelines=ansi, ansi=ansi, **xargs))
+            safe_print(drawtree.text(unicodelines=ansi, ansi=ansi, **xargs))
         except (UnicodeDecodeError, UnicodeEncodeError):
-            print(drawtree.text(unicodelines=False, ansi=False, **xargs))
+            safe_print(drawtree.text(unicodelines=False, ansi=False, **xargs))
 
     from nltk.corpus import treebank
 
     for n in [0, 1440, 1591, 2771, 2170]:
         tree = treebank.parsed_sents()[n]
         print_tree(n, tree, nodedist=2, maxwidth=8)
-    print()
-    print("ASCII version:")
-    print(TreePrettyPrinter(tree).text(nodedist=2))
+    safe_print()
+    safe_print("ASCII version:")
+    safe_print(TreePrettyPrinter(tree).text(nodedist=2))
 
     tree = Tree.fromstring(
         "(top (punct 8) (smain (noun 0) (verb 1) (inf (verb 5) (inf (verb 6) "

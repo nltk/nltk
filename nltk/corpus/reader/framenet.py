@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Framenet Corpus Reader
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Authors: Chuck Wooters <wooters@icsi.berkeley.edu>,
 #          Nathan Schneider <nathan.schneider@georgetown.edu>
 # URL: <https://www.nltk.org/>
@@ -12,6 +12,7 @@ Corpus reader for the FrameNet 1.7 lexicon and corpus.
 """
 
 import itertools
+import ntpath
 import os
 import re
 import sys
@@ -22,7 +23,9 @@ from itertools import zip_longest
 from operator import itemgetter
 from pprint import pprint
 
+from nltk import redos
 from nltk.corpus.reader import XMLCorpusReader, XMLCorpusView
+from nltk.termsec import safe_print
 from nltk.util import LazyConcatenation, LazyIteratorList, LazyMap
 
 __docformat__ = "epytext en"
@@ -251,7 +254,7 @@ def _pretty_fulltext_sentences(sents):
     outstr += "[corpid] {0.corpid}\n[corpname] {0.corpname}\n[description] {0.description}\n[URL] {0.URL}\n\n".format(
         sents
     )
-    outstr += f"[sentence]\n"
+    outstr += "[sentence]\n"
     for i, sent in enumerate(sents.sentence):
         outstr += f"[{i}] {sent.text}\n"
     outstr += "\n"
@@ -756,6 +759,50 @@ class FramenetError(Exception):
     """An exception class for framenet-related errors."""
 
 
+def _reject_unsafe_path_component(value, kind):
+    """Reject a corpus-/caller-supplied name that could escape the corpus root.
+
+    ``doc()``, ``frame_by_name()`` and ``_lu_file()`` interpolate a name into an
+    XML file path (CWE-22).  Besides POSIX/Windows separators and ``..``, this
+    also rejects a Windows drive- or UNC-qualified name such as ``C:evil`` or
+    ``\\\\host\\share``: it contains no separator, yet ``os.path.join`` discards
+    the corpus root when the name carries a drive on Windows.
+    ``ntpath.splitdrive`` is used rather than ``os.path.splitdrive`` so the
+    check applies on every platform (and stays testable off Windows).
+    """
+    value = str(value)
+    if (
+        os.sep in value
+        or "/" in value
+        or "\\" in value
+        or ".." in value
+        or ntpath.splitdrive(value)[0]
+    ):
+        # "Security violation" marks this as a containment decision, not an
+        # incidental lookup error, so callers and audits can tell them apart.
+        raise FramenetError(f"Security violation: Invalid {kind}: {value!r}")
+
+
+def _validate_in_root(locpath, root, context):
+    """Reject a resolved path that escapes the corpus root through a symlink.
+
+    ``_reject_unsafe_path_component`` only rejects unsafe characters in the
+    caller-/corpus-supplied name itself; it never resolves symlinks. A
+    symlink planted inside the corpus subdirectory (``frame/``, ``lu/`` or
+    ``fulltext/``) can still point outside the corpus root even when the name
+    referencing it contains no separator or ``..`` at all.
+
+    This calls ``nltk.pathsec.validate_path`` with the corpus root as
+    ``required_root``, the same symlink-resolving containment guard used by
+    ``CorpusReader.open()`` and ``NKJPCorpusReader.add_root()``: both
+    ``locpath`` and ``root`` are resolved with ``Path.resolve()`` before the
+    containment check, so a symlink cannot escape undetected.
+    """
+    from nltk.pathsec import validate_path
+
+    validate_path(locpath, context=context, required_root=root)
+
+
 class AttrDict(dict):
     """A class that wraps a dict and allows accessing the keys of the
     dict as if they were attributes. Taken from here:
@@ -1210,7 +1257,7 @@ buildindexes() loads metadata about all frames, LUs, etc. into memory to avoid
 readme() gives the text of the FrameNet README file
 warnings(True) to display corpus consistency warnings when loading data
         """
-        print(msg)
+        safe_print(msg)
 
     def _buildframeindex(self):
         # The total number of Frames in Framenet is fairly small (~1200) so
@@ -1292,7 +1339,7 @@ warnings(True) to display corpus consistency warnings when loading data
     def _warn(self, *message, **kwargs):
         if self._warnings:
             kwargs.setdefault("file", sys.stderr)
-            print(*message, **kwargs)
+            safe_print(*message, **kwargs)
 
     def buildindexes(self):
         """
@@ -1362,8 +1409,21 @@ warnings(True) to display corpus consistency warnings when loading data
         except KeyError as e:  # probably means that fn_docid was not in the index
             raise FramenetError(f"Unknown document id: {fn_docid}") from e
 
+        # Security (CWE-22 / CWE-59): defend against a malicious corpus index
+        # whose filename field contains path-traversal sequences or a symlink
+        # planted inside the fulltext directory.  Reject the unsafe name, then
+        # resolve through self.abspath() and validate_path() with the corpus
+        # root as required_root -- the same symlink-resolving containment
+        # guard CorpusReader.open() and NKJPCorpusReader use -- so the file is
+        # read via the PathPointer / nltk.pathsec sandbox instead of the
+        # builtin open() that a bare string path would use in XMLCorpusView,
+        # and a symlink cannot escape the corpus root even though its own name
+        # contains no separators or "..".
+        _reject_unsafe_path_component(xmlfname, "document filename")
+
         # construct the path name for the xml file containing the document info
-        locpath = os.path.join(f"{self._root}", self._fulltext_dir, xmlfname)
+        locpath = self.abspath(os.path.join(self._fulltext_dir, xmlfname))
+        _validate_in_root(locpath, self.root, "FramenetCorpusReader")
 
         # Grab the top-level xml element containing the fulltext annotation
         with XMLCorpusView(locpath, "fullTextAnnotation") as view:
@@ -1452,11 +1512,22 @@ warnings(True) to display corpus consistency warnings when loading data
         elif not self._frame_idx:
             self._buildframeindex()
 
+        # Security (CWE-22 / CWE-59): the frame name is interpolated into the
+        # XML file path.  Reject crafted names, then resolve through
+        # self.abspath() and validate_path() with the corpus root as
+        # required_root -- the same symlink-resolving containment guard
+        # CorpusReader.open() and NKJPCorpusReader use -- so the file is read
+        # via the PathPointer / nltk.pathsec sandbox rather than the builtin
+        # open() that a bare string path would use in XMLCorpusView, and a
+        # symlink planted inside the frame directory cannot escape the corpus
+        # root even though its own name contains no separators or "..".
+        _reject_unsafe_path_component(fn_fname, "frame name")
+
         # construct the path name for the xml file containing the Frame info
-        locpath = os.path.join(f"{self._root}", self._frame_dir, fn_fname + ".xml")
-        # print(locpath, file=sys.stderr)
         # Grab the xml for the frame
         try:
+            locpath = self.abspath(os.path.join(self._frame_dir, fn_fname + ".xml"))
+            _validate_in_root(locpath, self.root, "FramenetCorpusReader")
             with XMLCorpusView(locpath, "frame") as view:
                 elt = view[0]
         except OSError as e:
@@ -1585,10 +1656,11 @@ warnings(True) to display corpus consistency warnings when loading data
         :return: A list of frame objects.
         :rtype: list(AttrDict)
         """
+        pat_rx = redos.compile(pat)  # caller regex: bound compile + match
         return PrettyList(
             f
             for f in self.frames()
-            if any(re.search(pat, luName) for luName in f.lexUnit)
+            if any(pat_rx.search(luName) for luName in f.lexUnit)
         )
 
     def lu_basic(self, fn_luid):
@@ -1800,13 +1872,25 @@ warnings(True) to display corpus consistency warnings when loading data
         """
         fn_luid = lu.ID
 
+        # Security (CWE-22 / CWE-59): the LU id comes from corpus data (a
+        # <lexUnit ID="..."> attribute) and is interpolated into the XML file
+        # path.  A non-numeric id can carry path-traversal sequences; reject
+        # it, then resolve through self.abspath() and validate_path() with the
+        # corpus root as required_root -- the same symlink-resolving
+        # containment guard CorpusReader.open() and NKJPCorpusReader use --
+        # so the file is read via the PathPointer / nltk.pathsec sandbox
+        # rather than the builtin open() used for a bare string path, and a
+        # symlink planted inside the LU directory cannot escape the corpus
+        # root even though its own name contains no separators or "..".
+        _reject_unsafe_path_component(fn_luid, "LU id")
+
         fname = f"lu{fn_luid}.xml"
-        locpath = os.path.join(f"{self._root}", self._lu_dir, fname)
-        # print(locpath, file=sys.stderr)
         if not self._lu_idx:
             self._buildluindex()
 
         try:
+            locpath = self.abspath(os.path.join(self._lu_dir, fname))
+            _validate_in_root(locpath, self.root, "FramenetCorpusReader")
             with XMLCorpusView(locpath, "lexUnit") as view:
                 elt = view[0]
         except OSError as e:
@@ -2045,10 +2129,11 @@ warnings(True) to display corpus consistency warnings when loading data
         """
         if not self._frame_idx:
             self._buildframeindex()
+        name_rx = redos.compile(name) if name is not None else None
         return {
             fID: finfo.name
             for fID, finfo in self._frame_idx.items()
-            if name is None or re.search(name, finfo.name) is not None
+            if name is None or name_rx.search(finfo.name) is not None
         }
 
     def fes(self, name=None, frame=None):
@@ -2096,11 +2181,12 @@ warnings(True) to display corpus consistency warnings when loading data
         else:
             frames = self.frames()
 
+        name_rx = redos.compile(name, re.I) if name is not None else None
         return PrettyList(
             fe
             for f in frames
             for fename, fe in f.FE.items()
-            if name is None or re.search(name, fename, re.I)
+            if name is None or name_rx.search(fename)
         )
 
     def lus(self, name=None, frame=None):
@@ -2249,11 +2335,12 @@ warnings(True) to display corpus consistency warnings when loading data
         """
         if not self._lu_idx:
             self._buildluindex()
+        name_rx = redos.compile(name) if name is not None else None
         return {
             luID: luinfo.name
             for luID, luinfo in self._lu_idx.items()
             if luinfo.status not in self._bad_statuses
-            and (name is None or re.search(name, luinfo.name) is not None)
+            and (name is None or name_rx.search(luinfo.name) is not None)
         }
 
     def docs_metadata(self, name=None):
@@ -2299,8 +2386,9 @@ warnings(True) to display corpus consistency warnings when loading data
         if name is None:
             return ftlist
         else:
+            name_rx = redos.compile(name)  # bound compile + match
             return PrettyList(
-                x for x in ftlist if re.search(name, x["filename"]) is not None
+                x for x in ftlist if name_rx.search(x["filename"]) is not None
             )
 
     def docs(self, name=None):
@@ -2374,6 +2462,8 @@ warnings(True) to display corpus consistency warnings when loading data
                     )
         if frame is None and fe is not None and not isinstance(fe, str):
             frame = fe.frame
+        fe_rx = redos.compile(fe, re.I) if isinstance(fe, str) else None
+        fe2_rx = redos.compile(fe2, re.I) if isinstance(fe2, str) else None
 
         # narrow down to frames matching criteria
 
@@ -2404,8 +2494,7 @@ warnings(True) to display corpus consistency warnings when loading data
                     frames = PrettyLazyIteratorList(
                         f
                         for f in frames
-                        if fe in f.FE
-                        or any(re.search(fe, ffe, re.I) for ffe in f.FE.keys())
+                        if fe in f.FE or any(fe_rx.search(ffe) for ffe in f.FE.keys())
                     )
                 else:
                     if fe.frame not in frames:
@@ -2420,7 +2509,7 @@ warnings(True) to display corpus consistency warnings when loading data
                             f
                             for f in frames
                             if fe2 in f.FE
-                            or any(re.search(fe2, ffe, re.I) for ffe in f.FE.keys())
+                            or any(fe2_rx.search(ffe) for ffe in f.FE.keys())
                         )
                     # else we already narrowed it to a single frame
         else:  # frame, luNamePattern are None. fe, fe2 are None or strings
@@ -2441,13 +2530,13 @@ warnings(True) to display corpus consistency warnings when loading data
                 fes = fes2 = None  # FEs of interest
                 if fe is not None:
                     fes = (
-                        {ffe for ffe in f.FE.keys() if re.search(fe, ffe, re.I)}
+                        {ffe for ffe in f.FE.keys() if fe_rx.search(ffe)}
                         if isinstance(fe, str)
                         else {fe.name}
                     )
                     if fe2 is not None:
                         fes2 = (
-                            {ffe for ffe in f.FE.keys() if re.search(fe2, ffe, re.I)}
+                            {ffe for ffe in f.FE.keys() if fe2_rx.search(ffe)}
                             if isinstance(fe2, str)
                             else {fe2.name}
                         )
@@ -2731,7 +2820,7 @@ warnings(True) to display corpus consistency warnings when loading data
 
             data = data.replace("<t>", "")
             data = data.replace("</t>", "")
-            data = re.sub('<fex name="[^"]+">', "", data)
+            data = redos.sub('<fex name="[^"]+">', "", data)
             data = data.replace("</fex>", "")
             data = data.replace("<fen>", "")
             data = data.replace("</fen>", "")
@@ -3310,26 +3399,26 @@ def demo():
     # buildindexes(). We do this here just for demo purposes. If the
     # indexes are not built explicitly, they will be built as needed.
     #
-    print("Building the indexes...")
+    safe_print("Building the indexes...")
     fn.buildindexes()
 
     #
     # Get some statistics about the corpus
     #
-    print("Number of Frames:", len(fn.frames()))
-    print("Number of Lexical Units:", len(fn.lus()))
-    print("Number of annotated documents:", len(fn.docs()))
-    print()
+    safe_print("Number of Frames:", len(fn.frames()))
+    safe_print("Number of Lexical Units:", len(fn.lus()))
+    safe_print("Number of annotated documents:", len(fn.docs()))
+    safe_print()
 
     #
     # Frames
     #
-    print(
+    safe_print(
         'getting frames whose name matches the (case insensitive) regex: "(?i)medical"'
     )
     medframes = fn.frames(r"(?i)medical")
-    print(f'Found {len(medframes)} Frames whose name matches "(?i)medical":')
-    print([(f.name, f.ID) for f in medframes])
+    safe_print(f'Found {len(medframes)} Frames whose name matches "(?i)medical":')
+    safe_print([(f.name, f.ID) for f in medframes])
 
     #
     # store the first frame in the list of frames
@@ -3340,64 +3429,64 @@ def demo():
     #
     # get the frame relations
     #
-    print(
+    safe_print(
         '\nNumber of frame relations for the "{}" ({}) frame:'.format(
             m_frame.name, m_frame.ID
         ),
         len(m_frame.frameRelations),
     )
     for fr in m_frame.frameRelations:
-        print("   ", fr)
+        safe_print("   ", fr)
 
     #
     # get the names of the Frame Elements
     #
-    print(
+    safe_print(
         f'\nNumber of Frame Elements in the "{m_frame.name}" frame:',
         len(m_frame.FE),
     )
-    print("   ", [x for x in m_frame.FE])
+    safe_print("   ", [x for x in m_frame.FE])
 
     #
     # get the names of the "Core" Frame Elements
     #
-    print(f'\nThe "core" Frame Elements in the "{m_frame.name}" frame:')
-    print("   ", [x.name for x in m_frame.FE.values() if x.coreType == "Core"])
+    safe_print(f'\nThe "core" Frame Elements in the "{m_frame.name}" frame:')
+    safe_print("   ", [x.name for x in m_frame.FE.values() if x.coreType == "Core"])
 
     #
     # get all of the Lexical Units that are incorporated in the
     # 'Ailment' FE of the 'Medical_conditions' frame (id=239)
     #
-    print('\nAll Lexical Units that are incorporated in the "Ailment" FE:')
+    safe_print('\nAll Lexical Units that are incorporated in the "Ailment" FE:')
     m_frame = fn.frame(239)
     ailment_lus = [
         x
         for x in m_frame.lexUnit.values()
         if "incorporatedFE" in x and x.incorporatedFE == "Ailment"
     ]
-    print("   ", [x.name for x in ailment_lus])
+    safe_print("   ", [x.name for x in ailment_lus])
 
     #
     # get all of the Lexical Units for the frame
     #
-    print(
+    safe_print(
         f'\nNumber of Lexical Units in the "{m_frame.name}" frame:',
         len(m_frame.lexUnit),
     )
-    print("  ", [x.name for x in m_frame.lexUnit.values()][:5], "...")
+    safe_print("  ", [x.name for x in m_frame.lexUnit.values()][:5], "...")
 
     #
     # get basic info on the second LU in the frame
     #
     tmp_id = m_frame.lexUnit["ailment.n"].ID  # grab the id of the specified LU
     luinfo = fn.lu_basic(tmp_id)  # get basic info on the LU
-    print(f"\nInformation on the LU: {luinfo.name}")
+    safe_print(f"\nInformation on the LU: {luinfo.name}")
     pprint(luinfo)
 
     #
     # Get a list of all of the corpora used for fulltext annotation
     #
-    print("\nNames of all of the corpora used for fulltext annotation:")
+    safe_print("\nNames of all of the corpora used for fulltext annotation:")
     allcorpora = {x.corpname for x in fn.docs_metadata()}
     pprint(list(allcorpora))
 
@@ -3406,7 +3495,7 @@ def demo():
     #
     firstcorp = list(allcorpora)[0]
     firstcorp_docs = fn.docs(firstcorp)
-    print(f'\nNames of the annotated documents in the "{firstcorp}" corpus:')
+    safe_print(f'\nNames of the annotated documents in the "{firstcorp}" corpus:')
     pprint([x.filename for x in firstcorp_docs])
 
     #
@@ -3418,7 +3507,7 @@ def demo():
     #       lemmas to frames because each time frames_by_lemma() is
     #       called, it has to search through ALL of the frame XML files
     #       in the db.
-    print(
+    safe_print(
         '\nSearching for all Frames that have a lemma that matches the regexp: "^run.v$":'
     )
     pprint(fn.frames_by_lemma(r"^run.v$"))

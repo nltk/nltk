@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Twitter client
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Lorenzo Rubio <lrnzcig@gmail.com>
 # URL: <https://www.nltk.org/>
@@ -11,9 +11,10 @@ Authentication utilities to accompany `twitterclient`.
 """
 
 import os
-import pprint
 
 from twython import Twython
+
+from nltk.termsec import safe_print
 
 
 def credsfromfile(creds_file=None, subdir=None, verbose=False):
@@ -83,9 +84,11 @@ class Authenticate:
         if not os.path.isfile(self.creds_fullpath):
             raise OSError(f"Cannot find file {self.creds_fullpath}")
 
-        with open(self.creds_fullpath) as infile:
+        with open(
+            self.creds_fullpath, encoding="utf8"
+        ) as infile:  # sandboxed-open ok: operator credentials path, not attacker input
             if verbose:
-                print(f"Reading credentials file {self.creds_fullpath}")
+                safe_print(f"Reading credentials file {self.creds_fullpath}")
 
             for line in infile:
                 if "=" in line:
@@ -108,11 +111,14 @@ class Authenticate:
             oauth2 = True
 
         if not (oauth1 or oauth2):
+            # Report only the key names present, never the secret values: this
+            # message can reach stderr/logs, so pretty-printing the creds dict
+            # would leak app_secret/access_token (CWE-532/CWE-209/CWE-200).
             msg = f"Missing or incorrect entries in {self.creds_file}\n"
-            msg += pprint.pformat(self.oauth)
+            msg += f"found keys: {sorted(self.oauth)}"
             raise ValueError(msg)
         elif verbose:
-            print(f'Credentials file "{self.creds_file}" looks good')
+            safe_print(f'Credentials file "{self.creds_file}" looks good')
 
 
 def add_access_token(creds_file=None):
@@ -130,8 +136,10 @@ def add_access_token(creds_file=None):
     twitter = Twython(app_key, app_secret, oauth_version=2)
     access_token = twitter.obtain_access_token()
     tok = f"access_token={access_token}\n"
-    with open(creds_file, "a") as infile:
-        print(tok, file=infile)
+    with open(
+        creds_file, "a", encoding="utf8"
+    ) as infile:  # sandboxed-open ok: operator credentials path, not attacker input
+        safe_print(tok, file=infile)
 
 
 def guess_path(pth):

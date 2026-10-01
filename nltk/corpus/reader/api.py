@@ -1,6 +1,6 @@
 # Natural Language Toolkit: API for Corpus Readers
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
@@ -11,12 +11,13 @@ API for corpus readers.
 """
 
 import os
-import re
 from collections import defaultdict
 from itertools import chain
 
+from nltk import pathsec, redos
 from nltk.corpus.reader.util import *
 from nltk.data import FileSystemPathPointer, PathPointer, ZipFilePathPointer
+from nltk.pathsec import validate_path
 
 
 class CorpusReader:
@@ -70,9 +71,21 @@ class CorpusReader:
               for normalizing or converting the POS tags returned by the
               ``tagged_...()`` methods.
         """
+        # Defense in depth (CWE-73 / CWE-59; GHSA-3gq4-3j92-5w49, GHSA-p4rw):
+        # validate the raw string root against the NLTK data sandbox before it
+        # becomes a PathPointer, so a reader cannot be pointed outside the
+        # sandbox by caller-supplied input and a reader that later reaches a raw
+        # ``open()`` / ``sqlite3.connect()`` still cannot escape.  Under
+        # ``pathsec.ENFORCE`` an out-of-sandbox root is refused; a corpus in a
+        # custom location is authorized by registering it on ``nltk.data.path``.
+        # The ``str`` test also covers ``FileSystemPathPointer`` (a ``str``
+        # subclass), so a pointer root is validated too.
+        if pathsec.ENFORCE and isinstance(root, str):
+            validate_path(root, context="CorpusReader.__init__")
+
         # Convert the root to a path pointer, if necessary.
         if isinstance(root, str) and not isinstance(root, PathPointer):
-            m = re.match(r"(.*\.zip)/?(.*)$|", root)
+            m = redos.match(r"(.*\.zip)/?(.*)$|", root)
             zipfile, zipentry = m.groups()
             if zipfile:
                 root = ZipFilePathPointer(zipfile, zipentry)
@@ -99,11 +112,12 @@ class CorpusReader:
         # If encoding was specified as a list of regexps, then convert
         # it to a dictionary.
         if isinstance(encoding, list):
+            # caller regexps matched against fileids: bound compile + match time
+            compiled_encoding = [(redos.compile(rx), enc) for rx, enc in encoding]
             encoding_dict = {}
             for fileid in self._fileids:
-                for x in encoding:
-                    (regexp, enc) = x
-                    if re.match(regexp, fileid):
+                for rx, enc in compiled_encoding:
+                    if rx.match(fileid):
                         encoding_dict[fileid] = enc
                         break
             encoding = encoding_dict
@@ -158,6 +172,21 @@ class CorpusReader:
         """
         return self._fileids
 
+    def _guard_fileid(self, fileid):
+        """Resolve a corpus-relative fileid to a path pointer with the scoped-root
+        guard, so view methods get the same containment as :meth:`open`.
+
+        View methods (``words``/``sents``/``parsed_sents``/...) open the pointers
+        returned by :meth:`abspaths` directly, bypassing :meth:`open`.
+        ``self._root.join`` already rejects a ``..`` traversal; the scoped
+        ``validate_path`` additionally resolves symlinks so an intermediate
+        directory symlink inside the corpus root that escapes it is refused too
+        (CWE-22/CWE-59).
+        """
+        path = self._root.join(fileid)
+        validate_path(path, context="CorpusReader", required_root=self._root)
+        return path
+
     def abspath(self, fileid):
         """
         Return the absolute path for the given file.
@@ -167,7 +196,7 @@ class CorpusReader:
             should be returned.
         :rtype: PathPointer
         """
-        return self._root.join(fileid)
+        return self._guard_fileid(fileid)
 
     def abspaths(self, fileids=None, include_encoding=False, include_fileid=False):
         """
@@ -192,7 +221,7 @@ class CorpusReader:
         elif isinstance(fileids, str):
             fileids = [fileids]
 
-        paths = [self._root.join(f) for f in fileids]
+        paths = [self._guard_fileid(f) for f in fileids]
 
         if include_encoding and include_fileid:
             return list(zip(paths, [self.encoding(f) for f in fileids], fileids))
@@ -221,15 +250,25 @@ class CorpusReader:
 
     def open(self, file):
         """
-        Return an open stream that can be used to read the given file.
-        If the file's encoding is not None, then the stream will
-        automatically decode the file's contents into unicode.
-
-        :param file: The file identifier of the file to read.
+        Return an open stream for the given file.
+        Security patched: prevents path traversal and scoped escapes.
         """
-        encoding = self.encoding(file)
-        stream = self._root.join(file).open(encoding)
-        return stream
+        # Layer 1: Lexical guard
+        if os.path.isabs(file) or ".." in file.replace("\\", "/"):
+            raise ValueError(f"CorpusReader paths must be relative: {file}")
+
+        path = self._root.join(file)
+
+        # Layer 2: Scoped resolved guard (Fixes symlink escape test)
+        validate_path(path, context="CorpusReader", required_root=self._root)
+
+        # --- FIX: Handle dict-based encodings (e.g., UDHR corpus) ---
+        encoding = self._encoding
+        if isinstance(encoding, dict):
+            encoding = encoding.get(file)
+
+        # Layer 3: Global sentinel check happens inside path.open()
+        return path.open(encoding=encoding)
 
     def encoding(self, file):
         """
@@ -333,8 +372,9 @@ class CategorizedCorpusReader:
         self._c2f = defaultdict(set)
 
         if self._pattern is not None:
+            pattern_rx = redos.compile(self._pattern)  # caller cat_pattern: bound both
             for file_id in self._fileids:
-                category = re.match(self._pattern, file_id).group(1)
+                category = pattern_rx.match(file_id).group(1)
                 self._add(file_id, category)
 
         elif self._map is not None:

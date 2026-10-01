@@ -3,7 +3,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -30,13 +30,15 @@ For example::
 
 import operator
 import os
-import re
+import shutil
 import subprocess
 import tempfile
 from functools import reduce
 from optparse import OptionParser
 
-from nltk.internals import find_binary
+from nltk import redos
+from nltk.internals import find_binary_absolute
+from nltk.pathsec import TrustError, has_line_unsafe_char, spawn_trusted
 from nltk.sem.drt import (
     DRS,
     DrtApplicationExpression,
@@ -54,6 +56,7 @@ from nltk.sem.logic import (
     UnexpectedTokenException,
     Variable,
 )
+from nltk.termsec import safe_print
 
 
 class Boxer:
@@ -179,6 +182,31 @@ class Boxer:
         :param filename: str A filename for the output file
         :return: stdout
         """
+        # candc reads a line-oriented input where <META>'id' marks a discourse
+        # boundary. A control character or quote in an id, or an input line that
+        # itself starts with <META>, would inject or misroute those boundaries.
+        for discourse_id in discourse_ids:
+            text = str(discourse_id)
+            if has_line_unsafe_char(text) or any(c in "'\"" for c in text):
+                raise ValueError(
+                    "A candc discourse id cannot contain a control character, line "
+                    f"separator or quote (it is interpolated into <META>'id'): {discourse_id!r}"
+                )
+        for discourse in inputs:
+            for line in discourse:
+                text = str(line)
+                # candc reads whole lines and its output is not tab-delimited, so a
+                # literal TAB is ordinary in-line whitespace here and stays allowed.
+                if has_line_unsafe_char(text, allow_tab=True):
+                    raise ValueError(
+                        "A candc input line cannot contain a control character or "
+                        f"line separator: {line!r}"
+                    )
+                if text.startswith("<META>"):
+                    raise ValueError(
+                        "A candc input line cannot start with the <META> discourse "
+                        f"marker: {line!r}"
+                    )
         args = [
             "--models",
             os.path.join(self._candc_models_path, ["boxer", "questions"][question]),
@@ -204,12 +232,23 @@ class Boxer:
         :param candc_out: str output from C&C parser
         :return: stdout
         """
+        # Imported here, not at module scope: nltk.data's import graph pulls in
+        # nltk.sem, so a top level import can see a half built nltk.data module.
+        from nltk.data import make_staging_dir
+        from nltk.pathsec import open as pathsec_open
+
         f = None
+        # Stage the scratch input inside an allowed nltk.data root, never the
+        # shared system temp dir (world writable, not a pathsec root; CWE-377).
+        staging_dir = make_staging_dir(prefix="boxer-")
         try:
             fd, temp_filename = tempfile.mkstemp(
-                prefix="boxer-", suffix=".in", text=True
+                prefix="boxer-", suffix=".in", text=True, dir=staging_dir
             )
-            f = os.fdopen(fd, "w")
+            # mkstemp gives a race-free path in the validated staging dir; write
+            # through pathsec_open rather than the raw fd.
+            os.close(fd)
+            f = pathsec_open(temp_filename, "w", context="Boxer._call_boxer")
             f.write(candc_out.decode("utf-8"))
         finally:
             if f:
@@ -233,17 +272,37 @@ class Boxer:
             temp_filename,
         ]
         stdout = self._call(None, self._boxer_bin, args, verbose)
-        os.remove(temp_filename)
+        shutil.rmtree(staging_dir, ignore_errors=True)
         return stdout
 
     def _find_binary(self, name, bin_dir, verbose=False):
-        return find_binary(
-            name,
-            path_to_bin=bin_dir,
-            env_vars=["CANDC"],
-            url="http://svn.ask.it.usyd.edu.au/trac/candc/",
-            binary_names=[name, name + ".exe"],
-            verbose=verbose,
+        # find_binary() also matches a binary relative to the current working
+        # directory: a relative bin_dir yields e.g. "./candc", and even the
+        # default bin_dir=None matches a "<name>/<name>" directory in the CWD
+        # (find_file_iter joins the name with itself). Such a result contains a
+        # path separator, so _call()'s subprocess.Popen() would execute it
+        # directly from the CWD without consulting $PATH -- an attacker who can
+        # plant a "candc"/"boxer" file there would get code execution (an
+        # untrusted search path, CWE-426/CWE-427). Skip any CWD-relative
+        # candidate and use the first absolute one (an absolute bin_dir, the
+        # CANDC environment variable, or a $PATH lookup), none of which resolve
+        # against the CWD.
+        try:
+            return find_binary_absolute(
+                name,
+                path_to_bin=bin_dir,
+                env_vars=["CANDC"],
+                url="http://svn.ask.it.usyd.edu.au/trac/candc/",
+                binary_names=[name, name + ".exe"],
+                verbose=verbose,
+            )
+        except LookupError:
+            pass
+        raise LookupError(
+            "No absolute %r binary found. Pass an absolute bin_dir to Boxer(...) "
+            "or set the CANDC environment variable to an absolute directory that "
+            "contains the candc/boxer binaries (a binary found relative to the "
+            "current working directory is refused)." % name
         )
 
     def _call(self, input_str, binary, args=[], verbose=False):
@@ -256,32 +315,42 @@ class Boxer:
         :return: stdout
         """
         if verbose:
-            print("Calling:", binary)
-            print("Args:", args)
-            print("Input:", input_str)
-            print("Command:", binary + " " + " ".join(args))
+            safe_print("Calling:", binary)
+            safe_print("Args:", args)
+            safe_print("Input:", input_str)
+            safe_print("Command:", binary + " " + " ".join(args))
 
-        # Call via a subprocess
-        if input_str is None:
-            cmd = [binary] + args
-            p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            stdout, stderr = p.communicate()
-        else:
-            cmd = [binary] + args
-            p = subprocess.Popen(
-                cmd,
-                stdin=subprocess.PIPE,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
-            stdout, stderr = p.communicate(input=input_str.encode("utf-8"))
+        # Route through the trusted-exec chokepoint: verify the candc/boxer binary
+        # is on a path no other local user can swap, refuse a shell, and scrub the
+        # loader environment before exec (CWE-426/427/732).
+        cmd = [binary] + args
+        try:
+            if input_str is None:
+                p = spawn_trusted(
+                    cmd[0], cmd[1:], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                )
+                stdout, stderr = p.communicate()
+            else:
+                p = spawn_trusted(
+                    cmd[0],
+                    cmd[1:],
+                    stdin=subprocess.PIPE,
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                )
+                stdout, stderr = p.communicate(input=input_str.encode("utf-8"))
+        except TrustError as e:
+            raise LookupError(
+                f"Refusing to run {cmd[0]!r}: it is not on a trusted path. Install "
+                f"Boxer/C&C where only you (or root) can write ({e})."
+            ) from e
 
         if verbose:
-            print("Return code:", p.returncode)
+            safe_print("Return code:", p.returncode)
             if stdout:
-                print("stdout:\n", stdout, "\n")
+                safe_print("stdout:\n", stdout, "\n")
             if stderr:
-                print("stderr:\n", stderr, "\n")
+                safe_print("stderr:\n", stderr, "\n")
         if p.returncode != 0:
             raise Exception(
                 "ERROR CALLING: {} {}\nReturncode: {}\n{}".format(
@@ -779,7 +848,7 @@ class BoxerOutputDrsParser(DrtParser):
 
     def parse_variable(self):
         var = self.token()
-        assert re.match(r"^[exps]\d+$", var), var
+        assert redos.match(r"^[exps]\d+$", var), var
         return var
 
     def parse_index(self):
@@ -1604,10 +1673,10 @@ if __name__ == "__main__":
         args[0].split(r"\n"), question=options.question, verbose=options.verbose
     )
     if drs is None:
-        print(None)
+        safe_print(None)
     else:
         drs = drs.simplify().eliminate_equality()
         if options.fol:
-            print(drs.fol().normalize())
+            safe_print(drs.fol().normalize())
         else:
             drs.pretty_print()

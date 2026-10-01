@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Text Trees
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@gu.se>
@@ -315,7 +315,7 @@ class ParentedTree(AbstractParentedTree):
         if not deep:
             warnings.warn(
                 f"{self.__class__.__name__} objects do not support shallow copies. Defaulting to a deep copy."
-            )
+            )  # unsafe-print ok: the class's own name
         return super().copy(deep=True)
 
     # /////////////////////////////////////////////////////////////////

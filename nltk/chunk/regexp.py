@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Regular Expression Chunkers
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
 # URL: <https://www.nltk.org/>
@@ -8,9 +8,9 @@
 
 import re
 
-import regex
-
+from nltk import redos
 from nltk.chunk.api import ChunkParserI
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 
 # //////////////////////////////////////////////////////
@@ -62,12 +62,13 @@ class ChunkString:
     IN_CHUNK_PATTERN = r"(?=[^\{]*\})"
     IN_STRIP_PATTERN = r"(?=[^\}]*(\{|$))"
 
-    # These are used by _verify
-    _CHUNK = r"(\{%s+?\})+?" % CHUNK_TAG
-    _STRIP = r"(%s+?)+?" % CHUNK_TAG
-    _VALID = re.compile(r"^(\{?%s\}?)*?$" % CHUNK_TAG)
-    _BRACKETS = re.compile(r"[^\{\}]+")
-    _BALANCED_BRACKETS = re.compile(r"(\{\})*$")
+    # Used by _verify.  (The former ``_CHUNK``/``_STRIP`` class attributes were
+    # removed: they were never referenced anywhere, and both had the classic
+    # nested-quantifier ReDoS shape ``(<...>+?)+?`` -- dead code that could only
+    # ever be a footgun if resurrected.)
+    _VALID = redos.compile(r"^(\{?%s\}?)*?$" % CHUNK_TAG)
+    _BRACKETS = redos.compile(r"[^\{\}]+")
+    _BALANCED_BRACKETS = redos.compile(r"(\{\})*$")
 
     def __init__(self, chunk_struct, debug_level=1):
         """
@@ -142,7 +143,7 @@ class ChunkString:
         if verify_tags <= 0:
             return
 
-        tags1 = (re.split(r"[\{\}<>]+", s))[1:-1]
+        tags1 = (redos.split(r"[\{\}<>]+", s))[1:-1]
         tags2 = [self._tag(piece) for piece in self._pieces]
         if tags1 != tags2:
             raise ValueError(
@@ -164,7 +165,7 @@ class ChunkString:
         pieces = []
         index = 0
         piece_in_chunk = 0
-        for piece in re.split("[{}]", self._str):
+        for piece in redos.split("[{}]", self._str):
             # Find the list of tokens contained in this piece.
             length = piece.count("<")
             subsequence = self._pieces[index : index + length]
@@ -206,13 +207,19 @@ class ChunkString:
         :raise ValueError: If this transformation generated an
             invalid chunkstring.
         """
-        # Do the actual substitution
-        s = re.sub(regexp, repl, self._str)
+        # Do the actual substitution. ``regexp`` is a rule's (caller-derived)
+        # pattern; route it through ``redos`` so the substitution is bounded by
+        # a wall-clock timeout instead of hanging on a pathological tag pattern
+        # (CWE-1333). Rules already hold a ``TimedPattern`` (passed straight
+        # through by ``redos.compile``); a raw string/pattern is wrapped here.
+        if not isinstance(regexp, redos.TimedPattern):
+            regexp = redos.compile(regexp)
+        s = regexp.sub(repl, self._str)
 
         # The substitution might have generated "empty chunks"
         # (substrings of the form "{}").  Remove them, so they don't
         # interfere with other transformations.
-        s = re.sub(r"\{\}", "", s)
+        s = redos.sub(r"\{\}", "", s)
 
         # Make sure that the transformation was legal.
         if self._debug > 1:
@@ -242,8 +249,8 @@ class ChunkString:
         :rtype: str
         """
         # Add spaces to make everything line up.
-        str = re.sub(r">(?!\})", r"> ", self._str)
-        str = re.sub(r"([^\{])<", r"\1 <", str)
+        str = redos.sub(r">(?!\})", r"> ", self._str)
+        str = redos.sub(r"([^\{])<", r"\1 <", str)
         if str[0] == "<":
             str = " " + str
         return str
@@ -298,11 +305,17 @@ class RegexpChunkRule:
         :param descr: A short description of the purpose and/or effect
             of this rule.
         """
-        if isinstance(regexp, str):
-            regexp = re.compile(regexp)
+        # Normalise to a ``redos.TimedPattern`` so every application of this
+        # rule is bounded by a wall-clock timeout, whether the caller/subclass
+        # passed a string or a precompiled pattern. The tag pattern that a
+        # subclass turns into this regexp is caller-supplied (a chunk grammar),
+        # and ``CHUNK_TAG_PATTERN`` permits shapes such as ``<a|a>*`` whose
+        # derived regex backtracks catastrophically -- neither ``re`` nor the
+        # ``regex`` optimiser defuses that, so the timeout is the real defence
+        # (CWE-1333). See ``nltk/redos.py``.
         self._repl = repl
         self._descr = descr
-        self._regexp = regexp
+        self._regexp = redos.compile(regexp)
 
     def apply(self, chunkstr):
         # Keep docstring generic so we can inherit it.
@@ -368,7 +381,7 @@ class RegexpChunkRule:
         <ChunkRule: '<DT>?<NN.*>+'>
         """
         # Split off the comment (but don't split on '\#')
-        m = re.match(r"(?P<rule>(\\.|[^#])*)(?P<comment>#.*)?", s)
+        m = redos.match(r"(?P<rule>(\\.|[^#])*)(?P<comment>#.*)?", s)
         rule = m.group("rule").strip()
         comment = (m.group("comment") or "")[1:].strip()
 
@@ -386,8 +399,8 @@ class RegexpChunkRule:
             elif "{}" in rule:
                 left, right = rule.split("{}")
                 return MergeRule(left, right, comment)
-            elif re.match("[^{}]*{[^{}]*}[^{}]*", rule):
-                left, chunk, right = re.split("[{}]", rule)
+            elif redos.match("[^{}]*{[^{}]*}[^{}]*", rule):
+                left, chunk, right = redos.split("[{}]", rule)
                 return ChunkRuleWithContext(left, chunk, right, comment)
             else:
                 raise ValueError("Illegal chunk pattern: %s" % rule)
@@ -418,7 +431,7 @@ class ChunkRule(RegexpChunkRule):
             of this rule.
         """
         self._pattern = tag_pattern
-        regexp = re.compile(
+        regexp = redos.compile(
             "(?P<chunk>%s)%s"
             % (tag_pattern2re_pattern(tag_pattern), ChunkString.IN_STRIP_PATTERN)
         )
@@ -463,7 +476,7 @@ class StripRule(RegexpChunkRule):
             of this rule.
         """
         self._pattern = tag_pattern
-        regexp = re.compile(
+        regexp = redos.compile(
             "(?P<strip>%s)%s"
             % (tag_pattern2re_pattern(tag_pattern), ChunkString.IN_CHUNK_PATTERN)
         )
@@ -506,7 +519,9 @@ class UnChunkRule(RegexpChunkRule):
             of this rule.
         """
         self._pattern = tag_pattern
-        regexp = re.compile(r"\{(?P<chunk>%s)\}" % tag_pattern2re_pattern(tag_pattern))
+        regexp = redos.compile(
+            r"\{(?P<chunk>%s)\}" % tag_pattern2re_pattern(tag_pattern)
+        )
         RegexpChunkRule.__init__(self, regexp, r"\g<chunk>", descr)
 
     def __repr__(self):
@@ -559,12 +574,12 @@ class MergeRule(RegexpChunkRule):
         """
         # Ensure that the individual patterns are coherent.  E.g., if
         # left='(' and right=')', then this will raise an exception:
-        re.compile(tag_pattern2re_pattern(left_tag_pattern))
-        re.compile(tag_pattern2re_pattern(right_tag_pattern))
+        redos.compile(tag_pattern2re_pattern(left_tag_pattern))
+        redos.compile(tag_pattern2re_pattern(right_tag_pattern))
 
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
-        regexp = re.compile(
+        regexp = redos.compile(
             "(?P<left>%s)}{(?=%s)"
             % (
                 tag_pattern2re_pattern(left_tag_pattern),
@@ -628,12 +643,12 @@ class SplitRule(RegexpChunkRule):
         """
         # Ensure that the individual patterns are coherent.  E.g., if
         # left='(' and right=')', then this will raise an exception:
-        re.compile(tag_pattern2re_pattern(left_tag_pattern))
-        re.compile(tag_pattern2re_pattern(right_tag_pattern))
+        redos.compile(tag_pattern2re_pattern(left_tag_pattern))
+        redos.compile(tag_pattern2re_pattern(right_tag_pattern))
 
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
-        regexp = re.compile(
+        regexp = redos.compile(
             "(?P<left>%s)(?=%s)"
             % (
                 tag_pattern2re_pattern(left_tag_pattern),
@@ -698,12 +713,12 @@ class ExpandLeftRule(RegexpChunkRule):
         """
         # Ensure that the individual patterns are coherent.  E.g., if
         # left='(' and right=')', then this will raise an exception:
-        re.compile(tag_pattern2re_pattern(left_tag_pattern))
-        re.compile(tag_pattern2re_pattern(right_tag_pattern))
+        redos.compile(tag_pattern2re_pattern(left_tag_pattern))
+        redos.compile(tag_pattern2re_pattern(right_tag_pattern))
 
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
-        regexp = re.compile(
+        regexp = redos.compile(
             r"(?P<left>%s)\{(?P<right>%s)"
             % (
                 tag_pattern2re_pattern(left_tag_pattern),
@@ -768,12 +783,12 @@ class ExpandRightRule(RegexpChunkRule):
         """
         # Ensure that the individual patterns are coherent.  E.g., if
         # left='(' and right=')', then this will raise an exception:
-        re.compile(tag_pattern2re_pattern(left_tag_pattern))
-        re.compile(tag_pattern2re_pattern(right_tag_pattern))
+        redos.compile(tag_pattern2re_pattern(left_tag_pattern))
+        redos.compile(tag_pattern2re_pattern(right_tag_pattern))
 
         self._left_tag_pattern = left_tag_pattern
         self._right_tag_pattern = right_tag_pattern
-        regexp = re.compile(
+        regexp = redos.compile(
             r"(?P<left>%s)\}(?P<right>%s)"
             % (
                 tag_pattern2re_pattern(left_tag_pattern),
@@ -847,14 +862,14 @@ class ChunkRuleWithContext(RegexpChunkRule):
         """
         # Ensure that the individual patterns are coherent.  E.g., if
         # left='(' and right=')', then this will raise an exception:
-        re.compile(tag_pattern2re_pattern(left_context_tag_pattern))
-        re.compile(tag_pattern2re_pattern(chunk_tag_pattern))
-        re.compile(tag_pattern2re_pattern(right_context_tag_pattern))
+        redos.compile(tag_pattern2re_pattern(left_context_tag_pattern))
+        redos.compile(tag_pattern2re_pattern(chunk_tag_pattern))
+        redos.compile(tag_pattern2re_pattern(right_context_tag_pattern))
 
         self._left_context_tag_pattern = left_context_tag_pattern
         self._chunk_tag_pattern = chunk_tag_pattern
         self._right_context_tag_pattern = right_context_tag_pattern
-        regexp = re.compile(
+        regexp = redos.compile(
             "(?P<left>%s)(?P<chunk>%s)(?P<right>%s)%s"
             % (
                 tag_pattern2re_pattern(left_context_tag_pattern),
@@ -891,8 +906,17 @@ class ChunkRuleWithContext(RegexpChunkRule):
 
 # this should probably be made more strict than it is -- e.g., it
 # currently accepts 'foo'.
-CHUNK_TAG_PATTERN = re.compile(
-    r"^(({}|<{}>)*)$".format(r"([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})+", r"[^\{\}<>]+")
+#
+# The first alternative must NOT be quantified with "+" here: nesting it
+# inside the outer "( ... )*" gives the classic ``(A+)*`` shape, which causes
+# catastrophic (exponential) backtracking when the overall match fails on a
+# trailing "{", "}", "<" or ">" (ReDoS, CWE-1333). Dropping the inner "+" is
+# behaviour-preserving -- ``(A+|<B+>)*`` and ``(A|<B+>)*`` accept exactly the
+# same language, because a run of ``A``s is just several single-``A`` iterations
+# of the outer star -- while making the scan linear. See huntr report
+# https://huntr.com/bounties/aff8ef29-2f20-46a4-ae13-7ce6010e26a5.
+CHUNK_TAG_PATTERN = redos.compile(
+    r"^(({}|<{}>)*)$".format(r"([^\{\}<>]|\{\d+,?\}|\{\d*,\d+\})", r"[^\{\}<>]+")
 )
 
 
@@ -932,10 +956,14 @@ def tag_pattern2re_pattern(tag_pattern):
     :return: A regular expression pattern corresponding to
         ``tag_pattern``.
     """
+    # A caller tag pattern is arbitrary; refuse an over-long one up front so the
+    # regex-based validity check and expansion below run on a bounded input.
+    redos.check_pattern(tag_pattern)
+
     # Clean up the regular expression
-    tag_pattern = re.sub(r"\s", "", tag_pattern)
-    tag_pattern = re.sub(r"<", "(<(", tag_pattern)
-    tag_pattern = re.sub(r">", ")>)", tag_pattern)
+    tag_pattern = redos.sub(r"\s", "", tag_pattern)
+    tag_pattern = redos.sub(r"<", "(<(", tag_pattern)
+    tag_pattern = redos.sub(r">", ")>)", tag_pattern)
 
     # Check the regular expression
     if not CHUNK_TAG_PATTERN.match(tag_pattern):
@@ -954,9 +982,12 @@ def tag_pattern2re_pattern(tag_pattern):
 
     tc_rev = reverse_str(ChunkString.CHUNK_TAG_CHAR)
     reversed = reverse_str(tag_pattern)
-    reversed = re.sub(r"\.(?!\\(\\\\)*($|[^\\]))", tc_rev, reversed)
+    reversed = redos.sub(r"\.(?!\\(\\\\)*($|[^\\]))", tc_rev, reversed)
     tag_pattern = reverse_str(reversed)
 
+    # Every chunk rule compiles this expansion (with raw ``re.compile``), so refuse
+    # a caller tag pattern whose expansion is a compile-time DoS (CWE-1333) here.
+    redos.check_pattern(tag_pattern)
     return tag_pattern
 
 
@@ -1026,15 +1057,15 @@ class RegexpChunkParser(ChunkParserI):
         :param verbose: Whether output should be verbose.
         :rtype: None
         """
-        print("# Input:")
-        print(chunkstr)
+        safe_print("# Input:")
+        safe_print(chunkstr)
         for rule in self._rules:
             rule.apply(chunkstr)
             if verbose:
-                print("#", rule.descr() + " (" + repr(rule) + "):")
+                safe_print("#", rule.descr() + " (" + repr(rule) + "):")
             else:
-                print("#", rule.descr() + ":")
-            print(chunkstr)
+                safe_print("#", rule.descr() + ":")
+            safe_print(chunkstr)
 
     def _notrace_apply(self, chunkstr):
         """
@@ -1069,7 +1100,7 @@ class RegexpChunkParser(ChunkParserI):
             used to define this ``RegexpChunkParser``.
         """
         if len(chunk_struct) == 0:
-            print("Warning: parsing empty text")
+            safe_print("Warning: parsing empty text")
             return Tree(self._root_label, [])
 
         try:
@@ -1218,7 +1249,7 @@ class RegexpParser(ChunkParserI):
         """
         rules = []
         lhs = None
-        pattern = regex.compile("(?P<nonterminal>(\\.|[^:])*)(:(?P<rule>.*))")
+        pattern = redos.compile("(?P<nonterminal>(\\.|[^:])*)(:(?P<rule>.*))")
         for line in grammar.split("\n"):
             line = line.strip()
 
@@ -1327,7 +1358,7 @@ def demo_eval(chunkparser, text):
     chunkscore = chunk.ChunkScore()
 
     for sentence in text.split("\n"):
-        print(sentence)
+        safe_print(sentence)
         sentence = sentence.strip()
         if not sentence:
             continue
@@ -1335,35 +1366,35 @@ def demo_eval(chunkparser, text):
         tokens = gold.leaves()
         test = chunkparser.parse(Tree("S", tokens), trace=1)
         chunkscore.score(gold, test)
-        print()
+        safe_print()
 
-    print("/" + ("=" * 75) + "\\")
-    print("Scoring", chunkparser)
-    print("-" * 77)
-    print("Precision: %5.1f%%" % (chunkscore.precision() * 100), " " * 4, end=" ")
-    print("Recall: %5.1f%%" % (chunkscore.recall() * 100), " " * 6, end=" ")
-    print("F-Measure: %5.1f%%" % (chunkscore.f_measure() * 100))
+    safe_print("/" + ("=" * 75) + "\\")
+    safe_print("Scoring", chunkparser)
+    safe_print("-" * 77)
+    safe_print("Precision: %5.1f%%" % (chunkscore.precision() * 100), " " * 4, end=" ")
+    safe_print("Recall: %5.1f%%" % (chunkscore.recall() * 100), " " * 6, end=" ")
+    safe_print("F-Measure: %5.1f%%" % (chunkscore.f_measure() * 100))
 
     # Missed chunks.
     if chunkscore.missed():
-        print("Missed:")
+        safe_print("Missed:")
         missed = chunkscore.missed()
         for chunk in missed[:10]:
-            print("  ", " ".join(map(str, chunk)))
+            safe_print("  ", " ".join(map(str, chunk)))
         if len(chunkscore.missed()) > 10:
-            print("  ...")
+            safe_print("  ...")
 
     # Incorrect chunks.
     if chunkscore.incorrect():
-        print("Incorrect:")
+        safe_print("Incorrect:")
         incorrect = chunkscore.incorrect()
         for chunk in incorrect[:10]:
-            print("  ", " ".join(map(str, chunk)))
+            safe_print("  ", " ".join(map(str, chunk)))
         if len(chunkscore.incorrect()) > 10:
-            print("  ...")
+            safe_print("  ...")
 
-    print("\\" + ("=" * 75) + "/")
-    print()
+    safe_print("\\" + ("=" * 75) + "/")
+    safe_print()
 
 
 def demo():
@@ -1381,11 +1412,11 @@ def demo():
     [ John/NNP ] thinks/VBZ [ Mary/NN ] saw/VBD [ the/DT cat/NN ] sit/VB on/IN [ the/DT mat/NN ]./.
     """
 
-    print("*" * 75)
-    print("Evaluation text:")
-    print(text)
-    print("*" * 75)
-    print()
+    safe_print("*" * 75)
+    safe_print("Evaluation text:")
+    safe_print(text)
+    safe_print("*" * 75)
+    safe_print()
 
     grammar = r"""
     NP:                   # NP stage
@@ -1425,14 +1456,16 @@ def demo():
 
     from nltk.corpus import conll2000
 
-    print()
-    print("Demonstration of empty grammar:")
+    safe_print()
+    safe_print("Demonstration of empty grammar:")
 
     cp = chunk.RegexpParser("")
-    print(chunk.accuracy(cp, conll2000.chunked_sents("test.txt", chunk_types=("NP",))))
+    safe_print(
+        chunk.accuracy(cp, conll2000.chunked_sents("test.txt", chunk_types=("NP",)))
+    )
 
-    print()
-    print("Demonstration of accuracy evaluation using CoNLL tags:")
+    safe_print()
+    safe_print("Demonstration of accuracy evaluation using CoNLL tags:")
 
     grammar = r"""
     NP:
@@ -1441,10 +1474,10 @@ def demo():
       <DT|JJ>{}<NN.*>     # merge det/adj with nouns
     """
     cp = chunk.RegexpParser(grammar)
-    print(chunk.accuracy(cp, conll2000.chunked_sents("test.txt")[:5]))
+    safe_print(chunk.accuracy(cp, conll2000.chunked_sents("test.txt")[:5]))
 
-    print()
-    print("Demonstration of tagged token input")
+    safe_print()
+    safe_print("Demonstration of tagged token input")
 
     grammar = r"""
     NP: {<.*>*}             # start by chunking everything
@@ -1454,7 +1487,7 @@ def demo():
     VP: {<VB.*><NP|PP>*}    # VP = verb words + NPs and PPs
     """
     cp = chunk.RegexpParser(grammar)
-    print(
+    safe_print(
         cp.parse(
             [
                 ("the", "DT"),

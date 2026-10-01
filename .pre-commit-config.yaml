@@ -8,23 +8,95 @@ repos:
       - id: requirements-txt-fixer
       - id: check-yaml
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.21.0
+    rev: v3.21.2
     hooks:
     - id: pyupgrade
-      args: ["--py38-plus"]
-  - repo: https://github.com/ambv/black
-    rev: 25.9.0
+      args: ["--py310-plus"]
+  - repo: https://github.com/psf/black
+    rev: 25.11.0
     hooks:
     - id: black
+  - repo: https://github.com/pycqa/isort
+    rev: 6.1.0
+    hooks:
+    - id: isort
+      args: ['--filter-files']
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.6
+    hooks:
+    - id: ruff
+      args: [--fix]
   - repo: local
     hooks:
-      - id: isort
-        name: isort
-        entry: isort
-        require_serial: true
-        language: python
-        language_version: python3
-        types_or: [cython, pyi, python]
-        args: ['--filter-files']
-        minimum_pre_commit_version: '2.9.2'
-        additional_dependencies: ['isort==6.0.1']
+    - id: no-unsandboxed-open
+      name: no un-sandboxed open() in sandbox-sensitive modules
+      description: >-
+        Corpus readers and nltk.data resolve untrusted paths; they must open
+        files through the pathsec sandbox (CWE-22/59). Fails on a bare builtin
+        open() in the guarded modules (issue #3740).
+      entry: python tools/check_no_unsandboxed_open.py
+      language: system
+      pass_filenames: false
+      always_run: true
+    - id: no-unsafe-print
+      name: no un-sanitised print of untrusted values
+      description: >-
+        A print of attacker-influenceable text (corpus token, tool stdout, tweet,
+        user expression) can carry ANSI/OSC escapes or Unicode bidi/invisibles that
+        hijack or spoof the terminal (CWE-150/1007/1236). Every print must be
+        safe_print, a provably-harmless literal/repr/numeric print, or carry a
+        trailing '# unsafe-print ok: <why>' marker. Route untrusted output through
+        nltk.termsec.safe_print.
+      entry: python tools/check_unsafe_print.py
+      language: system
+      pass_filenames: false
+      always_run: true
+    - id: all-regex-through-redos
+      name: every regex routes through nltk.redos
+      description: >-
+        Every regex runs over attacker-influenceable input, so a bare
+        re/regex compile or match is a potential ReDoS / compile-time DoS
+        (CWE-1333 / CWE-400). Fails on any re/regex pattern call outside
+        nltk.redos itself; use redos.compile or the redos re-compatible helpers.
+      entry: python tools/check_all_regex_through_redos.py
+      language: system
+      pass_filenames: false
+      always_run: true
+    - id: all-pickle-through-picklesec
+      name: every pickle routes through nltk.picklesec
+      description: >-
+        Unpickling runs arbitrary code, so a bare pickle.load/loads on
+        attacker-controlled bytes is RCE (CWE-502). Fails on any
+        pickle.load/loads/dump/dumps/Unpickler/Pickler call outside
+        nltk.picklesec itself; load through a picklesec unpickler and write
+        through picklesec.pickle_dump / pickle_dumps.
+      entry: python tools/check_all_pickle_through_picklesec.py
+      language: system
+      pass_filenames: false
+      always_run: true
+    - id: all-spawns-through-pathsec
+      name: every process spawn routes through nltk.pathsec.spawn_trusted
+      description: >-
+        Every external tool NLTK runs is resolved absolute-only and launched
+        through pathsec.spawn_trusted, which checks the binary's directory
+        chain for ownership, refuses a shell and scrubs the child environment
+        (CWE-426 / CWE-427 / CWE-78). Fails on any subprocess.Popen/run/call/
+        check_*, os.system/popen/exec*/spawn* or shutil.which call outside
+        nltk.pathsec itself; resolve with internals.find_binary_absolute and
+        launch with pathsec.spawn_trusted.
+      entry: python tools/check_all_spawns_through_pathsec.py
+      language: system
+      pass_filenames: false
+      always_run: true
+    - id: all-json-through-jsontags
+      name: every JSON deserialization routes through nltk.jsontags
+      description: >-
+        json.load/loads build an unbounded object graph, so a deeply nested or
+        oversized document is a DoS (uncontrolled recursion CWE-674 / resource
+        exhaustion CWE-400). Fails on any json.load/loads/JSONDecoder call
+        outside nltk.jsontags itself; read through jsontags.safe_json_load /
+        safe_json_loads, which bound nesting depth and size.
+      entry: python tools/check_all_json_through_jsontags.py
+      language: system
+      pass_filenames: false
+      always_run: true

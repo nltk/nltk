@@ -1,6 +1,19 @@
 name: ci-workflow
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+  workflow_dispatch:
+  merge_group:
+
+# Automatically cancel in-progress jobs when new commits are pushed to the same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
 
 env:
   THIRD_PARTY_DIR: ${{ github.workspace }}/third
@@ -15,38 +28,61 @@ env:
   MALT_PARSER: ${{ github.workspace }}/third/maltparser
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      code: ${{ steps.filter.outputs.code }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            code:
+              - '**/*.py'
+              - 'requirements*.txt'
+              - 'setup.py'
+              - '.github/workflows/**'
+              - 'tools/github_actions/**'
+
   pre-commit:
     name: pre-commit
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
-          python-version: "3.14"
+          python-version: "3.13"  # or your chosen version
 
       - name: Install pre-commit
-        run: |
-          pip install pre-commit
-          pre-commit run --all-files
+        run: pip install pre-commit
+
+      - name: Run pre-commit hooks
+        run: pre-commit run --all-files
 
   minimal_download_test:
     name: Minimal NLTK Download Test
+    needs: [changes]
+    if: needs.changes.outputs.code == 'true'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.14"
 
-      - name: Install regex
-        run: pip install regex
+      - name: Install core dependencies
+        run: pip install regex defusedxml
 
       - name: Set NLTK_DATA environment variable
         shell: bash
@@ -62,23 +98,48 @@ jobs:
         run: |
           python -c "import os, nltk; d = os.environ['NLTK_DATA']; import pathlib; pathlib.Path(d).mkdir(parents=True, exist_ok=True); nltk.download('wordnet', download_dir=d)"
 
+  setup-matrix:
+    runs-on: ubuntu-latest
+    needs: [changes]
+    if: needs.changes.outputs.code == 'true'
+    outputs:
+      python_versions: ${{ steps.set-matrix.outputs.python_versions }}
+    steps:
+      - id: set-matrix
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "merge_group" ]] || [[ "${{ contains(github.event.pull_request.labels.*.name, 'full-matrix') }}" == "true" ]] || [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+            echo 'python_versions=["3.10", "3.11", "3.12", "3.13", "3.14", "3.14t"]' >> $GITHUB_OUTPUT
+          else
+            echo 'python_versions=["3.14", "3.14t"]' >> $GITHUB_OUTPUT
+          fi
+
   test:
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
-    needs: [pre-commit, minimal_download_test]
+    # Gate on pre-commit only. Depending on minimal_download_test blocked the
+    # whole matrix whenever its macos-latest leg could not acquire a hosted
+    # runner (it sits queued ~26m then errors), so the full suite never ran.
+    # minimal_download_test still runs and reports on its own.
+    needs: [pre-commit, setup-matrix]
     strategy:
       matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14', '3.14t']
+        python-version: ${{ fromJSON(needs.setup-matrix.outputs.python_versions) }}
         os: [ubuntu-latest, macos-latest, windows-latest]
         exclude:
           - os: windows-latest
             python-version: '3.14t'  # scikit-learn issue on Py3.14t on Windows
+          - os: macos-latest
+            python-version: '3.14t'  # free-threaded macOS hosted runner is not
+                                      # acquirable (job hangs ~26m then errors:
+                                      # "not acquired by Runner of type hosted");
+                                      # 3.14t is still covered on ubuntu-latest
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -90,6 +151,13 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install --upgrade --requirement requirements-ci.txt
+
+      - name: Give the runner's JDK back its private write bits (Linux)
+        # The Ubuntu image runs `chmod -R 777 /usr/lib/jvm`, so every JVM there
+        # is world-writable and nltk refuses to launch it (CWE-427); restore the
+        # root-only write bits so the real-JVM tests run against a trusted JDK.
+        if: runner.os == 'Linux'
+        run: sudo chmod -R go-w /usr/lib/jvm
 
       - name: Ensure minimal NLTK data for cache
         shell: bash
@@ -108,11 +176,11 @@ jobs:
         run: ls -lR "${{ github.workspace }}/nltk_data" || echo "nltk_data not found"
 
       - name: Cache nltk data
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         id: nltk-data-cache
         with:
           path: ${{ github.workspace }}/nltk_data
-          key: nltk_data_${{ runner.os }}_v1
+          key: nltk_data_${{ runner.os }}_v2
 
       - name: Download nltk data on cache miss
         if: steps.nltk-data-cache.outputs.cache-hit != 'true'
@@ -125,7 +193,7 @@ jobs:
         run: mkdir -p "${{ env.THIRD_PARTY_DIR }}"
 
       - name: Cache third-party tools
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         id: third-party-cache
         with:
           path: ${{ env.THIRD_PARTY_DIR }}
@@ -146,11 +214,182 @@ jobs:
         shell: bash
         run: ls -lR "${{ env.THIRD_PARTY_DIR }}" || echo "third-party dir not found"
 
+      - name: Trust the third-party tools tree (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          # The trusted-exec chokepoint refuses tools on paths others can write; a
+          # tree unzipped on a cache miss keeps the archive's group-write bits (a
+          # cache restore does not), so normalise it rather than weaken the guard.
+          chmod -R go-w "${{ env.THIRD_PARTY_DIR }}"
+
       - name: Print NLTK data search paths
         shell: bash
         run: python -c "import nltk; print('NLTK data search paths:', nltk.data.path)"
 
+      - name: Run ReDoS security regression tests
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          # Security regression suite for the ReDoS / catastrophic-backtracking
+          # backstop on caller-supplied patterns (GHSA-w3v8-gmh9-3wv7 umbrella:
+          # RegexpTokenizer, RegexpTagger, tgrep, chunk rules; plus the shared
+          # tight timeout with GHSA-rrv8-h7p8-rx55's Text.findall). Run as its
+          # own fast, early step -- with no third-party data needed -- so a
+          # change to the main pytest invocation below can never silently drop
+          # these checks. The suite is also collected by "Run pytest".
+          pytest -rsx nltk/test/unit/test_redos.py
+
+      - name: Run parser/grammar DoS security regression tests
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          # Security regression suite for the unbounded-work parser/grammar DoS
+          # cluster (GHSA-ff5c-cp5c-9wjf umbrella: RecursiveDescentParser
+          # CVE-2026-12876, ShiftReduceParser, NonprojectiveDependencyParser,
+          # ViterbiParser, CFG chomsky_normal_form unit-cycle, generate()). A
+          # living audit -- it also asserts the already-bounded parsers
+          # (ChartParser, ProjectiveDependencyParser) stay bounded. Own fast,
+          # early step so a change to the main pytest invocation cannot silently
+          # drop it; also collected by "Run pytest".
+          pytest -rsx nltk/test/unit/test_recursivedescent_dos.py nltk/test/unit/test_parser_dos.py nltk/test/unit/test_recursion_dos.py
+
+      - name: Run algorithmic-complexity DoS security regression tests
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          # Security regression suite for the algorithmic-complexity DoS cluster
+          # (GHSA-ww6m-cw3f-q94g umbrella: PorterStemmer; GHSA-vp2x XMLCorpusView,
+          # GHSA-8mpw TEICorpusView -- all directions -- and read_sexpr_block;
+          # plus the repo-wide sweep: TweetTokenizer/RIBES/Syllable/TextTiling/
+          # CHILDES single-input sinks and the metrics.distance / aline /
+          # gale_church two-string O(n*m) sinks. CWE-407/CWE-400). Own fast,
+          # early step so a change to the main pytest invocation can't silently
+          # drop it; also collected by "Run pytest".
+          pytest -rsx nltk/test/unit/test_quadratic_dos.py nltk/test/unit/test_distance.py
+
+      - name: Run path-traversal / file-I/O security regression tests
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          # Security regression suite for the path-traversal / file-I/O sandbox
+          # cluster (GHSA-8mgp-746c-j5xp umbrella: CVE-2026-54293 / GHSA-p4gq and
+          # CVE-2026-12243 / GHSA-q5h6 encoded-traversal in nltk.data; GHSA-f794
+          # pathsec symlink/hardlink TOCTOU -- read and the newly-closed write
+          # side; the perceptron shared-temp squat. CWE-22/59/377). Own fast,
+          # early step so a change to the main pytest invocation can't silently
+          # drop it; also collected by "Run pytest".
+          pytest -rsx nltk/test/unit/test_path_traversal_security.py
+
+      - name: Run advisory-verification probes
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          # One probe per published advisory (nltk/test/unit/security_probes/),
+          # each running the attack it describes, plus negative controls that
+          # prove the probes flip to VULNERABLE when a guard is removed. Offline;
+          # the GitHub coverage check is the separate advisory-coverage job.
+          pytest -rsx nltk/test/unit/test_advisory_probes.py
+
       - name: Run pytest
         shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
         run: |
-          pytest --numprocesses auto -rsx --doctest-modules nltk
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            # Windows spawn re-bootstraps pytest per subprocess; skip the plugin
+            # autoload scan (seconds per spawn) only here and load needed plugins
+            # explicitly. Set on this command alone so other OSes keep autoload.
+            PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -p xdist -p pytest_mock --numprocesses auto -rsx --doctest-modules nltk
+          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
+            # Files with wall-clock deadlines (proc.join backstops, "< N s" asserts,
+            # the 40 s CoreNLP start) were starved by the parallel workers here, so
+            # they run on their own afterwards; every other test runs as before.
+            quiet=(
+              nltk/test/unit/test_alpino.py
+              nltk/test/unit/test_ccg_lexicon_security.py
+              nltk/test/unit/test_chart_parser.py
+              nltk/test/unit/test_chunk_redos_security.py
+              nltk/test/unit/test_cistem.py
+              nltk/test/unit/test_confusionmatrix.py
+              nltk/test/unit/test_corenlp.py
+              nltk/test/unit/test_corenlp_options_security.py
+              nltk/test/unit/test_distance.py
+              nltk/test/unit/test_everygrams_alloc.py
+              nltk/test/unit/test_featstruct_redos.py
+              nltk/test/unit/test_generate.py
+              nltk/test/unit/test_inference_security.py
+              nltk/test/unit/test_logic.py
+              nltk/test/unit/test_markdown.py
+              nltk/test/unit/test_pathsec_sweep_tag.py
+              nltk/test/unit/test_quadratic_dos.py
+              nltk/test/unit/test_redos_chokepoint_safety.py
+              nltk/test/unit/test_reviews_security.py
+              nltk/test/unit/test_segmentation.py
+              nltk/test/unit/test_sem_evaluate.py
+              nltk/test/unit/test_senseval_security.py
+              nltk/test/unit/test_text.py
+              nltk/test/unit/test_texttiling_security.py
+              nltk/test/unit/test_treetransforms.py
+              nltk/test/unit/test_valuation_redos.py
+              nltk/test/unit/test_xmldocs_security.py
+              nltk/test/unit/translate/test_alignment.py
+              nltk/test/unit/translate/test_gdfa.py
+              nltk/test/unit/translate/test_lepor.py
+              nltk/test/unit/translate/test_meteor.py
+              nltk/test/unit/translate/test_phrase_based_security.py
+            )
+            ignores=()
+            for f in "${quiet[@]}"; do
+              [ -f "$f" ] || { echo "quiet-stage file missing: $f"; exit 1; }
+              ignores+=("--ignore=$f")
+            done
+            rc=0
+            pytest --numprocesses auto "${ignores[@]}" -rsx --doctest-modules nltk || rc=1
+            pytest -rsx "${quiet[@]}" || rc=1
+            exit $rc
+          else
+            pytest --numprocesses auto -rsx --doctest-modules nltk
+          fi
+
+  advisory-coverage:
+    name: Advisory coverage (GitHub)
+    # The only job that pulls the live advisory list, so the only one that hits
+    # the network -- the offline probes never do. It runs on every PR (fork
+    # ones included), because that is exactly where a missing probe should be
+    # caught. Safe to do so: it fetches published advisories UNAUTHENTICATED
+    # (they are public), takes an empty `permissions` so even the default
+    # GITHUB_TOKEN is neutered, and reads only advisory ids -- there is no
+    # secret to exfiltrate and no privilege beyond the test matrix, which
+    # already runs the PR's code. It fails only on a real coverage gap and
+    # skips if the fetch cannot be made. `permissions: {}` is intentional and
+    # sufficient: checking out a public repo needs no token scope.
+    needs: [changes]
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        # The coverage test only reads probe *keys* and never calls a probe, so
+        # it needs the package importable, not the full optional stack.
+        run: pip install -e . pytest pytest-mock
+
+      - name: Check every published advisory has a probe
+        env:
+          NLTK_ADVISORY_CI: "1"
+        run: |
+          # No token: the public advisories API is read unauthenticated. The
+          # test skips if the fetch is unavailable, fails only on a coverage gap.
+          pytest -rsx nltk/test/unit/test_advisory_coverage_ci.py

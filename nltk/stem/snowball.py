@@ -1,7 +1,7 @@
 #
 # Natural Language Toolkit: Snowball Stemmer
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Peter Michael Stahl <pemistahl@gmail.com>
 #         Peter Ljunglof <peter.ljunglof@heatherleaf.se> (revisions)
 #         Lakhdar Benzahia <lakhdar.benzahia@gmail.com>  (co-writer)
@@ -23,12 +23,13 @@ There is also a demo function: `snowball.demo()`.
 
 """
 
-import re
 
+from nltk import redos
 from nltk.corpus import stopwords
 from nltk.stem import porter
 from nltk.stem.api import StemmerI
 from nltk.stem.util import prefix_replace, suffix_replace
+from nltk.termsec import safe_print
 
 
 class SnowballStemmer(StemmerI):
@@ -317,25 +318,25 @@ class ArabicStemmer(_StandardStemmer):
     """
 
     # Normalize_pre stes
-    __vocalization = re.compile(
+    __vocalization = redos.compile(
         r"[\u064b-\u064c-\u064d-\u064e-\u064f-\u0650-\u0651-\u0652]"
     )  # ً، ٌ، ٍ، َ، ُ، ِ، ّ، ْ
 
-    __kasheeda = re.compile(r"[\u0640]")  # ـ tatweel/kasheeda
+    __kasheeda = redos.compile(r"[\u0640]")  # ـ tatweel/kasheeda
 
-    __arabic_punctuation_marks = re.compile(r"[\u060C-\u061B-\u061F]")  #  ؛ ، ؟
+    __arabic_punctuation_marks = redos.compile(r"[\u060C-\u061B-\u061F]")  #  ؛ ، ؟
 
     # Normalize_post
     __last_hamzat = ("\u0623", "\u0625", "\u0622", "\u0624", "\u0626")  # أ، إ، آ، ؤ، ئ
 
     # normalize other hamza's
-    __initial_hamzat = re.compile(r"^[\u0622\u0623\u0625]")  #  أ، إ، آ
+    __initial_hamzat = redos.compile(r"^[\u0622\u0623\u0625]")  #  أ، إ، آ
 
-    __waw_hamza = re.compile(r"[\u0624]")  # ؤ
+    __waw_hamza = redos.compile(r"[\u0624]")  # ؤ
 
-    __yeh_hamza = re.compile(r"[\u0626]")  # ئ
+    __yeh_hamza = redos.compile(r"[\u0626]")  # ئ
 
-    __alefat = re.compile(r"[\u0623\u0622\u0625]")  #  أ، إ، آ
+    __alefat = redos.compile(r"[\u0623\u0622\u0625]")  #  أ، إ، آ
 
     # Checks
     __checks1 = (
@@ -1123,17 +1124,22 @@ class DutchStemmer(_StandardStemmer):
         if word.startswith("y"):
             word = "".join(("Y", word[1:]))
 
-        for i in range(1, len(word)):
-            if word[i - 1] in self.__vowels and word[i] == "y":
-                word = "".join((word[:i], "Y", word[i + 1 :]))
+        # Mutate a list in place and join once: rebuilding the whole string on
+        # each match is O(n) per match, so a crafted token was O(n**2) (CWE-407).
+        # Reads see earlier upper-casings just as the rebuilt string did.
+        chars = list(word)
+        for i in range(1, len(chars)):
+            if chars[i - 1] in self.__vowels and chars[i] == "y":
+                chars[i] = "Y"
 
-        for i in range(1, len(word) - 1):
+        for i in range(1, len(chars) - 1):
             if (
-                word[i - 1] in self.__vowels
-                and word[i] == "i"
-                and word[i + 1] in self.__vowels
+                chars[i - 1] in self.__vowels
+                and chars[i] == "i"
+                and chars[i + 1] in self.__vowels
             ):
-                word = "".join((word[:i], "I", word[i + 1 :]))
+                chars[i] = "I"
+        word = "".join(chars)
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
 
@@ -1427,9 +1433,13 @@ class EnglishStemmer(_StandardStemmer):
         if word.startswith("y"):
             word = "".join(("Y", word[1:]))
 
-        for i in range(1, len(word)):
-            if word[i - 1] in self.__vowels and word[i] == "y":
-                word = "".join((word[:i], "Y", word[i + 1 :]))
+        # In-place mutation joined once; a per-match rebuild was O(n**2) on a
+        # crafted token (CWE-407).
+        chars = list(word)
+        for i in range(1, len(chars)):
+            if chars[i - 1] in self.__vowels and chars[i] == "y":
+                chars[i] = "Y"
+        word = "".join(chars)
 
         step1a_vowel_found = False
         step1b_vowel_found = False
@@ -2279,26 +2289,30 @@ class FrenchStemmer(_StandardStemmer):
         step2a_success = False
         step2b_success = False
 
+        # In-place mutation joined once; a per-match rebuild was O(n**2) on a
+        # crafted token (CWE-407). Reads see earlier upper-casings as before.
+        chars = list(word)
         # Every occurrence of 'u' after 'q' is put into upper case.
-        for i in range(1, len(word)):
-            if word[i - 1] == "q" and word[i] == "u":
-                word = "".join((word[:i], "U", word[i + 1 :]))
+        for i in range(1, len(chars)):
+            if chars[i - 1] == "q" and chars[i] == "u":
+                chars[i] = "U"
 
         # Every occurrence of 'u' and 'i'
         # between vowels is put into upper case.
         # Every occurrence of 'y' preceded or
         # followed by a vowel is also put into upper case.
-        for i in range(1, len(word) - 1):
-            if word[i - 1] in self.__vowels and word[i + 1] in self.__vowels:
-                if word[i] == "u":
-                    word = "".join((word[:i], "U", word[i + 1 :]))
+        for i in range(1, len(chars) - 1):
+            if chars[i - 1] in self.__vowels and chars[i + 1] in self.__vowels:
+                if chars[i] == "u":
+                    chars[i] = "U"
 
-                elif word[i] == "i":
-                    word = "".join((word[:i], "I", word[i + 1 :]))
+                elif chars[i] == "i":
+                    chars[i] = "I"
 
-            if word[i - 1] in self.__vowels or word[i + 1] in self.__vowels:
-                if word[i] == "y":
-                    word = "".join((word[:i], "Y", word[i + 1 :]))
+            if chars[i - 1] in self.__vowels or chars[i + 1] in self.__vowels:
+                if chars[i] == "y":
+                    chars[i] = "Y"
+        word = "".join(chars)
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
         rv = self.__rv_french(word, self.__vowels)
@@ -2657,13 +2671,17 @@ class GermanStemmer(_StandardStemmer):
 
         # Every occurrence of 'u' and 'y'
         # between vowels is put into upper case.
-        for i in range(1, len(word) - 1):
-            if word[i - 1] in self.__vowels and word[i + 1] in self.__vowels:
-                if word[i] == "u":
-                    word = "".join((word[:i], "U", word[i + 1 :]))
+        # In-place mutation joined once; a per-match rebuild was O(n**2) on a
+        # crafted token (CWE-407).
+        chars = list(word)
+        for i in range(1, len(chars) - 1):
+            if chars[i - 1] in self.__vowels and chars[i + 1] in self.__vowels:
+                if chars[i] == "u":
+                    chars[i] = "U"
 
-                elif word[i] == "y":
-                    word = "".join((word[:i], "Y", word[i + 1 :]))
+                elif chars[i] == "y":
+                    chars[i] = "Y"
+        word = "".join(chars)
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
 
@@ -2986,6 +3004,10 @@ class HungarianStemmer(_LanguageSpecificStemmer):
 
         """
         word = word.lower()
+
+        # Security fix for CVE-2026-14597: Guard against empty strings
+        if not word:
+            return word
 
         if word in self.stopwords:
             return word
@@ -3402,21 +3424,25 @@ class ItalianStemmer(_StandardStemmer):
             .replace("\xfa", "\xf9")
         )
 
+        # In-place mutation joined once; a per-match rebuild was O(n**2) on a
+        # crafted token (CWE-407).
+        chars = list(word)
         # Every occurrence of 'u' after 'q'
         # is put into upper case.
-        for i in range(1, len(word)):
-            if word[i - 1] == "q" and word[i] == "u":
-                word = "".join((word[:i], "U", word[i + 1 :]))
+        for i in range(1, len(chars)):
+            if chars[i - 1] == "q" and chars[i] == "u":
+                chars[i] = "U"
 
         # Every occurrence of 'u' and 'i'
         # between vowels is put into upper case.
-        for i in range(1, len(word) - 1):
-            if word[i - 1] in self.__vowels and word[i + 1] in self.__vowels:
-                if word[i] == "u":
-                    word = "".join((word[:i], "U", word[i + 1 :]))
+        for i in range(1, len(chars) - 1):
+            if chars[i - 1] in self.__vowels and chars[i + 1] in self.__vowels:
+                if chars[i] == "u":
+                    chars[i] = "U"
 
-                elif word[i] == "i":
-                    word = "".join((word[:i], "I", word[i + 1 :]))
+                elif chars[i] == "i":
+                    chars[i] = "I"
+        word = "".join(chars)
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
         rv = self._rv_standard(word, self.__vowels)
@@ -4282,13 +4308,17 @@ class RomanianStemmer(_StandardStemmer):
         step1_success = False
         step2_success = False
 
-        for i in range(1, len(word) - 1):
-            if word[i - 1] in self.__vowels and word[i + 1] in self.__vowels:
-                if word[i] == "u":
-                    word = "".join((word[:i], "U", word[i + 1 :]))
+        # In-place mutation joined once; a per-match rebuild was O(n**2) on a
+        # crafted token (CWE-407).
+        chars = list(word)
+        for i in range(1, len(chars) - 1):
+            if chars[i - 1] in self.__vowels and chars[i + 1] in self.__vowels:
+                if chars[i] == "u":
+                    chars[i] = "U"
 
-                elif word[i] == "i":
-                    word = "".join((word[:i], "I", word[i + 1 :]))
+                elif chars[i] == "i":
+                    chars[i] = "I"
+        word = "".join(chars)
 
         r1, r2 = self._r1r2_standard(word, self.__vowels)
         rv = self._rv_standard(word, self.__vowels)
@@ -5383,6 +5413,7 @@ class SpanishStemmer(_StandardStemmer):
         "acion",
         "aciones",
         "uciones",
+        "ucion",
         "adoras",
         "adores",
         "ancias",
@@ -5639,7 +5670,7 @@ class SpanishStemmer(_StandardStemmer):
                     word = suffix_replace(word, suffix, "log")
                     rv = suffix_replace(rv, suffix, "log")
 
-                elif suffix in ("uci\xf3n", "uciones"):
+                elif suffix in ("uci\xf3n", "uciones", "ucion"):
                     word = suffix_replace(word, suffix, "u")
                     rv = suffix_replace(rv, suffix, "u")
 
@@ -5878,10 +5909,10 @@ def demo():
         "swedish": "Swedish_Svenska-Latin1",
     }
 
-    print("\n")
-    print("******************************")
-    print("Demo for the Snowball stemmers")
-    print("******************************")
+    safe_print("\n")
+    safe_print("******************************")
+    safe_print("Demo for the Snowball stemmers")
+    safe_print("******************************")
 
     while True:
         language = input(
@@ -5890,13 +5921,13 @@ def demo():
             + "/".join(SnowballStemmer.languages)
             + "\n"
             + "(enter 'exit' in order to leave): "
-        )
+        )  # unsafe-print ok: prompt is literal text plus the fixed language tuple
 
         if language == "exit":
             break
 
         if language not in SnowballStemmer.languages:
-            print(
+            safe_print(
                 "\nOops, there is no stemmer for this language. "
                 + "Please try again.\n"
             )
@@ -5906,16 +5937,16 @@ def demo():
         excerpt = udhr.words(udhr_corpus[language])[:300]
 
         stemmed = " ".join(stemmer.stem(word) for word in excerpt)
-        stemmed = re.sub(r"(.{,70})\s", r"\1\n", stemmed + " ").rstrip()
+        stemmed = redos.sub(r"(.{,70})\s", r"\1\n", stemmed + " ").rstrip()
         excerpt = " ".join(excerpt)
-        excerpt = re.sub(r"(.{,70})\s", r"\1\n", excerpt + " ").rstrip()
+        excerpt = redos.sub(r"(.{,70})\s", r"\1\n", excerpt + " ").rstrip()
 
-        print("\n")
-        print("-" * 70)
-        print("ORIGINAL".center(70))
-        print(excerpt)
-        print("\n\n")
-        print("STEMMED RESULTS".center(70))
-        print(stemmed)
-        print("-" * 70)
-        print("\n")
+        safe_print("\n")
+        safe_print("-" * 70)
+        safe_print("ORIGINAL".center(70))
+        safe_print(excerpt)
+        safe_print("\n\n")
+        safe_print("STEMMED RESULTS".center(70))
+        safe_print(stemmed)
+        safe_print("-" * 70)
+        safe_print("\n")

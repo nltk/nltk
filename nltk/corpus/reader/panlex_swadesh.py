@@ -1,15 +1,15 @@
 # Natural Language Toolkit: Word List Corpus Reader
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 
-import re
 from collections import defaultdict, namedtuple
 
+from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.wordlist import WordListCorpusReader
@@ -43,7 +43,9 @@ class PanlexSwadeshCorpusReader(WordListCorpusReader):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Find the swadesh size using the fileids' path.
-        self.swadesh_size = re.match(r"swadesh([0-9].*)\/", self.fileids()[0]).group(1)
+        self.swadesh_size = redos.match(r"swadesh([0-9].*)\/", self.fileids()[0]).group(
+            1
+        )
         self._languages = {lang.panlex_uid: lang for lang in self.get_languages()}
         self._macro_langauges = self.get_macrolanguages()
 

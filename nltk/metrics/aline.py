@@ -1,6 +1,6 @@
 # Natural Language Toolkit: ALINE
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Greg Kondrak <gkondrak@ualberta.ca>
 #         Geoff Bacon <bacon@berkeley.edu> (Python port)
 # URL: <https://www.nltk.org/>
@@ -36,6 +36,7 @@ Example usage
 [1] G. Kondrak. Algorithms for Language Reconstruction. PhD dissertation,
 University of Toronto.
 """
+from nltk.termsec import safe_print
 
 try:
     import numpy as np
@@ -45,6 +46,14 @@ except ImportError:
 # === Constants ===
 
 inf = float("inf")
+
+#: Maximum input length accepted by :func:`align`. ``align`` fills an
+#: ``(m+1)x(n+1)`` numpy matrix with a very expensive per-cell cost (five
+#: ``sigma_*`` calls, each scanning ~30 phonetic features), so it is O(n*m) time
+#: and memory over two untrusted strings -- a CPU/memory DoS (CWE-407). Phonetic
+#: strings are short; ``align("a"*400, "a"*400)`` already runs for over a minute.
+#: Raise this if you genuinely need to align long, trusted strings.
+MAX_ALIGN_INPUT_LEN = 512
 
 # Default values for maximum similarity scores (Kondrak 2002: 54)
 C_skip = -10  # Indels
@@ -102,7 +111,6 @@ consonants = [
     "ʃ",
     "ʈ",
     "ʋ",
-    "ʐ ",
     "ʒ",
     "ʔ",
     "ʕ",
@@ -113,6 +121,46 @@ consonants = [
     "χ",
     "ʐ",
     "w",
+]
+
+vowels = [
+    "A",
+    "E",
+    "I",
+    "O",
+    "U",
+    "a",
+    "e",
+    "e̞",
+    "i",
+    "o",
+    "o̞",
+    "u",
+    "y",
+    "ä",
+    "æ",
+    "ø",
+    "ø̞",
+    "œ",
+    "ɐ",
+    "ɑ",
+    "ɒ",
+    "ɔ",
+    "ɘ",
+    "ə",
+    "ɛ",
+    "ɜ",
+    "ɞ",
+    "ɤ",
+    "ɤ̞",
+    "ɨ",
+    "ɯ",
+    "ɵ",
+    "ɶ",
+    "ʉ",
+    "ʊ",
+    "ʌ",
+    "ʏ",
 ]
 
 # Relevant features for comparing consonants and vowels
@@ -1206,7 +1254,7 @@ feature_matrix = {
         "lateral": "minus",
         "high": "high",
         "back": "back",
-        "round": "plus",
+        "round": "minus",
         "long": "minus",
         "aspirated": "minus",
     },
@@ -1246,7 +1294,7 @@ feature_matrix = {
         "nasal": "minus",
         "retroflex": "minus",
         "lateral": "minus",
-        "high": "high",
+        "high": "mid",
         "back": "central",
         "round": "minus",
         "long": "minus",
@@ -1274,7 +1322,7 @@ feature_matrix = {
         "nasal": "minus",
         "retroflex": "minus",
         "lateral": "minus",
-        "high": "high",
+        "high": "mid",
         "back": "central",
         "round": "plus",
         "long": "minus",
@@ -1332,6 +1380,21 @@ def align(str1, str2, epsilon=0):
         raise ImportError("You need numpy in order to use the align function")
 
     assert 0.0 <= epsilon <= 1.0, "Epsilon must be between 0.0 and 1.0."
+
+    # Validate that all input segments exist in the feature matrix
+    _validate_segments(str1, "str1")
+    _validate_segments(str2, "str2")
+
+    longest = max(len(str1), len(str2))
+    if longest > MAX_ALIGN_INPUT_LEN:
+        raise ValueError(
+            f"align: input length {longest} exceeds MAX_ALIGN_INPUT_LEN "
+            f"({MAX_ALIGN_INPUT_LEN}). align fills an O(n*m) matrix with a heavy "
+            "per-cell cost over two untrusted strings (CWE-407); a long input is "
+            "a CPU/memory DoS. Raise nltk.metrics.aline.MAX_ALIGN_INPUT_LEN if "
+            "you need to align longer trusted strings."
+        )
+
     m = len(str1)
     n = len(str2)
     # This includes Kondrak's initialization of row 0 and column 0 to all 0s.
@@ -1422,6 +1485,15 @@ def _retrieve(i, j, s, S, T, str1, str2, out):
     return out
 
 
+def _validate_segments(seq, name):
+    """Validate that all segments in seq exist in the feature matrix."""
+    for i, char in enumerate(seq):
+        if char not in feature_matrix:
+            raise ValueError(
+                f"Segment '{char}' at position {i} in {name} not found in feature_matrix"
+            )
+
+
 def sigma_skip(p):
     """
     Returns score of an indel of P.
@@ -1446,6 +1518,8 @@ def sigma_exp(p, q):
 
     (Kondrak 2002: 54)
     """
+    if len(q) != 2:
+        raise ValueError(f"sigma_exp expects q of length 2, got {len(q)}")
     q1 = q[0]
     q2 = q[1]
     return C_exp - delta(p, q1) - delta(p, q2) - V(p) - max(V(q1), V(q2))
@@ -1513,7 +1587,7 @@ def demo():
         alignment = align(pair[0], pair[1])[0]
         alignment = [f"({a[0]}, {a[1]})" for a in alignment]
         alignment = " ".join(alignment)
-        print(f"{pair[0]} ~ {pair[1]} : {alignment}")
+        safe_print(f"{pair[0]} ~ {pair[1]} : {alignment}")
 
 
 cognate_data = """jo,ʒə

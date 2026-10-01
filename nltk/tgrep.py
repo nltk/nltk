@@ -2,7 +2,7 @@
 #
 # Natural Language Toolkit: TGrep search
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Will Roberts <wildwilhelm@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -110,15 +110,18 @@ macro definitions to ``m`` and initialises ``l`` to an empty dictionary.
 """
 
 import functools
-import re
+
+# Bound before the optional-dependency check below, whose fallback prints.
+from nltk.termsec import safe_print
 
 try:
     import pyparsing
 except ImportError:
-    print("Warning: nltk.tgrep will not work without the `pyparsing` package")
-    print("installed.")
+    safe_print("Warning: nltk.tgrep will not work without the `pyparsing` package")
+    safe_print("installed.")
 
 import nltk.tree
+from nltk import redos
 
 
 class TgrepException(Exception):
@@ -350,11 +353,24 @@ def _tgrep_node_action(_s, _l, tokens):
         elif tokens[0].startswith("/"):
             assert tokens[0].endswith("/")
             node_lit = tokens[0][1:-1]
+            # The ``/regex/`` node literal comes straight from the (untrusted)
+            # tgrep query and is searched against every node label. Compile it
+            # through ``redos`` so a crafted literal (e.g. ``/(a|a)*$/``) is
+            # bounded by a wall-clock timeout instead of hanging the search
+            # (CWE-1333). See ``nltk/redos.py``.
+            try:
+                node_rx = redos.compile(node_lit)
+            except (ValueError, redos.error) as exc:
+                # redos refuses an oversized/over-nested /regex/ literal; surface
+                # it as a query error rather than an uncaught refusal.
+                raise TgrepException(
+                    f"invalid or oversized /regex/ node literal {node_lit!r}: {exc}"
+                ) from None
             return (
                 lambda r: lambda n, m=None, l=None: r.search(
                     _tgrep_node_literal_value(n)
                 )
-            )(re.compile(node_lit))
+            )(node_rx)
         elif tokens[0].startswith("i@"):
             node_func = _tgrep_node_action(_s, _l, [tokens[0][2:].lower()])
             return (
@@ -950,6 +966,28 @@ def _build_tgrep_parser(set_parse_actions=True):
     return tgrep_exprs.ignore("#" + pyparsing.restOfLine)
 
 
+#: Maximum bracket/paren nesting accepted in a TGrep pattern. pyparsing parses
+#: ``(``/``[`` groups recursively and overflows the stack on deep input
+#: (CWE-674), so a deeper pattern is refused with a clear ValueError.
+MAX_TGREP_DEPTH = 50
+
+
+def _check_tgrep_nesting(tgrep_string):
+    # Iterative scan, so it runs before the recursive parser regardless of the
+    # ambient recursion limit.
+    depth = 0
+    for char in tgrep_string:
+        if char in "([":
+            depth += 1
+            if depth > MAX_TGREP_DEPTH:
+                raise ValueError(
+                    f"TGrep nesting depth exceeds MAX_TGREP_DEPTH "
+                    f"({MAX_TGREP_DEPTH}); the pattern may be adversarially deep."
+                )
+        elif char in ")]" and depth > 0:
+            depth -= 1
+
+
 def tgrep_tokenize(tgrep_string):
     """
     Tokenizes a TGrep search string into separate tokens.
@@ -957,6 +995,7 @@ def tgrep_tokenize(tgrep_string):
     parser = _build_tgrep_parser(False)
     if isinstance(tgrep_string, bytes):
         tgrep_string = tgrep_string.decode()
+    _check_tgrep_nesting(tgrep_string)
     return list(parser.parseString(tgrep_string))
 
 
@@ -968,6 +1007,7 @@ def tgrep_compile(tgrep_string):
     parser = _build_tgrep_parser(True)
     if isinstance(tgrep_string, bytes):
         tgrep_string = tgrep_string.decode()
+    _check_tgrep_nesting(tgrep_string)
     return list(parser.parseString(tgrep_string, parseAll=True))[0]
 
 
