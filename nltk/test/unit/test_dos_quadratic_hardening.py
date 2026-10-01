@@ -542,8 +542,11 @@ class TestSpanTokenizeLinear:
         monkeypatch.setattr(destructive, "iter", _FrontPopIterator, raising=False)
         monkeypatch.setattr(treebank, "iter", _FrontPopIterator, raising=False)
         for tk in self._tokenizers():
+            # 10k/40k: at 4k the neutered small side sat under the 20 ms floor on a
+            # Windows runner (its 16k side was 0.156 s), so the ratio was floor-bound
+            # and read 7.8x; at 10k both sides resolve on the 15.6 ms CPU clock.
             _assert_quadratic(
-                lambda n, tk=tk: list(tk.span_tokenize('"' * n)), 4_000, 16_000, reps=2
+                lambda n, tk=tk: list(tk.span_tokenize('"' * n)), 10_000, 40_000, reps=2
             )
 
 
