@@ -193,6 +193,9 @@ from nltk.xmlsec import parse as safe_parse
 # is under 100 MB), and the index (under 100 KB in reality) is read bounded.
 MAX_PACKAGE_BYTES = 1024 * 1024 * 1024
 MAX_INDEX_BYTES = 64 * 1024 * 1024
+# A package id or subdir component from the index becomes a file name with
+# ".zip.lock" or ".zip.tmp" appended; filesystems allow 255 bytes a component.
+MAX_NAME_BYTES = 200
 
 # A parsed tree costs about twenty times its bytes, and DTD default attributes
 # multiply that further, so the index structure is bounded too. The real index
@@ -449,6 +452,17 @@ class Package:
             raise ValueError(
                 f"Invalid package id {id!r}: must not contain path separators"
             )
+        # The id and the subdir become file names: bound them well under the
+        # 255 bytes a filesystem allows a component, so an index cannot make
+        # the installer fail on a name it could not have been asked for.
+        for what, value in (("id", id), ("subdir", subdir)):
+            if any(
+                len(part.encode("utf-8")) > MAX_NAME_BYTES for part in value.split("/")
+            ):
+                raise ValueError(
+                    f"Invalid package {what} {sanitize_terminal(repr(value))}: "
+                    f"a path component longer than {MAX_NAME_BYTES} bytes"
+                )
 
         self.url = url
         """A URL that can be used to download this package's file."""
@@ -1135,11 +1149,11 @@ class Downloader:
                 yield FinishPackageMessage(info)
                 return
 
+            # The lock lives under the caller-chosen download dir, so bound
+            # it before creating it. O_EXCL already refuses an existing file
+            # or symlink; this stops the path leaving the sandbox at all.
+            validate_path(lock_filepath, context="downloader.lock")
             try:
-                # The lock lives under the caller-chosen download dir, so bound
-                # it before creating it. O_EXCL already refuses an existing file
-                # or symlink; this stops the path leaving the sandbox at all.
-                validate_path(lock_filepath, context="downloader.lock")
                 fd = os.open(lock_filepath, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
                 os.close(fd)
                 break
@@ -1152,6 +1166,11 @@ class Downloader:
                 except FileNotFoundError:
                     continue
                 time.sleep(POLL_INTERVAL)
+            except OSError as e:
+                # A name the filesystem refuses (too long, from the index) or
+                # a directory this account cannot write is reported, not raised.
+                yield ErrorMessage(info, f"Cannot create the install lock: {e}")
+                return
 
         try:
             # Recheck after lock acquisition in case another process completed first.
