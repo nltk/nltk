@@ -124,6 +124,54 @@ A discontinuous tree:
      │    │    │    │         │      │     │          │       │      │     │      │       │
      Ze  had  met  haar     moeder kunnen gaan     winkelen   ,   zwemmen  of terrassen   .
 
+Right-to-left languages
+-----------------------
+
+A tree of a right-to-left language reads from the right: ``rtl=True`` mirrors
+the drawing, so the first child of every node is drawn at the right, while the
+tree itself stays as it is and every leaf keeps its own preterminal:
+
+    >>> tree = Tree.fromstring('(S (NP Mary) (VP walks))')
+    >>> print(TreePrettyPrinter(tree, rtl=True).text())
+           S
+       ____|___
+      VP       NP
+      |        |
+    walks     Mary
+
+Every cell of right-to-left text is preceded by an invisible LEFT-TO-RIGHT
+MARK (``nltk.tree.prettyprinter.LRM``), which keeps a bidi-aware terminal or
+browser from reordering the cells of a row; strip it to compare the drawing
+as plain text:
+
+    >>> from nltk.tree.prettyprinter import LRM
+    >>> arabic = Tree.fromstring(
+    ...     '(S (VP (V ذهب) (NP (DET ال) (N طفل)) (PP (PREP إلى) (NP (DET ال) (N حديقة)))))')
+    >>> text = TreePrettyPrinter(arabic, rtl=True).text()
+    >>> text.count(LRM) == len(arabic.leaves())
+    True
+    >>> print(text.replace(LRM, ''))
+                        S
+                        |
+                        VP
+                ________|___________
+               PP           |       |
+            ___|___         |       |
+           NP      |        NP      |
+       ____|___    |     ___|___    |
+      N       DET PREP  N      DET  V
+      |        |   |    |       |   |
+    حديقة      ال إلى  طفل      ال ذهب
+
+The same option is available from the tree itself:
+
+    >>> tree.pretty_print(rtl=True)
+           S
+       ____|___
+      VP       NP
+      |        |
+    walks     Mary
+
 Importing TreePrettyPrinter
 ---------------------------
 

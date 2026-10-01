@@ -23,11 +23,28 @@ try:
 except ImportError:
     from cgi import escape
 
+import unicodedata
 from collections import OrderedDict, defaultdict
 
 from nltk import redos
 from nltk.termsec import safe_print
 from nltk.tree.tree import Tree
+
+# LEFT-TO-RIGHT MARK: invisible, zero-width. Written before a cell holding
+# right-to-left text so a bidi-aware terminal or browser keeps that cell in
+# its column instead of merging it with its neighbours into one reversed run.
+LRM = chr(0x200E)
+
+# Bidi classes of the characters that start or extend a right-to-left run:
+# Hebrew/Arabic letters (R, AL) and Arabic digits (AN), which pull the
+# neutral spaces between two such cells into the run (UAX #9, rule N1).
+_RTL_BIDI_CLASSES = frozenset(("R", "AL", "AN"))
+
+
+def _holds_rtl(text):
+    """True if *text* holds a right-to-left letter or an Arabic-Indic digit."""
+    return any(unicodedata.bidirectional(c) in _RTL_BIDI_CLASSES for c in text)
+
 
 ANSICOLOR = {
     "black": 30,
@@ -46,7 +63,7 @@ class TreePrettyPrinter:
     Pretty-print a tree in text format, either as ASCII or Unicode.
     The tree can be a normal tree, or discontinuous.
 
-    ``TreePrettyPrinter(tree, sentence=None, highlight=())``
+    ``TreePrettyPrinter(tree, sentence=None, highlight=(), rtl=False)``
     creates an object from which different visualizations can be created.
 
     :param tree: a Tree object.
@@ -57,6 +74,16 @@ class TreePrettyPrinter:
         should be highlighted. Has the effect of only applying colors to nodes
         in this sequence (nodes should be given as Tree objects, terminals as
         indices).
+    :param rtl: If True, draw the tree mirrored, with the first child of every
+        node at the right, as trees of right-to-left languages (Arabic, Hebrew,
+        Persian, Urdu) are read. The tree is not touched: only the columns of
+        the drawing grid are mirrored, so every leaf stays under its own
+        preterminal, subclasses keep their state and `highlight` still names
+        the original nodes. In ``text()`` every cell holding right-to-left text
+        is preceded by an invisible LEFT-TO-RIGHT MARK (U+200E, ``LRM``), which
+        keeps a bidi-aware terminal or browser from reordering the cells of a
+        row: the columns then line up there as well as in a terminal that does
+        no reordering. Strip ``LRM`` from the text to compare it as plain text.
 
     >>> from nltk.tree import Tree
     >>> tree = Tree.fromstring('(S (NP Mary) (VP walks))')
@@ -67,9 +94,17 @@ class TreePrettyPrinter:
      NP        VP
      |         |
     Mary     walks
+
+    >>> print(TreePrettyPrinter(tree, rtl=True).text())
+    ... # doctest: +NORMALIZE_WHITESPACE
+          S
+      ____|___
+     VP       NP
+     |        |
+    walks     Mary
     """
 
-    def __init__(self, tree, sentence=None, highlight=()):
+    def __init__(self, tree, sentence=None, highlight=(), rtl=False):
         if sentence is None:
             leaves = tree.leaves()
             if (
@@ -107,6 +142,13 @@ class TreePrettyPrinter:
         self.nodes, self.coords, self.edges, self.highlight = self.nodecoords(
             tree, sentence, highlight
         )
+        self.rtl = bool(rtl)
+        if self.rtl:
+            # mirror the grid: column 0 becomes the rightmost column
+            maxcol = max(col for _, col in self.coords.values())
+            self.coords = {
+                n: (row, maxcol - col) for n, (row, col) in self.coords.items()
+            }
 
     def __str__(self):
         return self.text()
@@ -460,6 +502,9 @@ class TreePrettyPrinter:
                     else:  # if n and n in minchildcol:
                         branchrow[col] = crosscell(branchrow[col])
                 text = [a.center(maxnodewith[col]) for a in text]
+                if self.rtl:
+                    # a mark before each right-to-left cell keeps it in place
+                    text = [(LRM if _holds_rtl(a) else "") + a for a in text]
                 color = nodecolor if isinstance(node, Tree) else leafcolor
                 if isinstance(node, Tree) and labels[n][0].startswith("-"):
                     color = funccolor
