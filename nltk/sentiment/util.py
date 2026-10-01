@@ -23,6 +23,7 @@ from nltk.corpus import CategorizedPlaintextCorpusReader
 from nltk.data import load
 from nltk.jsontags import safe_json_loads
 from nltk.pathsec import open as pathsec_open
+from nltk.termsec import safe_print, sanitize_terminal
 from nltk.tokenize import PunktTokenizer
 from nltk.tokenize.casual import EMOTICON_RE
 
@@ -142,9 +143,9 @@ def timer(method):
         # in Python 2.x round() will return a float, so we convert it to int
         secs = int(round(tot_time % 60))
         if hours == 0 and mins == 0 and secs < 10:
-            print(f"[TIMER] {method.__name__}(): {method.__name__:.3f} seconds")
+            safe_print(f"[TIMER] {method.__name__}(): {method.__name__:.3f} seconds")
         else:
-            print(f"[TIMER] {method.__name__}(): {hours}h {mins}m {secs}s")
+            safe_print(f"[TIMER] {method.__name__}(): {hours}h {mins}m {secs}s")
         return result
 
     return timed
@@ -258,21 +259,28 @@ def output_markdown(filename, **kwargs):
     """
     Write the output of an analysis to a file.
     """
+
+    # Each key and value is one line of the report: a line break or control
+    # sequence inside one would add report lines of its own (CWE-93 / CWE-150),
+    # so every piece is written escaped onto its single line.
+    def line(value):
+        return sanitize_terminal(str(value), single_line=True)
+
     with pathsec_open(filename, "at", context="output_markdown") as outfile:
         text = "\n*** \n\n"
         text += "{} \n\n".format(time.strftime("%d/%m/%Y, %H:%M"))
         for k in sorted(kwargs):
             if isinstance(kwargs[k], dict):
                 dictionary = kwargs[k]
-                text += f"  - **{k}:**\n"
+                text += f"  - **{line(k)}:**\n"
                 for entry in sorted(dictionary):
-                    text += f"    - {entry}: {dictionary[entry]} \n"
+                    text += f"    - {line(entry)}: {line(dictionary[entry])} \n"
             elif isinstance(kwargs[k], list):
-                text += f"  - **{k}:**\n"
+                text += f"  - **{line(k)}:**\n"
                 for entry in kwargs[k]:
-                    text += f"    - {entry}\n"
+                    text += f"    - {line(entry)}\n"
             else:
-                text += f"  - **{k}:** {kwargs[k]} \n"
+                text += f"  - **{line(k)}:** {line(kwargs[k])} \n"
         outfile.write(text)
 
 
@@ -367,6 +375,7 @@ def json2csv_preprocess(
     ) as fp:
         import gzip
 
+        from nltk.csvsec import sanitize_csv_field
         from nltk.twitter.common import extract_fields
 
         if gzip_compress:
@@ -382,11 +391,15 @@ def json2csv_preprocess(
                 context="json2csv_preprocess",
             )
         writer = csv.writer(outf)
-        # write the list of fields as header
-        writer.writerow(fields)
+        # Every cell, header included, goes through the CSV sanitiser: a tweet
+        # beginning with = + - @ would otherwise reach a spreadsheet as a
+        # formula (CWE-1236), a control sequence a terminal (CWE-150).
+        writer.writerow([sanitize_csv_field(c) for c in fields])
 
         if remove_duplicates:
-            tweets_cache = []
+            # a set: the membership test below runs once per tweet, and a list
+            # made a large file quadratic (CWE-407)
+            tweets_cache = set()
         i = 0
         for line in fp:
             # Untrusted tweet line: bound size and nesting depth before parsing.
@@ -418,10 +431,10 @@ def json2csv_preprocess(
                     if row[fields.index("text")] in tweets_cache:
                         continue
                     else:
-                        tweets_cache.append(row[fields.index("text")])
+                        tweets_cache.add(row[fields.index("text")])
             except ValueError:
                 pass
-            writer.writerow(row)
+            writer.writerow([sanitize_csv_field(c) for c in row])
             i += 1
             if limit and i >= limit:
                 break
@@ -458,7 +471,9 @@ def parse_tweets_set(
         for tweet_id, text in reader:
             # text = text[1]
             i += 1
-            sys.stdout.write(f"Loaded {i} tweets\r")
+            sys.stdout.write(
+                f"Loaded {i} tweets\r"
+            )  # unsafe-print ok: literal/numeric status line, no untrusted value
             # Apply sentence and word tokenizer to text
             if word_tokenizer:
                 tweet = [
@@ -470,7 +485,7 @@ def parse_tweets_set(
                 tweet = text
             tweets.append((tweet, label))
 
-    print(f"Loaded {i} tweets")
+    safe_print(f"Loaded {i} tweets")
     return tweets
 
 
@@ -551,7 +566,7 @@ def demo_tweets(trainer, n_instances=None, output=None):
     try:
         classifier.show_most_informative_features()
     except AttributeError:
-        print(
+        safe_print(
             "Your classifier does not provide a show_most_informative_features() method."
         )
     results = sentim_analyzer.evaluate(test_set)
@@ -620,7 +635,7 @@ def demo_movie_reviews(trainer, n_instances=None, output=None):
     try:
         classifier.show_most_informative_features()
     except AttributeError:
-        print(
+        safe_print(
             "Your classifier does not provide a show_most_informative_features() method."
         )
     results = sentim_analyzer.evaluate(test_set)
@@ -690,7 +705,7 @@ def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=Non
     try:
         classifier.show_most_informative_features()
     except AttributeError:
-        print(
+        safe_print(
             "Your classifier does not provide a show_most_informative_features() method."
         )
     results = sentim_analyzer.evaluate(test_set)
@@ -727,13 +742,13 @@ def demo_sent_subjectivity(text):
     try:
         sentim_analyzer = load("sa_subjectivity.pickle")
     except LookupError:
-        print("Cannot find the sentiment analyzer you want to load.")
-        print("Training a new one using NaiveBayesClassifier.")
+        safe_print("Cannot find the sentiment analyzer you want to load.")
+        safe_print("Training a new one using NaiveBayesClassifier.")
         sentim_analyzer = demo_subjectivity(NaiveBayesClassifier.train, True)
 
     # Tokenize and convert to lower case
     tokenized_text = [word.lower() for word in word_tokenizer.tokenize(text)]
-    print(sentim_analyzer.classify(tokenized_text))
+    safe_print(sentim_analyzer.classify(tokenized_text))
 
 
 def demo_liu_hu_lexicon(sentence, plot=False):
@@ -768,11 +783,11 @@ def demo_liu_hu_lexicon(sentence, plot=False):
             y.append(0)  # neutral
 
     if pos_words > neg_words:
-        print("Positive")
+        safe_print("Positive")
     elif pos_words < neg_words:
-        print("Negative")
+        safe_print("Negative")
     elif pos_words == neg_words:
-        print("Neutral")
+        safe_print("Neutral")
 
     if plot:
         _show_plot(
@@ -789,7 +804,7 @@ def demo_vader_instance(text):
     from nltk.sentiment import SentimentIntensityAnalyzer
 
     vader_analyzer = SentimentIntensityAnalyzer()
-    print(vader_analyzer.polarity_scores(text))
+    safe_print(vader_analyzer.polarity_scores(text))
 
 
 def demo_vader_tweets(n_instances=None, output=None):
@@ -875,7 +890,7 @@ def demo_vader_tweets(n_instances=None, output=None):
         metrics_results[f"F-measure [{label}]"] = f_measure_score
 
     for result in sorted(metrics_results):
-        print(f"{result}: {metrics_results[result]}")
+        safe_print(f"{result}: {metrics_results[result]}")
 
     if output:
         output_markdown(

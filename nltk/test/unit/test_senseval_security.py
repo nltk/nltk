@@ -23,6 +23,7 @@ import queue
 import time
 
 from nltk.corpus.reader.senseval import SensevalCorpusReader, _fixXML
+from nltk.test.unit import timing
 
 from . import _mp_ctx
 
@@ -65,9 +66,9 @@ def _fixxml_worker(result_q):
         # in-process so spawn/import latency is excluded.
         measurements = []
         for shape in _REDOS_SHAPES:
-            start = time.perf_counter()
+            start = time.process_time()
             length = len(_fixXML(shape))
-            measurements.append((length, time.perf_counter() - start))
+            measurements.append((length, time.process_time() - start))
         worst = max(dt for _, dt in measurements)
         result_q.put(("ok", measurements, worst))
     except BaseException as exc:  # surface to the parent process
@@ -76,9 +77,9 @@ def _fixxml_worker(result_q):
 
 def _reader_worker(result_q, root, fileid):
     try:
-        start = time.perf_counter()
+        start = time.process_time()
         instances = SensevalCorpusReader(root, fileid).instances()
-        result_q.put(("ok", len(instances), time.perf_counter() - start))
+        result_q.put(("ok", len(instances), time.process_time() - start))
     except BaseException as exc:
         result_q.put(("error", repr(exc), 0.0))
 
@@ -90,12 +91,10 @@ def _run_in_process(target, args=()):
     into a false ReDoS failure. ``finished`` is False only on a true hang."""
     ctx = _mp_ctx()
     result_q = ctx.Queue()
-    proc = ctx.Process(target=target, args=(result_q, *args))
-    proc.start()
-    proc.join(_TIMEOUT)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(
+        target, (result_q, *args), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         return False, None, None, None
     try:
         status, payload, op_elapsed = result_q.get_nowait()

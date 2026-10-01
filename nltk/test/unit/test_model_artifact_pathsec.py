@@ -36,7 +36,6 @@ import socket
 import stat
 import sys
 import tempfile
-import time
 
 import pytest
 
@@ -45,6 +44,7 @@ import nltk.data
 import nltk.pathsec as pathsec
 import nltk.tag.perceptron as perceptron
 from nltk.tag.perceptron import AveragedPerceptron, PerceptronTagger
+from nltk.test.unit import timing
 
 CANARY = "MODEL-ARTIFACT-CANARY"
 LANG = "probeartifact"
@@ -992,10 +992,8 @@ class TestModelReadsAreBounded:
         target = os.path.join(restricted_sandbox, "nested.json")
         with pathsec.open(target, "w", context="test") as handle:
             handle.write("[" * 200000 + "]" * 200000)
-        started = time.perf_counter()
-        with pytest.raises((RecursionError, ValueError)):
+        with timing.budget(15.0), pytest.raises((RecursionError, ValueError)):
             AveragedPerceptron().load(target)
-        assert time.perf_counter() - started < 15.0
 
 
 class TestModelReadsRefuseAPickleGadget:
@@ -1183,7 +1181,9 @@ class TestNegativeControls:
         pytest.importorskip("pycrfsuite")
         import nltk.tag.crf as crf
 
-        monkeypatch.setattr(crf, "validate_tool_path", lambda *a, **k: None)
+        # A pass-through, not None: the wrapper writes the string the guard
+        # returns, so "guard removed" means the caller's value goes straight in.
+        monkeypatch.setattr(crf, "validate_tool_path", lambda path, *a, **k: path)
         target = str(sandbox / "unguarded.crf")
         crf.CRFTagger().train(
             [[("the", "DT"), ("dog", "NN")], [("a", "DT"), ("cat", "NN")]], target

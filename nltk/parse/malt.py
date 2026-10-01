@@ -375,11 +375,13 @@ class MaltParser(ParserI):
         :type depgraphs: DependencyGraph
         """
 
-        # Write the conll_str to malt_train.conll file in /tmp/
+        # Render every graph first: to_conll refuses a field that would inject
+        # a row or column, and a refused graph must leave no file behind.
+        input_str = "\n".join(dg.to_conll(10) for dg in depgraphs)
+        # Write the conll_str to a malt_train.conll file in the working dir
         with tempfile.NamedTemporaryFile(
             prefix="malt_train.conll.", dir=self.working_dir, mode="w", delete=False
         ) as input_file:
-            input_str = "\n".join(dg.to_conll(10) for dg in depgraphs)
             input_file.write(str(input_str))
         # Trains the model with the malt_train.conll
         self.train_from_file(input_file.name, verbose=verbose)

@@ -28,6 +28,7 @@ from nltk.metrics import BigramAssocMeasures, f_measure
 from nltk.probability import ConditionalFreqDist as CFD
 from nltk.probability import FreqDist
 from nltk.redos import DEFAULT_TIMEOUT as _REDOS_DEFAULT_TIMEOUT
+from nltk.termsec import safe_print
 from nltk.tokenize import sent_tokenize
 from nltk.util import LazyConcatenation, cut_string, tokenwrap
 
@@ -247,12 +248,12 @@ class ConcordanceIndex:
         concordance_list = self.find_concordance(word, width=width)
 
         if not concordance_list:
-            print("no matches")
+            safe_print("no matches")
         else:
             lines = min(lines, len(concordance_list))
-            print(f"Displaying {lines} of {len(concordance_list)} matches:")
+            safe_print(f"Displaying {lines} of {len(concordance_list)} matches:")
             for i, concordance_line in enumerate(concordance_list[:lines]):
-                print(concordance_line.line)
+                safe_print(concordance_line.line)
 
 
 #: Default wall-clock limit, in seconds, for :meth:`TokenSearcher.findall` (and
@@ -512,7 +513,7 @@ class Text:
         collocation_strings = [
             w1 + " " + w2 for w1, w2 in self.collocation_list(num, window_size)
         ]
-        print(tokenwrap(collocation_strings, separator="; "))
+        safe_print(tokenwrap(collocation_strings, separator="; "))
 
     def count(self, word):
         """
@@ -560,9 +561,9 @@ class Text:
                 if c in contexts and not w == word
             )
             words = [w for w, _ in fd.most_common(num)]
-            print(tokenwrap(words))
+            safe_print(tokenwrap(words))
         else:
-            print("No matches")
+            safe_print("No matches")
 
     def common_contexts(self, words, num=20):
         """
@@ -584,13 +585,13 @@ class Text:
         try:
             fd = self._word_context_index.common_contexts(words, True)
             if not fd:
-                print("No common contexts were found")
+                safe_print("No common contexts were found")
             else:
                 ranked_contexts = [w for w, _ in fd.most_common(num)]
-                print(tokenwrap(w1 + "_" + w2 for w1, w2 in ranked_contexts))
+                safe_print(tokenwrap(w1 + "_" + w2 for w1, w2 in ranked_contexts))
 
         except ValueError as e:
-            print(e)
+            safe_print(e)
 
     def dispersion_plot(self, words):
         """
@@ -631,7 +632,7 @@ class Text:
             sent.split(" ") for sent in sent_tokenize(" ".join(self.tokens))
         ]
         if not hasattr(self, "_trigram_model"):
-            print("Building ngram index...", file=sys.stderr)
+            safe_print("Building ngram index...", file=sys.stderr)
             self._trigram_model = self._train_default_ngram_lm(
                 self._tokenized_sents, n=3
             )
@@ -654,7 +655,7 @@ class Text:
 
         prefix = " ".join(text_seed) + " " if text_seed else ""
         output_str = prefix + tokenwrap(generated_tokens[:length])
-        print(output_str)
+        safe_print(output_str)
         return output_str
 
     def plot(self, *args):
@@ -706,7 +707,7 @@ class Text:
 
         hits = self._token_searcher.findall(regexp, timeout=timeout)
         hits = [" ".join(h) for h in hits]
-        print(tokenwrap(hits, "; "))
+        safe_print(tokenwrap(hits, "; "))
 
     # ////////////////////////////////////////////////////////////
     # Helper Methods
@@ -796,30 +797,30 @@ def demo():
     from nltk.corpus import brown
 
     text = Text(brown.words(categories="news"))
-    print(text)
-    print()
-    print("Concordance:")
+    safe_print(text)
+    safe_print()
+    safe_print("Concordance:")
     text.concordance("news")
-    print()
-    print("Distributionally similar words:")
+    safe_print()
+    safe_print("Distributionally similar words:")
     text.similar("news")
-    print()
-    print("Collocations:")
+    safe_print()
+    safe_print("Collocations:")
     text.collocations()
-    print()
+    safe_print()
     # print("Automatically generated text:")
     # text.generate()
     # print()
-    print("Dispersion plot:")
+    safe_print("Dispersion plot:")
     text.dispersion_plot(["news", "report", "said", "announced"])
-    print()
-    print("Vocabulary plot:")
+    safe_print()
+    safe_print("Vocabulary plot:")
     text.plot(50)
-    print()
-    print("Indexing:")
-    print("text[3]:", text[3])
-    print("text[3:5]:", text[3:5])
-    print("text.vocab()['news']:", text.vocab()["news"])
+    safe_print()
+    safe_print("Indexing:")
+    safe_print("text[3]:", text[3])
+    safe_print("text[3:5]:", text[3:5])
+    safe_print("text.vocab()['news']:", text.vocab()["news"])
 
 
 if __name__ == "__main__":

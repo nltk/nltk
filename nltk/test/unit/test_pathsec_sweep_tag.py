@@ -43,6 +43,7 @@ import pytest
 
 import nltk.data
 import nltk.pathsec as pathsec
+from nltk.test.unit import timing
 
 # The pathsec sandbox fixtures (sandbox / restricted_sandbox / enforce_off)
 # are provided by nltk/test/unit/conftest.py.
@@ -110,7 +111,7 @@ def test_hunpos_init_refuses_outside_model(sandbox):
     hunpos-tag subprocess is spawned.
 
     ``find_file`` returns the outside model only if it exists on disk, so the
-    model file is created under ``~``; a dummy binary satisfies ``find_binary``
+    model file is created under ``~``; a dummy binary satisfies ``find_binary_absolute``
     without being executed (validation raises before ``Popen``).
     """
     from nltk.tag.hunpos import HunposTagger
@@ -535,13 +536,13 @@ def _hunpos_stub_bin():
 
 
 def _drive_hunpos_init(path):
-    """Drive HunposTagger.__init__ with find_file/find_binary stubbed out.
+    """Drive HunposTagger.__init__ with find_file/find_binary_absolute stubbed out.
 
     The real ``find_file`` refuses anything that does not already exist, which
     would mask the guard for most vectors; stubbing it means the guard is the
     only thing standing between the caller's string and the subprocess argv. The
     sink (``pathsec.subprocess.Popen``, which ``spawn_trusted`` calls) is replaced
-    so nothing is ever spawned, and ``find_binary`` returns a trusted stub so the
+    so nothing is ever spawned, and ``find_binary_absolute`` returns a trusted stub so the
     exec-trust check passes and the model path reaches the argv.
     """
     import nltk.pathsec as pathsec_module
@@ -552,16 +553,16 @@ def _drive_hunpos_init(path):
 
     stub = _hunpos_stub_bin()
     saved_ff = hunpos_module.find_file
-    saved_fb = hunpos_module.find_binary
+    saved_fb = hunpos_module.find_binary_absolute
     saved_popen = pathsec_module.subprocess.Popen
     hunpos_module.find_file = lambda p, **kw: p
-    hunpos_module.find_binary = lambda *a, **kw: stub
+    hunpos_module.find_binary_absolute = lambda *a, **kw: stub
     pathsec_module.subprocess.Popen = _boom
     try:
         hunpos_module.HunposTagger(path)
     finally:
         hunpos_module.find_file = saved_ff
-        hunpos_module.find_binary = saved_fb
+        hunpos_module.find_binary_absolute = saved_fb
         pathsec_module.subprocess.Popen = saved_popen
 
 
@@ -1280,21 +1281,18 @@ def test_find_terminates_on_a_newline_resource_name(restricted_sandbox, resource
     caller-supplied ``PerceptronTagger(loc=...)`` of one newline burned 76s and
     2.7 GB before raising (CWE-407). Guarded by absolute time, not a ratio.
     """
-    started = time.monotonic()
-    with pytest.raises((LookupError, ValueError)):
+    with timing.budget(5.0, f"find({resource_name!r})"), pytest.raises(
+        (LookupError, ValueError)
+    ):
         nltk.data.find(resource_name, paths=[restricted_sandbox])
-    elapsed = time.monotonic() - started
-    assert elapsed < 5.0, f"find({resource_name!r}) took {elapsed:.1f}s (DoS)"
 
 
 def test_perceptron_loc_with_newline_terminates(pathsec_sandbox):
     """The same DoS through the tagger entry point that surfaced it."""
     from nltk.tag.perceptron import PerceptronTagger
 
-    started = time.monotonic()
-    with pytest.raises((LookupError, PermissionError, ValueError)):
+    with timing.budget(5.0), pytest.raises((LookupError, PermissionError, ValueError)):
         PerceptronTagger(load=True, lang="eng", loc="\n")
-    assert time.monotonic() - started < 5.0
 
 
 def test_find_still_resolves_ordinary_zip_style_names(restricted_sandbox):
@@ -1717,10 +1715,8 @@ def test_find_scales_linearly_in_the_number_of_path_pieces(restricted_sandbox, p
     immediately because the retried name now contains ".zip". Before the DOTALL
     fix a newline made that condition unreachable and the retries compounded."""
     name = "/".join(f"p{i}\n" for i in range(pieces))
-    started = time.monotonic()
-    with pytest.raises((LookupError, ValueError)):
+    with timing.budget(5.0), pytest.raises((LookupError, ValueError)):
         nltk.data.find(name, paths=[restricted_sandbox])
-    assert time.monotonic() - started < 5.0
 
 
 # --- platform-shaped vectors --------------------------------------------------
@@ -1838,10 +1834,8 @@ def test_deeply_nested_model_json_raises_rather_than_crashing(restricted_sandbox
     deep = os.path.join(restricted_sandbox, "deep.json")
     with pathsec.open(deep, "w", context="probe") as handle:
         handle.write("[" * 200000 + "]" * 200000)
-    started = time.monotonic()
-    with pytest.raises((RecursionError, ValueError)):
+    with timing.budget(10.0), pytest.raises((RecursionError, ValueError)):
         AveragedPerceptron().load(deep)
-    assert time.monotonic() - started < 10.0
 
 
 def test_large_flat_model_is_not_size_capped(restricted_sandbox):
@@ -2506,8 +2500,8 @@ def _unicode_vectors(root, outside):
     return {
         "fullwidth-slash": "..／..／etc/passwd",
         "fullwidth-dot": "．．/etc/passwd",
-        "rtl-override": "‮" + secret,
-        "zero-width": secret[:5] + "​" + secret[5:],
+        "rtl-override": "\u202e" + secret,
+        "zero-width": secret[:5] + "\u200b" + secret[5:],
         "nfd-outside": unicodedata.normalize("NFD", secret),
         "nfc-outside": unicodedata.normalize("NFC", secret),
         "surrogate": secret + "\udcff",
@@ -2553,7 +2547,7 @@ def test_unicode_names_inside_the_root_still_work(pathsec_sandbox):
     from nltk.tag.perceptron import PerceptronTagger
 
     root, outside = pathsec_sandbox
-    for name in ("modél.json", "‮model.json", "模型.json"):
+    for name in ("modél.json", "\u202emodel.json", "模型.json"):
         target = root / name
         with pathsec.open(str(target), "w", context="probe") as handle:
             handle.write("{}")

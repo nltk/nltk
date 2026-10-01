@@ -17,6 +17,7 @@ from functools import reduce, total_ordering
 
 from nltk import redos
 from nltk.internals import Counter
+from nltk.termsec import safe_print
 from nltk.util import Trie
 
 APP = "APP"
@@ -75,7 +76,7 @@ def boolean_ops():
     """
     names = ["negation", "conjunction", "disjunction", "implication", "equivalence"]
     for pair in zip(names, [Tokens.NOT, Tokens.AND, Tokens.OR, Tokens.IMP, Tokens.IFF]):
-        print("%-15s\t%s" % pair)
+        safe_print("%-15s\t%s" % pair)
 
 
 def equality_preds():
@@ -84,7 +85,7 @@ def equality_preds():
     """
     names = ["equality", "inequality"]
     for pair in zip(names, [Tokens.EQ, Tokens.NEQ]):
-        print("%-15s\t%s" % pair)
+        safe_print("%-15s\t%s" % pair)
 
 
 def binding_ops():
@@ -93,7 +94,7 @@ def binding_ops():
     """
     names = ["existential", "universal", "lambda"]
     for pair in zip(names, [Tokens.EXISTS, Tokens.ALL, Tokens.LAMBDA, Tokens.IOTA]):
-        print("%-15s\t%s" % pair)
+        safe_print("%-15s\t%s" % pair)
 
 
 class LogicParser:
@@ -2079,39 +2080,43 @@ def is_eventvar(expr):
 
 def demo():
     lexpr = Expression.fromstring
-    print("=" * 20 + "Test reader" + "=" * 20)
-    print(lexpr(r"john"))
-    print(lexpr(r"man(x)"))
-    print(lexpr(r"-man(x)"))
-    print(lexpr(r"(man(x) & tall(x) & walks(x))"))
-    print(lexpr(r"exists x.(man(x) & tall(x) & walks(x))"))
-    print(lexpr(r"\x.man(x)"))
-    print(lexpr(r"\x.man(x)(john)"))
-    print(lexpr(r"\x y.sees(x,y)"))
-    print(lexpr(r"\x y.sees(x,y)(a,b)"))
-    print(lexpr(r"(\x.exists y.walks(x,y))(x)"))
-    print(lexpr(r"exists x.x = y"))
-    print(lexpr(r"exists x.(x = y)"))
-    print(lexpr("P(x) & x=y & P(y)"))
-    print(lexpr(r"\P Q.exists x.(P(x) & Q(x))"))
-    print(lexpr(r"man(x) <-> tall(x)"))
+    safe_print("=" * 20 + "Test reader" + "=" * 20)
+    safe_print(lexpr(r"john"))
+    safe_print(lexpr(r"man(x)"))
+    safe_print(lexpr(r"-man(x)"))
+    safe_print(lexpr(r"(man(x) & tall(x) & walks(x))"))
+    safe_print(lexpr(r"exists x.(man(x) & tall(x) & walks(x))"))
+    safe_print(lexpr(r"\x.man(x)"))
+    safe_print(lexpr(r"\x.man(x)(john)"))
+    safe_print(lexpr(r"\x y.sees(x,y)"))
+    safe_print(lexpr(r"\x y.sees(x,y)(a,b)"))
+    safe_print(lexpr(r"(\x.exists y.walks(x,y))(x)"))
+    safe_print(lexpr(r"exists x.x = y"))
+    safe_print(lexpr(r"exists x.(x = y)"))
+    safe_print(lexpr("P(x) & x=y & P(y)"))
+    safe_print(lexpr(r"\P Q.exists x.(P(x) & Q(x))"))
+    safe_print(lexpr(r"man(x) <-> tall(x)"))
 
-    print("=" * 20 + "Test simplify" + "=" * 20)
-    print(lexpr(r"\x.\y.sees(x,y)(john)(mary)").simplify())
-    print(lexpr(r"\x.\y.sees(x,y)(john, mary)").simplify())
-    print(lexpr(r"all x.(man(x) & (\x.exists y.walks(x,y))(x))").simplify())
-    print(lexpr(r"(\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x))(\x.bark(x))").simplify())
+    safe_print("=" * 20 + "Test simplify" + "=" * 20)
+    safe_print(lexpr(r"\x.\y.sees(x,y)(john)(mary)").simplify())
+    safe_print(lexpr(r"\x.\y.sees(x,y)(john, mary)").simplify())
+    safe_print(lexpr(r"all x.(man(x) & (\x.exists y.walks(x,y))(x))").simplify())
+    safe_print(
+        lexpr(r"(\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x))(\x.bark(x))").simplify()
+    )
 
-    print("=" * 20 + "Test alpha conversion and binder expression equality" + "=" * 20)
+    safe_print(
+        "=" * 20 + "Test alpha conversion and binder expression equality" + "=" * 20
+    )
     e1 = lexpr("exists x.P(x)")
-    print(e1)
+    safe_print(e1)
     e2 = e1.alpha_convert(Variable("z"))
-    print(e2)
-    print(e1 == e2)
+    safe_print(e2)
+    safe_print(e1 == e2)
 
 
 def demo_errors():
-    print("=" * 20 + "Test reader errors" + "=" * 20)
+    safe_print("=" * 20 + "Test reader errors" + "=" * 20)
     demoException("(P(x) & Q(x)")
     demoException("((P(x) &) & Q(x))")
     demoException("P(x) -> ")
@@ -2131,11 +2136,11 @@ def demoException(s):
     try:
         Expression.fromstring(s)
     except LogicalExpressionException as e:
-        print(f"{e.__class__.__name__}: {e}")
+        safe_print(f"{e.__class__.__name__}: {e}")
 
 
 def printtype(ex):
-    print(f"{ex.str()} : {ex.type}")
+    safe_print(f"{ex.str()} : {ex.type}")
 
 
 if __name__ == "__main__":

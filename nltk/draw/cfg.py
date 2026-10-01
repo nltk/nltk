@@ -69,6 +69,7 @@ from nltk.draw.util import (
     TextWidget,
 )
 from nltk.grammar import CFG, Nonterminal, _read_cfg_production, nonterminals
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 
 ######################################################################
@@ -286,13 +287,13 @@ class CFGEditor:
                     continue
                 if () in prod_tuples[i - 1][1]:
                     continue
-                print(prod_tuples[i - 1][1])
-                print(prod_tuples[i][1])
+                safe_print(prod_tuples[i - 1][1])
+                safe_print(prod_tuples[i][1])
                 prod_tuples[i - 1][1].extend(prod_tuples[i][1])
                 del prod_tuples[i]
 
         for lhs, rhss in prod_tuples:
-            print(lhs, rhss)
+            safe_print(lhs, rhss)
             s = "%s ->" % lhs
             for rhs in rhss:
                 for elt in rhs:
@@ -683,7 +684,7 @@ class CFGDemo:
                     break
             else:
                 # Everything matched!
-                print("MATCH AT", i)
+                safe_print("MATCH AT", i)
 
     # //////////////////////////////////////////////////
     # Grammar
@@ -799,7 +800,7 @@ def demo():
     )
 
     def cb(grammar):
-        print(grammar)
+        safe_print(grammar)
 
     top = Tk()
     editor = CFGEditor(top, grammar, cb)

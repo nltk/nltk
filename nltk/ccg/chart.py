@@ -57,6 +57,7 @@ from nltk.parse.chart import (
     _ParseTreeBudget,
 )
 from nltk.sem.logic import *
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 
 
@@ -422,8 +423,8 @@ def printCCGDerivation(tree):
         lleaflen = (nextlen - len(leaf)) // 2
         rleaflen = lleaflen + (nextlen - len(leaf)) % 2
         leafstr += " " * lleaflen + leaf + " " * rleaflen
-    print(leafstr.rstrip())
-    print(catstr.rstrip())
+    safe_print(leafstr.rstrip())
+    safe_print(catstr.rstrip())
 
     # Display the derivation steps
     printCCGTree(0, tree)
@@ -456,13 +457,13 @@ def printCCGTree(lwidth, tree):
 
     # Pad to the left with spaces, followed by a sequence of '-'
     # and the derivation rule.
-    print(lwidth * " " + (rwidth - lwidth) * "-" + "%s" % op)
+    safe_print(lwidth * " " + (rwidth - lwidth) * "-" + "%s" % op)
     # Print the resulting category on a new line.
     str_res = "%s" % (token.categ())
     if token.semantics() is not None:
         str_res += " {" + str(token.semantics()) + "}"
     respadlen = (rwidth - lwidth - len(str_res)) // 2 + lwidth
-    print(respadlen * " " + str_res)
+    safe_print(respadlen * " " + str_res)
     return rwidth
 
 

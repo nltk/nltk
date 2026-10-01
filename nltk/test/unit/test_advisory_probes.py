@@ -17,6 +17,8 @@ import tempfile
 import warnings
 from collections import Counter
 
+import pytest
+
 from nltk.test.unit import security_probes as probes
 from nltk.test.unit import test_advisory_coverage_ci as covci
 from nltk.test.unit.security_probes import _base
@@ -675,6 +677,44 @@ def test_pickle_denylist_fires_under_broad_allow():
         allowlisted_pickle_load(io.BytesIO(payload), allowed_modules=("os",))
 
 
+def test_cyclic_index_probe_deadline_scales_with_the_control():
+    """A loaded host that is slow to start a child must not be mistaken for the
+    advisory's infinite loop: every cyclic run gets twenty times the wall time the
+    acyclic control needed, never under the default, and a real loop still hangs
+    at any deadline."""
+    module = importlib.import_module(
+        "nltk.test.unit.security_probes.ghsa_pcm8_fqjx_rvx8"
+    )
+    probe = probes.PROBES["GHSA-pcm8-fqjx-rvx8"]
+    real_resolve, real_clock = module._resolve, module._clock
+    seen = {}
+    try:
+        module._clock = iter([100.0, 107.0]).__next__  # the control took 7 s
+        module._resolve = lambda shape, timeout=30: (
+            seen.setdefault(shape, timeout),
+            ("ok", "p1"),
+        )[1]
+        assert probe()[0] == probes.FIXED
+        assert seen == {
+            "acyclic": 30,
+            "self": 140.0,
+            "mutual": 140.0,
+            "chain": 140.0,
+            "diamond": 140.0,
+        }, seen
+        # a fast control keeps the default deadline
+        seen.clear()
+        module._clock = iter([0.0, 0.5]).__next__
+        assert probe()[0] == probes.FIXED
+        assert seen["self"] == 30.0
+        # a control that cannot resolve makes the run inconclusive, never FIXED
+        module._clock = iter([0.0, 1.0]).__next__
+        module._resolve = lambda shape, timeout=30: ("error", "boom")
+        assert probe()[0] == probes.STATIC
+    finally:
+        module._resolve, module._clock = real_resolve, real_clock
+
+
 def test_cyclic_index_probe_reports_a_hang_as_vulnerable():
     """The advisory's regression manifests as an infinite loop, i.e. a subprocess
     that never returns. Simulate that: a hanging cyclic run with a healthy acyclic
@@ -711,5 +751,308 @@ def test_jvm_option_filter_probe_has_teeth(monkeypatch):
     # proof of injection is the command line that was about to run, not a count
     assert "-Xbootclasspath" in evidence
 
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_r53h_front_mutation_probe_has_teeth():
+    """Reintroduce the O(n) front removal (deque -> list.pop(0)-style reslice); the
+    chomsky_normal_form scaling must go quadratic and flip the probe VULNERABLE."""
+    import nltk.tree.transforms as transforms
+
+    probe = probes.PROBES["GHSA-r53h-rw34-8h97"]
+    assert probe()[0] == probes.FIXED
+
+    class _FrontPopList(list):
+        def popleft(self):
+            # A Python-level reslice so the O(n) front removal is visible at test
+            # sizes (list.pop(0) is a C memmove and hides the constant). The tail
+            # is rebuilt three times so t_small clears scaling_ratio's 0.1s noise
+            # floor with margin on a fast interpreter and the measured ratio is
+            # the true quadratic, not the floored form (which sat within 1.3x of
+            # the threshold and flipped FIXED on CPython 3.14.7 runners).
+            head = self[0]
+            for _ in range(3):
+                rest = []
+                for item in self[1:]:
+                    rest.append(item)
+            self[:] = rest
+            return head
+
+    real = transforms.deque
+    try:
+        transforms.deque = _FrontPopList
+        assert probe()[0] == probes.VULNERABLE
+    finally:
+        transforms.deque = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_scaling_ratio_counts_only_the_time_the_process_runs():
+    """A run the runner deschedules must not deflate the ratio: here the small
+    side does 0.12 s of CPU work and then sleeps 0.25 s beside it, which on the
+    wall clock reads as a 1.3x ratio for a linear op (the way one stall halved
+    the r53h teeth's 16x to 7.8x on a loaded macOS runner). Measured in process
+    CPU time the op reads as the linear 4x it is."""
+    import time
+
+    def op(n):
+        deadline = time.process_time() + n / 1_000_000
+        while time.process_time() < deadline:
+            pass
+        if n == 120_000:
+            time.sleep(0.25)
+
+    ratio = _base.scaling_ratio(op, 120_000, 480_000)
+    assert 3.0 <= ratio <= 5.5, ratio
+
+
+def test_scaling_ratio_still_sees_a_sink_that_waits_instead_of_computing():
+    """CPU time is blind to a sink that sleeps, blocks on I/O or waits on a
+    child process: on CPU time alone an op that sleeps n squared read 0.0x.
+    Such an op is judged on the wall clock and must still read quadratic.
+
+    The sleeps are sized for a busy runner, not a quiet one: under xdist on
+    the 3-core macOS runner every 30 ms sleep woke after about 115 ms and a
+    16x op read 4.2x. With one sleep of s at the small size and 16 s at the
+    big one, a late wake-up of o per call gives (16 s + o) / (s + o), so the
+    0.3 s small sleep here still reads 8.5x when every wake-up is 0.3 s late.
+    """
+    import time
+
+    def op(n):
+        time.sleep(0.3 * (n / 1000) ** 2)
+
+    ratio = _base.scaling_ratio(op, 1000, 4000)
+    assert ratio >= _base.QUADRATIC_RATIO, ratio
+
+
+def _neuter_relative_binary_guard(monkeypatch, modules):
+    # put the pre-fix resolver back (plain find_binary honours an explicit
+    # relative path) behind the given entry-point modules only
+    from nltk import internals
+
+    for module in modules:
+        monkeypatch.setattr(module, "find_binary_absolute", internals.find_binary)
+
+
+_RELATIVE_BINARY_MODULES = [
+    ("nltk.inference.prover9", "config_prover9"),
+    ("nltk.classify.megam", "config_megam"),
+    ("nltk.classify.tadm", "config_tadm"),
+    ("nltk.internals", "config_java"),
+    ("nltk.tag.hunpos", "HunposTagger"),
+]
+
+
+def test_relative_binary_location_probe_has_teeth(monkeypatch):
+    """Neuter the absolute-only resolver behind every entry point the probe
+    covers: the probe must flip to VULNERABLE naming the tool and the CWD decoy
+    it took, and recover on undo."""
+    import importlib
+
+    probe = probes.PROBES["GHSA-cc5r-64rf-75hg"]
+    assert probe()[0] == probes.FIXED
+
+    modules = [importlib.import_module(m) for m, _ in _RELATIVE_BINARY_MODULES]
+    _neuter_relative_binary_guard(monkeypatch, modules)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "took the CWD-relative binary" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+@pytest.mark.skipif(os.name != "posix", reason="POSIX ownership check")
+def test_relative_binary_location_probe_world_writable_phase_has_teeth(monkeypatch):
+    """Neuter the spawn-time ownership check only: the finder still refuses
+    every relative form, so the probe must flip to VULNERABLE on its last
+    phase, the launch of a JVM out of a world-writable directory."""
+    from nltk import pathsec
+
+    probe = probes.PROBES["GHSA-cc5r-64rf-75hg"]
+    assert probe()[0] == probes.FIXED
+
+    def permissive(target):
+        real = os.path.realpath(target)
+        return real if os.path.isfile(real) else None
+
+    monkeypatch.setattr(pathsec, "resolve_trusted_executable", permissive)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "world-writable directory" in evidence and "PWNED" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+@pytest.mark.skipif(os.name != "posix", reason="the planted decoys are shell scripts")
+def test_relative_binary_location_probe_sink_phase_has_teeth(monkeypatch):
+    """The advisory's sink (phase 6), run on its own because the probe's earlier
+    phases would flip first under the same neutering. With the pre-fix resolver
+    behind config_prover9 the advisory's line configures ./prover9 verbatim:
+    the phase must report the decoy HELD, and nothing may have run, because
+    the POSIX spawn layer still refuses that relative spelling. With the same
+    pre-fix resolver handing back the normalised absolute CWD path instead
+    (what a caller's abspath() would make of it) the real spawn layer runs the
+    same-user file: the phase must report it EXECUTED, from the marker the
+    decoy writes. So the config-time gate is load-bearing. Recovers on undo."""
+    from nltk import internals
+    from nltk.inference import prover9 as prover9_module
+    from nltk.test.unit.security_probes import ghsa_cc5r_64rf_75hg as cc5r
+
+    assert cc5r._sink_alone()[0] == probes.FIXED
+
+    _neuter_relative_binary_guard(monkeypatch, (prover9_module,))
+    status, evidence = cc5r._sink_alone()
+    assert status == probes.VULNERABLE, evidence
+    assert evidence.startswith("Prover9.prove() after config_prover9('./')"), evidence
+    assert "held the CWD decoy './prover9'" in evidence, evidence
+    assert "executed" not in evidence, evidence
+
+    def absolutised(name, path_to_bin=None, **kwargs):
+        return os.path.abspath(internals.find_binary(name, path_to_bin, **kwargs))
+
+    monkeypatch.setattr(prover9_module, "find_binary_absolute", absolutised)
+    status, evidence = cc5r._sink_alone()
+    assert status == probes.VULNERABLE, evidence
+    assert evidence.startswith("Prover9.prove() after config_prover9('./')"), evidence
+    assert "executed the CWD decoy" in evidence, evidence
+    assert evidence.rstrip("'").endswith(os.sep + "prover9"), evidence
+
+    monkeypatch.undo()
+    assert cc5r._sink_alone()[0] == probes.FIXED
+    assert (
+        "sinks never held or executed a decoy"
+        in probes.PROBES["GHSA-cc5r-64rf-75hg"]()[1]
+    )
+
+
+@pytest.mark.parametrize("modname, label", _RELATIVE_BINARY_MODULES)
+def test_relative_binary_location_probe_covers_each_tool(monkeypatch, modname, label):
+    # neuter one tool's resolver only (each module binds it by name): the
+    # evidence must name exactly that tool, so the probe scores every entry point
+    import importlib
+
+    probe = probes.PROBES["GHSA-cc5r-64rf-75hg"]
+    _neuter_relative_binary_guard(monkeypatch, (importlib.import_module(modname),))
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert evidence.startswith(label + "("), evidence
+
+
+def _skip_if_static(probe):
+    import pytest
+
+    status = probe()[0]
+    if status == probes.STATIC:
+        pytest.skip("probe is STATIC on this platform (guard inactive)")
+    return status
+
+
+def test_7mxv_java_untrusted_exec_probe_has_teeth():
+    """Make the trusted-exec check accept any binary; java() then runs the planted
+    untrusted binary instead of refusing it, flipping the probe VULNERABLE. The
+    check is pathsec's own, reached through spawn_trusted, so that is where it
+    is neutered."""
+    import nltk.pathsec as pathsec
+
+    probe = probes.PROBES["GHSA-7mxv-7h3q-9324"]
+    assert _skip_if_static(probe) == probes.FIXED
+
+    real = pathsec.resolve_trusted_executable
+    try:
+        pathsec.resolve_trusted_executable = lambda target: target
+        status, evidence = probe()
+        assert status == probes.VULNERABLE, evidence
+        assert "executed the planted untrusted binary" in evidence, evidence
+    finally:
+        pathsec.resolve_trusted_executable = real
+    assert probe()[0] == probes.FIXED
+
+
+def _stdlib_zipfile_follows_hardlink():
+    """True if the RAW stdlib extractor writes through a pre-planted hardlink.
+
+    Runs pure ``zipfile`` with no nltk code involved, so it detects an
+    interpreter whose own extractor has been hardened (CPython backports); the
+    wr3g teeth then have no vulnerable extractor to regress to and must skip
+    rather than fail. Any error here reports False, which keeps the teeth
+    assertion in force (fail closed)."""
+    import zipfile
+
+    box = tempfile.mkdtemp()
+    try:
+        root = os.path.join(box, "root")
+        os.makedirs(root)
+        secret = os.path.join(box, "secret")
+        with open(secret, "wb") as fh:
+            fh.write(b"ORIG")
+        planted = os.path.join(root, "evil.txt")
+        try:
+            os.link(secret, planted)
+        except OSError:
+            return False
+        zip_path = os.path.join(box, "p.zip")
+        with zipfile.ZipFile(zip_path, "w") as zf:
+            zf.writestr("evil.txt", b"PAYLOAD")
+        try:
+            with zipfile.ZipFile(zip_path) as zf:
+                zf.extractall(root)
+        except Exception:
+            return False
+        with open(secret, "rb") as fh:
+            return b"PAYLOAD" in fh.read()
+    finally:
+        shutil.rmtree(box, ignore_errors=True)
+
+
+def test_wr3g_zip_hardlink_probe_has_teeth():
+    """Swap the hardened extractor for the stdlib one; on an interpreter whose
+    stdlib still follows hardlinks the member write escapes through the planted
+    link and the probe flips. On a hardened stdlib (behaviour-probed, never
+    version-sniffed) there is nothing vulnerable to regress to, so skip."""
+    import zipfile
+
+    import pytest
+
+    import nltk.pathsec as pathsec
+
+    probe = probes.PROBES["GHSA-wr3g-j6qj-xpgh"]
+    assert _skip_if_static(probe) == probes.FIXED
+
+    real = pathsec.ZipFile._extract_member
+    try:
+        pathsec.ZipFile._extract_member = zipfile.ZipFile._extract_member
+        status, detail = probe()[:2]
+        if status != probes.VULNERABLE and not _stdlib_zipfile_follows_hardlink():
+            pytest.skip(
+                "stdlib zipfile itself refuses the hardlink write on this "
+                "interpreter; no vulnerable extractor to regress to"
+            )
+        # the probe's own detail string names which branch produced the verdict,
+        # which is the forensic difference between a broken swap, a refusal from
+        # an unswapped pathsec layer, and a write that silently did not escape
+        assert status == probes.VULNERABLE, (
+            f"swapped-in stdlib extractor did not flip the probe: "
+            f"status={status!r} detail={detail!r}"
+        )
+    finally:
+        pathsec.ZipFile._extract_member = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_j8g8_reparse_probe_has_teeth(monkeypatch):
+    """Report a line boundary in every block; readline then re-splits the whole
+    growing buffer each pass (the pre-fix O(n^2)) and the probe flips."""
+    import nltk.data as data
+
+    probe = probes.PROBES["GHSA-j8g8-j4j7-8j54"]
+    assert probe()[0] == probes.FIXED
+
+    monkeypatch.setattr(data, "_has_line_boundary", lambda text: True)
+    status, detail = probe()
+    assert status == probes.VULNERABLE, detail  # the measured ratio, for the CI log
     monkeypatch.undo()
     assert probe()[0] == probes.FIXED

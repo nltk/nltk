@@ -38,6 +38,19 @@ repos:
       language: system
       pass_filenames: false
       always_run: true
+    - id: no-unsafe-print
+      name: no un-sanitised print of untrusted values
+      description: >-
+        A print of attacker-influenceable text (corpus token, tool stdout, tweet,
+        user expression) can carry ANSI/OSC escapes or Unicode bidi/invisibles that
+        hijack or spoof the terminal (CWE-150/1007/1236). Every print must be
+        safe_print, a provably-harmless literal/repr/numeric print, or carry a
+        trailing '# unsafe-print ok: <why>' marker. Route untrusted output through
+        nltk.termsec.safe_print.
+      entry: python tools/check_unsafe_print.py
+      language: system
+      pass_filenames: false
+      always_run: true
     - id: all-regex-through-redos
       name: every regex routes through nltk.redos
       description: >-
@@ -58,6 +71,20 @@ repos:
         nltk.picklesec itself; load through a picklesec unpickler and write
         through picklesec.pickle_dump / pickle_dumps.
       entry: python tools/check_all_pickle_through_picklesec.py
+      language: system
+      pass_filenames: false
+      always_run: true
+    - id: all-spawns-through-pathsec
+      name: every process spawn routes through nltk.pathsec.spawn_trusted
+      description: >-
+        Every external tool NLTK runs is resolved absolute-only and launched
+        through pathsec.spawn_trusted, which checks the binary's directory
+        chain for ownership, refuses a shell and scrubs the child environment
+        (CWE-426 / CWE-427 / CWE-78). Fails on any subprocess.Popen/run/call/
+        check_*, os.system/popen/exec*/spawn* or shutil.which call outside
+        nltk.pathsec itself; resolve with internals.find_binary_absolute and
+        launch with pathsec.spawn_trusted.
+      entry: python tools/check_all_spawns_through_pathsec.py
       language: system
       pass_filenames: false
       always_run: true

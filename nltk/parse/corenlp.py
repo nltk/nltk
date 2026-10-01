@@ -24,6 +24,7 @@ from nltk.internals import (
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tag.api import TaggerI
+from nltk.termsec import sanitize_terminal
 from nltk.tokenize.api import TokenizerI
 from nltk.tree import Tree
 
@@ -32,6 +33,67 @@ _stanford_url = "https://stanfordnlp.github.io/CoreNLP/"
 
 class CoreNLPServerError(EnvironmentError):
     """Exceptions associated with the Core NLP server."""
+
+
+# The server explains a non-2xx answer in its body (a request that timed out,
+# an exception name, a refused input). That text is the server's own, so it
+# is escaped for the terminal and capped before it enters an exception message.
+_EXPLANATION_BYTES = 2048
+_EXPLANATION_CHARS = 400
+_REASON_CHARS = 120
+_STDERR_TAIL_CHARS = 4000
+
+
+def _one_line(text, limit):
+    """*text* escaped for a single terminal line and cut to *limit* characters."""
+    text = sanitize_terminal(text, single_line=True)
+    if len(text) > limit:
+        text = text[:limit] + "..."
+    return text
+
+
+def _server_explanation(response):
+    """What the server said about a non-2xx answer: the head of the body, decoded
+    with the charset it declared (latin-1 when that is unusable), escaped and
+    capped, with the whole body's size alongside so a truncation is visible."""
+    try:
+        body = response.content or b""
+    except (OSError, ValueError):
+        return "a body that could not be read"
+    head = body[:_EXPLANATION_BYTES]
+    try:
+        text = head.decode(response.encoding or "utf-8", errors="replace")
+    except (LookupError, UnicodeError, TypeError, ValueError):
+        text = head.decode("latin-1")
+    text = _one_line(text.strip(), _EXPLANATION_CHARS)
+    if not text:
+        return f"an empty body ({len(body)} bytes)"
+    return f"'{text}' ({len(body)} bytes)"
+
+
+def _response_error(response):
+    """The error for a non-2xx answer: the status line as ``raise_for_status``
+    words it, then the server's explanation. It is the same ``HTTPError`` type,
+    so a caller catching that (or ``RequestException``) keeps working."""
+    import requests
+
+    status = response.status_code
+    reason = response.reason
+    if isinstance(reason, bytes):
+        reason = reason.decode("iso-8859-1", errors="replace")
+    reason = _one_line(str(reason or ""), _REASON_CHARS)
+    if 400 <= status < 500:
+        kind = "Client Error"
+    elif 500 <= status < 600:
+        kind = "Server Error"
+    else:
+        kind = "Unexpected Status"
+    url = sanitize_terminal(str(response.url), single_line=True)
+    message = (
+        f"{status} {kind}: {reason} for url: {url}; "
+        f"the CoreNLP server said: {_server_explanation(response)}"
+    )
+    return requests.exceptions.HTTPError(message, response=response)
 
 
 # corenlp_options allowlist (CWE-88 / CWE-22 / CWE-502): these are the CoreNLP
@@ -342,24 +404,14 @@ class CoreNLPServer:
             # Return java configurations to their default values.
             config_java(options=default_options, verbose=self.verbose)
 
-        # Check that the server is istill running.
-        returncode = self.popen.poll()
-        if returncode is not None:
-            _, stderrdata = self.popen.communicate()
-            # java() runs Popen with universal_newlines=True, so communicate()
-            # already returns text; only decode a bytes-returning path.
-            if isinstance(stderrdata, bytes):
-                stderrdata = stderrdata.decode("ascii")
-            raise CoreNLPServerError(
-                returncode,
-                f"Could not start the server. The error was: {stderrdata}",
-            )
+        self._raise_if_exited()
 
         for i in range(30):
             # Jittered backoff so retries don't all land on the same tick; the
             # first attempt fires immediately.
             if i > 0:
                 time.sleep(1 + random.uniform(0, 0.5))
+            self._raise_if_exited()
 
             try:
                 response = requests.get(
@@ -381,6 +433,7 @@ class CoreNLPServer:
             # first attempt fires immediately.
             if i > 0:
                 time.sleep(1 + random.uniform(0, 0.5))
+            self._raise_if_exited()
 
             try:
                 response = requests.get(
@@ -396,6 +449,29 @@ class CoreNLPServer:
                     break
         else:
             raise CoreNLPServerError("The server is not ready.")
+
+    def _raise_if_exited(self):
+        # A JVM that died after launch (no runtime, out of memory, a crash
+        # loading models) is reported with its exit code at once, not after the
+        # readiness loops time out on a port nothing will ever answer.
+        returncode = self.popen.poll()
+        if returncode is not None:
+            _, stderrdata = self.popen.communicate()
+            # java() runs Popen with universal_newlines=True, so communicate()
+            # already returns text; only decode a bytes-returning path.
+            if isinstance(stderrdata, bytes):
+                stderrdata = stderrdata.decode("utf-8", errors="replace")
+            if stderrdata is None:
+                stderrdata = "(stderr was redirected by the caller; read it there)"
+            # The JVM's output is the tool's, not ours: escaped for the terminal
+            # and cut to its tail, which is where a Java stack trace ends.
+            stderrdata = sanitize_terminal(stderrdata)
+            if len(stderrdata) > _STDERR_TAIL_CHARS:
+                stderrdata = "..." + stderrdata[-_STDERR_TAIL_CHARS:]
+            raise CoreNLPServerError(
+                returncode,
+                f"Could not start the server. The error was: {stderrdata}",
+            )
 
     def stop(self):
         self.popen.terminate()
@@ -500,7 +576,10 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
             timeout=timeout,
         )
 
-        response.raise_for_status()
+        # Any answer but a 2xx is a failure to annotate, and the body is where
+        # the server says why (a timeout, an exception, a refused input).
+        if not 200 <= response.status_code < 300:
+            raise _response_error(response)
 
         return response.json(strict=self.strict_json)
 

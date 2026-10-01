@@ -18,6 +18,7 @@ from nltk.grammar import (
 )
 from nltk.internals import raise_unorderable_types
 from nltk.parse.dependencygraph import DependencyGraph
+from nltk.termsec import safe_print
 
 #################################################################
 # Dependency Span
@@ -253,7 +254,7 @@ class ProjectiveDependencyParser:
         """
         spans = []
         if span1._start_index == span2._start_index:
-            print("Error: Mismatched spans - replace this with thrown error")
+            safe_print("Error: Mismatched spans - replace this with thrown error")
         if span1._start_index > span2._start_index:
             temp_span = span1
             span1 = span2
@@ -367,7 +368,7 @@ class ProbabilisticProjectiveDependencyParser:
                                 DependencySpan(i - 1, i, i - 1, [-1], [tag])
                             )
                     else:
-                        print(
+                        safe_print(
                             "No tag found for input token '%s', parse is impossible."
                             % tokens[i - 1]
                         )
@@ -426,7 +427,7 @@ class ProbabilisticProjectiveDependencyParser:
         """
         spans = []
         if span1._start_index == span2._start_index:
-            print("Error: Mismatched spans - replace this with thrown error")
+            safe_print("Error: Mismatched spans - replace this with thrown error")
         if span1._start_index > span2._start_index:
             temp_span = span1
             span1 = span2
@@ -661,11 +662,11 @@ def projective_rule_parse_demo():
     'cats' -> 'the'
     """
     )
-    print(grammar)
+    safe_print(grammar)
     pdp = ProjectiveDependencyParser(grammar)
     trees = pdp.parse(["the", "cats", "scratch", "the", "walls"])
     for tree in trees:
-        print(tree)
+        safe_print(tree)
 
 
 def arity_parse_demo():
@@ -675,10 +676,10 @@ def arity_parse_demo():
     head.  This can further constrain the number of possible parses
     created by a ``ProjectiveDependencyParser``.
     """
-    print()
-    print("A grammar with no arity constraints. Each DependencyProduction")
-    print("specifies a relationship between one head word and only one")
-    print("modifier word.")
+    safe_print()
+    safe_print("A grammar with no arity constraints. Each DependencyProduction")
+    safe_print("specifies a relationship between one head word and only one")
+    safe_print("modifier word.")
     grammar = DependencyGrammar.fromstring(
         """
     'fell' -> 'price' | 'stock'
@@ -687,21 +688,21 @@ def arity_parse_demo():
     'stock' -> 'the'
     """
     )
-    print(grammar)
+    safe_print(grammar)
 
-    print()
-    print("For the sentence 'The price of the stock fell', this grammar")
-    print("will produce the following three parses:")
+    safe_print()
+    safe_print("For the sentence 'The price of the stock fell', this grammar")
+    safe_print("will produce the following three parses:")
     pdp = ProjectiveDependencyParser(grammar)
     trees = pdp.parse(["the", "price", "of", "the", "stock", "fell"])
     for tree in trees:
-        print(tree)
+        safe_print(tree)
 
-    print()
-    print("By contrast, the following grammar contains a ")
-    print("DependencyProduction that specifies a relationship")
-    print("between a single head word, 'price', and two modifier")
-    print("words, 'of' and 'the'.")
+    safe_print()
+    safe_print("By contrast, the following grammar contains a ")
+    safe_print("DependencyProduction that specifies a relationship")
+    safe_print("between a single head word, 'price', and two modifier")
+    safe_print("words, 'of' and 'the'.")
     grammar = DependencyGrammar.fromstring(
         """
     'fell' -> 'price' | 'stock'
@@ -710,16 +711,16 @@ def arity_parse_demo():
     'stock' -> 'the'
     """
     )
-    print(grammar)
+    safe_print(grammar)
 
-    print()
-    print(
+    safe_print()
+    safe_print(
         "This constrains the number of possible parses to just one:"
     )  # unimplemented, soon to replace
     pdp = ProjectiveDependencyParser(grammar)
     trees = pdp.parse(["the", "price", "of", "the", "stock", "fell"])
     for tree in trees:
-        print(tree)
+        safe_print(tree)
 
 
 def projective_prob_parse_demo():
@@ -731,14 +732,14 @@ def projective_prob_parse_demo():
 
     graphs = [DependencyGraph(entry) for entry in conll_data2.split("\n\n") if entry]
     ppdp = ProbabilisticProjectiveDependencyParser()
-    print("Training Probabilistic Projective Dependency Parser...")
+    safe_print("Training Probabilistic Projective Dependency Parser...")
     ppdp.train(graphs)
 
     sent = ["Cathy", "zag", "hen", "wild", "zwaaien", "."]
-    print("Parsing '", " ".join(sent), "'...")
-    print("Parse:")
+    safe_print("Parsing '", " ".join(sent), "'...")
+    safe_print("Parse:")
     for tree in ppdp.parse(sent):
-        print(tree)
+        safe_print(tree)
 
 
 if __name__ == "__main__":
