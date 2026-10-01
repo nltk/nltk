@@ -53,8 +53,12 @@ Three groups:
    ``lin.py`` _key_re, ``bracket_parse.py`` ALPINO_ATTR (residual after
    ALPINO_NODE was hardened), ``senseval.py`` lone-& sub, and ``sem/evaluate.py``
    _VAL_SPLIT_RE + siblings (residual after CVE-2026-12890). All routed through
-   redos.compile; the regex engine linearizes four, destructive/lin are bounded
-   by the wall-clock timeout.
+   redos.compile; the regex engine linearizes four, lin is bounded by the
+   wall-clock timeout, and destructive is linear since the 2026-10-01 scan.
+8. The re-anchored leading runs found by the 2026-10-01 regex scan (bottom of
+   this file): the default word tokenizer's final-period rule, the blankline
+   tokenizer, the TextTiling paragraph-break scan, the three valuation
+   splitters, the relextract demo's ``in`` pattern and toktok's strip pattern.
 
 Tests assert (a) correctness is preserved and (b) a crafted input is bounded --
 either linear (ratio/wall-clock) or rejected by an explicit length guard. The
@@ -961,7 +965,8 @@ class TestSnowballUpcaseQuadratic:  # snowball.py y/i/u "mark-as-consonant" rebu
 # be absent, applied with findall/sub/split over attacker-controlled corpus/text
 # data (which retries at every start position) -> O(n^2). Routed through
 # redos.compile: four are linearized by the regex engine, one (lin) still
-# backtracks and is bounded by the wall-clock TimeoutError.
+# backtracks and is bounded by the wall-clock TimeoutError; the destructive
+# rule is linear since the 2026-10-01 scan (see the last section).
 
 
 class TestNLTKWordTokenizerFinalPeriodDoS:  # destructive.py PUNCTUATION[0]
@@ -978,18 +983,38 @@ class TestNLTKWordTokenizerFinalPeriodDoS:  # destructive.py PUNCTUATION[0]
             "of", "them.", "Thanks", ".",
         ]  # fmt: skip
 
-    def test_final_period_space_run_is_bounded(self, monkeypatch):
-        # The class ends with a space directly before \s*$, so [..space..]* and
-        # \s* both match the trailing space run and backtrack O(n^2) when the
-        # text ends in a non-space, non-class char (~32 KB -> 8s). The regex
-        # engine is also quadratic here, so only the timeout bounds it.
-        import nltk.redos as redos_mod
-
-        monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 0.5)
+    def test_final_period_space_run_is_linear(self):
+        # The class ends with a space directly before \s*$; the two re-split a
+        # trailing space run at every length when the text ends in a non-space,
+        # non-class char. The run is possessive now, so the rule is linear.
         from nltk.tokenize import NLTKWordTokenizer
 
-        with pytest.raises(TimeoutError):
-            NLTKWordTokenizer().tokenize("a." + " " * 80000 + "!")
+        tok = NLTKWordTokenizer()
+        _assert_subquadratic(
+            lambda n: tok.tokenize("a." + " " * n + "x"), 40000, 160000
+        )
+        _assert_subquadratic(
+            lambda n: tok.tokenize("a." + " " * n + "\tx"), 40000, 160000
+        )
+
+    def test_final_period_rule_matches_the_pre_fix_rule(self):
+        from nltk.tokenize.destructive import NLTKWordTokenizer
+
+        shipped = NLTKWordTokenizer.PUNCTUATION[0][0].pattern
+        assert "*+" in shipped and shipped != _PRE_FIX["destructive"]
+        texts = [
+            "a.", "a. ", "a.  x", "a.) ", 'a.)" \t', "a. \n", ".", "x.»”’  ",
+            "a." + " " * 30 + "x", "a." + " " * 30, "a.)" + " " * 30 + "\t",
+            "Thanks.\n", "them.", "x. . ", "a.\t\tx", "a. ) x",
+        ]  # fmt: skip
+        import re
+
+        _same_results(_PRE_FIX["destructive"], shipped, "sub", texts, re.U)
+
+    def test_pre_fix_final_period_rule_has_teeth(self):
+        import re
+
+        _trips_backstop(_PRE_FIX["destructive"], "sub", "a." + " " * 80000 + "x", re.U)
 
     def test_treebank_no_space_class_stays_linear(self):  # BENIGN guard
         # Treebank's twin rule has no space in the class -> disjoint quantifiers.
@@ -1093,3 +1118,253 @@ class TestClearedLinearOrByDesign:
 
         seq = list(range(20000))
         assert _elapsed(lambda: list(skipgrams(seq, 2, 2))) < 5.0
+
+
+# ==========================================================================
+# RE-ANCHORED LEADING RUNS (fixed) -- the regex scan of 2026-10-01
+# ==========================================================================
+# Shape: a pattern that opens with an unbounded whitespace or class run and is
+# applied with sub/split/findall/finditer, so the engine retries that run from
+# every position of a run no later literal completes: O(n**2) (CWE-407). The
+# redos wall-clock cap only bounded the burn. Each fix pins the run to its start
+# (a possessive run, or an optional run taken only when no run character
+# precedes it) or commits the backtracking (an atomic group). The verbatim
+# pre-fix patterns stay here as the faithfulness oracle and as the teeth.
+
+_PRE_FIX = {
+    "destructive": r'([^\.])(\.)([\]\)}>"\'»”’ ]*)\s*$',
+    "blankline": r"\s*\n\s*\n\s*",
+    "texttiling": r"[ \t\r\f\v]*+\n[ \t\r\f\v]*+\n[ \t\r\f\v]*+",
+    "val_split": r"\s*(?<!=)=+>\s*",
+    "element_split": r"\s*,\s*",
+    "tuples": r"\s*(\([^)]+\))\s*",
+    "in_relation": r".*\bin\b(?!\b.+ing)",
+    "rstrip": r"\s+$",
+}
+
+
+def _apply(rx, op, text, **kw):
+    if op == "sub":
+        return rx.sub(r"[\g<0>]", text, **kw)
+    if op == "split":
+        return rx.split(text, **kw)
+    if op == "findall":
+        return rx.findall(text, **kw)
+    if op == "finditer":
+        return [m.span() for m in rx.finditer(text, **kw)]
+    if op == "match":
+        m = rx.match(text, **kw)
+        return None if m is None else (m.span(), m.groups())
+    raise ValueError(op)
+
+
+def _same_results(old, new, op, texts, flags=0):
+    """The pre-fix and the shipped pattern agree, result for result."""
+    from nltk import redos
+
+    ro, rn = redos.compile(old, flags), redos.compile(new, flags)
+    for text in texts:
+        assert _apply(ro, op, text) == _apply(rn, op, text), text
+
+
+def _trips_backstop(old, op, text, flags=0):
+    """The pre-fix pattern still runs into a 0.5 s wall-clock cap on ``text``."""
+    from nltk import redos
+
+    with pytest.raises(TimeoutError):
+        _apply(redos.compile(old, flags), op, text, timeout=0.5)
+
+
+class TestBlanklineTokenizerLeadingRun:  # tokenize/regexp.py BlanklineTokenizer
+    def test_benign_split_unchanged(self):
+        from nltk.tokenize import blankline_tokenize
+
+        assert blankline_tokenize("a b\n\nc d\n  \n\te") == ["a b", "c d", "e"]
+
+    def test_space_run_before_a_newline_is_linear(self):
+        from nltk.tokenize import blankline_tokenize
+
+        _assert_subquadratic(
+            lambda n: blankline_tokenize(" " * n + "\na"), 40000, 160000
+        )
+
+    def test_shipped_pattern_matches_the_pre_fix_pattern(self):
+        from nltk.tokenize import BlanklineTokenizer
+
+        shipped = BlanklineTokenizer()._pattern
+        assert shipped != _PRE_FIX["blankline"]
+        texts = [
+            "", "a", "\n", "\n\n", " \n \n ", "a\n\nb", "a \n \n b", "\n\n\n\n",
+            " \n\n\n\n x", "a\n b", "x" + " " * 30 + "\ny", "x" + " " * 30 + "\n\ny",
+            "\t\n\x0b\r\n\x0c\x0b \x0c\n\r\n\x0c\n\r", "a\n\n\nb\n\n\n\nc",
+        ]  # fmt: skip
+        _same_results(_PRE_FIX["blankline"], shipped, "split", texts)
+
+    def test_pre_fix_pattern_has_teeth(self):
+        _trips_backstop(_PRE_FIX["blankline"], "split", " " * 80000 + "\na")
+
+
+class TestTextTilingParagraphBreakLeadingRun:  # texttiling._mark_paragraph_breaks
+    _STOPWORDS = ["the", "a", "of", "and", "to"]
+
+    def _tokenizer(self):
+        from nltk.tokenize import TextTilingTokenizer
+
+        return TextTilingTokenizer(stopwords=self._STOPWORDS)
+
+    def test_benign_breaks_unchanged(self):
+        tt = self._tokenizer()
+        assert tt._mark_paragraph_breaks("x" * 120 + "  \n  \n  " + "y" * 120) == [
+            0,
+            120,
+        ]
+
+    def test_space_run_before_a_newline_is_linear(self):
+        tt = self._tokenizer()
+        _assert_subquadratic(
+            lambda n: tt._mark_paragraph_breaks(" " * n + "\n"), 40000, 160000
+        )
+
+    def test_shipped_pattern_matches_the_pre_fix_pattern(self):
+        import inspect
+
+        from nltk.tokenize import texttiling
+
+        src = inspect.getsource(texttiling.TextTilingTokenizer._mark_paragraph_breaks)
+        shipped = r"(?:(?<![ \t\r\f\v])[ \t\r\f\v]*+)?\n[ \t\r\f\v]*+\n[ \t\r\f\v]*+"
+        assert shipped in src
+        texts = [
+            "", "\n", "\n\n", " \n \n ", "a\n\nb", "a \n \n b", "\n\n\n\n",
+            "\t\n\x0b\r\n\x0c\x0b \x0c\n\r\n\x0c\n\r", "x" + " " * 30 + "\ny",
+            "x" + " " * 30 + "\n\ny", "\r\x0c \t\n\n\t\x0b\n\n\t aa", "a \n\n \n\n b",
+        ]  # fmt: skip
+        _same_results(_PRE_FIX["texttiling"], shipped, "finditer", texts)
+
+    def test_pre_fix_pattern_has_teeth(self):
+        _trips_backstop(_PRE_FIX["texttiling"], "finditer", " " * 80000 + "\n")
+
+
+class TestValuationLeadingWhitespaceRuns:  # sem/evaluate.py, the three splitters
+    def test_benign_parse_unchanged(self):
+        from nltk.sem.evaluate import read_valuation
+
+        val = dict(
+            read_valuation("a => b\ngirl => {g1, g2}\nchase => {(b1, g1), (b2, g1)}")
+        )
+        assert val["a"] == "b"
+        assert val["girl"] == {("g1",), ("g2",)}
+        assert val["chase"] == {("b1", "g1"), ("b2", "g1")}
+
+    def test_interior_space_run_before_the_separator_is_linear(self):
+        from nltk.sem.evaluate import read_valuation
+
+        _assert_subquadratic(
+            lambda n: read_valuation("a" + " " * n + "b => c"), 10000, 40000
+        )
+
+    def test_interior_space_run_before_a_comma_is_linear(self):
+        from nltk.sem.evaluate import read_valuation
+
+        _assert_subquadratic(
+            lambda n: read_valuation("s => {a" + " " * n + "b, c}"), 20000, 80000
+        )
+
+    def test_interior_space_run_before_an_open_tuple_is_linear(self):
+        from nltk.sem.evaluate import read_valuation
+
+        _assert_subquadratic(
+            lambda n: read_valuation("s => {(a, b)" + " " * n + "(c}"), 20000, 80000
+        )
+
+    def test_shipped_patterns_match_the_pre_fix_patterns(self):
+        from nltk.sem import evaluate as ev
+
+        for key, rx, op, texts in (
+            ("val_split", ev._VAL_SPLIT_RE, "split",
+             [">=> ==>a>>a", "a => b", "a=>b", "a ==> b", " => ", "a" + " " * 30 + "b=>c",
+              "a => b => c", "==>", "a =b> c", "a\t=>\nb"]),
+            ("element_split", ev._ELEMENT_SPLIT_RE, "split",
+             ["a\na,, ,a,a\t,a a", ",a,\n\ta\na,\n ,aaa", "a, b , c", ",", " , ", "a" + " " * 30 + "b,c",
+              "a,,b", " ,a, "]),
+            ("tuples", ev._TUPLES_RE, "findall",
+             ["(a) (b)", ",,((a\t(a\t )\t(\t\n\t)(\t )\n", "(( ( )\t(\n\t) (a\n,( )", "(a, b)" + " " * 30 + "(c",
+              " (a)  (b) ", "(a)(b)", "x (a) y", "( )"]),
+        ):  # fmt: skip
+            assert rx.pattern != _PRE_FIX[key]
+            _same_results(_PRE_FIX[key], rx.pattern, op, texts, rx.flags)
+
+    def test_pre_fix_patterns_have_teeth(self):
+        import re
+
+        _trips_backstop(_PRE_FIX["val_split"], "split", " " * 20000 + "a=>b")
+        _trips_backstop(_PRE_FIX["element_split"], "split", " " * 60000 + "a,")
+        _trips_backstop(_PRE_FIX["tuples"], "findall", " " * 60000 + "(a", re.VERBOSE)
+
+
+class TestRelextractInRelationLookahead:  # sem/relextract.py in_demo IN pattern
+    def test_benign_matches_unchanged(self):
+        from nltk.sem.relextract import _IN_RE
+
+        assert _IN_RE.match("based in") is not None
+        assert _IN_RE.match("a company in the") is not None
+        assert _IN_RE.match("in the making") is None
+        assert _IN_RE.match("within") is None
+
+    def test_many_in_before_an_ing_is_linear(self):
+        from nltk.sem.relextract import _IN_RE
+
+        _assert_subquadratic(
+            lambda n: _IN_RE.match("in " * (n // 3) + "ing"), 40000, 160000
+        )
+
+    def test_shipped_pattern_matches_the_pre_fix_pattern(self):
+        from nltk.sem.relextract import _IN_RE
+
+        assert _IN_RE.pattern != _PRE_FIX["in_relation"]
+        texts = [
+            "", "in", "in ing", "in x ing", "a in b", "in in", "bin", "in\ting", "going in",
+            "in in ing", "x in y ing z", "in ing in", "inn in", "in-in", "in " * 10 + "ing",
+            "in " * 10 + "x", "ing in", "in ing" * 3,
+        ]  # fmt: skip
+        _same_results(_PRE_FIX["in_relation"], _IN_RE.pattern, "match", texts)
+
+    def test_pre_fix_pattern_has_teeth(self):
+        _trips_backstop(_PRE_FIX["in_relation"], "match", "in " * 60000 + "ing")
+
+
+class TestToktokStripPatternLeadingRun:  # toktok.py RSTRIP (not applied by tokenize)
+    def test_tokenize_unchanged_and_linear_on_a_tab_run(self):
+        from nltk.tokenize import ToktokTokenizer
+
+        tok = ToktokTokenizer()
+        assert tok.tokenize("a\t\tb") == ["a", "&#9;", "&#9;", "b"]
+        _assert_subquadratic(lambda n: tok.tokenize("\t" * n + "a"), 40000, 160000)
+
+    def test_rstrip_space_run_is_linear(self):
+        from nltk.tokenize import ToktokTokenizer
+
+        rx, repl = ToktokTokenizer.RSTRIP
+        _assert_subquadratic(lambda n: rx.sub(repl, " " * n + "a"), 40000, 160000)
+
+    def test_shipped_pattern_matches_the_pre_fix_pattern(self):
+        from nltk.tokenize import ToktokTokenizer
+
+        shipped = ToktokTokenizer.RSTRIP[0].pattern
+        assert shipped != _PRE_FIX["rstrip"]
+        texts = [
+            "",
+            "a",
+            " ",
+            "a ",
+            "a  \n",
+            "a\t\n",
+            " a ",
+            "a b  ",
+            "\n",
+            " \n ",
+            "a" + " " * 30,
+        ]
+        _same_results(_PRE_FIX["rstrip"], shipped, "sub", texts)
+
+    def test_pre_fix_pattern_has_teeth(self):
+        _trips_backstop(_PRE_FIX["rstrip"], "sub", " " * 80000 + "a")
