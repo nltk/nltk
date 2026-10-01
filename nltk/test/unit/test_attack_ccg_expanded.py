@@ -14,26 +14,38 @@ chart parser running on them exactly as documented. Nothing is mocked and no
 guard is patched; every timing goes through nltk.test.unit.timing.
 """
 
+import ast
 import contextlib
+import doctest
 import io
+import pathlib
+import random
+import re
 import string
+from collections import defaultdict
 
 import pytest
 
+import nltk.test
+from nltk import redos
 from nltk.ccg import chart
 from nltk.ccg import lexicon as ccglex
-from nltk.ccg.api import FunctionalCategory
+from nltk.ccg.api import CCGVar, Direction, FunctionalCategory, PrimitiveCategory
 from nltk.ccg.lexicon import (
     MAX_PARSE_DEPTH,
     MAX_PARSE_LEN,
+    CCGLexicon,
+    Token,
     augParseCategory,
     fromstring,
     matchBrackets,
     nextCategory,
 )
-from nltk.sem.logic import LogicalExpressionException
+from nltk.sem.logic import Expression, LogicalExpressionException
 from nltk.termsec import sanitize_terminal
 from nltk.test.unit import timing
+from nltk.test.unit.security_probes.ghsa_89p3_fcch_88ph import FLAT_BIG, FLAT_SMALL
+from nltk.tree import Tree
 
 NUL = chr(0)
 BEL = chr(7)
@@ -131,15 +143,15 @@ def _rows(text):
 class TestFlatChainScaling:
     def test_probe_shape_at_the_probe_sizes_is_linear(self):
         # The input and sizes the probe measures, through the same helper:
-        # the cursor parser reads ~4x, the tail re-slicer it replaced ~13x
+        # the cursor parser reads ~4x, the tail re-slicer it replaced 11x to 14x
         ratio = timing.scaling_ratio(
-            lambda n: fromstring(_chain(n)), 10_000, 40_000, cpu_bound=True
+            lambda n: fromstring(_chain(n)), FLAT_SMALL, FLAT_BIG, cpu_bound=True
         )
         assert ratio < timing.QUADRATIC_RATIO, ratio
 
     def test_probe_shape_is_a_real_parse(self):
-        cat = fromstring(_chain(40_000)).categories("w")[0].categ()
-        assert _applications(cat) == 40_000
+        cat = fromstring(_chain(FLAT_BIG)).categories("w")[0].categ()
+        assert _applications(cat) == FLAT_BIG
 
     def test_backward_and_modal_operators_are_linear(self):
         timing.assert_subquadratic(
@@ -417,45 +429,50 @@ class TestLexiconForms:
 _LINE = 200_000  # line-level regexes see no length cap
 _CAT = MAX_PARSE_LEN - 10_000  # category-level ones run under the cap
 
+# (label, lexicon line, outcome); the label is the test id. The payload must
+# never become the id: pytest writes the node id to PYTEST_CURRENT_TEST and
+# Windows refuses an environment variable over 32767 characters.
+_REGEX_PAYLOADS = [
+    ("LEX_RE ident then '=' run", "a" + "=" * _LINE, AttributeError),
+    ("LEX_RE ident then '-' run", "a" + "-" * _LINE, AttributeError),
+    ("LEX_RE 'a=' pairs", "a=" * _LINE, AttributeError),
+    ("LEX_RE letters then spaces", "a" * _LINE + " " * _LINE, AttributeError),
+    ("LEX_RE arrow without ident", " " * _LINE + "=> S", AttributeError),
+    (
+        "RHS_RE spaces then open brace",
+        "w => S" + " " * _LINE + "{" + "x" * _LINE,
+        "parsed",
+    ),
+    ("RHS_RE open braces", "w => S" + "{" * _LINE, "parsed"),
+    ("RHS_RE close braces", "w => S" + "}" * _LINE, "parsed"),
+    ("SEMANTICS_RE unclosed", "w => S {" + "x" * _LINE, "parsed"),
+    ("COMMENTS_RE hash run", "w => S " + "#" * _LINE, "parsed"),
+    ("PRIM_RE open subscripts", "w => S" + "[" * _CAT, AttributeError),
+    (
+        "PRIM_RE unclosed subscript list",
+        "w => S[" + "a," * (_CAT // 2),
+        AttributeError,
+    ),
+    ("NEXTPRIM_RE one long name", "w => " + "S" * _CAT, AssertionError),
+    ("APP_RE slash run", "w => S" + "/" * _CAT, AttributeError),
+    ("APP_RE slash-dot run", "w => S" + "/." * (_CAT // 2), AttributeError),
+    (
+        "APP_RE slash-modality run",
+        "w => S" + "/_," * (_CAT // 3),
+        AttributeError,
+    ),
+    ("brackets never closed", "w => " + "(" * _CAT, ValueError),
+    ("brackets never opened", "w => S" + ")" * _CAT, AttributeError),
+    ("empty bracket pairs", "w => " + "()" * (_CAT // 2), AttributeError),
+    ("over-cap chain", "w => S" + "/S" * MAX_PARSE_LEN, ValueError),
+]
+
 
 class TestRegexPayloads:
     @pytest.mark.parametrize(
         "label, line, outcome",
-        [
-            ("LEX_RE ident then '=' run", "a" + "=" * _LINE, AttributeError),
-            ("LEX_RE ident then '-' run", "a" + "-" * _LINE, AttributeError),
-            ("LEX_RE 'a=' pairs", "a=" * _LINE, AttributeError),
-            ("LEX_RE letters then spaces", "a" * _LINE + " " * _LINE, AttributeError),
-            ("LEX_RE arrow without ident", " " * _LINE + "=> S", AttributeError),
-            (
-                "RHS_RE spaces then open brace",
-                "w => S" + " " * _LINE + "{" + "x" * _LINE,
-                "parsed",
-            ),
-            ("RHS_RE open braces", "w => S" + "{" * _LINE, "parsed"),
-            ("RHS_RE close braces", "w => S" + "}" * _LINE, "parsed"),
-            ("SEMANTICS_RE unclosed", "w => S {" + "x" * _LINE, "parsed"),
-            ("COMMENTS_RE hash run", "w => S " + "#" * _LINE, "parsed"),
-            ("PRIM_RE open subscripts", "w => S" + "[" * _CAT, AttributeError),
-            (
-                "PRIM_RE unclosed subscript list",
-                "w => S[" + "a," * (_CAT // 2),
-                AttributeError,
-            ),
-            ("NEXTPRIM_RE one long name", "w => " + "S" * _CAT, AssertionError),
-            ("APP_RE slash run", "w => S" + "/" * _CAT, AttributeError),
-            ("APP_RE slash-dot run", "w => S" + "/." * (_CAT // 2), AttributeError),
-            (
-                "APP_RE slash-modality run",
-                "w => S" + "/_," * (_CAT // 3),
-                AttributeError,
-            ),
-            ("brackets never closed", "w => " + "(" * _CAT, ValueError),
-            ("brackets never opened", "w => S" + ")" * _CAT, AttributeError),
-            ("empty bracket pairs", "w => " + "()" * (_CAT // 2), AttributeError),
-            ("over-cap chain", "w => S" + "/S" * MAX_PARSE_LEN, ValueError),
-        ],
-        ids=lambda value: value if isinstance(value, str) and len(value) < 40 else None,
+        _REGEX_PAYLOADS,
+        ids=[label for label, _, _ in _REGEX_PAYLOADS],
     )
     def test_payload_is_bounded(self, label, line, outcome):
         with timing.budget(2.0, label, cpu_bound=True):
@@ -612,3 +629,670 @@ class TestDocumentedLexicons:
         rows = _rows(capsys.readouterr().out)
         assert rows[0] == "I might cook and eat the bacon"
         assert rows[-1] == "S"
+
+
+# ==========================================================================
+# The pre-fix parser, verbatim, as the reference oracle of the differential audit
+# ==========================================================================
+
+# nltk/ccg/lexicon.py as it stood on develop before this change (f4e93738f),
+# copied verbatim under private names with its own seven regexes; Token,
+# CCGLexicon and the api classes are the unchanged data types both parsers build.
+_OLD_PRIM_RE = redos.compile(r"""([A-Za-z]+)(\[[A-Za-z,]+\])?""")
+_OLD_NEXTPRIM_RE = redos.compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)""")
+_OLD_APP_RE = redos.compile(r"""([\\/])([.,_]?)([.,]?)(.*)""")
+_OLD_LEX_RE = redos.compile(r"""([\S_]*?[^\s=-])\s*(::|[-=]+>)\s*(.+)""", re.UNICODE)
+_OLD_RHS_RE = redos.compile(r"""([^{}]*[^ {}])\s*(\{[^}]+\})?""", re.UNICODE)
+_OLD_SEMANTICS_RE = redos.compile(r"""\{([^}]+)\}""", re.UNICODE)
+_OLD_COMMENTS_RE = redos.compile("""([^#]*)(?:#.*)?""")
+
+
+def _old_matchBrackets(string, _depth=0, max_depth=None):
+    """Separate the contents matching the first set of brackets from the rest of the input."""
+    if max_depth is None:
+        max_depth = MAX_PARSE_DEPTH
+    if _depth > max_depth:
+        raise ValueError(
+            f"CCG nesting depth exceeds MAX_PARSE_DEPTH "
+            f"({MAX_PARSE_DEPTH}); the input may be "
+            "adversarially deep. Raise "
+            "nltk.ccg.lexicon.MAX_PARSE_DEPTH to allow it."
+        )
+    rest = string[1:]
+    inside = "("
+
+    while rest != "" and not rest.startswith(")"):
+        if rest.startswith("("):
+            (part, rest) = _old_matchBrackets(rest, _depth + 1, max_depth)
+            inside = inside + part
+        else:
+            inside = inside + rest[0]
+            rest = rest[1:]
+    if rest.startswith(")"):
+        return (inside + ")", rest[1:])
+    raise AssertionError("Unmatched bracket in string '" + string + "'")
+
+
+def _old_nextCategory(string, _depth=0, max_depth=None):
+    """Separate the string for the next portion of the category from the rest of the string"""
+    if string.startswith("("):
+        return _old_matchBrackets(string, _depth, max_depth)
+    return _OLD_NEXTPRIM_RE.match(string).groups()
+
+
+def _old_parseApplication(app):
+    """Parse an application operator"""
+    return Direction(app[0], app[1:])
+
+
+def _old_parseSubscripts(subscr):
+    """Parse the subscripts for a primitive category"""
+    if subscr:
+        return subscr[1:-1].split(",")
+    return []
+
+
+def _old_parsePrimitiveCategory(chunks, primitives, families, var):
+    """Parse a primitive category
+
+    If the primitive is the special category 'var', replace it with the
+    correct `CCGVar`.
+    """
+    if chunks[0] == "var":
+        if chunks[1] is None:
+            if var is None:
+                var = CCGVar()
+            return (var, var)
+
+    catstr = chunks[0]
+    if catstr in families:
+        (cat, cvar) = families[catstr]
+        if var is None:
+            var = cvar
+        else:
+            cat = cat.substitute([(cvar, var)])
+        return (cat, var)
+
+    if catstr in primitives:
+        subscrs = _old_parseSubscripts(chunks[1])
+        return (PrimitiveCategory(catstr, subscrs), var)
+    raise AssertionError(
+        "String '" + catstr + "' is neither a family nor primitive category."
+    )
+
+
+def _old_augParseCategory(
+    line, primitives, families, var=None, _depth=0, max_depth=None
+):
+    """Parse a string representing a category, and returns a tuple with
+    (possibly) the CCG variable for the category
+    """
+    if max_depth is None:
+        max_depth = MAX_PARSE_DEPTH
+    if _depth > max_depth:
+        raise ValueError(
+            f"CCG nesting depth exceeds MAX_PARSE_DEPTH "
+            f"({MAX_PARSE_DEPTH}); the input may be "
+            "adversarially deep. Raise "
+            "nltk.ccg.lexicon.MAX_PARSE_DEPTH to allow it."
+        )
+    (cat_string, rest) = _old_nextCategory(line, _depth, max_depth)
+
+    if cat_string.startswith("("):
+        (res, var) = _old_augParseCategory(
+            cat_string[1:-1], primitives, families, var, _depth + 1, max_depth
+        )
+    else:
+        (res, var) = _old_parsePrimitiveCategory(
+            _OLD_PRIM_RE.match(cat_string).groups(), primitives, families, var
+        )
+
+    while rest != "":
+        app = _OLD_APP_RE.match(rest).groups()
+        direction = _old_parseApplication(app[0:3])
+        rest = app[3]
+
+        (cat_string, rest) = _old_nextCategory(rest, _depth, max_depth)
+        if cat_string.startswith("("):
+            (arg, var) = _old_augParseCategory(
+                cat_string[1:-1],
+                primitives,
+                families,
+                var,
+                _depth + 1,
+                max_depth,
+            )
+        else:
+            (arg, var) = _old_parsePrimitiveCategory(
+                _OLD_PRIM_RE.match(cat_string).groups(), primitives, families, var
+            )
+        res = FunctionalCategory(res, arg, direction)
+
+    return (res, var)
+
+
+def _old_fromstring(lex_str, include_semantics=False, max_depth=None):
+    """Convert string representation into a lexicon for CCGs."""
+    if max_depth is None:
+        max_depth = MAX_PARSE_DEPTH
+    CCGVar.reset_id()
+    primitives = []
+    families = {}
+    entries = defaultdict(list)
+    for line in lex_str.splitlines():
+        # Strip comments and leading/trailing whitespace.
+        line = _OLD_COMMENTS_RE.match(line).groups()[0].strip()
+        if line == "":
+            continue
+
+        if line.startswith(":-"):
+            # A line of primitive categories.
+            # The first one is the target category
+            # ie, :- S, N, NP, VP
+            primitives = primitives + [
+                prim.strip() for prim in line[2:].strip().split(",")
+            ]
+        else:
+            # Either a family definition, or a word definition
+            (ident, sep, rhs) = _OLD_LEX_RE.match(line).groups()
+            (catstr, semantics_str) = _OLD_RHS_RE.match(rhs).groups()
+            (cat, var) = _old_augParseCategory(
+                catstr, primitives, families, max_depth=max_depth
+            )
+
+            if sep == "::":
+                # Family definition
+                # ie, Det :: NP/N
+                families[ident] = (cat, var)
+            else:
+                semantics = None
+                if include_semantics is True:
+                    if semantics_str is None:
+                        raise AssertionError(
+                            line
+                            + " must contain semantics because include_semantics is set to True"
+                        )
+                    else:
+                        semantics = Expression.fromstring(
+                            _OLD_SEMANTICS_RE.match(semantics_str).groups()[0]
+                        )
+                # Word definition
+                # ie, which => (N\N)/(S/NP)
+                entries[ident].append(Token(ident, cat, semantics))
+    return CCGLexicon(primitives[0], primitives, families, entries)
+
+
+# ==========================================================================
+# Differential machinery: the same input through both parsers, compared whole
+# ==========================================================================
+
+
+def _signature(cat):
+    """A category as plain data: every primitive name, subscript, direction,
+    modifier and variable id, plus its string form."""
+    if isinstance(cat, CCGVar):
+        return ("var", cat.id(), str(cat))
+    if isinstance(cat, PrimitiveCategory):
+        return ("prim", cat.categ(), tuple(cat.restrs()), str(cat))
+    if isinstance(cat, FunctionalCategory):
+        direction = cat.dir()
+        return (
+            "fun",
+            _signature(cat.res()),
+            (direction.dir(), direction.restrs(), direction.is_variable()),
+            _signature(cat.arg()),
+            str(cat),
+        )
+    return ("other", repr(cat))
+
+
+def _var_signature(var):
+    return None if var is None else _signature(var)
+
+
+def _lexicon_signature(lex):
+    """A whole lexicon as plain data: start, primitives in order, every family
+    with its variable, every entry's categories and semantics, and str()."""
+    families = {
+        name: (_signature(cat), _var_signature(var))
+        for name, (cat, var) in lex._families.items()
+    }
+    entries = {
+        word: [(_signature(tok.categ()), str(tok.semantics())) for tok in toks]
+        for word, toks in lex._entries.items()
+    }
+    return (str(lex.start()), tuple(lex._primitives), families, entries, str(lex))
+
+
+def _tree_signature(tree):
+    """A parse tree as plain data: every token's category and semantics and
+    every combinator, down to the words."""
+    if not isinstance(tree, Tree):
+        return tree
+    label = tree.label()
+    if isinstance(label, tuple):
+        label = (str(label[0]), label[1])
+    elif isinstance(label, Token):
+        label = str(label)
+    return (label, tuple(_tree_signature(child) for child in tree))
+
+
+def _derivation_text(tree):
+    out = io.StringIO()
+    with contextlib.redirect_stdout(out):
+        chart.printCCGDerivation(tree)
+    return out.getvalue()
+
+
+def _outcome(fn):
+    """``("ok", value)`` or ``("exc", type name, message)``."""
+    try:
+        return ("ok", fn())
+    except Exception as exc:
+        return ("exc", type(exc).__name__, str(exc))
+
+
+def _described(outcome, describe):
+    if outcome[0] == "ok":
+        return ("ok", describe(outcome[1]))
+    return outcome
+
+
+def _category_outcome(parse, text, primitives, families):
+    """One parser's outcome on a category string, as comparable data; the
+    variable counter is reset so both sides number their variables alike."""
+    CCGVar.reset_id()
+    return _described(
+        _outcome(lambda: parse(text, primitives, families)),
+        lambda pair: (_signature(pair[0]), _var_signature(pair[1])),
+    )
+
+
+def _both_lexicons(text, include_semantics=False):
+    """``fromstring`` through the oracle and the fixed parser; the outcomes must
+    agree as data. Returns the fixed parser's lexicon carrying the oracle's as
+    ``_old_twin``, or raises what both raised."""
+    old = _outcome(lambda: _old_fromstring(text, include_semantics))
+    new = _outcome(lambda: fromstring(text, include_semantics))
+    assert _described(old, _lexicon_signature) == _described(new, _lexicon_signature), (
+        text[:200],
+        old if old[0] == "exc" else "parsed",
+        new if new[0] == "exc" else "parsed",
+    )
+    if new[0] == "exc":
+        return fromstring(text, include_semantics)  # raises the real exception
+    new[1]._old_twin = old[1]
+    return new[1]
+
+
+class _DifferentialLexiconModule:
+    """Stands in for ``nltk.ccg.lexicon`` in the documented examples."""
+
+    def __init__(self):
+        self.calls = 0
+
+    def fromstring(self, lex_str, include_semantics=False, max_depth=None):
+        self.calls += 1
+        return _both_lexicons(lex_str, include_semantics)
+
+    def __getattr__(self, name):
+        return getattr(ccglex, name)
+
+
+class _DifferentialChartParser(chart.CCGChartParser):
+    """The real chart parser over the fixed parser's lexicon, with a twin over
+    the oracle's; every parse must give the same trees and derivations."""
+
+    calls = 0
+
+    def __init__(self, lexicon, rules, *args, **kwargs):
+        super().__init__(lexicon, rules, *args, **kwargs)
+        self._twin = chart.CCGChartParser(lexicon._old_twin, rules, *args, **kwargs)
+
+    def parse(self, tokens):
+        type(self).calls += 1
+        CCGVar.reset_id()
+        new = list(super().parse(tokens))
+        CCGVar.reset_id()
+        old = list(self._twin.parse(tokens))
+        assert [_tree_signature(t) for t in new] == [_tree_signature(t) for t in old]
+        assert [_derivation_text(t) for t in new] == [_derivation_text(t) for t in old]
+        return iter(new)
+
+
+class _DifferentialChartModule:
+    """Stands in for ``nltk.ccg.chart`` in the documented examples."""
+
+    CCGChartParser = _DifferentialChartParser
+
+    def __getattr__(self, name):
+        return getattr(chart, name)
+
+
+def _run_documented_examples(doctest_name):
+    """Execute every example of a CCG doctest file, in order, with both
+    modules replaced by their differential stand-ins; an example that raises
+    must be one the document expects to raise. Returns the number of lexicons
+    parsed and of sentences parsed."""
+    text = (pathlib.Path(nltk.test.__file__).parent / doctest_name).read_text(
+        encoding="utf-8"
+    )
+    lexicon_module = _DifferentialLexiconModule()
+    _DifferentialChartParser.calls = 0
+    namespace = {}
+
+    def rebind():
+        namespace["lexicon"] = lexicon_module
+        namespace["chart"] = _DifferentialChartModule()
+        namespace["CCGChartParser"] = _DifferentialChartParser
+
+    rebind()
+    for example in doctest.DocTestParser().get_examples(text):
+        try:
+            with contextlib.redirect_stdout(io.StringIO()):
+                exec(compile(example.source, doctest_name, "single"), namespace)
+        except Exception as exc:
+            assert example.exc_msg, (example.source, repr(exc))
+            assert type(exc).__name__ in example.exc_msg, (example.exc_msg, repr(exc))
+        rebind()
+    return lexicon_module.calls, _DifferentialChartParser.calls
+
+
+def _source_lexicon_string(relative_path, name):
+    """The literal a module-level ``name = fromstring('''...''')`` parses."""
+    source = (pathlib.Path(ccglex.__file__).parent / relative_path).read_text(
+        encoding="utf-8"
+    )
+    for node in ast.walk(ast.parse(source)):
+        if isinstance(node, ast.Assign) and any(
+            isinstance(target, ast.Name) and target.id == name
+            for target in node.targets
+        ):
+            return node.value.args[0].value
+    raise AssertionError(f"{name} not found in {relative_path}")
+
+
+# ==========================================================================
+# Differential audit: the documented grammars
+# ==========================================================================
+
+
+class TestDifferentialDocumentedGrammars:
+    def test_ccg_doctest_examples_agree(self):
+        # 4 lexicons (relative clauses, test1_lex, test2_lex, Spanish) and the
+        # 7 sentences the document parses, trees and derivations compared
+        assert _run_documented_examples("ccg.doctest") == (4, 7)
+
+    def test_ccg_semantics_doctest_examples_agree(self):
+        # 9 lexicons (six with semantics, the three str() examples, one of
+        # them the documented AssertionError) and 6 parsed sentences
+        assert _run_documented_examples("ccg_semantics.doctest") == (9, 6)
+
+    def test_module_lexicons_agree_with_their_source_and_the_live_objects(self):
+        for relative_path, name, live in (
+            ("lexicon.py", "openccg_tinytiny", ccglex.openccg_tinytiny),
+            ("chart.py", "lex", chart.lex),
+        ):
+            text = _source_lexicon_string(relative_path, name)
+            lex = _both_lexicons(text)
+            assert _lexicon_signature(lex) == _lexicon_signature(live)
+        parser = _DifferentialChartParser(
+            _both_lexicons(_source_lexicon_string("chart.py", "lex")),
+            chart.DefaultRuleSet,
+        )
+        assert len(list(parser.parse("I might cook and eat the bacon".split()))) == 25
+
+
+# ==========================================================================
+# Differential audit: a generated corpus, fixed seed
+# ==========================================================================
+
+_CORPUS_PRIMITIVES = ["S", "NP", "N", "VP", "PP"]
+_CORPUS_FAMILIES = ":- S, NP, N, VP, PP\nDet :: NP/N\nTV :: VP/NP\n"
+_CORPUS_SEMANTICS = [
+    "{\\x.P(x)}",
+    "{book}",
+    "{\\x y.eat(x,y)}",
+    "{sem=\\x.P(x)}",
+    "{(((}",
+    "{",
+    "",
+]
+
+
+class _Corpus:
+    """Random lexicon text from the grammar and its neighbourhood: primitives
+    with and without subscripts, nests to depth 12, both slashes with every
+    modifier combination, variables, families, unknown and lower-case and
+    digit-bearing and accented names, empty and malformed subscripts, doubled
+    and spaced and foreign operators, embedded line breaks and tabs, trailing
+    garbage, semantics blocks, comments and odd separators."""
+
+    def __init__(self, seed):
+        self.rng = random.Random(seed)
+
+    def subscript(self):
+        return self.rng.choice(
+            ["", "", "[sg]", "[pl]", "[sg,pl]", "[]", "[1]", "[a,]", "[ing", "[x y]"]
+        )
+
+    def atom(self, depth):
+        roll = self.rng.random()
+        if roll < 0.08 and depth < 12:
+            return "(" + self.category(depth + 1) + ")"
+        if roll < 0.12:
+            return self.rng.choice(
+                [
+                    "var",
+                    "var[sg]",
+                    "Det",
+                    "TV",
+                    "X",
+                    "s",
+                    "np",
+                    "N1",
+                    "é",
+                    "ñp",
+                    "",
+                    " ",
+                    "S N",
+                    "(",
+                    ")",
+                    "S)",
+                ]
+            )
+        return self.rng.choice(_CORPUS_PRIMITIVES) + self.subscript()
+
+    def operator(self):
+        return self.rng.choice(
+            [
+                "/",
+                "\\",
+                "/.",
+                "\\.",
+                "/,",
+                "\\,",
+                "/_",
+                "\\_",
+                "/.,",
+                "\\,.",
+                "/_,",
+                "//",
+                "/ ",
+                "",
+                "|",
+                "\n/",
+                "/\n",
+            ]
+        )
+
+    def category(self, depth=0):
+        text = self.atom(depth)
+        for _ in range(self.rng.randint(0, 4)):
+            text += self.operator() + self.atom(depth)
+        if self.rng.random() < 0.05:
+            text += self.rng.choice(
+                [")", "(", "\n", "\nN", "\t", " ", "{x}", "#c", "1", "_", "S"]
+            )
+        return text
+
+    def lexicon(self):
+        lines = [
+            self.rng.choice(
+                [
+                    ":- S, NP, N, VP, PP",
+                    ":- S,NP,N,VP,PP",
+                    ":-S, NP",
+                    ":- S",
+                    "",
+                    "# only comment",
+                ]
+            )
+        ]
+        for _ in range(self.rng.randint(0, 6)):
+            ident = self.rng.choice(
+                [
+                    "the",
+                    "Det",
+                    "TV",
+                    "eat",
+                    "a-b",
+                    "x/y",
+                    "é",
+                    "w" + str(self.rng.randint(0, 9)),
+                    "and",
+                    "",
+                ]
+            )
+            separator = self.rng.choice(
+                [" => ", "=>", " :: ", "::", " ==> ", " -> ", " ", " = "]
+            )
+            semantics = (
+                self.rng.choice(_CORPUS_SEMANTICS) if self.rng.random() < 0.3 else ""
+            )
+            line = (
+                ident
+                + separator
+                + self.category()
+                + (" " + semantics if semantics else "")
+            )
+            if self.rng.random() < 0.2:
+                line += "  # " + self.rng.choice(["c", "#", "{", "=>"])
+            if self.rng.random() < 0.1:
+                line = "   " + line + "\t"
+            lines.append(line)
+        return self.rng.choice(["\n", "\r\n", "\r"]).join(lines) + self.rng.choice(
+            ["", "\n"]
+        )
+
+
+def _category_divergences(count, seed):
+    """Every generated category whose outcome differs between the oracle and
+    the fixed parser, as ``(index, text, old, new)``."""
+    corpus = _Corpus(seed)
+    old_families = _old_fromstring(_CORPUS_FAMILIES)._families
+    new_families = fromstring(_CORPUS_FAMILIES)._families
+    divergences = []
+    for index in range(count):
+        text = corpus.category()
+        old = _category_outcome(
+            _old_augParseCategory, text, _CORPUS_PRIMITIVES, old_families
+        )
+        new = _category_outcome(
+            augParseCategory, text, _CORPUS_PRIMITIVES, new_families
+        )
+        if old != new:
+            divergences.append((index, text, old, new))
+    return divergences
+
+
+class TestDifferentialGeneratedCorpus:
+    def test_categories_differ_only_on_an_embedded_line_break(self):
+        divergences = _category_divergences(6_000, 20261001)
+        # The one divergence class: the oracle's trailing (.*) stopped at a
+        # line break and silently dropped the rest; the fixed parser sees it
+        assert all("\n" in text for _, text, _, _ in divergences), divergences[:3]
+        assert all(new[0] == "exc" for _, _, _, new in divergences)
+        index, text, old, new = divergences[0]
+        assert (index, text) == (11, "VP\n/PP[]//NP[]/.,S[1]")
+        assert old[0] == "ok" and old[1][0][3] == "VP"
+        assert new[:2] == ("exc", "AttributeError")
+        assert len(divergences) == 273
+
+    def test_categories_without_a_line_break_never_differ(self):
+        corpus = _Corpus(20261001)
+        old_families = _old_fromstring(_CORPUS_FAMILIES)._families
+        new_families = fromstring(_CORPUS_FAMILIES)._families
+        checked = 0
+        for _ in range(6_000):
+            text = corpus.category().replace("\n", "")
+            old = _category_outcome(
+                _old_augParseCategory, text, _CORPUS_PRIMITIVES, old_families
+            )
+            new = _category_outcome(
+                augParseCategory, text, _CORPUS_PRIMITIVES, new_families
+            )
+            assert old == new, (text, old, new)
+            checked += 1
+        assert checked == 6_000
+
+    def test_lexicons_never_differ(self):
+        # fromstring splits lines before any category is parsed, so the one
+        # category-level divergence cannot be reached through it
+        corpus = _Corpus(20261002)
+        parsed = refused = 0
+        for _ in range(3_000):
+            text = corpus.lexicon()
+            include_semantics = corpus.rng.random() < 0.3
+            old = _outcome(lambda: _old_fromstring(text, include_semantics))
+            new = _outcome(lambda: fromstring(text, include_semantics))
+            assert _described(old, _lexicon_signature) == _described(
+                new, _lexicon_signature
+            ), (text, old, new)
+            if new[0] == "ok":
+                parsed += 1
+            else:
+                refused += 1
+        assert parsed >= 300 and refused >= 300, (parsed, refused)
+
+
+# ==========================================================================
+# The two points where the fixed parser departs from the oracle, pinned
+# ==========================================================================
+
+
+class TestDeparturesFromThePreFixParser:
+    def test_line_break_inside_a_category_is_refused_not_truncated(self):
+        # Directly: the oracle returned VP and dropped "/PP"; the fixed parser
+        # refuses, as it does every malformed category
+        CCGVar.reset_id()
+        old, _ = _old_augParseCategory("VP\n/PP", _CORPUS_PRIMITIVES, {})
+        assert str(old) == "VP"
+        with pytest.raises(AttributeError):
+            augParseCategory("VP\n/PP", _CORPUS_PRIMITIVES, {})
+        # Through fromstring the break is a line boundary for both parsers
+        lex = _both_lexicons(":- S, VP, PP\nw => VP\nv => PP\n")
+        assert sorted(lex._entries) == ["v", "w"]
+        with pytest.raises(AttributeError):
+            _old_fromstring(":- S, VP, PP\nw => VP\n/PP\n")
+        with pytest.raises(AttributeError):
+            fromstring(":- S, VP, PP\nw => VP\n/PP\n")
+
+    def test_the_cap_is_the_only_size_departure(self):
+        # Exactly MAX_PARSE_LEN: both parse, identically
+        exact = "S[" + "a," * ((MAX_PARSE_LEN - 4) // 2) + "a]"
+        assert len(exact) == MAX_PARSE_LEN
+        assert _category_outcome(
+            _old_augParseCategory, exact, ["S"], {}
+        ) == _category_outcome(augParseCategory, exact, ["S"], {})
+        # One more: the oracle accepts it (in milliseconds, the sink is not the
+        # subscript scan), the fixed parser refuses it by the cap
+        over = exact[:-1] + "a]"
+        assert len(over) == MAX_PARSE_LEN + 1
+        with timing.budget(
+            2.0, "the oracle on a 100001-char primitive", cpu_bound=True
+        ):
+            old, _ = _old_augParseCategory(over, ["S"], {})
+        assert len(old.restrs()) == (MAX_PARSE_LEN - 4) // 2 + 1
+        with pytest.raises(ValueError, match="MAX_PARSE_LEN"):
+            augParseCategory(over, ["S"], {})
