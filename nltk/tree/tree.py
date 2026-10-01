@@ -811,16 +811,27 @@ class Tree(list):
 
         draw_trees(self)
 
-    def pretty_print(self, sentence=None, highlight=(), stream=None, **kwargs):
+    def pretty_print(
+        self, sentence=None, highlight=(), stream=None, rtl=False, **kwargs
+    ):
         """
         Pretty-print this tree as ASCII or Unicode art.
         For explanation of the arguments, see the documentation for
         `nltk.tree.prettyprinter.TreePrettyPrinter`.
+
+        :param rtl: If True, draw the tree mirrored, the first child of every
+            node at the right, for a right-to-left language (Arabic, Hebrew,
+            Persian, Urdu). The tree itself is not changed; each cell of
+            right-to-left text in the output is preceded by an invisible
+            LEFT-TO-RIGHT MARK (U+200E) so that a bidi-aware terminal keeps
+            the columns aligned.
+        :type rtl: bool
         """
         from nltk.tree.prettyprinter import TreePrettyPrinter
 
         safe_print(
-            TreePrettyPrinter(self, sentence, highlight).text(**kwargs), file=stream
+            TreePrettyPrinter(self, sentence, highlight, rtl=rtl).text(**kwargs),
+            file=stream,
         )
 
     def __repr__(self):
