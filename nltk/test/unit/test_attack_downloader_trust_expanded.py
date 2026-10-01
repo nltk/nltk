@@ -663,11 +663,8 @@ SPOOFED_INDEX = {
     "id-lf": ("id", "tiny\n"),
     "id-nul": ("id", "ti" + NUL + "ny"),
     "id-bidi": ("id", "ti" + RLO + "ny"),
-    "id-device-name": ("id", "CON"),
-    "id-device-name-with-extension": ("id", "nul.zip"),
     "id-nfd": ("id", unicodedata.normalize("NFD", "caf" + chr(0xE9))),
     "subdir-trailing-dot": ("subdir", "corpora."),
-    "subdir-device-name": ("subdir", "corpora/aux"),
 }
 
 
@@ -764,9 +761,6 @@ MEMBER_SHAPES = {
         None,
     ),
     "trailing-dot-dir": ([("h/", b""), ("h/sub./ok.txt", b"ok")], None),
-    "device-name": ([("h/", b""), ("h/CON", b"x")], None),
-    "device-name-with-extension": ([("h/", b""), ("h/nul.txt", b"x")], None),
-    "device-name-dir": ([("h/", b""), ("h/com1/ok.txt", b"x")], None),
     "nfd-alone": (
         [
             ("h/", b""),
@@ -828,6 +822,97 @@ class TestMemberNames:
             } == expected, shape
             monkeypatch.setattr(nltk.data, "path", [str(dl)])
             assert fresh_status(index, dl, "h") == INSTALLED
+
+    @pytest.mark.parametrize("name", ["con.xml", "NUL.txt", "COM1", "CON"], ids=str)
+    def test_a_device_name_is_refused_where_it_opens_a_device(self, box, name):
+        """The platform split of the device-name rule: on Windows the name
+        opens the console or the null device, so the member is refused and
+        nothing is written; on POSIX it is an ordinary file name (propbank
+        ships frames/con.xml) and lands as written, bytes intact, the other
+        member untouched."""
+        root, outside, dl, server = box
+        entries = [
+            ("h/", b""),
+            ("h/sub/", b""),
+            (f"h/sub/{name}", b"DEVICE?"),
+            ("h/ok.txt", b"ok"),
+        ]
+        index = serve_packages(server, [("h", make_zip(entries), {"unzip": "0"})])
+        result, text = run_download(index, dl, "h", quiet=True, extract=True)
+        unpacked = dl / "corpora" / "h"
+        assert not _links_under(str(dl))
+        if os.name != "posix":
+            assert result is False, (name, text)
+            assert "character device name" in text
+            assert not any(
+                kind == stat.S_IFREG for kind, size in tree(str(unpacked)).values()
+            ), (name, tree(str(unpacked)))
+        else:
+            assert result is True, (name, text)
+            assert sorted(os.listdir(unpacked)) == ["ok.txt", "sub"]
+            assert os.listdir(unpacked / "sub") == [name]
+            assert (unpacked / "sub" / name).read_bytes() == b"DEVICE?"
+            assert (unpacked / "ok.txt").read_bytes() == b"ok"
+            assert fresh_status(index, dl, "h") == INSTALLED
+
+    @pytest.mark.parametrize(
+        "field, value",
+        [("id", "CON"), ("id", "nul.zip"), ("subdir", "corpora/aux")],
+        ids=["id-CON", "id-nul.zip", "subdir-aux"],
+    )
+    def test_a_device_name_in_the_index_is_refused_where_it_opens_a_device(
+        self, box, monkeypatch, field, value
+    ):
+        """The same split for an index id or subdir: refused when the index
+        is read on Windows; on POSIX installed under the name as written."""
+        root, outside, dl, server = box
+        pid = value if field == "id" else "tiny"
+        blob = tiny_package(pid)
+        server.body("/pkgs/p.zip", blob)
+        attrs = package_attrs(pid, blob, server.url("/pkgs/p.zip"), unzip="0")
+        attrs[field] = value
+        server.body("/index.xml", make_index([attrs]))
+        try:
+            result, text = run_download(
+                server.url("/index.xml"), dl, pid, quiet=True, extract=True
+            )
+        except ValueError as exc:
+            result, text = False, str(exc)
+        if os.name != "posix":
+            assert result is False and "character device name" in text, (value, text)
+            assert not any(
+                kind == stat.S_IFREG for kind, size in tree(str(dl)).values()
+            )
+        else:
+            assert result is True, (value, text)
+            subdir = value if field == "subdir" else "corpora"
+            assert (dl / subdir / pid / "words.txt").read_bytes() == WORDS
+
+    def test_every_member_of_the_real_propbank_passes_the_name_rule(self):
+        """The real propbank archive ships frames/con.xml: every one of its
+        member names passes on POSIX, and on Windows exactly that one is
+        refused (the console device), a finding for the data repository."""
+        archive = None
+        for root in nltk.data.path:
+            candidate = os.path.join(root, "corpora", "propbank.zip")
+            if os.path.isfile(candidate) and os.access(candidate, os.R_OK):
+                archive = candidate
+                break
+        if archive is None:
+            pytest.skip("the real propbank archive is not installed here")
+        with zipfile.ZipFile(archive) as zf:
+            names = [info.filename for info in zf.infolist()]
+        assert len(names) > 100
+        refused = {
+            name: downloader._name_not_as_written(name.replace("\\", "/"))
+            for name in names
+        }
+        refused = {name: why for name, why in refused.items() if why is not None}
+        if os.name == "posix":
+            assert refused == {}, refused
+        else:
+            assert refused == {"propbank/frames/con.xml": "is a character device name"}
+        pathsec._reject_colliding_members(names, context="propbank")
 
     def test_a_nul_in_a_member_name_cannot_hide_a_second_member(self, box):
         """zipfile cuts a name at NUL (writing and reading), so a name the

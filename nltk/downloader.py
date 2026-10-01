@@ -3127,11 +3127,17 @@ def _validate_member(member, root_abs):
 def _name_not_as_written(name):
     """Why a slash-separated *name* would not land on disk as written, or None.
 
-    A component with a trailing dot or space is stored without it on Windows;
-    a component whose stem is a character device name (CON, NUL, COM1 ...)
-    opens the device there; a component in a decomposed Unicode spelling is
-    stored composed on a normalising filesystem. Each lets one name stand for
-    another, so each is refused on every platform (CWE-22, resource poisoning).
+    A component with a trailing dot or space is stored without it on Windows,
+    and a component in a decomposed Unicode spelling is stored composed on a
+    normalising filesystem: each lets one name stand for another, so each is
+    refused on every platform, since an archive extracted anywhere may be
+    carried to such a filesystem (CWE-22, resource poisoning). A component
+    whose stem is a character device name (CON, NUL, COM1 ...) opens the
+    device where such names exist, so it is refused there, the scope
+    ``pathsec._is_windows_device_name`` uses; on POSIX ``con.xml`` is stored
+    as written, nothing stands for anything else, and refusing it would make
+    a real package (propbank ships ``frames/con.xml``) uninstallable for no
+    gain.
     """
     import unicodedata
 
@@ -3142,7 +3148,10 @@ def _name_not_as_written(name):
             continue
         if part != part.rstrip(" ."):
             return "ends in a dot or a space, which a filesystem strips"
-        if part.split(".", 1)[0].upper() in _WINDOWS_RESERVED_NAMES:
+        if (
+            os.name != "posix"
+            and part.split(".", 1)[0].upper() in _WINDOWS_RESERVED_NAMES
+        ):
             return "is a character device name"
         if unicodedata.normalize("NFC", part) != part:
             return "is not in composed (NFC) form, which a filesystem may apply"
