@@ -25,6 +25,7 @@ from nltk.internals import (
     find_jar,
     java,
 )
+from nltk.pathsec import has_line_unsafe_char
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path, validate_tool_dir, validate_tool_path
 from nltk.tokenize.api import TokenizerI
@@ -292,6 +293,22 @@ class StanfordSegmenter(TokenizerI):
     def segment_sents(self, sentences):
         """ """
         encoding = self._encoding
+
+        # A line break in a token would inject an extra segmenter input line; a
+        # tab, NUL or other control character would be re-split or truncated by
+        # the tool. Refuse them by the shared line-safety rule, then build the
+        # input once and require one separator per sentence gap.
+        for sentence in sentences:
+            for token in sentence:
+                if has_line_unsafe_char(token):
+                    raise ValueError(
+                        "Tokens cannot contain newline characters, nor a tab, "
+                        "another line break, a control character or NUL: %r" % (token,)
+                    )
+        _input = "\n".join(" ".join(x) for x in sentences)
+        if _input.count("\n") != max(len(sentences) - 1, 0) or "\r" in _input:
+            raise ValueError("Tokens cannot contain newline characters.")
+
         input_file_path = None
         java_succeeded = False
         try:
@@ -301,11 +318,14 @@ class StanfordSegmenter(TokenizerI):
             )
             self._input_file_path = input_file_path
 
-            # Write the actual sentences to the temporary input file
-            with os.fdopen(_input_fh, "wb") as input_fh:
-                _input = "\n".join(" ".join(x) for x in sentences)
-                if isinstance(_input, str) and encoding:
-                    _input = _input.encode(encoding)
+            # mkstemp gives a race-free path inside the pathsec-validated 0700
+            # staging dir; reopen it through pathsec_open rather than the raw fd.
+            os.close(_input_fh)
+            if isinstance(_input, str) and encoding:
+                _input = _input.encode(encoding)
+            with pathsec_open(
+                input_file_path, "wb", context="StanfordSegmenter.segment_sents"
+            ) as input_fh:
                 input_fh.write(_input)
 
             # Validate BEFORE building the command, and build it from the
