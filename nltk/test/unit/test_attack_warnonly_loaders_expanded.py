@@ -65,6 +65,7 @@ from nltk.grammar import CFG, FeatureGrammar
 from nltk.parse.chart import ChartParser
 from nltk.parse.featurechart import FeatureChartParser
 from nltk.picklesec import WarningUnpickler
+from nltk.test.unit import timing
 from nltk.tree import Tree
 
 POSIX_ONLY = pytest.mark.skipif(os.name != "posix", reason="POSIX-only global")
@@ -429,17 +430,18 @@ def _run_child_bounded(pickle_path, wall_timeout):
         print("LOADED", top_len, depth)
         """
     )
-    try:
-        proc = subprocess.run(
-            [sys.executable, "-c", child, str(pickle_path)],
-            capture_output=True,
-            text=True,
-            timeout=wall_timeout,
-            env=env,
-        )
-        return False, proc.stdout.strip()
-    except subprocess.TimeoutExpired:
+    # the guarded child is charged its CPU time (see nltk.test.unit.timing)
+    proc, run = timing.run_subprocess(
+        [sys.executable, "-c", child, str(pickle_path)],
+        wall_timeout,
+        cpu_bound=True,
+        capture_output=True,
+        text=True,
+        env=env,
+    )
+    if proc is None or not run.within_budget:
         return True, ""
+    return False, proc.stdout.strip()
 
 
 def test_deeply_nested_graph_is_bounded(pathsec_sandbox):

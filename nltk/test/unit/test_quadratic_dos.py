@@ -64,7 +64,6 @@ caught.
 """
 
 import io
-import time
 
 import pytest
 
@@ -72,12 +71,13 @@ from nltk.corpus.reader.pl196x import TEICorpusView
 from nltk.corpus.reader.util import read_sexpr_block
 from nltk.corpus.reader.xmldocs import XMLCorpusView
 from nltk.stem import PorterStemmer
+from nltk.test.unit import timing
 
 
 def _elapsed(fn):
-    start = time.perf_counter()
-    fn()
-    return time.perf_counter() - start
+    """Seconds charged to ``fn``: CPU time when it computed, wall time when it
+    waited (see :mod:`nltk.test.unit.timing`)."""
+    return timing.charged(fn)
 
 
 def _assert_subquadratic(op, small, big, factor=8.0, noise_floor=0.1, reps=3):
@@ -85,16 +85,15 @@ def _assert_subquadratic(op, small, big, factor=8.0, noise_floor=0.1, reps=3):
 
     A load-invariant ratio, not an absolute ceiling: a linear op is ~4x, the
     pre-patch O(n**2) ~16x, so factor=8 separates them on any machine. The floor
-    is multiplicative (an additive slack would hide a small quadratic); each side
-    is the min of ``reps`` runs to shed a transient stall.
+    is multiplicative (an additive slack would hide a small quadratic). The
+    measurement is the suite's shared one: CPU time for a CPU-bound op, the wall
+    clock for one that waits, small and big runs alternating, minimum kept.
     """
-    t_small = min(_elapsed(lambda: op(small)) for _ in range(reps))
-    t_big = min(_elapsed(lambda: op(big)) for _ in range(reps))
-    # Explicit ratio (equivalent to ``t_big < factor * max(t_small, noise_floor)``;
-    # the floor already rules out division-by-zero) so the measured scaling factor
-    # is right there in the failure output.
-    ratio = t_big / max(t_small, noise_floor)
-    assert ratio < factor, (small, big, t_small, t_big, ratio)
+    # every op here computes (parsers, regexes, tokenizers), so its CPU time is
+    # its cost, declared rather than left to the share heuristic
+    timing.assert_subquadratic(
+        op, small, big, factor, noise_floor, reps, cpu_bound=True
+    )
 
 
 # ==========================================================================

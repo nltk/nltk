@@ -72,7 +72,7 @@ def _conll_srl_quadratic_rescan():
         def op(n):
             reader._get_srl_instances(grids[n], False)
 
-        ratio = scaling_ratio(op, _SMALL, _BIG)
+        ratio = scaling_ratio(op, _SMALL, _BIG, cpu_bound=True)  # the sink computes
         if ratio >= QUADRATIC_RATIO:
             return (
                 VULNERABLE,
