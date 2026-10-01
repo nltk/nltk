@@ -2290,10 +2290,9 @@ class TestExtractRouteAttackMatrix:
         root, outside, dl, server = box
         blob = make_zip([("h/", b"")] + [(f"h/f{i}.txt", b"x") for i in range(3000)])
         index = serve_packages(server, [("h", blob, {"unzip": "0"})])
-        started = time.perf_counter()
-        result, text = run_download(index, dl, "h", quiet=True, extract=True)
+        with timing.budget(60, "extracting 3000 members"):
+            result, text = run_download(index, dl, "h", quiet=True, extract=True)
         assert result is True, text
-        assert time.perf_counter() - started < 60
         assert len(os.listdir(dl / "corpora" / "h")) == 3000
 
     @pytest.mark.skipif(os.name != "posix", reason="symlinks and hardlinks as on POSIX")
