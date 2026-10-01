@@ -16,7 +16,6 @@ invocation of the same jar and model on the same input. Nothing is mocked."""
 import glob
 import hashlib
 import os
-import subprocess
 import sys
 import tempfile
 import unicodedata
@@ -26,6 +25,10 @@ import pytest
 import nltk.data
 from nltk import pathsec
 from nltk.pathsec import has_line_unsafe_char
+from nltk.test.unit import timing
+
+#: seconds a direct JVM run has, as the budget and as the hang deadline
+_JAVA_BUDGET = 600
 
 # Every character class has_line_unsafe_char refuses, spelled with chr()
 LINE_BREAKS = [chr(c) for c in (0x0A, 0x0D, 0x0B, 0x0C, 0x1C, 0x1D, 0x1E, 0x85)]
@@ -162,13 +165,13 @@ class TestStanfordInputGuard:
                 _bare_tagger().tag_sents(sentences)
 
     def test_the_guard_is_linear_in_the_input(self):
-        from nltk.test.unit.test_quadratic_dos import _assert_subquadratic
-
         def op(n):
             with pytest.raises(AttributeError):
                 _bare_tagger().tag_sents([["w" * 8] * n])
 
-        _assert_subquadratic(op, 250_000, 1_000_000)
+        # the guard only computes (a scan and a count), so its CPU time is its
+        # cost: declared, not left to the share heuristic on a loaded runner
+        timing.assert_subquadratic(op, 250_000, 1_000_000, cpu_bound=True)
 
 
 # ------------------------------------------------------------------------- #
@@ -355,9 +358,16 @@ def _jvm_env(monkeypatch):
 
 def _run_java(jar, argv, options=("-mx2g",)):
     java = os.path.join(os.environ["JAVA_HOME"], "bin", "java")
-    done = subprocess.run(
-        [java, *options, "-cp", jar, *argv], capture_output=True, text=True, timeout=600
+    # the JVM is a child doing the work, judged by the suite's timing rule: a
+    # child still running at the deadline is a hang, killed, and fails here
+    done, run = timing.run_subprocess(
+        [java, *options, "-cp", jar, *argv],
+        _JAVA_BUDGET,
+        hard_deadline=_JAVA_BUDGET,
+        capture_output=True,
+        text=True,
     )
+    assert done is not None and run.within_budget, run
     assert done.returncode == 0, done.stderr[-500:]
     return done.stdout
 
