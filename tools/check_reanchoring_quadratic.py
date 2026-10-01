@@ -132,22 +132,6 @@ _REVIEWED: dict[tuple[str, str], str] = {
     ("nltk/corpus/reader/comparative_sents.py", "\\(([^\\(]*)\\)$"): (
         "[^\\(]* excludes the ( anchor and is $-anchored; one bounded scan"
     ),
-    (
-        "nltk/corpus/reader/pl196x.py",
-        "<([wc](?: [^>]*){0,1}>)(.{0,8192}?)</[wc]>",
-    ): "body bounded {0,8192}; the attribute [^>]* is a {0,1} optional, > excluded",
-    (
-        "nltk/corpus/reader/pl196x.py",
-        "<[wc](?: [^>]*){0,1}>(.{0,8192}?)</[wc]>",
-    ): "body bounded {0,8192}; the attribute [^>]* is a {0,1} optional, > excluded",
-    (
-        "nltk/corpus/reader/pl196x.py",
-        "<p(?: [^>]*){0,1}>(.{0,8192}?)</p>",
-    ): "body bounded {0,8192}; the attribute [^>]* is a {0,1} optional, > excluded",
-    (
-        "nltk/corpus/reader/pl196x.py",
-        "<s(?: [^>]*){0,1}>(.{0,8192}?)</s>",
-    ): "body bounded {0,8192}; the attribute [^>]* is a {0,1} optional, > excluded",
     ("nltk/corpus/reader/pl196x.py", 'ana="(.*?)"'): (
         'search on a short tag; anchor ends in the " terminator'
     ),

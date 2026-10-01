@@ -1017,3 +1017,105 @@ class TestCompiledPatternReanchoringBounded:
             "'fell' -> 'price' | 'stock'\n'price' -> 'of'"
         )
         assert dg.contains("fell", "price")
+
+
+# --- pl196x: the attribute run of PARA/SENT/WORD/TAGGEDWORD is bounded ---------
+
+#: The pre-fix patterns, verbatim: the oracle for faithfulness and the teeth.
+_PL196X_UNBOUNDED_ATTR = {
+    "PARA": r"<p(?: [^>]*){0,1}>(.{0,8192}?)</p>",
+    "SENT": r"<s(?: [^>]*){0,1}>(.{0,8192}?)</s>",
+    "TAGGEDWORD": r"<([wc](?: [^>]*){0,1}>)(.{0,8192}?)</[wc]>",
+    "WORD": r"<[wc](?: [^>]*){0,1}>(.{0,8192}?)</[wc]>",
+}
+_PL196X_OPEN = {"PARA": "<p ", "SENT": "<s ", "TAGGEDWORD": "<c ", "WORD": "<w "}
+
+
+class TestPl196xAttributeRunBounded:
+    """``(?: [^>]*){0,1}`` kept an unbounded attribute scan: with the ``>``
+    omitted, every ``<p `` anchor re-scanned to the end of the block, O(n**2)
+    under findall (2500 opens took 1.1 s, 5000 hit the 5 s redos backstop), and
+    ``TEICorpusView.read_block`` reads a whole file with no ``</text>`` into one
+    block. The run is now ``[^>]{0,1024}`` (the corpus's widest is 337 chars),
+    so the scan is linear and the backstop is no longer what bounds it."""
+
+    def _pattern(self, name):
+        from nltk.corpus.reader import pl196x
+
+        return getattr(pl196x, name)
+
+    def _old_pattern(self, name):
+        from nltk import redos
+
+        return redos.compile(_PL196X_UNBOUNDED_ATTR[name])
+
+    @pytest.mark.parametrize("name", sorted(_PL196X_OPEN))
+    def test_unterminated_attribute_is_linear(self, name):
+        pat, tag = self._pattern(name), _PL196X_OPEN[name]
+        assert "[^>]{0,1024}" in pat.pattern
+        _assert_subquadratic(lambda n: pat.findall(tag * n), 2_500, 10_000)
+
+    @pytest.mark.parametrize("name", sorted(_PL196X_OPEN))
+    def test_attribute_bound_has_teeth(self, name, monkeypatch):
+        # The bounded pattern finishes the trigger well inside the default
+        # backstop; the verbatim pre-fix pattern runs into a 0.5 s backstop on
+        # the same trigger, so the bound, not the timeout, is the fix.
+        import nltk.redos as redos_mod
+
+        pat, tag = self._pattern(name), _PL196X_OPEN[name]
+        assert pat.findall(tag * 2_500) == []
+        unbounded = self._old_pattern(name)
+        monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 0.5)
+        with pytest.raises(TimeoutError):
+            unbounded.findall(tag * 5_000)
+
+    def test_bounded_patterns_match_the_verbatim_old_patterns(self):
+        # Attribute runs up to the bound and bodies up to 8 KB, nested as the
+        # corpus nests them; an over-long body is skipped by both alike.
+        doc = (
+            "".join(
+                '<p id="%d" %s><s n="%d"><w ana="A%d" lemma="l">tok%d</w>'
+                '<c type="interp">,</c> %s</s></p>'
+                % (i, "x" * (i % 1000), i, i, i, "b" * (i % 8192))
+                for i in range(0, 1100, 7)
+            )
+            + "<p>"
+            + "y" * 9000
+            + "</p>"
+        )
+        for name in _PL196X_OPEN:
+            new, old = self._pattern(name).findall(doc), self._old_pattern(
+                name
+            ).findall(doc)
+            assert new == old and len(new) >= 150, (name, len(new), len(old))
+        # the one difference is the bound itself: a run past it is no match
+        wide = "<p " + "x" * 1025 + ">body</p>"
+        assert self._old_pattern("PARA").findall(wide) == ["body"]
+        assert self._pattern("PARA").findall(wide) == []
+
+    def test_real_corpus_reads_identically_through_the_old_patterns(self, monkeypatch):
+        # The reader's view (TEICorpusView, as Pl196xCorpusReader.words and
+        # tagged_words build it) on a real corpus file, with the shipped
+        # patterns and with the verbatim pre-fix ones: identical output.
+        import nltk.data
+        from nltk.corpus.reader import pl196x
+        from nltk.corpus.reader.pl196x import Pl196xCorpusReader, TEICorpusView
+
+        try:
+            path = nltk.data.find("corpora/pl196x/a-publi.xml")
+        except LookupError:
+            pytest.skip("pl196x corpus not downloaded")
+        head_len = Pl196xCorpusReader.head_len
+
+        def read():
+            return [
+                list(TEICorpusView(path, tagged, True, True, head_len=head_len))
+                for tagged in (False, True)
+            ]
+
+        shipped = read()
+        for name in _PL196X_OPEN:
+            monkeypatch.setattr(pl196x, name, self._old_pattern(name))
+        assert read() == shipped
+        words, tagged = shipped
+        assert len(words) > 1000 and tagged[0][0][0][1]  # paras of sents of (w, tag)
