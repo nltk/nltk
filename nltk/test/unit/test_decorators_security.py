@@ -18,7 +18,6 @@ import os
 import subprocess
 import sys
 import textwrap
-import time
 
 import pytest
 
@@ -29,6 +28,7 @@ from nltk.decorators import (
     getinfo,
     new_wrapper,
 )
+from nltk.test.unit import timing
 
 
 class _FakeSig:
@@ -469,16 +469,15 @@ def test_soft_keywords_and_dunder_names_are_ordinary_parameters(name):
 def test_very_long_name_and_many_parameters_stay_bounded():
     long_name = "x" * 100000
     many = ", ".join(f"p{i}" for i in range(5000))
-    started = time.perf_counter()
-    ns = {}
-    exec(  # bare-exec ok: builds the two victims
-        f"def long_one({long_name}):\n    return {long_name}\n"
-        f"def many_one({many}):\n    return p0 + p4999",
-        ns,
-    )
-    assert decorator(_passthrough)(ns["long_one"])(3) == 3
-    assert decorator(_passthrough)(ns["many_one"])(*range(5000)) == 4999
-    assert time.perf_counter() - started < 10.0
+    with timing.budget(10.0):
+        ns = {}
+        exec(  # bare-exec ok: builds the two victims
+            f"def long_one({long_name}):\n    return {long_name}\n"
+            f"def many_one({many}):\n    return p0 + p4999",
+            ns,
+        )
+        assert decorator(_passthrough)(ns["long_one"])(3) == 3
+        assert decorator(_passthrough)(ns["many_one"])(*range(5000)) == 4999
 
 
 def test_signature_object_lying_about_its_length_is_refused():

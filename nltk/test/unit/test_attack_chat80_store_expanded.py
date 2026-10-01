@@ -28,13 +28,13 @@ import shutil
 import socket
 import sqlite3
 import stat
-import threading
 
 import pytest
 
 import nltk.data
 import nltk.pathsec as pathsec
 from nltk.sem import chat80
+from nltk.test.unit import timing
 
 CANARY = "STORE_OUTSIDE_CANARY"
 SENTINEL = b"SENTINEL-do-not-touch\n"
@@ -292,18 +292,10 @@ def test_shifting_path_like_creates_nothing_outside(staged):
 
 
 def _finishes_within(seconds, fn):
-    done, out = threading.Event(), {}
-
-    def run():
-        try:
-            fn()
-        except BaseException as exc:
-            out["e"] = exc
-        finally:
-            done.set()
-
-    threading.Thread(target=run, daemon=True).start()
-    return done.wait(seconds), out.get("e")
+    """``(finished, exception)`` for ``fn`` run on a thread, judged by the time
+    charged to it (see nltk.test.unit.timing)."""
+    finished, exc, _charged = timing.finishes_within(seconds, fn)
+    return finished, exc
 
 
 @pytest.mark.skipif(not hasattr(os, "mkfifo"), reason="no FIFOs on this platform")

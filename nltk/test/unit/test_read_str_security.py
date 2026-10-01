@@ -12,11 +12,11 @@ literal must surface as ``ReadError`` rather than an interpreter error
 
 import os
 import tempfile
-import time
 
 import pytest
 
 from nltk.internals import ReadError, read_str
+from nltk.test.unit import timing
 
 _INJECTION = "{__import__('os').system('touch %s')}"
 
@@ -295,10 +295,9 @@ def test_long_literals_are_linear_and_bounded():
     # caller owns, so it is bounded by that input; pinned generously.
     escaped = '"' + "\\\\" * 100000 + '"'
     plain = '"' + "x" * 1000000 + '"'
-    started = time.perf_counter()
-    assert read_str(escaped, 0) == ("\\" * 100000, len(escaped))
-    assert read_str(plain, 0) == ("x" * 1000000, len(plain))
-    assert time.perf_counter() - started < 5.0
+    with timing.budget(5.0):
+        assert read_str(escaped, 0) == ("\\" * 100000, len(escaped))
+        assert read_str(plain, 0) == ("x" * 1000000, len(plain))
 
 
 def test_the_return_type_guard_has_teeth(monkeypatch):

@@ -36,7 +36,6 @@ import socket
 import stat
 import sys
 import tempfile
-import time
 
 import pytest
 
@@ -45,6 +44,7 @@ import nltk.data
 import nltk.pathsec as pathsec
 import nltk.tag.perceptron as perceptron
 from nltk.tag.perceptron import AveragedPerceptron, PerceptronTagger
+from nltk.test.unit import timing
 
 CANARY = "MODEL-ARTIFACT-CANARY"
 LANG = "probeartifact"
@@ -992,10 +992,8 @@ class TestModelReadsAreBounded:
         target = os.path.join(restricted_sandbox, "nested.json")
         with pathsec.open(target, "w", context="test") as handle:
             handle.write("[" * 200000 + "]" * 200000)
-        started = time.perf_counter()
-        with pytest.raises((RecursionError, ValueError)):
+        with timing.budget(15.0), pytest.raises((RecursionError, ValueError)):
             AveragedPerceptron().load(target)
-        assert time.perf_counter() - started < 15.0
 
 
 class TestModelReadsRefuseAPickleGadget:
