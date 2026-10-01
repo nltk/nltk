@@ -134,7 +134,13 @@ class IBMModel3(IBMModel):
 
     """
 
-    def __init__(self, sentence_aligned_corpus, iterations, probability_tables=None):
+    def __init__(
+        self,
+        sentence_aligned_corpus,
+        iterations,
+        probability_tables=None,
+        lexical_floor=None,
+    ):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model, a distortion model, a fertility model, and a
@@ -157,19 +163,28 @@ class IBMModel3(IBMModel):
             ``fertility_table``, ``p1``, ``distortion_table``.
             See ``IBMModel`` for the type and purpose of these tables.
         :type probability_tables: dict[str]: object
+
+        :param lexical_floor: Minimum lexical probability in [0, 1], or
+            ``None`` for ``MIN_PROB``. See ``IBMModel`` for initialization,
+            zero-probability, and normalization policies.
+        :type lexical_floor: float or None
         """
-        super().__init__(sentence_aligned_corpus)
+        super().__init__(sentence_aligned_corpus, lexical_floor=lexical_floor)
         self.reset_probabilities()
 
         if probability_tables is None:
             # Get translation and alignment probabilities from IBM Model 2
-            ibm2 = IBMModel2(sentence_aligned_corpus, iterations)
+            ibm2 = IBMModel2(
+                sentence_aligned_corpus, iterations, lexical_floor=self.lexical_floor
+            )
             self.translation_table = ibm2.translation_table
             self.alignment_table = ibm2.alignment_table
             self.set_uniform_probabilities(sentence_aligned_corpus)
         else:
             # Set user-defined probabilities
-            self.translation_table = probability_tables["translation_table"]
+            self._set_translation_table(
+                probability_tables["translation_table"], lexical_floor
+            )
             self.alignment_table = probability_tables["alignment_table"]
             self.fertility_table = probability_tables["fertility_table"]
             self.p1 = probability_tables["p1"]
@@ -252,7 +267,7 @@ class IBMModel3(IBMModel):
                 counts.update_fertility(normalized_count, alignment_info)
 
         # M step: Update probabilities with maximum likelihood estimates
-        # If any probability is less than MIN_PROB, clamp it to MIN_PROB
+        # Lexical estimates use lexical_floor; other tables use MIN_PROB.
         existing_alignment_table = self.alignment_table
         self.reset_probabilities()
         self.alignment_table = existing_alignment_table  # don't retrain
