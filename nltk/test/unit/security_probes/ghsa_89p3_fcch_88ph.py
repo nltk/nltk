@@ -24,14 +24,7 @@ FLAT_ENTRIES = 3
 
 
 def flat_lexicon(n):
-    """A lexicon of FLAT_ENTRIES words, each a flat chain of ``n`` applications.
-
-    One entry's small run is 0.08 s to 0.11 s on the macOS and Windows runners,
-    at the 0.1 s floor, where the ratio degenerates into a 0.8 s budget on the
-    big run that a sibling xdist worker's 1.5x to 2x CPU-time inflation breaks
-    (9.0x read on Windows 3.14). Three entries lift the small run to 0.25 s to
-    0.33 s there; a linear parse reads the same 4x with one entry or three.
-    """
+    """A lexicon of FLAT_ENTRIES words, each a flat chain of ``n`` applications."""
     chain = "S" + "/S" * n
     words = ("w", "v", "u", "t", "s", "r")[:FLAT_ENTRIES]
     return ":- S\n" + "".join(word + " => " + chain + "\n" for word in words)
@@ -45,14 +38,7 @@ NESTING = 80
 
 def _nested_lexicon(chars):
     """A lexicon whose one entry is a primitive with a long subscript list,
-    wrapped in NESTING brackets, ``chars`` characters of category in all.
-
-    The fixed parser's cost here is a Python loop per character per level, so
-    the depth sets its small run: 0.148 s to 0.214 s on the hosted runners at
-    depth 60, but 0.114 s on one macOS instance, where a faster instance and a
-    sibling xdist worker's CPU-time inflation would reach the floor the way
-    the one-entry flat leg did; depth 80 keeps a third of margin there.
-    """
+    wrapped in NESTING brackets, ``chars`` characters of category in all."""
     inner = chars - 2 * NESTING
     subscripts = "a," * ((inner - 4) // 2) + "a"
     return (
@@ -62,26 +48,15 @@ def _nested_lexicon(chars):
 
 @probe("GHSA-89p3-fcch-88ph")
 def _ccg_lexicon_quadratic_parse():
-    """Parse the two shapes the tail re-slicing made quadratic, confirm each
-    parse stays linear, then confirm an over-cap category is refused.
+    """Parse the two shapes the tail re-slicing made quadratic, a flat chain
+    and a primitive inside NESTING brackets, confirm each parse stays linear
+    over a 4x input, then confirm an over-cap category is refused.
 
     Pre-fix, matchBrackets/nextCategory/augParseCategory resliced the remaining
     tail (and NEXTPRIM_RE/APP_RE captured it with a trailing ``(.*)``) on every
     step, so parsing a chain of length n copied O(n) characters n times: O(n**2).
-    The fix threads an integer cursor instead, so the scaling factor for a 4x
-    longer input stays near linear. VULNERABLE if either shape is super-linear.
-
-    Both legs stay under MAX_PARSE_LEN, so the pre-fix parser's quadratic work
-    is bounded by the cap and competes with its own per-step cost; measured on
-    the hosted runners (nltk/nltk PR #3944), the pre-fix parser reads 11x to
-    15x on the flat leg and 9x to 19x on the nested leg, the fixed parser 3.2x
-    to 4.5x on both, with the cyclic GC on, off or frozen alike. The flat leg
-    is the advisory's own chain and the stable signal; the nested leg wraps one
-    primitive in NESTING brackets, where the pre-fix matchBrackets copied its
-    tail once per character at every level, and covers the bracket scanner the
-    flat leg never enters. Each leg's small run clears the 0.1 s floor on the
-    fastest runner, so each ratio is a ratio and a loaded runner's CPU-time
-    inflation cancels out of it (see FLAT_ENTRIES and NESTING).
+    The fix threads an integer cursor instead. VULNERABLE if either shape is
+    super-linear or the cap does not hold.
     """
     from nltk.ccg import lexicon
     from nltk.ccg.lexicon import MAX_PARSE_LEN, fromstring
