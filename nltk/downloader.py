@@ -1682,10 +1682,11 @@ class Downloader:
         self._url = url or self._url
 
         # Check if the index is already up-to-date.  If so, do nothing. An
-        # index fetched from another URL (the URL changed after it was read)
-        # is not this URL's index, however fresh: it is fetched again.
+        # explicit url always refetches (the callers' way to force a refresh),
+        # and so does an index fetched from another URL, however fresh it is.
         if not (
             self._index is None
+            or url is not None
             or self._url != getattr(self, "_index_url", None)
             or time.time() - self._index_timestamp > self.INDEX_TIMEOUT
         ):

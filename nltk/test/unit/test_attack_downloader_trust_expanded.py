@@ -1108,6 +1108,12 @@ class TestTheCycleForReal:
         hits = server.hits.count("/index.xml")
         assert {p.id for p in d.packages()} == {"tiny"}
         assert server.hits.count("/index.xml") == hits
+        # an explicit url, even the same one, always refetches: the callers'
+        # way to force a refresh (the url setter, the shells) is kept
+        d._update_index(url=first)
+        assert server.hits.count("/index.xml") == hits + 1
+        assert {p.id for p in d.packages()} == {"tiny"}
+        assert server.hits.count("/index.xml") == hits + 1
 
     def test_the_documented_remedy_extracts_an_archive_already_installed(
         self, box, monkeypatch
