@@ -186,7 +186,10 @@ class BlanklineTokenizer(RegexpTokenizer):
     """
 
     def __init__(self):
-        RegexpTokenizer.__init__(self, r"\s*\n\s*\n\s*", gaps=True)
+        # The leading run is taken only when no whitespace precedes it: split
+        # retried ``\s*`` from every position of a space run with no blank line
+        # after it, O(n**2) (CWE-407). No split ever began inside such a run.
+        RegexpTokenizer.__init__(self, r"(?:(?<!\s)\s*)?\n\s*\n\s*", gaps=True)
 
 
 class WordPunctTokenizer(RegexpTokenizer):
