@@ -1,5 +1,7 @@
 Version 3.10.4 2026-09-01
 
+This release routes every file path, archive, download, URL fetch and external program through one sandbox that keeps reads and writes inside the trusted data directories, refuses path traversal, symlink escapes and decompression bombs, blocks requests to internal network addresses, and runs Java and other third-party tools only from trusted absolute locations with validated options and input. Pickled models now load through a restricted unpickler, XML and JSON parsing are hardened, and regular expressions, recursion and slow algorithms in the tokenizers, parsers, stemmers and corpus readers are bounded against denial-of-service input. Text that NLTK writes to the terminal, to CSV files, to the WordNet browser and to third-party tool input is sanitized against injection.
+
 * Fix develop CI: register data roots for benign save/IO tests broken by pathsec hardening (PR #3822)
 * Add tests covering already-merged pathsec/security guards (PR #3818)
 * Harden nltk.tbl.demo model load/save through picklesec and pathsec (PR #3817)
@@ -31,7 +33,7 @@ Version 3.10.4 2026-09-01
 * Fix ARFF label injection in Weka classifier (PR #3768)
 * Prevent infinite loop from cyclic collection indices (PR #3767)
 
-Thanks to the following contributors to 3.10.4: Liling Tan, Zhewen Tan, Eric Kafe, Yanhaoxi, Yazan Balawneh (Cystack.ps).
+Thanks to the following contributors to 3.10.4: Liling Tan, Zhewen Tan, Eric Kafe, Yanhaoxi, Yazan Balawneh (Cystack.ps), Abdulmoyn Sommakieh, Steven Bird, Golitsin Vyacheslav, Mingzhe Yu, 宁岑, Tai An, 区梓灏, Tom Aarsen, Raffi Enficiaud, JJ, Artemiy, Cherno.x, 0xEaS, sarvesh patil, Isaac David, Arthur Gervais, leduckhuong, Ibrahim zain, Athul Jayaram, Chiencp, Ziyu Lin, Michael Lip, GOLDBERG8, Litesh Ghute, Kartik G, Thai Son Dinh, infy, 0xRenSec, Joshgun Abdullayev, Arpit Jain, Mohammad Favas S, Jace, nguyencanhthuong, kokomaru167, jankesec, Daniel Coles, Fodhil Benhiba.
 
 Version 3.10.3 2026-08-12
 
