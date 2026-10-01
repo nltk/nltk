@@ -126,6 +126,70 @@ def test_model_artifact_probe_covers_every_api_the_advisory_names():
         assert named in labels, f"advisory API {named} is not probed"
 
 
+def test_maxent_load_bare_open_probe_has_teeth():
+    """Restore the advisory's own bug and the probe must flip to VULNERABLE.
+
+    ``load_maxent_params`` read the four tab files through ``builtins.open``
+    on a caller path, outside the sandbox (GHSA-59f9-gqg8-mqpj). Putting that
+    back is the exact regression the probe exists to catch, so it must not
+    stay FIXED through it, for a str, a Path or a pointer argument.
+    """
+    import numpy
+
+    from nltk.classify import maxent
+    from nltk.tabdata import MaxentDecoder
+
+    probe = probes.PROBES["GHSA-59f9-gqg8-mqpj"]
+    guarded = maxent.load_maxent_params
+
+    def bare_load(tab_dir):
+        mdec, base = MaxentDecoder(), os.fspath(tab_dir)
+        with open(os.path.join(base, "weights.txt")) as fin:
+            wgt = numpy.array(list(map(numpy.float64, mdec.txt2list(fin))))
+        with open(os.path.join(base, "mapping.tab")) as fin:
+            mpg = mdec.tupkey2dict(fin)
+        with open(os.path.join(base, "labels.txt")) as fin:
+            lab = mdec.txt2list(fin)
+        with open(os.path.join(base, "alwayson.tab")) as fin:
+            aon = mdec.tab2ivdict(fin)
+        return wgt, mpg, lab, aon
+
+    maxent.load_maxent_params = bare_load
+    try:
+        status, evidence = probe()
+    finally:
+        maxent.load_maxent_params = guarded
+    assert status == probes.VULNERABLE, evidence
+    for face in ("load(pointer)", "load(str)", "load(Path)"):
+        assert face + " read" in evidence, evidence
+    assert probe()[0] == probes.FIXED
+
+
+def test_maxent_save_bare_open_probe_has_teeth():
+    """The save half of the same probe: a writer that opens the caller path
+    with ``builtins.open`` lands the parameter files outside every root, and
+    the probe must report it rather than stay FIXED on the load half alone."""
+    from nltk.classify import maxent
+
+    probe = probes.PROBES["GHSA-59f9-gqg8-mqpj"]
+    guarded = maxent.save_maxent_params
+
+    def bare_save(wgt, mpg, lab, aon, tab_dir=None):
+        os.makedirs(tab_dir, exist_ok=True)
+        with open(os.path.join(tab_dir, "weights.txt"), "w") as fout:
+            fout.write("\n".join(map(repr, wgt.tolist())))
+        return tab_dir
+
+    maxent.save_maxent_params = bare_save
+    try:
+        status, evidence = probe()
+    finally:
+        maxent.save_maxent_params = guarded
+    assert status == probes.VULNERABLE, evidence
+    assert "save wrote ['weights.txt']" in evidence, evidence
+    assert probe()[0] == probes.FIXED
+
+
 def test_perceptron_bare_open_probe_has_teeth():
     """Restore the advisory's own bug and the probe must flip to VULNERABLE.
 
