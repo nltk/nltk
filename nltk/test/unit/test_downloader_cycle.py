@@ -6,6 +6,7 @@ import unittest
 from pathlib import Path
 
 import nltk
+from nltk.test.unit import timing
 
 
 class TestDownloaderCycle(unittest.TestCase):
@@ -31,13 +32,18 @@ class TestDownloaderCycle(unittest.TestCase):
             # Derive import root from nltk.__file__
             nltk_root = os.path.dirname(os.path.dirname(os.path.dirname(nltk.__file__)))
             env["PYTHONPATH"] = nltk_root + os.pathsep + env.get("PYTHONPATH", "")
-            result = subprocess.run(
+            # the child is charged its CPU time (see nltk.test.unit.timing); a
+            # run over budget or still running at the hard deadline is the hang
+            result, run = timing.run_subprocess(
                 [sys.executable, "-c", script],
+                timeout,
+                cpu_bound=True,
                 capture_output=True,
                 text=True,
-                timeout=timeout,
                 env=env,
             )
+            if result is None or not run.within_budget:
+                raise subprocess.TimeoutExpired([sys.executable, "-c", script], timeout)
             self.assertEqual(
                 result.returncode, 0, f"Subprocess failed: {result.stderr}"
             )

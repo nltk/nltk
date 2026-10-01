@@ -43,6 +43,7 @@ import pytest
 
 import nltk.data
 import nltk.pathsec as pathsec
+from nltk.test.unit import timing
 
 # The pathsec sandbox fixtures (sandbox / restricted_sandbox / enforce_off)
 # are provided by nltk/test/unit/conftest.py.
@@ -1280,21 +1281,18 @@ def test_find_terminates_on_a_newline_resource_name(restricted_sandbox, resource
     caller-supplied ``PerceptronTagger(loc=...)`` of one newline burned 76s and
     2.7 GB before raising (CWE-407). Guarded by absolute time, not a ratio.
     """
-    started = time.monotonic()
-    with pytest.raises((LookupError, ValueError)):
+    with timing.budget(5.0, f"find({resource_name!r})"), pytest.raises(
+        (LookupError, ValueError)
+    ):
         nltk.data.find(resource_name, paths=[restricted_sandbox])
-    elapsed = time.monotonic() - started
-    assert elapsed < 5.0, f"find({resource_name!r}) took {elapsed:.1f}s (DoS)"
 
 
 def test_perceptron_loc_with_newline_terminates(pathsec_sandbox):
     """The same DoS through the tagger entry point that surfaced it."""
     from nltk.tag.perceptron import PerceptronTagger
 
-    started = time.monotonic()
-    with pytest.raises((LookupError, PermissionError, ValueError)):
+    with timing.budget(5.0), pytest.raises((LookupError, PermissionError, ValueError)):
         PerceptronTagger(load=True, lang="eng", loc="\n")
-    assert time.monotonic() - started < 5.0
 
 
 def test_find_still_resolves_ordinary_zip_style_names(restricted_sandbox):
@@ -1717,10 +1715,8 @@ def test_find_scales_linearly_in_the_number_of_path_pieces(restricted_sandbox, p
     immediately because the retried name now contains ".zip". Before the DOTALL
     fix a newline made that condition unreachable and the retries compounded."""
     name = "/".join(f"p{i}\n" for i in range(pieces))
-    started = time.monotonic()
-    with pytest.raises((LookupError, ValueError)):
+    with timing.budget(5.0), pytest.raises((LookupError, ValueError)):
         nltk.data.find(name, paths=[restricted_sandbox])
-    assert time.monotonic() - started < 5.0
 
 
 # --- platform-shaped vectors --------------------------------------------------
@@ -1838,10 +1834,8 @@ def test_deeply_nested_model_json_raises_rather_than_crashing(restricted_sandbox
     deep = os.path.join(restricted_sandbox, "deep.json")
     with pathsec.open(deep, "w", context="probe") as handle:
         handle.write("[" * 200000 + "]" * 200000)
-    started = time.monotonic()
-    with pytest.raises((RecursionError, ValueError)):
+    with timing.budget(10.0), pytest.raises((RecursionError, ValueError)):
         AveragedPerceptron().load(deep)
-    assert time.monotonic() - started < 10.0
 
 
 def test_large_flat_model_is_not_size_capped(restricted_sandbox):

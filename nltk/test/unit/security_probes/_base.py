@@ -22,7 +22,6 @@ import pathlib
 import shutil
 import socket  # noqa: F401
 import tempfile
-import time
 
 FIXED = "FIXED"
 VULNERABLE = "VULNERABLE"
@@ -49,41 +48,49 @@ def probe(ghsa):
     return register
 
 
-def timed(func, *args):
-    start = time.perf_counter()
-    func(*args)
-    return time.perf_counter() - start
+from nltk.test.unit import timing
 
-
-def within_budget(func, budget=DOS_BUDGET, repeats=3):
-    """Fastest of ``repeats`` runs of ``func``; ``(ok, seconds)``, ok if under budget.
-
-    Absolute wall-clock, not a doubling ratio: a pre-patch quadratic ran for
-    tens of seconds on these payloads while the fixed code is milliseconds, so a
-    generous budget separates them cleanly. Min-of-k because one sample on a
-    loaded CI runner is noise -- a tight ratio there produced a false
-    VULNERABLE. Contention only adds time, so the minimum is closest to truth.
-    """
-    best = min(timed(func) for _ in range(repeats))
-    return best < budget, best
-
-
-def scaling_ratio(op, small, big, reps=3, noise_floor=0.1):
-    """Fastest-of-``reps`` ``op(big)`` over ``op(small)`` (``big`` == 4*``small``).
-
-    A load-invariant scaling factor, mirroring the DoS regression harness: a
-    linear sink is ~4x, a pre-patch O(n**2) sink ~16x. The floor is
-    multiplicative so a sub-second quadratic is not hidden by additive slack,
-    and each side is a min-of-``reps`` to shed a transient scheduler stall.
-    """
-    t_small = min(timed(op, small) for _ in range(reps))
-    t_big = min(timed(op, big) for _ in range(reps))
-    return t_big / max(t_small, noise_floor)
-
-
+#: An op whose big run spends less than this share of its wall time on the CPU
+#: is mostly waiting, and its cost is judged on the wall clock instead.
+CPU_BOUND_SHARE = timing.CPU_BOUND_SHARE
 #: A scaling factor at or above this reads as super-linear (quadratic ~16x);
 #: a linear sink stays near 4x, so the gap is wide on any machine.
-QUADRATIC_RATIO = 8.0
+QUADRATIC_RATIO = timing.QUADRATIC_RATIO
+#: (CPU seconds, wall seconds) spent in a call. CPU time is what the
+#: interpreter actually worked: descheduling by a loaded runner stretches only
+#: the wall clock; a call that sleeps or waits on a child spends almost none.
+timed_both = timing.cpu_and_wall
+#: Fastest-of-reps op(big) over op(small): ~4x linear, ~16x quadratic. A wall
+#: clock stall once halved a 16x quadratic to 7.8x on a macOS runner (the r53h
+#: teeth flipped FIXED), hence CPU time: see nltk.test.unit.timing.scaling_ratio.
+scaling_ratio = timing.scaling_ratio
+
+
+def timed(func, *args):
+    """Seconds charged to ``func(*args)``.
+
+    Historically the wall clock; now the suite's shared rule in
+    :mod:`nltk.test.unit.timing`: CPU time when the call computed, wall time
+    when it waited, so a loaded runner cannot inflate a probe's measurement.
+    """
+    return timing.charged(func, *args)
+
+
+def within_budget(func, budget=None, repeats=3):
+    """Fastest of ``repeats`` runs of ``func``; ``(ok, seconds)``, ok if under budget.
+
+    Absolute budget, not a doubling ratio: a pre-patch quadratic ran for
+    tens of seconds on these payloads while the fixed code is milliseconds, so a
+    generous budget separates them cleanly. Min-of-k because one sample on a
+    loaded CI runner is noise, and a tight ratio there produced a false
+    VULNERABLE. Contention only adds time, so the minimum is closest to truth.
+    The seconds are the ones :mod:`nltk.test.unit.timing` charges: CPU time
+    when the run computed, wall time when it waited. ``budget`` defaults to the
+    module's ``DOS_BUDGET`` as it stands when the probe runs.
+    """
+    if budget is None:
+        budget = DOS_BUDGET
+    return timing.within_budget(func, budget, repeats)
 
 
 def read_source(dotted_module):
