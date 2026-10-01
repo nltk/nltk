@@ -11,9 +11,10 @@ server cannot run in a unit test); the guards and file writes run for real."""
 
 import hashlib
 import os
-import time
 
 import pytest
+
+from nltk.test.unit import timing
 
 NUL = chr(0)
 
@@ -201,10 +202,10 @@ class TestSignatureFence:
     def test_everything_that_is_not_a_name_list_is_refused(self, sig):
         from nltk.decorators import _assert_safe_signature
 
-        started = time.perf_counter()
-        with pytest.raises(ValueError, match="non-identifier signature"):
+        with timing.budget(1.0), pytest.raises(
+            ValueError, match="non-identifier signature"
+        ):
             _assert_safe_signature(sig)
-        assert time.perf_counter() - started < 1.0
 
     def test_a_non_string_signature_is_refused(self):
         from nltk.decorators import _assert_safe_signature
@@ -276,10 +277,9 @@ class TestReadStrMatrix:
 
         monkeypatch.setattr(builtins, "eval", _boom)
         monkeypatch.setattr(builtins, "exec", _boom)
-        started = time.perf_counter()
-        try:
-            value, end = read_str(source, 0)
-            assert isinstance(value, (str, bytes)) and end <= len(source)
-        except (ReadError, ValueError, SyntaxError):
-            pass
-        assert time.perf_counter() - started < 2.0
+        with timing.budget(2.0):
+            try:
+                value, end = read_str(source, 0)
+                assert isinstance(value, (str, bytes)) and end <= len(source)
+            except (ReadError, ValueError, SyntaxError):
+                pass

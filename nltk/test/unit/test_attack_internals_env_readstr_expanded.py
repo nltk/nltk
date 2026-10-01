@@ -16,13 +16,13 @@ import os
 import pathlib
 import shutil
 import tempfile
-import time
 import unittest.mock
 
 import pytest
 
 import nltk.data
 from nltk import internals, pathsec
+from nltk.test.unit import timing
 
 NUL = chr(0)
 
@@ -291,11 +291,14 @@ def test_real_jvm_child_sees_only_the_scrubbed_environment(jvm_source_root):
     ):
         # source-file mode: the launcher compiles PrintEnv.java in memory, so
         # no class file is planted anywhere and no separate compiler is spawned
-        started = time.perf_counter()
-        out, _err = internals.java(
-            [jvm_source_root], classpath=None, options=[], stdout="pipe", stderr="pipe"
-        )
-        assert time.perf_counter() - started < 120.0
+        with timing.budget(120.0, "the JVM call"):
+            out, _err = internals.java(
+                [jvm_source_root],
+                classpath=None,
+                options=[],
+                stdout="pipe",
+                stderr="pipe",
+            )
     child = dict(line.partition("=")[::2] for line in out.splitlines() if "=" in line)
     survivors = sorted(name for name in hostile if name in child)
     assert survivors == [], survivors
