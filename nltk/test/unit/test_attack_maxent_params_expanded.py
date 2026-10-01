@@ -450,11 +450,53 @@ class TestLoaderContent:
         assert (name, "cat", "L1") in mpg
         assert lab == ["L1" + NUL, "L2" + ESC + "c"]
 
-    def test_invalid_utf8_is_refused(self, pathsec_sandbox):
+    def test_invalid_utf8_is_refused_by_name(self, pathsec_sandbox):
         planted = _plant(pathsec_sandbox.root / "p")
         (planted / "labels.txt").write_bytes(b"\xff\xfeL1\n")
-        with pytest.raises(UnicodeDecodeError):
+        pattern = r"labels\.txt in .* is not UTF-8 \(invalid start byte at byte 0 of"
+        with pytest.raises(ValueError, match=pattern) as info:
             load_maxent_params(str(planted))
+        assert isinstance(info.value.__cause__, UnicodeDecodeError)
+
+    @pytest.mark.parametrize("name", [name for name, _ in FILES])
+    def test_a_latin1_byte_in_any_parameter_file_is_refused_cleanly(
+        self, pathsec_sandbox, name
+    ):
+        """What a Windows cell exposed: a file written in cp1252 holds byte
+        0xE9 for an accented name, which is not UTF-8. The loader names the
+        file and the byte offset instead of surfacing a raw codec trace."""
+        bodies = {
+            "weights.txt": b"0.5\ncaf\xe9\n",
+            "mapping.tab": b"caf\xe9\tcat\tL1\t0\n",
+            "labels.txt": b"L1\ncaf\xe9\n",
+            "alwayson.tab": b"caf\xe9\t0\n",
+        }
+        planted = _plant(pathsec_sandbox.root / "p")
+        (planted / name).write_bytes(bodies[name])
+        pattern = (
+            name.replace(".", r"\.")
+            + " in .* is not UTF-8 \\(invalid continuation byte"
+        )
+        with pytest.raises(ValueError, match=pattern) as info:
+            load_maxent_params(str(planted))
+        assert isinstance(info.value.__cause__, UnicodeDecodeError)
+        assert ESC not in str(info.value) and "\n" not in str(info.value)
+
+    def test_a_bad_byte_at_the_end_of_a_large_file_is_refused_in_bounded_time(
+        self, pathsec_sandbox
+    ):
+        planted = _plant(pathsec_sandbox.root / "p")
+        rows = b"".join(b"f%d\tv\tL1\t%d\n" % (i, i) for i in range(1_000_000))
+        (planted / "mapping.tab").write_bytes(rows + b"last\t\xff\tL1\t1000000\n")
+
+        def op():
+            with pytest.raises(ValueError, match="is not UTF-8"):
+                load_maxent_params(str(planted))
+
+        ok, seconds = timing.within_budget(op, _NO_HANG_BUDGET, cpu_bound=True)
+        assert (
+            ok
+        ), f"a {len(rows) >> 20} MB file with a trailing bad byte took {seconds:.1f}s"
 
     def test_one_enormous_row_is_refused_in_bounded_time(self, pathsec_sandbox):
         planted = _plant(pathsec_sandbox.root / "p")
@@ -1337,10 +1379,20 @@ class TestParameterFileFidelity:
 
     @pytest.mark.parametrize(
         "name",
-        ["caf" + chr(0xE9), chr(0x4E2D) + chr(0x6587), "a" + chr(0x200B) + "b"],
-        ids=["accent", "cjk", "zwsp"],
+        [
+            "caf" + chr(0xE9),
+            chr(0x4E2D) + chr(0x6587),
+            "a" + chr(0x200B) + "b",
+            "w" + RLO + "x" + ESC + "[31m",
+        ],
+        ids=["accent", "cjk", "zwsp", "bidi_escape"],
     )
     def test_saved_files_are_utf8_whatever_the_locale(self, pathsec_sandbox, name):
+        """The four inputs the Windows cells failed on: under a cp1252 default
+        the old writer raised UnicodeEncodeError on the RLO, the zero-width
+        space and the CJK pair, and wrote the accent as byte 0xE9, which the
+        UTF-8 loader then could not decode. The bytes on disk are now UTF-8
+        whatever the locale, and the loader reads them back exactly."""
         mpg = {(name, name, name): 0, ("shape", "up", "L2"): 1}
         out = _save(
             str(pathsec_sandbox.root / "sv"), mpg=mpg, lab=[name, "L2"], aon={name: 2}
