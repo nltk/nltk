@@ -70,6 +70,9 @@ _CLOSED_WITH_PROBE = {
     "GHSA-j456-xh4h-cpf2",
     # Draft advisory carrying a regression probe ahead of publication.
     "GHSA-r53h-rw34-8h97",
+    # Triage: the GitHub transfer of Huntr CVE-2026-15367 (maxent tab_dir);
+    # already fixed on develop, probe added so the coverage is provable.
+    "GHSA-59f9-gqg8-mqpj",
 }
 
 #: Draft advisories we have already fixed and probe ahead of publication. The
