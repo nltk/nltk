@@ -1678,16 +1678,18 @@ class Downloader:
         A helper function that ensures that self._index is up-to-date.
         If the index is older than self.INDEX_TIMEOUT, then download it again.
         """
-        # Check if the index is already up-to-date.  If so, do nothing.
+        # If a URL was specified, then update our URL.
+        self._url = url or self._url
+
+        # Check if the index is already up-to-date.  If so, do nothing. An
+        # index fetched from another URL (the URL changed after it was read)
+        # is not this URL's index, however fresh: it is fetched again.
         if not (
             self._index is None
-            or url is not None
+            or self._url != getattr(self, "_index_url", None)
             or time.time() - self._index_timestamp > self.INDEX_TIMEOUT
         ):
             return
-
-        # If a URL was specified, then update our URL.
-        self._url = url or self._url
 
         # Download the index bounded in bytes and in time, and count its
         # structure before a tree is built: an endless or drip-fed index, or
@@ -1710,6 +1712,7 @@ class Downloader:
             _check_index_structure(view)
         self._index = nltk.internals.ElementWrapper(safe_parse(body).getroot())
         self._index_timestamp = time.time()
+        self._index_url = self._url
 
         # Build a dictionary of packages.
         packages = [Package.fromxml(p) for p in self._index.findall("packages/package")]

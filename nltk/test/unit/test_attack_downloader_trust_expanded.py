@@ -1029,3 +1029,74 @@ class TestTheCycleForReal:
         shutil.rmtree(unpacked)
         result, text = run_download(index, dl, "tiny", quiet=True, extract=False)
         assert result is True and not unpacked.exists()
+
+    def test_a_cached_index_follows_the_url(self, box):
+        """Two indexes on the server: a Downloader whose URL is switched reads
+        the package list of the URL it has now, not the cached list of the
+        URL it had, however fresh that cache is."""
+        root, outside, dl, server = box
+        first = serve_packages(server, [("tiny", tiny_package(), {"unzip": "0"})])
+        server.body(
+            "/second.xml",
+            make_index(
+                [
+                    package_attrs(
+                        "other", tiny_package("other"), server.url("/pkgs/other.zip")
+                    )
+                ]
+            ),
+        )
+        server.body("/pkgs/other.zip", tiny_package("other"))
+        second = server.url("/second.xml")
+        d = downloader.Downloader(server_index_url=first, download_dir=str(dl))
+        assert {p.id for p in d.packages()} == {"tiny"}
+        assert d._index_url == first
+        d._url = second  # what server_index_url set later, or _update_index(url=)
+        assert {p.id for p in d.packages()} == {"other"}
+        assert d._index_url == second
+        assert d.info("other").id == "other"
+        with pytest.raises(ValueError, match="not found"):
+            d.info("tiny")
+        d._update_index(url=first)
+        assert {p.id for p in d.packages()} == {"tiny"}
+        # the same URL again within the timeout is served from the cache
+        hits = server.hits.count("/index.xml")
+        assert {p.id for p in d.packages()} == {"tiny"}
+        assert server.hits.count("/index.xml") == hits
+
+    def test_the_documented_remedy_extracts_an_archive_already_installed(
+        self, box, monkeypatch
+    ):
+        """find() tells the account that cannot read an archive to re-run the
+        download with extraction. Run by the installer over its existing
+        install, that must extract: the package read as installed (archive
+        present, index leaves it zipped), so the request used to be answered
+        with up-to-date and nothing happened. No second download is made."""
+        root, outside, dl, server = box
+        index = serve_packages(server, [("tiny", tiny_package(), {"unzip": "0"})])
+        result, text = run_download(index, dl, "tiny", quiet=True, extract=False)
+        assert result is True, text
+        unpacked, archive = dl / "corpora" / "tiny", dl / "corpora" / "tiny.zip"
+        assert archive.is_file() and not unpacked.exists()
+        assert fresh_status(index, dl) == INSTALLED
+        fetched_before = server.hits.count("/pkgs/tiny.zip")
+        with _umask(0o022):
+            result, text = run_download(index, dl, "tiny", quiet=True, extract=True)
+        assert result is True, text
+        assert (unpacked / "words.txt").read_bytes() == WORDS
+        assert _mode(unpacked) == 0o755 and _mode(archive) == 0o600
+        assert server.hits.count("/pkgs/tiny.zip") == fetched_before  # no re-download
+        assert fresh_status(index, dl) == INSTALLED
+        # done once, it is up to date: nothing is extracted twice
+        result, text = run_download(index, dl, "tiny", extract=True)
+        assert result is True and "up-to-date" in text
+        # the shared-install rule reaches an existing archive-only install the
+        # same way (an upgrade of nltk over an older root install)
+        shutil.rmtree(unpacked)
+        if downloader._shared_install(str(dl)):
+            result, text = run_download(index, dl, "tiny", quiet=True)
+            assert result is True and (unpacked / "words.txt").read_bytes() == WORDS
+        # asked not to extract, an installed archive stays as it is
+        shutil.rmtree(unpacked)
+        result, text = run_download(index, dl, "tiny", quiet=True, extract=False)
+        assert result is True and not unpacked.exists()
