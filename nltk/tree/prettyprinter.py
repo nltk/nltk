@@ -359,7 +359,7 @@ class TreePrettyPrinter:
         :param maxwidth: maximum number of characters before a label starts to
             wrap; pass None to disable.
         """
-        if abbreviate:
+        if abbreviate is True:
             abbreviate = 5
         if unicodelines:
             horzline = "\u2500"
@@ -394,9 +394,11 @@ class TreePrettyPrinter:
         maxchildcol = {}
         childcols = defaultdict(set)
         labels = {}
-        wrapre = redos.compile(
-            "(.{%d,%d}\\b\\W*|.{%d})" % (maxwidth - 4, maxwidth, maxwidth)
-        )
+        wrapre = None
+        if maxwidth:
+            wrapre = redos.compile(
+                "(.{%d,%d}\\b\\W*|.{%d})" % (maxwidth - 4, maxwidth, maxwidth)
+            )
         # collect labels and coordinates
         for a in self.nodes:
             row, column = self.coords[a]
@@ -407,6 +409,7 @@ class TreePrettyPrinter:
                 if isinstance(self.nodes[a], Tree)
                 else self.nodes[a]
             )
+            label = "%s" % label  # a label may be any value, as a leaf may
             if abbreviate and len(label) > abbreviate:
                 label = label[:abbreviate] + ellipsis
             if maxwidth and len(label) > maxwidth:
@@ -458,7 +461,7 @@ class TreePrettyPrinter:
                         branchrow[col] = crosscell(branchrow[col])
                 text = [a.center(maxnodewith[col]) for a in text]
                 color = nodecolor if isinstance(node, Tree) else leafcolor
-                if isinstance(node, Tree) and node.label().startswith("-"):
+                if isinstance(node, Tree) and labels[n][0].startswith("-"):
                     color = funccolor
                 if html:
                     text = [escape(a, quote=False) for a in text]
@@ -564,26 +567,19 @@ class TreePrettyPrinter:
         # write nodes with coordinates
         for n, (row, column) in self.coords.items():
             node = self.nodes[n]
+            label = "%s" % (node.label() if isinstance(node, Tree) else node)
             x = column * hscale + hstart
             y = row * vscale + vstart
             if n in self.highlight:
                 color = nodecolor if isinstance(node, Tree) else leafcolor
-                if isinstance(node, Tree) and node.label().startswith("-"):
+                if isinstance(node, Tree) and label.startswith("-"):
                     color = funccolor
             else:
                 color = "black"
             result += [
                 '\t<text style="text-anchor: middle; fill: %s; '
                 'font-size: %dpx;" x="%g" y="%g">%s</text>'
-                % (
-                    color,
-                    fontsize,
-                    x,
-                    y,
-                    escape(
-                        node.label() if isinstance(node, Tree) else node, quote=False
-                    ),
-                )
+                % (color, fontsize, x, y, escape(label, quote=False))
             ]
 
         result += ["</svg>"]
