@@ -33,7 +33,7 @@ This release routes every file path, archive, download, URL fetch and external p
 * Fix ARFF label injection in Weka classifier (PR #3768)
 * Prevent infinite loop from cyclic collection indices (PR #3767)
 
-Thanks to the following contributors to 3.10.4: Zhewen Tan, Yanhaoxi, Yazan Balawneh (Cystack.ps), Abdulmoyn Sommakieh, Steven Bird, Golitsin Vyacheslav, Mingzhe Yu, 宁岑, Tai An, 区梓灏, Tom Aarsen, Raffi Enficiaud, JJ, Artemiy, Cherno.x, 0xEaS, sarvesh patil, Isaac David, Arthur Gervais, leduckhuong, Ibrahim zain, Athul Jayaram, Chiencp, Ziyu Lin, Michael Lip, GOLDBERG8, Litesh Ghute, Kartik G, Thai Son Dinh, infy, 0xRenSec, Joshgun Abdullayev, Arpit Jain, Mohammad Favas S, Jace, nguyencanhthuong, kokomaru167, jankesec, Daniel Coles, Fodhil Benhiba, Liling Tan, Eric Kafe.
+Thanks to the following contributors to 3.10.4: Zhewen Tan, Yanhaoxi, Yazan Balawneh (Cystack.ps), Abdulmoyn Sommakieh, Golitsin Vyacheslav, Mingzhe Yu, 宁岑, Tai An, 区梓灏, Tom Aarsen, Raffi Enficiaud, JJ, Artemiy, Cherno.x, 0xEaS, sarvesh patil, Isaac David, Arthur Gervais, leduckhuong, Ibrahim zain, Athul Jayaram, Chiencp, Ziyu Lin, Michael Lip, GOLDBERG8, Litesh Ghute, Kartik G, Thai Son Dinh, infy, 0xRenSec, Joshgun Abdullayev, Arpit Jain, Mohammad Favas S, Jace, nguyencanhthuong, kokomaru167, jankesec, Daniel Coles, Fodhil Benhiba, Liling Tan, Eric Kafe, Steven Bird.
 
 Version 3.10.3 2026-08-12
 
