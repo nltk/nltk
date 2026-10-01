@@ -3096,6 +3096,14 @@ def _member_shape_error(member, root_abs):
     spelled = member.replace("\\", "/")
     if os.pardir in spelled.split("/"):
         return f"Parent reference blocked: {member!r}"
+    # A name a terminal would act on (control, line-break, bidi or invisible
+    # characters) is refused as an index identifier is (CWE-150): on disk it
+    # would forge listing lines and spoof the name the package declares.
+    if sanitize_terminal(member, single_line=True) != member:
+        return (
+            "Member name holds control, line-break, bidi or invisible "
+            f"characters (CWE-150): {sanitize_terminal(repr(member))}"
+        )
     if spelled == member:
         return None
     error = _validate_member(spelled, root_abs)
