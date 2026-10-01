@@ -941,7 +941,9 @@ class Downloader:
             return len(item.packages)
 
     def _download_list(self, items, download_dir, force, _expanding=()):
-        # Look up the requested items.
+        # Look up the requested items in a copy: a tuple cannot be assigned
+        # to, and the caller's list is theirs, not a place to keep lookups.
+        items = list(items)
         for i in range(len(items)):
             try:
                 items[i] = self._info_or_id(items[i])
