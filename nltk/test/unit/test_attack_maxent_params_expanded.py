@@ -1352,18 +1352,57 @@ class TestParameterFileFidelity:
         if not found:
             pytest.skip("neither maxent tab data package is installed")
 
-    def test_shipped_pos_tagger_still_tags(self):
+    # Recorded on develop (0d3ccee1e) and identical on this branch: the shipped
+    # maxent tagger and NE chunker, loaded through the guarded loader, must
+    # keep producing exactly these outputs.
+    SENTENCE = (
+        "Barack Obama was born in Hawaii and worked in Chicago for the United Nations ."
+    )
+    SENTENCE_TAGS = [
+        "NNP",
+        "NNP",
+        "VBD",
+        "VBN",
+        "IN",
+        "NNP",
+        "CC",
+        "VBD",
+        "IN",
+        "NNP",
+        "IN",
+        "DT",
+        "NNP",
+        "NNPS",
+        ".",
+    ]
+    SENTENCE_ENTITIES = [
+        ("PERSON", "Barack"),
+        ("PERSON", "Obama"),
+        ("GPE", "Hawaii"),
+        ("GPE", "Chicago"),
+        ("ORGANIZATION", "United Nations"),
+    ]
+
+    def test_shipped_pos_tagger_output_matches_the_recorded_develop_output(self):
         from nltk.classify.maxent import maxent_pos_tagger
 
         try:
             tagger = maxent_pos_tagger()
         except LookupError:
             pytest.skip("maxent_treebank_pos_tagger_tab is not installed")
-        tagged = tagger.tag(["The", "cat", "sat", "on", "the", "mat", "."])
-        assert [tag for _, tag in tagged][:2] == ["DT", "NN"]
-        assert tagged[-1] == (".", ".")
+        assert tagger.tag("The cat sat on the mat .".split()) == [
+            ("The", "DT"),
+            ("cat", "NN"),
+            ("sat", "NN"),
+            ("on", "IN"),
+            ("the", "DT"),
+            ("mat", "NN"),
+            (".", "."),
+        ]
+        tokens = self.SENTENCE.split()
+        assert tagger.tag(tokens) == list(zip(tokens, self.SENTENCE_TAGS))
 
-    def test_shipped_ne_chunker_still_chunks(self):
+    def test_shipped_ne_chunker_output_matches_the_recorded_develop_output(self):
         from nltk.chunk.named_entity import Maxent_NE_Chunker
         from nltk.tree import Tree
 
@@ -1371,11 +1410,36 @@ class TestParameterFileFidelity:
             chunker = Maxent_NE_Chunker()
         except LookupError:
             pytest.skip("maxent_ne_chunker_tab is not installed")
-        tree = chunker.parse(
-            [("Barack", "NNP"), ("Obama", "NNP"), ("visited", "VBD"), ("Paris", "NNP")]
-        )
-        assert isinstance(tree, Tree)
-        assert any(isinstance(node, Tree) for node in tree)
+        tree = chunker.parse(list(zip(self.SENTENCE.split(), self.SENTENCE_TAGS)))
+        entities = [
+            (node.label(), " ".join(word for word, _ in node))
+            for node in tree
+            if isinstance(node, Tree)
+        ]
+        assert entities == self.SENTENCE_ENTITIES
+        assert len(list(tree.leaves())) == len(self.SENTENCE_TAGS)
+
+    def test_ne_chunk_end_to_end_matches_the_recorded_develop_output(self):
+        """``nltk.ne_chunk`` over ``nltk.pos_tag``: the whole user-facing path
+        through the tab-file loader, against the output recorded on develop."""
+        import nltk
+        from nltk.tree import Tree
+
+        tokens = self.SENTENCE.split()
+        try:
+            tagged = nltk.pos_tag(tokens)
+            tree = nltk.ne_chunk(tagged)
+        except LookupError as exc:
+            pytest.skip(
+                f"tagger or chunker data not installed: {str(exc).splitlines()[0]}"
+            )
+        assert [tag for _, tag in tagged] == self.SENTENCE_TAGS
+        entities = [
+            (node.label(), " ".join(word for word, _ in node))
+            for node in tree
+            if isinstance(node, Tree)
+        ]
+        assert entities == self.SENTENCE_ENTITIES
 
     @pytest.mark.parametrize(
         "name",
