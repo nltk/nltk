@@ -1071,8 +1071,12 @@ _CORPUS_SEMANTICS = [
 
 
 class _Corpus:
-    """Random category and lexicon text from the grammar and its neighbourhood,
-    valid and malformed alike, for the old-versus-new equivalence check."""
+    """Random category and lexicon text from the grammar and its neighbourhood
+    for the old-versus-new equivalence check: primitives with and without
+    subscripts, nests to depth 12, both slashes with every modifier
+    combination, variables, families, unknown and non-ASCII names, malformed
+    subscripts and operators, embedded line breaks, trailing garbage,
+    semantics blocks, comments and odd separators."""
 
     def __init__(self, seed):
         self.rng = random.Random(seed)
