@@ -312,6 +312,10 @@ def fromstring(lex_str, include_semantics=False, max_depth=None):
         max_depth = MAX_PARSE_DEPTH
     CCGVar.reset_id()
     primitives = []
+    # The primitive names as a set for the category parser's membership test:
+    # a list scan per name made a lexicon of P primitives and E entries cost
+    # O(P*E), ten seconds for a 400 KB lexicon naming its last primitive.
+    known_primitives = set()
     families = {}
     entries = defaultdict(list)
     for line in lex_str.splitlines():
@@ -324,15 +328,15 @@ def fromstring(lex_str, include_semantics=False, max_depth=None):
             # A line of primitive categories.
             # The first one is the target category
             # ie, :- S, N, NP, VP
-            primitives = primitives + [
-                prim.strip() for prim in line[2:].strip().split(",")
-            ]
+            new_primitives = [prim.strip() for prim in line[2:].strip().split(",")]
+            primitives.extend(new_primitives)
+            known_primitives.update(new_primitives)
         else:
             # Either a family definition, or a word definition
             (ident, sep, rhs) = LEX_RE.match(line).groups()
             (catstr, semantics_str) = RHS_RE.match(rhs).groups()
             (cat, var) = augParseCategory(
-                catstr, primitives, families, max_depth=max_depth
+                catstr, known_primitives, families, max_depth=max_depth
             )
 
             if sep == "::":
