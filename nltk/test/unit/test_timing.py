@@ -93,6 +93,20 @@ def test_within_budget_keeps_the_fastest_charged_run():
     assert not ok and best >= 0.29, best
 
 
+def test_scaling_ratio_times_the_small_side_as_a_block_of_calls():
+    # both sides of a linear sink run for about as long: the small op is
+    # called SMALL_BLOCK times per rep inside one timed block, the big op once
+    calls = {}
+
+    def op(n):
+        calls[n] = calls.get(n, 0) + 1
+        spin(n / 1_000_000)
+
+    ratio = timing.scaling_ratio(op, 150_000, 600_000, reps=2, cpu_bound=True)
+    assert calls == {150_000: 2 * timing.SMALL_BLOCK, 600_000: 2}, calls
+    assert 2.0 < ratio < 8.0, ratio
+
+
 def test_assert_subquadratic_separates_linear_from_quadratic_cpu_work():
     timing.assert_subquadratic(
         lambda n: spin(n / 1_000_000), 150_000, 600_000, cpu_bound=True

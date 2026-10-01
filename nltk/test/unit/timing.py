@@ -46,6 +46,11 @@ CPU_BOUND_SHARE = 0.5
 #: a linear sink stays near 4x, so the gap is wide on any machine.
 QUADRATIC_RATIO = 8.0
 
+#: Calls of the small op timed as one block in ``scaling_ratio``: a linear
+#: sink then runs for about as long on both sides, so a host whose core rate
+#: drifts cannot hand the short side a fast window the long side never sees.
+SMALL_BLOCK = 4
+
 
 def cpu_and_wall(func, *args, **kwargs):
     """``(cpu_seconds, wall_seconds)`` this process spent in ``func``."""
@@ -123,25 +128,32 @@ def scaling_ratio(op, small, big, reps=3, noise_floor=0.1, cpu_bound=None):
     A load-invariant scaling factor: a linear sink is ~4x, a pre-patch O(n**2)
     sink ~16x. The floor is multiplicative so a sub-second quadratic is not
     hidden by additive slack. The small and big runs alternate so a burst of
-    load cannot land on one side only, the cheap small side gets ``reps``
-    extra runs, and each side keeps its minimum on both clocks. A CPU-bound op
-    is judged in CPU time; an op that mostly waits is judged on the wall clock
-    and the higher of the two ratios is kept, so the fallback only tightens.
-    ``cpu_bound`` declares the op's kind and skips the heuristic.
+    load cannot land on one side only, and each side keeps its minimum on both
+    clocks. The small side is timed as a block of four calls, so a linear sink
+    runs for about as long on both sides: the macOS runners change their core
+    rate two to three times within a second, and the minimum of short single
+    runs would catch a fast window the long run never gets, reading a linear
+    sink as up to 8x. A quadratic sink's small block is still four times
+    shorter than its big run, so that bias can only raise its ratio. A
+    CPU-bound op is judged in CPU time; an op that mostly waits is judged on
+    the wall clock and the higher of the two ratios is kept, so the fallback
+    only tightens. ``cpu_bound`` declares the op's kind and skips the heuristic.
     """
     inf = float("inf")
     cpu, wall = {small: inf, big: inf}, {small: inf, big: inf}
 
-    def run(n):
-        cpu_seconds, wall_seconds = cpu_and_wall(op, n)
-        cpu[n] = min(cpu[n], cpu_seconds)
-        wall[n] = min(wall[n], wall_seconds)
+    def small_block():
+        for _ in range(SMALL_BLOCK):
+            op(small)
+
+    def run(n, fn, calls):
+        cpu_seconds, wall_seconds = cpu_and_wall(fn)
+        cpu[n] = min(cpu[n], cpu_seconds / calls)
+        wall[n] = min(wall[n], wall_seconds / calls)
 
     for _ in range(reps):
-        run(small)
-        run(big)
-    for _ in range(reps):
-        run(small)
+        run(small, small_block, SMALL_BLOCK)
+        run(big, lambda: op(big), 1)
     cpu_ratio = cpu[big] / max(cpu[small], noise_floor)
     wall_ratio = wall[big] / max(wall[small], noise_floor)
     if cpu_bound is True:
