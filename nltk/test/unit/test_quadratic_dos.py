@@ -53,8 +53,12 @@ Three groups:
    ``lin.py`` _key_re, ``bracket_parse.py`` ALPINO_ATTR (residual after
    ALPINO_NODE was hardened), ``senseval.py`` lone-& sub, and ``sem/evaluate.py``
    _VAL_SPLIT_RE + siblings (residual after CVE-2026-12890). All routed through
-   redos.compile; the regex engine linearizes four, destructive/lin are bounded
-   by the wall-clock timeout.
+   redos.compile; the regex engine linearizes four, lin is bounded by the
+   wall-clock timeout, and destructive is linear since the 2026-10-01 scan.
+8. The re-anchored leading runs found by the 2026-10-01 regex scan (bottom of
+   this file): the default word tokenizer's final-period rule, the blankline
+   tokenizer, the TextTiling paragraph-break scan, the three valuation
+   splitters, the relextract demo's ``in`` pattern and toktok's strip pattern.
 
 Tests assert (a) correctness is preserved and (b) a crafted input is bounded --
 either linear (ratio/wall-clock) or rejected by an explicit length guard. The
@@ -961,7 +965,8 @@ class TestSnowballUpcaseQuadratic:  # snowball.py y/i/u "mark-as-consonant" rebu
 # be absent, applied with findall/sub/split over attacker-controlled corpus/text
 # data (which retries at every start position) -> O(n^2). Routed through
 # redos.compile: four are linearized by the regex engine, one (lin) still
-# backtracks and is bounded by the wall-clock TimeoutError.
+# backtracks and is bounded by the wall-clock TimeoutError; the destructive
+# rule is linear since the 2026-10-01 scan (see the last section).
 
 
 class TestNLTKWordTokenizerFinalPeriodDoS:  # destructive.py PUNCTUATION[0]
@@ -978,18 +983,38 @@ class TestNLTKWordTokenizerFinalPeriodDoS:  # destructive.py PUNCTUATION[0]
             "of", "them.", "Thanks", ".",
         ]  # fmt: skip
 
-    def test_final_period_space_run_is_bounded(self, monkeypatch):
-        # The class ends with a space directly before \s*$, so [..space..]* and
-        # \s* both match the trailing space run and backtrack O(n^2) when the
-        # text ends in a non-space, non-class char (~32 KB -> 8s). The regex
-        # engine is also quadratic here, so only the timeout bounds it.
-        import nltk.redos as redos_mod
-
-        monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 0.5)
+    def test_final_period_space_run_is_linear(self):
+        # The class ends with a space directly before \s*$; the two re-split a
+        # trailing space run at every length when the text ends in a non-space,
+        # non-class char. The run is possessive now, so the rule is linear.
         from nltk.tokenize import NLTKWordTokenizer
 
-        with pytest.raises(TimeoutError):
-            NLTKWordTokenizer().tokenize("a." + " " * 80000 + "!")
+        tok = NLTKWordTokenizer()
+        _assert_subquadratic(
+            lambda n: tok.tokenize("a." + " " * n + "x"), 40000, 160000
+        )
+        _assert_subquadratic(
+            lambda n: tok.tokenize("a." + " " * n + "\tx"), 40000, 160000
+        )
+
+    def test_final_period_rule_matches_the_pre_fix_rule(self):
+        from nltk.tokenize.destructive import NLTKWordTokenizer
+
+        shipped = NLTKWordTokenizer.PUNCTUATION[0][0].pattern
+        assert "*+" in shipped and shipped != _PRE_FIX["destructive"]
+        texts = [
+            "a.", "a. ", "a.  x", "a.) ", 'a.)" \t', "a. \n", ".", "x.»”’  ",
+            "a." + " " * 30 + "x", "a." + " " * 30, "a.)" + " " * 30 + "\t",
+            "Thanks.\n", "them.", "x. . ", "a.\t\tx", "a. ) x",
+        ]  # fmt: skip
+        import re
+
+        _same_results(_PRE_FIX["destructive"], shipped, "sub", texts, re.U)
+
+    def test_pre_fix_final_period_rule_has_teeth(self):
+        import re
+
+        _trips_backstop(_PRE_FIX["destructive"], "sub", "a." + " " * 80000 + "x", re.U)
 
     def test_treebank_no_space_class_stays_linear(self):  # BENIGN guard
         # Treebank's twin rule has no space in the class -> disjoint quantifiers.
@@ -1093,3 +1118,58 @@ class TestClearedLinearOrByDesign:
 
         seq = list(range(20000))
         assert _elapsed(lambda: list(skipgrams(seq, 2, 2))) < 5.0
+
+
+# ==========================================================================
+# RE-ANCHORED LEADING RUNS (fixed) -- the regex scan of 2026-10-01
+# ==========================================================================
+# Shape: a pattern that opens with an unbounded whitespace or class run and is
+# applied with sub/split/findall/finditer, so the engine retries that run from
+# every position of a run no later literal completes: O(n**2) (CWE-407). The
+# redos wall-clock cap only bounded the burn. Each fix pins the run to its start
+# (a possessive run, or an optional run taken only when no run character
+# precedes it) or commits the backtracking (an atomic group). The verbatim
+# pre-fix patterns stay here as the faithfulness oracle and as the teeth.
+
+_PRE_FIX = {
+    "destructive": r'([^\.])(\.)([\]\)}>"\'»”’ ]*)\s*$',
+    "blankline": r"\s*\n\s*\n\s*",
+    "texttiling": r"[ \t\r\f\v]*+\n[ \t\r\f\v]*+\n[ \t\r\f\v]*+",
+    "val_split": r"\s*(?<!=)=+>\s*",
+    "element_split": r"\s*,\s*",
+    "tuples": r"\s*(\([^)]+\))\s*",
+    "in_relation": r".*\bin\b(?!\b.+ing)",
+    "rstrip": r"\s+$",
+}
+
+
+def _apply(rx, op, text, **kw):
+    if op == "sub":
+        return rx.sub(r"[\g<0>]", text, **kw)
+    if op == "split":
+        return rx.split(text, **kw)
+    if op == "findall":
+        return rx.findall(text, **kw)
+    if op == "finditer":
+        return [m.span() for m in rx.finditer(text, **kw)]
+    if op == "match":
+        m = rx.match(text, **kw)
+        return None if m is None else (m.span(), m.groups())
+    raise ValueError(op)
+
+
+def _same_results(old, new, op, texts, flags=0):
+    """The pre-fix and the shipped pattern agree, result for result."""
+    from nltk import redos
+
+    ro, rn = redos.compile(old, flags), redos.compile(new, flags)
+    for text in texts:
+        assert _apply(ro, op, text) == _apply(rn, op, text), text
+
+
+def _trips_backstop(old, op, text, flags=0):
+    """The pre-fix pattern still runs into a 0.5 s wall-clock cap on ``text``."""
+    from nltk import redos
+
+    with pytest.raises(TimeoutError):
+        _apply(redos.compile(old, flags), op, text, timeout=0.5)
