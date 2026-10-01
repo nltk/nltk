@@ -208,3 +208,26 @@ def test_run_subprocess_judges_a_child_interpreter():
         hard_deadline=1.0,
     )
     assert completed is None and not run.finished, run
+
+
+def test_run_subprocess_charges_a_child_its_own_cpu_time_on_every_platform():
+    import sys
+
+    # a child that computes for 0.3 s and then waits a full second, over a
+    # 1 s budget: a declared computing child must read its CPU time on every
+    # platform, so the wait never reaches the charge and the wall clock does
+    completed, run = timing.run_subprocess(
+        [
+            sys.executable,
+            "-c",
+            "import time\nt=time.process_time()\n"
+            "while time.process_time()-t<0.3: pass\ntime.sleep(1.0)",
+        ],
+        budget=1.0,
+        cpu_bound=True,
+        capture_output=True,
+    )
+    assert completed is not None and completed.returncode == 0, run
+    assert run.cpu is not None and run.charged == run.cpu, run
+    assert 0.25 <= run.cpu < 1.0 <= run.wall, run
+    assert run.within_budget, run
