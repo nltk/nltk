@@ -100,7 +100,7 @@ def test_long_trailing_digit_run_renames_in_linear_time():
     """A long TRAILING digit run must also strip in linear time (and correctly)."""
     ctx = _mp_ctx()
     run = timing.run_in_process(
-        _rename_trailing_worker, (), budget=_TIMEOUT, context=ctx
+        _rename_trailing_worker, (), budget=_TIMEOUT, context=ctx, cpu_bound=True
     )
     if not run.within_budget:
         raise AssertionError(

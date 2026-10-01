@@ -84,7 +84,7 @@ def test_many_separator_runs_parse_in_linear_time():
     """Many hostile '=' runs (one per line) must all stay linear."""
     ctx = _mp_ctx()
     run = timing.run_in_process(
-        _parse_multiline_worker, (), budget=_TIMEOUT, context=ctx
+        _parse_multiline_worker, (), budget=_TIMEOUT, context=ctx, cpu_bound=True
     )
     if not run.within_budget:
         raise AssertionError(

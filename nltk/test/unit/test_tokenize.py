@@ -389,7 +389,7 @@ class TestTokenize:
         """
         ctx = _mp_ctx()
         run = timing.run_in_process(
-            _tweet_tokenizer_redos_worker, (), budget=60, context=ctx
+            _tweet_tokenizer_redos_worker, (), budget=60, context=ctx, cpu_bound=True
         )
         if not run.within_budget:
             raise AssertionError(

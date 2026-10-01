@@ -33,17 +33,30 @@ _LIMIT = 20
 
 
 def _run(code):
-    return subprocess.run(
+    # the guarded child is charged its CPU time (see nltk.test.unit.timing);
+    # a run over budget or still running at the hard deadline raises as before
+    proc, run = timing.run_subprocess(
         [
             sys.executable,
             "-c",
             "import warnings;warnings.filterwarnings('ignore');" + code,
         ],
+        _LIMIT,
+        cpu_bound=True,
         capture_output=True,
         text=True,
-        timeout=_LIMIT,
         env=dict(os.environ, PYTHONPATH=os.pathsep.join(sys.path)),
     )
+    if proc is None or not run.within_budget:
+        raise subprocess.TimeoutExpired(
+            [
+                sys.executable,
+                "-c",
+                "import warnings;warnings.filterwarnings('ignore');" + code,
+            ],
+            _LIMIT,
+        )
+    return proc
 
 
 def test_a_catastrophic_pattern_does_not_hang():

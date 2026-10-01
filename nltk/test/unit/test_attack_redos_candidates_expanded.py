@@ -83,23 +83,24 @@ def _run_child(code, budget):
     """
     env = dict(os.environ)
     env["PYTHONPATH"] = os.pathsep.join(sys.path)
-    try:
-        proc = subprocess.run(
-            [sys.executable, "-c", code],
-            capture_output=True,
-            text=True,
-            timeout=budget,
-            env=env,
-        )
-    except subprocess.TimeoutExpired as exc:
-        out, err = exc.stdout or "", exc.stderr or ""
-        if isinstance(out, bytes):
-            out = out.decode("utf-8", "replace")
-        if isinstance(err, bytes):
-            err = err.decode("utf-8", "replace")
-        return _ChildResult(True, None, _parse_cases(out), out, err)
+    # the guarded child is charged its CPU time (see nltk.test.unit.timing);
+    # one still running at the hard deadline is a hang, killed, no output kept
+    proc, run = timing.run_subprocess(
+        [sys.executable, "-c", code],
+        budget,
+        cpu_bound=True,
+        capture_output=True,
+        text=True,
+        env=env,
+    )
+    if proc is None:
+        return _ChildResult(True, None, {}, "", "")
     return _ChildResult(
-        False, proc.returncode, _parse_cases(proc.stdout), proc.stdout, proc.stderr
+        not run.within_budget,
+        proc.returncode,
+        _parse_cases(proc.stdout),
+        proc.stdout,
+        proc.stderr,
     )
 
 

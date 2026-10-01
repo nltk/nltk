@@ -102,7 +102,7 @@ def test_meteor_on_disjoint_text_is_linear_time():
     ctx = _mp_ctx()
     result_q = ctx.Queue()
     run = timing.run_in_process(
-        _meteor_worker, (result_q,), budget=_TIMEOUT, context=ctx
+        _meteor_worker, (result_q,), budget=_TIMEOUT, context=ctx, cpu_bound=True
     )
     if not run.within_budget:
         raise AssertionError(

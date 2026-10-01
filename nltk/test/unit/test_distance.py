@@ -459,7 +459,7 @@ def test_jaro_similarity_not_cubic_on_near_matches():
     ctx = _mp_ctx()
     result_q = ctx.Queue()
     run = timing.run_in_process(
-        _jaro_worker, (result_q,), budget=_JARO_TIMEOUT, context=ctx
+        _jaro_worker, (result_q,), budget=_JARO_TIMEOUT, context=ctx, cpu_bound=True
     )
     if not run.within_budget:
         raise AssertionError(
