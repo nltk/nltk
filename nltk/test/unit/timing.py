@@ -38,11 +38,8 @@ import threading
 import time
 
 #: A block whose CPU time is at least this share of its wall time is judged on
-#: CPU time; below it the block was mostly waiting and the wall clock applies.
-#: Under xdist a 3-core runner stretched 0.20 s of CPU to 0.55 s of wall, under
-#: this share, so a call site that knows its sink computes declares it with
-#: ``cpu_bound=True`` and skips the heuristic; the share itself stays at a half
-#: so no undeclared block is judged more leniently than before.
+#: CPU time, below it on the wall clock. A loaded runner can push a computing
+#: block under it (0.20 s CPU took 0.55 s wall), so such a sink declares itself.
 CPU_BOUND_SHARE = 0.5
 
 #: A scaling factor at or above this reads as super-linear (quadratic ~16x);
@@ -164,14 +161,9 @@ def assert_subquadratic(
     assert ratio < factor, (small, big, ratio)
 
 
-# ---------------------------------------------------------------------------
-# Work done in a child process or on a thread
-# ---------------------------------------------------------------------------
-# A hang detector runs the sink in a child and joins it with a deadline. The
-# same rule applies: the child is charged its own CPU time when it computed and
-# its wall time when it waited, and only a child that is still running at a
-# generous hard deadline is a hang. The budget the test names stays the same
-# number; it now bounds the work rather than the runner's queue.
+# Work done in a child process or on a thread: the same rule, with the budget
+# the test names bounding the child's own work and a generous hard deadline
+# marking a hang. See run_in_process, finishes_within and run_subprocess.
 
 
 def hard_deadline_for(budget):

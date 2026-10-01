@@ -327,12 +327,12 @@ class TestBoundaryCheck:
         )
 
     def test_ordinary_lines_cost_no_more_than_the_historical_readline(self):
-        # One file of ordinary short lines, read whole by both implementations,
-        # best of five: the fixed readline must stay within twice the historical
-        # per-line cost (the timed-regex version ran at about five times it).
-        # Process CPU time, on a file big enough to take a few tenths of a
-        # second: a busy runner stretches the wall clock, not the work, and
-        # Windows reports CPU time in 15.6 ms steps (a 60k-line file read 2.5x).
+        """One file of ordinary short lines, read whole by both implementations,
+        best of five: the fixed readline must stay within twice the historical
+        per-line cost (the timed-regex version ran at about five times it).
+        Measured in process CPU time on a file that takes a few tenths of a
+        second: a busy runner stretches the wall clock, not the work, and the
+        Windows CPU clock steps in 15.6 ms (a 60k-line file read 2.5x there)."""
         data = (
             "the quick brown fox jumps over the lazy dog, again and again\n" * 240000
         ).encode()
