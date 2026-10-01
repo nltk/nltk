@@ -811,7 +811,9 @@ class Tree(list):
 
         draw_trees(self)
 
-    def pretty_print(self, sentence=None, highlight=(), stream=None, rtl=False, **kwargs):
+    def pretty_print(
+        self, sentence=None, highlight=(), stream=None, rtl=False, **kwargs
+    ):
         """
         Pretty-print this tree as ASCII or Unicode art.
         For explanation of the arguments, see the documentation for
