@@ -1173,3 +1173,32 @@ def _trips_backstop(old, op, text, flags=0):
 
     with pytest.raises(TimeoutError):
         _apply(redos.compile(old, flags), op, text, timeout=0.5)
+
+
+class TestBlanklineTokenizerLeadingRun:  # tokenize/regexp.py BlanklineTokenizer
+    def test_benign_split_unchanged(self):
+        from nltk.tokenize import blankline_tokenize
+
+        assert blankline_tokenize("a b\n\nc d\n  \n\te") == ["a b", "c d", "e"]
+
+    def test_space_run_before_a_newline_is_linear(self):
+        from nltk.tokenize import blankline_tokenize
+
+        _assert_subquadratic(
+            lambda n: blankline_tokenize(" " * n + "\na"), 40000, 160000
+        )
+
+    def test_shipped_pattern_matches_the_pre_fix_pattern(self):
+        from nltk.tokenize import BlanklineTokenizer
+
+        shipped = BlanklineTokenizer()._pattern
+        assert shipped != _PRE_FIX["blankline"]
+        texts = [
+            "", "a", "\n", "\n\n", " \n \n ", "a\n\nb", "a \n \n b", "\n\n\n\n",
+            " \n\n\n\n x", "a\n b", "x" + " " * 30 + "\ny", "x" + " " * 30 + "\n\ny",
+            "\t\n\x0b\r\n\x0c\x0b \x0c\n\r\n\x0c\n\r", "a\n\n\nb\n\n\n\nc",
+        ]  # fmt: skip
+        _same_results(_PRE_FIX["blankline"], shipped, "split", texts)
+
+    def test_pre_fix_pattern_has_teeth(self):
+        _trips_backstop(_PRE_FIX["blankline"], "split", " " * 80000 + "\na")
