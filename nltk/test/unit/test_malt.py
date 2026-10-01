@@ -5,6 +5,15 @@ import pytest
 
 import nltk.parse.malt as malt
 from nltk.parse.malt import MaltParser
+from nltk.parse.util import taggedsents_to_conll
+
+
+def test_tagged_sents_to_conll_separates_sentences():
+    sentences = iter([[("hello", "NN")], [("world", "NN")]])
+    assert "".join(taggedsents_to_conll(sentences)) == (
+        "1\thello\t_\tNN\tNN\t_\t0\ta\t_\t_\n\n"
+        "1\tworld\t_\tNN\tNN\t_\t0\ta\t_\t_\n\n"
+    )
 
 
 def _minimal_malt_parser(tmp_path, monkeypatch):
@@ -41,6 +50,29 @@ def _write_minimal_parse(cmd):
         "1\thello\t_\tNN\tNN\t_\t0\tnull\t_\t_\n",
         encoding="utf-8",
     )
+
+
+@pytest.mark.parametrize("words", [[], ["hello"], ["hello", "world"]])
+def test_malt_parse_ignores_empty_output_blocks(monkeypatch, tmp_path, words):
+    parser, _ = _minimal_malt_parser(tmp_path, monkeypatch)
+
+    def fake_execute(cmd, verbose=False):
+        output_path = Path(cmd[cmd.index("-o") + 1])
+        output_path.write_text(
+            "".join(f"1\t{word}\t_\tNN\tNN\t_\t0\tnull\t_\t_\n\n" for word in words),
+            encoding="utf-8",
+        )
+        return 0
+
+    parser._execute = fake_execute
+    parses = [
+        next(trees)
+        for trees in parser.parse_tagged_sents([[(word, "NN")] for word in words])
+    ]
+    assert [
+        [node["word"] for address, node in sorted(graph.nodes.items()) if address]
+        for graph in parses
+    ] == [[word] for word in words]
 
 
 def test_malt_parse_passes_model_dir_via_w_without_changing_process_cwd(

@@ -259,6 +259,8 @@ class MaltParser(ParserI):
                     output_file_name, context="MaltParser.parse_tagged_sents"
                 ) as infile:
                     for tree_str in infile.read().split("\n\n"):
+                        if not tree_str.strip():
+                            continue
                         yield (
                             iter(
                                 [
