@@ -43,11 +43,18 @@ def _srl_reader(tmp_path):
     )
 
 
-def _grid(n):
+def _grid(predicates, words=600):
+    # the probe's shape: a fixed sentence length, one column per predicate, a
+    # verb on the diagonal and a decoy span elsewhere, so the grid grows
+    # linearly with the predicates (n predicates over n words grew as n * n)
     grid = []
-    for i in range(n):
-        row = ["w", "NN", "*", "verb.01", "p"]
-        row += ["(V*)" if i == j else "(A1*)" for j in range(n)]
+    for i in range(words):
+        row = (
+            ["w", "NN", "*", "verb.01", "p"]
+            if i < predicates
+            else ["w", "NN", "*", "-", "-"]
+        )
+        row += ["(V*)" if i == j else "(A1*)" for j in range(predicates)]
         grid.append(row)
     return grid
 

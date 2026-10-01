@@ -18,25 +18,33 @@ from ._base import (
     scaling_ratio,
 )
 
-# Predicate counts fed to the sink; big is 4*small so a linear method scales ~4x
-# and the pre-fix quadratic rescan scales ~16x. Sizes keep the fixed sink in tens
-# of milliseconds and a reverted quadratic run well under a couple of seconds.
+# Predicate counts fed to the sink over a sentence of _WORDS words; big is
+# 4*small so a linear method scales ~4x and the pre-fix rescan ~16x. The word
+# count is fixed because the format gives every predicate its own column.
+_WORDS = 600
 _SMALL = 70
 _BIG = 4 * _SMALL
 
 
-def _build_grid(n):
-    """A one-sentence CoNLL-2005 SRL grid with n predicates and n span columns.
+def _build_grid(predicates, words=_WORDS):
+    """A one-sentence CoNLL-2005 SRL grid: ``words`` rows, the first
+    ``predicates`` of them predicates, and one span column per predicate.
 
-    Columns: words, pos, tree, roleset, predicate, then one span column per
-    predicate. Column j carries the '(V*)' verb for predicate j on its diagonal
-    row and a decoy '(A1*)' span on every other row, so each spanlist holds n
-    spans and predicate j's verb sits in spanlist j.
+    Columns: words, pos, tree, roleset, predicate, then the span columns.
+    Column j carries the '(V*)' verb for predicate j on row j and a decoy
+    '(A1*)' span on every other row, so each spanlist holds ``words`` spans and
+    predicate j's verb sits in spanlist j. The grid is words * predicates cells,
+    so growing the predicates alone grows the input linearly: a grid that grew
+    both (n predicates over n words) was itself quadratic in n and read the
+    one-pass reader as 16x too, hidden only by the noise floor on the small run.
     """
     grid = []
-    for i in range(n):
-        row = ["w", "NN", "*", "verb.01", "p"]
-        for j in range(n):
+    for i in range(words):
+        if i < predicates:
+            row = ["w", "NN", "*", "verb.01", "p"]
+        else:
+            row = ["w", "NN", "*", "-", "-"]
+        for j in range(predicates):
             row.append("(V*)" if i == j else "(A1*)")
         grid.append(row)
     return grid
