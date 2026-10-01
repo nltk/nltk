@@ -126,6 +126,70 @@ def test_model_artifact_probe_covers_every_api_the_advisory_names():
         assert named in labels, f"advisory API {named} is not probed"
 
 
+def test_maxent_load_bare_open_probe_has_teeth():
+    """Restore the advisory's own bug and the probe must flip to VULNERABLE.
+
+    ``load_maxent_params`` read the four tab files through ``builtins.open``
+    on a caller path, outside the sandbox (GHSA-59f9-gqg8-mqpj). Putting that
+    back is the exact regression the probe exists to catch, so it must not
+    stay FIXED through it, for a str, a Path or a pointer argument.
+    """
+    import numpy
+
+    from nltk.classify import maxent
+    from nltk.tabdata import MaxentDecoder
+
+    probe = probes.PROBES["GHSA-59f9-gqg8-mqpj"]
+    guarded = maxent.load_maxent_params
+
+    def bare_load(tab_dir):
+        mdec, base = MaxentDecoder(), os.fspath(tab_dir)
+        with open(os.path.join(base, "weights.txt")) as fin:
+            wgt = numpy.array(list(map(numpy.float64, mdec.txt2list(fin))))
+        with open(os.path.join(base, "mapping.tab")) as fin:
+            mpg = mdec.tupkey2dict(fin)
+        with open(os.path.join(base, "labels.txt")) as fin:
+            lab = mdec.txt2list(fin)
+        with open(os.path.join(base, "alwayson.tab")) as fin:
+            aon = mdec.tab2ivdict(fin)
+        return wgt, mpg, lab, aon
+
+    maxent.load_maxent_params = bare_load
+    try:
+        status, evidence = probe()
+    finally:
+        maxent.load_maxent_params = guarded
+    assert status == probes.VULNERABLE, evidence
+    for face in ("load(pointer)", "load(str)", "load(Path)"):
+        assert face + " read" in evidence, evidence
+    assert probe()[0] == probes.FIXED
+
+
+def test_maxent_save_bare_open_probe_has_teeth():
+    """The save half of the same probe: a writer that opens the caller path
+    with ``builtins.open`` lands the parameter files outside every root, and
+    the probe must report it rather than stay FIXED on the load half alone."""
+    from nltk.classify import maxent
+
+    probe = probes.PROBES["GHSA-59f9-gqg8-mqpj"]
+    guarded = maxent.save_maxent_params
+
+    def bare_save(wgt, mpg, lab, aon, tab_dir=None):
+        os.makedirs(tab_dir, exist_ok=True)
+        with open(os.path.join(tab_dir, "weights.txt"), "w") as fout:
+            fout.write("\n".join(map(repr, wgt.tolist())))
+        return tab_dir
+
+    maxent.save_maxent_params = bare_save
+    try:
+        status, evidence = probe()
+    finally:
+        maxent.save_maxent_params = guarded
+    assert status == probes.VULNERABLE, evidence
+    assert "save wrote ['weights.txt']" in evidence, evidence
+    assert probe()[0] == probes.FIXED
+
+
 def test_perceptron_bare_open_probe_has_teeth():
     """Restore the advisory's own bug and the probe must flip to VULNERABLE.
 
@@ -785,6 +849,171 @@ def test_r53h_front_mutation_probe_has_teeth():
         assert probe()[0] == probes.VULNERABLE
     finally:
         transforms.deque = real
+    assert probe()[0] == probes.FIXED
+
+
+def _pre_fix_ccg_parser(compile=re.compile):
+    """The CCG category parser as it stood before the cursor rewrite, copied
+    verbatim: every step re-sliced the remaining tail and NEXTPRIM_RE and
+    APP_RE captured it with a trailing (.*). Its regexes are compiled by
+    ``compile`` (the standard library, as before they were routed through
+    redos). Returns its augParseCategory."""
+    from nltk.ccg import lexicon
+
+    old_nextprim_re = compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)""")
+    old_app_re = compile(r"""([\\/])([.,_]?)([.,]?)(.*)""")
+    old_prim_re = compile(r"""([A-Za-z]+)(\[[A-Za-z,]+\])?""")
+
+    def old_matchBrackets(string, _depth=0, max_depth=None):
+        if max_depth is None:
+            max_depth = lexicon.MAX_PARSE_DEPTH
+        if _depth > max_depth:
+            raise ValueError("CCG nesting depth exceeds MAX_PARSE_DEPTH")
+        rest = string[1:]
+        inside = "("
+        while rest != "" and not rest.startswith(")"):
+            if rest.startswith("("):
+                (part, rest) = old_matchBrackets(rest, _depth + 1, max_depth)
+                inside = inside + part
+            else:
+                inside = inside + rest[0]
+                rest = rest[1:]
+        if rest.startswith(")"):
+            return (inside + ")", rest[1:])
+        raise AssertionError("Unmatched bracket in string '" + string + "'")
+
+    def old_nextCategory(string, _depth=0, max_depth=None):
+        if string.startswith("("):
+            return old_matchBrackets(string, _depth, max_depth)
+        return old_nextprim_re.match(string).groups()
+
+    def old_augParseCategory(
+        line, primitives, families, var=None, _depth=0, max_depth=None
+    ):
+        if max_depth is None:
+            max_depth = lexicon.MAX_PARSE_DEPTH
+        if _depth > max_depth:
+            raise ValueError("CCG nesting depth exceeds MAX_PARSE_DEPTH")
+        (cat_string, rest) = old_nextCategory(line, _depth, max_depth)
+        if cat_string.startswith("("):
+            (res, var) = old_augParseCategory(
+                cat_string[1:-1], primitives, families, var, _depth + 1, max_depth
+            )
+        else:
+            (res, var) = lexicon.parsePrimitiveCategory(
+                old_prim_re.match(cat_string).groups(), primitives, families, var
+            )
+        while rest != "":
+            app = old_app_re.match(rest).groups()
+            direction = lexicon.parseApplication(app[0:3])
+            rest = app[3]
+            (cat_string, rest) = old_nextCategory(rest, _depth, max_depth)
+            if cat_string.startswith("("):
+                (arg, var) = old_augParseCategory(
+                    cat_string[1:-1], primitives, families, var, _depth + 1, max_depth
+                )
+            else:
+                (arg, var) = lexicon.parsePrimitiveCategory(
+                    old_prim_re.match(cat_string).groups(),
+                    primitives,
+                    families,
+                    var,
+                )
+            res = lexicon.FunctionalCategory(res, arg, direction)
+        return (res, var)
+
+    return old_augParseCategory
+
+
+def _uncapped_ccg_parser():
+    """The fixed cursor parser with only augParseCategory's MAX_PARSE_LEN
+    refusal removed; matchBrackets keeps its own, which the probe's over-cap
+    chain, carrying no bracket, never reaches."""
+    from nltk.ccg import lexicon
+
+    def uncapped_augParseCategory(
+        line, primitives, families, var=None, _depth=0, max_depth=None
+    ):
+        if max_depth is None:
+            max_depth = lexicon.MAX_PARSE_DEPTH
+        if _depth > max_depth:
+            raise ValueError("CCG nesting depth exceeds MAX_PARSE_DEPTH")
+        n = len(line)
+        (cat_string, pos) = lexicon.nextCategory(line, 0, _depth, max_depth)
+        if cat_string.startswith("("):
+            (res, var) = uncapped_augParseCategory(
+                cat_string[1:-1], primitives, families, var, _depth + 1, max_depth
+            )
+        else:
+            (res, var) = lexicon.parsePrimitiveCategory(
+                lexicon.PRIM_RE.match(cat_string).groups(), primitives, families, var
+            )
+        while pos < n:
+            m = lexicon.APP_RE.match(line, pos)
+            if m is None:
+                m.groups()
+            direction = lexicon.parseApplication(m.group(1, 2, 3))
+            pos = m.end()
+            (cat_string, pos) = lexicon.nextCategory(line, pos, _depth, max_depth)
+            if cat_string.startswith("("):
+                (arg, var) = uncapped_augParseCategory(
+                    cat_string[1:-1], primitives, families, var, _depth + 1, max_depth
+                )
+            else:
+                (arg, var) = lexicon.parsePrimitiveCategory(
+                    lexicon.PRIM_RE.match(cat_string).groups(),
+                    primitives,
+                    families,
+                    var,
+                )
+            res = lexicon.FunctionalCategory(res, arg, direction)
+        return (res, var)
+
+    return uncapped_augParseCategory
+
+
+def test_89p3_cap_removed_probe_has_teeth():
+    """Only the cap removed: the probe must flip VULNERABLE through its cap leg."""
+    from nltk.ccg import lexicon
+
+    probe = probes.PROBES["GHSA-89p3-fcch-88ph"]
+    assert probe()[0] == probes.FIXED
+
+    real = lexicon.augParseCategory
+    try:
+        lexicon.augParseCategory = _uncapped_ccg_parser()
+        status, evidence = probe()
+        assert status == probes.VULNERABLE, evidence
+        assert "not capped" in evidence, evidence
+    finally:
+        lexicon.augParseCategory = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_89p3_tail_reslice_probe_has_teeth():
+    """Only the linear parse removed: the pre-fix parser behind the cap it
+    lacked, so the probe must flip VULNERABLE through a scaling leg."""
+    from nltk.ccg import lexicon
+
+    probe = probes.PROBES["GHSA-89p3-fcch-88ph"]
+    assert probe()[0] == probes.FIXED
+    old_augParseCategory = _pre_fix_ccg_parser()
+
+    def capped_old_augParseCategory(
+        line, primitives, families, var=None, _depth=0, max_depth=None
+    ):
+        if len(line) > lexicon.MAX_PARSE_LEN:
+            raise ValueError("CCG category length exceeds MAX_PARSE_LEN")
+        return old_augParseCategory(line, primitives, families, var, _depth, max_depth)
+
+    real = lexicon.augParseCategory
+    try:
+        lexicon.augParseCategory = capped_old_augParseCategory
+        status, evidence = probe()
+        assert status == probes.VULNERABLE, evidence
+        assert "quadratic" in evidence, evidence
+    finally:
+        lexicon.augParseCategory = real
     assert probe()[0] == probes.FIXED
 
 
