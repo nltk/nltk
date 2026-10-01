@@ -86,7 +86,9 @@ def _parse_worker():
 def test_exponential_grammar_is_refused_not_run():
     """The default cap must refuse an exponential parse forest, not build it."""
     ctx = _mp_ctx()
-    run = timing.run_in_process(_parse_worker, (), budget=_TIMEOUT, context=ctx)
+    run = timing.run_in_process(
+        _parse_worker, (), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
     if not run.within_budget:
         raise AssertionError(
             "chart tree extraction did not finish -> unbounded exponential DoS"

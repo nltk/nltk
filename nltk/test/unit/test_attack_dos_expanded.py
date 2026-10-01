@@ -113,6 +113,7 @@ def _run_child(code, budget):
     proc, run = timing.run_subprocess(
         [sys.executable, "-c", code],
         budget,
+        cpu_bound=True,
         capture_output=True,
         text=True,
         env=env,

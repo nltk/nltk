@@ -70,7 +70,9 @@ def _rename_worker():
 def test_long_digit_run_renames_in_linear_time():
     """A long digit-run variable name must rename in linear time (not ReDoS)."""
     ctx = _mp_ctx()
-    run = timing.run_in_process(_rename_worker, (), budget=_TIMEOUT, context=ctx)
+    run = timing.run_in_process(
+        _rename_worker, (), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
     if not run.within_budget:
         raise AssertionError(
             "feature-structure renaming did not finish in time -> quadratic ReDoS"

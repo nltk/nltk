@@ -57,7 +57,9 @@ def _parse_worker():
 def test_long_separator_run_parses_in_linear_time():
     """A long '=' run must split in linear time, not quadratic (ReDoS)."""
     ctx = _mp_ctx()
-    run = timing.run_in_process(_parse_worker, (), budget=_TIMEOUT, context=ctx)
+    run = timing.run_in_process(
+        _parse_worker, (), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
     if not run.within_budget:
         raise AssertionError(
             "valuation parsing did not finish in time -> quadratic ReDoS (CWE-1333)"

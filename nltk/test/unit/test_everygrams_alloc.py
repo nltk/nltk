@@ -105,7 +105,9 @@ def _everygrams_worker():
 def test_oversized_default_does_not_allocate():
     """everygrams(long_seq) with the default max_len must be refused, not run."""
     ctx = _mp_ctx()
-    run = timing.run_in_process(_everygrams_worker, (), budget=_TIMEOUT, context=ctx)
+    run = timing.run_in_process(
+        _everygrams_worker, (), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
     if not run.within_budget:
         raise AssertionError(
             "everygrams() did not return quickly -> unbounded O(n**3) allocation (DoS)"

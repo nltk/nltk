@@ -76,7 +76,9 @@ def test_alignment_is_linear_not_quadratic():
     n = 120_000
     deadline = 30
     ctx = _mp_ctx()
-    run = timing.run_in_process(_alignment_worker, (n,), budget=deadline, context=ctx)
+    run = timing.run_in_process(
+        _alignment_worker, (n,), budget=deadline, context=ctx, cpu_bound=True
+    )
     if not run.within_budget:
         raise AssertionError(
             "alignment() did not finish in time: quadratic blow-up regressed"

@@ -178,7 +178,9 @@ def _pk_worker(n):
 def _finishes_within(target, n, deadline=30):
     """Run target(n) in a separate process; return (finished, exitcode)."""
     ctx = _mp_ctx()
-    run = timing.run_in_process(target, (n,), budget=deadline, context=ctx)
+    run = timing.run_in_process(
+        target, (n,), budget=deadline, context=ctx, cpu_bound=True
+    )
     if not run.within_budget:
         return False, None
     return True, run.exitcode

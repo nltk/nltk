@@ -132,7 +132,9 @@ def test_alpino_normalize_is_linear_not_quadratic(tmp_path):
     (tmp_path / "alpino.xml").write_text(body, encoding="ISO-8859-1")
 
     ctx = _mp_ctx()
-    run = timing.run_in_process(_words_worker, (str(tmp_path),), budget=30, context=ctx)
+    run = timing.run_in_process(
+        _words_worker, (str(tmp_path),), budget=30, context=ctx, cpu_bound=True
+    )
     if not run.within_budget:
         raise AssertionError(
             "AlpinoCorpusReader.words() did not finish in time: ReDoS regressed"

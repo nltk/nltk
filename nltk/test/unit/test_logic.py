@@ -75,7 +75,9 @@ def test_simplify_bounds_exponential_blowup():
     or hanging the suite.
     """
     ctx = _mp_ctx()
-    run = timing.run_in_process(_blowup_worker, (), budget=30, context=ctx)
+    run = timing.run_in_process(
+        _blowup_worker, (), budget=30, context=ctx, cpu_bound=True
+    )
     if not run.within_budget:
         raise AssertionError(
             "simplify() did not terminate: exponential beta-reduction regressed"

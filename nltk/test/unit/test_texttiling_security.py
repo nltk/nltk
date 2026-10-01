@@ -98,7 +98,9 @@ def _run_in_process(target):
     """
     ctx = _mp_ctx()
     result_q = ctx.Queue()
-    run = timing.run_in_process(target, (result_q,), budget=_TIMEOUT, context=ctx)
+    run = timing.run_in_process(
+        target, (result_q,), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
     if not run.within_budget:
         return False, None, None, None
     try:

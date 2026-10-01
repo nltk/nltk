@@ -94,7 +94,9 @@ def test_un_chomsky_is_linear_not_quadratic():
     n = 20_000
     deadline = 30
     ctx = _mp_ctx()
-    run = timing.run_in_process(_un_chomsky_worker, (n,), budget=deadline, context=ctx)
+    run = timing.run_in_process(
+        _un_chomsky_worker, (n,), budget=deadline, context=ctx, cpu_bound=True
+    )
     if not run.within_budget:
         raise AssertionError(
             "un_chomsky_normal_form did not finish in time: quadratic blow-up regressed"

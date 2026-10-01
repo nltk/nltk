@@ -106,7 +106,9 @@ def test_findall_star_query_is_linear():
     n = 200_000
     deadline = 30
     ctx = _mp_ctx()
-    run = timing.run_in_process(_star_query_worker, (n,), budget=deadline, context=ctx)
+    run = timing.run_in_process(
+        _star_query_worker, (n,), budget=deadline, context=ctx, cpu_bound=True
+    )
     if not run.within_budget:
         raise AssertionError(
             "TokenSearcher.findall did not finish in time: quadratic scan regressed"

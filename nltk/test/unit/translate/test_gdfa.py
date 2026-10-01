@@ -187,7 +187,9 @@ def test_gdfa_cost_independent_of_lengths():
     test instead of pinning a core for the rest of the suite.
     """
     ctx = _mp_ctx()
-    run = timing.run_in_process(_gdfa_worker, (50_000,), budget=30, context=ctx)
+    run = timing.run_in_process(
+        _gdfa_worker, (50_000,), budget=30, context=ctx, cpu_bound=True
+    )
     if not run.within_budget:
         raise AssertionError(
             "grow_diag_final_and did not finish in time: O(srclen*trglen) regressed"
