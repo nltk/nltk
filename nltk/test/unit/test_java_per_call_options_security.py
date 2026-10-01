@@ -29,10 +29,6 @@ def stub_java_bin(monkeypatch, trusted_java_stub):
     # Avoid config_java()'s binary search so the call reaches option validation.
     monkeypatch.setattr(internals, "_java_bin", trusted_java_stub)
     monkeypatch.setattr(internals, "_java_options", [])
-    # Binary trust is a separate chokepoint with its own suite
-    # (test_pathsec_trusted_exec); the stub sits on a private path we own, so
-    # the real check in pathsec.spawn_trusted passes on any runner filesystem
-    # and these option/env/classpath validations run against it unstubbed.
 
 
 DANGEROUS = [
