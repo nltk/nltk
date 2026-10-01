@@ -394,6 +394,41 @@ class TestChomskyNormalFormFrontMutation:  # GHSA-r53h: tree.transforms
 
 
 # ==========================================================================
+# GROW-AND-REPARSE / FRONT-OF-SEQUENCE cluster (fixed): newly swept O(n^2)
+# ==========================================================================
+
+
+class TestCCGLexiconTailReslice:  # GHSA-89p3: ccg.lexicon augParseCategory
+    def test_correctness_preserved(self):
+        from nltk.ccg.lexicon import fromstring
+
+        lex = fromstring(":- S, N\nDet :: N/N\nthe => Det\n")
+        assert str(lex.start()) == "S"
+        assert [str(c) for c in lex.categories("the")] == ["(N/N)"]
+
+    def test_long_application_chain_is_linear(self):
+        from nltk.ccg.lexicon import fromstring
+
+        # Pre-patch: APP_RE/NEXTPRIM_RE carried a trailing (.*) capture and the
+        # parser did rest=rest[1:], rescanning the remainder per operator, so a
+        # flat application chain parsed in O(n^2). The cursor rewrite is linear.
+        _assert_subquadratic(
+            lambda n: fromstring(":- S\nw => S" + "/S" * n + "\n"),
+            5_000,
+            20_000,
+        )
+
+    def test_over_length_category_is_rejected(self):
+        from nltk.ccg.lexicon import MAX_PARSE_LEN, fromstring
+
+        # Defense in depth beside the linear-time fix: a category longer than
+        # MAX_PARSE_LEN is refused up front rather than parsed.
+        huge = "S" + "/S" * MAX_PARSE_LEN
+        with pytest.raises(ValueError):
+            fromstring(":- S\nw => " + huge + "\n")
+
+
+# ==========================================================================
 # GENERAL ALGORITHMIC-DoS BATCH (fixed) -- single-untrusted-input O(n^2)
 # ==========================================================================
 
