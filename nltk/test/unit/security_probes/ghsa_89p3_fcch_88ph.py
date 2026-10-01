@@ -39,13 +39,20 @@ def flat_lexicon(n):
 
 #: Bracket depth of the nested leg. The pre-fix parser re-sliced the bracketed
 #: text per character and did so again at every level, so the depth sets the
-#: work per character; 60 lifts the fixed parser's small run off the floor.
-NESTING = 60
+#: work per character; 80 keeps the fixed parser's small run off the floor.
+NESTING = 80
 
 
 def _nested_lexicon(chars):
     """A lexicon whose one entry is a primitive with a long subscript list,
-    wrapped in NESTING brackets, ``chars`` characters of category in all."""
+    wrapped in NESTING brackets, ``chars`` characters of category in all.
+
+    The fixed parser's cost here is a Python loop per character per level, so
+    the depth sets its small run: 0.148 s to 0.214 s on the hosted runners at
+    depth 60, but 0.114 s on one macOS instance, where a faster instance and a
+    sibling xdist worker's CPU-time inflation would reach the floor the way
+    the one-entry flat leg did; depth 80 keeps a third of margin there.
+    """
     inner = chars - 2 * NESTING
     subscripts = "a," * ((inner - 4) // 2) + "a"
     return (
