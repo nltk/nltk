@@ -417,45 +417,50 @@ class TestLexiconForms:
 _LINE = 200_000  # line-level regexes see no length cap
 _CAT = MAX_PARSE_LEN - 10_000  # category-level ones run under the cap
 
+# (label, lexicon line, outcome); the label is the test id. The payload must
+# never become the id: pytest writes the node id to PYTEST_CURRENT_TEST and
+# Windows refuses an environment variable over 32767 characters.
+_REGEX_PAYLOADS = [
+    ("LEX_RE ident then '=' run", "a" + "=" * _LINE, AttributeError),
+    ("LEX_RE ident then '-' run", "a" + "-" * _LINE, AttributeError),
+    ("LEX_RE 'a=' pairs", "a=" * _LINE, AttributeError),
+    ("LEX_RE letters then spaces", "a" * _LINE + " " * _LINE, AttributeError),
+    ("LEX_RE arrow without ident", " " * _LINE + "=> S", AttributeError),
+    (
+        "RHS_RE spaces then open brace",
+        "w => S" + " " * _LINE + "{" + "x" * _LINE,
+        "parsed",
+    ),
+    ("RHS_RE open braces", "w => S" + "{" * _LINE, "parsed"),
+    ("RHS_RE close braces", "w => S" + "}" * _LINE, "parsed"),
+    ("SEMANTICS_RE unclosed", "w => S {" + "x" * _LINE, "parsed"),
+    ("COMMENTS_RE hash run", "w => S " + "#" * _LINE, "parsed"),
+    ("PRIM_RE open subscripts", "w => S" + "[" * _CAT, AttributeError),
+    (
+        "PRIM_RE unclosed subscript list",
+        "w => S[" + "a," * (_CAT // 2),
+        AttributeError,
+    ),
+    ("NEXTPRIM_RE one long name", "w => " + "S" * _CAT, AssertionError),
+    ("APP_RE slash run", "w => S" + "/" * _CAT, AttributeError),
+    ("APP_RE slash-dot run", "w => S" + "/." * (_CAT // 2), AttributeError),
+    (
+        "APP_RE slash-modality run",
+        "w => S" + "/_," * (_CAT // 3),
+        AttributeError,
+    ),
+    ("brackets never closed", "w => " + "(" * _CAT, ValueError),
+    ("brackets never opened", "w => S" + ")" * _CAT, AttributeError),
+    ("empty bracket pairs", "w => " + "()" * (_CAT // 2), AttributeError),
+    ("over-cap chain", "w => S" + "/S" * MAX_PARSE_LEN, ValueError),
+]
+
 
 class TestRegexPayloads:
     @pytest.mark.parametrize(
         "label, line, outcome",
-        [
-            ("LEX_RE ident then '=' run", "a" + "=" * _LINE, AttributeError),
-            ("LEX_RE ident then '-' run", "a" + "-" * _LINE, AttributeError),
-            ("LEX_RE 'a=' pairs", "a=" * _LINE, AttributeError),
-            ("LEX_RE letters then spaces", "a" * _LINE + " " * _LINE, AttributeError),
-            ("LEX_RE arrow without ident", " " * _LINE + "=> S", AttributeError),
-            (
-                "RHS_RE spaces then open brace",
-                "w => S" + " " * _LINE + "{" + "x" * _LINE,
-                "parsed",
-            ),
-            ("RHS_RE open braces", "w => S" + "{" * _LINE, "parsed"),
-            ("RHS_RE close braces", "w => S" + "}" * _LINE, "parsed"),
-            ("SEMANTICS_RE unclosed", "w => S {" + "x" * _LINE, "parsed"),
-            ("COMMENTS_RE hash run", "w => S " + "#" * _LINE, "parsed"),
-            ("PRIM_RE open subscripts", "w => S" + "[" * _CAT, AttributeError),
-            (
-                "PRIM_RE unclosed subscript list",
-                "w => S[" + "a," * (_CAT // 2),
-                AttributeError,
-            ),
-            ("NEXTPRIM_RE one long name", "w => " + "S" * _CAT, AssertionError),
-            ("APP_RE slash run", "w => S" + "/" * _CAT, AttributeError),
-            ("APP_RE slash-dot run", "w => S" + "/." * (_CAT // 2), AttributeError),
-            (
-                "APP_RE slash-modality run",
-                "w => S" + "/_," * (_CAT // 3),
-                AttributeError,
-            ),
-            ("brackets never closed", "w => " + "(" * _CAT, ValueError),
-            ("brackets never opened", "w => S" + ")" * _CAT, AttributeError),
-            ("empty bracket pairs", "w => " + "()" * (_CAT // 2), AttributeError),
-            ("over-cap chain", "w => S" + "/S" * MAX_PARSE_LEN, ValueError),
-        ],
-        ids=lambda value: value if isinstance(value, str) and len(value) < 40 else None,
+        _REGEX_PAYLOADS,
+        ids=[label for label, _, _ in _REGEX_PAYLOADS],
     )
     def test_payload_is_bounded(self, label, line, outcome):
         with timing.budget(2.0, label, cpu_bound=True):
