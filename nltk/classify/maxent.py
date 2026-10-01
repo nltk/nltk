@@ -1614,6 +1614,44 @@ def load_maxent_params(tab_dir):
     return wgt, mpg, lab, aon
 
 
+def _holds_tab_file_separator(value):
+    """True when the str *value* holds a tab or a row boundary of the tab files.
+
+    A tab separates columns. A row ends at any boundary ``str.splitlines``
+    recognises (LF, CR, CR LF, the vertical and form feeds, the file, group
+    and record separators, NEL and the line and paragraph separators), since
+    that is how the loader's stream reader splits the files back into rows.
+    """
+    return bool(value) and ("\t" in value or value.splitlines() != [value])
+
+
+def _reject_tab_file_separators(mpg, lab, aon):
+    """Refuse a feature name, feature value, label or always-on label holding a
+    tab or row boundary before any parameter file is written.
+
+    The tab files cannot carry one: a tab adds a column and a row boundary
+    adds a row, so the saved model would reload as a different model (a label
+    with a line break reloads as two labels) or not reload at all. Refusing it
+    at the sink keeps the artifact faithful to the classifier (CWE-93, the
+    structured-output class the megam and tadm writers already refuse).
+    """
+
+    def check(value, what):
+        if isinstance(value, str) and _holds_tab_file_separator(value):
+            raise ValueError(
+                f"save_maxent_params: {what} {value!r} contains a tab or line "
+                "break, which the tab files cannot carry"
+            )
+
+    for key in mpg:
+        for part in key if isinstance(key, tuple) else (key,):
+            check(part, "feature name, value or label")
+    for label in lab:
+        check(label, "label")
+    for label in aon or ():
+        check(label, "always-on label")
+
+
 def save_maxent_params(wgt, mpg, lab, aon, tab_dir: str | None = None) -> str:
     """Write maxent classifier parameters as tab files; return the directory.
 
@@ -1622,14 +1660,18 @@ def save_maxent_params(wgt, mpg, lab, aon, tab_dir: str | None = None) -> str:
     (CWE-377/378), and one pathsec refuses anyway. Default instead to a fresh
     private (mode 0700), unpredictably-named directory. A caller-supplied
     ``tab_dir`` is validated against the NLTK data sandbox before the directory
-    is created or any file is written (GHSA-8mgp-746c-j5xp).
+    is created or any file is written (GHSA-8mgp-746c-j5xp). A feature name,
+    feature value or label holding a tab or line break is refused first, since
+    the tab files could not carry it and the model would not reload faithfully.
 
     :param tab_dir: destination directory; defaults to a fresh private one.
     :type tab_dir: str or None
     :return: the directory the parameter files were written to.
     :rtype: str
+    :raises ValueError: if a name, value or label holds a tab or line break.
     """
     menc = MaxentEncoder()
+    _reject_tab_file_separators(mpg, lab, aon)
     if tab_dir is None:
         tab_dir = make_staging_dir(prefix="nltk_maxent_params_")
     validate_path(tab_dir, context="save_maxent_params")
