@@ -766,6 +766,10 @@ class Downloader:
         self._index = None
         """The XML index file downloaded from the data server"""
 
+        self._index_url = None
+        """The URL ``self._index`` was fetched from; None for an index
+           installed by hand. A different ``self._url`` fetches afresh."""
+
         self._index_timestamp = None
         """Time at which ``self._index`` was downloaded.  If it is more
            than ``INDEX_TIMEOUT`` seconds old, it will be re-downloaded."""
@@ -1683,11 +1687,13 @@ class Downloader:
 
         # Check if the index is already up-to-date.  If so, do nothing. An
         # explicit url always refetches (the callers' way to force a refresh),
-        # and so does an index fetched from another URL, however fresh it is.
+        # and so does an index fetched from another URL, however fresh it is;
+        # an index installed by hand has no origin URL and is kept as it is.
+        index_url = getattr(self, "_index_url", None)
         if not (
             self._index is None
             or url is not None
-            or self._url != getattr(self, "_index_url", None)
+            or (index_url is not None and self._url != index_url)
             or time.time() - self._index_timestamp > self.INDEX_TIMEOUT
         ):
             return

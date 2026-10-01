@@ -1114,6 +1114,22 @@ class TestTheCycleForReal:
         assert server.hits.count("/index.xml") == hits + 1
         assert {p.id for p in d.packages()} == {"tiny"}
         assert server.hits.count("/index.xml") == hits + 1
+        # an index installed by hand (no origin URL) is kept as it is, as the
+        # offline tests of the suite rely on: no fetch, whatever the URL says
+        hand = downloader.Downloader(server_index_url=second, download_dir=str(dl))
+        marker = object()
+        hand._index, hand._index_timestamp = marker, __import__("time").time()
+        hand._packages = {"hand": d.info("tiny")}
+        hits_second, hits_first = (
+            server.hits.count("/second.xml"),
+            server.hits.count("/index.xml"),
+        )
+        hand._url = first
+        hand._update_index()
+        assert hand._index is marker and set(hand._packages) == {"hand"}
+        assert server.hits.count("/second.xml") == hits_second
+        assert server.hits.count("/index.xml") == hits_first
+        assert hand._index_url is None
 
     def test_the_documented_remedy_extracts_an_archive_already_installed(
         self, box, monkeypatch
