@@ -1288,6 +1288,22 @@ class TestDeparturesFromThePreFixParser:
         with pytest.raises(AttributeError):
             fromstring(":- S, VP, PP\nw => VP\n/PP\n")
 
+    def test_repeated_primitive_declarations_keep_the_list_and_parse_alike(self):
+        # The set is an index for the membership test only: the lexicon's list
+        # keeps every declaration, repeats and order included, as on develop
+        text = (
+            ":- S, NP, S, N\n:- NP\nDet :: NP/N\nthe => Det\ncake => N\n"
+            "sleeps => S\\NP\n"
+        )
+        lex = _both_lexicons(text)  # compares _primitives as data too
+        assert lex._primitives == ["S", "NP", "S", "N", "NP"]
+        assert lex._old_twin._primitives == ["S", "NP", "S", "N", "NP"]
+        assert str(lex.start()) == "S"
+        assert [str(c) for c in lex.categories("the")] == ["(NP/N)"]
+        parser = _DifferentialChartParser(lex, chart.DefaultRuleSet)
+        parses = list(parser.parse("the cake sleeps".split()))
+        assert len(parses) == 1 and _rows(_derivation_text(parses[0]))[-1] == "S"
+
     def test_the_cap_is_the_only_size_departure(self):
         # Exactly MAX_PARSE_LEN: both parse, identically
         exact = "S[" + "a," * ((MAX_PARSE_LEN - 4) // 2) + "a]"

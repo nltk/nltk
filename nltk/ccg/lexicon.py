@@ -318,9 +318,9 @@ def fromstring(lex_str, include_semantics=False, max_depth=None):
         max_depth = MAX_PARSE_DEPTH
     CCGVar.reset_id()
     primitives = []
-    # The primitive names as a set for the category parser's membership test:
-    # a list scan per name made a lexicon of P primitives and E entries cost
-    # O(P*E), ten seconds for a 400 KB lexicon naming its last primitive.
+    # The list stays the lexicon's record, order and repeats included; the set
+    # only answers "catstr in primitives" in O(1), where a list scan per name
+    # cost O(P*E), ten seconds for a 400 KB lexicon naming its last primitive.
     known_primitives = set()
     families = {}
     entries = defaultdict(list)
