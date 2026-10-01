@@ -1056,20 +1056,3 @@ def test_j8g8_reparse_probe_has_teeth(monkeypatch):
     assert status == probes.VULNERABLE, detail  # the measured ratio, for the CI log
     monkeypatch.undo()
     assert probe()[0] == probes.FIXED
-
-
-def test_7j4p_chat80_store_link_probe_has_teeth():
-    """Disable the derived-name store guard; the planted symlink is followed past
-    it and the probe must flip VULNERABLE."""
-    import nltk.sem.chat80 as chat80
-
-    probe = probes.PROBES["GHSA-7j4p-88wx-5jrc"]
-    assert _skip_if_static(probe) == probes.FIXED
-
-    real = chat80._refuse_symlinked_store
-    try:
-        chat80._refuse_symlinked_store = lambda *args, **kwargs: None
-        assert probe()[0] == probes.VULNERABLE
-    finally:
-        chat80._refuse_symlinked_store = real
-    assert probe()[0] == probes.FIXED

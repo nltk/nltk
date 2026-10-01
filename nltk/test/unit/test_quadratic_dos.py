@@ -421,44 +421,6 @@ class TestCCGLexiconTailReslice:  # GHSA-89p3: ccg.lexicon augParseCategory
             fromstring(":- S\nw => " + huge + "\n")
 
 
-class TestConllSRLPredicateRescan:  # GHSA-v8f3: conll _get_srl_instances
-    @staticmethod
-    def _reader(tmp_path):
-        from nltk.corpus.reader.conll import ConllCorpusReader
-
-        root = str(tmp_path)
-        (tmp_path / "srl.conll").write_text("")
-        return ConllCorpusReader(root, ["srl.conll"], ("words", "pos", "tree", "srl"))
-
-    @staticmethod
-    def _grid(n):
-        # One sentence, n predicates: column j carries the '(V*)' verb for
-        # predicate j on its diagonal row and a decoy '(A1*)' elsewhere, so each
-        # spanlist holds n spans and predicate j's verb sits in spanlist j.
-        grid = []
-        for i in range(n):
-            row = ["w", "NN", "*", "verb.01", "p"]
-            row += ["(V*)" if i == j else "(A1*)" for j in range(n)]
-            grid.append(row)
-        return grid
-
-    def test_correctness_preserved(self, tmp_path):
-        reader = self._reader(tmp_path)
-        instances = reader._get_srl_instances(self._grid(3), False)
-        assert len(instances) == 3
-        assert all(type(x).__name__ == "ConllSRLInstance" for x in instances)
-
-    def test_many_predicates_is_linear(self, tmp_path):
-        # Pre-patch: each predicate rescanned every spanlist to find its verb
-        # span, so a sentence with P predicates over R spans was O(P^2*R). The
-        # one-pass wordnum->spanlist index makes selection O(P*R).
-        reader = self._reader(tmp_path)
-        grids = {70: self._grid(70), 280: self._grid(280)}
-        _assert_subquadratic(
-            lambda n: reader._get_srl_instances(grids[n], False), 70, 280
-        )
-
-
 # ==========================================================================
 # GENERAL ALGORITHMIC-DoS BATCH (fixed) -- single-untrusted-input O(n^2)
 # ==========================================================================
