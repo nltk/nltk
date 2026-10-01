@@ -86,17 +86,23 @@ def test_budget_does_not_mask_an_exception_from_the_block():
 
 
 def test_within_budget_keeps_the_fastest_charged_run():
-    ok, best = timing.within_budget(lambda: spin(0.05), 0.5)
+    ok, best = timing.within_budget(lambda: spin(0.05), 0.5, cpu_bound=True)
     assert ok and 0.02 <= best <= 0.2, best
     ok, best = timing.within_budget(lambda: time.sleep(0.3), 0.2, repeats=1)
     assert not ok and best >= 0.3, best
 
 
 def test_assert_subquadratic_separates_linear_from_quadratic_cpu_work():
-    timing.assert_subquadratic(lambda n: spin(n / 1_000_000), 150_000, 600_000)
+    timing.assert_subquadratic(
+        lambda n: spin(n / 1_000_000), 150_000, 600_000, cpu_bound=True
+    )
     with pytest.raises(AssertionError):
         timing.assert_subquadratic(
-            lambda n: spin((n / 1_000_000) ** 2 * 4), 200_000, 800_000, reps=2
+            lambda n: spin((n / 1_000_000) ** 2 * 4),
+            200_000,
+            800_000,
+            reps=2,
+            cpu_bound=True,
         )
 
 
@@ -117,11 +123,22 @@ def _exit_child(code):
 
 
 def test_a_child_that_computes_is_charged_its_own_cpu_time():
-    run = timing.run_in_process(_spin_child, (0.3,), budget=5.0)
+    # a declared computing child: the stretch a loaded runner adds to its wall
+    # time (2.2x to 2.7x on the macOS cells) must not reach the charge
+    run = timing.run_in_process(_spin_child, (0.3,), budget=5.0, cpu_bound=True)
     assert run.finished and run.exitcode == 0, run
     assert run.cpu is not None and run.charged == run.cpu, run
     assert run.cpu >= 0.25, run  # the child's own clock, not the parent's
     assert run.within_budget
+
+
+def test_an_undeclared_child_is_judged_by_the_share_rule_on_fixed_numbers():
+    computing = timing.ChildRun(True, 0, 0.6, 1.0, budget=0.8)
+    stretched = timing.ChildRun(True, 0, 0.3, 1.0, budget=0.8)
+    assert computing.charged == 0.6 and computing.within_budget
+    assert stretched.charged == 1.0 and not stretched.within_budget
+    assert timing.ChildRun(True, 0, 0.3, 1.0, budget=0.8, cpu_bound=True).within_budget
+    assert not timing.ChildRun(False, None, None, 60.0, budget=0.8).within_budget
 
 
 def test_a_child_over_budget_fails_whether_it_spins_or_sleeps():
@@ -145,7 +162,9 @@ def test_a_child_exit_code_is_reported_with_its_cpu_time():
 
 
 def test_finishes_within_charges_a_thread_its_cpu_time():
-    finished, exc, charged = timing.finishes_within(0.5, lambda: spin(0.2))
+    finished, exc, charged = timing.finishes_within(
+        0.5, lambda: spin(0.2), cpu_bound=True
+    )
     assert finished and exc is None and 0.15 <= charged < 0.5, (finished, charged)
     finished, exc, charged = timing.finishes_within(0.2, lambda: time.sleep(0.4))
     assert not finished and charged >= 0.4, (finished, charged)
@@ -163,6 +182,7 @@ def test_run_subprocess_judges_a_child_interpreter():
             "import time\nt=time.process_time()\nwhile time.process_time()-t<0.3: pass",
         ],
         budget=5.0,
+        cpu_bound=True,
     )
     assert (
         completed is not None and completed.returncode == 0 and run.within_budget
