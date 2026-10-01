@@ -1128,7 +1128,12 @@ class Downloader:
             return self.status(info, download_dir)
 
         def _installed_now():
-            return _status_now() == self.INSTALLED
+            if _status_now() != self.INSTALLED:
+                return False
+            # An install asked to be extracted is not done while the archive
+            # alone is on disk: the extraction below completes it with no
+            # second download, the archive having just passed its checksum.
+            return not (extract and unzipdir and not os.path.isdir(unzipdir))
 
         os.makedirs(download_dir, exist_ok=True)
         os.makedirs(os.path.join(download_dir, info.subdir), exist_ok=True)
