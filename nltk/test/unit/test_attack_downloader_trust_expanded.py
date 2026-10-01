@@ -663,6 +663,11 @@ SPOOFED_INDEX = {
     "id-lf": ("id", "tiny\n"),
     "id-nul": ("id", "ti" + NUL + "ny"),
     "id-bidi": ("id", "ti" + RLO + "ny"),
+    "id-device-name": ("id", "CON"),
+    "id-device-name-with-extension": ("id", "nul.zip"),
+    "id-nfd": ("id", unicodedata.normalize("NFD", "caf" + chr(0xE9))),
+    "subdir-trailing-dot": ("subdir", "corpora."),
+    "subdir-device-name": ("subdir", "corpora/aux"),
 }
 
 
@@ -697,8 +702,16 @@ class TestSpoofedIndexNames:
             assert name in ("tiny", "tiny.zip") or full.is_file(), (shape, name)
         assert nltk.data.find("corpora/tiny/words.txt").open().read() == WORDS
         if field == "id" and value not in ("tiny", "TINY"):
-            with pytest.raises((LookupError, ValueError)):
-                nltk.data.find(f"corpora/{value}/words.txt")
+            # asked for by the spoofed name, find() serves the genuine file
+            # (a filesystem that folds the spelling, as Windows does for a
+            # trailing dot) or nothing; never anything else
+            try:
+                found = nltk.data.find(f"corpora/{value}/words.txt")
+            except (LookupError, ValueError):
+                pass
+            else:
+                assert os.path.samefile(found.path, unpacked / "words.txt")
+                assert found.open().read() == WORDS
 
 
 # ===========================================================================
@@ -740,11 +753,49 @@ MEMBER_SHAPES = {
     ),
     "empty-name": ([("h/", b""), ("", b"x")], None),
     "only-the-dirname": ([("h/", b""), ("h", b"x")], None),
+    # a name a target filesystem would store under another name: Windows
+    # strips a trailing dot or space (so "ok.txt." lands on "ok.txt", a
+    # spoof of another member or of the expected file), opens a device for
+    # CON or NUL, and a normalising filesystem composes a decomposed name
+    "trailing-dot": ([("h/", b""), ("h/ok.txt.", b"ok")], None),
+    "trailing-space": ([("h/", b""), ("h/ok.txt ", b"ok")], None),
+    "trailing-dot-collision": (
+        [("h/", b""), ("h/ok.txt", b"1"), ("h/ok.txt.", b"2")],
+        None,
+    ),
+    "trailing-dot-dir": ([("h/", b""), ("h/sub./ok.txt", b"ok")], None),
+    "device-name": ([("h/", b""), ("h/CON", b"x")], None),
+    "device-name-with-extension": ([("h/", b""), ("h/nul.txt", b"x")], None),
+    "device-name-dir": ([("h/", b""), ("h/com1/ok.txt", b"x")], None),
+    "nfd-alone": (
+        [
+            ("h/", b""),
+            ("h/" + unicodedata.normalize("NFD", "caf" + chr(0xE9)) + ".txt", b"x"),
+        ],
+        None,
+    ),
+    "nfkc-collision": (
+        [("h/", b""), ("h/" + chr(0xFB01) + "le.txt", b"1"), ("h/file.txt", b"2")],
+        None,
+    ),
+    "case-collision-dir": (
+        [
+            ("h/", b""),
+            ("h/Sub/", b""),
+            ("h/Sub/a", b"1"),
+            ("h/sub/", b""),
+            ("h/sub/b", b"2"),
+        ],
+        None,
+    ),
     # normalised inside the package: exactly these files, nothing else
     "double-slash": ([("h/", b""), ("h//ok.txt", b"ok")], {"ok.txt": b"ok"}),
     "backslash-inside": ([("h/", b""), ("h\\ok.txt", b"ok")], {"ok.txt": b"ok"}),
-    "trailing-dot": ([("h/", b""), ("h/ok.txt.", b"ok")], {"ok.txt.": b"ok"}),
-    "trailing-space": ([("h/", b""), ("h/ok.txt ", b"ok")], {"ok.txt ": b"ok"}),
+    "inner-dot": ([("h/", b""), ("h/ok.v1.txt", b"ok")], {"ok.v1.txt": b"ok"}),
+    "device-like-stem-longer": (
+        [("h/", b""), ("h/console.txt", b"ok")],
+        {"console.txt": b"ok"},
+    ),
     "unicode": (
         [("h/", b""), ("h/caf" + chr(0xE9) + ".txt", b"ok")],
         {"caf" + chr(0xE9) + ".txt": b"ok"},
