@@ -32,7 +32,7 @@ then classifies EVERY weakness against this codebase by evidence, not by name:
 
 No weakness is left unresolved. Re-run whenever the catalogs or the code change:
 
-    python tools/security_cve_cwe_audit.py            # writes SECURITY_LEDGER.md
+    python tools/security_cve_cwe_audit.py            # writes tools/pentest/ledgers/SECURITY_LEDGER.md
     python tools/security_cve_cwe_audit.py --offline  # reuse cached catalogs
 
 This is dev-only maintenance tooling; it is not shipped in the wheel or sdist.
@@ -65,6 +65,10 @@ NVD_API = "https://services.nvd.nist.gov/rest/json/cves/2.0"
 # ``--offline`` reproduces the ledger with zero network. Refresh by re-running
 # online; the fetch helpers rewrite the .gz in place.
 CACHE = os.path.join(os.path.dirname(__file__), "security_audit_cache")
+# The generated ledger lives with the other pentest ledgers.
+DEFAULT_LEDGER = os.path.join(
+    os.path.dirname(__file__), "pentest", "ledgers", "SECURITY_LEDGER.md"
+)
 
 # Operation + execution surface classes the audit inherits from the wider Python
 # ecosystem. NLTK runs on CPython and shells out to external binaries / a JVM, so
@@ -1091,7 +1095,9 @@ def resolve_proving_tests(note, test_files, cap=3):
     return "GAP: unmapped guard", False
 
 
-def generate(offline=False, out_path="SECURITY_LEDGER.md"):
+def generate(offline=False, out_path=None):
+    if out_path is None:
+        out_path = DEFAULT_LEDGER
     cwes = fetch_cwe(offline)
     cves = fetch_nvd_cves("nltk", offline)
     eco_rows, eco_counts, eco_capped = fetch_ecosystem_cves(offline)
@@ -1319,7 +1325,7 @@ def main(argv=None):
         action="store_true",
         help="reuse cached catalogs instead of fetching",
     )
-    ap.add_argument("-o", "--out", default="SECURITY_LEDGER.md")
+    ap.add_argument("-o", "--out", default=DEFAULT_LEDGER)
     args = ap.parse_args(argv)
     stats, ncwe, ncve, neco, eco_stats, ngaps = generate(args.offline, args.out)
     print(

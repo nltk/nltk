@@ -4,7 +4,7 @@
 # Copyright (C) 2001-2026 NLTK Project
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
-"""Automatic scanner for OUTPUT_ENTRY_POINT_LEDGER.md.
+"""Automatic scanner for tools/pentest/ledgers/OUTPUT_ENTRY_POINT_LEDGER.md.
 
 Two independent passes, so the ledger's claims can be re-verified on demand
 instead of trusted:
