@@ -24,6 +24,7 @@ except ImportError:
     from cgi import escape
 
 import unicodedata
+from bisect import bisect_right
 from collections import OrderedDict, defaultdict
 
 from nltk import redos
@@ -175,6 +176,18 @@ class TreePrettyPrinter:
         - identify nodes which cannot be in the same column
         - place nodes into a grid at (row, column)
         - order child-parent edges with crossing edges last
+
+        An edge *crosses* when the vertical line from a child up to its parent
+        passes a row strictly between them in which the horizontal branch of a
+        third node spans the child's column: no edge of a continuous tree
+        does, and in a discontinuous tree the edges drawn through another
+        node's branch do. ``edges`` is filled bottom up with the crossing
+        edges moved to its end; ``text()`` only looks edges up by node, so the
+        order shows in ``svg()``, which draws the vertical lines in it. The
+        crossings are found by one sweep down the rows of the finished grid:
+        a row holding a branch sorts the columns of the vertical lines through
+        it once, and a vertical line is marked and retired the first time a
+        branch crosses it, so the sweep costs no more than the grid itself.
 
         Coordinates are (row, column); the origin (0, 0) is at the top left;
         the root node is on row 0. Coordinates do not consider the size of a
@@ -364,13 +377,70 @@ class TreePrettyPrinter:
                 if isinstance(i, int) and i >= 0:
                     coords[i] = n, m
 
+        # crossing edges: the vertical line from a child up to its parent
+        # passes a row strictly between them in which the horizontal branch
+        # of a third node spans the child's column. One sweep down the rows.
+        branches, starts, ends = defaultdict(list), defaultdict(list), defaultdict(list)
+        for a, n in ids.items():
+            if n not in coords:
+                continue  # a cell taken over by another node has no drawing
+            if a and ids[a[:-1]] in coords:
+                (childrow, col), parentrow = coords[n], coords[ids[a[:-1]]][0]
+                if childrow > parentrow + 1:
+                    starts[parentrow + 1].append((col, n))
+                    ends[childrow].append((col, n))
+            if isinstance(node_at[a], Tree):
+                cols = [
+                    coords[ids[a + (j,)]][1]
+                    for j, _ in enumerate(node_at[a])
+                    if ids[a + (j,)] in coords
+                ]
+                if len(cols) > 1:
+                    branches[coords[n][0]].append((min(cols), max(cols)))
+
+        def still_active(skip, i):
+            """The first index at or after ``i`` whose column was not retired."""
+            while skip[i] != i:
+                skip[i] = skip[skip[i]]
+                i = skip[i]
+            return i
+
+        # a column normally carries one vertical line at a time; a node that
+        # sits on the line between another node and its parent makes two
+        crossed = set()
+        active = defaultdict(set)
+        for row in range(len(matrix)):
+            for col, n in ends.get(row, ()):
+                lines = active.get(col)
+                if lines:
+                    lines.discard(n)
+                    if not lines:
+                        del active[col]
+            for col, n in starts.get(row, ()):
+                active[col].add(n)
+            if active and row in branches:
+                cols = sorted(active)
+                skip = list(range(len(cols) + 1))
+                for lo, hi in branches[row]:
+                    i = still_active(skip, bisect_right(cols, lo))
+                    while i < len(cols) and cols[i] < hi:
+                        crossed.update(active.pop(cols[i]))
+                        skip[i] = i + 1
+                        i = still_active(skip, i + 1)
+
         positions = [a for level in levels.values() for a in level]
 
-        # collect edges from node to node
+        # collect edges from node to node, bottom up; crossing edges last
         edges = OrderedDict()
-        for i in reversed(positions):
-            for j, _ in enumerate(node_at[i]):
-                edges[ids[i + (j,)]] = ids[i]
+        for child, parent in sorted(
+            (
+                (ids[i + (j,)], ids[i])
+                for i in reversed(positions)
+                for j, _ in enumerate(node_at[i])
+            ),
+            key=lambda edge: edge[0] in crossed,
+        ):
+            edges[child] = parent
 
         return nodes, coords, edges, highlighted_nodes
 

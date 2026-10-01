@@ -18,6 +18,7 @@ Every invisible character is built with ``chr(0x...)``: the tool layer that
 writes these files decodes backslash escapes."""
 
 import io
+import random
 import warnings
 
 import pytest
@@ -398,3 +399,279 @@ class TestAbbreviate:
         tree = Tree("S", [Tree("N", ["حديقة" * 4])])
         text = TreePrettyPrinter(tree, rtl=True).text(maxwidth=None)
         assert "حديقة" * 4 in text and text.count(LRM) == 1
+
+
+CORNER_L, CORNER_R, VERTICAL = chr(0x250C), chr(0x2510), chr(0x2502)
+
+
+def crossing_by_geometry(drawn):
+    """Brute force over a drawing's coordinates, independent of the sweep in
+    ``nodecoords``: the ids of the children whose vertical line up to their
+    parent passes a row strictly between them in which the horizontal branch
+    of another node spans the child's column."""
+    children = {}
+    for child, parent in drawn.edges.items():
+        children.setdefault(parent, []).append(child)
+    branches = []
+    for parent, kids in children.items():
+        if len(kids) > 1:
+            cols = [drawn.coords[k][1] for k in kids]
+            branches.append((drawn.coords[parent][0], min(cols), max(cols)))
+    found = set()
+    for child, parent in drawn.edges.items():
+        (crow, col), prow = drawn.coords[child], drawn.coords[parent][0]
+        if any(prow < brow < crow and lo < col < hi for brow, lo, hi in branches):
+            found.add(child)
+    return found
+
+
+def drawn_crossings(text):
+    """How many vertical lines a unicode drawing draws through a branch: a
+    box vertical strictly inside an open corner pair of its row."""
+    count = 0
+    for line in text.split("\n"):
+        depth = 0
+        for ch in line:
+            if ch == CORNER_L:
+                depth += 1
+            elif ch == CORNER_R:
+                depth -= 1
+            elif ch == VERTICAL and depth > 0:
+                count += 1
+    return count
+
+
+def random_discontinuous(rng, n):
+    """A random tree over ``n`` leaves whose leaves are a random permutation
+    of ``0..n-1``, so most of its preterminals straddle one another."""
+
+    def shape(k, depth):
+        if k == 1 or (depth > 1 and rng.random() < 0.3):
+            return Tree("N", [None] * k)
+        cuts = sorted(rng.sample(range(1, k), min(k - 1, rng.randint(1, 3))))
+        parts = [b - a for a, b in zip([0] + cuts, cuts + [k])]
+        return Tree("S", [shape(p, depth + 1) for p in parts])
+
+    leaves = iter(rng.sample(range(n), n))
+
+    def fill(node):
+        return Tree(
+            node.label(),
+            [fill(c) if isinstance(c, Tree) else next(leaves) for c in node],
+        )
+
+    return fill(shape(n, 0)), [str(i) for i in range(n)]
+
+
+def svg_verticals(svg):
+    """``[(x, y_from, y_to)]`` of the child-to-parent lines of an SVG drawing,
+    in document order: the black vertical polylines longer than the four
+    pixel stub every branching node draws under its own label."""
+    found = []
+    for line in svg.split("\n"):
+        if "stroke:black" in line and "points=" in line:
+            points = line.split('points="', 1)[1].split('"', 1)[0].split()
+            (x1, y1), (x2, y2) = (map(float, p.split(",")) for p in points)
+            if x1 == x2 and abs(y1 - y2) > 4:
+                found.append((x1, y1, y2))
+    return found
+
+
+def svg_vertical_of(drawn, child):
+    """The line ``svg()`` draws from ``child`` up to its parent."""
+    (crow, col), prow = drawn.coords[child], drawn.coords[drawn.edges[child]][0]
+    return (col * 40 + 20, crow * 25 + 20 - 12, prow * 25 + 20 + 6)
+
+
+DISCO = "(S (A 0 2) (B 1))"
+SAMETIER = "(S (X (A 1) (B 2)) (P 0 3))"
+RIGHTMOST = "(S (A 0) (B 1 3) (C 2))"
+DUTCH = (
+    "(top (punct 8) (smain (noun 0) (verb 1) (inf (verb 5) (inf (verb 6) "
+    "(conj (inf (pp (prep 2) (np (det 3) (noun 4))) (verb 7)) (inf (verb 9)) "
+    "(vg 10) (inf (verb 11)))))) (punct 12))"
+)
+DUTCH_SENTENCE = (
+    "Ze had met haar moeder kunnen gaan winkelen , zwemmen of terrassen .".split()
+)
+DISCO_UNICODE = (
+    "     S         \n"
+    "     ┌───┐      \n"
+    "     │   A     \n"
+    " ┌── │ ──┴───┐  \n"
+    " │   B       │ \n"
+    " │   │       │  \n"
+    " a   b       c \n"
+)
+SAMETIER_UNICODE = (
+    "         S         \n"
+    "         ┌───┐      \n"
+    "         │   X     \n"
+    "     ┌── │ ──┐      \n"
+    "     │   P   │     \n"
+    " ┌── │ ──┴── │ ──┐  \n"
+    " │   A       B   │ \n"
+    " │   │       │   │  \n"
+    " a   b       c   d \n"
+)
+# a layout in which S1 (id 9) was placed on the line from S2 (id 2) up to
+# the other S1 (id 1), so one column carries two vertical lines at once
+TWO_LINES_ONE_COLUMN = (
+    "(S0 (S1 (S2 (N2 0) (N4 6))) (S1 (N1 7) (N2 5) (N2 2)) (N1 1) "
+    "(S1 (N4 3) (S2 (S3 (N0 8 4)))))"
+)
+
+
+class TestCrossingEdges:
+    """``nodecoords`` orders ``edges`` bottom up with the crossing edges last.
+    An edge crosses when the vertical line from the child up to its parent
+    is drawn through the horizontal branch of a third node: a row strictly
+    between the two whose branch spans the child's column. Pinned here
+    against a brute-force reading of the coordinates and against the
+    drawing itself, in both directions."""
+
+    @pytest.mark.parametrize("source", [SMALL, ENGLISH, ARABIC, HEBREW, PERSIAN])
+    @pytest.mark.parametrize("rtl", [False, True])
+    def test_a_continuous_tree_has_no_crossing_edge(self, source, rtl):
+        drawn = TreePrettyPrinter(Tree.fromstring(source), rtl=rtl)
+        assert crossing_by_geometry(drawn) == set()
+        assert drawn_crossings(plain(drawn.text(unicodelines=True))) == 0
+
+    def test_continuous_edges_keep_the_bottom_up_order(self):
+        # ids follow the tree positions: S 0, NP 1, Mary 2, VP 3, walks 4
+        ltr, rtl = TreePrettyPrinter(Tree.fromstring(SMALL)), TreePrettyPrinter(
+            Tree.fromstring(SMALL), rtl=True
+        )
+        assert list(ltr.edges.items()) == [(4, 3), (2, 1), (1, 0), (3, 0)]
+        assert list(rtl.edges.items()) == list(ltr.edges.items())
+
+    def test_the_crossing_edge_of_a_discontinuous_tree_comes_last(self):
+        # ids: S 0, A 1, a 2, c 3, B 4, b 5: B's line up to S crosses A's branch
+        drawn = TreePrettyPrinter(Tree.fromstring(DISCO, read_leaf=int), list("abc"))
+        assert crossing_by_geometry(drawn) == {4}
+        assert list(drawn.edges.items()) == [(2, 1), (3, 1), (5, 4), (1, 0), (4, 0)]
+        assert drawn.text(unicodelines=True) == DISCO_UNICODE
+        assert drawn_crossings(DISCO_UNICODE) == 1
+        assert (
+            TreePrettyPrinter(
+                Tree.fromstring(DISCO, read_leaf=int), list("abc"), rtl=True
+            ).text()
+            == DISCONTINUOUS_RTL
+        )
+
+    def test_crossing_edges_are_moved_not_merely_found(self):
+        # P sits between X and X's children: the lines of A, B and P cross,
+        # and X's own edge (id 4) now precedes them, which bottom up it did not
+        tree = Tree.fromstring(SAMETIER, read_leaf=int)
+        drawn = TreePrettyPrinter(tree, list("abcd"))
+        assert crossing_by_geometry(drawn) == {1, 5, 7}
+        assert list(drawn.edges.items()) == [
+            (2, 1),
+            (3, 1),
+            (8, 7),
+            (6, 5),
+            (4, 0),
+            (5, 4),
+            (7, 4),
+            (1, 0),
+        ]
+        assert [drawn.nodes[c].label() for c in list(drawn.edges)[-3:]] == [
+            "A",
+            "B",
+            "P",
+        ]
+        assert drawn.text(unicodelines=True) == SAMETIER_UNICODE
+        assert drawn_crossings(SAMETIER_UNICODE) == 3
+
+    def test_a_child_that_is_not_the_leftmost_crosses_too(self):
+        tree = Tree.fromstring(RIGHTMOST, read_leaf=int)
+        drawn = TreePrettyPrinter(tree, list("abcd"))
+        assert crossing_by_geometry(drawn) == {6}
+        assert list(drawn.edges)[-1] == 6 and drawn.nodes[6].label() == "C"
+        assert drawn.edges[6] == 0 and drawn.nodes[0].label() == "S"
+        assert drawn_crossings(drawn.text(unicodelines=True)) == 1
+
+    def test_the_dutch_tree_of_the_doctest(self):
+        drawn = TreePrettyPrinter(Tree.fromstring(DUTCH, read_leaf=int), DUTCH_SENTENCE)
+        crossing = crossing_by_geometry(drawn)
+        tail = list(drawn.edges)[-3:]
+        assert crossing == set(tail) and len(crossing) == 3
+        assert [
+            (drawn.nodes[c].label(), drawn.nodes[drawn.edges[c]].label()) for c in tail
+        ] == [("verb", "inf"), ("verb", "inf"), ("punct", "top")]
+        assert [DUTCH_SENTENCE[drawn.nodes[c][0]] for c in tail] == [
+            "gaan",
+            "kunnen",
+            ",",
+        ]
+        # the verbs cross the branches of conj and inf, the comma that of conj
+        assert drawn_crossings(drawn.text(unicodelines=True)) == 5
+
+    @pytest.mark.parametrize(
+        "source, sentence",
+        [
+            (DISCO, list("abc")),
+            (SAMETIER, list("abcd")),
+            (RIGHTMOST, list("abcd")),
+            (DUTCH, DUTCH_SENTENCE),
+            (TWO_LINES_ONE_COLUMN, [str(i) for i in range(9)]),
+        ],
+    )
+    def test_same_edges_and_crossings_in_both_directions(self, source, sentence):
+        tree = Tree.fromstring(source, read_leaf=int)
+        ltr = TreePrettyPrinter(tree, sentence)
+        rtl = TreePrettyPrinter(tree, sentence, rtl=True)
+        assert list(ltr.edges.items()) == list(rtl.edges.items())
+        assert crossing_by_geometry(ltr) == crossing_by_geometry(rtl) != set()
+        assert drawn_crossings(ltr.text(unicodelines=True)) == drawn_crossings(
+            plain(rtl.text(unicodelines=True))
+        )
+
+    def test_two_lines_in_one_column_are_both_found(self):
+        tree = Tree.fromstring(TWO_LINES_ONE_COLUMN, read_leaf=int)
+        drawn = TreePrettyPrinter(tree, [str(i) for i in range(9)])
+        assert drawn.coords[1][1] == drawn.coords[9][1] == drawn.coords[2][1]
+        crossing = crossing_by_geometry(drawn)
+        assert crossing == {1, 2, 5, 7, 9, 10, 12, 14, 17, 20}
+        assert set(list(drawn.edges)[-10:]) == crossing
+
+    def test_svg_draws_the_crossing_lines_last(self):
+        tree = Tree.fromstring(SAMETIER, read_leaf=int)
+        for rtl in (False, True):
+            drawn = TreePrettyPrinter(tree, list("abcd"), rtl=rtl)
+            verticals = svg_verticals(drawn.svg())
+            assert verticals == [svg_vertical_of(drawn, child) for child in drawn.edges]
+            assert verticals[-3:] == [svg_vertical_of(drawn, c) for c in (5, 7, 1)]
+
+    def test_highlight_and_the_sentence_channel_leave_the_order_alone(self):
+        tree = Tree.fromstring(SAMETIER, read_leaf=int)
+        plain_order = list(TreePrettyPrinter(tree, list("abcd")).edges.items())
+        # the drawing sorts S's children by first leaf: P (tree[1]) gets id 1
+        lit = TreePrettyPrinter(tree, list("abcd"), highlight=[tree[1], 0], rtl=True)
+        assert list(lit.edges.items()) == plain_order and lit.highlight == {1, 2}
+        assert lit.text(ansi=True).count(BLUE) == 1
+        words = TreePrettyPrinter(tree, ["ذهب", "ال", "طفل", "إلى"], rtl=True)
+        assert list(words.edges.items()) == plain_order
+        assert words.text().count(LRM) == 4
+
+    def test_an_empty_label_on_a_crossing_node(self):
+        tree = Tree("S", [Tree("A", [0, 2]), Tree("", [1])])
+        drawn = TreePrettyPrinter(tree, list("abc"))
+        assert crossing_by_geometry(drawn) == {4} and list(drawn.edges)[-1] == 4
+        assert drawn_crossings(drawn.text(unicodelines=True)) == 1
+
+    def test_random_discontinuous_trees_agree_with_the_geometry(self):
+        rng = random.Random(2886)
+        with_crossings = 0
+        for _ in range(300):
+            tree, sentence = random_discontinuous(rng, rng.randint(2, 8))
+            for rtl in (False, True):
+                drawn = TreePrettyPrinter(tree, sentence, rtl=rtl)
+                assert set(drawn.nodes) == set(drawn.coords), tree
+                crossing = crossing_by_geometry(drawn)
+                order = list(drawn.edges)
+                assert set(order[len(order) - len(crossing) :]) == crossing, tree
+                text = plain(drawn.text(unicodelines=True))
+                assert (drawn_crossings(text) > 0) == bool(crossing), tree
+                with_crossings += bool(crossing)
+        assert with_crossings > 200

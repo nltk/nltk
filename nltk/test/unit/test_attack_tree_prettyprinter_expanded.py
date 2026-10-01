@@ -30,6 +30,10 @@ import pytest
 
 from nltk.termsec import _bidi_is_balanced, sanitize_terminal
 from nltk.test.unit.test_termsec_attack_matrix import _dangerous_cp
+from nltk.test.unit.test_tree_prettyprinter_rtl import (
+    crossing_by_geometry,
+    drawn_crossings,
+)
 from nltk.test.unit.timing import assert_subquadratic, budget
 from nltk.tree import ProbabilisticTree, Tree, TreePrettyPrinter
 from nltk.tree.prettyprinter import LRM
@@ -446,3 +450,136 @@ class TestBenignParameters:
         ):
             for rtl in (False, True):
                 assert TreePrettyPrinter(source, rtl=rtl).text()
+
+
+class TestCrossingCost:
+    """CWE-400 / CWE-407 for the crossing-edge sweep of ``nodecoords``: the
+    check that marks the edges drawn through another node's branch must not
+    bring back a rescan of the grid per node. Shapes with thousands of
+    crossing lines in one row stay linear, a discontinuous comb at the depth
+    cap and a nest of branches over the same lines stay inside a budget, and
+    right-to-left, hostile, empty and huge text on crossing trees is drawn
+    with every crossing edge still found and moved last."""
+
+    @staticmethod
+    def _chain(n):
+        """Every preterminal straddles the next: n/2 - 1 lines, each crossing
+        one branch, all in one row."""
+        kids = [Tree("P%d" % i, [2 * i, 2 * i + 3]) for i in range(n // 2 - 1)]
+        kids.append(Tree("Q", [1]))
+        return Tree("S", kids), [str(i) for i in range(n)]
+
+    @staticmethod
+    def _interleaved(n):
+        """Two preterminals whose leaves alternate: one branch over n/2 lines."""
+        tree = Tree(
+            "S", [Tree("A", list(range(0, n, 2))), Tree("B", list(range(1, n, 2)))]
+        )
+        return tree, [str(i) for i in range(n)]
+
+    @staticmethod
+    def _nested(n):
+        """Every preterminal contains the next, one per row: the line of each
+        inner one crosses every outer branch, (n/2 - 1)(n/2)/2 crossings on
+        n/2 - 1 lines, each of which must be retired at its first branch."""
+        kids = [Tree("P%d" % i, [i, n - 1 - i]) for i in range(n // 2)]
+        return Tree("S", kids), [str(i) for i in range(n)]
+
+    @staticmethod
+    def _disco_comb(depth):
+        """A comb whose every level holds a preterminal straddling the next."""
+        node = Tree("Q", [1])
+        for i in reversed(range(depth)):
+            node = Tree("S%d" % i, [Tree("P%d" % i, [2 * i, 2 * i + 3]), node])
+        return node, [str(j) for j in range(2 * depth + 2)]
+
+    @staticmethod
+    def _crossing_last(drawn):
+        crossing = crossing_by_geometry(drawn)
+        order = list(drawn.edges)
+        assert set(order[len(order) - len(crossing) :]) == crossing
+        return len(crossing)
+
+    @pytest.mark.parametrize("rtl", [False, True])
+    def test_thousands_of_crossing_lines_in_one_row_are_linear(self, rtl):
+        trees = {n: self._chain(n) for n in (5000, 20000)}
+        assert_subquadratic(
+            lambda n: TreePrettyPrinter(*trees[n], rtl=rtl).text(),
+            5000,
+            20000,
+            cpu_bound=True,
+        )
+        small = TreePrettyPrinter(*self._chain(400), rtl=rtl)
+        assert self._crossing_last(small) == 199
+        assert drawn_crossings(small.text(unicodelines=True)) == 199
+        big = TreePrettyPrinter(*trees[20000], rtl=rtl)
+        assert drawn_crossings(big.text(unicodelines=True)) == 9999
+
+    def test_one_branch_over_thousands_of_lines_is_linear(self):
+        trees = {n: self._interleaved(n) for n in (5000, 20000)}
+        assert_subquadratic(
+            lambda n: TreePrettyPrinter(*trees[n], rtl=True).text(),
+            5000,
+            20000,
+            cpu_bound=True,
+        )
+        small = TreePrettyPrinter(*self._interleaved(400))
+        assert self._crossing_last(small) == 200
+        assert (
+            drawn_crossings(TreePrettyPrinter(*trees[20000]).text(unicodelines=True))
+            == 10000
+        )
+
+    def test_nested_branches_retire_each_line_once(self):
+        tree, sentence = self._nested(400)
+        with budget(
+            10, "two hundred nested branches over the same lines", cpu_bound=True
+        ):
+            drawn = TreePrettyPrinter(tree, sentence, rtl=True)
+            text = drawn.text(unicodelines=True)
+        assert self._crossing_last(drawn) == 199
+        assert drawn_crossings(text) == 199 * 200 // 2
+
+    def test_a_discontinuous_comb_at_the_depth_cap_is_bounded(self):
+        tree, sentence = self._disco_comb(MAX_TREE_DEPTH - 2)
+        tree = Tree.fromstring(str(tree), read_leaf=int)
+        with budget(
+            10, "a discontinuous comb at the fromstring depth cap", cpu_bound=True
+        ):
+            drawn = TreePrettyPrinter(tree, sentence, rtl=True)
+            text, svg = drawn.text(), drawn.svg()
+        assert self._crossing_last(drawn) == 2 * (MAX_TREE_DEPTH - 2) - 1
+        assert text.count("\n") > MAX_TREE_DEPTH and "<svg" in svg
+
+    def test_hostile_and_right_to_left_tokens_on_crossing_lines(self):
+        tree, _ = self._chain(2000)
+        hostile = sorted(TestTerminalSink.HOSTILE.values())
+        sentence = [
+            ("ذهب", "ישראל", "٣", hostile[i % len(hostile)])[i % 4] for i in range(2000)
+        ]
+        with budget(10, "two thousand hostile and bidi tokens on crossing lines"):
+            out = _printed(tree, sentence=sentence, rtl=True, unicodelines=True)
+        assert "evil" in out and not _live(out) and sanitize_terminal(out) == out
+        assert drawn_crossings(out) == 999
+        clean = [("ذهب", "ישראל")[i % 2] for i in range(2000)]
+        out = _printed(tree, sentence=clean, rtl=True)
+        # one mark per drawn leaf; the chain leaves one token unattached
+        assert out.count(LRM) == len(tree.leaves()) == 1999
+        assert _bidi_is_balanced(out) and not _live(out)
+        assert self._crossing_last(TreePrettyPrinter(tree, clean, rtl=True)) == 999
+
+    def test_empty_and_huge_labels_on_crossing_nodes(self):
+        tree, sentence = self._chain(200)
+        for i, kid in enumerate(tree):
+            if kid.label().startswith("P"):
+                kid.set_label("" if i % 2 else "x" * 5000)
+        with budget(5, "a hundred crossing nodes labelled empty or five thousand wide"):
+            drawn = TreePrettyPrinter(tree, sentence, rtl=True)
+            wrapped, unwrapped, svg = (
+                drawn.text(maxwidth=16),
+                drawn.text(maxwidth=None),
+                drawn.svg(),
+            )
+        assert self._crossing_last(drawn) == 99
+        assert "x" * 5000 in unwrapped and "x" * 5000 not in wrapped
+        assert svg.count("x" * 5000) == 50 and "<script" not in svg
