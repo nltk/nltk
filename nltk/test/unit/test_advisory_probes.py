@@ -788,19 +788,22 @@ def test_r53h_front_mutation_probe_has_teeth():
     assert probe()[0] == probes.FIXED
 
 
-def test_89p3_tail_reslice_probe_has_teeth():
-    """Reinstate the CCG category parser as it stood before the cursor rewrite,
-    copied verbatim (every step re-sliced the remaining tail and NEXTPRIM_RE and
-    APP_RE captured it with a trailing (.*)), as the reference oracle; the
-    GHSA-89p3 probe must read it VULNERABLE and the fixed parser FIXED."""
-    from nltk import redos
+def _pre_fix_ccg_parser(compile=re.compile):
+    """The CCG category parser as it stood before the cursor rewrite, copied
+    verbatim: every step re-sliced the remaining tail and NEXTPRIM_RE and
+    APP_RE captured it with a trailing (.*). Returns its augParseCategory.
+
+    The regexes are compiled by ``compile``, the standard library by default:
+    the parser as it stood before #3753 routed them through redos, whose 7 to
+    11 us of per-call overhead is unrelated to the advisory and, two calls per
+    operator, masks the tail copies at the sizes the cap allows (the verbatim
+    redos form read 8.0x to 8.7x on the ubuntu runners, this form 11.8x to
+    14.1x; the fixed parser 3.9x to 4.5x either way)."""
     from nltk.ccg import lexicon
 
-    probe = probes.PROBES["GHSA-89p3-fcch-88ph"]
-    assert probe()[0] == probes.FIXED
-
-    old_nextprim_re = redos.compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)""")
-    old_app_re = redos.compile(r"""([\\/])([.,_]?)([.,]?)(.*)""")
+    old_nextprim_re = compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)""")
+    old_app_re = compile(r"""([\\/])([.,_]?)([.,]?)(.*)""")
+    old_prim_re = compile(r"""([A-Za-z]+)(\[[A-Za-z,]+\])?""")
 
     def old_matchBrackets(string, _depth=0, max_depth=None):
         if max_depth is None:
@@ -839,7 +842,7 @@ def test_89p3_tail_reslice_probe_has_teeth():
             )
         else:
             (res, var) = lexicon.parsePrimitiveCategory(
-                lexicon.PRIM_RE.match(cat_string).groups(), primitives, families, var
+                old_prim_re.match(cat_string).groups(), primitives, families, var
             )
         while rest != "":
             app = old_app_re.match(rest).groups()
@@ -852,6 +855,53 @@ def test_89p3_tail_reslice_probe_has_teeth():
                 )
             else:
                 (arg, var) = lexicon.parsePrimitiveCategory(
+                    old_prim_re.match(cat_string).groups(),
+                    primitives,
+                    families,
+                    var,
+                )
+            res = lexicon.FunctionalCategory(res, arg, direction)
+        return (res, var)
+
+    return old_augParseCategory
+
+
+def _uncapped_ccg_parser():
+    """The fixed cursor parser with only its MAX_PARSE_LEN refusal removed (the
+    bracket scanner it calls keeps its own); the probe's over-cap chain carries
+    no bracket, so this is the fixed parser with the cap gone and nothing else."""
+    from nltk.ccg import lexicon
+
+    def uncapped_augParseCategory(
+        line, primitives, families, var=None, _depth=0, max_depth=None
+    ):
+        if max_depth is None:
+            max_depth = lexicon.MAX_PARSE_DEPTH
+        if _depth > max_depth:
+            raise ValueError("CCG nesting depth exceeds MAX_PARSE_DEPTH")
+        n = len(line)
+        (cat_string, pos) = lexicon.nextCategory(line, 0, _depth, max_depth)
+        if cat_string.startswith("("):
+            (res, var) = uncapped_augParseCategory(
+                cat_string[1:-1], primitives, families, var, _depth + 1, max_depth
+            )
+        else:
+            (res, var) = lexicon.parsePrimitiveCategory(
+                lexicon.PRIM_RE.match(cat_string).groups(), primitives, families, var
+            )
+        while pos < n:
+            m = lexicon.APP_RE.match(line, pos)
+            if m is None:
+                m.groups()
+            direction = lexicon.parseApplication(m.group(1, 2, 3))
+            pos = m.end()
+            (cat_string, pos) = lexicon.nextCategory(line, pos, _depth, max_depth)
+            if cat_string.startswith("("):
+                (arg, var) = uncapped_augParseCategory(
+                    cat_string[1:-1], primitives, families, var, _depth + 1, max_depth
+                )
+            else:
+                (arg, var) = lexicon.parsePrimitiveCategory(
                     lexicon.PRIM_RE.match(cat_string).groups(),
                     primitives,
                     families,
@@ -860,12 +910,55 @@ def test_89p3_tail_reslice_probe_has_teeth():
             res = lexicon.FunctionalCategory(res, arg, direction)
         return (res, var)
 
+    return uncapped_augParseCategory
+
+
+def test_89p3_cap_removed_probe_has_teeth():
+    """Only the cap removed: the fixed linear parser without its MAX_PARSE_LEN
+    refusal. Both scaling legs read linear, so the probe can flip VULNERABLE only
+    through its cap leg, and must."""
+    from nltk.ccg import lexicon
+
+    probe = probes.PROBES["GHSA-89p3-fcch-88ph"]
+    assert probe()[0] == probes.FIXED
+
     real = lexicon.augParseCategory
     try:
-        lexicon.augParseCategory = old_augParseCategory
+        lexicon.augParseCategory = _uncapped_ccg_parser()
         status, evidence = probe()
         assert status == probes.VULNERABLE, evidence
-        assert "quadratic" in evidence
+        assert "not capped" in evidence, evidence
+    finally:
+        lexicon.augParseCategory = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_89p3_tail_reslice_probe_has_teeth():
+    """Only the linear parse removed: the pre-fix parser, verbatim, behind the
+    MAX_PARSE_LEN refusal it lacked, so the cap leg passes and the probe can flip
+    VULNERABLE only through a scaling leg; it must, and as quadratic. Measured
+    on the hosted runners (nltk/nltk PR #3944), this parser reads 11.1x to
+    14.1x on the probe's flat leg and 8.6x to 18.9x on its nested leg, the
+    fixed parser 3.9x to 4.2x on both."""
+    from nltk.ccg import lexicon
+
+    probe = probes.PROBES["GHSA-89p3-fcch-88ph"]
+    assert probe()[0] == probes.FIXED
+    old_augParseCategory = _pre_fix_ccg_parser()
+
+    def capped_old_augParseCategory(
+        line, primitives, families, var=None, _depth=0, max_depth=None
+    ):
+        if len(line) > lexicon.MAX_PARSE_LEN:
+            raise ValueError("CCG category length exceeds MAX_PARSE_LEN")
+        return old_augParseCategory(line, primitives, families, var, _depth, max_depth)
+
+    real = lexicon.augParseCategory
+    try:
+        lexicon.augParseCategory = capped_old_augParseCategory
+        status, evidence = probe()
+        assert status == probes.VULNERABLE, evidence
+        assert "quadratic" in evidence, evidence
     finally:
         lexicon.augParseCategory = real
     assert probe()[0] == probes.FIXED
