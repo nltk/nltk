@@ -71,7 +71,7 @@ from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.probability import DictionaryProbDist
 from nltk.tabdata import MaxentEncoder
-from nltk.termsec import safe_print
+from nltk.termsec import safe_print, sanitize_terminal
 from nltk.util import OrderedDict
 
 __docformat__ = "epytext en"
@@ -1598,19 +1598,29 @@ def load_maxent_params(tab_dir):
         tab_dir = FileSystemPathPointer(os.fspath(tab_dir))
 
     mdec = MaxentDecoder()
-    # Use .join() to reach the files regardless of zip/real FS.
-    with open_datafile(tab_dir, "weights.txt") as f:
-        wgt = numpy.array(list(map(numpy.float64, mdec.txt2list(f))))
 
-    with open_datafile(tab_dir, "mapping.tab") as f:
-        mpg = mdec.tupkey2dict(f)
+    def read(name, decode):
+        # open_datafile uses .join() to reach the file regardless of zip/real
+        # FS and reads it as UTF-8, which is what save_maxent_params writes.
+        try:
+            with open_datafile(tab_dir, name) as f:
+                return decode(f)
+        except UnicodeDecodeError as exc:
+            # The reader decodes block by block, so the first bad byte stops
+            # the read; name the file and the fault instead of a codec trace.
+            raise ValueError(
+                f"load_maxent_params: {name} in "
+                f"{sanitize_terminal(str(tab_dir), single_line=True)!r} is not "
+                f"UTF-8 ({exc.reason} at byte {exc.start} of the block read); "
+                "the tab files are written as UTF-8 by save_maxent_params"
+            ) from exc
 
-    with open_datafile(tab_dir, "labels.txt") as f:
-        lab = mdec.txt2list(f)
-
-    with open_datafile(tab_dir, "alwayson.tab") as f:
-        aon = mdec.tab2ivdict(f)
-
+    wgt = read(
+        "weights.txt", lambda f: numpy.array(list(map(numpy.float64, mdec.txt2list(f))))
+    )
+    mpg = read("mapping.tab", mdec.tupkey2dict)
+    lab = read("labels.txt", mdec.txt2list)
+    aon = read("alwayson.tab", mdec.tab2ivdict)
     return wgt, mpg, lab, aon
 
 
