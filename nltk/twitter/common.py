@@ -13,6 +13,7 @@ the `twython` library to have been installed.
 import csv
 import gzip
 
+from nltk.csvsec import sanitize_csv_field
 from nltk.internals import deprecated
 from nltk.jsontags import safe_json_loads
 
@@ -120,13 +121,13 @@ def json2csv(
     """
     (writer, outf) = _outf_writer(outfile, encoding, errors, gzip_compress)
     # write the list of fields as header
-    writer.writerow(fields)
+    writer.writerow([sanitize_csv_field(c) for c in fields])
     # process the file
     for line in fp:
         # Untrusted tweet line: bound size and nesting depth before parsing.
         tweet = safe_json_loads(line, context="twitter.json2csv")
         row = extract_fields(tweet, fields)
-        writer.writerow(row)
+        writer.writerow([sanitize_csv_field(c) for c in row])
     outf.close()
 
 
@@ -201,7 +202,7 @@ def json2csv_entities(
 
     (writer, outf) = _outf_writer(outfile, encoding, errors, gzip_compress)
     header = get_header_field_list(main_fields, entity_type, entity_fields)
-    writer.writerow(header)
+    writer.writerow([sanitize_csv_field(c) for c in header])
     for line in tweets_file:
         # Untrusted tweet line: bound size and nesting depth before parsing.
         tweet = safe_json_loads(line, context="twitter.json2csv_entities")
@@ -268,9 +269,9 @@ def _write_to_file(object_fields, items, entity_fields, writer):
                     )
                 )
             row += [json_dict[vd]]
-        writer.writerow(row)
+        writer.writerow([sanitize_csv_field(c) for c in row])
         return
     # in general it is a list
     for item in items:
         row = object_fields + extract_fields(item, entity_fields)
-        writer.writerow(row)
+        writer.writerow([sanitize_csv_field(c) for c in row])
