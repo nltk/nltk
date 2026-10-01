@@ -32,7 +32,7 @@ def _ccg_lexicon_quadratic_parse():
         return fromstring(lex(n))
 
     small, big = 10000, 40000
-    ratio = scaling_ratio(op, small, big)
+    ratio = scaling_ratio(op, small, big, cpu_bound=True)  # the sink computes
     if ratio >= QUADRATIC_RATIO:
         return VULNERABLE, "parse time scales %.1fx for 4x input (quadratic)" % ratio
 
