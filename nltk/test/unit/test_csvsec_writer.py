@@ -20,7 +20,6 @@
 
 import csv
 import io
-import time
 
 import pytest
 
@@ -33,6 +32,7 @@ from nltk.csvsec import (
     safe_csv_writer,
     sanitize_csv_field,
 )
+from nltk.test.unit import timing
 
 ESC = "\x1b"
 RLO = chr(0x202E)
@@ -111,9 +111,8 @@ class TestNumericLeadLengthCap:
         # bound is on that function alone: microseconds against 0.1s, which no
         # machine speed can turn into a lottery (the full pipeline's linear
         # sanitiser scan over a million characters is a separate cost)
-        start = time.perf_counter()
-        assert _looks_numeric(payload) is False
-        assert time.perf_counter() - start < 0.1
+        with timing.budget(0.1):
+            assert _looks_numeric(payload) is False
         assert sanitize_csv_field(payload).startswith("'-")
 
     def test_cap_boundary(self):

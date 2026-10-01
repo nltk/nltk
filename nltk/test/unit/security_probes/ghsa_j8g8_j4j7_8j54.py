@@ -32,7 +32,7 @@ def _readline_grow_and_reparse():
     # The larger sizes also exposed a residual in-place str growth that copied
     # on every pass on Windows (9.6x there); readline now joins spans once.
     small, big = 2_000_000, 8_000_000
-    ratio = scaling_ratio(op, small, big)
+    ratio = scaling_ratio(op, small, big, cpu_bound=True)  # the sink computes
     if ratio >= QUADRATIC_RATIO:
         return (
             VULNERABLE,

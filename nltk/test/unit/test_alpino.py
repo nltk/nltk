@@ -19,6 +19,7 @@ import sys
 import traceback
 
 from nltk.corpus.reader.bracket_parse import AlpinoCorpusReader
+from nltk.test.unit import timing
 
 from . import _mp_ctx
 
@@ -131,13 +132,11 @@ def test_alpino_normalize_is_linear_not_quadratic(tmp_path):
     (tmp_path / "alpino.xml").write_text(body, encoding="ISO-8859-1")
 
     ctx = _mp_ctx()
-    proc = ctx.Process(target=_words_worker, args=(str(tmp_path),))
-    proc.start()
-    proc.join(30)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(
+        _words_worker, (str(tmp_path),), budget=30, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         raise AssertionError(
             "AlpinoCorpusReader.words() did not finish in time: ReDoS regressed"
         )
-    assert proc.exitcode == 0, f"worker failed (exit {proc.exitcode})"
+    assert run.exitcode == 0, f"worker failed (exit {run.exitcode})"
