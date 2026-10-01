@@ -32,8 +32,10 @@ def test_ordinary_tagpattern_prints_matches(capsys):
 
 
 @pytest.mark.skipif(not _tagset_available(), reason="upenn_tagset data unavailable")
-def test_oversized_tagpattern_raises_value_error():
+def test_oversized_tagpattern_raises_value_error(capsys):
     oversized = "N" * (redos.MAX_PATTERN_LENGTH + 10)
-    # Fail closed: the redos refusal is re-raised as a clear ValueError.
+    # Fail closed: the redos refusal is re-raised as a clear ValueError, and it
+    # never degrades to a printed warning (the library-wide contract).
     with pytest.raises(ValueError, match="Invalid or oversized tag pattern"):
         help_module._format_tagset("upenn_tagset", oversized)
+    assert "Invalid or oversized tag pattern" not in capsys.readouterr().out
