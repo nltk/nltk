@@ -901,7 +901,10 @@ def test_relative_binary_location_probe_world_writable_phase_has_teeth(monkeypat
 
 
 def test_cj8f_xml_depth_probe_has_teeth(monkeypatch):
-    """Lift the nesting bound; the per-tag path rebuild must scale quadratically."""
+    """Lift both bounds; the per-tag path cost must scale quadratically in depth.
+
+    With only the depth bound lifted the width bound still refuses the 32 KB
+    path of the deep shape, so the probe stays FIXED (defence in depth)."""
     import nltk.corpus.reader.xmldocs as xmldocs
 
     probe = probes.PROBES["GHSA-cj8f-5fp3-6m88"]
@@ -909,10 +912,29 @@ def test_cj8f_xml_depth_probe_has_teeth(monkeypatch):
 
     monkeypatch.setattr(xmldocs, "MAX_XML_DEPTH", 10**9)
     status, evidence = probe()
+    assert status == probes.FIXED and "MAX_XML_PATH_LENGTH" in evidence, evidence
+
+    monkeypatch.setattr(xmldocs, "MAX_XML_PATH_LENGTH", 10**9)
+    status, evidence = probe()
     assert status == probes.VULNERABLE, evidence
     assert "no depth bound" in evidence
-    # the rebuild hands the tagspec d**2 characters: exactly 16.0x for 4x depth
+    # the path handed to the tagspec sums to d**2 characters: 16.0x for 4x depth
     assert "scales 16.0x" in evidence, evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_cj8f_xml_path_width_probe_has_teeth(monkeypatch):
+    """Lift the width bound alone: the deep shape is still refused by depth, and
+    the wide shape (400 deep, long names, many siblings) must read quadratic."""
+    import nltk.corpus.reader.xmldocs as xmldocs
+
+    probe = probes.PROBES["GHSA-cj8f-5fp3-6m88"]
+    monkeypatch.setattr(xmldocs, "MAX_XML_PATH_LENGTH", 10**9)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "no path width bound" in evidence, evidence
 
     monkeypatch.undo()
     assert probe()[0] == probes.FIXED

@@ -10,8 +10,12 @@ untrusted input (CWE-400/407/674/1333):
 * ``redos.check_pattern`` bounds the capturing-group count (quadratic compile).
 * ``SeekableUnicodeStreamReader.readline`` reads an unterminated line in linear
   time (was O(N**2) re-splitting the whole growing buffer).
-* ``XMLCorpusView.read_block`` bounds XML nesting depth (the per-tag
-  ``"/".join(context)`` was O(depth) each, so deep nesting was O(n**2)).
+* ``XMLCorpusView.read_block`` bounds XML nesting depth and the joined path's
+  width, and extends the path per tag (the per-tag ``"/".join(context)`` cost
+  the path's length, so deep nesting, or long names under a prefix within the
+  depth cap, was O(n**2)).
+* the pl196x ``PARA``/``SENT``/``WORD``/``TAGGEDWORD`` attribute runs are
+  bounded, so an open tag with its ``>`` omitted no longer re-scans the block.
 * the WordNet ``Synset`` hypernym walkers refuse a cyclic / over-deep graph
   instead of recursing without bound.
 * the tokenizer quote restore, the legality syllable loop and the stepping
@@ -279,7 +283,10 @@ class TestXMLCorpusViewDepth:
         import nltk.corpus.reader.xmldocs as xmldocs
 
         monkeypatch.setattr(xmldocs, "MAX_XML_DEPTH", 10**9)
-        assert self._nested(6000) == []  # accepted once the bound is gone
+        with pytest.raises(ValueError, match="MAX_XML_PATH_LENGTH"):
+            self._nested(6000)  # the width bound still refuses a 12 KB path
+        monkeypatch.setattr(xmldocs, "MAX_XML_PATH_LENGTH", 10**9)
+        assert self._nested(6000) == []  # accepted once both bounds are gone
         small, big = self._rebuild_work(1000), self._rebuild_work(4000)
         assert small == 1000**2 and big == 4000**2, (small, big)
         assert big / small >= QUADRATIC_RATIO
@@ -1119,3 +1126,251 @@ class TestPl196xAttributeRunBounded:
         assert read() == shipped
         words, tagged = shipped
         assert len(words) > 1000 and tagged[0][0][0][1]  # paras of sents of (w, tag)
+
+
+# --- #cj8f, the path width: XMLCorpusView refuses a wide root-to-node path -----
+
+from nltk import redos  # noqa: E402
+from nltk.corpus.reader.xmldocs import MAX_XML_DEPTH  # noqa: E402
+from nltk.corpus.reader.xmldocs import XMLCorpusView, safe_fromstring  # noqa: E402
+from nltk.data import SeekableUnicodeStreamReader  # noqa: E402
+from nltk.termsec import safe_print  # noqa: E402
+
+
+class _PreFixXMLCorpusView(XMLCorpusView):
+    """``read_block`` exactly as shipped at 6b83f4a06 (the depth bound only, the
+    path re-joined at every tag): the oracle the width bound's teeth are measured
+    against, and the reference the incremental path must reproduce."""
+
+    def read_block(self, stream, tagspec=None, elt_handler=None):
+        """
+        Read from ``stream`` until we find at least one element that
+        matches ``tagspec``, and return the result of applying
+        ``elt_handler`` to each element found.
+        """
+        if tagspec is None:
+            tagspec = self._tagspec
+        if isinstance(tagspec, str):
+            tagspec = redos.compile(tagspec)  # caller-passed raw tagspec: bound both
+        if elt_handler is None:
+            elt_handler = self.handle_elt
+
+        # Use a stack of strings to keep track of our context:
+        context = list(self._tag_context.get(stream.tell()))
+        assert context is not None  # check this -- could it ever happen?
+
+        elts = []
+
+        elt_start = None  # where does the elt start
+        elt_depth = None  # what context depth
+        elt_text = ""
+
+        while elts == [] or elt_start is not None:
+            if isinstance(stream, SeekableUnicodeStreamReader):
+                startpos = stream.tell()
+            xml_fragment = self._read_xml_fragment(stream)
+
+            # End of file.
+            if not xml_fragment:
+                if elt_start is None:
+                    break
+                else:
+                    raise ValueError("Unexpected end of file")
+
+            # Process each <tag> in the xml fragment.
+            for piece in self._XML_PIECE.finditer(xml_fragment):
+                if self._DEBUG:
+                    safe_print(
+                        "{:>25} {}".format("/".join(context)[-20:], piece.group())
+                    )
+
+                if piece.group("START_TAG"):
+                    name = self._XML_TAG_NAME.match(piece.group()).group(1)
+                    # Keep context up-to-date.
+                    context.append(name)
+                    if len(context) > MAX_XML_DEPTH:
+                        raise ValueError(
+                            f"XML nesting depth exceeds MAX_XML_DEPTH "
+                            f"({MAX_XML_DEPTH}); the input may be adversarially deep."
+                        )
+                    # Is this one of the elts we're looking for?
+                    if elt_start is None:
+                        if tagspec.match("/".join(context)):
+                            elt_start = piece.start()
+                            elt_depth = len(context)
+
+                elif piece.group("END_TAG"):
+                    name = self._XML_TAG_NAME.match(piece.group()).group(1)
+                    # sanity checks:
+                    if not context:
+                        raise ValueError("Unmatched tag </%s>" % name)
+                    if name != context[-1]:
+                        raise ValueError(f"Unmatched tag <{context[-1]}>...</{name}>")
+                    # Is this the end of an element?
+                    if elt_start is not None and elt_depth == len(context):
+                        elt_text += xml_fragment[elt_start : piece.end()]
+                        elts.append((elt_text, "/".join(context)))
+                        elt_start = elt_depth = None
+                        elt_text = ""
+                    # Keep context up-to-date
+                    context.pop()
+
+                elif piece.group("EMPTY_ELT_TAG"):
+                    name = self._XML_TAG_NAME.match(piece.group()).group(1)
+                    if elt_start is None:
+                        if tagspec.match("/".join(context) + "/" + name):
+                            elts.append((piece.group(), "/".join(context) + "/" + name))
+
+            if elt_start is not None:
+                # If we haven't found any elements yet, then keep
+                # looping until we do.
+                if elts == []:
+                    elt_text += xml_fragment[elt_start:]
+                    elt_start = 0
+
+                # If we've found at least one element, then try
+                # backtracking to the start of the element that we're
+                # inside of.
+                else:
+                    # take back the last start-tag, and return what
+                    # we've gotten so far (elts is non-empty).
+                    if self._DEBUG:
+                        safe_print(" " * 36 + "(backtrack)")
+                    if isinstance(stream, SeekableUnicodeStreamReader):
+                        stream.seek(startpos)
+                        stream.char_seek_forward(elt_start)
+                    else:
+                        stream.seek(-(len(xml_fragment) - elt_start), 1)
+                    context = context[: elt_depth - 1]
+                    elt_start = elt_depth = None
+                    elt_text = ""
+
+        # Update the _tag_context dict.
+        pos = stream.tell()
+        if pos in self._tag_context:
+            assert tuple(context) == self._tag_context[pos]
+        else:
+            self._tag_context[pos] = tuple(context)
+
+        return [
+            elt_handler(
+                safe_fromstring(elt.encode("ascii", "xmlcharrefreplace")),
+                context,
+            )
+            for (elt, context) in elts
+        ]
+
+
+class _PathRecorder:
+    """A tagspec that never matches and records every path it is handed."""
+
+    def __init__(self):
+        self.paths = []
+
+    def match(self, path):
+        self.paths.append(path)
+        return None
+
+
+def _wide_xml(depth, name_len, siblings, kind="empty", sib_name="x"):
+    name = "n" * name_len
+    pre = "".join(f"<{name}{i}>" for i in range(depth))
+    post = "".join(f"</{name}{i}>" for i in reversed(range(depth)))
+    if kind == "empty":
+        mid = f"<{sib_name}/>" * siblings
+    else:
+        mid = f"<{sib_name}></{sib_name}>" * siblings
+    return pre + mid + post
+
+
+class TestXMLCorpusViewPathWidth:
+    """The depth bound left the per-tag path cost unbounded in width: 400 levels
+    of 1000-char names (under the cap) made every one of many siblings cost a
+    400 KB path, O(filesize**2) (a 962 KB file took 9.9 s). The joined path is
+    now bounded by MAX_XML_PATH_LENGTH and extended per tag, not re-joined."""
+
+    def _read(self, xml, tagspec="zzz", cls=XMLCorpusView):
+        import shutil
+
+        from nltk.data import FileSystemPathPointer
+        from nltk.test.unit.security_probes._base import register_data_root
+
+        d = tempfile.mkdtemp()
+        undo = register_data_root(d)
+        try:
+            path = os.path.join(d, "corpus.xml")
+            with open(path, "w", encoding="utf-8") as fh:
+                fh.write(xml)
+            pointer = FileSystemPathPointer(path)
+            if isinstance(tagspec, str):
+                return sum(1 for _ in cls(pointer, tagspec))
+            stream = pointer.open("utf8")
+            try:
+                return cls(pointer, "zzz").read_block(stream, tagspec=tagspec)
+            finally:
+                stream.close()
+        finally:
+            undo()
+            shutil.rmtree(d, ignore_errors=True)
+
+    @pytest.mark.parametrize("kind", ["empty", "startend"])
+    def test_the_wide_shape_is_refused(self, kind):
+        # the review's reproduction: depth 400, 1000-char names, many siblings
+        with pytest.raises(ValueError, match="MAX_XML_PATH_LENGTH"):
+            self._read(_wide_xml(400, 1000, 10_000, kind))
+
+    def test_path_at_the_bound_is_accepted(self):
+        from nltk.corpus.reader.xmldocs import MAX_XML_PATH_LENGTH
+
+        # _XML_TAG_NAME keeps an empty element's trailing slash in its name (as
+        # before the fix), so that path is one char longer than its start tag's.
+        a, b = "a" * 2047, "b" * (MAX_XML_PATH_LENGTH - 2048)
+        e = "e" * (MAX_XML_PATH_LENGTH - 2049)
+        assert self._read(f"<{a}><{b}>x</{b}><{e}/></{a}>") == 0
+        with pytest.raises(ValueError, match="MAX_XML_PATH_LENGTH"):
+            self._read(f"<{a}><{b}c>x</{b}c></{a}>")
+        with pytest.raises(ValueError, match="MAX_XML_PATH_LENGTH"):
+            self._read(f"<{a}><{e}c/></{a}>")
+
+    @pytest.mark.parametrize("kind", ["empty", "startend"])
+    def test_sibling_walk_under_the_bound_is_linear(self, kind):
+        # a 3 KB path (depth 50, 60-char names) and 4x the siblings under it
+        _assert_subquadratic(
+            lambda n: self._read(_wide_xml(50, 60, n, kind)), 10_000, 40_000
+        )
+
+    def test_long_name_siblings_under_the_bound_are_linear(self):
+        op = lambda n: self._read(_wide_xml(50, 60, n, "empty", sib_name="m" * 900))
+        _assert_subquadratic(op, 2_500, 10_000)
+
+    def test_incremental_path_matches_a_rejoin_at_every_tag(self):
+        # Every path handed to the tagspec, over nesting, empty elements at the
+        # root and below, siblings and a backtrack, equals the pre-fix re-join.
+        xml = (
+            "<r/><d><a/><b><c/><c/></b><b>t</b><e></e></d>"
+            + "<d><s>x</s>"
+            + "<q/>" * 50
+            + "<p><p>y</p></p></d>"
+        )
+        got, ref = _PathRecorder(), _PathRecorder()
+        self._read(xml, tagspec=got)
+        self._read(xml, tagspec=ref, cls=_PreFixXMLCorpusView)
+        assert got.paths == ref.paths and got.paths[:3] == ["/r/", "d", "d/a/"]
+        assert self._read("<doc><s>a</s><s>b</s></doc>", ".*/s") == 2
+
+    def test_width_bound_has_teeth(self):
+        # The pre-fix walk accepts the shape and the path characters it hands the
+        # tagspec grow 16x over a budget split 4x between name length and
+        # sibling count; the shipped walk refuses the same shape.
+        work = {}
+        for u in (1, 4):
+            meter = _PathRecorder()
+            self._read(
+                _wide_xml(400, 100 * u, 1000 * u),
+                tagspec=meter,
+                cls=_PreFixXMLCorpusView,
+            )
+            work[u] = sum(len(p) for p in meter.paths)
+        assert work[4] / work[1] >= QUADRATIC_RATIO, work
+        with pytest.raises(ValueError, match="MAX_XML_PATH_LENGTH"):
+            self._read(_wide_xml(400, 100, 1000))
