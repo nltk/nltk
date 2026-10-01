@@ -1359,6 +1359,15 @@ class Downloader:
             return True
 
         else:
+            # Fix for Issue #3394: Redirect or append 'punkt_tab' when 'punkt' is requested.
+            if isinstance(info_or_id, str) and info_or_id == "punkt":
+                info_or_id = ["punkt", "punkt_tab"]
+            elif (
+                isinstance(info_or_id, list)
+                and "punkt" in info_or_id
+                and "punkt_tab" not in info_or_id
+            ):
+                info_or_id.append("punkt_tab")
             # Define a helper function for displaying output:
             def show(s, prefix2=""):
                 # A message is one logical line: flatten its line breaks here,
