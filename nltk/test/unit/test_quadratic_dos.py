@@ -1202,3 +1202,43 @@ class TestBlanklineTokenizerLeadingRun:  # tokenize/regexp.py BlanklineTokenizer
 
     def test_pre_fix_pattern_has_teeth(self):
         _trips_backstop(_PRE_FIX["blankline"], "split", " " * 80000 + "\na")
+
+
+class TestTextTilingParagraphBreakLeadingRun:  # texttiling._mark_paragraph_breaks
+    _STOPWORDS = ["the", "a", "of", "and", "to"]
+
+    def _tokenizer(self):
+        from nltk.tokenize import TextTilingTokenizer
+
+        return TextTilingTokenizer(stopwords=self._STOPWORDS)
+
+    def test_benign_breaks_unchanged(self):
+        tt = self._tokenizer()
+        assert tt._mark_paragraph_breaks("x" * 120 + "  \n  \n  " + "y" * 120) == [
+            0,
+            120,
+        ]
+
+    def test_space_run_before_a_newline_is_linear(self):
+        tt = self._tokenizer()
+        _assert_subquadratic(
+            lambda n: tt._mark_paragraph_breaks(" " * n + "\n"), 40000, 160000
+        )
+
+    def test_shipped_pattern_matches_the_pre_fix_pattern(self):
+        import inspect
+
+        from nltk.tokenize import texttiling
+
+        src = inspect.getsource(texttiling.TextTilingTokenizer._mark_paragraph_breaks)
+        shipped = r"(?:(?<![ \t\r\f\v])[ \t\r\f\v]*+)?\n[ \t\r\f\v]*+\n[ \t\r\f\v]*+"
+        assert shipped in src
+        texts = [
+            "", "\n", "\n\n", " \n \n ", "a\n\nb", "a \n \n b", "\n\n\n\n",
+            "\t\n\x0b\r\n\x0c\x0b \x0c\n\r\n\x0c\n\r", "x" + " " * 30 + "\ny",
+            "x" + " " * 30 + "\n\ny", "\r\x0c \t\n\n\t\x0b\n\n\t aa", "a \n\n \n\n b",
+        ]  # fmt: skip
+        _same_results(_PRE_FIX["texttiling"], shipped, "finditer", texts)
+
+    def test_pre_fix_pattern_has_teeth(self):
+        _trips_backstop(_PRE_FIX["texttiling"], "finditer", " " * 80000 + "\n")
