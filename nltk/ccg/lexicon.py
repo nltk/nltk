@@ -33,15 +33,21 @@ MAX_PARSE_LEN = 100_000
 # Parses a primitive category and subscripts
 PRIM_RE = redos.compile(r"""([A-Za-z]+)(\[[A-Za-z,]+\])?""")
 
-# Matches the next primitive category (name and optional subscript). The parser
-# threads a position cursor for the remainder, so no trailing group is captured;
-# a captured remainder made parsing quadratic in the category length.
+# NEXTPRIM_RE and APP_RE used to end in a trailing (.*) that captured the rest of
+# the category for the next step. It validated nothing (any character but a line
+# break, any number of times): it was the copy that made parsing O(n**2).
+
+# The parser now reads the remainder in place from the match end instead
+# (GHSA-89p3-fcch-88ph). The next character must still satisfy APP_RE, and the
+# one after it NEXTPRIM_RE or an open bracket, or the parse raises as before.
+
+# Matches the next primitive category (name and optional subscript); the
+# validating group is unchanged, the parser resumes at m.end(1).
 NEXTPRIM_RE = redos.compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)""")
 
-# Matches the next application operator (slash and optional modality). The parser
-# threads a position cursor for the remainder, so no trailing group is captured.
-# The modifier slot also accepts `_`, marking a variable direction
-# (e.g. `(S\_NP)/(S\_NP)` for a polymorphic adverb).
+# Matches the next application operator (slash and optional modality); the three
+# validating groups are unchanged, the parser resumes at m.end(). The modifier
+# slot also accepts `_`, a variable direction (`(S\_NP)/(S\_NP)`, an adverb).
 APP_RE = redos.compile(r"""([\\/])([.,_]?)([.,]?)""")
 
 # Parses the definition of the right-hand side (rhs) of either a word or a family.
