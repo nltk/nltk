@@ -9,7 +9,8 @@
 A re-anchoring op -- ``redos.sub``/``subn``/``finditer``/``findall``/``split``/
 ``search`` -- retries its match at O(n) positions in the input. If the pattern
 pairs a repeatable anchor with an unbounded "wide" run (``[^X]*``/``[^X]+``,
-``.*``/``.*?``, ``\\S*``/``\\D*``/``\\W*``) that scans toward a terminator the
+``.*``/``.*?``, ``\\S*``/``\\D*``/``\\W*``, and the lowercase shorthand runs
+``\\s*``/``\\d+``/``\\w*``, which re-anchor the same way) that scans toward a terminator the
 attacker can omit, every anchor position triggers an O(n) forward scan -> O(n**2)
 (CWE-400/407). The ``nltk.redos`` wall-clock timeout is only a BACKSTOP for this
 shape (it still burns a full timeout window per malicious call AND raises
@@ -38,14 +39,18 @@ _EXEMPT_FILES = (os.path.join("nltk", "redos.py"),)
 # match/fullmatch anchor once and are excluded.
 _REANCHOR_OPS = frozenset({"sub", "subn", "finditer", "findall", "split", "search"})
 
-# The dangerous unbounded "wide" runs: a negated class, dot, or a wide category
-# escape carrying a ``*``/``+`` (no upper bound). A bounded ``{0,N}`` run has no
-# ``*``/``+`` and so does not match -- that is exactly the fix.
+# The dangerous unbounded "wide" runs: a negated class, dot, or a category
+# escape carrying a ``*``/``+`` (no upper bound). The lowercase shorthand runs
+# (``\s*``, ``\d+``, ``\w*``) are narrower than their negated counterparts but
+# re-anchor exactly the same way (a leading ``\s*`` under split/findall was
+# retried from every position of a whitespace run, #3947), so they are guarded
+# too. A bounded ``{0,N}`` run has no ``*``/``+`` and so does not match -- that
+# is exactly the fix.
 _WIDE_RUN = re.compile(
     r"""
       \[\^[^\]]*\][*+]        # [^...]* or [^...]+   (negated class)
     | (?<!\\)\.[*+]           # .*  .+   (unescaped dot)
-    | \\[SDW][*+]             # \S* \D+ \W* ...      (wide category escapes)
+    | \\[SDWsdw][*+]          # \S* \D+ \W* \s* \d+ \w* (category escapes)
     """,
     re.VERBOSE,
 )
@@ -173,6 +178,76 @@ _REVIEWED: dict[tuple[str, str], str] = {
         'every [^"] run has its " terminator supplied by the name=/wn=/ID= anchor; '
         "the tail, the only run with an omittable terminator, is bounded and "
         "excludes the < of the anchor"
+    ),
+    # --- lowercase shorthand runs (\s* \d+ \w*), each measured linear on its
+    # re-anchoring trigger with the required literal absent and present once:
+    # the run cannot cross its own anchor, is pinned, or is the whole pattern ---
+    ("nltk/app/chunkparser_app.py", "\\n\\s+"): (
+        "GUI text; the \\s+ run swallows every following \\n anchor in one match"
+    ),
+    ("nltk/corpus/reader/senseval.py", "(?<!\\s)(\\s+)&(\\s+)"): (
+        "the (?<!\\s) lookbehind lets the run start only at the head of a "
+        "whitespace run, so interior positions fail in O(1)"
+    ),
+    ("nltk/corpus/reader/senseval.py", "<&\\w+ \\.>"): (
+        "\\w excludes the < of the anchor, so a scan stops at the next tag"
+    ),
+    ("nltk/corpus/reader/senseval.py", "<(\\&\\w+;)>"): (
+        "\\w excludes the < of the anchor, so a scan stops at the next tag"
+    ),
+    ("nltk/corpus/reader/senseval.py", "(?<!\\s)\\s*+\\\"\\s*+<p='\\\"'/>"): (
+        "possessive runs behind a (?<!\\s) lookbehind, one attempt per run"
+    ),
+    ("nltk/corpus/reader/sentiwordnet.py", "^\\s*#"): (
+        "^-anchored without MULTILINE, one attempt per line"
+    ),
+    (
+        "nltk/corpus/reader/wordnet.py",
+        "Word[nN]et (\\d+\\+?|\\d+\\.\\d+) Copyright",
+    ): "the \\d runs sit behind a literal anchor they cannot contain",
+    ("nltk/featstruct.py", "(?<!\\d)\\d+$"): (
+        "the (?<!\\d) lookbehind pins the run to the head of a digit run"
+    ),
+    ("nltk/grammar.py", "( [\\w/][\\w/^<>-]* ) \\s*"): (
+        "each match consumes a maximal token run and advances past it"
+    ),
+    ("nltk/internals.py", "\\A\\s*@deprecated:"): "\\A-pinned, one attempt",
+    ("nltk/internals.py", "(?m)^\\s*"): (
+        "^ under MULTILINE; the \\s* run swallows the following line starts"
+    ),
+    ("nltk/sem/evaluate.py", "(?:(?<!\\s)\\s*)?(?<!=)=+>\\s*"): (
+        "the leading run is taken only where no whitespace precedes it (#3947); "
+        "the trailing run follows a matched terminator"
+    ),
+    (
+        "nltk/sem/evaluate.py",
+        "(?:(?<!\\s)\\s*)?\n"
+        "                                (\\([^()]{1,1024}\\))  # tuple-expression; bounded run\n"
+        "                                                     # that excludes its `(` anchor:\n"
+        "                                                     # unclosed parens were quadratic\n"
+        "                                                     # under findall, then O(n*bound)\n"
+        "                                                     # with `[^)]` (CWE-407)\n"
+        "                                \\s*",
+    ): (
+        "the leading run is taken only where no whitespace precedes it (#3947), "
+        "the tuple run is bounded and excludes its ( anchor, the trailing run "
+        "follows a matched tuple"
+    ),
+    ("nltk/sem/evaluate.py", "(?:(?<!\\s)\\s*)?,\\s*"): (
+        "the leading run is taken only where no whitespace precedes it (#3947); "
+        "the trailing run follows the , terminator"
+    ),
+    ("nltk/sem/relextract.py", "&(\\w+?);"): (
+        "\\w excludes the & anchor, so a scan stops at the next entity"
+    ),
+    ("nltk/sentiment/util.py", "(?!\\n)\\s+"): (
+        "the run is the whole pattern: each match consumes a maximal run"
+    ),
+    ("nltk/tokenize/texttiling.py", "\\w+"): (
+        "the run is the whole pattern: each match consumes a maximal run"
+    ),
+    ("nltk/translate/chrf_score.py", "\\s+"): (
+        "the run is the whole pattern: each match consumes a maximal run"
     ),
     (
         "nltk/corpus/reader/xmldocs.py",
