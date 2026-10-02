@@ -186,14 +186,14 @@ class Valuation(dict):
 # in the run length and lets a single valuation string pin a CPU core
 # (CWE-1333; CVE-2026-12890). The lookbehind only lets ``=+`` start at the
 # beginning of a run, so interior positions fail in O(1); the split result is
-# unchanged. The CVE fix closed the ``=``-run direction, but the leading ``\s*``
-# of each pattern is still retried by split/findall over an internal whitespace
-# run (``line.strip()`` only trims the ends), so route all three through
-# redos.compile for a wall-clock bound on that residual (CWE-1333).
-_VAL_SPLIT_RE = redos.compile(r"\s*(?<!=)=+>\s*")
-_ELEMENT_SPLIT_RE = redos.compile(r"\s*,\s*")
+# unchanged. The leading ``\s*`` of each pattern was likewise retried by
+# split/findall from every position of an internal whitespace run (``strip``
+# only trims the ends), O(n**2) (CWE-407): it is now an optional run taken only
+# when no whitespace precedes it, which no split or tuple ever started inside.
+_VAL_SPLIT_RE = redos.compile(r"(?:(?<!\s)\s*)?(?<!=)=+>\s*")
+_ELEMENT_SPLIT_RE = redos.compile(r"(?:(?<!\s)\s*)?,\s*")
 _TUPLES_RE = redos.compile(
-    r"""\s*
+    r"""(?:(?<!\s)\s*)?
                                 (\([^)]{1,1024}\))  # tuple-expression; bounded run,
                                                     # was quadratic under findall on
                                                     # unclosed parens (CWE-407)
