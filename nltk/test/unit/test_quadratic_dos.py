@@ -1302,8 +1302,16 @@ class TestValuationLeadingWhitespaceRuns:  # sem/evaluate.py, the three splitter
     def test_interior_space_run_before_an_open_tuple_is_linear(self):
         from nltk.sem.evaluate import read_valuation
 
+        # the trailing `(c` is an unclosed tuple: it is now refused (a
+        # ValueError naming MAX_TUPLE_LENGTH) rather than read as a scalar,
+        # and the refusal is as linear as the parse
+        def refused(n):
+            with pytest.raises(ValueError, match="MAX_TUPLE_LENGTH"):
+                read_valuation("s => {(a, b)" + " " * n + "(c}")
+
+        _assert_subquadratic(refused, 20000, 80000)
         _assert_subquadratic(
-            lambda n: read_valuation("s => {(a, b)" + " " * n + "(c}"), 20000, 80000
+            lambda n: read_valuation("s => {(a, b)" + " " * n + "(c, d)}"), 20000, 80000
         )
 
     def test_shipped_patterns_match_the_pre_fix_patterns(self):

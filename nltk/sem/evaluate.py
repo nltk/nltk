@@ -190,6 +190,12 @@ class Valuation(dict):
 # split/findall from every position of an internal whitespace run (``strip``
 # only trims the ends), O(n**2) (CWE-407): it is now an optional run taken only
 # when no whitespace precedes it, which no split or tuple ever started inside.
+#: Max length in characters of one parenthesised tuple expression in a
+#: valuation set; mirrors the {1,1024} run in _TUPLES_RE below. The longest
+#: shipped tuple (grammars/sample_grammars/valuation1.val, the semantics
+#: doctests and the sem demos) is 8 chars.
+MAX_TUPLE_LENGTH = 1024
+
 _VAL_SPLIT_RE = redos.compile(r"(?:(?<!\s)\s*)?(?<!=)=+>\s*")
 _ELEMENT_SPLIT_RE = redos.compile(r"(?:(?<!\s)\s*)?,\s*")
 _TUPLES_RE = redos.compile(
@@ -226,6 +232,15 @@ def _read_valuation_line(s):
     if value.startswith("{"):
         value = value[1:-1]
         tuple_strings = _TUPLES_RE.findall(value)
+        # Every "(" must open a matched tuple: a tuple over MAX_TUPLE_LENGTH
+        # chars (or an unclosed one) finds no match above, and silently reading
+        # the set as comma-separated scalars would reinterpret the relation, so
+        # refuse it instead. str.count is one O(n) pass.
+        if value.count("(") != len(tuple_strings):
+            raise ValueError(
+                f"tuple expression is unclosed or longer than MAX_TUPLE_LENGTH "
+                f"({MAX_TUPLE_LENGTH} chars): {value[:40]!r}..."
+            )
         # are the set elements tuples?
         if tuple_strings:
             set_elements = []
@@ -260,7 +275,7 @@ def read_valuation(s, encoding=None):
         try:
             statements.append(_read_valuation_line(line))
         except ValueError as e:
-            raise ValueError(f"Unable to parse line {linenum}: {line}") from e
+            raise ValueError(f"Unable to parse line {linenum}: {line}\n{e}") from e
     return Valuation(statements)
 
 
