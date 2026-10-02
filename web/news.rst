@@ -4,6 +4,100 @@ Release Notes
 2026
 ----
 
+NLTK 3.10.3 release: August 2026
+
+- docs: wrap Chat-80 HOWTO output
+- Sandbox Stanford JAR execution to nltk_data directories
+- Harden path-traversal / file-I/O sandbox: close write-side symlink TOCTOU + shared-temp squat, lock the cluster with a living audit (CWE-22/59/377)
+- Extend algorithmic-complexity DoS hardening: repo-wide sweep + two-string distances (CWE-407/CWE-400)
+- Bound unbounded-work DoS in parsers and grammar transforms (CWE-407/674/835)
+- fix(security): sandbox MaltParser's Java execution (CVE-2026-12252, CVE-2026-12841)
+- fix(security): trust the system temp dir only when it is private (CWE-377/CWE-378)
+- fix(security): validate corpus-reader roots against the data sandbox (CWE-73)
+- fix(security): validate per-call java() options and replace the -XX:/-D allowlist with a minimal one (CWE-88)
+- Additional security hardening (CWE-407, CWE-426, CWE-427, CWE-502, CWE-59, CWE-776, CWE-918)
+
+NLTK 3.10.2 release: August 2026
+
+- Remove inisec.py and document PYTHONSAFEPATH instead
+- Skip draft step in release workflow
+- Fix symlink escape in FramenetCorpusReader (CWE-59)
+- Guard tempfile.gettempdir() when building pathsec allowed roots
+- add tests for transitive_closure
+
+NLTK 3.10.1 release: July 2026
+
+- Fix ReDoS in TweetTokenizer url and email regexes
+- Fix module hijacking in inline imports
+
+NLTK 3.10.0 release: June 2026
+
+- Enforce the stricter ``nltk.pathsec`` policy by default (``ENFORCE = True``)
+- ``file:`` URLs are no longer a general-purpose way to load arbitrary local files
+- Local resources must resolve inside allowed NLTK data directories such as ``nltk.data.path`` or ``NLTK_DATA``
+- ``http:`` and ``https:`` resource loading now goes through centralized validation with SSRF protections
+- Redirects are re-validated at each hop during network access, including DNS-rebinding protections
+- Downloader path handling is hardened, including safer containment checks and improved concurrency behavior
+- Disallowed local paths and blocked network destinations raise ``PermissionError`` (and some corpus-reader validations raise ``ValueError``)
+- Block remaining path traversal and ReDoS edge cases in corpus readers
+- Replace unsafe ``exec()`` usage in the utility CLI
+- Update documentation for NLTK's security model and migration guidance
+- Add HuggingFace datasets integration (``nltk.huggingface``)
+- Align TnT with Brants (2000) specifications
+- Fix PorterStemmer irregular-form lowercasing in NLTK mode
+- Fix TransitionParser sparse index dtype for scikit-learn 1.9
+- Fix TextCat tie handling
+- Fix WordNet object comparisons for incompatible types
+- Cache WordNet max depth lazily for ``lch_similarity()``
+- Fix CCG variable direction, substitution, and type-raising bugs
+- Improve CI and release-maintenance workflows
+
+Migration note:
+
+NLTK 3.10.0 enforces the stricter ``pathsec`` policy by default.
+
+Local files (``file:``)
+^^^^^^^^^^^^^^^^^^^^^^^
+
+``file:`` URLs are no longer a general-purpose way to load arbitrary local files.
+
+Under enforcement:
+
+- Files must resolve inside allowed NLTK data directories, including locations from ``nltk.data.path`` and ``NLTK_DATA``
+- Access to arbitrary locations, including the current working directory unless explicitly added, is blocked by default
+- Disallowed paths raise ``PermissionError``
+
+If you load custom local resources, move them into a directory on ``NLTK_DATA`` or explicitly add a trusted directory via ``nltk.data.path.append(...)``, then load them by NLTK resource path.
+
+Network URLs (``http:`` / ``https:``)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Network loading is now subject to centralized validation.
+
+- Only ``http`` and ``https`` URLs are allowed
+- Requests are blocked if the resolved host is loopback, private, link-local, multicast, or otherwise non-public
+- Redirects are re-validated at each hop
+- Violations raise ``PermissionError``
+
+In practice, normal public URLs continue to work, but URLs such as ``https://127.0.0.1/...``, ``https://10.0.0.1/...`` and ``https://169.254.169.254/...`` are rejected.
+
+Documentation has also been updated to remove recommendations for arbitrary ``file:`` loading and to clarify that both local and network resource access now go through ``pathsec`` validation.
+
+NLTK 3.9.4 release: March 2026
+
+- Support Python 3.14
+- Fix Levenshtein distance when ``substitution_cost > 2``
+- Fix TreebankWordDetokenizer quote ordering and spacing
+- Fix Jaro similarity for empty strings
+- Several security enhancements
+- Fix GHSA-rf74-v2fm-23pw / CVE-2025-14009: secure ZIP extraction in ``nltk.downloader``
+- Implement TextTiling vocabulary introduction method (Hearst 1997)
+- Fix ALINE feature matrix errors and add regression tests
+- Support multiple VerbNet versions and OEWN 2025+ naming
+- Let the downloader fall back to MD5 when SHA256 is unavailable
+- Add support for Python 3.13, 3.14, and 3.14t in CI
+- Various CI and maintenance improvements
+
 NLTK 3.9.3 release: February 2026
 
 - Security fix for CVE-2025-14009 (Zip-Slip/RCE)

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Language Models
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 #         Manu Joseph <manujosephv@gmail.com>
 # URL: <https://www.nltk.org/>
@@ -76,7 +76,9 @@ class StupidBackoff(LanguageModel):
     def unmasked_score(self, word, context=None):
         if context:
             max_ctx = self.order - 1
-            if len(context) > max_ctx:
+            if max_ctx <= 0:
+                context = ()
+            elif len(context) > max_ctx:
                 context = context[-max_ctx:]
 
         if not context:
@@ -108,7 +110,9 @@ class InterpolatedLanguageModel(LanguageModel):
     def unmasked_score(self, word, context=None):
         if context:
             max_ctx = self.order - 1
-            if len(context) > max_ctx:
+            if max_ctx <= 0:
+                context = ()
+            elif len(context) > max_ctx:
                 context = context[-max_ctx:]
 
         if not context:

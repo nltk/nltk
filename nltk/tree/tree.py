@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Text Trees
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Peter Ljunglöf <peter.ljunglof@gu.se>
@@ -17,8 +17,19 @@ syntax trees and morphological trees.
 
 import re
 
+from nltk import redos
 from nltk.grammar import Nonterminal, Production
 from nltk.internals import deprecated
+from nltk.termsec import safe_print
+
+#: Maximum bracket-nesting depth accepted by :meth:`Tree.fromstring`. The parse
+#: itself is iterative, but the resulting tree is walked by recursive methods
+#: (``__str__``, ``productions``, ``subtrees``, ``chomsky_normal_form`` ...), so
+#: an arbitrarily deep tree would make every traversal raise ``RecursionError``
+#: (CWE-674). Real trees are nowhere near this deep; a crafted ``"(X "*10000``
+#: string is rejected with a clear ``ValueError``. Raise it if you genuinely need
+#: deeper trees (and raise ``sys.setrecursionlimit`` to match).
+MAX_TREE_DEPTH = 500
 
 ######################################################################
 ## Trees
@@ -540,7 +551,12 @@ class Tree(list):
         :return: The new Tree.
         """
         if isinstance(tree, Tree):
-            children = [cls.convert(child) for child in tree]
+            # a loop, not a comprehension: before Python 3.12 a comprehension is
+            # its own frame, which halved the depth deepcopy could reach
+            # (inlined since https://peps.python.org/pep-0709/)
+            children = []
+            for child in tree:
+                children.append(cls.convert(child))
             return cls(tree._label, children)
         else:
             return tree
@@ -640,16 +656,29 @@ class Tree(list):
         """
         if not isinstance(brackets, str) or len(brackets) != 2:
             raise TypeError("brackets must be a length-2 string")
-        if re.search(r"\s", brackets):
+        if redos.search(r"\s", brackets):
             raise TypeError("whitespace brackets not allowed")
         # Construct a regexp that will tokenize the string.
         open_b, close_b = brackets
         open_pattern, close_pattern = (re.escape(open_b), re.escape(close_b))
+        # A token char is either a backslash-escaped bracket (kept verbatim) or
+        # any character that is not whitespace or an unescaped bracket.
+        token_char = (
+            rf"(?:\\[{open_pattern}{close_pattern}]|[^\s{open_pattern}{close_pattern}])"
+        )
+        # The default node/leaf patterns are constant and linear. A *caller*
+        # pattern, however, is untrusted and run over the unbounded string ``s``
+        # via ``finditer``, where a shape such as ``(a|a)*z`` backtracks
+        # catastrophically (CWE-1333). Compile the caller-pattern case through
+        # ``redos`` for a wall-clock bound; keep the (hot) default path on
+        # stdlib ``re`` so corpus loading pays no overhead. See ``nltk/redos.py``.
+        caller_pattern = node_pattern is not None or leaf_pattern is not None
         if node_pattern is None:
-            node_pattern = rf"[^\s{open_pattern}{close_pattern}]+"
+            node_pattern = rf"{token_char}+"
         if leaf_pattern is None:
-            leaf_pattern = rf"[^\s{open_pattern}{close_pattern}]+"
-        token_re = re.compile(
+            leaf_pattern = rf"{token_char}+"
+        _compile = redos.compile if caller_pattern else re.compile
+        token_re = _compile(
             r"%s\s*(%s)?|%s|(%s)"
             % (open_pattern, node_pattern, close_pattern, leaf_pattern)
         )
@@ -665,6 +694,16 @@ class Tree(list):
                 if read_node is not None:
                     label = read_node(label)
                 stack.append((label, []))
+                # Bound nesting depth: the tree built here is later walked by
+                # recursive methods, so an arbitrarily deep tree would make every
+                # traversal raise RecursionError (CWE-674). ``len(stack)`` is the
+                # current depth.
+                if len(stack) > MAX_TREE_DEPTH:
+                    raise ValueError(
+                        f"Tree nesting depth exceeds MAX_TREE_DEPTH "
+                        f"({MAX_TREE_DEPTH}); the input may be adversarially "
+                        "deep. Raise nltk.tree.tree.MAX_TREE_DEPTH to allow it."
+                    )
             # End of a tree/subtree
             elif token == close_b:
                 if len(stack) == 1:
@@ -731,20 +770,32 @@ class Tree(list):
         raise ValueError(msg)
 
     @classmethod
-    def fromlist(cls, l):
+    def fromlist(cls, l, _depth=0, max_depth=None):
         """
         :type l: list
         :param l: a tree represented as nested lists
-
+        :param int _depth: current recursion depth (internal)
+        :param int max_depth: maximum nesting depth; defaults to ``MAX_TREE_DEPTH``
         :return: A tree corresponding to the list representation ``l``.
         :rtype: Tree
 
-        Convert nested lists to a NLTK Tree
+        Convert nested lists to an NLTK Tree
         """
+        if max_depth is None:
+            max_depth = MAX_TREE_DEPTH
+        if _depth > max_depth:
+            raise ValueError(
+                f"Tree nesting depth exceeds MAX_TREE_DEPTH "
+                f"({MAX_TREE_DEPTH}); the input may be adversarially "
+                "deep. Raise nltk.tree.tree.MAX_TREE_DEPTH to allow it."
+            )
         if type(l) == list and len(l) > 0:
             label = repr(l[0])
             if len(l) > 1:
-                return Tree(label, [cls.fromlist(child) for child in l[1:]])
+                children = []
+                for child in l[1:]:
+                    children.append(cls.fromlist(child, _depth + 1, max_depth))
+                return Tree(label, children)
             else:
                 return label
 
@@ -760,15 +811,28 @@ class Tree(list):
 
         draw_trees(self)
 
-    def pretty_print(self, sentence=None, highlight=(), stream=None, **kwargs):
+    def pretty_print(
+        self, sentence=None, highlight=(), stream=None, rtl=False, **kwargs
+    ):
         """
         Pretty-print this tree as ASCII or Unicode art.
         For explanation of the arguments, see the documentation for
         `nltk.tree.prettyprinter.TreePrettyPrinter`.
+
+        :param rtl: If True, draw the tree mirrored, the first child of every
+            node at the right, for a right-to-left language (Arabic, Hebrew,
+            Persian, Urdu). The tree itself is not changed; each cell of
+            right-to-left text in the output is preceded by an invisible
+            LEFT-TO-RIGHT MARK (U+200E) so that a bidi-aware terminal keeps
+            the columns aligned.
+        :type rtl: bool
         """
         from nltk.tree.prettyprinter import TreePrettyPrinter
 
-        print(TreePrettyPrinter(self, sentence, highlight).text(**kwargs), file=stream)
+        safe_print(
+            TreePrettyPrinter(self, sentence, highlight, rtl=rtl).text(**kwargs),
+            file=stream,
+        )
 
     def __repr__(self):
         childstr = ", ".join(repr(c) for c in self)
@@ -796,9 +860,9 @@ class Tree(list):
             del kwargs["stream"]
         else:
             stream = None
-        print(self.pformat(**kwargs), file=stream)
+        safe_print(self.pformat(**kwargs), file=stream)
 
-    def pformat(self, margin=70, indent=0, nodesep="", parens="()", quotes=False):
+    def pformat(self, margin=70, indent=0, nodesep="", parens="()", quotes=("", "")):
         """
         :return: A pretty-printed string representation of this tree.
         :rtype: str
@@ -809,9 +873,17 @@ class Tree(list):
             subsequent lines.
         :type indent: int
         :param nodesep: A string that is used to separate the node
-            from the children.  E.g., the default value ``':'`` gives
+            from the children.  E.g., the value ``':'`` gives
             trees like ``(S: (NP: I) (VP: (V: saw) (NP: it)))``.
+        :type nodesep: str
+        :param parens: Two-element iterable to surround non-leaf nodes.
+        :param quotes: Two-element iterable to surround leaf nodes,
+            or True to quote leaf nodes as Python strings.
         """
+
+        # For backwards compatibility
+        if quotes is False:
+            quotes = ("", "")
 
         # Try writing it on one line.
         s = self._pformat_flat(nodesep, parens, quotes)
@@ -823,19 +895,20 @@ class Tree(list):
             s = f"{parens[0]}{self._label}{nodesep}"
         else:
             s = f"{parens[0]}{repr(self._label)}{nodesep}"
+        indent_str = " " * (indent + 2)
         for child in self:
             if isinstance(child, Tree):
                 s += (
                     "\n"
-                    + " " * (indent + 2)
+                    + indent_str
                     + child.pformat(margin, indent + 2, nodesep, parens, quotes)
                 )
             elif isinstance(child, tuple):
-                s += "\n" + " " * (indent + 2) + "/".join(child)
-            elif isinstance(child, str) and not quotes:
-                s += "\n" + " " * (indent + 2) + "%s" % child
+                s += "\n" + indent_str + "/".join(child)
+            elif isinstance(child, str) and quotes is not True:
+                s += "\n" + indent_str + quotes[0] + str(child) + quotes[1]
             else:
-                s += "\n" + " " * (indent + 2) + repr(child)
+                s += "\n" + indent_str + repr(child)
         return s + parens[1]
 
     def pformat_latex_qtree(self):
@@ -856,10 +929,34 @@ class Tree(list):
         :return: A latex qtree representation of this tree.
         :rtype: str
         """
-        reserved_chars = re.compile(r"([#\$%&~_\{\}])")
+        reserved_chars = redos.compile(r"([#\$%&~_\{\}])")
 
         pformat = self.pformat(indent=6, nodesep="", parens=("[.", " ]"))
-        return r"\Tree " + re.sub(reserved_chars, r"\\\1", pformat)
+        return r"\Tree " + redos.sub(reserved_chars, r"\\\1", pformat)
+
+    def pformat_latex_forest(self):
+        r"""
+        Returns a representation of the tree compatible with the
+        LaTeX forest package. This consists of the tree represented
+        in bracketed notation, wrapped in a forest environment.
+
+        For example, the following result was generated from a parse
+        tree of the sentence ``the dog chased the cat``::
+
+          \begin{forest}
+            [S
+              [NP [D [the] ] [N [dog] ] ]
+              [VP [V [chased] ] [NP [D [the] ] [N [cat] ] ] ] ]
+          \end{forest}
+
+        :return: A latex forest representation of this tree.
+        :rtype: str
+        """
+        reserved_chars = redos.compile(r"([#\$%&~_\{\}])")
+
+        pformat = self.pformat(indent=2, parens=("[", " ]"), quotes=("[", "]"))
+        pformat = redos.sub(reserved_chars, r"\\\1", pformat)
+        return "\\begin{forest}\n  " + pformat + "\n\\end{forest}"
 
     def _pformat_flat(self, nodesep, parens, quotes):
         childstrs = []
@@ -868,26 +965,17 @@ class Tree(list):
                 childstrs.append(child._pformat_flat(nodesep, parens, quotes))
             elif isinstance(child, tuple):
                 childstrs.append("/".join(child))
-            elif isinstance(child, str) and not quotes:
-                childstrs.append("%s" % child)
+            elif isinstance(child, str) and quotes is not True:
+                childstrs.append(f"{quotes[0]}{child}{quotes[1]}")
             else:
                 childstrs.append(repr(child))
-        if isinstance(self._label, str):
-            return "{}{}{} {}{}".format(
-                parens[0],
-                self._label,
-                nodesep,
-                " ".join(childstrs),
-                parens[1],
-            )
-        else:
-            return "{}{}{} {}{}".format(
-                parens[0],
-                repr(self._label),
-                nodesep,
-                " ".join(childstrs),
-                parens[1],
-            )
+        return "{}{}{} {}{}".format(
+            parens[0],
+            self._label if isinstance(self._label, str) else repr(self._label),
+            nodesep,
+            " ".join(childstrs),
+            parens[1],
+        )
 
 
 def _child_names(tree):
@@ -918,63 +1006,63 @@ def demo():
     # Demonstrate tree parsing.
     s = "(S (NP (DT the) (NN cat)) (VP (VBD ate) (NP (DT a) (NN cookie))))"
     t = Tree.fromstring(s)
-    print("Convert bracketed string into tree:")
-    print(t)
-    print(t.__repr__())
+    safe_print("Convert bracketed string into tree:")
+    safe_print(t)
+    safe_print(t.__repr__())
 
-    print("Display tree properties:")
-    print(t.label())  # tree's constituent type
-    print(t[0])  # tree's first child
-    print(t[1])  # tree's second child
-    print(t.height())
-    print(t.leaves())
-    print(t[1])
-    print(t[1, 1])
-    print(t[1, 1, 0])
+    safe_print("Display tree properties:")
+    safe_print(t.label())  # tree's constituent type
+    safe_print(t[0])  # tree's first child
+    safe_print(t[1])  # tree's second child
+    safe_print(t.height())
+    safe_print(t.leaves())
+    safe_print(t[1])
+    safe_print(t[1, 1])
+    safe_print(t[1, 1, 0])
 
     # Demonstrate tree modification.
     the_cat = t[0]
     the_cat.insert(1, Tree.fromstring("(JJ big)"))
-    print("Tree modification:")
-    print(t)
+    safe_print("Tree modification:")
+    safe_print(t)
     t[1, 1, 1] = Tree.fromstring("(NN cake)")
-    print(t)
-    print()
+    safe_print(t)
+    safe_print()
 
     # Tree transforms
-    print("Collapse unary:")
+    safe_print("Collapse unary:")
     t.collapse_unary()
-    print(t)
-    print("Chomsky normal form:")
+    safe_print(t)
+    safe_print("Chomsky normal form:")
     t.chomsky_normal_form()
-    print(t)
-    print()
+    safe_print(t)
+    safe_print()
 
     # Demonstrate probabilistic trees.
     pt = ProbabilisticTree("x", ["y", "z"], prob=0.5)
-    print("Probabilistic Tree:")
-    print(pt)
-    print()
+    safe_print("Probabilistic Tree:")
+    safe_print(pt)
+    safe_print()
 
     # Demonstrate parsing of treebank output format.
     t = Tree.fromstring(t.pformat())
-    print("Convert tree to bracketed string and back again:")
-    print(t)
-    print()
+    safe_print("Convert tree to bracketed string and back again:")
+    safe_print(t)
+    safe_print()
 
     # Demonstrate LaTeX output
-    print("LaTeX output:")
-    print(t.pformat_latex_qtree())
-    print()
+    safe_print("LaTeX output:")
+    safe_print(t.pformat_latex_qtree())
+    safe_print()
 
     # Demonstrate Productions
-    print("Production output:")
-    print(t.productions())
-    print()
+    safe_print("Production output:")
+    safe_print(t.productions())
+    safe_print()
 
     # Demonstrate tree nodes containing objects other than strings
     t.set_label(("test", 3))
-    print(t)
+    safe_print(t)
 
 
 __all__ = [

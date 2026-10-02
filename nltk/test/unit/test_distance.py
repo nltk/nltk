@@ -1,12 +1,20 @@
+import queue
 from typing import Tuple
 
 import pytest
 
+from nltk import pathsec
 from nltk.metrics.distance import (
+    MAX_DISTANCE_INPUT_LEN,
+    custom_distance,
     edit_distance,
+    edit_distance_align,
     jaro_similarity,
     jaro_winkler_similarity,
 )
+from nltk.test.unit import timing
+
+from . import _mp_ctx
 
 
 class TestEditDistance:
@@ -226,3 +234,269 @@ class TestJaroWinklerSimilarity:
         """Winkler similarity >= Jaro similarity for common prefixes."""
         s1, s2 = "MARTHA", "MARHTA"
         assert jaro_winkler_similarity(s1, s2) >= jaro_similarity(s1, s2)
+
+
+def _alignment_has_no_substitutions(alignment):
+    """Check that no step in the alignment is a diagonal move between mismatched positions."""
+    for k in range(len(alignment) - 1):
+        i1, j1 = alignment[k]
+        i2, j2 = alignment[k + 1]
+        if i2 == i1 + 1 and j2 == j1 + 1:
+            return False  # diagonal move = substitution or match; caller must verify
+    return True
+
+
+def _alignment_cost(alignment, s1, s2, substitution_cost):
+    """Compute the total cost of an alignment."""
+    cost = 0
+    for k in range(len(alignment) - 1):
+        i1, j1 = alignment[k]
+        i2, j2 = alignment[k + 1]
+        if i2 == i1 + 1 and j2 == j1 + 1:
+            # diagonal: match or substitution
+            if s1[i1] != s2[j1]:
+                cost += substitution_cost
+            # else: match, cost 0
+        elif i2 == i1 + 1 and j2 == j1:
+            cost += 1  # deletion
+        elif i2 == i1 and j2 == j1 + 1:
+            cost += 1  # insertion
+    return cost
+
+
+class TestEditDistanceAlign:
+    def test_default_rain_to_shine(self):
+        """Docstring example: rain -> shine with default substitution_cost=1."""
+        result = edit_distance_align("rain", "shine")
+        assert result == [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (4, 5)]
+
+    def test_identical_strings(self):
+        """Identical strings should produce a pure diagonal alignment."""
+        result = edit_distance_align("abc", "abc")
+        assert result == [(0, 0), (1, 1), (2, 2), (3, 3)]
+
+    def test_empty_to_nonempty(self):
+        """Empty s1 -> all insertions."""
+        result = edit_distance_align("", "abc")
+        assert result == [(0, 0), (0, 1), (0, 2), (0, 3)]
+
+    def test_nonempty_to_empty(self):
+        """Non-empty s1 to empty s2 -> all deletions."""
+        result = edit_distance_align("abc", "")
+        assert result == [(0, 0), (1, 0), (2, 0), (3, 0)]
+
+    def test_both_empty(self):
+        result = edit_distance_align("", "")
+        assert result == [(0, 0)]
+
+    def test_single_char_substitution(self):
+        """Single character substitution with default cost."""
+        result = edit_distance_align("a", "b")
+        assert result == [(0, 0), (1, 1)]
+
+    # --- The core bug fix: substitution_cost > 2 ---
+
+    def test_inf_sub_cost_different_chars(self):
+        """Bug from issue #3017: sub_cost=inf should avoid substitution."""
+        result = edit_distance_align("a", "b", float("inf"))
+        # Must use delete + insert, NOT substitution
+        assert result in [
+            [(0, 0), (0, 1), (1, 1)],  # insert then delete
+            [(0, 0), (1, 0), (1, 1)],  # delete then insert
+        ]
+
+    def test_inf_sub_cost_identical_strings(self):
+        """With sub_cost=inf, identical strings must still use diagonal (match, cost 0)."""
+        result = edit_distance_align("abc", "abc", float("inf"))
+        assert result == [(0, 0), (1, 1), (2, 2), (3, 3)]
+
+    def test_inf_sub_cost_partial_match(self):
+        """With sub_cost=inf, matching chars use diagonal, mismatched use del+ins."""
+        result = edit_distance_align("ab", "cb", float("inf"))
+        # a->del, ins->c, b=b(match)
+        assert result == [(0, 0), (0, 1), (1, 1), (2, 2)]
+        cost = _alignment_cost(result, "ab", "cb", float("inf"))
+        assert cost == 2  # one delete + one insert
+
+    def test_inf_sub_cost_longer_partial_match(self):
+        """Longer string with inf sub_cost: matches use diagonal, mismatches use del+ins."""
+        result = edit_distance_align("abcd", "axcy", float("inf"))
+        cost = _alignment_cost(result, "abcd", "axcy", float("inf"))
+        assert cost == 4  # two mismatched pairs, each costs 2 (del+ins)
+
+    def test_sub_cost_2_prefers_substitution(self):
+        """When sub_cost=2 (equal to del+ins), substitution is preferred per precedence."""
+        result = edit_distance_align("a", "b", 2)
+        # Diagonal is listed first in candidates, so tied cost -> diagonal wins
+        assert result == [(0, 0), (1, 1)]
+
+    def test_sub_cost_3_avoids_substitution(self):
+        """When sub_cost=3 (more than del+ins=2), should avoid substitution."""
+        result = edit_distance_align("a", "b", 3)
+        assert result in [
+            [(0, 0), (0, 1), (1, 1)],
+            [(0, 0), (1, 0), (1, 1)],
+        ]
+
+    # --- Alignment cost consistency ---
+
+    @pytest.mark.parametrize(
+        "s1,s2,sub_cost",
+        [
+            ("rain", "shine", 1),
+            ("kitten", "sitting", 1),
+            ("abc", "def", 1),
+            ("abc", "def", 2),
+            ("abc", "def", float("inf")),
+            ("abc", "abc", float("inf")),
+            ("", "abc", 1),
+            ("abc", "", 1),
+            ("saturday", "sunday", 1),
+        ],
+    )
+    def test_alignment_cost_equals_edit_distance(self, s1, s2, sub_cost):
+        """The cost of the alignment path must equal the edit distance."""
+        alignment = edit_distance_align(s1, s2, sub_cost)
+        cost = _alignment_cost(alignment, s1, s2, sub_cost)
+        expected = edit_distance(s1, s2, substitution_cost=sub_cost)
+        assert cost == expected
+
+    # --- Alignment structural validity ---
+
+    @pytest.mark.parametrize(
+        "s1,s2,sub_cost",
+        [
+            ("abc", "xyz", 1),
+            ("abc", "xyz", float("inf")),
+            ("hello", "world", 1),
+            ("hello", "world", float("inf")),
+        ],
+    )
+    def test_alignment_starts_and_ends_correctly(self, s1, s2, sub_cost):
+        """Alignment must start at (0,0) and end at (len(s1), len(s2))."""
+        alignment = edit_distance_align(s1, s2, sub_cost)
+        assert alignment[0] == (0, 0)
+        assert alignment[-1] == (len(s1), len(s2))
+
+    @pytest.mark.parametrize(
+        "s1,s2,sub_cost",
+        [
+            ("abc", "xyz", 1),
+            ("abc", "xyz", float("inf")),
+            ("rain", "shine", 1),
+        ],
+    )
+    def test_alignment_steps_are_valid(self, s1, s2, sub_cost):
+        """Each step must advance by exactly (1,1), (1,0), or (0,1)."""
+        alignment = edit_distance_align(s1, s2, sub_cost)
+        for k in range(len(alignment) - 1):
+            i1, j1 = alignment[k]
+            i2, j2 = alignment[k + 1]
+            di, dj = i2 - i1, j2 - j1
+            assert (di, dj) in [
+                (1, 1),
+                (1, 0),
+                (0, 1),
+            ], f"Invalid step from {(i1,j1)} to {(i2,j2)}"
+
+
+class TestCustomDistanceSandbox:
+    def test_enforces_pathsec_sandbox(self, tmp_path, monkeypatch):
+        """``custom_distance`` must read through the pathsec sandbox (CWE-22).
+
+        Regression test ensuring it does not fall back to the builtin ``open``:
+        under ``ENFORCE`` a path outside the allowed roots is rejected, while an
+        in-root file still loads into a working distance callable.
+        """
+        allowed = tmp_path / "data"
+        allowed.mkdir()
+        outside = tmp_path / "outside"
+        outside.mkdir()
+        monkeypatch.setattr(pathsec, "ENFORCE", True)
+        monkeypatch.setattr(pathsec, "_get_allowed_roots", lambda: {allowed.resolve()})
+
+        out_tsv = outside / "d.tsv"
+        out_tsv.write_text("a\tb\t0.5\n", encoding="utf-8")
+        with pytest.raises((PermissionError, ValueError)):
+            custom_distance(str(out_tsv))
+
+        in_tsv = allowed / "d.tsv"
+        in_tsv.write_text("a\tb\t0.5\n", encoding="utf-8")
+        dist = custom_distance(str(in_tsv))
+        assert dist(frozenset(["a"]), frozenset(["b"])) == 0.5
+
+
+# ---------------------------------------------------------------------------
+# jaro_similarity must not be cubic on near-matching strings (CWE-770; CVE-2026-12926)
+# ---------------------------------------------------------------------------
+
+_JARO_TIMEOUT = 20
+# Two near-identical strings: almost every character matches inside the window.
+# The pre-fix ``j not in flagged_2`` list membership made this O(n**3) (tens of
+# seconds even at the cap length: MAX_DISTANCE_INPUT_LEN**3 is billions of ops);
+# with a set it is the algorithm's natural O(n**2) (sub-second). We test at
+# exactly MAX_DISTANCE_INPUT_LEN -- the largest input the length guard admits --
+# so a cubic regression is still caught inside the timeout while a longer input
+# is instead rejected outright (see ``test_jaro_similarity_length_capped``).
+_JARO_N = MAX_DISTANCE_INPUT_LEN
+
+
+def _jaro_worker(result_q):
+    try:
+        jaro_similarity("a" * _JARO_N, "a" * (_JARO_N - 1) + "b")
+        result_q.put(("ok", None))
+    except BaseException as exc:  # surface to the parent process
+        result_q.put(("error", repr(exc)))
+
+
+def test_jaro_similarity_not_cubic_on_near_matches():
+    """A near-matching pair must compute quickly, not in cubic time (ReDoS-style).
+
+    Runs in a separate process with a hard timeout and reports status back via a
+    queue, so a regression to the cubic version is terminated (no lingering CPU)
+    and any worker exception is surfaced to the assertion.
+    """
+    ctx = _mp_ctx()
+    result_q = ctx.Queue()
+    run = timing.run_in_process(
+        _jaro_worker, (result_q,), budget=_JARO_TIMEOUT, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
+        raise AssertionError(
+            "jaro_similarity did not finish in time -> cubic-time DoS (CWE-770)"
+        )
+    try:
+        status, detail = result_q.get_nowait()
+    except queue.Empty:
+        raise AssertionError("jaro_similarity worker produced no result")
+    assert status == "ok", f"worker raised: {detail}"
+
+
+# ---------------------------------------------------------------------------
+# Length caps on the super-linear two-string distances (CWE-407/CWE-400).
+# The set fix above only made jaro's inner loop O(n**2); the outer double loop
+# (and edit_distance's full DP matrix) are still super-linear, so an unbounded
+# length is a CPU/memory DoS. MAX_DISTANCE_INPUT_LEN closes it for all three.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "func",
+    [
+        lambda n: jaro_similarity("a" * n, "b" * n),
+        lambda n: edit_distance("a" * n, "b" * n),
+        lambda n: edit_distance_align("a" * n, "b" * n),
+    ],
+    ids=["jaro_similarity", "edit_distance", "edit_distance_align"],
+)
+def test_distance_functions_reject_oversized_input(func):
+    # At/under the cap the call works; one over the cap is rejected.
+    func(MAX_DISTANCE_INPUT_LEN)  # no exception
+    with pytest.raises(ValueError):
+        func(MAX_DISTANCE_INPUT_LEN + 1)
+
+
+def test_edit_distance_short_inputs_unchanged():
+    # The cap must not perturb ordinary short inputs.
+    assert edit_distance("kitten", "sitting") == 3
+    assert edit_distance("rain", "shine") == 3

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: SVM-based classifier
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Leon Derczynski <leon@dcs.shef.ac.uk>
 #
 # URL: <https://www.nltk.org/>

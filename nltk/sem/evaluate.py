@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Models for first-order languages with lambda
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>,
 # URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
@@ -20,6 +20,7 @@ import sys
 import textwrap
 from pprint import pformat
 
+from nltk import redos
 from nltk.decorators import decorator  # this used in code that is commented out
 from nltk.sem.logic import (
     AbstractVariableExpression,
@@ -39,6 +40,7 @@ from nltk.sem.logic import (
     Variable,
     is_indvar,
 )
+from nltk.termsec import safe_print
 
 
 class Error(Exception):
@@ -53,9 +55,9 @@ def trace(f, *args, **kw):
     argspec = inspect.getfullargspec(f)
     d = dict(zip(argspec[0], args))
     if d.pop("trace", None):
-        print()
+        safe_print()
         for item in d.items():
-            print("%s => %s" % item)
+            safe_print("%s => %s" % item)
     return f(*args, **kw)
 
 
@@ -178,10 +180,20 @@ class Valuation(dict):
 ##########################################
 # REs used by the _read_valuation function
 ##########################################
-_VAL_SPLIT_RE = re.compile(r"\s*=+>\s*")
-_ELEMENT_SPLIT_RE = re.compile(r"\s*,\s*")
-_TUPLES_RE = re.compile(
-    r"""\s*
+# The ``(?<!=)`` makes the greedy ``=+`` run fail fast: without it, splitting a
+# line that holds a long run of ``=`` not terminated by ``>`` re-scans the run
+# from every position (match ``=+``, miss ``>``, backtrack), which is quadratic
+# in the run length and lets a single valuation string pin a CPU core
+# (CWE-1333; CVE-2026-12890). The lookbehind only lets ``=+`` start at the
+# beginning of a run, so interior positions fail in O(1); the split result is
+# unchanged. The leading ``\s*`` of each pattern was likewise retried by
+# split/findall from every position of an internal whitespace run (``strip``
+# only trims the ends), O(n**2) (CWE-407): it is now an optional run taken only
+# when no whitespace precedes it, which no split or tuple ever started inside.
+_VAL_SPLIT_RE = redos.compile(r"(?:(?<!\s)\s*)?(?<!=)=+>\s*")
+_ELEMENT_SPLIT_RE = redos.compile(r"(?:(?<!\s)\s*)?,\s*")
+_TUPLES_RE = redos.compile(
+    r"""(?:(?<!\s)\s*)?
                                 (\([^)]+\))  # tuple-expression
                                 \s*""",
     re.VERBOSE,
@@ -377,6 +389,46 @@ class Assignment(dict):
         return self
 
 
+def _max_binder_depth(parsed):
+    """
+    Greatest number of nested domain-quantifying binders along any path of
+    ``parsed`` (``all``/``exists``/``iota`` quantifiers and ``\\`` lambdas).
+
+    ``Model.satisfy`` iterates the whole domain once per such binder, so a
+    nesting path of depth *k* explores O(|domain| ** k) domain-value
+    combinations; *k* is what bounds the blow-up, and it comes entirely from
+    the (untrusted) formula. Used by ``Model._check_satisfy_cost`` to refuse a
+    formula before the recursion explodes (CWE-770; CVE-2026-12840).
+    """
+    if isinstance(
+        parsed,
+        (AllExpression, ExistsExpression, IotaExpression, LambdaExpression),
+    ):
+        return 1 + _max_binder_depth(parsed.term)
+    if isinstance(parsed, ApplicationExpression):
+        return max(
+            _max_binder_depth(parsed.function),
+            _max_binder_depth(parsed.argument),
+        )
+    if isinstance(parsed, NegatedExpression):
+        return _max_binder_depth(parsed.term)
+    if isinstance(
+        parsed,
+        (
+            AndExpression,
+            OrExpression,
+            ImpExpression,
+            IffExpression,
+            EqualityExpression,
+        ),
+    ):
+        return max(
+            _max_binder_depth(parsed.first),
+            _max_binder_depth(parsed.second),
+        )
+    return 0
+
+
 class Model:
     """
     A first order model is a domain *D* of discourse and a valuation *V*.
@@ -394,6 +446,17 @@ class Model:
     :param prop: If this is set, then we are building a propositional\
     model and don't require the domain of *V* to be subset of *D*.
     """
+
+    #: Upper bound on the number of domain-value combinations a single nested
+    #: quantifier/lambda path may explore. ``satisfy`` iterates the whole domain
+    #: once per nested binder, so a path of *k* nested binders explores
+    #: |domain| ** k combinations; *k* is attacker-controlled, and this product
+    #: is the term that blows up (a formula's total work is at most this times a
+    #: factor linear in the formula's size -- independent sibling quantifiers
+    #: only add, they do not multiply). A formula whose deepest path would
+    #: exceed this bound is refused up front instead of being allowed to exhaust
+    #: memory/CPU (CWE-770; CVE-2026-12840).
+    MAX_SATISFY_OPERATIONS = 1_000_000
 
     def __init__(self, domain, valuation):
         assert isinstance(domain, set)
@@ -424,13 +487,13 @@ class Model:
             parsed = Expression.fromstring(expr)
             value = self.satisfy(parsed, g, trace=trace)
             if trace:
-                print()
-                print(f"'{expr}' evaluates to {value} under M, {g}")
+                safe_print()
+                safe_print(f"'{expr}' evaluates to {value} under M, {g}")
             return value
         except Undefined:
             if trace:
-                print()
-                print(f"'{expr}' is undefined under M, {g}")
+                safe_print()
+                safe_print(f"'{expr}' is undefined under M, {g}")
             return "Undefined"
 
     def satisfy(self, parsed, g, trace=None):
@@ -447,58 +510,95 @@ class Model:
         :param parsed: An expression of ``logic``.
         :type g: Assignment
         :param g: an assignment to individual variables.
+        :raise Error: if ``parsed`` has a nested quantifier/lambda path whose\
+        domain-value combinations (|domain| ** nesting depth) would exceed\
+        ``MAX_SATISFY_OPERATIONS`` (CWE-770).
         """
+        self._check_satisfy_cost(parsed)
+        return self._satisfy(parsed, g, trace)
 
+    def _check_satisfy_cost(self, parsed):
+        """
+        Refuse ``parsed`` if its most deeply nested quantifier/lambda path
+        would explore more than ``MAX_SATISFY_OPERATIONS`` domain-value
+        combinations, i.e. |domain| ** (max binder nesting depth). That product
+        is the combinatorial factor that drives the blow-up; bounding it
+        *before* the recursion runs stops a deeply-nested formula from
+        exhausting memory/CPU (CWE-770; CVE-2026-12840). Independent sibling
+        quantifiers are not multiplied (they only add a factor linear in the
+        formula's size), so they are intentionally not counted here. The check
+        itself is cheap (linear in the size of ``parsed``) and, by bailing on
+        the first overflow, uses no large integers.
+        """
+        size = len(self.domain)
+        if size < 2:
+            # 0 or 1 domain element: |domain| ** k can never exceed the bound.
+            return
+        ops = 1
+        for _ in range(_max_binder_depth(parsed)):
+            ops *= size
+            if ops > self.MAX_SATISFY_OPERATIONS:
+                raise Error(
+                    "Refusing to evaluate formula: over a domain of %d "
+                    "element(s) its nested quantifiers would explore more than "
+                    "%d domain-value combinations (|domain| ** nesting depth) "
+                    "(CWE-770). Reduce the formula's quantifier nesting or the "
+                    "domain size." % (size, self.MAX_SATISFY_OPERATIONS)
+                )
+
+    def _satisfy(self, parsed, g, trace=None):
         if isinstance(parsed, ApplicationExpression):
             function, arguments = parsed.uncurry()
             if isinstance(function, AbstractVariableExpression):
                 # It's a predicate expression ("P(x,y)"), so used uncurried arguments
-                funval = self.satisfy(function, g)
-                argvals = tuple(self.satisfy(arg, g) for arg in arguments)
+                funval = self._satisfy(function, g)
+                argvals = tuple(self._satisfy(arg, g) for arg in arguments)
                 return argvals in funval
             else:
                 # It must be a lambda expression, so use curried form
-                funval = self.satisfy(parsed.function, g)
-                argval = self.satisfy(parsed.argument, g)
+                funval = self._satisfy(parsed.function, g)
+                argval = self._satisfy(parsed.argument, g)
                 return funval[argval]
         elif isinstance(parsed, NegatedExpression):
-            return not self.satisfy(parsed.term, g)
+            return not self._satisfy(parsed.term, g)
         elif isinstance(parsed, AndExpression):
-            return self.satisfy(parsed.first, g) and self.satisfy(parsed.second, g)
+            return self._satisfy(parsed.first, g) and self._satisfy(parsed.second, g)
         elif isinstance(parsed, OrExpression):
-            return self.satisfy(parsed.first, g) or self.satisfy(parsed.second, g)
+            return self._satisfy(parsed.first, g) or self._satisfy(parsed.second, g)
         elif isinstance(parsed, ImpExpression):
-            return (not self.satisfy(parsed.first, g)) or self.satisfy(parsed.second, g)
+            return (not self._satisfy(parsed.first, g)) or self._satisfy(
+                parsed.second, g
+            )
         elif isinstance(parsed, IffExpression):
-            return self.satisfy(parsed.first, g) == self.satisfy(parsed.second, g)
+            return self._satisfy(parsed.first, g) == self._satisfy(parsed.second, g)
         elif isinstance(parsed, EqualityExpression):
-            return self.satisfy(parsed.first, g) == self.satisfy(parsed.second, g)
+            return self._satisfy(parsed.first, g) == self._satisfy(parsed.second, g)
         elif isinstance(parsed, AllExpression):
             new_g = g.copy()
             for u in self.domain:
                 new_g.add(parsed.variable.name, u)
-                if not self.satisfy(parsed.term, new_g):
+                if not self._satisfy(parsed.term, new_g):
                     return False
             return True
         elif isinstance(parsed, ExistsExpression):
             new_g = g.copy()
             for u in self.domain:
                 new_g.add(parsed.variable.name, u)
-                if self.satisfy(parsed.term, new_g):
+                if self._satisfy(parsed.term, new_g):
                     return True
             return False
         elif isinstance(parsed, IotaExpression):
             new_g = g.copy()
             for u in self.domain:
                 new_g.add(parsed.variable.name, u)
-                if self.satisfy(parsed.term, new_g):
+                if self._satisfy(parsed.term, new_g):
                     return True
             return False
         elif isinstance(parsed, LambdaExpression):
             cf = {}
             var = parsed.variable.name
             for u in self.domain:
-                val = self.satisfy(parsed.term, g.add(var, u))
+                val = self._satisfy(parsed.term, g.add(var, u))
                 # NB the dict would be a lot smaller if we do this:
                 # if val: cf[u] = val
                 # But then need to deal with cases where f(a) should yield
@@ -559,8 +659,8 @@ class Model:
 
         if var in parsed.free():
             if trace:
-                print()
-                print(
+                safe_print()
+                safe_print(
                     (spacer * nesting)
                     + f"Open formula is '{parsed}' with assignment {g}"
                 )
@@ -574,18 +674,22 @@ class Model:
                 value = self.satisfy(parsed, new_g, lowtrace)
 
                 if trace:
-                    print(indent + "(trying assignment %s)" % new_g)
+                    safe_print(indent + "(trying assignment %s)" % new_g)
 
                 # parsed == False under g[u/var]?
                 if not value:
                     if trace:
-                        print(indent + f"value of '{parsed}' under {new_g} is False")
+                        safe_print(
+                            indent + f"value of '{parsed}' under {new_g} is False"
+                        )
 
                 # so g[u/var] is a satisfying assignment
                 else:
                     candidates.append(u)
                     if trace:
-                        print(indent + f"value of '{parsed}' under {new_g} is {value}")
+                        safe_print(
+                            indent + f"value of '{parsed}' under {new_g} is {value}"
+                        )
 
             result = {c for c in candidates}
         # var isn't free in parsed
@@ -613,14 +717,14 @@ def propdemo(trace=None):
     m1 = Model(dom1, val1)
     g1 = Assignment(dom1)
 
-    print()
-    print("*" * mult)
-    print("Propositional Formulas Demo")
-    print("*" * mult)
-    print("(Propositional constants treated as nullary predicates)")
-    print()
-    print("Model m1:\n", m1)
-    print("*" * mult)
+    safe_print()
+    safe_print("*" * mult)
+    safe_print("Propositional Formulas Demo")
+    safe_print("*" * mult)
+    safe_print("(Propositional constants treated as nullary predicates)")
+    safe_print()
+    safe_print("Model m1:\n", m1)
+    safe_print("*" * mult)
     sentences = [
         "(P & Q)",
         "(P & R)",
@@ -643,10 +747,10 @@ def propdemo(trace=None):
 
     for sent in sentences:
         if trace:
-            print()
+            safe_print()
             m1.evaluate(sent, g1, trace)
         else:
-            print(f"The value of '{sent}' is: {m1.evaluate(sent, g1)}")
+            safe_print(f"The value of '{sent}' is: {m1.evaluate(sent, g1)}")
 
 
 # Demo 2: FOL Model
@@ -673,25 +777,25 @@ def folmodel(quiet=False, trace=None):
     g2 = Assignment(dom2, [("x", "b1"), ("y", "g2")])
 
     if not quiet:
-        print()
-        print("*" * mult)
-        print("Models Demo")
-        print("*" * mult)
-        print("Model m2:\n", "-" * 14, "\n", m2)
-        print("Variable assignment = ", g2)
+        safe_print()
+        safe_print("*" * mult)
+        safe_print("Models Demo")
+        safe_print("*" * mult)
+        safe_print("Model m2:\n", "-" * 14, "\n", m2)
+        safe_print("Variable assignment = ", g2)
 
         exprs = ["adam", "boy", "love", "walks", "x", "y", "z"]
         parsed_exprs = [Expression.fromstring(e) for e in exprs]
 
-        print()
+        safe_print()
         for parsed in parsed_exprs:
             try:
-                print(
+                safe_print(
                     "The interpretation of '%s' in m2 is %s"
                     % (parsed, m2.i(parsed, g2))
                 )
             except Undefined:
-                print("The interpretation of '%s' in m2 is Undefined" % parsed)
+                safe_print("The interpretation of '%s' in m2 is Undefined" % parsed)
 
         applications = [
             ("boy", ("adam")),
@@ -704,9 +808,9 @@ def folmodel(quiet=False, trace=None):
             try:
                 funval = m2.i(Expression.fromstring(fun), g2)
                 argsval = tuple(m2.i(Expression.fromstring(arg), g2) for arg in args)
-                print(f"{fun}({args}) evaluates to {argsval in funval}")
+                safe_print(f"{fun}({args}) evaluates to {argsval in funval}")
             except Undefined:
-                print(f"{fun}({args}) evaluates to Undefined")
+                safe_print(f"{fun}({args}) evaluates to Undefined")
 
 
 # Demo 3: FOL
@@ -719,10 +823,10 @@ def foldemo(trace=None):
     """
     folmodel(quiet=True)
 
-    print()
-    print("*" * mult)
-    print("FOL Formulas Demo")
-    print("*" * mult)
+    safe_print()
+    safe_print("*" * mult)
+    safe_print("FOL Formulas Demo")
+    safe_print("*" * mult)
 
     formulas = [
         "love (adam, betty)",
@@ -750,7 +854,7 @@ def foldemo(trace=None):
         if trace:
             m2.evaluate(fmla, g2, trace)
         else:
-            print(f"The value of '{fmla}' is: {m2.evaluate(fmla, g2)}")
+            safe_print(f"The value of '{fmla}' is: {m2.evaluate(fmla, g2)}")
 
 
 # Demo 3: Satisfaction
@@ -760,10 +864,10 @@ def foldemo(trace=None):
 def satdemo(trace=None):
     """Satisfiers of an open formula in a first order model."""
 
-    print()
-    print("*" * mult)
-    print("Satisfiers Demo")
-    print("*" * mult)
+    safe_print()
+    safe_print("*" * mult)
+    safe_print("Satisfiers Demo")
+    safe_print("*" * mult)
 
     folmodel(quiet=True)
 
@@ -790,17 +894,17 @@ def satdemo(trace=None):
     ]
 
     if trace:
-        print(m2)
+        safe_print(m2)
 
     for fmla in formulas:
-        print(fmla)
+        safe_print(fmla)
         Expression.fromstring(fmla)
 
     parsed = [Expression.fromstring(fmla) for fmla in formulas]
 
     for p in parsed:
         g2.purge()
-        print(
+        safe_print(
             "The satisfiers of '{}' are: {}".format(p, m2.satisfiers(p, "x", g2, trace))
         )
 

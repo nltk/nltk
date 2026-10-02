@@ -1,6 +1,6 @@
-# Natural Language Toolkit: Interface to Weka Classsifiers
+# Natural Language Toolkit: Interface to Weka Classifiers
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -9,21 +9,33 @@
 Classifiers that make use of the external 'Weka' package.
 """
 
+import numbers
 import os
-import re
 import subprocess
 import tempfile
 import time
-import zipfile
+import warnings
 from sys import stdin
 
+from nltk import redos
 from nltk.classify.api import ClassifierI
+from nltk.data import make_staging_dir
 from nltk.internals import config_java, java
+from nltk.pathsec import ZipFile as SecureZipFile
+from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_path, validate_tool_path
 from nltk.probability import DictionaryProbDist
+from nltk.termsec import safe_print
 
 _weka_classpath = None
+# NB: the current working directory (".") is deliberately NOT searched. Picking
+# up a ``weka.jar`` from the CWD would load and run Java classes from an
+# unverified jar -- ``java -cp ./weka.jar weka.classifiers.bayes.NaiveBayes ...``
+# -- with no integrity check, so an attacker who can write ``./weka.jar`` gets
+# code execution (CWE-494; reachable via an untrusted search path, CWE-426). Set
+# the WEKAHOME environment variable or pass ``config_weka(classpath=...)`` to
+# point at a trusted weka.jar.
 _weka_search = [
-    ".",
     "/usr/share/weka",
     "/usr/local/share/weka",
     "/usr/lib/weka",
@@ -41,18 +53,30 @@ def config_weka(classpath=None):
         _weka_classpath = classpath
 
     if _weka_classpath is None:
-        searchpath = _weka_search
+        searchpath = list(_weka_search)  # copy; don't mutate the module global
         if "WEKAHOME" in os.environ:
-            searchpath.insert(0, os.environ["WEKAHOME"])
+            weka_home = os.environ["WEKAHOME"]
+            try:
+                # Bound the attacker-influenceable WEKAHOME to the pathsec sandbox so
+                # it cannot add a weka.jar from outside the trusted roots (CWE-426/427).
+                validate_path(
+                    os.path.join(weka_home, "weka.jar"), context="config_weka(WEKAHOME)"
+                )
+                searchpath.insert(0, weka_home)
+            except (PermissionError, ValueError):
+                warnings.warn(
+                    f"Ignoring WEKAHOME {weka_home!r}: outside the trusted NLTK data roots.",
+                    stacklevel=2,
+                )
 
         for path in searchpath:
             if os.path.exists(os.path.join(path, "weka.jar")):
                 _weka_classpath = os.path.join(path, "weka.jar")
                 version = _check_weka_version(_weka_classpath)
                 if version:
-                    print(f"[Found Weka: {_weka_classpath} (version {version})]")
+                    safe_print(f"[Found Weka: {_weka_classpath} (version {version})]")
                 else:
-                    print("[Found Weka: %s]" % _weka_classpath)
+                    safe_print("[Found Weka: %s]" % _weka_classpath)
                 _check_weka_version(_weka_classpath)
 
     if _weka_classpath is None:
@@ -66,7 +90,9 @@ def config_weka(classpath=None):
 
 def _check_weka_version(jar):
     try:
-        zf = zipfile.ZipFile(jar)
+        # Secured wrapper (never bare): path containment + the read() bomb cap, so a
+        # jar declaring a gigabyte version.txt cannot exhaust RAM (CWE-409).
+        zf = SecureZipFile(jar)
     except (SystemExit, KeyboardInterrupt):
         raise
     except Exception:
@@ -83,6 +109,10 @@ def _check_weka_version(jar):
 class WekaClassifier(ClassifierI):
     def __init__(self, formatter, model_filename):
         self._formatter = formatter
+        # Bound the caller-controlled model path to the pathsec data roots before
+        # it reaches the weka JVM as a -l read target, closing the model-artifact
+        # containment gap weka.py was left out of (GHSA-j456-xh4h-cpf2).
+        validate_tool_path(model_filename, context="WekaClassifier", must_exist=False)
         self._model = model_filename
 
     def prob_classify_many(self, featuresets):
@@ -92,10 +122,16 @@ class WekaClassifier(ClassifierI):
         return self._classify_many(featuresets, ["-p", "0"])
 
     def _classify_many(self, featuresets, options):
+        # Re-bound the model path in case _model was reassigned after construction;
+        # weka reads it via -l (GHSA-j456-xh4h-cpf2). Containment, not existence, is
+        # the security property, so must_exist stays False.
+        validate_tool_path(
+            self._model, context="WekaClassifier._classify_many", must_exist=False
+        )
         # Make sure we can find java & weka.
         config_weka()
 
-        temp_dir = tempfile.mkdtemp()
+        temp_dir = make_staging_dir(prefix="nltk_weka_run_", cleanup=True)
         try:
             # Write the test data file.
             test_filename = os.path.join(temp_dir, "test.arff")
@@ -109,7 +145,7 @@ class WekaClassifier(ClassifierI):
                 "-T",
                 test_filename,
             ] + options
-            (stdout, stderr) = java(
+            stdout, stderr = java(
                 cmd,
                 classpath=_weka_classpath,
                 stdout=subprocess.PIPE,
@@ -127,8 +163,11 @@ class WekaClassifier(ClassifierI):
                 else:
                     raise ValueError("Weka failed to generate output:\n%s" % stderr)
 
-            # Parse weka's output.
-            return self.parse_weka_output(stdout.decode(stdin.encoding).split("\n"))
+            # Parse weka's output. java() returns text (universal_newlines=True);
+            # only decode when an older bytes-returning path is in play.
+            if isinstance(stdout, bytes):
+                stdout = stdout.decode(stdin.encoding)
+            return self.parse_weka_output(stdout.split("\n"))
 
         finally:
             for f in os.listdir(temp_dir):
@@ -136,9 +175,20 @@ class WekaClassifier(ClassifierI):
             os.rmdir(temp_dir)
 
     def parse_weka_distribution(self, s):
-        probs = [float(v) for v in re.split("[*,]+", s) if v.strip()]
+        probs = [float(v) for v in redos.split("[*,]+", s) if v.strip()]
         probs = dict(zip(self._formatter.labels(), probs))
         return DictionaryProbDist(probs)
+
+    @staticmethod
+    def _weka_predicted_class(line):
+        # A weka -p line is "<inst> <actual> <idx>:<class> <error> <prob>". The
+        # stdout is only as trustworthy as the model weka just loaded, so guard the
+        # shape and raise a clear error instead of an opaque IndexError on a
+        # truncated or malformed line.
+        toks = line.split()
+        if len(toks) < 3 or ":" not in toks[2]:
+            raise ValueError("Malformed weka prediction line: %r" % line)
+        return toks[2].split(":", 1)[1]
 
     def parse_weka_output(self, lines):
         # Strip unwanted text from stdout
@@ -147,8 +197,13 @@ class WekaClassifier(ClassifierI):
                 lines = lines[i:]
                 break
 
+        if not lines:
+            raise ValueError("No weka output to parse")
+
         if lines[0].split() == ["inst#", "actual", "predicted", "error", "prediction"]:
-            return [line.split()[2].split(":")[1] for line in lines[1:] if line.strip()]
+            return [
+                self._weka_predicted_class(line) for line in lines[1:] if line.strip()
+            ]
         elif lines[0].split() == [
             "inst#",
             "actual",
@@ -163,12 +218,12 @@ class WekaClassifier(ClassifierI):
             ]
 
         # is this safe:?
-        elif re.match(r"^0 \w+ [01]\.[0-9]* \?\s*$", lines[0]):
+        elif redos.match(r"^0 \w+ [01]\.[0-9]* \?\s*$", lines[0]):
             return [line.split()[1] for line in lines if line.strip()]
 
         else:
             for line in lines[:10]:
-                print(line)
+                safe_print(line)
             raise ValueError(
                 "Unhandled output format -- your version "
                 "of weka may not be supported.\n"
@@ -206,13 +261,22 @@ class WekaClassifier(ClassifierI):
         options=[],
         quiet=True,
     ):
+        # Bound the caller-controlled model path before weka writes to it via -d
+        # (GHSA-j456-xh4h-cpf2); it need not exist yet, and validating before any
+        # weka lookup refuses an out-of-root path early.
+        validate_tool_path(
+            model_filename,
+            context="WekaClassifier.train",
+            for_write=True,
+            must_exist=False,
+        )
         # Make sure we can find java & weka.
         config_weka()
 
         # Build an ARFF formatter.
         formatter = ARFF_Formatter.from_train(featuresets)
 
-        temp_dir = tempfile.mkdtemp()
+        temp_dir = make_staging_dir(prefix="nltk_weka_run_", cleanup=True)
         try:
             # Write the training data file.
             train_filename = os.path.join(temp_dir, "train.arff")
@@ -245,22 +309,20 @@ class WekaClassifier(ClassifierI):
 
 class ARFF_Formatter:
     """
-    Converts featuresets and labeled featuresets to ARFF-formatted
-    strings, appropriate for input into Weka.
-
-    Features and classes can be specified manually in the constructor, or may
-    be determined from data using ``from_train``.
+    Converts featuresets and labeled featuresets to ARFF-formatted strings,
+    appropriate for input into Weka.  Features and classes can be specified
+    manually in the constructor, or may be determined from data using
+    ``from_train``.
     """
 
     def __init__(self, labels, features):
         """
         :param labels: A list of all class labels that can be generated.
-        :param features: A list of feature specifications, where
-            each feature specification is a tuple (fname, ftype);
-            and ftype is an ARFF type string such as NUMERIC or
-            STRING.
+        :param features: A list of feature specifications, where each feature
+                         specification is a tuple (fname, ftype); and ftype is
+                         an ARFF type string such as NUMERIC or STRING.
         """
-        self._labels = labels
+        self._labels = [self._sanitize_arff_label(lbl) for lbl in labels]
         self._features = features
 
     def format(self, tokens):
@@ -274,7 +336,12 @@ class ARFF_Formatter:
     def write(self, outfile, tokens):
         """Writes ARFF data to a file for the given data."""
         if not hasattr(outfile, "write"):
-            outfile = open(outfile, "w")
+            # newline="" writes LF, not the platform default, so the ARFF file is
+            # byte-identical across platforms (a default text write on Windows
+            # would emit CRLF).
+            outfile = pathsec_open(
+                outfile, "w", context="ARFF_Formatter.write", newline=""
+            )
         outfile.write(self.format(tokens))
         outfile.close()
 
@@ -282,11 +349,11 @@ class ARFF_Formatter:
     def from_train(tokens):
         """
         Constructs an ARFF_Formatter instance with class labels and feature
-        types determined from the given data. Handles boolean, numeric and
+        types determined from the given data.  Handles boolean, numeric and
         string (note: not nominal) types.
         """
-        # Find the set of all attested labels.
-        labels = {label for (tok, label) in tokens}
+        # Find the set of all attested labels, sanitizing them.
+        labels = {ARFF_Formatter._sanitize_arff_label(label) for (tok, label) in tokens}
 
         # Determine the types of all features.
         features = {}
@@ -301,8 +368,10 @@ class ARFF_Formatter:
                 elif fval is None:
                     continue  # can't tell the type.
                 else:
-                    raise ValueError("Unsupported value type %r" % ftype)
-
+                    # Report the offending type, not the undefined ftype (which
+                    # raised an opaque UnboundLocalError here). type() is safe to
+                    # format; a hostile __repr__ on the value never runs.
+                    raise ValueError("Unsupported value type %r" % type(fval))
                 if features.get(fname, ftype) != ftype:
                     raise ValueError("Inconsistent type for %s" % fname)
                 features[fname] = ftype
@@ -318,33 +387,41 @@ class ARFF_Formatter:
             + "% Generated automatically by NLTK\n"
             + "%% %s\n\n" % time.ctime()
         )
-
         # Relation name
         s += "@RELATION rel\n\n"
 
-        # Input attribute specifications
+        # Input attribute specifications. fname goes through _safe_str_repr (the
+        # built-in str repr of its characters, so a str subclass overriding
+        # __repr__ cannot smuggle a newline), and ftype is refused if it carries a
+        # control char; either would otherwise inject a new @ATTRIBUTE/@DATA line
+        # (CWE-1236).
         for fname, ftype in self._features:
-            s += "@ATTRIBUTE %-30r %s\n" % (fname, ftype)
+            s += "@ATTRIBUTE %-30s %s\n" % (
+                self._safe_str_repr(fname),
+                self._check_arff_ftype(ftype),
+            )
 
-        # Label attribute specification
-        s += "@ATTRIBUTE %-30r {%s}\n" % ("-label-", ",".join(self._labels))
+        # Label attribute specification – labels are already sanitized.
+        # Wrap each label in single quotes and join with commas.
+        safe_labels = ["'%s'" % lbl for lbl in self._labels]
+        s += "@ATTRIBUTE %-30r {%s}\n" % ("-label-", ",".join(safe_labels))
 
         return s
 
     def data_section(self, tokens, labeled=None):
         """
         Returns the ARFF data section for the given data.
-
         :param tokens: a list of featuresets (dicts) or labelled featuresets
-            which are tuples (featureset, label).
-        :param labeled: Indicates whether the given tokens are labeled
-            or not.  If None, then the tokens will be assumed to be
-            labeled if the first token's value is a tuple or list.
+                       which are tuples (featureset, label).
+        :param labeled: Indicates whether the given tokens are labeled or not.
+                        If None, then the tokens will be assumed to be labeled
+                        if the first token's value is a tuple or list.
         """
-        # Check if the tokens are labeled or unlabeled.  If unlabeled,
+        # Check if the tokens are labeled or unlabeled. If unlabeled,
         # then use 'None'
         if labeled is None:
             labeled = tokens and isinstance(tokens[0], (tuple, list))
+
         if not labeled:
             tokens = [(tok, None) for tok in tokens]
 
@@ -353,25 +430,81 @@ class ARFF_Formatter:
         for tok, label in tokens:
             for fname, ftype in self._features:
                 s += "%s," % self._fmt_arff_val(tok.get(fname))
-            s += "%s\n" % self._fmt_arff_val(label)
-
+            # Sanitize the label if it is not None; otherwise output "?"
+            if label is None:
+                s += "%s\n" % self._fmt_arff_val(None)
+            else:
+                safe_label = self._sanitize_arff_label(label)
+                s += "%s\n" % self._fmt_arff_val(safe_label)
         return s
 
+    @staticmethod
+    def _safe_str_repr(value):
+        # Return the built-in str repr of value's characters. str.__repr__ always
+        # escapes control chars (a newline becomes a literal \n), so routing every
+        # string-like ARFF token through it means a str subclass overriding
+        # __repr__/__str__, or any object with a hostile __str__, cannot break out
+        # of its field to forge an @ATTRIBUTE/@DATA line (CWE-1236).
+        s = value if isinstance(value, str) else str(value)
+        return str.__repr__(s)
+
     def _fmt_arff_val(self, fval):
+        # Numerics are formatted from their numeric VALUE, not str()/repr(): int()
+        # and float() strip any subclass whose __str__/__repr__ could otherwise
+        # inject a newline, and the resulting text is digits/./e/+/-/inf/nan only.
+        # Everything else is escaped through _safe_str_repr. So no feature value,
+        # whatever its type, can smuggle an ARFF directive into the data section.
         if fval is None:
             return "?"
-        elif isinstance(fval, (bool, int)):
-            return "%s" % fval
-        elif isinstance(fval, float):
-            return "%r" % fval
-        else:
-            return "%r" % fval
+        if isinstance(fval, bool):
+            return "True" if fval else "False"
+        if isinstance(fval, numbers.Integral):
+            return "%d" % int(fval)
+        if isinstance(fval, numbers.Real):
+            return repr(float(fval))
+        return self._safe_str_repr(fval)
+
+    @staticmethod
+    def _check_arff_ftype(ftype):
+        """Refuse an ARFF attribute type carrying a control character.
+
+        ``from_train`` only ever emits the fixed enum (NUMERIC / STRING /
+        ``{True, False}``), but a caller may build an ``ARFF_Formatter`` directly;
+        a newline or other C0 control in the type would break out of the
+        ``@ATTRIBUTE`` line and inject a new attribute or ``@DATA`` section
+        (CWE-1236). Any legitimate ARFF type is control-character free.
+        """
+        text = str(ftype)
+        if any(ord(ch) < 0x20 for ch in text):
+            raise ValueError(
+                f"ARFF attribute type must not contain control characters: {ftype!r}"
+            )
+        return text
+
+    @staticmethod
+    def _sanitize_arff_label(label):
+        """
+        Sanitize a class label to prevent ARFF injection.
+        - Convert to string.
+        - Replace control characters (\\n, \\r, \\t) with spaces.
+        - Remove any character that is not alphanumeric, underscore, hyphen, space, or single quote.
+        - Escape single quotes by doubling them.
+        """
+        label = str(label)
+        for ch in ("\n", "\r", "\t"):
+            label = label.replace(ch, " ")
+        sanitized = redos.sub(r"[^a-zA-Z0-9_\- ']", "", label)
+        sanitized = sanitized.replace("'", "''")
+        return sanitized
 
 
 if __name__ == "__main__":
     from nltk.classify.util import binary_names_demo_features, names_demo
 
     def make_classifier(featuresets):
-        return WekaClassifier.train("/tmp/name.model", featuresets, "C4.5")
+        # A fresh private (0700) staging dir under an allowed data root (the same
+        # helper the maxent/NE saves use), not a guessable shared /tmp path.
+        model = os.path.join(make_staging_dir(prefix="nltk_weka_"), "name.model")
+        return WekaClassifier.train(model, featuresets, "C4.5")
 
     classifier = names_demo(make_classifier, binary_names_demo_features)

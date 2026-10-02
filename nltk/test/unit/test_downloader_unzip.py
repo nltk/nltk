@@ -6,6 +6,7 @@ from unittest.mock import patch
 
 import pytest
 
+from nltk import pathsec
 from nltk.downloader import ErrorMessage, _unzip_iter, _validate_member
 
 
@@ -13,7 +14,7 @@ def _make_zip(file_path: Path, members: dict[str, bytes]) -> None:
     """
     Create a ZIP file at file_path, with the given arcname->content mapping.
     """
-    with zipfile.ZipFile(file_path, "w") as zf:
+    with pathsec.ZipFile(file_path, "w") as zf:
         for arcname, content in members.items():
             zf.writestr(arcname, content)
 

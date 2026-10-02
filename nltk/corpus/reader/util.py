@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus Reader Utilities
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
@@ -14,6 +14,7 @@ import tempfile
 from functools import reduce
 from xml.etree import ElementTree
 
+from nltk import redos
 from nltk.data import (
     FileSystemPathPointer,
     PathPointer,
@@ -21,6 +22,9 @@ from nltk.data import (
     ZipFilePathPointer,
 )
 from nltk.internals import slice_bounds
+from nltk.pathsec import open as _secure_open
+from nltk.pathsec import validate_path
+from nltk.termsec import sanitize_terminal
 from nltk.tokenize import wordpunct_tokenize
 from nltk.util import AbstractLazySequence, LazyConcatenation, LazySubsequence
 
@@ -167,12 +171,16 @@ class StreamBackedCorpusView(AbstractLazySequence):
            reader, which under rare circumstances may need to know
            the current block number."""
 
-        # Find the length of the file.
+        # Find the length of the file. A bare stat follows a symlink and leaks
+        # the existence/size of an out-of-root path (CWE-59), so a fileid that
+        # fails containment is not stat'ed; its refusal surfaces at _open().
         try:
-            if isinstance(self._fileid, PathPointer):
-                self._eofpos = self._fileid.file_size()
+            try:
+                validate_path(self._fileid, context="StreamBackedCorpusView")
+            except (PermissionError, ValueError):
+                self._eofpos = None
             else:
-                self._eofpos = os.stat(self._fileid).st_size
+                self._eofpos = self._file_size()
         except Exception as exc:
             raise ValueError(f"Unable to open or access {fileid!r} -- {exc}") from exc
 
@@ -209,10 +217,20 @@ class StreamBackedCorpusView(AbstractLazySequence):
             self._stream = self._fileid.open(self._encoding)
         elif self._encoding:
             self._stream = SeekableUnicodeStreamReader(
-                open(self._fileid, "rb"), self._encoding
+                _secure_open(self._fileid, "rb"), self._encoding
             )
         else:
-            self._stream = open(self._fileid, "rb")
+            self._stream = _secure_open(self._fileid, "rb")
+        # A fileid refused at construction was never stat'ed; the secure open
+        # above has now vouched for it, so its size can be taken.
+        if self._eofpos is None:
+            self._eofpos = self._file_size()
+
+    def _file_size(self):
+        """The size in bytes of the file behind this view's fileid."""
+        if isinstance(self._fileid, PathPointer):
+            return self._fileid.file_size()
+        return os.stat(self._fileid).st_size
 
     def close(self):
         """
@@ -546,7 +564,7 @@ def read_alignedsent_block(stream):
         # Other line:
         else:
             s += line
-            if re.match(r"^\d+-\d+", line) is not None:
+            if redos.match(r"^\d+-\d+", line) is not None:
                 return [s]
 
 
@@ -557,12 +575,17 @@ def read_regexp_block(stream, start_re, end_re=None):
     tokens end with lines that match ``end_re``; otherwise, tokens end
     whenever the next line matching ``start_re`` or EOF is found.
     """
+    # start_re / end_re are caller-supplied and matched per line (a line can be
+    # adversarially long), so compile through redos to bound compile AND match.
+    start_rx = redos.compile(start_re)
+    end_rx = redos.compile(end_re) if end_re is not None else None
+
     # Scan until we find a line matching the start regexp.
     while True:
         line = stream.readline()
         if not line:
             return []  # end of file.
-        if re.match(start_re, line):
+        if start_rx.match(line):
             break
 
     # Scan until we find another line matching the regexp, or EOF.
@@ -574,11 +597,11 @@ def read_regexp_block(stream, start_re, end_re=None):
         if not line:
             return ["".join(lines)]
         # End of token:
-        if end_re is not None and re.match(end_re, line):
+        if end_rx is not None and end_rx.match(line):
             return ["".join(lines)]
         # Start of new token: backup to just before it starts, and
         # return the token we've already collected.
-        if end_re is None and re.match(start_re, line):
+        if end_rx is None and start_rx.match(line):
             stream.seek(oldpos)
             return ["".join(lines)]
         # Anything else is part of the token.
@@ -613,13 +636,22 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
 
         warnings.warn(
             "Parsing may fail, depending on the properties "
-            "of the %s encoding!" % encoding
+            "of the %s encoding!" % sanitize_terminal(encoding)
         )
         # (e.g., the utf-16 encoding does not work because it insists
         # on adding BOMs to the beginning of encoded strings.)
 
     if comment_char:
-        COMMENT = re.compile("(?m)^%s.*$" % re.escape(comment_char))
+        _comment_src = "(?m)^%s.*$" % re.escape(comment_char)
+        COMMENT = redos.compile(_comment_src)  # comment_char: bound compile + match
+    # When a single s-expression spans more than one block, we grow ``block``
+    # and re-parse it. Growing by a *fixed* amount re-parses (and, with a
+    # comment_char, re-substitutes) the whole growing buffer on every step,
+    # which is O(n^2) on one oversized s-expression (CWE-407). Doubling the read
+    # size instead makes the number of re-parses O(log n) and the total work a
+    # geometric sum O(n), with no change to the parsed result (the stream is
+    # seeked back to the parsed offset regardless of any over-read).
+    read_size = block_size
     while True:
         try:
             # If we're stripping comments, then make sure our block ends
@@ -628,11 +660,11 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
             # would make our offset wrong.)
             if comment_char:
                 block += stream.readline()
-                block = re.sub(COMMENT, _sub_space, block)
+                block = COMMENT.sub(_sub_space, block)
             # Read the block.
             tokens, offset = _parse_sexpr_block(block)
             # Skip whitespace
-            offset = re.compile(r"\s*").search(block, offset).end()
+            offset = redos.compile(r"\s*").search(block, offset).end()
 
             # Move to the end position.
             if encoding is None:
@@ -644,7 +676,8 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
             return tokens
         except ValueError as e:
             if e.args[0] == "Block too small":
-                next_block = stream.read(block_size)
+                read_size *= 2  # exponential growth -> O(log n) re-parses, O(n) total
+                next_block = stream.read(read_size)
                 if next_block:
                     block += next_block
                     continue
@@ -666,7 +699,7 @@ def _parse_sexpr_block(block):
     start = end = 0
 
     while end < len(block):
-        m = re.compile(r"\S").search(block, end)
+        m = redos.compile(r"\S").search(block, end)
         if not m:
             return tokens, end
 
@@ -674,7 +707,7 @@ def _parse_sexpr_block(block):
 
         # Case 1: sexpr is not parenthesized.
         if m.group() != "(":
-            m2 = re.compile(r"[\s(]").search(block, start)
+            m2 = redos.compile(r"[\s(]").search(block, start)
             if m2:
                 end = m2.start()
             else:
@@ -685,7 +718,7 @@ def _parse_sexpr_block(block):
         # Case 2: parenthesized sexpr.
         else:
             nesting = 0
-            for m in re.compile(r"[()]").finditer(block, start):
+            for m in redos.compile(r"[()]").finditer(block, start):
                 if m.group() == "(":
                     nesting += 1
                 else:
@@ -711,7 +744,19 @@ def _parse_sexpr_block(block):
 def find_corpus_fileids(root, regexp):
     if not isinstance(root, PathPointer):
         raise TypeError("find_corpus_fileids: expected a PathPointer")
+
+    # Defense in depth (CWE-73, GHSA-3gq4-3j92-5w49): validate the root against
+    # the NLTK data sandbox before scanning it.  A few readers call
+    # find_corpus_fileids() before their super().__init__() runs the root check,
+    # so without this an out-of-sandbox FileSystemPathPointer root would still be
+    # enumerated (an os.walk directory listing) before construction is refused.
+    from nltk import pathsec
+
+    if pathsec.ENFORCE:
+        pathsec.validate_path(root, context="find_corpus_fileids")
+
     regexp += "$"
+    regexp_rx = redos.compile(regexp)  # caller fileid regexp: bound compile + match
 
     # Find fileids in a zipfile: scan the zipfile's namelist.  Filter
     # out entries that end in '/' -- they're directories.
@@ -721,24 +766,55 @@ def find_corpus_fileids(root, regexp):
             for name in root.zipfile.namelist()
             if not name.endswith("/")
         ]
-        items = [name for name in fileids if re.match(regexp, name)]
+        items = [name for name in fileids if regexp_rx.match(name)]
         return sorted(items)
 
-    # Find fileids in a directory: use os.walk to search all (proper
-    # or symlinked) subdirectories, and match paths against the regexp.
+    # Find fileids in a directory: use os.walk to search subdirectories,
+    # but do not descend into symlinked directories that resolve outside
+    # the corpus root.
     elif isinstance(root, FileSystemPathPointer):
         items = []
+        resolved_root = os.path.realpath(root.path)
+
         for dirname, subdirs, fileids in os.walk(root.path):
+            dirname_real = os.path.realpath(dirname)
+            try:
+                if os.path.commonpath([resolved_root, dirname_real]) != resolved_root:
+                    subdirs[:] = []
+                    continue
+            except ValueError:
+                subdirs[:] = []
+                continue
+
+            pruned_subdirs = []
+            for subdir in subdirs:
+                full_subdir = os.path.join(dirname, subdir)
+                subdir_real = os.path.realpath(full_subdir)
+                try:
+                    inside_root = (
+                        os.path.commonpath([resolved_root, subdir_real])
+                        == resolved_root
+                    )
+                except ValueError:
+                    inside_root = False
+
+                if inside_root and subdir != ".svn":
+                    pruned_subdirs.append(subdir)
+
+            subdirs[:] = pruned_subdirs
+
             prefix = "".join("%s/" % p for p in _path_from(root.path, dirname))
             items += [
                 prefix + fileid
                 for fileid in fileids
-                if re.match(regexp, prefix + fileid)
+                if regexp_rx.match(prefix + fileid)
             ]
-            # Don't visit svn directories:
-            if ".svn" in subdirs:
-                subdirs.remove(".svn")
         return sorted(items)
+
+    # HuggingFace PathPointer: delegate to its fileids() method (duck typing,
+    # avoids a circular import of nltk.huggingface.dataset here).
+    elif hasattr(root, "fileids"):
+        return [fid for fid in root.fileids() if regexp_rx.match(fid)]
 
     else:
         raise AssertionError("Don't know how to handle %r" % root)
@@ -766,7 +842,7 @@ def tagged_treebank_para_block_reader(stream):
     while True:
         line = stream.readline()
         # End of paragraph:
-        if re.match(r"======+\s*$", line):
+        if redos.match(r"======+\s*$", line):
             if para.strip():
                 return [para]
         # End of file:

@@ -1,14 +1,16 @@
 # Natural Language Toolkit: Internal utility functions
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 #         Nitin Madnani <nmadnani@ets.org>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import ast
 import fnmatch
 import locale
+import operator
 import os
 import re
 import stat
@@ -19,12 +21,222 @@ import types
 import warnings
 from xml.etree import ElementTree
 
+from nltk import redos
+from nltk.pathsec import (
+    _as_path_text,
+    _reject_bad_name_syntax,
+    safe_env,
+    validate_path,
+)
+from nltk.termsec import safe_print
+
 ##########################################################################
 # Java Via Command-Line
 ##########################################################################
 
 _java_bin = None
 _java_options = []
+
+# Allowlist of safe JVM tuning flags for NLTK's Java wrapper.
+# Anything not matching is rejected to prevent argument injection
+# (CVE-2026-12841, CWE-88).  A minimal allowlist is used rather than a denylist so
+# that -jar, @argfile, -XX:OnError=<cmd>, and *future* dangerous flags are blocked
+# without needing to be enumerated (OWASP / SEI CERT IDS07-J both prefer this).
+#
+# What NLTK's wrappers (Stanford tagger/parser/tokenizer/segmenter, CoreNLP,
+# MaltParser) and the Stanford CoreNLP documentation actually pass is: heap/stack
+# sizing (-Xmx/-mx/-Xms/-Xss), -verbose, -server/-client, and (on JDK 9-11)
+# ``--add-modules java.se.ee``. So exactly those are allowed.
+#
+# Deliberately NOT allowlisted, because they are unnecessary for NLTK/CoreNLP and
+# proven dangerous:
+#   * ``-XX:`` -- ``-XX:OnError=`` / ``-XX:OnOutOfMemoryError=`` are executed by
+#     the JVM as shell commands (verified: an OOM ran the injected command), and
+#     others write files or unlock restricted options.
+#   * ``-D`` system properties -- e.g. ``-Djava.ext.dirs`` (RCE on JDK<=8),
+#     ``-Djava.rmi.server.codebase`` / JNDI trust props. CoreNLP sets encoding via
+#     its own ``-encoding`` *program* argument, not ``-Dfile.encoding``.
+# An application that genuinely needs one of these passes it through the explicit
+# ``trusted_raw_options`` escape hatch (see ``java()``), taking responsibility.
+# Heap/stack sizing (-Xmx512m / -mx2g / -Xms128m / -Xss4m; no-X aliases are what
+# Stanford/CoreNLP pass). Anchored to number+unit so no suffix rides a bare prefix.
+_SAFE_SIZING_RE = redos.compile(r"\A-(xmx|mx|xms|ms|xss|ss)\d+[kmgt]?\Z", re.IGNORECASE)
+
+# -verbose diagnostic output: bare or one standard category (-verbose:gc etc.).
+_SAFE_VERBOSE_RE = redos.compile(
+    r"\A-verbose(:(class|gc|jni|module))?\Z", re.IGNORECASE
+)
+
+# Exact no-argument flags (mode / VM selectors); no suffix may ride these.
+_SAFE_JVM_EXACT = frozenset(
+    {"-server", "-client", "-xbatch", "-xint", "-xcomp", "-xmixed"}
+)
+
+# ``--add-modules <module-list>`` is required by CoreNLP on JDK 9-11 (a CoreNLP
+# dependency uses the JAXB module dropped from the default set). The value is a
+# comma-separated list of module names -- it names JDK modules, and because
+# ``--module-path`` / ``-p`` is NOT allowlisted it cannot point at attacker code.
+# Restrict the value to a plain module-list shape so nothing else rides through.
+_MODULE_LIST_RE = redos.compile(r"\A[A-Za-z0-9_.,-]+\Z")
+
+# Every flag the allowlist accepts (heap/stack sizing, -verbose, -server/-client,
+# --add-modules) is a single simple token; none contains whitespace or a shell
+# metacharacter. Rejecting those characters is therefore a free, name-agnostic
+# defense-in-depth layer (it has no false positives now that -D, whose values may
+# legitimately contain them, is not accepted): e.g. a malformed ``-Xmx512m ; rm``
+# token cannot ride through as a sizing flag.
+_UNSAFE_OPTION_CHARS = frozenset(" \t\r\n;|&$`<>(){}[]*?!'\"\\")
+
+# JVM env vars that inject flags (JAVA_TOOL_OPTIONS / _JAVA_OPTIONS / JDK_JAVA_OPTIONS
+# / IBM_JAVA_OPTIONS / OPENJ9_JAVA_OPTIONS), classpath (CLASSPATH) or launcher
+# debug output on stdout (_JAVA_LAUNCHER_DEBUG, which the wrappers parse); stripped (CWE-88).
+_JVM_INJECTING_ENV_VARS = frozenset(
+    {
+        "JAVA_TOOL_OPTIONS",
+        "_JAVA_OPTIONS",
+        "JDK_JAVA_OPTIONS",
+        "IBM_JAVA_OPTIONS",
+        "OPENJ9_JAVA_OPTIONS",
+        "CLASSPATH",
+        "_JAVA_LAUNCHER_DEBUG",
+    }
+)
+
+# Variables that redirect the child JVM's dynamic loader or locale machinery
+# (CWE-427), by family (glibc/Solaris, macOS, AIX, IRIX/Tru64, glibc tunables
+# and malloc hooks) plus the exact AIX/HP-UX/glibc search-path names, IFS and
+# JAVA_LIBRARY_PATH (the JDK adds it to java.library.path on macOS).
+_LOADER_ENV_PREFIXES = ("LD_", "DYLD_", "LDR_", "_RLD_", "GLIBC_", "MALLOC_")
+_LOADER_ENV_EXACT = frozenset(
+    {
+        "LIBPATH",
+        "SHLIB_PATH",
+        "GCONV_PATH",
+        "LOCPATH",
+        "NLSPATH",
+        "IFS",
+        "JAVA_LIBRARY_PATH",
+    }
+)
+
+
+def _is_loader_env_var(name):
+    """True if *name* can steer the child's loader/locale and must be dropped."""
+    up = name.upper()
+    return up in _LOADER_ENV_EXACT or up.startswith(_LOADER_ENV_PREFIXES)
+
+
+def _java_child_env(environ=None):
+    """Return a sanitised environment for the child JVM that java() launches.
+
+    Drops the JVM-injecting vars (JAVA_TOOL_OPTIONS et al., CWE-88) AND the loader
+    family (LD_*, DYLD_*, LDR_*, _RLD_*, GLIBC_*, MALLOC_*, LIBPATH, SHLIB_PATH,
+    GCONV_PATH, LOCPATH, NLSPATH, IFS) that could redirect the dynamic linker or
+    locale loader so it cannot be made to load a planted library (CWE-427), in
+    any letter case, then locks PATH to pathsec's non-writable value so the
+    child cannot resolve a planted helper by bare name (the JVM itself is
+    launched by absolute path). Benign identity vars (HOME, JAVA_HOME, ...) are
+    kept so the tools keep working. A name or value the OS could not hold
+    (empty, ``=`` in the name, a NUL, a non-str) is dropped rather than handed
+    to the spawn. Every NLTK JVM launch routes through java(), so this is the
+    single place the child environment is scrubbed; ``environ`` defaults to
+    ``os.environ`` and exists so a substituted mapping can be checked."""
+    if environ is None:
+        environ = os.environ
+    env = {}
+    for k, v in environ.items():
+        if not (isinstance(k, str) and isinstance(v, str)):
+            continue
+        if not k or "=" in k or "\x00" in k or "\x00" in v:
+            continue
+        if k.upper() in _JVM_INJECTING_ENV_VARS or _is_loader_env_var(k):
+            continue
+        env[k] = v
+    env["PATH"] = safe_env()["PATH"]
+    return env
+
+
+def _validate_java_options(options):
+    """
+    Raise ValueError if *options* contains JVM flags that can change the
+    executed program, run a command, load agents, or expand argument files.
+
+    Uses a minimal allowlist of exactly the flags NLTK's Java wrappers and the
+    Stanford CoreNLP documentation use (heap/stack sizing, -verbose,
+    -server/-client, and ``--add-modules``). This is intentionally stricter than
+    a denylist so that -jar, @argfile, ``-XX:OnError=<cmd>``, dangerous ``-D``
+    system properties, and future dangerous flags are all rejected without
+    needing to be enumerated (CVE-2026-12841, CWE-88). Applications needing an
+    unlisted flag use ``java(..., trusted_raw_options=[...])``.
+    """
+    opts = list(options)
+    i = 0
+    while i < len(opts):
+        flag = opts[i]
+
+        # A JVM flag is a non-empty string; anything else cannot be reasoned
+        # about safely, so reject it rather than call .lower() on it.
+        if not isinstance(flag, str) or not flag:
+            raise ValueError(
+                f"java_options contains an invalid (non-string or empty) entry: "
+                f"{flag!r} (CVE-2026-12841, CWE-88)."
+            )
+
+        # Shape guard: no legitimate allowed flag contains whitespace, a control
+        # character, or a shell metacharacter; reject any that does.
+        if any(
+            c.isspace() or ord(c) < 0x20 or ord(c) == 0x7F or c in _UNSAFE_OPTION_CHARS
+            for c in flag
+        ):
+            raise ValueError(
+                f"java_options contains whitespace, a control character, or a "
+                f"shell metacharacter, which a valid JVM flag never does: "
+                f"{flag!r} (CVE-2026-12841, CWE-88)."
+            )
+
+        n = flag.lower()
+
+        # @argfile references are expanded by the Java launcher before
+        # any other argument processing and can smuggle blocked flags.
+        if n.startswith("@"):
+            raise ValueError(
+                f"java_options contains a disallowed Java argument file "
+                f"reference: {flag!r} (CVE-2026-12841, CWE-88)."
+            )
+
+        # --add-modules <modules>  (two tokens) or  --add-modules=<modules>.
+        if n == "--add-modules":
+            mods = opts[i + 1] if i + 1 < len(opts) else None
+            if not isinstance(mods, str) or not _MODULE_LIST_RE.match(mods):
+                raise ValueError(
+                    f"--add-modules must be followed by a plain module list, got "
+                    f"{mods!r} (CVE-2026-12841, CWE-88)."
+                )
+            i += 2
+            continue
+        if n.startswith("--add-modules="):
+            if not _MODULE_LIST_RE.match(flag.split("=", 1)[1]):
+                raise ValueError(
+                    f"--add-modules has a non-module-list value: {flag!r} "
+                    "(CVE-2026-12841, CWE-88)."
+                )
+            i += 1
+            continue
+
+        if n in _SAFE_JVM_EXACT:
+            i += 1
+            continue
+
+        if _SAFE_SIZING_RE.match(flag) or _SAFE_VERBOSE_RE.match(flag):
+            i += 1
+            continue
+
+        raise ValueError(
+            f"java_options contains a disallowed JVM/launcher flag: {flag!r}. "
+            "Only JVM memory/stack tuning, -verbose, -server/-client and "
+            "--add-modules are permitted; pass anything else through "
+            "java(trusted_raw_options=...) (CVE-2026-12841, CWE-88)."
+        )
 
 
 # [xx] add classpath option to config_java?
@@ -46,7 +258,10 @@ def config_java(bin=None, options=None, verbose=False):
     :type options: list(str)
     """
     global _java_bin, _java_options
-    _java_bin = find_binary(
+    # Absolute only: a relative ``bin`` would resolve against the CWD and java()
+    # executes the result (untrusted search path, CWE-426/427), the same guard
+    # as the prover9/megam/tadm entry points.
+    _java_bin = find_binary_absolute(
         "java",
         bin,
         env_vars=["JAVAHOME", "JAVA_HOME"],
@@ -57,97 +272,257 @@ def config_java(bin=None, options=None, verbose=False):
     if options is not None:
         if isinstance(options, str):
             options = options.split()
-        _java_options = list(options)
+        options = list(options)
+        _validate_java_options(options)
+        _java_options[:] = options
 
 
-def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=True):
-    """
-    Execute the given java command, by opening a subprocess that calls
-    Java.  If java has not yet been configured, it will be configured
-    by calling ``config_java()`` with no arguments.
-
-    :param cmd: The java command that should be called, formatted as
-        a list of strings.  Typically, the first string will be the name
-        of the java class; and the remaining strings will be arguments
-        for that java class.
-    :type cmd: list(str)
-
-    :param classpath: A ``':'`` separated list of directories, JAR
-        archives, and ZIP archives to search for class files.
-    :type classpath: str
-
-    :param stdin: Specify the executed program's
-        standard input file handles, respectively.  Valid values are ``subprocess.PIPE``,
-        an existing file descriptor (a positive integer), an existing
-        file object, 'pipe', 'stdout', 'devnull' and None.  ``subprocess.PIPE`` indicates that a
-        new pipe to the child should be created.  With None, no
-        redirection will occur; the child's file handles will be
-        inherited from the parent.  Additionally, stderr can be
-        ``subprocess.STDOUT``, which indicates that the stderr data
-        from the applications should be captured into the same file
-        handle as for stdout.
-
-    :param stdout: Specify the executed program's standard output file
-        handle. See ``stdin`` for valid values.
-
-    :param stderr: Specify the executed program's standard error file
-        handle. See ``stdin`` for valid values.
+class UntrustedJarError(Exception):
+    pass
 
 
-    :param blocking: If ``false``, then return immediately after
-        spawning the subprocess.  In this case, the return value is
-        the ``Popen`` object, and not a ``(stdout, stderr)`` tuple.
+def _verify_jar_sandbox(classpath_entries):
+    if (
+        os.environ.get("NLTK_ALLOW_UNSAFE_JARS") == "1"
+        or os.environ.get("NLTK_ALLOW_UNSAFE_CLASSPATH") == "1"
+    ):
+        import warnings
 
-    :return: If ``blocking=True``, then return a tuple ``(stdout,
-        stderr)``, containing the stdout and stderr outputs generated
-        by the java command if the ``stdout`` and ``stderr`` parameters
-        were set to ``subprocess.PIPE``; or None otherwise.  If
-        ``blocking=False``, then return a ``subprocess.Popen`` object.
+        warnings.warn(
+            "Arbitrary JAR execution is permitted via NLTK_ALLOW_UNSAFE_JARS/CLASSPATH=1",
+            UserWarning,
+        )
+        return
 
-    :raise OSError: If the java command returns a nonzero return code.
-    """
+    if isinstance(classpath_entries, str):
+        entries = [classpath_entries]
+    else:
+        entries = list(classpath_entries)
 
-    subprocess_output_dict = {
-        "pipe": subprocess.PIPE,
-        "stdout": subprocess.STDOUT,
-        "devnull": subprocess.DEVNULL,
-    }
+    trusted_roots = []
+    from nltk.data import path as data_path
 
-    stdin = subprocess_output_dict.get(stdin, stdin)
-    stdout = subprocess_output_dict.get(stdout, stdout)
-    stderr = subprocess_output_dict.get(stderr, stderr)
+    for p in data_path:
+        try:
+            trusted_roots.append(os.path.normcase(os.path.realpath(p)))
+        except Exception:
+            continue
 
+    try:
+        import nltk
+
+        nltk_package_dir = os.path.dirname(os.path.realpath(nltk.__file__))
+        repo_root = os.path.realpath(os.path.join(nltk_package_dir, ".."))
+        git_marker = os.path.join(repo_root, ".git")
+        if os.path.isdir(git_marker) or os.path.isfile(git_marker):
+            # In a source checkout, trust only the third-party jar dir, never the
+            # whole tree: a stray or committed jar elsewhere must not run.
+            third_dir = os.path.realpath(os.path.join(repo_root, "third"))
+            if os.path.isdir(third_dir):
+                trusted_roots.append(os.path.normcase(third_dir))
+    except Exception:
+        pass
+
+    for wp in (
+        "/usr/share/weka",
+        "/usr/local/weka",
+        "/opt/weka",
+        "C:\\Program Files\\Weka",
+        "C:\\Program Files (x86)\\Weka",
+    ):
+        try:
+            abs_wp = os.path.realpath(wp)
+            if os.path.isdir(abs_wp):
+                trusted_roots.append(os.path.normcase(abs_wp))
+        except Exception:
+            continue
+
+    trusted_roots = list(dict.fromkeys(trusted_roots))
+
+    for entry in entries:
+        if not isinstance(entry, str):
+            # A non-string is not a CWD element, just an unsupported type; report
+            # the expected type rather than the misleading current-directory text.
+            raise UntrustedJarError(
+                f"Classpath entry must be a string, got {type(entry).__name__}: {entry!r}"
+            )
+        if not entry:
+            # An empty entry is the JVM's current-directory element (CWD class
+            # injection); refuse it rather than skip it.
+            raise UntrustedJarError(
+                f"Empty classpath entry is forbidden (the JVM would treat it as "
+                f"the current directory): {entry!r}"
+            )
+        if "\x00" in entry:
+            # A NUL truncates the path in native calls; reject with a clear error
+            # instead of letting os.path.realpath raise a bare ValueError.
+            raise UntrustedJarError(
+                f"Classpath entry may not contain a NUL byte: {entry!r}"
+            )
+        if os.pathsep in entry:
+            # An entry embedding os.pathsep passes the per-entry check as one path
+            # but the JVM re-splits it into unverified elements (sandbox bypass).
+            raise UntrustedJarError(
+                f"Classpath entry may not contain the path separator {os.pathsep!r} "
+                f"(it would expand into multiple unverified elements): {entry!r}"
+            )
+        if not os.path.isabs(entry):
+            raise UntrustedJarError(f"Relative paths are strictly forbidden: {entry}")
+
+        clean_entry = os.path.normcase(os.path.realpath(entry))
+        allowed = False
+        for root in trusted_roots:
+            try:
+                if os.path.commonpath([root, clean_entry]) == root:
+                    allowed = True
+                    break
+            except ValueError:
+                continue
+        if not allowed:
+            raise UntrustedJarError(
+                f"Classpath entry {entry} is not in a trusted location (outside nltk_data).\n"
+                f"Trusted roots: {trusted_roots}"
+            )
+
+
+def java(
+    cmd,
+    classpath=None,
+    stdin=None,
+    stdout=None,
+    stderr=None,
+    blocking=True,
+    options=None,
+    trusted_raw_options=None,
+):
     if isinstance(cmd, str):
-        raise TypeError("cmd should be a list of strings")
+        raise TypeError("cmd must be a sequence of strings, not a string")
+    cmd_list = list(cmd)
 
-    # Make sure we know where a java binary is.
+    def _normalise(stream):
+        if stream is None:
+            return None
+        if stream == "pipe" or stream is True:
+            return subprocess.PIPE
+        if stream == "devnull":
+            return subprocess.DEVNULL
+        return stream
+
+    stdin = _normalise(stdin)
+    stdout = _normalise(stdout)
+    stderr = _normalise(stderr)
+
+    if options is None:
+        opt_list = list(_java_options) if _java_options else []
+    else:
+        opt_list = options.split() if isinstance(options, str) else list(options)
+        # Per-call options reach subprocess.Popen directly, so they must be
+        # validated too -- config_java() alone is not enough (CVE-2026-12841,
+        # CWE-88). Without this a caller-supplied -javaagent / -agentlib /
+        # @argfile / -XX:OnError flag would be injected into the JVM command line.
+        _validate_java_options(opt_list)
+    # Escape hatch: options the caller vouches for are appended WITHOUT
+    # validation. Use only for flags NLTK's allowlist rejects but you need and
+    # trust (e.g. a specific ``-XX:`` GC tuning flag) -- never route untrusted
+    # input here (CVE-2026-12841, CWE-88).
+    if trusted_raw_options:
+        if isinstance(trusted_raw_options, str):
+            trusted_raw_options = trusted_raw_options.split()
+        opt_list = opt_list + list(trusted_raw_options)
+
+    classpath_arg = None
+    if classpath is not None:
+        if isinstance(classpath, str):
+            # Keep empty parts ("a.jar::" is the JVM's CWD element) so
+            # _verify_jar_sandbox can refuse them instead of silently dropping them.
+            raw_entries = classpath.split(os.pathsep)
+        else:
+            raw_entries = list(classpath)
+        if not raw_entries:
+            raise ValueError("Classpath is empty after splitting")
+        _verify_jar_sandbox(raw_entries)
+        # Rebuild from the verified entries only; never pass the raw string to -cp.
+        classpath_arg = os.pathsep.join(raw_entries)
+
+    # The Java launcher treats the first non-option token as the main class. A
+    # caller-supplied cmd must therefore begin with a real main-class name, not a
+    # launcher switch (-jar / -version / -XX:OnError=...) or an @argfile: either
+    # would run an arbitrary JAR or inject JVM arguments the options allowlist
+    # rejects (CVE-2026-12841, CWE-88). Program arguments after the main class may
+    # start with "-" (e.g. Stanford's -loadClassifier), but an @argfile is
+    # expanded by the launcher wherever it appears and is never a legitimate NLTK
+    # argument, so reject it in any position. Checked after the options/classpath
+    # channels so a hostile option is still reported by their own validators.
+    if not cmd_list:
+        raise ValueError("cmd must contain a Java main class")
+    first = cmd_list[0]
+    # Compare the stripped token: a real main-class name never has surrounding
+    # whitespace, and some launchers/shells trim it, so " -jar" / "\t@file" must
+    # be treated as the launcher token it becomes, not slipped through.
+    if (
+        not isinstance(first, str)
+        or not first.strip()
+        or first.strip().startswith(("-", "@"))
+    ):
+        raise ValueError(
+            f"cmd must begin with a Java main class, not a launcher switch or "
+            f"@argfile: {first!r} (CWE-88)"
+        )
+    for tok in cmd_list:
+        if isinstance(tok, str) and tok.strip().startswith("@"):
+            raise ValueError(
+                f"cmd may not contain an @argfile token: {tok!r}; the Java "
+                "launcher would expand it, injecting arguments (CWE-88)"
+            )
+
+    # Resolve the JVM absolute-only before spawning: a bare "java" handed to
+    # Popen is found by the OS search, which on Windows begins in the CWD
+    # (CWE-427), so java() never launches an unresolved name. The trust check
+    # on the resolved binary (GHSA-7mxv, CWE-426/427/732) is spawn_trusted's.
     if _java_bin is None:
         config_java()
+    final_cmd = [_java_bin] if isinstance(_java_bin, str) else list(_java_bin)
 
-    # Set up the classpath.
-    if isinstance(classpath, str):
-        classpaths = [classpath]
-    else:
-        classpaths = list(classpath)
-    classpath = os.path.pathsep.join(classpaths)
+    final_cmd.extend(opt_list)
+    if classpath_arg is not None:
+        final_cmd.extend(["-cp", classpath_arg])
+    final_cmd.extend(cmd_list)
 
-    # Construct the full command string.
-    cmd = list(cmd)
-    cmd = ["-cp", classpath] + cmd
-    cmd = [_java_bin] + _java_options + cmd
+    child_env = _java_child_env()
+    # The JVM binary itself goes through the trusted-exec chokepoint like every
+    # other tool binary: no other local user may be able to swap it (CWE-427/732)
+    from nltk.pathsec import TrustError, spawn_trusted
 
-    # Call java via a subprocess
-    p = subprocess.Popen(cmd, stdin=stdin, stdout=stdout, stderr=stderr)
-    if not blocking:
+    try:
+        p = spawn_trusted(
+            final_cmd[0],
+            final_cmd[1:],
+            stdin=stdin,
+            stdout=stdout,
+            stderr=stderr,
+            universal_newlines=True,
+            env=child_env,
+        )
+    except TrustError as e:
+        raise LookupError(
+            f"Refusing to run the Java binary {final_cmd[0]!r}: it is not on a "
+            f"trusted path. Install Java where only you (or root) can write, or "
+            f"point config_java() at such an install ({e})."
+        ) from e
+    try:
+        if blocking:
+            stdout_data, stderr_data = p.communicate()
+            if p.returncode != 0:
+                raise OSError(
+                    f"Java command failed: {' '.join(final_cmd)}\n"
+                    f"Return code: {p.returncode}\nOutput: {stdout_data}\nError: {stderr_data}"
+                )
+            return stdout_data, stderr_data
         return p
-    (stdout, stderr) = p.communicate()
-
-    # Check the return code.
-    if p.returncode != 0:
-        print(_decode_stdoutdata(stderr))
-        raise OSError("Java command failed : " + str(cmd))
-
-    return (stdout, stderr)
+    except OSError as e:
+        raise OSError(
+            f"Failed to execute Java command: {' '.join(final_cmd)}\nError: {e}"
+        )
 
 
 ######################################################################
@@ -171,7 +546,7 @@ class ReadError(ValueError):
         return f"Expected {self.expected} at {self.position}"
 
 
-_STRING_START_RE = re.compile(r"[uU]?[rR]?(\"\"\"|\'\'\'|\"|\')")
+_STRING_START_RE = redos.compile(r"[uU]?[rR]?(\"\"\"|\'\'\'|\"|\')")
 
 
 def read_str(s, start_position):
@@ -194,11 +569,13 @@ def read_str(s, start_position):
     :rtype: tuple(str, int)
 
     :raise ReadError: If the ``_STRING_START_RE`` regex doesn't return a
-        match in ``s`` at ``start_position``, i.e., open quote. If the
-        ``_STRING_END_RE`` regex doesn't return a match in ``s`` at the
-        end of the first match, i.e., close quote.
-    :raise ValueError: If an invalid string (i.e., contains an invalid
-        escape sequence) is passed into the ``eval``.
+        match in ``s`` at ``start_position``, i.e., open quote (a negative
+        position never does). If the ``_STRING_END_RE`` regex doesn't return
+        a match in ``s`` at the end of the first match, i.e., close quote.
+        If the delimited text is not one valid string literal (an invalid
+        escape sequence, say).
+    :raise TypeError: If ``s`` is not a ``str`` or ``start_position`` is not
+        an integer.
 
     :Example:
 
@@ -207,6 +584,19 @@ def read_str(s, start_position):
     ('Hello', 7)
 
     """
+    if not isinstance(s, str):
+        raise TypeError(f"read_str expects a str, not {type(s).__name__}")
+    # An int index only: a negative one would clamp to 0 for the regex but
+    # slice from the end below, so it is refused as "no literal starts here".
+    try:
+        start_position = operator.index(start_position)
+    except TypeError:
+        raise TypeError(
+            f"start_position must be an int, not {type(start_position).__name__}"
+        ) from None
+    if start_position < 0:
+        raise ReadError("open quote", start_position)
+
     # Read the open quote, and any modifiers.
     m = _STRING_START_RE.match(s, start_position)
     if not m:
@@ -214,7 +604,7 @@ def read_str(s, start_position):
     quotemark = m.group(1)
 
     # Find the close quote.
-    _STRING_END_RE = re.compile(r"\\|%s" % quotemark)
+    _STRING_END_RE = redos.compile(r"\\|%s" % quotemark)
     position = m.end()
     while True:
         match = _STRING_END_RE.search(s, position)
@@ -225,15 +615,22 @@ def read_str(s, start_position):
         else:
             break
 
-    # Process it, using eval.  Strings with invalid escape sequences
-    # might raise ValueError.
+    # The base slice, so a str subclass overriding __getitem__ cannot hand a
+    # different text to the parser than the one the regexes delimited.
+    literal = str.__getitem__(s, slice(start_position, match.end()))
+    # ast.literal_eval, never eval: it accepts only a literal, so the one quoted
+    # slice the regexes delimited cannot execute code; an invalid escape (a
+    # ValueError) or a malformed literal (a SyntaxError) is the caller's input.
     try:
-        return eval(s[start_position : match.end()]), match.end()
-    except ValueError as e:
-        raise ReadError("valid escape sequence", start_position) from e
+        value = ast.literal_eval(literal)
+    except (ValueError, SyntaxError) as e:
+        raise ReadError("valid string literal", start_position) from e
+    if type(value) is not str:
+        raise ReadError("valid string literal", start_position)
+    return value, match.end()
 
 
-_READ_INT_RE = re.compile(r"-?\d+")
+_READ_INT_RE = redos.compile(r"-?\d+")
 
 
 def read_int(s, start_position):
@@ -271,7 +668,7 @@ def read_int(s, start_position):
     return int(m.group()), m.end()
 
 
-_READ_NUMBER_VALUE = re.compile(r"-?(\d*)([.]?\d*)?")
+_READ_NUMBER_VALUE = redos.compile(r"-?(\d*)([.]?\d*)?")
 
 
 def read_number(s, start_position):
@@ -378,7 +775,7 @@ def _add_epytext_field(obj, field, message):
     # it from the new field, and check its indentation.
     if obj.__doc__:
         obj.__doc__ = obj.__doc__.rstrip() + "\n\n"
-        indents = re.findall(r"(?<=\n)[ ]+(?!\s)", obj.__doc__.expandtabs())
+        indents = redos.findall(r"(?<=\n)[ ]+(?!\s)", obj.__doc__.expandtabs())
         if indents:
             indent = min(indents)
     # If we don't have a docstring, add an empty one.
@@ -409,7 +806,9 @@ def deprecated(message):
         msg = "\n" + textwrap.fill(msg, initial_indent="  ", subsequent_indent="  ")
 
         def newFunc(*args, **kwargs):
-            warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
+            warnings.warn(
+                msg, category=DeprecationWarning, stacklevel=2
+            )  # unsafe-print ok: deprecation text from the decorated object's own name and docstring
             return func(*args, **kwargs)
 
         # Copy the old function's name, docstring, & dict
@@ -452,9 +851,9 @@ class Deprecated:
         # Construct an appropriate warning.
         doc = dep_cls.__doc__ or "".strip()
         # If there's a @deprecated field, strip off the field marker.
-        doc = re.sub(r"\A\s*@deprecated:", r"", doc)
+        doc = redos.sub(r"\A\s*@deprecated:", r"", doc)
         # Strip off any indentation.
-        doc = re.sub(r"(?m)^\s*", "", doc)
+        doc = redos.sub(r"(?m)^\s*", "", doc)
         # Construct a 'name' string.
         name = "Class %s" % dep_cls.__name__
         if cls != dep_cls:
@@ -463,7 +862,9 @@ class Deprecated:
         msg = f"{name} has been deprecated.  {doc}"
         # Wrap it.
         msg = "\n" + textwrap.fill(msg, initial_indent="    ", subsequent_indent="    ")
-        warnings.warn(msg, category=DeprecationWarning, stacklevel=2)
+        warnings.warn(
+            msg, category=DeprecationWarning, stacklevel=2
+        )  # unsafe-print ok: deprecation text from the class's own name and docstring
         # Do the actual work of __new__.
         return object.__new__(cls)
 
@@ -489,6 +890,38 @@ class Counter:
 ##########################################################################
 # Search for files/binaries
 ##########################################################################
+
+
+def _path_dirs_iter(file_names):
+    """Yield every executable regular file named by *file_names* found in the
+    PATH directories, in PATH order, with the PATHEXT suffixes the Windows
+    search would try for a name without an extension.
+
+    This is the PATH lookup ``find_file_iter`` makes on every platform, in
+    place of a ``which`` subprocess. Unlike the Windows search and
+    ``shutil.which`` it never consults the current directory unless PATH names
+    it, and it does not stop at the first hit: a planted binary in the CWD must
+    neither be chosen nor hide the real installs behind it (CWE-427). A
+    relative PATH entry (``.``) still yields a relative path, which
+    ``find_binary_iter`` refuses. A name with a directory part is not a PATH
+    lookup (the OS search and ``which`` take it as given), so it is never
+    joined onto a PATH entry: that join would rebase a ``../<cwd>/<name>``
+    form through a trusted directory.
+    """
+    suffixes = [ext for ext in os.environ.get("PATHEXT", "").split(os.pathsep) if ext]
+    bare_names = [name for name in file_names if not os.path.dirname(name)]
+    for directory in os.environ.get("PATH", "").split(os.pathsep):
+        directory = directory.strip('"')
+        if not directory:
+            continue
+        for alternative in bare_names:
+            names = [alternative]
+            if not os.path.splitext(alternative)[1]:
+                names += [alternative + ext for ext in suffixes]
+            for name in names:
+                path = os.path.join(directory, name)
+                if os.path.isfile(path) and os.access(path, os.X_OK):
+                    yield path
 
 
 def find_file_iter(
@@ -523,35 +956,39 @@ def find_file_iter(
         path_to_file = os.path.join(filename, alternative)
         if os.path.isfile(path_to_file):
             if verbose:
-                print(f"[Found {filename}: {path_to_file}]")
+                safe_print(f"[Found {filename}: {path_to_file}]")
             yielded = True
             yield path_to_file
         # Check the bare alternatives
         if os.path.isfile(alternative):
             if verbose:
-                print(f"[Found {filename}: {alternative}]")
+                safe_print(f"[Found {filename}: {alternative}]")
             yielded = True
             yield alternative
         # Check if the alternative is inside a 'file' directory
         path_to_file = os.path.join(filename, "file", alternative)
         if os.path.isfile(path_to_file):
             if verbose:
-                print(f"[Found {filename}: {path_to_file}]")
+                safe_print(f"[Found {filename}: {path_to_file}]")
             yielded = True
             yield path_to_file
 
     # Check environment variables
     for env_var in env_vars:
         if env_var in os.environ:
-            if finding_dir:  # This is to file a directory instead of file
-                yielded = True
-                yield os.environ[env_var]
+            if finding_dir:  # This is to find a directory instead of file
+                for env_dir in os.environ[env_var].split(os.pathsep):
+                    env_dir = os.path.expanduser(env_dir)
+                    if env_dir:
+                        yielded = True
+                        yield env_dir
 
             for env_dir in os.environ[env_var].split(os.pathsep):
+                env_dir = os.path.expanduser(env_dir)
                 # Check if the environment variable contains a direct path to the bin
                 if os.path.isfile(env_dir):
                     if verbose:
-                        print(f"[Found {filename}: {env_dir}]")
+                        safe_print(f"[Found {filename}: {env_dir}]")
                     yielded = True
                     yield env_dir
                 # Check if the possible bin names exist inside the environment variable directories
@@ -559,7 +996,7 @@ def find_file_iter(
                     path_to_file = os.path.join(env_dir, alternative)
                     if os.path.isfile(path_to_file):
                         if verbose:
-                            print(f"[Found {filename}: {path_to_file}]")
+                            safe_print(f"[Found {filename}: {path_to_file}]")
                         yielded = True
                         yield path_to_file
                     # Check if the alternative is inside a 'file' directory
@@ -570,7 +1007,7 @@ def find_file_iter(
 
                     if os.path.isfile(path_to_file):
                         if verbose:
-                            print(f"[Found {filename}: {path_to_file}]")
+                            safe_print(f"[Found {filename}: {path_to_file}]")
                         yielded = True
                         yield path_to_file
 
@@ -582,27 +1019,14 @@ def find_file_iter(
                 yielded = True
                 yield path_to_file
 
-    # If we're on a POSIX system, then try using the 'which' command
-    # to find the file.
-    if os.name == "posix":
-        for alternative in file_names:
-            try:
-                p = subprocess.Popen(
-                    ["which", alternative],
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                )
-                stdout, stderr = p.communicate()
-                path = _decode_stdoutdata(stdout).strip()
-                if path.endswith(alternative) and os.path.exists(path):
-                    if verbose:
-                        print(f"[Found {filename}: {path}]")
-                    yielded = True
-                    yield path
-            except (KeyboardInterrupt, SystemExit, OSError):
-                raise
-            finally:
-                pass
+    # Walk PATH ourselves on every platform: no ``which`` subprocess, and no
+    # implicit CWD entry as the Windows search has; a CWD hit is refused by the
+    # callers and must not hide the real installs behind it (CWE-427).
+    for path in _path_dirs_iter(file_names):
+        if verbose:
+            safe_print(f"[Found {filename}: {path}]")
+        yielded = True
+        yield path
 
     if not yielded:
         msg = (
@@ -622,11 +1046,48 @@ def find_file_iter(
         raise LookupError(f"\n\n{div}\n{msg}\n{div}")
 
 
+def _reject_cwd_relative_bare_match(filename, matches, kind):
+    """Filter out an untrusted CWD-relative match for a bare tool name.
+
+    ``find_file_iter`` probes the current working directory for a bare
+    ``filename`` before the configured env vars / searchpath, so a planted
+    ``./<name>`` or ``./<name>/<name>`` is returned first and, because a returned
+    relative path is later run or loaded relative to the CWD, an attacker who can
+    write to the CWD chooses the tool (CWE-426 / CWE-427). ``find_binary``
+    already refuses this; ``find_file`` / ``find_dir`` did not.
+
+    Only a *bare* name (no directory component) is filtered, and only when the
+    match is not absolute: a caller who passed ``tools/maltparser`` or an
+    absolute path made an explicit choice and is honoured. An env var or
+    searchpath hit is absolute, so it survives.
+    """
+    if os.path.dirname(filename) != "":
+        yield from matches
+        return
+    found_untrusted = False
+    for match in matches:
+        if not os.path.isabs(match):
+            found_untrusted = True
+            continue
+        yield match
+    if found_untrusted:
+        raise LookupError(
+            f"NLTK found {kind} {filename!r} only in the current working "
+            "directory, which is not a trusted location. Install it on a "
+            "configured search path, set the relevant environment variable, or "
+            "pass an absolute path."
+        )
+
+
 def find_file(
     filename, env_vars=(), searchpath=(), file_names=None, url=None, verbose=False
 ):
     return next(
-        find_file_iter(filename, env_vars, searchpath, file_names, url, verbose)
+        _reject_cwd_relative_bare_match(
+            filename,
+            find_file_iter(filename, env_vars, searchpath, file_names, url, verbose),
+            "file",
+        )
     )
 
 
@@ -634,8 +1095,18 @@ def find_dir(
     filename, env_vars=(), searchpath=(), file_names=None, url=None, verbose=False
 ):
     return next(
-        find_file_iter(
-            filename, env_vars, searchpath, file_names, url, verbose, finding_dir=True
+        _reject_cwd_relative_bare_match(
+            filename,
+            find_file_iter(
+                filename,
+                env_vars,
+                searchpath,
+                file_names,
+                url,
+                verbose,
+                finding_dir=True,
+            ),
+            "directory",
         )
     )
 
@@ -660,9 +1131,38 @@ def find_binary_iter(
     :param url: URL presented to user for download help.
     :param verbose: Whether or not to print path when a file is found.
     """
-    yield from find_file_iter(
+    # Searching by a *bare* tool name (no explicit ``path_to_bin`` and no
+    # directory component in ``name``) is the insecure case: ``find_file_iter``
+    # probes the current working directory for ``<name>/<name>`` and the bare
+    # name before the configured ``env_vars`` / ``searchpath``, so a planted
+    # ``./<name>/...`` could be returned and -- because it contains a separator
+    # -- run relative to the CWD rather than looked up on PATH: arbitrary code
+    # execution (CWE-426 / CWE-427). Only in that case do we refuse CWD-relative
+    # matches and accept solely a trusted absolute location (env var / searchpath
+    # / ``which``). A path with a directory component (e.g. ``tools/prover9`` or
+    # ``/usr/bin/java``), via ``name`` or ``path_to_bin``, is the caller's explicit
+    # choice and is honored. A *bare* tool name is NOT an explicit path even when
+    # passed as ``path_to_bin`` (a bare ``bin="java"`` would otherwise let a planted
+    # ``./java/java`` hijack it), so it triggers the refusal too; an empty
+    # ``path_to_bin`` falls back to ``name`` through ``path_to_bin or name``.
+    searching_bare_name = os.path.dirname(path_to_bin or name) == ""
+    safe_match = False
+    for path in find_file_iter(
         path_to_bin or name, env_vars, searchpath, binary_names, url, verbose
-    )
+    ):
+        if searching_bare_name and not os.path.isabs(path):
+            continue
+        safe_match = True
+        yield path
+    if searching_bare_name and not safe_match:
+        # ``find_file_iter`` itself raises ``LookupError`` when nothing matches,
+        # so reaching here means it found only untrusted CWD-relative
+        # executables, which were rejected above.
+        raise LookupError(
+            f"NLTK found {name!r} only in the current working directory, which "
+            "is not a trusted location for executables. Install it on PATH or in "
+            "a configured location, or pass an explicit path_to_bin."
+        )
 
 
 def find_binary(
@@ -679,6 +1179,106 @@ def find_binary(
             name, path_to_bin, env_vars, searchpath, binary_names, url, verbose
         )
     )
+
+
+def find_binary_absolute(
+    name,
+    path_to_bin=None,
+    env_vars=(),
+    searchpath=(),
+    binary_names=None,
+    url=None,
+    verbose=False,
+):
+    """Like :func:`find_binary`, but return only an *absolute* match with no
+    parent-directory component.
+
+    A relative match resolves against the current working directory, so a
+    wrapper that runs the result through ``subprocess.Popen`` would execute a
+    binary planted in an attacker-writable directory (an untrusted search path,
+    CWE-426 / CWE-427). ``find_binary_iter`` already refuses a bare name that
+    resolves only in the CWD, but an explicit *relative* ``path_to_bin`` (e.g.
+    ``"tools/prover9"``) is honored there as the caller's choice, which is unsafe
+    for something about to be executed; and a relative location joined onto a
+    trusted directory can climb back out of it (``"/trusted/../cwd/prover9"`` is
+    absolute and is the CWD file), so a ``..`` component is refused as well.
+    Tool wrappers (prover9/mace, megam, tadm, java, hunpos; cf. Boxer/Malt/REPP)
+    therefore accept only an absolute location: an absolute ``path_to_bin``, an
+    env var, or a ``$PATH`` lookup, none of which resolve against the CWD.
+
+    ``path_to_bin`` (str, bytes or path-like) and every candidate the finder
+    yields go through :func:`_tool_location`: the same materialisation and name
+    checks pathsec applies to every model and tool path, so a lying ``str``
+    subclass, a NUL or control character, a ``..`` component, a URL, a UNC
+    share or a ``~`` never reaches the filesystem or the spawn. A hostile
+    candidate is skipped; a hostile ``path_to_bin`` is refused outright.
+    """
+    if path_to_bin is not None:
+        path_to_bin = _tool_location(path_to_bin, "binary location") or None
+    for path in find_binary_iter(
+        name, path_to_bin, env_vars, searchpath, binary_names, url, verbose
+    ):
+        try:
+            path = _tool_location(path, "binary location")
+            if not path or not os.path.isabs(path):
+                continue
+            # the name checks every model and tool path gets: no '..', control
+            # character, URL, UNC share, Windows device or trailing dot/space
+            _reject_bad_name_syntax(path, "binary location", error=LookupError)
+        except LookupError:
+            continue  # a hostile candidate is skipped, not the whole search
+        # normalised only now: with no '..' left, normpath is purely lexical
+        return os.path.normpath(path)
+    raise LookupError(
+        f"No absolute {name!r} binary found; a binary found relative to the "
+        "current working directory, or through a '..' component, is refused "
+        "(untrusted search path). Pass an absolute path_to_bin without '..', or "
+        "set the tool's env var / searchpath to an absolute location."
+    )
+
+
+def absolute_tool_dir(location, what="tool"):
+    """Return *location* as a normalised absolute directory, or raise
+    :class:`LookupError`. A relative location resolves against the CWD and a
+    ``..`` component can climb out of a trusted directory, so a wrapper that
+    spawns ``<location>/<binary>`` accepts neither (CWE-426 / CWE-427); the
+    location goes through :func:`_tool_location` first and must exist as a
+    directory.
+    """
+    text = _tool_location(location, f"{what} directory")
+    if not text or not os.path.isabs(text):
+        raise LookupError(
+            f"A {what} directory must be an absolute path without '..', not "
+            f"{text!r} (untrusted search path)."
+        )
+    # the name checks every model and tool path gets: no '..', control
+    # character, URL, UNC share, Windows device or trailing dot/space
+    _reject_bad_name_syntax(text, f"{what} directory", error=LookupError)
+    text = os.path.normpath(text)
+    if not os.path.isdir(text):
+        raise LookupError(f"{what} directory not found: {text!r}")
+    return text
+
+
+def _tool_location(location, what):
+    """A plain ``str`` copy of a tool *location* (str, bytes or path-like),
+    raising :class:`LookupError` for a value that cannot be one; a blank
+    location comes back as ``""`` (the finder's "not given").
+
+    The real characters are copied out of a ``str`` subclass so its methods are
+    never consulted (:func:`nltk.pathsec._as_path_text`, the same step every
+    model and tool path gets), and a NUL is refused here rather than raised as
+    a ValueError from the filesystem. Nothing else is judged at this point: a
+    location is only ever a search key, and it is each absolute candidate the
+    search yields that must pass :func:`nltk.pathsec._reject_bad_name_syntax`
+    before it is returned (a relative one is never returned at all).
+    """
+    text = _as_path_text(location, what, error=LookupError)
+    if not text.strip():
+        return ""
+    if "\x00" in text:
+        raise LookupError(f"Security Violation [{what}]: {text!r} contains a NUL byte.")
+    return text
 
 
 def find_jar_iter(
@@ -703,6 +1303,8 @@ def find_jar_iter(
     """
 
     assert isinstance(name_pattern, str)
+    # caller regex (when is_regex): bound compile + match time
+    name_rx = redos.compile(name_pattern) if is_regex else None
     assert not isinstance(searchpath, str)
     if isinstance(env_vars, str):
         env_vars = env_vars.split()
@@ -733,11 +1335,11 @@ def find_jar_iter(
                         filename = os.path.basename(cp)
                         if (
                             is_regex
-                            and re.match(name_pattern, filename)
+                            and name_rx.match(filename)
                             or (not is_regex and filename == name_pattern)
                         ):
                             if verbose:
-                                print(f"[Found {name_pattern}: {cp}]")
+                                safe_print(f"[Found {name_pattern}: {cp}]")
                             yielded = True
                             yield cp
                     # The case where user put directory containing the jar file in the classpath
@@ -745,15 +1347,15 @@ def find_jar_iter(
                         if not is_regex:
                             if os.path.isfile(os.path.join(cp, name_pattern)):
                                 if verbose:
-                                    print(f"[Found {name_pattern}: {cp}]")
+                                    safe_print(f"[Found {name_pattern}: {cp}]")
                                 yielded = True
                                 yield os.path.join(cp, name_pattern)
                         else:
                             # Look for file using regular expression
                             for file_name in os.listdir(cp):
-                                if re.match(name_pattern, file_name):
+                                if name_rx.match(file_name):
                                     if verbose:
-                                        print(
+                                        safe_print(
                                             "[Found %s: %s]"
                                             % (
                                                 name_pattern,
@@ -778,11 +1380,11 @@ def find_jar_iter(
                         filename = os.path.basename(path_to_jar)
                         if (
                             is_regex
-                            and re.match(name_pattern, filename)
+                            and name_rx.match(filename)
                             or (not is_regex and filename == name_pattern)
                         ):
                             if verbose:
-                                print(f"[Found {name_pattern}: {path_to_jar}]")
+                                safe_print(f"[Found {name_pattern}: {path_to_jar}]")
                             yielded = True
                             yield path_to_jar
 
@@ -791,17 +1393,19 @@ def find_jar_iter(
         if is_regex:
             for filename in os.listdir(directory):
                 path_to_jar = os.path.join(directory, filename)
-                if os.path.isfile(path_to_jar):
-                    if re.match(name_pattern, filename):
-                        if verbose:
-                            print(f"[Found {filename}: {path_to_jar}]")
-                yielded = True
-                yield path_to_jar
+                # Only yield an actual file whose name matches the pattern; the
+                # yield was previously outside both guards, returning every dir
+                # entry (subdirs / unrelated files) as if it were the jar.
+                if os.path.isfile(path_to_jar) and name_rx.match(filename):
+                    if verbose:
+                        safe_print(f"[Found {filename}: {path_to_jar}]")
+                    yielded = True
+                    yield path_to_jar
         else:
             path_to_jar = os.path.join(directory, name_pattern)
             if os.path.isfile(path_to_jar):
                 if verbose:
-                    print(f"[Found {name_pattern}: {path_to_jar}]")
+                    safe_print(f"[Found {name_pattern}: {path_to_jar}]")
                 yielded = True
                 yield path_to_jar
 
@@ -914,14 +1518,19 @@ class ElementWrapper:
         Initialize a new Element wrapper for ``etree``.
 
         If ``etree`` is a string, then it will be converted to an
-        Element object using ``ElementTree.fromstring()`` first:
+        Element object using ``nltk.xmlsec.fromstring()`` first, which
+        refuses documents that declare XML entities:
 
             >>> ElementWrapper("<test></test>")
             <Element "<?xml version='1.0' encoding='utf8'?>\n<test />">
 
         """
         if isinstance(etree, str):
-            etree = ElementTree.fromstring(etree)
+            # nltk.xmlsec refuses entity declarations, so a hostile string
+            # cannot expand to exhaust memory (CWE-776).
+            from nltk.xmlsec import fromstring as safe_fromstring
+
+            etree = safe_fromstring(etree)
         self.__dict__["_etree"] = etree
 
     def unwrap(self):

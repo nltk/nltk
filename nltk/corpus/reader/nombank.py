@@ -1,18 +1,18 @@
 # Natural Language Toolkit: NomBank Corpus Reader
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Authors: Paul Bedaride <paul.bedaride@gmail.com>
 #          Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 from functools import total_ordering
-from xml.etree import ElementTree
 
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
 from nltk.internals import raise_unorderable_types
 from nltk.tree import Tree
+from nltk.xmlsec import parse as safe_parse
 
 
 class NombankCorpusReader(CorpusReader):
@@ -108,7 +108,7 @@ class NombankCorpusReader(CorpusReader):
         # n.b.: The encoding for XML fileids is specified by the file
         # itself; so we ignore self._encoding here.
         with self.abspath(framefile).open() as fp:
-            etree = ElementTree.parse(fp).getroot()
+            etree = safe_parse(fp).getroot()
         for roleset in etree.findall("predicate/roleset"):
             if roleset.attrib["id"] == roleset_id:
                 return roleset
@@ -131,7 +131,7 @@ class NombankCorpusReader(CorpusReader):
             # n.b.: The encoding for XML fileids is specified by the file
             # itself; so we ignore self._encoding here.
             with self.abspath(framefile).open() as fp:
-                etree = ElementTree.parse(fp).getroot()
+                etree = safe_parse(fp).getroot()
             rsets.append(etree.findall("predicate/roleset"))
         return LazyConcatenation(rsets)
 
@@ -278,19 +278,33 @@ class NombankInstance:
         if parse_fileid_xform is not None:
             fileid = parse_fileid_xform(fileid)
 
-        # Convert sentence & word numbers to ints.
-        sentnum = int(sentnum)
-        wordnum = int(wordnum)
+        # Convert sentence & word numbers to ints. A non-numeric field would
+        # otherwise raise a cryptic ValueError that aborts iteration over the
+        # whole corpus; fail with the same clear message as the checks above.
+        try:
+            sentnum = int(sentnum)
+            wordnum = int(wordnum)
+        except ValueError:
+            raise ValueError("Badly formatted nombank line: %r" % s) from None
 
-        # Parse the predicate location.
-
-        predloc, predid = rel[0].split("-", 1)
+        # Parse the predicate location. (The rel field always contains "-rel",
+        # so the split is defensive, but check it so a future change to the
+        # rel selection can't crash with a cryptic unpacking error.)
+        pred_pieces = rel[0].split("-", 1)
+        if len(pred_pieces) != 2:
+            raise ValueError("Badly formatted nombank line: %r" % s)
+        predloc, predid = pred_pieces
         predicate = NombankTreePointer.parse(predloc)
 
         # Parse the arguments.
         arguments = []
         for arg in args:
-            argloc, argid = arg.split("-", 1)
+            arg_pieces = arg.split("-", 1)
+            # An argument missing its "-" separator would otherwise raise a
+            # cryptic unpacking ValueError that aborts the whole-corpus iteration.
+            if len(arg_pieces) != 2:
+                raise ValueError("Badly formatted nombank line: %r" % s)
+            argloc, argid = arg_pieces
             arguments.append((NombankTreePointer.parse(argloc), argid))
 
         # Put it all together.

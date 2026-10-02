@@ -1,6 +1,6 @@
 # Natural Language Toolkit: XML Corpus Reader
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -12,13 +12,23 @@ Corpus reader for corpora whose documents are xml files.
 """
 
 import codecs
-from xml.etree import ElementTree
 
+from nltk import redos
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import *
 from nltk.data import SeekableUnicodeStreamReader
 from nltk.internals import ElementWrapper
+from nltk.pathsec import open as pathsec_open
+from nltk.termsec import safe_print
 from nltk.tokenize import WordPunctTokenizer
+
+# Parse untrusted corpus XML through nltk.xmlsec, which forbids the custom-entity
+# definitions used by XML entity-expansion (Billion Laughs, CWE-776) attacks
+# while leaving ordinary XML (including the standard &amp; &lt; ... entities)
+# unaffected. See issue #3545 / PR #3544, which applied the same guard to the
+# downloader's remote index.
+from nltk.xmlsec import fromstring as safe_fromstring
+from nltk.xmlsec import parse as safe_parse
 
 
 class XMLCorpusReader(CorpusReader):
@@ -40,9 +50,9 @@ class XMLCorpusReader(CorpusReader):
             fileid = self._fileids[0]
         if not isinstance(fileid, str):
             raise TypeError("Expected a single file identifier string")
-        # Read the XML in using ElementTree.
+        # Read the XML in through nltk.xmlsec: entities refused, tree bounded.
         with self.abspath(fileid).open() as fp:
-            elt = ElementTree.parse(fp).getroot()
+            elt = safe_parse(fp).getroot()
         # If requested, wrap it.
         if self._wrap_etree:
             elt = ElementWrapper(elt)
@@ -138,7 +148,7 @@ class XMLCorpusView(StreamBackedCorpusView):
         if elt_handler:
             self.handle_elt = elt_handler
 
-        self._tagspec = re.compile(tagspec + r"\Z")
+        self._tagspec = redos.compile(tagspec + r"\Z")  # bound compile + match time
         """The tag specification for this corpus view."""
 
         self._tag_context = {0: ()}
@@ -158,7 +168,18 @@ class XMLCorpusView(StreamBackedCorpusView):
             finally:
                 infile.close()
         else:
-            with open(fileid, "rb") as infile:
+            # A bare string fileid bypasses the PathPointer containment that the
+            # branch above enforces; open through pathsec (containment plus
+            # O_NOFOLLOW / hardlink guards) so a symlink/hardlink cannot resolve
+            # outside (CWE-59, GHSA-934p / GHSA-p4rw). A view does not always
+            # carry its root, so fall back to the global data-root sandbox when
+            # it is absent.
+            with pathsec_open(
+                fileid,
+                "rb",
+                context="XMLCorpusReader",
+                required_root=getattr(self, "_root", None),
+            ) as infile:
                 s = infile.readline()
         if s.startswith(codecs.BOM_UTF16_BE):
             return "utf-16-be"
@@ -170,10 +191,10 @@ class XMLCorpusView(StreamBackedCorpusView):
             return "utf-32-le"
         if s.startswith(codecs.BOM_UTF8):
             return "utf-8"
-        m = re.match(rb'\s*<\?xml\b.*\bencoding="([^"]+)"', s)
+        m = redos.match(rb'\s*<\?xml\b.*\bencoding="([^"]+)"', s)
         if m:
             return m.group(1).decode()
-        m = re.match(rb"\s*<\?xml\b.*\bencoding='([^']+)'", s)
+        m = redos.match(rb"\s*<\?xml\b.*\bencoding='([^']+)'", s)
         if m:
             return m.group(1).decode()
         # No encoding found -- what should the default be?
@@ -203,13 +224,26 @@ class XMLCorpusView(StreamBackedCorpusView):
 
     #: A regular expression that matches XML fragments that do not
     #: contain any un-closed tags.
-    _VALID_XML_RE = re.compile(
+    #
+    # Each delimited alternative is pinned to its own terminator so it cannot
+    # span across it: the comment body is "any run that does not start ``-->``"
+    # and the CDATA body "any run that does not start ``]]>``", rather than a
+    # lazy ``.*?`` which, with re.DOTALL, matches across the terminator and so
+    # spans several comments/sections. The lazy form makes the repeated group
+    # ambiguous: when the final ``\Z`` fails (e.g. the fragment ends with an
+    # unterminated comment) the engine tries exponentially many ways to
+    # partition the input -- a catastrophic-backtracking ReDoS (CWE-1333).
+    # Likewise the doctype's pre-subset run excludes ``>``. Pinning each piece
+    # to its first terminator keeps validation linear while matching the same
+    # well-formed fragments. (The CDATA brackets are also escaped so they match
+    # a literal ``<![CDATA[`` rather than being read as a character class.)
+    _VALID_XML_RE = redos.compile(
         r"""
         [^<]*
         (
-          ((<!--.*?-->)                         |  # comment
-           (<![CDATA[.*?]])                     |  # raw character data
-           (<!DOCTYPE\s+[^\[]*(\[[^\]]*])?\s*>) |  # doctype decl
+          ((<!--(?:(?!-->).)*-->)              |  # comment
+           (<!\[CDATA\[(?:(?!\]\]>).)*\]\]>)     |  # raw character data
+           (<!DOCTYPE\s+[^\[>]*(\[[^\]]*])?\s*>) |  # doctype decl
            (<[^!>][^>]*>))                         # tag or PI
           [^<]*)*
         \Z""",
@@ -218,17 +252,17 @@ class XMLCorpusView(StreamBackedCorpusView):
 
     #: A regular expression used to extract the tag name from a start tag,
     #: end tag, or empty-elt tag string.
-    _XML_TAG_NAME = re.compile(r"<\s*(?:/\s*)?([^\s>]+)")
+    _XML_TAG_NAME = redos.compile(r"<\s*(?:/\s*)?([^\s>]+)")
 
     #: A regular expression used to find all start-tags, end-tags, and
     #: empty-elt tags in an XML file.  This regexp is more lenient than
     #: the XML spec -- e.g., it allows spaces in some places where the
     #: spec does not.
-    _XML_PIECE = re.compile(
+    _XML_PIECE = redos.compile(
         r"""
         # Include these so we can skip them:
         (?P<COMMENT>        <!--.*?-->                          )|
-        (?P<CDATA>          <![CDATA[.*?]]>                     )|
+        (?P<CDATA>          <!\[CDATA\[.*?\]\]>                 )|
         (?P<PI>             <\?.*?\?>                           )|
         (?P<DOCTYPE>        <!DOCTYPE\s+[^\[^>]*(\[[^\]]*])?\s*>)|
         # These are the ones we actually care about:
@@ -248,22 +282,39 @@ class XMLCorpusView(StreamBackedCorpusView):
         another block.
         """
         fragment = ""
+        # Track whether the fragment currently ends inside an unterminated
+        # '<...' tag, updated over just the newly-read block. While it does, the
+        # fragment can never be well-formed, so the ``_VALID_XML_RE`` match below
+        # (which backtracks over ``[^>]*`` across the whole buffer looking for a
+        # '>') is skipped -- re-running it on every 1 KiB block otherwise makes a
+        # single oversized tag O(n^2) (CWE-407). Skipping it is behaviour-
+        # preserving: an in-tag fragment always fails that match anyway.
+        in_tag = False
+        last_lt = -1  # absolute index in ``fragment`` of the most recent '<'
 
         if isinstance(stream, SeekableUnicodeStreamReader):
             startpos = stream.tell()
+        read_size = self._BLOCK_SIZE
         while True:
             # Read a block and add it to the fragment.
-            xml_block = stream.read(self._BLOCK_SIZE)
+            block_start = len(fragment)
+            xml_block = stream.read(read_size)
             fragment += xml_block
+            for offset, ch in enumerate(xml_block):
+                if ch == "<":
+                    in_tag = True
+                    last_lt = block_start + offset
+                elif ch == ">":
+                    in_tag = False
 
             # Do we have a well-formed xml fragment?
-            if self._VALID_XML_RE.match(fragment):
+            if not in_tag and self._VALID_XML_RE.match(fragment):
                 return fragment
 
             # Do we have a fragment that will never be well-formed?
-            if re.search("[<>]", fragment).group(0) == ">":
+            if redos.search("[<>]", fragment).group(0) == ">":
                 pos = stream.tell() - (
-                    len(fragment) - re.search("[<>]", fragment).end()
+                    len(fragment) - redos.search("[<>]", fragment).end()
                 )
                 raise ValueError('Unexpected ">" near char %s' % pos)
 
@@ -272,9 +323,11 @@ class XMLCorpusView(StreamBackedCorpusView):
                 raise ValueError("Unexpected end of file: tag not closed")
 
             # If not, then we must be in the middle of a <..tag..>.
-            # If appropriate, backtrack to the most recent '<'
-            # character.
-            last_open_bracket = fragment.rfind("<")
+            # If appropriate, backtrack to the most recent '<' character. Use
+            # the incrementally-tracked index rather than ``fragment.rfind('<')``
+            # so this stays O(1) per block instead of re-scanning the whole
+            # growing buffer (CWE-407).
+            last_open_bracket = last_lt
             if last_open_bracket > 0:
                 if self._VALID_XML_RE.match(fragment[:last_open_bracket]):
                     if isinstance(stream, SeekableUnicodeStreamReader):
@@ -284,8 +337,10 @@ class XMLCorpusView(StreamBackedCorpusView):
                         stream.seek(-(len(fragment) - last_open_bracket), 1)
                     return fragment[:last_open_bracket]
 
-            # Otherwise, read another block. (i.e., return to the
-            # top of the loop.)
+            # Grow the read window exponentially before the next block so the
+            # whole-buffer match/search re-scans stay O(log n) passes, as in
+            # read_sexpr_block; return paths seek back so the over-read is safe.
+            read_size *= 2
 
     def read_block(self, stream, tagspec=None, elt_handler=None):
         """
@@ -295,6 +350,8 @@ class XMLCorpusView(StreamBackedCorpusView):
         """
         if tagspec is None:
             tagspec = self._tagspec
+        if isinstance(tagspec, str):
+            tagspec = redos.compile(tagspec)  # caller-passed raw tagspec: bound both
         if elt_handler is None:
             elt_handler = self.handle_elt
 
@@ -323,7 +380,9 @@ class XMLCorpusView(StreamBackedCorpusView):
             # Process each <tag> in the xml fragment.
             for piece in self._XML_PIECE.finditer(xml_fragment):
                 if self._DEBUG:
-                    print("{:>25} {}".format("/".join(context)[-20:], piece.group()))
+                    safe_print(
+                        "{:>25} {}".format("/".join(context)[-20:], piece.group())
+                    )
 
                 if piece.group("START_TAG"):
                     name = self._XML_TAG_NAME.match(piece.group()).group(1)
@@ -331,7 +390,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                     context.append(name)
                     # Is this one of the elts we're looking for?
                     if elt_start is None:
-                        if re.match(tagspec, "/".join(context)):
+                        if tagspec.match("/".join(context)):
                             elt_start = piece.start()
                             elt_depth = len(context)
 
@@ -354,7 +413,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                 elif piece.group("EMPTY_ELT_TAG"):
                     name = self._XML_TAG_NAME.match(piece.group()).group(1)
                     if elt_start is None:
-                        if re.match(tagspec, "/".join(context) + "/" + name):
+                        if tagspec.match("/".join(context) + "/" + name):
                             elts.append((piece.group(), "/".join(context) + "/" + name))
 
             if elt_start is not None:
@@ -371,7 +430,7 @@ class XMLCorpusView(StreamBackedCorpusView):
                     # take back the last start-tag, and return what
                     # we've gotten so far (elts is non-empty).
                     if self._DEBUG:
-                        print(" " * 36 + "(backtrack)")
+                        safe_print(" " * 36 + "(backtrack)")
                     if isinstance(stream, SeekableUnicodeStreamReader):
                         stream.seek(startpos)
                         stream.char_seek_forward(elt_start)
@@ -390,7 +449,7 @@ class XMLCorpusView(StreamBackedCorpusView):
 
         return [
             elt_handler(
-                ElementTree.fromstring(elt.encode("ascii", "xmlcharrefreplace")),
+                safe_fromstring(elt.encode("ascii", "xmlcharrefreplace")),
                 context,
             )
             for (elt, context) in elts

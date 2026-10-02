@@ -1,6 +1,6 @@
 # Natural Language Toolkit: WordNet
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Bethard <Steven.Bethard@colorado.edu>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
@@ -32,17 +32,18 @@ https://omwn.org/
 
 import math
 import os
-import re
 import warnings
 from collections import defaultdict, deque
 from functools import total_ordering
 from itertools import chain, islice
 from operator import itemgetter
 
+from nltk import redos
 from nltk.corpus.reader import CorpusReader
 from nltk.internals import deprecated
 from nltk.probability import FreqDist
 from nltk.tag import map_tag
+from nltk.termsec import safe_print, sanitize_terminal
 from nltk.util import binary_search_file as _binary_search_file
 
 ######################################################################
@@ -119,7 +120,7 @@ VERB_FRAME_STRINGS = (
     "Somebody %s out of somebody",
 )
 
-SENSENUM_RE = re.compile(r"\.[\d]+\.")
+SENSENUM_RE = redos.compile(r"\.[\d]+\.")
 
 
 ######################################################################
@@ -211,12 +212,13 @@ class _WordNetObject:
         return hash(self._name)
 
     def __eq__(self, other):
+        if not isinstance(other, _WordNetObject):
+            return NotImplemented
         return self._name == other._name
 
-    def __ne__(self, other):
-        return self._name != other._name
-
     def __lt__(self, other):
+        if not isinstance(other, _WordNetObject):
+            return NotImplemented
         return self._name < other._name
 
 
@@ -912,11 +914,12 @@ class Synset(_WordNetObject):
             )
 
         need_root = self._needs_root()
+        key = (self._pos, need_root)
 
-        if self._pos not in self._wordnet_corpus_reader._max_depth:
+        if key not in self._wordnet_corpus_reader._max_depth:
             self._wordnet_corpus_reader._compute_max_depth(self._pos, need_root)
 
-        depth = self._wordnet_corpus_reader._max_depth[self._pos]
+        depth = self._wordnet_corpus_reader._max_depth[key]
 
         distance = self.shortest_path_distance(
             other, simulate_root=simulate_root and need_root
@@ -1168,9 +1171,9 @@ class WordNetCorpusReader(CorpusReader):
         # Map from pos -> offset -> synset
         self._synset_offset_cache = defaultdict(dict)
 
-        # A lookup for the maximum depth of each part of speech.  Useful for
-        # the lch similarity metric.
-        self._max_depth = defaultdict(dict)
+        # A cache for the maximum depth used by the lch similarity metric.
+        # Keyed by (pos, need_root), where need_root indicates whether a simulated root is required..
+        self._max_depth = {}
 
         # Corpus reader containing omw data.
         self._omw_reader = omw_reader
@@ -1474,24 +1477,31 @@ class WordNetCorpusReader(CorpusReader):
 
     def _compute_max_depth(self, pos, simulate_root):
         """
-        Compute the max depth for the given part of speech.  This is
+        Compute the max depth for the given part of speech. This is
         used by the lch similarity metric.
         """
+        key = (pos, simulate_root)
+        if key in self._max_depth:
+            return self._max_depth[key]
+
         depth = 0
-        for ii in self.all_synsets(pos):
+        for ss in self.all_synsets(pos):
             try:
-                depth = max(depth, ii.max_depth())
+                depth = max(depth, ss.max_depth())
             except RuntimeError:
-                print(ii)
+                safe_print(ss)
+
         if simulate_root:
             depth += 1
-        self._max_depth[pos] = depth
+
+        self._max_depth[key] = depth
+        return depth
 
     def get_version(self):
         fh = self._data_file(ADJ)
         fh.seek(0)
         for line in fh:
-            match = re.search(r"Word[nN]et (\d+\+?|\d+\.\d+) Copyright", line)
+            match = redos.search(r"Word[nN]et (\d+\+?|\d+\.\d+) Copyright", line)
             if match is not None:
                 version = match.group(1)
                 fh.seek(0)
@@ -1615,7 +1625,10 @@ class WordNetCorpusReader(CorpusReader):
             self._synset_offset_cache[pos][offset] = synset
         else:
             synset = None
-            warnings.warn(f"No WordNet synset found for pos={pos} at offset={offset}.")
+            warnings.warn(
+                f"No WordNet synset found for pos={sanitize_terminal(pos)} "
+                f"at offset={sanitize_terminal(offset)}."
+            )
         data_file.seek(0)
         return synset
 
@@ -1636,8 +1649,8 @@ class WordNetCorpusReader(CorpusReader):
         try:
             # parse out the definitions and examples from the gloss
             columns_str, gloss = data_file_line.strip().split("|")
-            definition = re.sub(r"[\"].*?[\"]", "", gloss).strip()
-            examples = re.findall(r'"([^"]*)"', gloss)
+            definition = redos.sub(r"[\"].*?[\"]", "", gloss).strip()
+            examples = redos.findall(r'"([^"]*)"', gloss)
             for example in examples:
                 synset._examples.append(example)
 
@@ -1667,7 +1680,7 @@ class WordNetCorpusReader(CorpusReader):
                 # get the lex_id (used for sense_keys)
                 lex_id = int(_next_token(), 16)
                 # If the lemma has a syntactic marker, extract it.
-                m = re.match(r"(.*?)(\(.*\))?$", lemma_name)
+                m = redos.match(r"(.*?)(\(.*\))?$", lemma_name)
                 lemma_name, syn_mark = m.groups()
                 # create the lemma object
                 lemma = Lemma(self, synset, lemma_name, lexname_index, lex_id, syn_mark)
@@ -2282,7 +2295,7 @@ class WordNetCorpusReader(CorpusReader):
                             not in self.nomap["wordnet"]
                         ):
                             warnings.warn(
-                                f"{lang}: invalid offset {offset_pos} in '{line}'"
+                                f"{sanitize_terminal(lang)}: invalid offset {sanitize_terminal(offset_pos)} in '{sanitize_terminal(line)}'"
                             )
                         continue
                 elif offset_pos[-1] == "a":
@@ -2516,7 +2529,7 @@ def _lcs_ic(synset1, synset2, ic, verbose=False):
         subsumer_ic = max(information_content(s, ic) for s in subsumers)
 
     if verbose:
-        print("> LCS Subsumer by content:", subsumer_ic)
+        safe_print("> LCS Subsumer by content:", subsumer_ic)
 
     return ic1, ic2, subsumer_ic
 

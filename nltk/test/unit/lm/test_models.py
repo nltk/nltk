@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Language Model Unit Tests
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -609,3 +609,19 @@ def test_generate_None_text_seed(mle_trigram_model):
     assert mle_trigram_model.generate(
         text_seed=None, random_seed=3
     ) == mle_trigram_model.generate(random_seed=3)
+
+
+def test_stupid_backoff_unigram_long_context_matches_empty_context(vocabulary):
+    model = StupidBackoff(order=1, vocabulary=vocabulary)
+    model.fit([[("a",)], [("b",)], [("a",)]])
+
+    long_context = tuple("x" for _ in range(10000))
+    assert model.score("a", long_context) == model.score("a", ())
+
+
+def test_witten_bell_unigram_long_context_matches_empty_context(vocabulary):
+    model = WittenBellInterpolated(order=1, vocabulary=vocabulary)
+    model.fit([[("a",)], [("b",)], [("a",)]])
+
+    long_context = tuple("x" for _ in range(10000))
+    assert model.score("a", long_context) == model.score("a", ())

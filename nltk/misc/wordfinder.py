@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Word Finder
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -9,6 +9,8 @@
 # http://fswordfinder.sourceforge.net/
 
 import random
+
+from nltk.termsec import safe_print
 
 
 # reverse a word with probability 0.5
@@ -124,15 +126,15 @@ def word_finder():
     wordlist = [w for w in wordlist if 3 <= len(w) <= 12]
     grid, used = wordfinder(wordlist)
 
-    print("Word Finder\n")
+    safe_print("Word Finder\n")
     for i in range(len(grid)):
         for j in range(len(grid[i])):
-            print(grid[i][j], end=" ")
-        print()
-    print()
+            safe_print(grid[i][j], end=" ")
+        safe_print()
+    safe_print()
 
     for i in range(len(used)):
-        print("%d:" % (i + 1), used[i])
+        safe_print("%d:" % (i + 1), used[i])
 
 
 if __name__ == "__main__":

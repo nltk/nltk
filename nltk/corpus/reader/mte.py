@@ -6,8 +6,11 @@ import os
 import re
 from functools import reduce
 
+from nltk import redos
 from nltk.corpus.reader import TaggedCorpusReader, concat
 from nltk.corpus.reader.xmldocs import XMLCorpusView
+from nltk.pathsec import validate_path
+from nltk.termsec import safe_print
 
 
 def xpath(root, path, ns):
@@ -48,34 +51,42 @@ class MTEFileReader:
     sent_path = "TEI/text/body/div/div/p/s"
     para_path = "TEI/text/body/div/div/p"
 
-    def __init__(self, file_path):
+    def __init__(self, file_path, required_root=None):
+        validate_path(
+            file_path, context="MTEFileReader.__init__", required_root=required_root
+        )
         self.__file_path = file_path
+        self._required_root = required_root
+        self._tagset = "msd"
+        self._tags = ""
 
-    @classmethod
-    def _word_elt(cls, elt, context):
+    def _word_elt(self, elt, context):
         return elt.text
 
-    @classmethod
-    def _sent_elt(cls, elt, context):
-        return [cls._word_elt(w, None) for w in xpath(elt, "*", cls.ns)]
+    def _sent_elt(self, elt, context):
+        return [self._word_elt(w, None) for w in xpath(elt, "*", self.ns)]
 
-    @classmethod
-    def _para_elt(cls, elt, context):
-        return [cls._sent_elt(s, None) for s in xpath(elt, "*", cls.ns)]
+    def _para_elt(self, elt, context):
+        return [self._sent_elt(s, None) for s in xpath(elt, "*", self.ns)]
 
-    @classmethod
-    def _tagged_word_elt(cls, elt, context):
+    def _tagged_word_elt(self, elt, context):
         if "ana" not in elt.attrib:
             return (elt.text, "")
 
-        if cls.__tags == "" and cls.__tagset == "msd":
+        if self._tags == "" and self._tagset == "msd":
             return (elt.text, elt.attrib["ana"])
-        elif cls.__tags == "" and cls.__tagset == "universal":
+        elif self._tags == "" and self._tagset == "universal":
             return (elt.text, MTETagConverter.msd_to_universal(elt.attrib["ana"]))
         else:
-            tags = re.compile("^" + re.sub("-", ".", cls.__tags) + ".*$")
+            # ``self._tags`` is a caller MSD tag filter where ``-`` means "any
+            # position"; escape every other char so a metacharacter cannot inject
+            # a different pattern (or an unbalanced ``(`` crash the whole corpus
+            # read), while keeping the intended ``-`` -> ``.`` wildcard.
+            tag_body = "".join("." if c == "-" else re.escape(c) for c in self._tags)
+            tag_src = r"\A" + tag_body + r".*\Z"
+            tags = redos.compile(tag_src)  # caller tags filter: bound compile + match
             if tags.match(elt.attrib["ana"]):
-                if cls.__tagset == "msd":
+                if self._tagset == "msd":
                     return (elt.text, elt.attrib["ana"])
                 else:
                     return (
@@ -85,88 +96,74 @@ class MTEFileReader:
             else:
                 return None
 
-    @classmethod
-    def _tagged_sent_elt(cls, elt, context):
+    def _tagged_sent_elt(self, elt, context):
         return list(
             filter(
                 lambda x: x is not None,
-                [cls._tagged_word_elt(w, None) for w in xpath(elt, "*", cls.ns)],
+                [self._tagged_word_elt(w, None) for w in xpath(elt, "*", self.ns)],
             )
         )
 
-    @classmethod
-    def _tagged_para_elt(cls, elt, context):
+    def _tagged_para_elt(self, elt, context):
         return list(
             filter(
                 lambda x: x is not None,
-                [cls._tagged_sent_elt(s, None) for s in xpath(elt, "*", cls.ns)],
+                [self._tagged_sent_elt(s, None) for s in xpath(elt, "*", self.ns)],
             )
         )
 
-    @classmethod
-    def _lemma_word_elt(cls, elt, context):
+    def _lemma_word_elt(self, elt, context):
         if "lemma" not in elt.attrib:
             return (elt.text, "")
         else:
             return (elt.text, elt.attrib["lemma"])
 
-    @classmethod
-    def _lemma_sent_elt(cls, elt, context):
-        return [cls._lemma_word_elt(w, None) for w in xpath(elt, "*", cls.ns)]
+    def _lemma_sent_elt(self, elt, context):
+        return [self._lemma_word_elt(w, None) for w in xpath(elt, "*", self.ns)]
 
-    @classmethod
-    def _lemma_para_elt(cls, elt, context):
-        return [cls._lemma_sent_elt(s, None) for s in xpath(elt, "*", cls.ns)]
+    def _lemma_para_elt(self, elt, context):
+        return [self._lemma_sent_elt(s, None) for s in xpath(elt, "*", self.ns)]
 
     def words(self):
-        return MTECorpusView(
-            self.__file_path, MTEFileReader.word_path, MTEFileReader._word_elt
-        )
+        return MTECorpusView(self.__file_path, self.word_path, self._word_elt)
 
     def sents(self):
-        return MTECorpusView(
-            self.__file_path, MTEFileReader.sent_path, MTEFileReader._sent_elt
-        )
+        return MTECorpusView(self.__file_path, self.sent_path, self._sent_elt)
 
     def paras(self):
-        return MTECorpusView(
-            self.__file_path, MTEFileReader.para_path, MTEFileReader._para_elt
-        )
+        return MTECorpusView(self.__file_path, self.para_path, self._para_elt)
 
     def lemma_words(self):
-        return MTECorpusView(
-            self.__file_path, MTEFileReader.word_path, MTEFileReader._lemma_word_elt
-        )
-
-    def tagged_words(self, tagset, tags):
-        MTEFileReader.__tagset = tagset
-        MTEFileReader.__tags = tags
-        return MTECorpusView(
-            self.__file_path, MTEFileReader.word_path, MTEFileReader._tagged_word_elt
-        )
+        return MTECorpusView(self.__file_path, self.word_path, self._lemma_word_elt)
 
     def lemma_sents(self):
+        return MTECorpusView(self.__file_path, self.sent_path, self._lemma_sent_elt)
+
+    def lemma_paras(self):
+        return MTECorpusView(self.__file_path, self.para_path, self._lemma_para_elt)
+
+    def tagged_words(self, tagset, tags):
+        view_reader = MTEFileReader(self.__file_path, required_root=self._required_root)
+        view_reader._tagset = tagset
+        view_reader._tags = tags
         return MTECorpusView(
-            self.__file_path, MTEFileReader.sent_path, MTEFileReader._lemma_sent_elt
+            self.__file_path, self.word_path, view_reader._tagged_word_elt
         )
 
     def tagged_sents(self, tagset, tags):
-        MTEFileReader.__tagset = tagset
-        MTEFileReader.__tags = tags
+        view_reader = MTEFileReader(self.__file_path, required_root=self._required_root)
+        view_reader._tagset = tagset
+        view_reader._tags = tags
         return MTECorpusView(
-            self.__file_path, MTEFileReader.sent_path, MTEFileReader._tagged_sent_elt
-        )
-
-    def lemma_paras(self):
-        return MTECorpusView(
-            self.__file_path, MTEFileReader.para_path, MTEFileReader._lemma_para_elt
+            self.__file_path, self.sent_path, view_reader._tagged_sent_elt
         )
 
     def tagged_paras(self, tagset, tags):
-        MTEFileReader.__tagset = tagset
-        MTEFileReader.__tags = tags
+        view_reader = MTEFileReader(self.__file_path, required_root=self._required_root)
+        view_reader._tagset = tagset
+        view_reader._tags = tags
         return MTECorpusView(
-            self.__file_path, MTEFileReader.para_path, MTEFileReader._tagged_para_elt
+            self.__file_path, self.para_path, view_reader._tagged_para_elt
         )
 
 
@@ -239,7 +236,7 @@ class MTECorpusReader(TaggedCorpusReader):
         # filter multext-east sourcefiles that are not compatible to the teip5 specification
         fileids = filter(lambda x: x not in ["oana-bg.xml", "oana-mk.xml"], fileids)
         if not fileids:
-            print("No valid multext-east file specified")
+            safe_print("No valid multext-east file specified")
         return fileids
 
     def words(self, fileids=None):
@@ -250,7 +247,9 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(self._root, f)).words()
+                MTEFileReader(
+                    os.path.join(str(self._root), f), required_root=self._root
+                ).words()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -264,7 +263,9 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(self._root, f)).sents()
+                MTEFileReader(
+                    os.path.join(str(self._root), f), required_root=self._root
+                ).sents()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -278,7 +279,9 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(self._root, f)).paras()
+                MTEFileReader(
+                    os.path.join(str(self._root), f), required_root=self._root
+                ).paras()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -292,7 +295,9 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(self._root, f)).lemma_words()
+                MTEFileReader(
+                    os.path.join(str(self._root), f), required_root=self._root
+                ).lemma_words()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -311,14 +316,14 @@ class MTECorpusReader(TaggedCorpusReader):
         if tagset == "universal" or tagset == "msd":
             return concat(
                 [
-                    MTEFileReader(os.path.join(self._root, f)).tagged_words(
-                        tagset, tags
-                    )
+                    MTEFileReader(
+                        os.path.join(str(self._root), f), required_root=self._root
+                    ).tagged_words(tagset, tags)
                     for f in self.__fileids(fileids)
                 ]
             )
         else:
-            print("Unknown tagset specified.")
+            safe_print("Unknown tagset specified.")
 
     def lemma_sents(self, fileids=None):
         """
@@ -330,7 +335,9 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(self._root, f)).lemma_sents()
+                MTEFileReader(
+                    os.path.join(str(self._root), f), required_root=self._root
+                ).lemma_sents()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -349,14 +356,14 @@ class MTECorpusReader(TaggedCorpusReader):
         if tagset == "universal" or tagset == "msd":
             return concat(
                 [
-                    MTEFileReader(os.path.join(self._root, f)).tagged_sents(
-                        tagset, tags
-                    )
+                    MTEFileReader(
+                        os.path.join(str(self._root), f), required_root=self._root
+                    ).tagged_sents(tagset, tags)
                     for f in self.__fileids(fileids)
                 ]
             )
         else:
-            print("Unknown tagset specified.")
+            safe_print("Unknown tagset specified.")
 
     def lemma_paras(self, fileids=None):
         """
@@ -368,7 +375,9 @@ class MTECorpusReader(TaggedCorpusReader):
         """
         return concat(
             [
-                MTEFileReader(os.path.join(self._root, f)).lemma_paras()
+                MTEFileReader(
+                    os.path.join(str(self._root), f), required_root=self._root
+                ).lemma_paras()
                 for f in self.__fileids(fileids)
             ]
         )
@@ -388,11 +397,11 @@ class MTECorpusReader(TaggedCorpusReader):
         if tagset == "universal" or tagset == "msd":
             return concat(
                 [
-                    MTEFileReader(os.path.join(self._root, f)).tagged_paras(
-                        tagset, tags
-                    )
+                    MTEFileReader(
+                        os.path.join(str(self._root), f), required_root=self._root
+                    ).tagged_paras(tagset, tags)
                     for f in self.__fileids(fileids)
                 ]
             )
         else:
-            print("Unknown tagset specified.")
+            safe_print("Unknown tagset specified.")

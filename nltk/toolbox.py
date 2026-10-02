@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Toolbox Reader
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Greg Aumann <greg_aumann@sil.org>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -11,11 +11,18 @@ Toolbox databases and settings files.
 """
 
 import codecs
-import re
 from io import StringIO
 from xml.etree.ElementTree import Element, ElementTree, SubElement, TreeBuilder
 
+from nltk import redos
 from nltk.data import PathPointer, find
+from nltk.pathsec import open as pathsec_open
+from nltk.termsec import safe_print
+
+#: Maximum depth the recursive Toolbox settings helpers will descend to.
+#: Beyond this they raise ValueError instead of letting Python raise an
+#: uncaught RecursionError (CWE-674).  Configurable.
+MAX_TOOLBOX_DEPTH = 500
 
 
 class StandardFormat:
@@ -38,7 +45,13 @@ class StandardFormat:
         if isinstance(sfm_file, PathPointer):
             self._file = sfm_file.open(self._encoding)
         else:
-            self._file = codecs.open(sfm_file, "r", self._encoding)
+            # A bare string filename bypasses the PathPointer containment above;
+            # open through pathsec (containment + O_NOFOLLOW / hardlink guards) so
+            # a symlink/hardlink cannot resolve outside the data roots (CWE-59,
+            # GHSA-cr8c).
+            self._file = pathsec_open(
+                sfm_file, "r", context="toolbox.StandardFormat", encoding=self._encoding
+            )
 
     def open_string(self, s):
         """
@@ -60,8 +73,8 @@ class StandardFormat:
         join_string = "\n"
         line_regexp = r"^%s(?:\\(\S+)\s*)?(.*)$"
         # discard a BOM in the first line
-        first_line_pat = re.compile(line_regexp % "(?:\xef\xbb\xbf)?")
-        line_pat = re.compile(line_regexp % "")
+        first_line_pat = redos.compile(line_regexp % "(?:\xef\xbb\xbf)?")
+        line_pat = redos.compile(line_regexp % "")
         # need to get first line outside the loop for correct handling
         # of the first marker if it spans multiple lines
         file_iter = iter(self._file)
@@ -71,13 +84,13 @@ class StandardFormat:
         except StopIteration:
             # no more data is available, terminate the generator
             return
-        mobj = re.match(first_line_pat, line)
+        mobj = redos.match(first_line_pat, line)
         mkr, line_value = mobj.groups()
         value_lines = [line_value]
         self.line_num = 0
         for line in file_iter:
             self.line_num += 1
-            mobj = re.match(line_pat, line)
+            mobj = redos.match(line_pat, line)
             line_mkr, line_value = mobj.groups()
             if line_mkr:
                 yield (mkr, join_string.join(value_lines))
@@ -121,7 +134,7 @@ class StandardFormat:
         """
         if encoding is None and unicode_fields is not None:
             raise ValueError("unicode_fields is set but not encoding.")
-        unwrap_pat = re.compile(r"\n+")
+        unwrap_pat = redos.compile(r"\n+")
         for mkr, val in self.raw_fields():
             if unwrap:
                 val = unwrap_pat.sub(" ", val)
@@ -136,6 +149,20 @@ class StandardFormat:
             del self.line_num
         except AttributeError:
             pass
+
+
+def _sanitize_marker(mkr):
+    if not mkr:
+        return "empty"
+    # Replace non-word characters with underscores, preserving letters, numbers, hyphens, and dots
+    safe = redos.sub(r"[^\w\-.]", "_", mkr)
+    # XML element names cannot start with a digit, hyphen, or dot
+    if redos.match(r"^[\d\-.]", safe):
+        safe = "_" + safe
+    # Mitigate HTML element injection for web viewers / XSS
+    if safe.lower() in {"script", "style", "iframe", "object", "embed", "link", "meta"}:
+        safe = "tb_" + safe
+    return safe
 
 
 class ToolboxData(StandardFormat):
@@ -202,7 +229,8 @@ class ToolboxData(StandardFormat):
         builder.start("header", {})
         in_records = False
         for mkr, value in self.fields(**kwargs):
-            if key is None and not in_records and mkr[0] != "_":
+            # 1. Structural Logic: Use the ORIGINAL `mkr` and `key`
+            if key is None and not in_records and mkr and mkr[0] != "_":
                 key = mkr
             if mkr == key:
                 if in_records:
@@ -211,9 +239,13 @@ class ToolboxData(StandardFormat):
                     builder.end("header")
                     in_records = True
                 builder.start("record", {})
-            builder.start(mkr, {})
+
+            # 2. Emission Logic: Use `safe_mkr` STRICTLY for XML tags
+            safe_mkr = _sanitize_marker(mkr)
+            builder.start(safe_mkr, {})
             builder.data(value)
-            builder.end(mkr)
+            builder.end(safe_mkr)
+
         if in_records:
             builder.end("record")
         else:
@@ -268,7 +300,7 @@ class ToolboxData(StandardFormat):
         return tb_etree
 
 
-_is_value = re.compile(r"\S")
+_is_value = redos.compile(r"\S")
 
 
 def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
@@ -309,12 +341,12 @@ def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
                     cur_encoding = "utf8"
                 else:
                     cur_encoding = encoding
-                if re.search(_is_value, value):
+                if redos.search(_is_value, value):
                     l.append((f"\\{mkr} {value}\n").encode(cur_encoding, errors))
                 else:
                     l.append((f"\\{mkr}{value}\n").encode(cur_encoding, errors))
             else:
-                if re.search(_is_value, value):
+                if redos.search(_is_value, value):
                     l.append(f"\\{mkr} {value}\n")
                 else:
                     l.append(f"\\{mkr}{value}\n")
@@ -333,31 +365,40 @@ class ToolboxSettings(StandardFormat):
 
         :param encoding: encoding used by settings file
         :type encoding: str
-        :param errors: Error handling scheme for codec. Same as ``decode()`` builtin method.
+        :param errors: Error handling scheme for codec. Same as ``decode()``
+            builtin method.
         :type errors: str
         :param kwargs: Keyword arguments passed to ``StandardFormat.fields()``
         :type kwargs: dict
         :rtype: ElementTree._ElementInterface
         """
         builder = TreeBuilder()
+        depth = 0
         for mkr, value in self.fields(encoding=encoding, errors=errors, **kwargs):
-            # Check whether the first char of the field marker
-            # indicates a block start (+) or end (-)
-            block = mkr[0]
+            block = mkr[0] if mkr else None
             if block in ("+", "-"):
                 mkr = mkr[1:]
             else:
                 block = None
-            # Build tree on the basis of block char
+            safe_mkr = _sanitize_marker(mkr)
             if block == "+":
-                builder.start(mkr, {})
+                depth += 1
+                if depth > MAX_TOOLBOX_DEPTH:
+                    raise ValueError(
+                        f"Toolbox nesting depth exceeds MAX_TOOLBOX_DEPTH "
+                        f"({MAX_TOOLBOX_DEPTH}); the input may be "
+                        "adversarially deep. Raise "
+                        "nltk.toolbox.MAX_TOOLBOX_DEPTH to allow it."
+                    )
+                builder.start(safe_mkr, {})
                 builder.data(value)
             elif block == "-":
-                builder.end(mkr)
+                builder.end(safe_mkr)
+                depth -= 1
             else:
-                builder.start(mkr, {})
+                builder.start(safe_mkr, {})
                 builder.data(value)
-                builder.end(mkr)
+                builder.end(safe_mkr)
         return builder.close()
 
 
@@ -374,8 +415,17 @@ def to_settings_string(tree, encoding=None, errors="strict", unicode_fields=None
     return "".join(l)
 
 
-def _to_settings_string(node, l, **kwargs):
+def _to_settings_string(node, l, _depth=0, max_depth=None, **kwargs):
     # write XML to file
+    if max_depth is None:
+        max_depth = MAX_TOOLBOX_DEPTH
+    if _depth > max_depth:
+        raise ValueError(
+            f"Toolbox nesting depth exceeds MAX_TOOLBOX_DEPTH "
+            f"({MAX_TOOLBOX_DEPTH}); the input may be "
+            "adversarially deep. Raise "
+            "nltk.toolbox.MAX_TOOLBOX_DEPTH to allow it."
+        )
     tag = node.tag
     text = node.text
     if len(node) == 0:
@@ -388,28 +438,37 @@ def _to_settings_string(node, l, **kwargs):
             l.append(f"\\+{tag} {text}\n")
         else:
             l.append("\\+%s\n" % tag)
-        for n in node:
-            _to_settings_string(n, l, **kwargs)
-        l.append("\\-%s\n" % tag)
+    for n in node:
+        _to_settings_string(n, l, _depth + 1, max_depth, **kwargs)
+    l.append("\\-%s\n" % tag)
     return
 
 
-def remove_blanks(elem):
+def remove_blanks(elem, _depth=0, max_depth=None):
     """
     Remove all elements and subelements with no text and no child elements.
 
     :param elem: toolbox data in an elementtree structure
     :type elem: ElementTree._ElementInterface
     """
+    if max_depth is None:
+        max_depth = MAX_TOOLBOX_DEPTH
+    if _depth > max_depth:
+        raise ValueError(
+            f"Toolbox nesting depth exceeds MAX_TOOLBOX_DEPTH "
+            f"({MAX_TOOLBOX_DEPTH}); the input may be "
+            "adversarially deep. Raise "
+            "nltk.toolbox.MAX_TOOLBOX_DEPTH to allow it."
+        )
     out = list()
     for child in elem:
-        remove_blanks(child)
+        remove_blanks(child, _depth + 1, max_depth)
         if child.text or len(child) > 0:
             out.append(child)
     elem[:] = out
 
 
-def add_default_fields(elem, default_fields):
+def add_default_fields(elem, default_fields, _depth=0, max_depth=None):
     """
     Add blank elements and subelements specified in default_fields.
 
@@ -418,11 +477,20 @@ def add_default_fields(elem, default_fields):
     :param default_fields: fields to add to each type of element and subelement
     :type default_fields: dict(tuple)
     """
+    if max_depth is None:
+        max_depth = MAX_TOOLBOX_DEPTH
+    if _depth > max_depth:
+        raise ValueError(
+            f"Toolbox nesting depth exceeds MAX_TOOLBOX_DEPTH "
+            f"({MAX_TOOLBOX_DEPTH}); the input may be "
+            "adversarially deep. Raise "
+            "nltk.toolbox.MAX_TOOLBOX_DEPTH to allow it."
+        )
     for field in default_fields.get(elem.tag, []):
         if elem.find(field) is None:
             SubElement(elem, field)
     for child in elem:
-        add_default_fields(child, default_fields)
+        add_default_fields(child, default_fields, _depth + 1, max_depth)
 
 
 def sort_fields(elem, field_orders):
@@ -442,8 +510,17 @@ def sort_fields(elem, field_orders):
     _sort_fields(elem, order_dicts)
 
 
-def _sort_fields(elem, orders_dicts):
+def _sort_fields(elem, orders_dicts, _depth=0, max_depth=None):
     """sort the children of elem"""
+    if max_depth is None:
+        max_depth = MAX_TOOLBOX_DEPTH
+    if _depth > max_depth:
+        raise ValueError(
+            f"Toolbox nesting depth exceeds MAX_TOOLBOX_DEPTH "
+            f"({MAX_TOOLBOX_DEPTH}); the input may be "
+            "adversarially deep. Raise "
+            "nltk.toolbox.MAX_TOOLBOX_DEPTH to allow it."
+        )
     try:
         order = orders_dicts[elem.tag]
     except KeyError:
@@ -455,40 +532,45 @@ def _sort_fields(elem, orders_dicts):
         elem[:] = [child for key, child in tmp]
     for child in elem:
         if len(child):
-            _sort_fields(child, orders_dicts)
+            _sort_fields(child, orders_dicts, _depth + 1, max_depth)
 
 
-def add_blank_lines(tree, blanks_before, blanks_between):
-    """
-    Add blank lines before all elements and subelements specified in blank_before.
-
-    :param elem: toolbox data in an elementtree structure
-    :type elem: ElementTree._ElementInterface
-    :param blank_before: elements and subelements to add blank lines before
-    :type blank_before: dict(tuple)
-    """
+def add_blank_lines(tree, blanks_before, blanks_between, _depth=0, max_depth=None):
+    if max_depth is None:
+        max_depth = MAX_TOOLBOX_DEPTH
+    if _depth > max_depth:
+        raise ValueError(
+            f"Toolbox nesting depth exceeds MAX_TOOLBOX_DEPTH "
+            f"({MAX_TOOLBOX_DEPTH}); the input may be "
+            "adversarially deep. Raise "
+            "nltk.toolbox.MAX_TOOLBOX_DEPTH to allow it."
+        )
     try:
         before = blanks_before[tree.tag]
         between = blanks_between[tree.tag]
     except KeyError:
         for elem in tree:
             if len(elem):
-                add_blank_lines(elem, blanks_before, blanks_between)
-    else:
-        last_elem = None
-        for elem in tree:
-            tag = elem.tag
-            if last_elem is not None and last_elem.tag != tag:
-                if tag in before and last_elem is not None:
-                    e = last_elem.getiterator()[-1]
-                    e.text = (e.text or "") + "\n"
+                add_blank_lines(
+                    elem, blanks_before, blanks_between, _depth + 1, max_depth
+                )
             else:
-                if tag in between:
-                    e = last_elem.getiterator()[-1]
-                    e.text = (e.text or "") + "\n"
-            if len(elem):
-                add_blank_lines(elem, blanks_before, blanks_between)
-            last_elem = elem
+                last_elem = None
+                for elem in tree:
+                    tag = elem.tag
+                    if last_elem is not None and last_elem.tag != tag:
+                        if tag in before and last_elem is not None:
+                            e = last_elem.getiterator()[-1]
+                            e.text = (e.text or "") + "\n"
+                    else:
+                        if tag in between:
+                            e = last_elem.getiterator()[-1]
+                            e.text = (e.text or "") + "\n"
+                    if len(elem):
+                        add_blank_lines(
+                            elem, blanks_before, blanks_between, _depth + 1, max_depth
+                        )
+                    last_elem = elem
 
 
 def demo():
@@ -498,26 +580,26 @@ def demo():
     #    lexicon = ToolboxData(ZipFilePathPointer(zip_path, 'toolbox/rotokas.dic')).parse()
     file_path = find("corpora/toolbox/rotokas.dic")
     lexicon = ToolboxData(file_path).parse()
-    print("first field in fourth record:")
-    print(lexicon[3][0].tag)
-    print(lexicon[3][0].text)
+    safe_print("first field in fourth record:")
+    safe_print(lexicon[3][0].tag)
+    safe_print(lexicon[3][0].text)
 
-    print("\nfields in sequential order:")
+    safe_print("\nfields in sequential order:")
     for field in islice(lexicon.find("record"), 10):
-        print(field.tag, field.text)
+        safe_print(field.tag, field.text)
 
-    print("\nlx fields:")
+    safe_print("\nlx fields:")
     for field in islice(lexicon.findall("record/lx"), 10):
-        print(field.text)
+        safe_print(field.text)
 
     settings = ToolboxSettings()
     file_path = find("corpora/toolbox/MDF/MDF_AltH.typ")
     settings.open(file_path)
     #    settings.open(ZipFilePathPointer(zip_path, entry='toolbox/MDF/MDF_AltH.typ'))
     tree = settings.parse(unwrap=False, encoding="cp1252")
-    print(tree.find("expset/expMDF/rtfPageSetup/paperSize").text)
+    safe_print(tree.find("expset/expMDF/rtfPageSetup/paperSize").text)
     settings_tree = ElementTree(tree)
-    print(to_settings_string(settings_tree).encode("utf8"))
+    safe_print(to_settings_string(settings_tree).encode("utf8"))
 
 
 if __name__ == "__main__":

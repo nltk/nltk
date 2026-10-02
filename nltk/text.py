@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Texts
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
@@ -14,19 +14,21 @@ regular expression search over tokenized strings, and
 distributional similarity.
 """
 
-import re
 import sys
 import unicodedata
 from collections import Counter, defaultdict, namedtuple
 from functools import reduce
 from math import log
 
+from nltk import redos
 from nltk.collocations import BigramCollocationFinder
 from nltk.lm import MLE
 from nltk.lm.preprocessing import padded_everygram_pipeline
 from nltk.metrics import BigramAssocMeasures, f_measure
 from nltk.probability import ConditionalFreqDist as CFD
 from nltk.probability import FreqDist
+from nltk.redos import DEFAULT_TIMEOUT as _REDOS_DEFAULT_TIMEOUT
+from nltk.termsec import safe_print
 from nltk.tokenize import sent_tokenize
 from nltk.util import LazyConcatenation, cut_string, tokenwrap
 
@@ -246,12 +248,30 @@ class ConcordanceIndex:
         concordance_list = self.find_concordance(word, width=width)
 
         if not concordance_list:
-            print("no matches")
+            safe_print("no matches")
         else:
             lines = min(lines, len(concordance_list))
-            print(f"Displaying {lines} of {len(concordance_list)} matches:")
+            safe_print(f"Displaying {lines} of {len(concordance_list)} matches:")
             for i, concordance_line in enumerate(concordance_list[:lines]):
-                print(concordance_line.line)
+                safe_print(concordance_line.line)
+
+
+#: Default wall-clock limit, in seconds, for :meth:`TokenSearcher.findall` (and
+#: :meth:`Text.findall`). The search applies an attacker-influenceable token
+#: regex across the whole corpus; a quantified token group (e.g. ``<a>+<b>``) can
+#: trigger super-linear, potentially catastrophic backtracking on a crafted query
+#: or corpus (CWE-1333), so the search is abandoned with a ``TimeoutError`` once
+#: this many seconds elapse. Benign searches finish in well under a second; set it
+#: to ``None`` to disable. Shares :data:`nltk.redos.DEFAULT_TIMEOUT` so every
+#: caller-supplied-pattern sink in NLTK uses one, deliberately tight, bound
+#: (the earlier 60s value was itself a DoS amplifier: the busy-wait window is
+#: the damage).
+TOKENSEARCH_TIMEOUT = _REDOS_DEFAULT_TIMEOUT
+
+#: Sentinel for the ``timeout`` defaults below: resolving ``TOKENSEARCH_TIMEOUT``
+#: inside the methods (rather than binding it as a literal default at definition
+#: time) means a later ``nltk.text.TOKENSEARCH_TIMEOUT = ...`` still takes effect.
+_TIMEOUT_UNSET = object()
 
 
 class TokenSearcher:
@@ -268,7 +288,7 @@ class TokenSearcher:
     def __init__(self, tokens):
         self._raw = "".join("<" + w + ">" for w in tokens)
 
-    def findall(self, regexp):
+    def findall(self, regexp, timeout=_TIMEOUT_UNSET):
         """
         Find instances of the regular expression in the text.
         The text is a list of tokens, and a regexp pattern to match
@@ -290,15 +310,41 @@ class TokenSearcher:
 
         :param regexp: A regular expression
         :type regexp: str
+        :param timeout: wall-clock limit, in seconds, for the search; ``None``
+            disables it. Defaults to ``TOKENSEARCH_TIMEOUT``.
+        :type timeout: float or None
         """
-        # preprocess the regular expression
-        regexp = re.sub(r"\s", "", regexp)
-        regexp = re.sub(r"<", "(?:<(?:", regexp)
-        regexp = re.sub(r">", ")>)", regexp)
-        regexp = re.sub(r"(?<!\\)\.", "[^>]", regexp)
+        if timeout is _TIMEOUT_UNSET:
+            timeout = TOKENSEARCH_TIMEOUT
 
-        # perform the search
-        hits = re.findall(regexp, self._raw)
+        # preprocess the regular expression
+        regexp = redos.sub(r"\s", "", regexp)
+        regexp = redos.sub(r"<", "(?:<(?:", regexp)
+        regexp = redos.sub(r">", ")>)", regexp)
+        regexp = redos.sub(r"(?<!\\)\.", "[^>]", regexp)
+
+        # Perform the search with the third-party ``regex`` engine: unlike the
+        # stdlib ``re`` it does not re-scan a long run of a quantified token from
+        # every position (which is quadratic in the corpus length), and it honours
+        # a wall-clock ``timeout`` so a crafted query/corpus cannot pin a CPU core
+        # indefinitely (CWE-1333). The output is identical to ``re.findall`` for
+        # these patterns.
+        try:
+            # redos.compile refuses a compile-time DoS and wraps the pattern; its
+            # findall takes the per-call wall-clock timeout.
+            hits = redos.compile(regexp).findall(self._raw, timeout=timeout)
+        except TimeoutError:
+            raise TimeoutError(
+                f"TokenSearcher.findall exceeded its {timeout}s time limit; the "
+                "query may be too expensive for this corpus (pass timeout=None "
+                "to disable the limit)."
+            ) from None
+        except (ValueError, redos.error) as exc:
+            # redos refuses an oversized/over-nested query at compile time; report
+            # it as a bad query rather than letting the raw refusal escape.
+            raise ValueError(
+                f"TokenSearcher.findall could not compile the query: {exc}"
+            ) from None
 
         # Sanity check
         for h in hits:
@@ -467,7 +513,7 @@ class Text:
         collocation_strings = [
             w1 + " " + w2 for w1, w2 in self.collocation_list(num, window_size)
         ]
-        print(tokenwrap(collocation_strings, separator="; "))
+        safe_print(tokenwrap(collocation_strings, separator="; "))
 
     def count(self, word):
         """
@@ -515,9 +561,9 @@ class Text:
                 if c in contexts and not w == word
             )
             words = [w for w, _ in fd.most_common(num)]
-            print(tokenwrap(words))
+            safe_print(tokenwrap(words))
         else:
-            print("No matches")
+            safe_print("No matches")
 
     def common_contexts(self, words, num=20):
         """
@@ -539,13 +585,13 @@ class Text:
         try:
             fd = self._word_context_index.common_contexts(words, True)
             if not fd:
-                print("No common contexts were found")
+                safe_print("No common contexts were found")
             else:
                 ranked_contexts = [w for w, _ in fd.most_common(num)]
-                print(tokenwrap(w1 + "_" + w2 for w1, w2 in ranked_contexts))
+                safe_print(tokenwrap(w1 + "_" + w2 for w1, w2 in ranked_contexts))
 
         except ValueError as e:
-            print(e)
+            safe_print(e)
 
     def dispersion_plot(self, words):
         """
@@ -586,7 +632,7 @@ class Text:
             sent.split(" ") for sent in sent_tokenize(" ".join(self.tokens))
         ]
         if not hasattr(self, "_trigram_model"):
-            print("Building ngram index...", file=sys.stderr)
+            safe_print("Building ngram index...", file=sys.stderr)
             self._trigram_model = self._train_default_ngram_lm(
                 self._tokenized_sents, n=3
             )
@@ -609,7 +655,7 @@ class Text:
 
         prefix = " ".join(text_seed) + " " if text_seed else ""
         output_str = prefix + tokenwrap(generated_tokens[:length])
-        print(output_str)
+        safe_print(output_str)
         return output_str
 
     def plot(self, *args):
@@ -628,7 +674,7 @@ class Text:
             self._vocab = FreqDist(self)
         return self._vocab
 
-    def findall(self, regexp):
+    def findall(self, regexp, timeout=_TIMEOUT_UNSET):
         """
         Find instances of the regular expression in the text.
         The text is a list of tokens, and a regexp pattern to match
@@ -649,20 +695,25 @@ class Text:
 
         :param regexp: A regular expression
         :type regexp: str
+        :param timeout: wall-clock limit, in seconds, for the search; ``None``
+            disables it. Defaults to ``TOKENSEARCH_TIMEOUT``.
+        :type timeout: float or None
         """
+        if timeout is _TIMEOUT_UNSET:
+            timeout = TOKENSEARCH_TIMEOUT
 
         if "_token_searcher" not in self.__dict__:
             self._token_searcher = TokenSearcher(self)
 
-        hits = self._token_searcher.findall(regexp)
+        hits = self._token_searcher.findall(regexp, timeout=timeout)
         hits = [" ".join(h) for h in hits]
-        print(tokenwrap(hits, "; "))
+        safe_print(tokenwrap(hits, "; "))
 
     # ////////////////////////////////////////////////////////////
     # Helper Methods
     # ////////////////////////////////////////////////////////////
 
-    _CONTEXT_RE = re.compile(r"\w+|[\.\!\?]")
+    _CONTEXT_RE = redos.compile(r"\w+|[\.\!\?]")
 
     def _context(self, tokens, i):
         """
@@ -746,30 +797,30 @@ def demo():
     from nltk.corpus import brown
 
     text = Text(brown.words(categories="news"))
-    print(text)
-    print()
-    print("Concordance:")
+    safe_print(text)
+    safe_print()
+    safe_print("Concordance:")
     text.concordance("news")
-    print()
-    print("Distributionally similar words:")
+    safe_print()
+    safe_print("Distributionally similar words:")
     text.similar("news")
-    print()
-    print("Collocations:")
+    safe_print()
+    safe_print("Collocations:")
     text.collocations()
-    print()
+    safe_print()
     # print("Automatically generated text:")
     # text.generate()
     # print()
-    print("Dispersion plot:")
+    safe_print("Dispersion plot:")
     text.dispersion_plot(["news", "report", "said", "announced"])
-    print()
-    print("Vocabulary plot:")
+    safe_print()
+    safe_print("Vocabulary plot:")
     text.plot(50)
-    print()
-    print("Indexing:")
-    print("text[3]:", text[3])
-    print("text[3:5]:", text[3:5])
-    print("text.vocab()['news']:", text.vocab()["news"])
+    safe_print()
+    safe_print("Indexing:")
+    safe_print("text[3]:", text[3])
+    safe_print("text[3:5]:", text[3:5])
+    safe_print("text.vocab()['news']:", text.vocab()["news"])
 
 
 if __name__ == "__main__":

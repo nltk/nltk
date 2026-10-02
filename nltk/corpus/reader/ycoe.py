@@ -18,12 +18,13 @@ to the YCOE standard: https://www-users.york.ac.uk/~lang22/YCOE/YcoeHome.htm
 """
 
 import os
-import re
 
+from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.bracket_parse import BracketParseCorpusReader
 from nltk.corpus.reader.tagged import TaggedCorpusReader
 from nltk.corpus.reader.util import *
+from nltk.pathsec import validate_path
 from nltk.tokenize import RegexpTokenizer
 
 
@@ -36,6 +37,16 @@ class YCOECorpusReader(CorpusReader):
 
     def __init__(self, root, encoding="utf8"):
         CorpusReader.__init__(self, root, [], encoding)
+
+        # A psd/pos directory symlink escapes the corpus root: join() does a
+        # string-prefix check only, not symlink resolution, so files outside the
+        # YCOE corpus would be enumerated and read (CWE-59).
+        for sub in ("psd", "pos"):
+            validate_path(
+                self.root.join(sub),
+                context="YCOECorpusReader",
+                required_root=self.root,
+            )
 
         self._psd_reader = YCOEParseCorpusReader(
             self.root.join("psd"), ".*", ".psd", encoding=encoding
@@ -136,8 +147,8 @@ class YCOEParseCorpusReader(BracketParseCorpusReader):
     that strips out (CODE ...) and (ID ...) nodes."""
 
     def _parse(self, t):
-        t = re.sub(r"(?u)\((CODE|ID)[^\)]*\)", "", t)
-        if re.match(r"\s*\(\s*\)\s*$", t):
+        t = redos.sub(r"(?u)\((CODE|ID)[^\)]*\)", "", t)
+        if redos.match(r"\s*\(\s*\)\s*$", t):
             return None
         return BracketParseCorpusReader._parse(self, t)
 

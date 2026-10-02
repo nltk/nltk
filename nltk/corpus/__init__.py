@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus Readers
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -59,8 +59,8 @@ For example, to read a list of the words in the Brown Corpus, use
 
 """
 
-import re
 
+from nltk import redos
 from nltk.corpus.reader import *
 from nltk.corpus.util import LazyCorpusLoader
 from nltk.tokenize import RegexpTokenizer
@@ -312,8 +312,8 @@ sinica_treebank: SinicaTreebankCorpusReader = LazyCorpusLoader(
 state_union: PlaintextCorpusReader = LazyCorpusLoader(
     "state_union", PlaintextCorpusReader, r"(?!\.).*\.txt", encoding="ISO-8859-2"
 )
-stopwords: WordListCorpusReader = LazyCorpusLoader(
-    "stopwords", WordListCorpusReader, r"(?!README|\.).*", encoding="utf8"
+stopwords: StopwordsCorpusReader = LazyCorpusLoader(
+    "stopwords", StopwordsCorpusReader, r"(?!README|\.).*", encoding="utf8"
 )
 subjectivity: CategorizedSentencesCorpusReader = LazyCorpusLoader(
     "subjectivity",
@@ -393,7 +393,7 @@ webtext: PlaintextCorpusReader = LazyCorpusLoader(
 wordnet: WordNetCorpusReader = LazyCorpusLoader(
     "wordnet",
     WordNetCorpusReader,
-    LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
+    LazyCorpusLoader("omw-2.0", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
 )
 ## Use the following template to add a custom Wordnet package.
 ## Just uncomment, and replace the identifier (my_wordnet) in two places:
@@ -401,30 +401,30 @@ wordnet: WordNetCorpusReader = LazyCorpusLoader(
 # my_wordnet: WordNetCorpusReader = LazyCorpusLoader(
 #    "my_wordnet",
 #    WordNetCorpusReader,
-#    LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
+#    LazyCorpusLoader("omw-2.0", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
 # )
 wordnet31: WordNetCorpusReader = LazyCorpusLoader(
     "wordnet31",
     WordNetCorpusReader,
-    LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
+    LazyCorpusLoader("omw-2.0", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
 )
 wordnet2021: WordNetCorpusReader = LazyCorpusLoader(
     # Obsolete, use english_wordnet instead.
     "wordnet2021",
     WordNetCorpusReader,
-    LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
+    LazyCorpusLoader("omw-2.0", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
 )
 wordnet2022: WordNetCorpusReader = LazyCorpusLoader(
     # Obsolete, use english_wordnet instead.
     "wordnet2022",
     WordNetCorpusReader,
-    LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
+    LazyCorpusLoader("omw-2.0", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
 )
 english_wordnet: WordNetCorpusReader = LazyCorpusLoader(
     # Latest Open English Wordnet
     "english_wordnet",
     WordNetCorpusReader,
-    LazyCorpusLoader("omw-1.4", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
+    LazyCorpusLoader("omw-2.0", CorpusReader, r".*/wn-data-.*\.tab", encoding="utf8"),
 )
 wordnet_ic: WordNetICCorpusReader = LazyCorpusLoader(
     "wordnet_ic", WordNetICCorpusReader, r".*\.dat"
@@ -440,7 +440,7 @@ propbank: PropbankCorpusReader = LazyCorpusLoader(
     "prop.txt",
     r"frames/.*\.xml",
     "verbs.txt",
-    lambda filename: re.sub(r"^wsj/\d\d/", "", filename),
+    lambda filename: redos.sub(r"^wsj/\d\d/", "", filename),
     treebank,
 )  # Must be defined *after* treebank corpus.
 nombank: NombankCorpusReader = LazyCorpusLoader(
@@ -449,7 +449,7 @@ nombank: NombankCorpusReader = LazyCorpusLoader(
     "nombank.1.0",
     r"frames/.*\.xml",
     "nombank.1.0.words",
-    lambda filename: re.sub(r"^wsj/\d\d/", "", filename),
+    lambda filename: redos.sub(r"^wsj/\d\d/", "", filename),
     treebank,
 )  # Must be defined *after* treebank corpus.
 propbank_ptb: PropbankCorpusReader = LazyCorpusLoader(

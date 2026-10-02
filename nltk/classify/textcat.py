@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Language ID module using TextCat algorithm
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Avital Pekker <avital.pekker@utoronto.ca>
 #
 # URL: <https://www.nltk.org/>
@@ -29,6 +29,8 @@ https://borel.slu.edu/crubadan/index.html
 
 from sys import maxsize
 
+from nltk import redos
+from nltk.termsec import safe_print
 from nltk.util import trigrams
 
 # Note: this is NOT "re" you're likely used to. The regex module
@@ -70,7 +72,7 @@ class TextCat:
 
     def remove_punctuation(self, text):
         """Get rid of punctuation except apostrophes"""
-        return re.sub(r"[^\P{P}\']+", "", text)
+        return redos.sub(r"[^\P{P}\']+", "", text)
 
     def profile(self, text):
         """Create FreqDist of trigrams within text"""
@@ -119,25 +121,107 @@ class TextCat:
 
         distances = {}
         profile = self.profile(text)
-        # For all the languages
+        # Precompute each trigram's rank (position) once. The original called
+        # ``list(profile.keys()).index(trigram)`` (and the same on each language
+        # profile) for every trigram, which is O(m^2 * languages) and lets a
+        # few-KB unicode-diverse string burn tens of seconds (CWE-407). Dict
+        # insertion order equals list order, so the ranks -- and the resulting
+        # out-of-place distance -- are identical to ``calc_dist``.
+        text_ranks = {trigram: i for i, trigram in enumerate(profile)}
         for lang in self._corpus._all_lang_freq.keys():
-            # Calculate distance metric for every trigram in
-            # input text to be identified
+            lang_ranks = {t: i for i, t in enumerate(self._corpus.lang_freq(lang))}
             lang_dist = 0
             for trigram in profile:
-                lang_dist += self.calc_dist(lang, trigram, profile)
-
+                if trigram in lang_ranks:
+                    lang_dist += abs(lang_ranks[trigram] - text_ranks[trigram])
+                else:
+                    lang_dist += maxsize
             distances[lang] = lang_dist
 
         return distances
 
-    def guess_language(self, text):
-        """Find the language with the min distance
-        to the text and return its ISO 639-3 code"""
-        self.last_distances = self.lang_dists(text)
+    def guess_language(self, text, return_all=False):
+        """
+        Determines the most likely language(s) for the given text.
 
-        return min(self.last_distances, key=self.last_distances.get)
-        #################################################')
+        Parameters
+        ----------
+        text : str
+            The text whose language is to be identified.
+        return_all : bool, optional
+            If False (default), returns a single ISO 639-3 language code as a str,
+            or None if the language is ambiguous or cannot be determined.
+            If True, returns a list of all language codes sharing the minimal distance.
+            The list will have one element if there is a unique best match,
+            multiple elements for ties, or be empty if no language is found.
+
+        Returns
+        -------
+        str or None, or list of str
+            If return_all is False:
+                - str: language code if unique minimum found
+                - None: if ambiguous or not classifiable
+            If return_all is True:
+                - list: possible language code(s), or empty list if not classifiable
+
+        Examples
+        --------
+        >>> from nltk.classify.textcat import TextCat
+        >>> cat = TextCat()
+        >>> print(cat.guess_language('The quick brown fox jumps over the lazy dog.'))
+        eng
+
+        A case with no information, returns None or an empty list:
+
+        >>> print(cat.guess_language('', return_all=True))
+        []
+        >>> print(cat.guess_language(''))
+        None
+
+        A case where a single short input ties between Catalan and French:
+
+        >>> print(sorted(cat.guess_language('ent', return_all=True)))
+        ['cat', 'fra']
+
+        By default (`return_all=False`), in a tie, guess_language returns None:
+
+        >>> print(cat.guess_language('ent'))
+        None
+
+        Note: For short or generic inputs, or for closely related languages,
+        the classifier may return an unexpected language. For example,
+        the following is a perfectly grammatical English sentence, but may
+        be classified as Scots ('sco') due to profile similarity:
+
+        >>> print(cat.guess_language('This is a short English sentence.'))
+        sco
+
+        This behavior is not a bug, but an artifact of the underlying n-gram profiles.
+        The classifier should be used with sufficiently distinctive and longer text fragments
+        for best accuracy.
+        """
+        self.last_distances = self.lang_dists(text)
+        if not self.last_distances:
+            if return_all:
+                return []
+            return None
+        min_dist = min(self.last_distances.values())
+        candidates = [
+            lang for lang, dist in self.last_distances.items() if dist == min_dist
+        ]
+        all_languages = list(self.last_distances.keys())
+
+        # Special case: all languages match equally (uninformative), return empty list/None
+        if len(candidates) == len(all_languages):
+            if return_all:
+                return []
+            return None
+
+        if return_all:
+            return candidates
+        if len(candidates) == 1:
+            return candidates[0]
+        return None
 
 
 def demo():
@@ -183,10 +267,10 @@ def demo():
             sample += cur_sent
 
         # Try to detect what it is
-        print("Language snippet: " + sample[0:140] + "...")
+        safe_print("Language snippet: " + sample[0:140] + "...")
         guess = tc.guess_language(sample)
-        print(f"Language detection: {guess} ({friendly[guess]})")
-        print("#" * 140)
+        safe_print(f"Language detection: {guess} ({friendly[guess]})")
+        safe_print("#" * 140)
 
 
 if __name__ == "__main__":

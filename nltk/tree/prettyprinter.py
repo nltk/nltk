@@ -1,6 +1,6 @@
 # Natural Language Toolkit: ASCII visualization of NLTK trees
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Andreas van Cranenburgh <A.W.vanCranenburgh@uva.nl>
 #         Peter Ljunglöf <peter.ljunglof@gu.se>
 # URL: <https://www.nltk.org/>
@@ -17,18 +17,35 @@ Graph Algorithms and Applications, 10(2) 141--157 (2006)149.
 https://jgaa.info/accepted/2006/EschbachGuentherBecker2006.10.2.pdf
 """
 
-import re
 
 try:
     from html import escape
 except ImportError:
     from cgi import escape
 
-from collections import defaultdict
-from operator import itemgetter
+import unicodedata
+from bisect import bisect_right
+from collections import OrderedDict, defaultdict
 
+from nltk import redos
+from nltk.termsec import safe_print
 from nltk.tree.tree import Tree
-from nltk.util import OrderedDict
+
+# LEFT-TO-RIGHT MARK: invisible, zero-width. Written before a cell holding
+# right-to-left text so a bidi-aware terminal or browser keeps that cell in
+# its column instead of merging it with its neighbours into one reversed run.
+LRM = chr(0x200E)
+
+# Bidi classes of the characters that start or extend a right-to-left run:
+# Hebrew/Arabic letters (R, AL) and Arabic digits (AN), which pull the
+# neutral spaces between two such cells into the run (UAX #9, rule N1).
+_RTL_BIDI_CLASSES = frozenset(("R", "AL", "AN"))
+
+
+def _holds_rtl(text):
+    """True if *text* holds a right-to-left letter or an Arabic-Indic digit."""
+    return any(unicodedata.bidirectional(c) in _RTL_BIDI_CLASSES for c in text)
+
 
 ANSICOLOR = {
     "black": 30,
@@ -47,7 +64,7 @@ class TreePrettyPrinter:
     Pretty-print a tree in text format, either as ASCII or Unicode.
     The tree can be a normal tree, or discontinuous.
 
-    ``TreePrettyPrinter(tree, sentence=None, highlight=())``
+    ``TreePrettyPrinter(tree, sentence=None, highlight=(), rtl=False)``
     creates an object from which different visualizations can be created.
 
     :param tree: a Tree object.
@@ -58,6 +75,16 @@ class TreePrettyPrinter:
         should be highlighted. Has the effect of only applying colors to nodes
         in this sequence (nodes should be given as Tree objects, terminals as
         indices).
+    :param rtl: If True, draw the tree mirrored, with the first child of every
+        node at the right, as trees of right-to-left languages (Arabic, Hebrew,
+        Persian, Urdu) are read. The tree is not touched: only the columns of
+        the drawing grid are mirrored, so every leaf stays under its own
+        preterminal, subclasses keep their state and `highlight` still names
+        the original nodes. In ``text()`` every cell holding right-to-left text
+        is preceded by an invisible LEFT-TO-RIGHT MARK (U+200E, ``LRM``), which
+        keeps a bidi-aware terminal or browser from reordering the cells of a
+        row: the columns then line up there as well as in a terminal that does
+        no reordering. Strip ``LRM`` from the text to compare it as plain text.
 
     >>> from nltk.tree import Tree
     >>> tree = Tree.fromstring('(S (NP Mary) (VP walks))')
@@ -68,9 +95,17 @@ class TreePrettyPrinter:
      NP        VP
      |         |
     Mary     walks
+
+    >>> print(TreePrettyPrinter(tree, rtl=True).text())
+    ... # doctest: +NORMALIZE_WHITESPACE
+          S
+      ____|___
+     VP       NP
+     |        |
+    walks     Mary
     """
 
-    def __init__(self, tree, sentence=None, highlight=()):
+    def __init__(self, tree, sentence=None, highlight=(), rtl=False):
         if sentence is None:
             leaves = tree.leaves()
             if (
@@ -82,7 +117,17 @@ class TreePrettyPrinter:
             else:
                 # this deals with empty nodes (frontier non-terminals)
                 # and multiple/mixed terminals under non-terminals.
-                tree = tree.copy(True)
+                # The leaves of a plain, mutable copy become indices below;
+                # the highlighted nodes are carried over to it by position.
+                marked = [
+                    pos
+                    for pos in tree.treepositions()
+                    if highlight
+                    and isinstance(tree[pos], Tree)
+                    and tree[pos] in highlight
+                ]
+                tree = Tree.convert(tree)
+                highlight = [tree[pos] for pos in marked] + list(highlight)
                 sentence = []
                 for a in tree.subtrees():
                     if len(a) == 0:
@@ -98,6 +143,13 @@ class TreePrettyPrinter:
         self.nodes, self.coords, self.edges, self.highlight = self.nodecoords(
             tree, sentence, highlight
         )
+        self.rtl = bool(rtl)
+        if self.rtl:
+            # mirror the grid: column 0 becomes the rightmost column
+            maxcol = max(col for _, col in self.coords.values())
+            self.coords = {
+                n: (row, maxcol - col) for n, (row, col) in self.coords.items()
+            }
 
     def __str__(self):
         return self.text()
@@ -125,6 +177,18 @@ class TreePrettyPrinter:
         - place nodes into a grid at (row, column)
         - order child-parent edges with crossing edges last
 
+        An edge *crosses* when the vertical line from a child up to its parent
+        passes a row strictly between them in which the horizontal branch of a
+        third node spans the child's column: no edge of a continuous tree
+        does, and in a discontinuous tree the edges drawn through another
+        node's branch do. ``edges`` is filled bottom up with the crossing
+        edges moved to its end; ``text()`` only looks edges up by node, so the
+        order shows in ``svg()``, which draws the vertical lines in it. The
+        crossings are found by one sweep down the rows of the finished grid:
+        a row holding a branch sorts the columns of the vertical lines through
+        it once, and a vertical line is marked and retired the first time a
+        branch crosses it, so the sweep costs no more than the grid itself.
+
         Coordinates are (row, column); the origin (0, 0) is at the top left;
         the root node is on row 0. Coordinates do not consider the size of a
         node (which depends on font, &c), so the width of a column of the grid
@@ -149,8 +213,9 @@ class TreePrettyPrinter:
             add new row to level if no free row available.
             """
             candidates = [a for _, a in children[m]]
+            candidateset = set(candidates)
             minidx, maxidx = min(candidates), max(candidates)
-            leaves = tree[m].leaves()
+            leaves = leaves_of(m)
             center = scale * sum(leaves) // len(leaves)  # center of gravity
             if minidx < maxidx and not minidx < center < maxidx:
                 center = sum(candidates) // len(candidates)
@@ -180,18 +245,18 @@ class TreePrettyPrinter:
                         i = j = center + n
                         while j > minidx or i < maxidx:
                             if i < maxidx and (
-                                matrix[rowidx][i] is None or i in candidates
+                                matrix[rowidx][i] is None or i in candidateset
                             ):
                                 return rowidx, i
                             elif j > minidx and (
-                                matrix[rowidx][j] is None or j in candidates
+                                matrix[rowidx][j] is None or j in candidateset
                             ):
                                 return rowidx, j
                             i += scale
                             j -= scale
             raise ValueError(
                 "could not find a free cell for:\n%s\n%s"
-                "min=%d; max=%d" % (tree[m], minidx, maxidx, dumpmatrix())
+                "min=%d; max=%d" % (node_at[m], minidx, maxidx, dumpmatrix())
             )
 
         def dumpmatrix():
@@ -200,6 +265,12 @@ class TreePrettyPrinter:
                 "%2d: %s" % (n, " ".join(("%2r" % i)[:2] for i in row))
                 for n, row in enumerate(matrix)
             )
+
+        def leaves_of(a):
+            """The leaves under position ``a``, walked once per node."""
+            if a not in leaves_at:
+                leaves_at[a] = node_at[a].leaves()
+            return leaves_at[a]
 
         leaves = tree.leaves()
         if not all(isinstance(n, int) for n in leaves):
@@ -217,36 +288,41 @@ class TreePrettyPrinter:
         for a in tree.subtrees():
             a.sort(key=lambda n: min(n.leaves()) if isinstance(n, Tree) else n)
         scale = 2
-        crossed = set()
         # internal nodes and lexical nodes (no frontiers)
         positions = tree.treepositions()
+        # the node at each position, resolved once: a positional lookup
+        # on the tree walks its depth, and every node is consulted repeatedly
+        node_at = {}
+        for a in positions:
+            node_at[a] = tree if not a else node_at[a[:-1]][a[-1]]
+        leaves_at = {}
         maxdepth = max(map(len, positions)) + 1
         childcols = defaultdict(set)
         matrix = [[None] * (len(sentence) * scale)]
         nodes = {}
         ids = {a: n for n, a in enumerate(positions)}
         highlighted_nodes = {
-            n for a, n in ids.items() if not highlight or tree[a] in highlight
+            n for a, n in ids.items() if not highlight or node_at[a] in highlight
         }
         levels = {n: [] for n in range(maxdepth - 1)}
         terminals = []
         for a in positions:
-            node = tree[a]
+            node = node_at[a]
             if isinstance(node, Tree):
                 levels[maxdepth - node.height()].append(a)
             else:
                 terminals.append(a)
 
         for n in levels:
-            levels[n].sort(key=lambda n: max(tree[n].leaves()) - min(tree[n].leaves()))
+            levels[n].sort(key=lambda n: max(leaves_of(n)) - min(leaves_of(n)))
         terminals.sort()
         positions = set(positions)
 
         for m in terminals:
-            i = int(tree[m]) * scale
+            i = int(node_at[m]) * scale
             assert matrix[0][i] is None, (matrix[0][i], m, i)
             matrix[0][i] = ids[m]
-            nodes[ids[m]] = sentence[tree[m]]
+            nodes[ids[m]] = sentence[node_at[m]]
             if nodes[ids[m]] is None:
                 nodes[ids[m]] = "..."
                 highlighted_nodes.discard(ids[m])
@@ -263,21 +339,6 @@ class TreePrettyPrinter:
                 [vertline if a not in (corner, None) else None for a in matrix[-1]]
             )
             for m in nodesatdepth:  # [::-1]:
-                if n < maxdepth - 1 and childcols[m]:
-                    _, pivot = min(childcols[m], key=itemgetter(1))
-                    if {
-                        a[:-1]
-                        for row in matrix[:-1]
-                        for a in row[:pivot]
-                        if isinstance(a, tuple)
-                    } & {
-                        a[:-1]
-                        for row in matrix[:-1]
-                        for a in row[pivot:]
-                        if isinstance(a, tuple)
-                    }:
-                        crossed.add(m)
-
                 rowidx, i = findcell(m, matrix, startoflevel, childcols)
                 positions.remove(m)
 
@@ -288,17 +349,19 @@ class TreePrettyPrinter:
                 #         matrix[rowidx][i], m, str(tree), ' '.join(sentence))
                 # node itself
                 matrix[rowidx][i] = ids[m]
-                nodes[ids[m]] = tree[m]
+                nodes[ids[m]] = node_at[m]
                 # add column to the set of children for its parent
                 if len(m) > 0:
                     childcols[m[:-1]].add((rowidx, i))
         assert len(positions) == 0
 
-        # remove unused columns, right to left
-        for m in range(scale * len(sentence) - 1, -1, -1):
-            if not any(isinstance(row[m], (Tree, int)) for row in matrix):
-                for row in matrix:
-                    del row[m]
+        # remove unused columns
+        used = [
+            m
+            for m in range(scale * len(sentence))
+            if any(isinstance(row[m], (Tree, int)) for row in matrix)
+        ]
+        matrix = [[row[m] for m in used] for row in matrix]
 
         # remove unused rows, reverse
         matrix = [
@@ -314,17 +377,70 @@ class TreePrettyPrinter:
                 if isinstance(i, int) and i >= 0:
                     coords[i] = n, m
 
-        # move crossed edges last
-        positions = sorted(
-            (a for level in levels.values() for a in level),
-            key=lambda a: a[:-1] in crossed,
-        )
+        # crossing edges: the vertical line from a child up to its parent
+        # passes a row strictly between them in which the horizontal branch
+        # of a third node spans the child's column. One sweep down the rows.
+        branches, starts, ends = defaultdict(list), defaultdict(list), defaultdict(list)
+        for a, n in ids.items():
+            if n not in coords:
+                continue  # a cell taken over by another node has no drawing
+            if a and ids[a[:-1]] in coords:
+                (childrow, col), parentrow = coords[n], coords[ids[a[:-1]]][0]
+                if childrow > parentrow + 1:
+                    starts[parentrow + 1].append((col, n))
+                    ends[childrow].append((col, n))
+            if isinstance(node_at[a], Tree):
+                cols = [
+                    coords[ids[a + (j,)]][1]
+                    for j, _ in enumerate(node_at[a])
+                    if ids[a + (j,)] in coords
+                ]
+                if len(cols) > 1:
+                    branches[coords[n][0]].append((min(cols), max(cols)))
 
-        # collect edges from node to node
+        def still_active(skip, i):
+            """The first index at or after ``i`` whose column was not retired."""
+            while skip[i] != i:
+                skip[i] = skip[skip[i]]
+                i = skip[i]
+            return i
+
+        # a column normally carries one vertical line at a time; a node that
+        # sits on the line between another node and its parent makes two
+        crossed = set()
+        active = defaultdict(set)
+        for row in range(len(matrix)):
+            for col, n in ends.get(row, ()):
+                lines = active.get(col)
+                if lines:
+                    lines.discard(n)
+                    if not lines:
+                        del active[col]
+            for col, n in starts.get(row, ()):
+                active[col].add(n)
+            if active and row in branches:
+                cols = sorted(active)
+                skip = list(range(len(cols) + 1))
+                for lo, hi in branches[row]:
+                    i = still_active(skip, bisect_right(cols, lo))
+                    while i < len(cols) and cols[i] < hi:
+                        crossed.update(active.pop(cols[i]))
+                        skip[i] = i + 1
+                        i = still_active(skip, i + 1)
+
+        positions = [a for level in levels.values() for a in level]
+
+        # collect edges from node to node, bottom up; crossing edges last
         edges = OrderedDict()
-        for i in reversed(positions):
-            for j, _ in enumerate(tree[i]):
-                edges[ids[i + (j,)]] = ids[i]
+        for child, parent in sorted(
+            (
+                (ids[i + (j,)], ids[i])
+                for i in reversed(positions)
+                for j, _ in enumerate(node_at[i])
+            ),
+            key=lambda edge: edge[0] in crossed,
+        ):
+            edges[child] = parent
 
         return nodes, coords, edges, highlighted_nodes
 
@@ -355,7 +471,7 @@ class TreePrettyPrinter:
         :param maxwidth: maximum number of characters before a label starts to
             wrap; pass None to disable.
         """
-        if abbreviate:
+        if abbreviate is True:
             abbreviate = 5
         if unicodelines:
             horzline = "\u2500"
@@ -390,9 +506,11 @@ class TreePrettyPrinter:
         maxchildcol = {}
         childcols = defaultdict(set)
         labels = {}
-        wrapre = re.compile(
-            "(.{%d,%d}\\b\\W*|.{%d})" % (maxwidth - 4, maxwidth, maxwidth)
-        )
+        wrapre = None
+        if maxwidth:
+            wrapre = redos.compile(
+                "(.{%d,%d}\\b\\W*|.{%d})" % (maxwidth - 4, maxwidth, maxwidth)
+            )
         # collect labels and coordinates
         for a in self.nodes:
             row, column = self.coords[a]
@@ -403,6 +521,7 @@ class TreePrettyPrinter:
                 if isinstance(self.nodes[a], Tree)
                 else self.nodes[a]
             )
+            label = "%s" % label  # a label may be any value, as a leaf may
             if abbreviate and len(label) > abbreviate:
                 label = label[:abbreviate] + ellipsis
             if maxwidth and len(label) > maxwidth:
@@ -439,12 +558,13 @@ class TreePrettyPrinter:
                         branchrow[j] = (rightcorner + (" " * b)).rjust(
                             maxnodewith[j], horzline
                         )
+                        branchcols = {a for _, a in childcols[n]}
                         for i in range(minchildcol[n] + 1, maxchildcol[n]):
-                            if i == col and any(a == i for _, a in childcols[n]):
+                            if i == col and i in branchcols:
                                 line = cross
                             elif i == col:
                                 line = bottom
-                            elif any(a == i for _, a in childcols[n]):
+                            elif i in branchcols:
                                 line = tee
                             else:
                                 line = horzline
@@ -452,8 +572,11 @@ class TreePrettyPrinter:
                     else:  # if n and n in minchildcol:
                         branchrow[col] = crosscell(branchrow[col])
                 text = [a.center(maxnodewith[col]) for a in text]
+                if self.rtl:
+                    # a mark before each right-to-left cell keeps it in place
+                    text = [(LRM if _holds_rtl(a) else "") + a for a in text]
                 color = nodecolor if isinstance(node, Tree) else leafcolor
-                if isinstance(node, Tree) and node.label().startswith("-"):
+                if isinstance(node, Tree) and labels[n][0].startswith("-"):
                     color = funccolor
                 if html:
                     text = [escape(a, quote=False) for a in text]
@@ -559,26 +682,19 @@ class TreePrettyPrinter:
         # write nodes with coordinates
         for n, (row, column) in self.coords.items():
             node = self.nodes[n]
+            label = "%s" % (node.label() if isinstance(node, Tree) else node)
             x = column * hscale + hstart
             y = row * vscale + vstart
             if n in self.highlight:
                 color = nodecolor if isinstance(node, Tree) else leafcolor
-                if isinstance(node, Tree) and node.label().startswith("-"):
+                if isinstance(node, Tree) and label.startswith("-"):
                     color = funccolor
             else:
                 color = "black"
             result += [
                 '\t<text style="text-anchor: middle; fill: %s; '
                 'font-size: %dpx;" x="%g" y="%g">%s</text>'
-                % (
-                    color,
-                    fontsize,
-                    x,
-                    y,
-                    escape(
-                        node.label() if isinstance(node, Tree) else node, quote=False
-                    ),
-                )
+                % (color, fontsize, x, y, escape(label, quote=False))
             ]
 
         result += ["</svg>"]
@@ -589,24 +705,24 @@ def test():
     """Do some tree drawing tests."""
 
     def print_tree(n, tree, sentence=None, ansi=True, **xargs):
-        print()
-        print('{}: "{}"'.format(n, " ".join(sentence or tree.leaves())))
-        print(tree)
-        print()
+        safe_print()
+        safe_print('{}: "{}"'.format(n, " ".join(sentence or tree.leaves())))
+        safe_print(tree)
+        safe_print()
         drawtree = TreePrettyPrinter(tree, sentence)
         try:
-            print(drawtree.text(unicodelines=ansi, ansi=ansi, **xargs))
+            safe_print(drawtree.text(unicodelines=ansi, ansi=ansi, **xargs))
         except (UnicodeDecodeError, UnicodeEncodeError):
-            print(drawtree.text(unicodelines=False, ansi=False, **xargs))
+            safe_print(drawtree.text(unicodelines=False, ansi=False, **xargs))
 
     from nltk.corpus import treebank
 
     for n in [0, 1440, 1591, 2771, 2170]:
         tree = treebank.parsed_sents()[n]
         print_tree(n, tree, nodedist=2, maxwidth=8)
-    print()
-    print("ASCII version:")
-    print(TreePrettyPrinter(tree).text(nodedist=2))
+    safe_print()
+    safe_print("ASCII version:")
+    safe_print(TreePrettyPrinter(tree).text(nodedist=2))
 
     tree = Tree.fromstring(
         "(top (punct 8) (smain (noun 0) (verb 1) (inf (verb 5) (inf (verb 6) "

@@ -1,6 +1,6 @@
 # CHILDES XML Corpus Reader
 
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Tomonori Nagano <tnagano@gc.cuny.edu>
 #         Alexis Dimitriadis <A.Dimitriadis@uu.nl>
 # URL: <https://www.nltk.org/>
@@ -12,12 +12,14 @@ Corpus reader for the XML version of the CHILDES corpus.
 
 __docformat__ = "epytext en"
 
-import re
 from collections import defaultdict
 
+from nltk import redos
 from nltk.corpus.reader.util import concat
-from nltk.corpus.reader.xmldocs import ElementTree, XMLCorpusReader
+from nltk.corpus.reader.xmldocs import XMLCorpusReader
+from nltk.termsec import safe_print
 from nltk.util import LazyConcatenation, LazyMap, flatten
+from nltk.xmlsec import parse as safe_parse
 
 # to resolve the namespace issue
 NS = "http://www.talkbank.org/ns/talkbank"
@@ -216,7 +218,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
 
     def _get_corpus(self, fileid):
         results = dict()
-        xmldoc = ElementTree.parse(fileid).getroot()
+        with fileid.open() as fp:
+            xmldoc = safe_parse(fp).getroot()
         for key, value in xmldoc.items():
             results[key] = value
         return results
@@ -236,7 +239,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
         def dictOfDicts():
             return defaultdict(dictOfDicts)
 
-        xmldoc = ElementTree.parse(fileid).getroot()
+        with fileid.open() as fp:
+            xmldoc = safe_parse(fp).getroot()
         # getting participants' data
         pat = dictOfDicts()
         for participant in xmldoc.findall(
@@ -262,7 +266,8 @@ class CHILDESCorpusReader(XMLCorpusReader):
         return LazyMap(get_age, self.abspaths(fileids))
 
     def _get_age(self, fileid, speaker, month):
-        xmldoc = ElementTree.parse(fileid).getroot()
+        with fileid.open() as fp:
+            xmldoc = safe_parse(fp).getroot()
         for pat in xmldoc.findall(f".//{{{NS}}}Participants/{{{NS}}}participant"):
             try:
                 if pat.get("id") == speaker:
@@ -270,13 +275,23 @@ class CHILDESCorpusReader(XMLCorpusReader):
                     if month:
                         age = self.convert_age(age)
                     return age
-            # some files don't have age data
-            except (TypeError, AttributeError) as e:
+            # some files have missing (TypeError) or malformed (ValueError) age
+            # data; AttributeError is kept for backward compatibility
+            except (TypeError, AttributeError, ValueError) as e:
                 return None
 
     def convert_age(self, age_year):
-        "Caclculate age in months from a string in CHILDES format"
-        m = re.match(r"P(\d+)Y(\d+)M?(\d?\d?)D?", age_year)
+        "Calculate age in months from a string in CHILDES format"
+        m = redos.match(r"P(\d+)Y(\d+)M?(\d?\d?)D?", age_year)
+        if m is None:
+            # A string that does not fit the CHILDES age shape would otherwise
+            # make ``m.group(1)`` raise a cryptic ``AttributeError`` out of this
+            # public helper (CWE-476); fail with a clear, catchable error.
+            raise ValueError(
+                f"Cannot convert age {age_year!r}: expected a CHILDES age string "
+                "of the form 'P<years>Y<months>' with an optional 'M' and "
+                "'<days>D', e.g. 'P2Y10M', 'P2Y10', or 'P2Y1M15D'"
+            )
         age_month = int(m.group(1)) * 12 + int(m.group(2))
         try:
             if int(m.group(3)) > 15:
@@ -354,24 +369,35 @@ class CHILDESCorpusReader(XMLCorpusReader):
             isinstance(speaker, str) and speaker != "ALL"
         ):  # ensure we have a list of speakers
             speaker = [speaker]
-        xmldoc = ElementTree.parse(fileid).getroot()
+        with fileid.open() as fp:
+            xmldoc = safe_parse(fp).getroot()
         # processing each xml doc
         results = []
         for xmlsent in xmldoc.findall(".//{%s}u" % NS):
             sents = []
+            # These `find` calls scan the whole utterance subtree and return the
+            # same element no matter which word we are on. Computing them once
+            # per utterance (instead of per word) keeps an utterance with W words
+            # O(W) rather than O(W^2) -- otherwise a crafted CHILDES file makes
+            # words(replace=True)/MLU() quadratic (CWE-407).
+            if replace:
+                _repl_cond = xmlsent.find(f".//{{{NS}}}w/{{{NS}}}replacement")
+                _repl_word = xmlsent.find(f".//{{{NS}}}w/{{{NS}}}replacement/{{{NS}}}w")
+                _wk = xmlsent.find(f".//{{{NS}}}w/{{{NS}}}wk")
+            else:
+                _repl_cond = _repl_word = _wk = None
             # select speakers
             if speaker == "ALL" or xmlsent.get("who") in speaker:
                 for xmlword in xmlsent.findall(".//{%s}w" % NS):
                     infl = None
                     suffixStem = None
                     suffixTag = None
-                    # getting replaced words
-                    if replace and xmlsent.find(f".//{{{NS}}}w/{{{NS}}}replacement"):
-                        xmlword = xmlsent.find(
-                            f".//{{{NS}}}w/{{{NS}}}replacement/{{{NS}}}w"
-                        )
-                    elif replace and xmlsent.find(f".//{{{NS}}}w/{{{NS}}}wk"):
-                        xmlword = xmlsent.find(f".//{{{NS}}}w/{{{NS}}}wk")
+                    # getting replaced words (behaviour-preserving: same elements
+                    # as the original per-word finds, incl. the truthiness test).
+                    if _repl_cond is not None and len(_repl_cond):
+                        xmlword = _repl_word
+                    elif _wk is not None and len(_wk):
+                        xmlword = _wk
                     # get text
                     if xmlword.text:
                         word = xmlword.text
@@ -539,12 +565,12 @@ class CHILDESCorpusReader(XMLCorpusReader):
             path = urlbase + "/" + fileid
         else:
             full = self.root + "/" + fileid
-            full = re.sub(r"\\", "/", full)
+            full = redos.sub(r"\\", "/", full)
             if "/childes/" in full.lower():
                 # Discard /data-xml/ if present
-                path = re.findall(r"(?i)/childes(?:/data-xml)?/(.*)\.xml", full)[0]
+                path = redos.findall(r"(?i)/childes(?:/data-xml)?/(.*)\.xml", full)[0]
             elif "eng-usa" in full.lower():
-                path = "Eng-USA/" + re.findall(r"/(?i)Eng-USA/(.*)\.xml", full)[0]
+                path = "Eng-USA/" + redos.findall(r"/(?i)Eng-USA/(.*)\.xml", full)[0]
             else:
                 path = fileid
 
@@ -558,7 +584,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         url = self.childes_url_base + path
 
         webbrowser.open_new_tab(url)
-        print("Opening in browser:", url)
+        safe_print("Opening in browser:", url)
         # Pausing is a good idea, but it's up to the user...
         # raw_input("Hit Return to continue")
 
@@ -584,35 +610,39 @@ def demo(corpus_root=None):
                     corpus = value
                 if key == "Id":
                     corpus_id = value
-            print("Reading", corpus, corpus_id, " .....")
-            print("words:", childes.words(file)[:7], "...")
-            print(
+            safe_print("Reading", corpus, corpus_id, " .....")
+            safe_print("words:", childes.words(file)[:7], "...")
+            safe_print(
                 "words with replaced words:",
                 childes.words(file, replace=True)[:7],
                 " ...",
             )
-            print("words with pos tags:", childes.tagged_words(file)[:7], " ...")
-            print("words (only MOT):", childes.words(file, speaker="MOT")[:7], "...")
-            print("words (only CHI):", childes.words(file, speaker="CHI")[:7], "...")
-            print("stemmed words:", childes.words(file, stem=True)[:7], " ...")
-            print(
+            safe_print("words with pos tags:", childes.tagged_words(file)[:7], " ...")
+            safe_print(
+                "words (only MOT):", childes.words(file, speaker="MOT")[:7], "..."
+            )
+            safe_print(
+                "words (only CHI):", childes.words(file, speaker="CHI")[:7], "..."
+            )
+            safe_print("stemmed words:", childes.words(file, stem=True)[:7], " ...")
+            safe_print(
                 "words with relations and pos-tag:",
                 childes.words(file, relation=True)[:5],
                 " ...",
             )
-            print("sentence:", childes.sents(file)[:2], " ...")
+            safe_print("sentence:", childes.sents(file)[:2], " ...")
             for participant, values in childes.participants(file)[0].items():
                 for key, value in values.items():
-                    print("\tparticipant", participant, key, ":", value)
-            print("num of sent:", len(childes.sents(file)))
-            print("num of morphemes:", len(childes.words(file, stem=True)))
-            print("age:", childes.age(file))
-            print("age in month:", childes.age(file, month=True))
-            print("MLU:", childes.MLU(file))
-            print()
+                    safe_print("\tparticipant", participant, key, ":", value)
+            safe_print("num of sent:", len(childes.sents(file)))
+            safe_print("num of morphemes:", len(childes.words(file, stem=True)))
+            safe_print("age:", childes.age(file))
+            safe_print("age in month:", childes.age(file, month=True))
+            safe_print("MLU:", childes.MLU(file))
+            safe_print()
 
     except LookupError as e:
-        print(
+        safe_print(
             """The CHILDES corpus, or the parts you need, should be manually
         downloaded from https://childes.talkbank.org/data-xml/ and saved at
         [NLTK_Data_Dir]/corpora/childes/
@@ -620,8 +650,11 @@ def demo(corpus_root=None):
         demo('/path/to/childes/data-xml/Eng-USA/")
         """
         )
-        # corpus_root_http = urllib2.urlopen('https://childes.talkbank.org/data-xml/Eng-USA/Bates.zip')
-        # corpus_root_http_bates = zipfile.ZipFile(cStringIO.StringIO(corpus_root_http.read()))
+
+        # To test remote fetching securely, use the pathsec wrapper:
+        # from nltk.pathsec import urlopen, ZipFile
+        # corpus_root_http = urlopen('https://childes.talkbank.org/data-xml/Eng-USA/Bates.zip')
+        # corpus_root_http_bates = ZipFile(cStringIO.StringIO(corpus_root_http.read()))
         ##this fails
         # childes = CHILDESCorpusReader(corpus_root_http_bates,corpus_root_http_bates.namelist())
 

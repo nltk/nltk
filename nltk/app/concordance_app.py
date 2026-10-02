@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Concordance Application
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Sumukh Ghodke <sghodke@csse.unimelb.edu.au>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -26,6 +26,7 @@ from tkinter import (
 )
 from tkinter.font import Font
 
+from nltk import redos
 from nltk.corpus import (
     alpino,
     brown,
@@ -39,6 +40,7 @@ from nltk.corpus import (
     treebank,
 )
 from nltk.draw.util import ShowText
+from nltk.termsec import safe_print
 from nltk.util import in_idle
 
 WORD_OR_TAG = "[^/ ]+"
@@ -652,7 +654,7 @@ class ConcordanceSearchModel:
                 ]
                 self.model.queue.put(CORPUS_LOADED_EVENT)
             except Exception as e:
-                print(e)
+                safe_print(e)
                 self.model.queue.put(ERROR_LOADING_CORPUS_EVENT)
 
     class SearchCorpus(threading.Thread):
@@ -665,8 +667,11 @@ class ConcordanceSearchModel:
             sent_pos, i, sent_count = [], 0, 0
             for sent in self.model.tagged_sents[self.model.last_sent_searched :]:
                 try:
-                    m = re.search(q, sent)
-                except re.error:
+                    # redos.search bounds compile and match (wall-clock) time; a
+                    # hostile query raises re.error (bad), ValueError (compile-time
+                    # DoS) or TimeoutError (match ReDoS), all shown as SEARCH_ERROR.
+                    m = redos.search(q, sent)
+                except (re.error, ValueError, TimeoutError):
                     self.model.reset_results()
                     self.model.queue.put(SEARCH_ERROR_EVENT)
                     return
@@ -688,8 +693,8 @@ class ConcordanceSearchModel:
         def processed_query(self):
             new = []
             for term in self.model.query.split():
-                term = re.sub(r"\.", r"[^/ ]", term)
-                if re.match("[A-Z]+$", term):
+                term = redos.sub(r"\.", r"[^/ ]", term)
+                if redos.match("[A-Z]+$", term):
                     new.append(BOUNDARY + WORD_OR_TAG + "/" + term + BOUNDARY)
                 elif "/" in term:
                     new.append(BOUNDARY + term + BOUNDARY)

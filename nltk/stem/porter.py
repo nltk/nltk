@@ -20,9 +20,10 @@ in many languages.
 
 __docformat__ = "plaintext"
 
-import re
 
+from nltk import redos
 from nltk.stem.api import StemmerI
+from nltk.termsec import safe_print
 
 
 class PorterStemmer(StemmerI):
@@ -138,11 +139,40 @@ class PorterStemmer(StemmerI):
         if word[i] in self.vowels:
             return False
         if word[i] == "y":
-            if i == 0:
-                return True
-            else:
-                return not self._is_consonant(word, i - 1)
+            # A 'y' counts as a consonant when the letter before it is not
+            # one, and as a vowel otherwise.  Resolve a run of 'y's
+            # iteratively instead of recursively so that a token such as
+            # "yyyy..." cannot drive the recursion depth past the
+            # interpreter limit and raise an uncaught RecursionError
+            # (CWE-674).
+            negate = False
+            while i > 0 and word[i] == "y":
+                negate = not negate
+                i -= 1
+            return (word[i] not in self.vowels) != negate
         return True
+
+    def _consonant_flags(self, word):
+        """Classify every character of ``word`` as consonant/vowel in a single
+        left-to-right O(n) pass.
+
+        Returns a list of bools (``True`` == consonant) equivalent to calling
+        ``_is_consonant(word, i)`` for each ``i``, but without that method's
+        per-call backward walk over a run of 'y's. Callers that classify every
+        position (``_measure``, ``_contains_vowel``) would otherwise be O(n^2)
+        -- a quadratic-time DoS on a token like ``"yyyy..."`` (CWE-407). A 'y'
+        is a consonant iff the preceding letter is not one (or it starts the
+        word), which is exactly the previous flag we just computed.
+        """
+        flags = []
+        for i, ch in enumerate(word):
+            if ch in self.vowels:
+                flags.append(False)
+            elif ch == "y":
+                flags.append(True if i == 0 else not flags[i - 1])
+            else:
+                flags.append(True)
+        return flags
 
     def _measure(self, stem):
         r"""Returns the 'measure' of stem, per definition in the paper
@@ -178,17 +208,14 @@ class PorterStemmer(StemmerI):
                 m=1    TROUBLE,  OATS,  TREES,  IVY.
                 m=2    TROUBLES,  PRIVATE,  OATEN,  ORRERY.
         """
-        cv_sequence = ""
-
         # Construct a string of 'c's and 'v's representing whether each
-        # character in `stem` is a consonant or a vowel.
+        # character in `stem` is a consonant or a vowel, in a single O(n) pass
+        # (see _consonant_flags; a per-position _is_consonant loop is O(n^2)).
         # e.g. 'falafel' becomes 'cvcvcvc',
         #      'architecture' becomes 'vcccvcvccvcv'
-        for i in range(len(stem)):
-            if self._is_consonant(stem, i):
-                cv_sequence += "c"
-            else:
-                cv_sequence += "v"
+        cv_sequence = "".join(
+            "c" if is_cons else "v" for is_cons in self._consonant_flags(stem)
+        )
 
         # Count the number of 'vc' occurrences, which is equivalent to
         # the number of 'VC' occurrences in Porter's reduced form in the
@@ -200,10 +227,8 @@ class PorterStemmer(StemmerI):
 
     def _contains_vowel(self, stem):
         """Returns True if stem contains a vowel, else False"""
-        for i in range(len(stem)):
-            if not self._is_consonant(stem, i):
-                return True
-        return False
+        # Single O(n) pass (a per-position _is_consonant loop is O(n^2)).
+        return not all(self._consonant_flags(stem))
 
     def _ends_double_consonant(self, word):
         """Implements condition *d from the paper
@@ -659,7 +684,7 @@ class PorterStemmer(StemmerI):
         """
         stem = word.lower() if to_lowercase else word
 
-        if self.mode == self.NLTK_EXTENSIONS and word in self.pool:
+        if self.mode == self.NLTK_EXTENSIONS and stem in self.pool:
             return self.pool[stem]
 
         if self.mode != self.ORIGINAL_ALGORITHM and len(word) <= 2:
@@ -703,15 +728,15 @@ def demo():
 
     # Convert the results to a string, and word-wrap them.
     results = " ".join(stemmed)
-    results = re.sub(r"(.{,70})\s", r"\1\n", results + " ").rstrip()
+    results = redos.sub(r"(.{,70})\s", r"\1\n", results + " ").rstrip()
 
     # Convert the original to a string, and word wrap it.
     original = " ".join(orig)
-    original = re.sub(r"(.{,70})\s", r"\1\n", original + " ").rstrip()
+    original = redos.sub(r"(.{,70})\s", r"\1\n", original + " ").rstrip()
 
     # Print the results.
-    print("-Original-".center(70).replace(" ", "*").replace("-", " "))
-    print(original)
-    print("-Results-".center(70).replace(" ", "*").replace("-", " "))
-    print(results)
-    print("*" * 70)
+    safe_print("-Original-".center(70).replace(" ", "*").replace("-", " "))
+    safe_print(original)
+    safe_print("-Results-".center(70).replace(" ", "*").replace("-", " "))
+    safe_print(results)
+    safe_print("*" * 70)

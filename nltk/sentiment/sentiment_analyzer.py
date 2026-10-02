@@ -1,7 +1,7 @@
 #
 # Natural Language Toolkit: Sentiment Analyzer
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -22,7 +22,10 @@ from nltk.metrics import BigramAssocMeasures
 from nltk.metrics import f_measure as eval_f_measure
 from nltk.metrics import precision as eval_precision
 from nltk.metrics import recall as eval_recall
+from nltk.pathsec import open as pathsec_open
+from nltk.picklesec import pickle_dump
 from nltk.probability import FreqDist
+from nltk.termsec import safe_print
 
 
 class SentimentAnalyzer:
@@ -175,7 +178,7 @@ class SentimentAnalyzer:
         :return: A classifier instance trained on the training set.
         :rtype:
         """
-        print("Training classifier")
+        safe_print("Training classifier")
         self.classifier = trainer(training_set, **kwargs)
         if save_classifier:
             self.save_file(self.classifier, save_classifier)
@@ -186,12 +189,15 @@ class SentimentAnalyzer:
         """
         Store `content` in `filename`. Can be used to store a SentimentAnalyzer.
         """
-        print("Saving", filename, file=sys.stderr)
-        with open(filename, "wb") as storage_file:
-            import pickle
-
+        safe_print("Saving", filename, file=sys.stderr)
+        # ``filename`` is caller-controlled; route the write through the pathsec
+        # sandbox so a classifier cannot be pickled to an arbitrary path outside
+        # the allowed NLTK data roots (GHSA-8mgp-746c-j5xp).
+        with pathsec_open(
+            filename, "wb", context="SentimentAnalyzer.save_file"
+        ) as storage_file:
             # The protocol=2 parameter is for python2 compatibility
-            pickle.dump(content, storage_file, protocol=2)
+            pickle_dump(content, storage_file, protocol=2)
 
     def evaluate(
         self,
@@ -217,7 +223,7 @@ class SentimentAnalyzer:
         """
         if classifier is None:
             classifier = self.classifier
-        print(f"Evaluating {type(classifier).__name__} results...")
+        safe_print(f"Evaluating {type(classifier).__name__} results...")
         metrics_results = {}
         if accuracy:
             accuracy_score = eval_accuracy(classifier, test_set)
@@ -250,6 +256,6 @@ class SentimentAnalyzer:
         # Print evaluation results (in alphabetical order)
         if verbose:
             for result in sorted(metrics_results):
-                print(f"{result}: {metrics_results[result]}")
+                safe_print(f"{result}: {metrics_results[result]}")
 
         return metrics_results

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: NLTK's very own tokenizer.
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Liling Tan
 #         Tom Aarsen <> (modifications)
 # URL: <https://www.nltk.org>
@@ -12,6 +12,7 @@ import warnings
 from collections.abc import Iterator
 from typing import List, Tuple
 
+from nltk import redos
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import align_tokens
 
@@ -51,21 +52,24 @@ class NLTKWordTokenizer(TokenizerI):
 
     # Starting quotes.
     STARTING_QUOTES = [
-        (re.compile("([«“‘„]|[`]+)", re.U), r" \1 "),
-        (re.compile(r"^\""), r"``"),
-        (re.compile(r"(``)"), r" \1 "),
-        (re.compile(r"([ \(\[{<])(\"|\'{2})"), r"\1 `` "),
-        (re.compile(r"(?i)(\')(?!re|ve|ll|m|t|s|d|n)(\w)\b", re.U), r"\1 \2"),
+        (redos.compile("([«“‘„]|[`]+)", re.U), r" \1 "),
+        (redos.compile(r"^\""), r"``"),
+        (redos.compile(r"(``)"), r" \1 "),
+        (redos.compile(r"([ \(\[{<])(\"|\'{2})"), r"\1 `` "),
+        (
+            redos.compile(r"(?i)(?<!\w)(\')(?!(?:re|ve|ll|m|t|s|d|n)\b)(?=\w)", re.U),
+            r"\1 ",
+        ),
     ]
 
     # Ending quotes.
     ENDING_QUOTES = [
-        (re.compile("([»”’])", re.U), r" \1 "),
-        (re.compile(r"''"), " '' "),
-        (re.compile(r'"'), " '' "),
-        (re.compile(r"\s+"), " "),
-        (re.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 "),
-        (re.compile(r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1 \2 "),
+        (redos.compile("([»”’])", re.U), r" \1 "),
+        (redos.compile(r"''"), " '' "),
+        (redos.compile(r'"'), " '' "),
+        (redos.compile(r"\s+"), " "),
+        (redos.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 "),
+        (redos.compile(r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1 \2 "),
     ]
 
     # For improvements for starting/closing quotes from TreebankWordTokenizer,
@@ -79,44 +83,50 @@ class NLTKWordTokenizer(TokenizerI):
 
     # Punctuation.
     PUNCTUATION = [
-        (re.compile(r'([^\.])(\.)([\]\)}>"\'' "»”’ " r"]*)\s*$", re.U), r"\1 \2 \3 "),
-        (re.compile(r"([:,])([^\d])"), r" \1 \2"),
-        (re.compile(r"([:,])$"), r" \1 "),
+        # Possessive: the class holds a space right before ``\s*$``, and re-splitting
+        # a trailing space run between the two was O(n**2) (CWE-407); the maximal
+        # run is the only split that ever matched, so the spans are unchanged.
         (
-            re.compile(r"\.{2,}", re.U),
+            redos.compile(r'([^\.])(\.)([\]\)}>"\'' "»”’ " r"]*+)\s*$", re.U),
+            r"\1 \2 \3 ",
+        ),
+        (redos.compile(r"([:,])([^\d])"), r" \1 \2"),
+        (redos.compile(r"([:,])$"), r" \1 "),
+        (
+            redos.compile(r"\.{2,}", re.U),
             r" \g<0> ",
         ),  # See https://github.com/nltk/nltk/pull/2322
-        (re.compile(r"[;@#$%&]"), r" \g<0> "),
+        (redos.compile(r"[;@#$%&]"), r" \g<0> "),
         (
-            re.compile(r"[\u2012-\u2015]", re.UNICODE),
+            redos.compile(r"[\u2012-\u2015]", re.UNICODE),
             r" \g<0> ",
         ),  # Handles figure dash, en dashes, em dashes and horizontal bars
         (
-            re.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'),
+            redos.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'),
             r"\1 \2\3 ",
         ),  # Handles the final period.
-        (re.compile(r"[?!]"), r" \g<0> "),
-        (re.compile(r"([^'])' "), r"\1 ' "),
+        (redos.compile(r"[?!]"), r" \g<0> "),
+        (redos.compile(r"([^'])' "), r"\1 ' "),
         (
-            re.compile(r"[*]", re.U),
+            redos.compile(r"[*]", re.U),
             r" \g<0> ",
         ),  # See https://github.com/nltk/nltk/pull/2322
     ]
 
     # Pads parentheses
-    PARENS_BRACKETS = (re.compile(r"[\]\[\(\)\{\}\<\>]"), r" \g<0> ")
+    PARENS_BRACKETS = (redos.compile(r"[\]\[\(\)\{\}\<\>]"), r" \g<0> ")
 
     # Optionally: Convert parentheses, brackets and converts them to PTB symbols.
     CONVERT_PARENTHESES = [
-        (re.compile(r"\("), "-LRB-"),
-        (re.compile(r"\)"), "-RRB-"),
-        (re.compile(r"\["), "-LSB-"),
-        (re.compile(r"\]"), "-RSB-"),
-        (re.compile(r"\{"), "-LCB-"),
-        (re.compile(r"\}"), "-RCB-"),
+        (redos.compile(r"\("), "-LRB-"),
+        (redos.compile(r"\)"), "-RRB-"),
+        (redos.compile(r"\["), "-LSB-"),
+        (redos.compile(r"\]"), "-RSB-"),
+        (redos.compile(r"\{"), "-LCB-"),
+        (redos.compile(r"\}"), "-RCB-"),
     ]
 
-    DOUBLE_DASHES = (re.compile(r"--"), r" -- ")
+    DOUBLE_DASHES = (redos.compile(r"--"), r" -- ")
 
     # List of contractions adapted from Robert MacIntyre's tokenizer.
     _contractions = MacIntyreContractions()
@@ -226,12 +236,14 @@ class NLTKWordTokenizer(TokenizerI):
         # treated as starting quotes).
         if ('"' in text) or ("''" in text):
             # Find double quotes and converted quotes
-            matched = [m.group() for m in re.finditer(r"``|'{2}|\"", text)]
+            matched = [m.group() for m in redos.finditer(r"``|'{2}|\"", text)]
 
-            # Replace converted quotes back to double quotes
+            # Replace converted quotes back to double quotes. Draw matches from a
+            # forward iterator so the comprehension stays linear (CWE-407); popping
+            # index 0 off a list per token was quadratic.
+            mit = iter(matched)
             tokens = [
-                matched.pop(0) if tok in ['"', "``", "''"] else tok
-                for tok in raw_tokens
+                next(mit) if tok in ['"', "``", "''"] else tok for tok in raw_tokens
             ]
         else:
             tokens = raw_tokens

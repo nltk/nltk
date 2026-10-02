@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Distance Metrics
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Tom Lippincott <tom@cs.columbia.edu>
@@ -21,6 +21,35 @@ As metrics, they must satisfy the following three requirements:
 
 import operator
 import warnings
+
+from nltk.pathsec import open as _secure_open
+from nltk.termsec import safe_print
+
+#: Maximum input length accepted by the super-linear two-string distance
+#: functions in this module: the O(n*m) time-and-memory :func:`edit_distance` /
+#: :func:`edit_distance_align` (they build a full ``(n+1)x(m+1)`` DP matrix) and
+#: the O(n**2) :func:`jaro_similarity`. Both operate on two untrusted strings, so
+#: an unbounded length is a CPU/memory DoS (CWE-407, CWE-400): e.g.
+#: ``edit_distance("a"*40000, "b"*40000)`` allocates tens of GB and runs for
+#: hours. CVE-2026-12926 hardened ``jaro_similarity``'s inner loop from O(n**3)
+#: to O(n**2) but left the length unbounded, so the quadratic DoS survived; this
+#: cap closes it and the matching ``edit_distance`` hole. A real distance query
+#: is short; raise this if you genuinely need to compare very long, trusted
+#: strings.
+MAX_DISTANCE_INPUT_LEN = 2000
+
+
+def _check_distance_input_len(s1, s2, func_name):
+    """Reject oversized inputs to the O(n*m)/O(n**2) distance functions."""
+    longest = max(len(s1), len(s2))
+    if longest > MAX_DISTANCE_INPUT_LEN:
+        raise ValueError(
+            f"{func_name}: input length {longest} exceeds MAX_DISTANCE_INPUT_LEN "
+            f"({MAX_DISTANCE_INPUT_LEN}). This function is super-linear in the "
+            "input length over two untrusted strings (CWE-407/CWE-400); a long "
+            "input is a CPU/memory DoS. Raise nltk.metrics.distance."
+            "MAX_DISTANCE_INPUT_LEN if you need to compare longer trusted strings."
+        )
 
 
 def _edit_dist_init(len1, len2):
@@ -85,6 +114,7 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     :type transpositions: bool
     :rtype: int
     """
+    _check_distance_input_len(s1, s2, "edit_distance")
     # set up a 2-D array
     len1 = len(s1)
     len2 = len(s2)
@@ -123,24 +153,35 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     return lev[len1][len2]
 
 
-def _edit_dist_backtrace(lev):
+def _edit_dist_backtrace(lev, s1, s2, substitution_cost=1):
     i, j = len(lev) - 1, len(lev[0]) - 1
     alignment = [(i, j)]
 
     while (i, j) != (0, 0):
         directions = [
-            (i - 1, j - 1),  # substitution
+            (i - 1, j - 1),  # substitution / match
             (i - 1, j),  # skip s1
             (i, j - 1),  # skip s2
         ]
 
-        direction_costs = (
-            (lev[i][j] if (i >= 0 and j >= 0) else float("inf"), (i, j))
-            for i, j in directions
-        )
+        direction_costs = []
+        for pi, pj in directions:
+            if pi < 0 or pj < 0:
+                cost = float("inf")
+            elif pi == i - 1 and pj == j - 1:  # diagonal
+                # Use actual transition cost: 0 for match, substitution_cost
+                # for mismatch. This ensures the backtrace prefers delete+insert
+                # (cost 2) over substitution when substitution_cost > 2.
+                sub_cost = 0 if s1[pi] == s2[pj] else substitution_cost
+                cost = lev[pi][pj] + sub_cost
+            else:  # skip s1 or skip s2
+                cost = lev[pi][pj] + 1
+            direction_costs.append((cost, (pi, pj)))
+
         _, (i, j) = min(direction_costs, key=operator.itemgetter(0))
 
         alignment.append((i, j))
+
     return list(reversed(alignment))
 
 
@@ -173,6 +214,7 @@ def edit_distance_align(s1, s2, substitution_cost=1):
     :type substitution_cost: int
     :rtype: List[Tuple(int, int)]
     """
+    _check_distance_input_len(s1, s2, "edit_distance_align")
     # set up a 2-D array
     len1 = len(s1)
     len2 = len(s2)
@@ -194,7 +236,7 @@ def edit_distance_align(s1, s2, substitution_cost=1):
             )
 
     # backtrace to find alignment
-    alignment = _edit_dist_backtrace(lev)
+    alignment = _edit_dist_backtrace(lev, s1, s2, substitution_cost)
     return alignment
 
 
@@ -227,7 +269,7 @@ def masi_distance(label1, label2):
 
     >>> from nltk.metrics import masi_distance
     >>> masi_distance(set([1, 2]), set([1, 2, 3, 4]))
-    0.665
+    0.6666666666666667
 
     Passonneau 2006, Measuring Agreement on Set-Valued Items (MASI)
     for Semantic and Pragmatic Annotation.
@@ -240,9 +282,9 @@ def masi_distance(label1, label2):
     if len_label1 == len_label2 and len_label1 == len_intersection:
         m = 1
     elif len_intersection == min(len_label1, len_label2):
-        m = 0.67
+        m = 2 / 3
     elif len_intersection > 0:
-        m = 0.33
+        m = 1 / 3
     else:
         m = 0
 
@@ -263,7 +305,7 @@ def interval_distance(label1, label2):
         return pow(label1 - label2, 2)
     #        return pow(list(label1)[0]-list(label2)[0],2)
     except Exception:
-        print("non-numeric labels not supported with interval distance")
+        safe_print("non-numeric labels not supported with interval distance")
 
 
 def presence(label):
@@ -283,7 +325,10 @@ def fractional_presence(label):
 
 def custom_distance(file):
     data = {}
-    with open(file) as infile:
+    # Route through the pathsec sentinel so the read honours the file-access
+    # sandbox (allowed data roots, symlink resolution) instead of the builtin
+    # open, which bypasses it and can read arbitrary local files (CWE-22).
+    with _secure_open(file) as infile:
         for l in infile:
             labelA, labelB, dist = l.strip().split("\t")
             labelA = frozenset([labelA])
@@ -318,6 +363,12 @@ def jaro_similarity(s1, s2):
     if s1 == s2:
         return 1.0
 
+    # CVE-2026-12926 cut the inner membership test from O(n) to O(1) (below),
+    # but the surrounding double loop is still O(n**2) and had no length bound,
+    # so two long near-matching strings remained a CPU DoS. Cap the length to
+    # close that residual (CWE-407).
+    _check_distance_input_len(s1, s2, "jaro_similarity")
+
     # First, store the length of the strings
     # because they will be re-used several times.
     len_s1, len_s2 = len(s1), len(s2)
@@ -329,19 +380,26 @@ def jaro_similarity(s1, s2):
     matches = 0  # no.of matched characters in s1 and s2
     transpositions = 0  # no. of transpositions between s1 and s2
     flagged_1 = []  # positions in s1 which are matches to some character in s2
-    flagged_2 = []  # positions in s2 which are matches to some character in s1
+    # Positions in s2 which are matches to some character in s1, held as a set so
+    # the ``j not in matched_2`` membership test below is O(1): with a list it was
+    # O(len(matched_2)) inside the O(n**2) double loop, which grows to O(n**3) on
+    # near-matching strings and lets two short inputs pin a CPU core (CWE-770;
+    # CVE-2026-12926).
+    matched_2 = set()
 
     # Iterate through sequences, check for matches and compute transpositions.
     for i in range(len_s1):  # Iterate through each character.
         upperbound = min(i + match_bound, len_s2 - 1)
         lowerbound = max(0, i - match_bound)
         for j in range(lowerbound, upperbound + 1):
-            if s1[i] == s2[j] and j not in flagged_2:
+            if s1[i] == s2[j] and j not in matched_2:
                 matches += 1
                 flagged_1.append(i)
-                flagged_2.append(j)
+                matched_2.add(j)
                 break
-    flagged_2.sort()
+    # Ordered list of the matched s2 positions for the transposition pass, giving
+    # the same result as the original (which sorted the matched positions).
+    flagged_2 = sorted(matched_2)
     for i, j in zip(flagged_1, flagged_2):
         if s1[i] != s2[j]:
             transpositions += 1
@@ -503,27 +561,27 @@ def demo():
         ("language", "lngauage"),
     ]
     for s1, s2 in string_distance_examples:
-        print(f"Edit distance btwn '{s1}' and '{s2}':", edit_distance(s1, s2))
-        print(
+        safe_print(f"Edit distance btwn '{s1}' and '{s2}':", edit_distance(s1, s2))
+        safe_print(
             f"Edit dist with transpositions btwn '{s1}' and '{s2}':",
             edit_distance(s1, s2, transpositions=True),
         )
-        print(f"Jaro similarity btwn '{s1}' and '{s2}':", jaro_similarity(s1, s2))
-        print(
+        safe_print(f"Jaro similarity btwn '{s1}' and '{s2}':", jaro_similarity(s1, s2))
+        safe_print(
             f"Jaro-Winkler similarity btwn '{s1}' and '{s2}':",
             jaro_winkler_similarity(s1, s2),
         )
-        print(
+        safe_print(
             f"Jaro-Winkler distance btwn '{s1}' and '{s2}':",
             1 - jaro_winkler_similarity(s1, s2),
         )
     s1 = {1, 2, 3, 4}
     s2 = {3, 4, 5}
-    print("s1:", s1)
-    print("s2:", s2)
-    print("Binary distance:", binary_distance(s1, s2))
-    print("Jaccard distance:", jaccard_distance(s1, s2))
-    print("MASI distance:", masi_distance(s1, s2))
+    safe_print("s1:", s1)
+    safe_print("s2:", s2)
+    safe_print("Binary distance:", binary_distance(s1, s2))
+    safe_print("Jaccard distance:", jaccard_distance(s1, s2))
+    safe_print("MASI distance:", masi_distance(s1, s2))
 
 
 if __name__ == "__main__":

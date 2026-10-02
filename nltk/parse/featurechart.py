@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chart Parser for Feature-Based Grammars
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Rob Speer <rspeer@mit.edu>
 #         Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 # URL: <https://www.nltk.org/>
@@ -10,8 +10,10 @@
 Extension of chart parsing implementation to handle grammars with
 feature structures as nodes.
 """
+import os
 from time import perf_counter
 
+from nltk.data import make_staging_dir
 from nltk.featstruct import TYPE, FeatStruct, find_variables, unify
 from nltk.grammar import (
     CFG,
@@ -36,6 +38,7 @@ from nltk.parse.chart import (
     TreeEdge,
 )
 from nltk.sem import logic
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 
 # ////////////////////////////////////////////////////////////
@@ -627,35 +630,36 @@ def demo(
     import sys
     import time
 
-    print()
+    safe_print()
     grammar = demo_grammar()
     if print_grammar:
-        print(grammar)
-        print()
-    print("*", parser.__name__)
+        safe_print(grammar)
+        safe_print()
+    safe_print("*", parser.__name__)
     if print_sentence:
-        print("Sentence:", sent)
+        safe_print("Sentence:", sent)
     tokens = sent.split()
     t = perf_counter()
     cp = parser(grammar, trace=trace)
     chart = cp.chart_parse(tokens)
     trees = list(chart.parses(grammar.start()))
     if print_times:
-        print("Time: %s" % (perf_counter() - t))
+        safe_print("Time: %s" % (perf_counter() - t))
     if print_trees:
         for tree in trees:
-            print(tree)
+            safe_print(tree)
     else:
-        print("Nr trees:", len(trees))
+        safe_print("Nr trees:", len(trees))
 
 
 def run_profile():
     import profile
-
-    profile.run("for i in range(1): demo()", "/tmp/profile.out")
     import pstats
 
-    p = pstats.Stats("/tmp/profile.out")
+    # A private staging dir under a data root, not a guessable /tmp path.
+    stats_file = os.path.join(make_staging_dir(prefix="nltk_profile_"), "profile.out")
+    profile.run("for i in range(1): demo()", stats_file)
+    p = pstats.Stats(stats_file)
     p.strip_dirs().sort_stats("time", "cum").print_stats(60)
     p.strip_dirs().sort_stats("cum", "time").print_stats(60)
 
@@ -664,11 +668,11 @@ if __name__ == "__main__":
     from nltk.data import load
 
     demo()
-    print()
+    safe_print()
     grammar = load("grammars/book_grammars/feat0.fcfg")
     cp = FeatureChartParser(grammar, trace=2)
     sent = "Kim likes children"
     tokens = sent.split()
     trees = cp.parse(tokens)
     for tree in trees:
-        print(tree)
+        safe_print(tree)

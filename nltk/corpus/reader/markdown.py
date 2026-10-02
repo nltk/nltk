@@ -218,17 +218,24 @@ class CategorizedMarkdownCorpusReader(CategorizedCorpusReader, MarkdownCorpusRea
 
     def blockquote_reader(self, stream):
         tokens = self.parser.parse(stream.read())
-        opening_tokens = filter(
-            lambda t: t.level == 0 and t.type == "blockquote_open", tokens
-        )
-        closing_tokens = filter(
-            lambda t: t.level == 0 and t.type == "blockquote_close", tokens
-        )
-        blockquotes = list()
-        for o, c in zip(opening_tokens, closing_tokens):
-            opening_index = tokens.index(o)
-            closing_index = tokens.index(c, opening_index)
-            blockquotes.append(tokens[opening_index : closing_index + 1])
+        # Record the index of each top-level blockquote_open/blockquote_close
+        # with two linear scans and pair them positionally, instead of calling
+        # tokens.index() once per block: that is an O(n) scan per block, i.e.
+        # O(n^2) overall (CWE-407) on a document made of many top-level
+        # blockquotes.
+        opening_indices = [
+            i
+            for i, t in enumerate(tokens)
+            if t.level == 0 and t.type == "blockquote_open"
+        ]
+        closing_indices = [
+            i
+            for i, t in enumerate(tokens)
+            if t.level == 0 and t.type == "blockquote_close"
+        ]
+        blockquotes = [
+            tokens[o : c + 1] for o, c in zip(opening_indices, closing_indices)
+        ]
         return [
             MarkdownBlock(
                 self.parser.renderer.render(block, self.parser.options, env=None)
@@ -293,24 +300,26 @@ class CategorizedMarkdownCorpusReader(CategorizedCorpusReader, MarkdownCorpusRea
     def list_reader(self, stream):
         tokens = self.parser.parse(stream.read())
         opening_types = ("bullet_list_open", "ordered_list_open")
-        opening_tokens = filter(
-            lambda t: t.level == 0 and t.type in opening_types, tokens
-        )
         closing_types = ("bullet_list_close", "ordered_list_close")
-        closing_tokens = filter(
-            lambda t: t.level == 0 and t.type in closing_types, tokens
-        )
-        list_blocks = list()
-        for o, c in zip(opening_tokens, closing_tokens):
-            opening_index = tokens.index(o)
-            closing_index = tokens.index(c, opening_index)
-            list_blocks.append(tokens[opening_index : closing_index + 1])
+        # Pair each top-level list_open with its list_close by index, collected
+        # with two linear scans, instead of an O(n) tokens.index() scan per block
+        # which makes the loop O(n^2) (CWE-407) on a document of many top-level
+        # lists.
+        opening_indices = [
+            i for i, t in enumerate(tokens) if t.level == 0 and t.type in opening_types
+        ]
+        closing_indices = [
+            i for i, t in enumerate(tokens) if t.level == 0 and t.type in closing_types
+        ]
+        list_blocks = [
+            tokens[o : c + 1] for o, c in zip(opening_indices, closing_indices)
+        ]
         return [
             List(
-                tokens[0].type == "ordered_list_open",
-                [t.content for t in tokens if t.content],
+                block[0].type == "ordered_list_open",
+                [t.content for t in block if t.content],
             )
-            for tokens in list_blocks
+            for block in list_blocks
         ]
 
     @comma_separated_string_args

@@ -3,10 +3,13 @@ Unit tests for nltk.tokenize.
 See also nltk/test/tokenize.doctest
 """
 
+import hashlib
+import os
 from typing import List, Tuple
 
 import pytest
 
+from nltk.test.unit import timing
 from nltk.tokenize import (
     LegalitySyllableTokenizer,
     StanfordSegmenter,
@@ -18,6 +21,9 @@ from nltk.tokenize import (
     word_tokenize,
 )
 from nltk.tokenize.simple import CharTokenizer
+from nltk.tokenize.treebank import TreebankWordDetokenizer
+
+from . import _mp_ctx
 
 
 def load_stanford_segmenter():
@@ -34,6 +40,13 @@ check_stanford_segmenter = pytest.mark.skipif(
     not load_stanford_segmenter(),
     reason="NLTK was unable to find stanford-segmenter.jar.",
 )
+
+
+def _tweet_tokenizer_redos_worker():
+    tokenizer = TweetTokenizer()
+    for payload in ("a." * 8000, "a.a-" * 8000, "http://a(" * 8000):
+        tokenizer.tokenize(payload)
+    os._exit(0)
 
 
 class TestTokenize:
@@ -58,6 +71,20 @@ class TestTokenize:
             "français",
         ]
         assert tokens == expected
+
+    def test_tweet_tokenizer_ellipsis_newline(self):
+        """
+        Ellipsis tokens must not span newlines (#1954).
+        """
+        tokenizer = TweetTokenizer()
+        assert tokenizer.tokenize("hello...\n...world") == [
+            "hello",
+            "...",
+            "...",
+            "world",
+        ]
+        # spaces between ellipsis dots are still allowed
+        assert tokenizer.tokenize("a.. .b") == ["a", ".. .", "b"]
 
     @pytest.mark.parametrize(
         "test_input, expecteds",
@@ -352,6 +379,45 @@ class TestTokenize:
         expected = ["(", "393", ")", "928 -3010"]
         result = tokenizer.tokenize(test2)
         assert result == expected
+
+    def test_tweet_tokenizer_redos(self):
+        """
+        The URL/email regexes used to backtrack catastrophically on long
+        dotted strings, so a tiny input could hang the tokenizer for many
+        seconds. Run pathological inputs in a separate process with a hard
+        timeout so a regression fails fast instead of hanging the suite.
+        """
+        ctx = _mp_ctx()
+        run = timing.run_in_process(
+            _tweet_tokenizer_redos_worker, (), budget=60, context=ctx, cpu_bound=True
+        )
+        if not run.within_budget:
+            raise AssertionError(
+                "TweetTokenizer did not finish in time, possible ReDoS"
+            )
+        assert run.exitcode == 0, f"worker failed (exit code {run.exitcode})"
+
+    def test_tweet_tokenizer_reduce_len_preserves_non_latin(self):
+        """
+        With ``reduce_len=False`` (the default), the tokenizer must not shorten
+        runs of repeated non-Latin letters. Regression test for
+        https://github.com/nltk/nltk/issues/3157, where a run of Cyrillic
+        characters was collapsed even though Latin ones were left untouched.
+        """
+        keep = TweetTokenizer(reduce_len=False)
+        # A Latin run is preserved (control) ...
+        assert keep.tokenize("Loooool") == ["Loooool"]
+        # ... and a Cyrillic run must be preserved identically.
+        assert keep.tokenize("Лооооол") == ["Лооооол"]
+
+        # reduce_len=True must still collapse long runs in any script.
+        shorten = TweetTokenizer(reduce_len=True)
+        assert shorten.tokenize("Loooool") == ["Loool"]
+        assert shorten.tokenize("Лооооол") == ["Лооол"]
+
+        # Long runs of a single punctuation character are still shortened even
+        # when reduce_len=False, so the tokenizer stays safe against ReDoS.
+        assert keep.tokenize("!!!!!!!!") == ["!", "!", "!"]
 
     def test_emoji_tokenizer(self):
         """
@@ -797,6 +863,27 @@ class TestTokenize:
         expected = ["'", "v", "'", "'re", "'"]
         assert word_tokenize(sentence) == expected
 
+    def test_word_tokenize_opening_single_quote_padding(self):
+        sentence = "'Hard' to tell"
+        expected = ["'", "Hard", "'", "to", "tell"]
+        assert word_tokenize(sentence) == expected
+
+        sentence = "He said 'hello' to me"
+        expected = ["He", "said", "'", "hello", "'", "to", "me"]
+        assert word_tokenize(sentence) == expected
+
+        sentence = "It's more'n enough."
+        expected = ["It", "'s", "more", "'n", "enough", "."]
+        assert word_tokenize(sentence) == expected
+
+        sentence = "It's o'clock already"
+        expected = ["It", "'s", "o'clock", "already"]
+        assert word_tokenize(sentence) == expected
+
+        sentence = "O'Connor went home"
+        expected = ["O'Connor", "went", "home"]
+        assert word_tokenize(sentence) == expected
+
     def test_punkt_pair_iter(self):
         test_cases = [
             ("12", [("1", "2"), ("2", None)]),
@@ -925,6 +1012,47 @@ class TestTokenize:
     def test_sent_tokenize(self, sentences: str, expected: list[str]):
         assert sent_tokenize(sentences) == expected
 
+    def test_sent_tokenize_curly_quotes_and_guillemets_issue_2333(self):
+        # Regression test for https://github.com/nltk/nltk/issues/2333.
+        #
+        # A sentence-final Unicode curly closing quote or guillemet that
+        # directly abuts the period, with no intervening whitespace, used to
+        # hide the sentence boundary from Punkt entirely: the period matched
+        # neither the "non-word char" branch nor the "whitespace" branch of
+        # the period-context regex, so period_context_re() never even
+        # yielded a match at that position. NLTKWordTokenizer's
+        # STARTING_QUOTES / ENDING_QUOTES (see
+        # test_word_tokenize_opening_single_quote_padding above) already
+        # special-cased this character set; PunktLanguageVars did not.
+        assert sent_tokenize("“First sentence.” Next one.") == [
+            "“First sentence.”",
+            "Next one.",
+        ]
+        assert sent_tokenize("He said “this is great.” Then left.") == [
+            "He said “this is great.”",
+            "Then left.",
+        ]
+        assert sent_tokenize("She asked, “Are you coming?” He nodded.") == [
+            "She asked, “Are you coming?”",
+            "He nodded.",
+        ]
+        assert sent_tokenize("Il a dit «bonjour.» Puis il est parti.") == [
+            "Il a dit «bonjour.»",
+            "Puis il est parti.",
+        ]
+
+        # Regression guards: straight quotes and plain text (no quotes at
+        # all) must tokenize exactly as before, unaffected by the new
+        # boundary-realignment / non-word-char classes.
+        assert sent_tokenize('He said "hi." Then left.') == [
+            'He said "hi."',
+            "Then left.",
+        ]
+        assert sent_tokenize("This is one sentence. This is another.") == [
+            "This is one sentence.",
+            "This is another.",
+        ]
+
     def test_string_tokenizer(self) -> None:
         sentence = "Hello there"
         tokenizer = CharTokenizer()
@@ -944,6 +1072,80 @@ class TestTokenize:
         ]
 
 
+class TestStanfordSegmenterClasspathValidation:
+    def _make_segmenter(self, classpath):
+        seg = StanfordSegmenter.__new__(StanfordSegmenter)
+        seg._stanford_jar = classpath
+        seg._jar_sha256_cache = {}
+        return seg
+
+    def _write_jar(self, tmp_path, name, data):
+        path = tmp_path / name
+        path.write_bytes(data)
+        return path
+
+    def _sha256(self, path):
+        return hashlib.sha256(path.read_bytes()).hexdigest()
+
+    def test_validate_classpath_allows_all_approved(self, monkeypatch, tmp_path):
+        jar1 = self._write_jar(tmp_path, "segmenter.jar", b"jar-one")
+        jar2 = self._write_jar(tmp_path, "slf4j.jar", b"jar-two")
+        seg = self._make_segmenter(os.pathsep.join([str(jar1), str(jar2)]))
+
+        monkeypatch.setenv(
+            "NLTK_SEGMENTER_ALLOW_SHA256",
+            ",".join([self._sha256(jar1), self._sha256(jar2)]),
+        )
+
+        seg._validate_classpath()
+
+    def test_validate_classpath_blocks_unapproved_entry(self, monkeypatch, tmp_path):
+        jar1 = self._write_jar(tmp_path, "segmenter.jar", b"jar-one")
+        jar2 = self._write_jar(tmp_path, "slf4j.jar", b"jar-two")
+        seg = self._make_segmenter(os.pathsep.join([str(jar1), str(jar2)]))
+
+        monkeypatch.setenv("NLTK_SEGMENTER_ALLOW_SHA256", self._sha256(jar1))
+
+        with pytest.raises(LookupError, match=r"\[SECURITY BLOCKED\]"):
+            seg._validate_classpath()
+
+    def test_validate_classpath_does_not_trust_path_substrings(
+        self, monkeypatch, tmp_path
+    ):
+        jar = self._write_jar(
+            tmp_path, "stanford-segmenter-malicious.jar", b"not-approved"
+        )
+        seg = self._make_segmenter(str(jar))
+        monkeypatch.setenv("NLTK_SEGMENTER_ALLOW_SHA256", "")
+
+        with pytest.raises(LookupError) as excinfo:
+            seg._validate_classpath()
+
+        assert "stanford-segmenter-malicious.jar" in str(excinfo.value)
+
+    def test_sha256sum_invalidates_cache_when_file_changes(self, tmp_path):
+        jar = self._write_jar(tmp_path, "segmenter.jar", b"original")
+        seg = self._make_segmenter(str(jar))
+
+        first_digest = seg._sha256sum(str(jar))
+        jar.write_bytes(b"modified and definitely different")
+        second_digest = seg._sha256sum(str(jar))
+
+        assert first_digest != second_digest
+
+    def test_validate_classpath_error_includes_guidance(self, monkeypatch, tmp_path):
+        jar = self._write_jar(tmp_path, "segmenter.jar", b"jar-one")
+        seg = self._make_segmenter(str(jar))
+        monkeypatch.setenv("NLTK_SEGMENTER_ALLOW_SHA256", "")
+
+        with pytest.raises(LookupError) as excinfo:
+            seg._validate_classpath()
+
+        message = str(excinfo.value)
+        assert "NLTK_SEGMENTER_ALLOW_SHA256" in message
+        assert "SHA256:" in message
+
+
 class TestPunktTrainer:
     def test_punkt_train(self) -> None:
         trainer = punkt.PunktTrainer()
@@ -956,3 +1158,203 @@ class TestPunktTrainer:
     def test_punkt_train_no_punc(self) -> None:
         trainer = punkt.PunktTrainer()
         trainer.train("This is a test")
+
+
+class TestTreebankWordDetokenizer:
+    detok = TreebankWordDetokenizer()
+
+    def test_simple_sentence(self):
+        tokens = ["Hello", ",", "world", "."]
+        assert self.detok.detokenize(tokens) == "Hello, world."
+
+    def test_contractions(self):
+        tokens = ["I", "'m", "sure", "."]
+        assert self.detok.detokenize(tokens) == "I'm sure."
+
+    def test_contraction_ll(self):
+        tokens = ["You", "'ll", "see", "."]
+        assert self.detok.detokenize(tokens) == "You'll see."
+
+    def test_contraction_not(self):
+        tokens = ["I", "do", "n't", "know", "."]
+        assert self.detok.detokenize(tokens) == "I don't know."
+
+    def test_double_quotes(self):
+        tokens = ["``", "Hello", "''"]
+        assert self.detok.detokenize(tokens) == '"Hello"'
+
+    def test_double_quotes_with_period(self):
+        tokens = ["He", "said", "``", "hi", "''", "."]
+        assert self.detok.detokenize(tokens) == 'He said "hi".'
+
+    def test_comma_before_closing_double_quote(self):
+        tokens = ["``", "Yes", ",", "''", "he", "said", "."]
+        assert self.detok.detokenize(tokens) == '"Yes," he said.'
+
+    def test_possessive(self):
+        tokens = ["The", "dog", "'s", "bone", "."]
+        assert self.detok.detokenize(tokens) == "The dog's bone."
+
+    def test_parentheses_ptb(self):
+        """PTB bracket symbols are converted when convert_parentheses=True."""
+        tokens = ["-LRB-", "hello", "-RRB-"]
+        result = self.detok.detokenize(tokens, convert_parentheses=True)
+        assert result == "(hello)"
+
+    def test_double_dashes(self):
+        tokens = ["foo", "--", "bar"]
+        assert self.detok.detokenize(tokens) == "foo--bar"
+
+    def test_opening_backtick_double(self):
+        """`` is converted to opening double quote."""
+        tokens = ["``", "Hello", "''"]
+        assert self.detok.detokenize(tokens) == '"Hello"'
+
+    def test_opening_backtick_single(self):
+        """` is preserved as-is (no standard conversion in detokenizer)."""
+        tokens = ["`", "Hello", "'"]
+        result = self.detok.detokenize(tokens)
+        assert "`" in result or "'" in result
+
+    def test_closing_double_quote_backticks(self):
+        """'' is converted to closing double quote."""
+        tokens = ["He", "said", "``", "yes", "''", "."]
+        result = self.detok.detokenize(tokens)
+        assert '"yes"' in result
+
+    def test_issue_3260_nested_quotes(self):
+        """Fix #3260: closing single then double quote after comma."""
+        tokens = [
+            "``",
+            "Shippers",
+            "are",
+            "saying",
+            "`",
+            "the",
+            "party",
+            "'s",
+            "over",
+            ",",
+            "'",
+            "''",
+            "said",
+            "Mr.",
+            "LaLonde",
+            ".",
+        ]
+        result = self.detok.detokenize(tokens)
+        # The closing sequence ,'" should have single quote before double quote
+        assert ",'" in result or ",'\"" in result
+
+    def test_issue_3260_minimal(self):
+        """Minimal case: comma, single quote, double quote should collapse."""
+        tokens = ["word", ",", "'", "''"]
+        result = self.detok.detokenize(tokens)
+        assert result == "word,'\"" or result == "word,'\""
+
+    def test_roundtrip_simple(self):
+        """Tokenize then detokenize should approximate the original."""
+        original = "Hello, world."
+        tokenizer = TreebankWordTokenizer()
+        tokens = tokenizer.tokenize(original)
+        result = self.detok.detokenize(tokens)
+        assert result == original
+
+    def test_semicolon_spacing(self):
+        tokens = ["a", ";", "b"]
+        assert self.detok.detokenize(tokens) == "a; b"
+
+    def test_colon_spacing(self):
+        tokens = ["a", ":", "b"]
+        assert self.detok.detokenize(tokens) == "a: b"
+
+    def test_contraction_ve(self):
+        tokens = ["we", "'ve", "seen", "."]
+        assert self.detok.detokenize(tokens) == "we've seen."
+
+    def test_contraction_d(self):
+        tokens = ["who", "'d", "know", "."]
+        assert self.detok.detokenize(tokens) == "who'd know."
+
+    def test_closing_double_quote_after_period(self):
+        tokens = ["word", ".", "''"]
+        assert self.detok.detokenize(tokens) == 'word."'
+
+    def test_closing_double_quote_after_comma(self):
+        tokens = ["word", ",", "''"]
+        assert self.detok.detokenize(tokens) == 'word,"'
+
+    def test_closing_double_quote_after_exclamation(self):
+        tokens = ["word", "!", "''"]
+        assert self.detok.detokenize(tokens) == 'word!"'
+
+    def test_closing_double_quote_after_question(self):
+        tokens = ["word", "?", "''"]
+        assert self.detok.detokenize(tokens) == 'word?"'
+
+    def test_multiple_tokens_in_quotes(self):
+        tokens = ["``", "A", "B", "C", "''"]
+        assert self.detok.detokenize(tokens) == '"A B C"'
+
+    def test_quote_comma_said(self):
+        tokens = ["``", "Hi", ",", "''", "said", "Jo", "."]
+        assert self.detok.detokenize(tokens) == '"Hi," said Jo.'
+
+    def test_no_spurious_space_before_comma(self):
+        result = self.detok.detokenize(["a", ",", "b"])
+        assert " ," not in result
+
+    def test_no_spurious_space_before_period(self):
+        result = self.detok.detokenize(["a", "."])
+        assert " ." not in result
+
+    def test_no_spurious_space_before_closing_quote(self):
+        result = self.detok.detokenize(["``", "a", "''"])
+        assert ' "' not in result or result.startswith('"')
+
+    def test_roundtrip_quotes(self):
+        """Round-trip a quoted sentence."""
+        original_tokens = ["``", "Hello", ",", "''", "he", "said", "."]
+        result = self.detok.detokenize(original_tokens)
+        assert '"' in result
+
+    def test_issue_3210_mid_string_period(self):
+        """Standalone period tokens mid-string must not keep a leading space (#3210)."""
+        tokens = [
+            "Lorem",
+            "ipsum",
+            "dolor",
+            "sit",
+            "amet",
+            ".",
+            "consectetur",
+            "adipiscing",
+            "elit",
+            ".",
+        ]
+        assert (
+            self.detok.detokenize(tokens)
+            == "Lorem ipsum dolor sit amet. consectetur adipiscing elit."
+        )
+
+    def test_issue_3210_multiple_sentence_periods(self):
+        """Every sentence-final period is joined, not only the last one (#3210)."""
+        tokens = [
+            "I",
+            "called",
+            "Dr.",
+            "Jones",
+            ".",
+            "I",
+            "called",
+            "Dr.",
+            "Jones",
+            ".",
+        ]
+        assert (
+            self.detok.detokenize(tokens) == "I called Dr. Jones. I called Dr. Jones."
+        )
+
+    def test_issue_3210_ellipsis_preserved(self):
+        """The mid-string period fix must not disturb ellipsis tokens (#3210)."""
+        assert self.detok.detokenize(["wait", "...", "what"]) == "wait...what"
