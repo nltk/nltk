@@ -21,8 +21,12 @@ def _span_tokenize_quote_restore():
     from nltk.tokenize.treebank import TreebankWordTokenizer
 
     # Sized so a quadratic small side clears the (lowered) noise floor even on
-    # a fast runner; the linear restore at 16000 quotes is ~0.25 s.
-    small, big = 4_000, 16_000  # big == 4 * small
+    # a fast runner: at 4k/16k the teeth test's neutered small side sat under
+    # the 20 ms floor on a Windows runner (16k took 0.156 s) and the ratio read
+    # a floor-bound 7.8x, a false FIXED; at 10k/40k both sides resolve on the
+    # 15.6 ms CPU clock (the sizes TestSpanTokenizeLinear adopted). The linear
+    # restore at 40000 quotes is ~0.6 s.
+    small, big = 10_000, 40_000  # big == 4 * small
     findings = []
     for tokenizer in (TreebankWordTokenizer(), NLTKWordTokenizer()):
 
