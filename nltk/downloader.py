@@ -360,6 +360,23 @@ def _one_line_each(text):
     )
 
 
+def _refuse_install_aliases(packages):
+    """Refuse an index in which one package would install into another's
+    place: two archives, or an archive and the directory another unzips to,
+    that are one name on a case-folding or normalising filesystem (macOS,
+    Windows), or a package placed inside the directory another unzips to.
+    Either would overwrite or delete the other's files (resource poisoning);
+    the real index has none."""
+    claimed = []
+    for package in packages:
+        claimed.append(package.filename)
+        if package.filename.endswith(".zip"):
+            # The directory it unzips to is claimed whole, as a file is, so a
+            # path inside it collides as well as a path spelled like it.
+            claimed.append(package.filename[:-4])
+    _reject_colliding_members(claimed, context="data index install path")
+
+
 # urllib2 = nltk.internals.import_from_stdlib('urllib2')
 
 
@@ -1674,7 +1691,9 @@ class Downloader:
 
         # Build a dictionary of packages.
         packages = [Package.fromxml(p) for p in self._index.findall("packages/package")]
-        self._packages = {p.id: p for p in packages}
+        packages = {p.id: p for p in packages}
+        _refuse_install_aliases(packages.values())
+        self._packages = packages
 
         # Build a dictionary of collections.
         collections = [
