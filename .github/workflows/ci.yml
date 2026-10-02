@@ -35,11 +35,13 @@ jobs:
       pull-requests: read
     outputs:
       code: ${{ steps.filter.outputs.code }}
+      pygame: ${{ steps.pygame.outputs.touched }}
     steps:
       - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
         id: filter
         with:
+          list-files: json
           filters: |
             code:
               - '**/*.py'
@@ -47,6 +49,26 @@ jobs:
               - 'setup.py'
               - '.github/workflows/**'
               - 'tools/github_actions/**'
+            nltk_py:
+              - 'nltk/**/*.py'
+      # The pygame playback job runs only when a changed NLTK module references pygame.
+      - name: Check whether changed modules use pygame
+        id: pygame
+        env:
+          FILES: ${{ steps.filter.outputs.nltk_py_files }}
+        run: |
+          python3 - <<'PY'
+          import json, os, pathlib
+          files = json.loads(os.environ["FILES"] or "[]")
+          touched = any(
+              "pygame" in pathlib.Path(f).read_text(encoding="utf-8")
+              for f in files
+              if pathlib.Path(f).is_file()
+          )
+          print("Changed modules using pygame:", touched)
+          with open(os.environ["GITHUB_OUTPUT"], "a") as out:
+              out.write(f"touched={str(touched).lower()}\n")
+          PY
 
   pre-commit:
     name: pre-commit
@@ -97,6 +119,33 @@ jobs:
         shell: bash
         run: |
           python -c "import os, nltk; d = os.environ['NLTK_DATA']; import pathlib; pathlib.Path(d).mkdir(parents=True, exist_ok=True); nltk.download('wordnet', download_dir=d)"
+
+  timit_playback:
+    name: TIMIT pygame playback
+    needs: [changes]
+    if: needs.changes.outputs.pygame == 'true'
+    runs-on: ubuntu-latest
+    env:
+      SDL_AUDIODRIVER: dummy
+      NLTK_REQUIRE_PYGAME: "1"
+      NLTK_DATA: ${{ github.workspace }}/nltk_data
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install -e . pytest pytest-mock pygame
+
+      - name: Download TIMIT corpus
+        run: |
+          python -c "import os, nltk; nltk.download('timit', download_dir=os.environ['NLTK_DATA'], raise_on_error=True)"
+
+      - name: Run TIMIT playback tests
+        run: pytest nltk/test/unit/test_corpus_reader_hardening.py -k timit -v
 
   setup-matrix:
     runs-on: ubuntu-latest

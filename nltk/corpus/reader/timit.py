@@ -19,8 +19,8 @@ This corpus contains selected portion of the TIMIT corpus.
    sentences are shared among other speakers, especially sa1 and sa2
    are spoken by all speakers.)
  - total 160 recording of sentences (10 recordings per speaker)
- - audio format: NIST Sphere, single channel, 16kHz sampling,
-   16 bit sample, PCM encoding
+ - audio format: RIFF WAV (most recordings also ship as NIST Sphere),
+   single channel, 16kHz sampling, 16 bit sample, PCM encoding
 
 
 Module contents
@@ -120,12 +120,19 @@ The 4 functions are as follows.
 """
 import sys
 import time
+from io import BytesIO
 
 from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.internals import import_from_stdlib
 from nltk.termsec import safe_print
 from nltk.tree import Tree
+
+# The longest recording wav() returns. pygame.mixer resamples a clip to the
+# mixer rate, so its buffer grows with duration, not file size: a 10 KB file
+# that declares 1 Hz is 5000 s and 320 MB once resampled (CWE-400 / CWE-789).
+# A TIMIT utterance is a few seconds of 16 kHz speech.
+MAX_WAV_SECONDS = 600
 
 
 class TimitCorpusReader(CorpusReader):
@@ -389,9 +396,8 @@ class TimitCorpusReader(CorpusReader):
                     pi += 1
         return trees
 
-    # [xx] NOTE: This is currently broken -- we're assuming that the
-    # fileids are WAV fileids (aka RIFF), but they're actually NIST SPHERE
-    # fileids.
+    # Reads the utterance's RIFF ``.wav`` file; the distributed sample ships
+    # one beside most NIST SPHERE ``.sph`` files.
     def wav(self, utterance, start=0, end=None):
         # nltk.chunk conflicts with the stdlib module 'chunk'
         wave = import_from_stdlib("wave")
@@ -404,6 +410,20 @@ class TimitCorpusReader(CorpusReader):
         # Skip past frames before start, then read the frames we want
         w.readframes(start)
         frames = w.readframes(end - start)
+
+        # Bound what was actually read, so a header that overstates its length
+        # is not refused for frames it does not have.
+        # The stdlib wave reader accepts a zero frame rate, which the division
+        # below would turn into a ZeroDivisionError.
+        framerate = w.getframerate()
+        if framerate <= 0:
+            raise ValueError(f"refusing {utterance}.wav: bad frame rate {framerate}")
+        seconds = len(frames) / (w.getsampwidth() * w.getnchannels() * framerate)
+        if seconds > MAX_WAV_SECONDS:
+            raise ValueError(
+                f"refusing {utterance}.wav: {seconds:.0f} s of audio is over "
+                f"MAX_WAV_SECONDS ({MAX_WAV_SECONDS})"
+            )
 
         # Open a new temporary file -- the wave module requires
         # an actual file, and won't work w/ stringio. :(
@@ -472,12 +492,10 @@ class TimitCorpusReader(CorpusReader):
 
         # Method 2: pygame
         try:
-            # FIXME: this won't work under python 3
             import pygame.mixer
-            import StringIO
 
             pygame.mixer.init(16000)
-            f = StringIO.StringIO(self.wav(utterance, start, end))
+            f = BytesIO(self.wav(utterance, start, end))
             pygame.mixer.Sound(f).play()
             while pygame.mixer.get_busy():
                 time.sleep(0.01)
