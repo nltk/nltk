@@ -1317,11 +1317,28 @@ class TestValuationLeadingWhitespaceRuns:  # sem/evaluate.py, the three splitter
              ["a\na,, ,a,a\t,a a", ",a,\n\ta\na,\n ,aaa", "a, b , c", ",", " , ", "a" + " " * 30 + "b,c",
               "a,,b", " ,a, "]),
             ("tuples", ev._TUPLES_RE, "findall",
-             ["(a) (b)", ",,((a\t(a\t )\t(\t\n\t)(\t )\n", "(( ( )\t(\n\t) (a\n,( )", "(a, b)" + " " * 30 + "(c",
-              " (a)  (b) ", "(a)(b)", "x (a) y", "( )"]),
+             ["(a) (b)", "(a, b)" + " " * 30 + "(c", " (a)  (b) ", "(a)(b)", "x (a) y", "( )",
+              "(\t\n\t)(\t )\n", "(a\n,) ( )"]),
         ):  # fmt: skip
             assert rx.pattern != _PRE_FIX[key]
             _same_results(_PRE_FIX[key], rx.pattern, op, texts, rx.flags)
+        # The one deliberate difference of the tuple pattern: its run now
+        # excludes the `(` anchor (so a crafted paren run is O(n), not
+        # O(n*bound)), and a nested `(` therefore ends a candidate tuple instead
+        # of being swallowed into it. Nothing shipped nests parens in a
+        # valuation; read_valuation refuses such a line outright.
+        from nltk import redos
+
+        nested = [
+            ",,((a\t(a\t )\t(\t\n\t)(\t )\n",
+            "(( ( )\t(\n\t) (a\n,( )",
+            "(a\n,( )",
+        ]
+        pre_fix = redos.compile(_PRE_FIX["tuples"], ev._TUPLES_RE.flags)
+        for text in nested:
+            got, old = ev._TUPLES_RE.findall(text), pre_fix.findall(text)
+            assert got != old and all("(" not in t[1:] for t in got), (text, got, old)
+            assert {t for t in old if "(" not in t[1:]} <= set(got), (text, got, old)
 
     def test_pre_fix_patterns_have_teeth(self):
         import re

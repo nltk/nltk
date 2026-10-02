@@ -308,8 +308,13 @@ class XML_Tool:
                 while len(line):
                     line = fr.readline()
                     text = line.decode("utf-8")
-                    # Bound the token: `nkjp:`*N with no space is O(n**2) (CWE-407).
-                    x = redos.split(r"nkjp:[^ ]{0,256} ", text)  # in all files
+                    # Bound the token: `nkjp:`*N with no space is O(n**2) (CWE-407);
+                    # the tempered `(?!nkjp:)` keeps a scan from crossing the next
+                    # anchor, O(n) rather than O(n*bound). A real token never holds
+                    # a second `nkjp:` prefix.
+                    x = redos.split(
+                        r"nkjp:(?:(?!nkjp:)[^ ]){0,256} ", text
+                    )  # in all files
                     ret = " ".join(x)
                     x = redos.split("<nkjp:paren>", ret)  # in ann_segmentation.xml
                     ret = " ".join(x)

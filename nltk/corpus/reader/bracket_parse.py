@@ -257,8 +257,13 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
         t = redos.sub(r"  </node>", r")", t)
         # Bound the greedy runs: a repeated `<sentence>`/`<alpino_ds` anchor whose
         # `.*` has no closing tag re-scans a crafted giant line -> O(n**2) (CWE-407).
-        t = redos.sub(r"<sentence>.{0,8192}</sentence>", r"", t)
-        t = redos.sub(r"</?alpino_ds.{0,1024}>", r"", t)
+        # Keeping the anchor out of the run (the tempered `(?!<sentence>).`, and
+        # `[^<>]` for the tag tail) stops each scan at the next anchor, so a
+        # crafted line is O(n) rather than O(n*bound). Measured on the shipped
+        # corpus: the longest <sentence> body is 512 chars and the longest
+        # <alpino_ds ...> tail 24, one of each per tree.
+        t = redos.sub(r"<sentence>(?:(?!<sentence>).){0,8192}</sentence>", r"", t)
+        t = redos.sub(r"</?alpino_ds[^<>]{0,1024}>", r"", t)
         return t
 
     def _tag(self, t, tagset=None):

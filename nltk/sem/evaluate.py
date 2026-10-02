@@ -194,9 +194,11 @@ _VAL_SPLIT_RE = redos.compile(r"(?:(?<!\s)\s*)?(?<!=)=+>\s*")
 _ELEMENT_SPLIT_RE = redos.compile(r"(?:(?<!\s)\s*)?,\s*")
 _TUPLES_RE = redos.compile(
     r"""(?:(?<!\s)\s*)?
-                                (\([^)]{1,1024}\))  # tuple-expression; bounded run,
-                                                    # was quadratic under findall on
-                                                    # unclosed parens (CWE-407)
+                                (\([^()]{1,1024}\))  # tuple-expression; bounded run
+                                                     # that excludes its `(` anchor:
+                                                     # unclosed parens were quadratic
+                                                     # under findall, then O(n*bound)
+                                                     # with `[^)]` (CWE-407)
                                 \s*""",
     re.VERBOSE,
 )

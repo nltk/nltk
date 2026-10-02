@@ -167,11 +167,12 @@ _REVIEWED: dict[tuple[str, str], str] = {
     ),
     (
         "nltk/corpus/reader/verbnet.py",
-        '<MEMBER name="\\??([^"]+)" wn="([^"]*)"[^>]{1,1024}>|'
+        '<MEMBER name="\\??([^"]+)" wn="([^"]*)"[^<>]{1,1024}>|'
         '<VNSUBCLASS ID="([^"]+)"/?>',
     ): (
         'every [^"] run has its " terminator supplied by the name=/wn=/ID= anchor; '
-        "the [^>] tail, the only run with an omittable terminator, is bounded"
+        "the tail, the only run with an omittable terminator, is bounded and "
+        "excludes the < of the anchor"
     ),
     (
         "nltk/corpus/reader/xmldocs.py",
