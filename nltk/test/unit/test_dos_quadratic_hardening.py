@@ -1026,16 +1026,21 @@ class TestCompiledPatternReanchoringBounded:
         assert dg.contains("fell", "price")
 
 
-# --- pl196x: the attribute run of PARA/SENT/WORD/TAGGEDWORD is bounded ---------
+# --- pl196x: the attribute runs and bodies of PARA/SENT/WORD/TAGGEDWORD are
+# bounded and cannot step over another open tag of their own kind ----------------
 
-#: The pre-fix patterns, verbatim: the oracle for faithfulness and the teeth.
-_PL196X_UNBOUNDED_ATTR = {
-    "PARA": r"<p(?: [^>]*){0,1}>(.{0,8192}?)</p>",
-    "SENT": r"<s(?: [^>]*){0,1}>(.{0,8192}?)</s>",
-    "TAGGEDWORD": r"<([wc](?: [^>]*){0,1}>)(.{0,8192}?)</[wc]>",
-    "WORD": r"<[wc](?: [^>]*){0,1}>(.{0,8192}?)</[wc]>",
+#: The pre-fix (develop) patterns, verbatim: the oracle for faithfulness and the
+#: teeth. An earlier form of the fix, ``[^>]{0,1024}`` and ``.{0,8192}?``, was
+#: O(n*bound) on the unterminated-attribute trigger (120 KB ran into the 5 s
+#: backstop) and silently dropped the four real paragraphs over 8 KB.
+_PL196X_PREFIX = {
+    "PARA": r"<p(?: [^>]*){0,1}>(.*?)</p>",
+    "SENT": r"<s(?: [^>]*){0,1}>(.*?)</s>",
+    "TAGGEDWORD": r"<([wc](?: [^>]*){0,1}>)(.*?)</[wc]>",
+    "WORD": r"<[wc](?: [^>]*){0,1}>(.*?)</[wc]>",
 }
 _PL196X_OPEN = {"PARA": "<p ", "SENT": "<s ", "TAGGEDWORD": "<c ", "WORD": "<w "}
+_PL196X_CLOSE = {"PARA": "</p>", "SENT": "</s>", "TAGGEDWORD": "</c>", "WORD": "</w>"}
 
 
 class TestPl196xAttributeRunBounded:
@@ -1043,8 +1048,10 @@ class TestPl196xAttributeRunBounded:
     omitted, every ``<p `` anchor re-scanned to the end of the block, O(n**2)
     under findall (2500 opens took 1.1 s, 5000 hit the 5 s redos backstop), and
     ``TEICorpusView.read_block`` reads a whole file with no ``</text>`` into one
-    block. The run is now ``[^>]{0,1024}`` (the corpus's widest is 337 chars),
-    so the scan is linear and the backstop is no longer what bounds it."""
+    block. The run is now ``[^<>]{0,1024}`` (the corpus's widest is 337 chars)
+    and excludes the ``<`` of the next anchor, so the scan stops there: linear
+    with a small constant, and the backstop is no longer what bounds it. The
+    lazy body likewise cannot step over the next open tag of its own kind."""
 
     def _pattern(self, name):
         from nltk.corpus.reader import pl196x
@@ -1054,47 +1061,60 @@ class TestPl196xAttributeRunBounded:
     def _old_pattern(self, name):
         from nltk import redos
 
-        return redos.compile(_PL196X_UNBOUNDED_ATTR[name])
+        return redos.compile(_PL196X_PREFIX[name])
 
     @pytest.mark.parametrize("name", sorted(_PL196X_OPEN))
     def test_unterminated_attribute_is_linear(self, name):
         pat, tag = self._pattern(name), _PL196X_OPEN[name]
-        assert "[^>]{0,1024}" in pat.pattern
-        _assert_subquadratic(lambda n: pat.findall(tag * n), 2_500, 10_000)
+        assert "[^<>]{0,1024}" in pat.pattern
+        _assert_subquadratic(lambda n: pat.findall(tag * n), 100_000, 400_000)
+        # the required literal present once at the end defeats the engine's
+        # literal prefilter; the anchor-excluded run keeps this linear too
+        close = _PL196X_CLOSE[name]
+        _assert_subquadratic(
+            lambda n: pat.findall(tag * n + ">" + close), 100_000, 400_000
+        )
+
+    @pytest.mark.parametrize("name", sorted(_PL196X_OPEN))
+    def test_unclosed_body_is_linear(self, name):
+        pat, tag, close = (
+            self._pattern(name),
+            _PL196X_OPEN[name][:2] + ">",
+            _PL196X_CLOSE[name],
+        )
+        _assert_subquadratic(lambda n: pat.findall(tag * n), 100_000, 400_000)
+        _assert_subquadratic(lambda n: pat.findall(tag * n + close), 100_000, 400_000)
 
     @pytest.mark.parametrize("name", sorted(_PL196X_OPEN))
     def test_attribute_bound_has_teeth(self, name, monkeypatch):
         # The bounded pattern finishes the trigger well inside the default
         # backstop; the verbatim pre-fix pattern runs into a 0.5 s backstop on
-        # the same trigger, so the bound, not the timeout, is the fix.
+        # the same trigger (untimed, 5000 opens ran past 5 s), so the bound,
+        # not the timeout, is the fix.
         import nltk.redos as redos_mod
 
         pat, tag = self._pattern(name), _PL196X_OPEN[name]
-        assert pat.findall(tag * 2_500) == []
+        assert pat.findall(tag * 5_000) == []
         unbounded = self._old_pattern(name)
         monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 0.5)
         with pytest.raises(TimeoutError):
             unbounded.findall(tag * 5_000)
 
     def test_bounded_patterns_match_the_verbatim_old_patterns(self):
-        # Attribute runs up to the bound and bodies up to 8 KB, nested as the
-        # corpus nests them; an over-long body is skipped by both alike.
-        doc = (
-            "".join(
-                '<p id="%d" %s><s n="%d"><w ana="A%d" lemma="l">tok%d</w>'
-                '<c type="interp">,</c> %s</s></p>'
-                % (i, "x" * (i % 1000), i, i, i, "b" * (i % 8192))
-                for i in range(0, 1100, 7)
-            )
-            + "<p>"
-            + "y" * 9000
-            + "</p>"
-        )
+        # Attribute runs up to the bound and bodies past the earlier 8 KB cap,
+        # nested as the corpus nests them: identical to the pre-fix patterns.
+        doc = "".join(
+            '<p id="%d" %s><s n="%d"><w ana="A%d" lemma="l">tok%d</w>'
+            '<c type="interp">,</c> %s</s></p>'
+            % (i, "x" * (i % 1000), i, i, i, "b" * (i % 4096))
+            for i in range(0, 1100, 7)
+        ) + ("<p>" + "<s><w>y</w></s>" * 700 + "</p>")
         for name in _PL196X_OPEN:
             new, old = self._pattern(name).findall(doc), self._old_pattern(
                 name
             ).findall(doc)
             assert new == old and len(new) >= 150, (name, len(new), len(old))
+        assert len(self._pattern("PARA").findall(doc)[-1]) == 700 * 15
         # the one difference is the bound itself: a run past it is no match
         wide = "<p " + "x" * 1025 + ">body</p>"
         assert self._old_pattern("PARA").findall(wide) == ["body"]

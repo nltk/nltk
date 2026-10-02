@@ -180,19 +180,32 @@ class TestTEICorpusViewQuadratic:  # GHSA-8mpw -- has MULTIPLE quadratic directi
     def test_direction3_lazy_regex_is_bounded(self, tag, monkeypatch):
         # PARA/SENT/WORD `.*?` findall over many unclosed tags was O(k*n) and is
         # not linearised by the regex engine. The shipped patterns now bound the
-        # lazy body to {0,8192}, so the scan is linear and completes well inside
-        # the redos backstop; the same pattern with the bound removed still runs
-        # into the backstop, which pins that the bound (not the timeout) is the fix.
+        # body (a <p>/<s> body to 16384 pieces of at most 4096 tag-free chars
+        # each, calibrated on the corpus's longest paragraph of 10399 chars and
+        # 577 pieces; a <w>/<c> body to 1024 chars with no `<`) and cannot step
+        # over the next open tag of their own kind, so the scan is linear and
+        # completes well inside the redos backstop; the same pattern with the
+        # bound removed still runs into the backstop, which pins that the bound
+        # (not the timeout) is the fix.
         import nltk.redos as redos_mod
         from nltk import redos
         from nltk.corpus.reader.pl196x import PARA, WORD
 
         pat = PARA if tag == "<p>" else WORD
-        assert "{0,8192}?" in pat.pattern
+        assert (
+            "{1,4096}+(?![^<])|<(?!p[ >])){0,16384}?"
+            if tag == "<p>"
+            else "([^<]{0,1024})"
+        ) in pat.pattern
         pat.findall(tag * 60000)  # completes, no TimeoutError
         _assert_subquadratic(lambda n: pat.findall(tag * n), 15000, 60000)
 
-        unbounded = redos.compile(pat.pattern.replace("{0,8192}?", "*?"))
+        # the verbatim pre-fix pattern (an unbounded lazy body) on the same trigger
+        unbounded = redos.compile(
+            r"<p(?: [^>]*){0,1}>(.*?)</p>"
+            if tag == "<p>"
+            else r"<[wc](?: [^>]*){0,1}>(.*?)</[wc]>"
+        )
         monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 0.5)
         with pytest.raises(TimeoutError):
             unbounded.findall(tag * 60000)

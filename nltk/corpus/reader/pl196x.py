@@ -19,15 +19,36 @@ from nltk.pathsec import open as pathsec_open
 # crafted block can burn instead of letting it grow without limit.
 # Bound the lazy bodies AND the attribute runs: a repeated open tag with no close,
 # or with no `>`, re-scans the rest of the document at every open, O(n**2) under
-# findall (CWE-407). Real bodies are well under 8 KB and attribute runs under 1 KB.
-# The corpus's widest attribute run is 337 chars (a <w> carrying id, lemma and a
-# 300-char ana list); <c> peaks at 27 and <p> at 9, so {0,1024} is 3x the widest
-# real run while a crafted `<p ` with its `>` omitted stops after 1 KB.
-PARA = redos.compile(r"<p(?: [^>]{0,1024}){0,1}>(.{0,8192}?)</p>")
-SENT = redos.compile(r"<s(?: [^>]{0,1024}){0,1}>(.{0,8192}?)</s>")
+# findall (CWE-407). Keeping `<` out of the attribute run and out of every
+# tag-free run of the body, and refusing to step over another `<p`/`<s` open
+# (the `<(?!p[ >])` alternative), stops every scan at the next tag of its own
+# kind, so a crafted block costs O(n) rather than O(n*bound): with a plain
+# `[^>]{0,1024}` and `.{0,8192}?` a `<p ` repeated with its `>` omitted ran 120 KB
+# into the 5 s backstop. The body is an unrolled loop of pieces, each a
+# possessive tag-free run of at most 4096 chars that must end at a `<` or at
+# the end of the block (so a longer run is no match, not two pieces), or one
+# `<` that does not open another tag of the same kind; the `+` keeps the
+# engine from re-splitting a run. Measured on the shipped corpus (all ten
+# files): the widest attribute run is 337 chars (a <w> carrying id, lemma and
+# a 300-char ana list; <c> peaks at 27, <p> and <s> carry none), the longest
+# <p> body is 10399 chars and the longest <s> body 7926 (both hold the nested
+# <w>/<c> markup: at most 350 chars between two `<` and at most 577 pieces),
+# and the longest <w>/<c> body is 41 chars with no `<` in it. So {0,1024} is 3x
+# the widest run, {1,4096} 11x the longest tag-free run, {0,16384} 28x the most
+# pieces and {0,1024} 25x the longest word; an earlier `.{0,8192}?` body
+# silently dropped the four paragraphs over 8 KB. A <p>, <s>, <w> or <c> never
+# nests its own kind in TEI P4.
+PARA = redos.compile(
+    r"<p(?: [^<>]{0,1024}){0,1}>"
+    r"((?:[^<]{1,4096}+(?![^<])|<(?!p[ >])){0,16384}?)</p>"
+)
+SENT = redos.compile(
+    r"<s(?: [^<>]{0,1024}){0,1}>"
+    r"((?:[^<]{1,4096}+(?![^<])|<(?!s[ >])){0,16384}?)</s>"
+)
 
-TAGGEDWORD = redos.compile(r"<([wc](?: [^>]{0,1024}){0,1}>)(.{0,8192}?)</[wc]>")
-WORD = redos.compile(r"<[wc](?: [^>]{0,1024}){0,1}>(.{0,8192}?)</[wc]>")
+TAGGEDWORD = redos.compile(r"<([wc](?: [^<>]{0,1024}){0,1}>)([^<]{0,1024})</[wc]>")
+WORD = redos.compile(r"<[wc](?: [^<>]{0,1024}){0,1}>([^<]{0,1024})</[wc]>")
 
 TYPE = redos.compile(r'type="(.*?)"')
 ANA = redos.compile(r'ana="(.*?)"')
