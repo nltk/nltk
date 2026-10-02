@@ -4887,6 +4887,9 @@ class RussianStemmer(_LanguageSpecificStemmer):
     __superlative_suffixes = ("ei`she", "ei`sh")
     __derivational_suffixes = ("ost'", "ost")
 
+    # The transliteration of each Russian letter met so far.
+    __letter_cache = {}
+
     @staticmethod
     def __cuts_letter(word, length):
         """
@@ -4922,7 +4925,21 @@ class RussianStemmer(_LanguageSpecificStemmer):
         if not chr_exceeded:
             return word
 
-        word = self.__cyrillic_to_roman(word)
+        # Transliterate letter by letter and keep the pieces, so the stem can
+        # be cut from the input itself. A character that is not a Russian
+        # letter becomes "#", which is no vowel and occurs in no suffix.
+        original = word.lower().replace("\u0451", "\u0435")
+        cache = self.__letter_cache
+        pieces = []
+        for letter in original:
+            piece = cache.get(letter)
+            if piece is None:
+                if "\u0430" <= letter <= "\u044f":
+                    piece = cache[letter] = self.__cyrillic_to_roman(letter)
+                else:
+                    piece = "#"
+            pieces.append(piece)
+        word = "".join(pieces)
 
         step1_success = False
         adjectival_removed = False
@@ -5199,9 +5216,18 @@ class RussianStemmer(_LanguageSpecificStemmer):
             if rv.endswith("'") and not rv.endswith("''"):
                 word = word[:-1]
 
-        word = self.__roman_to_cyrillic(word)
-
-        return word
+        # Every step only removes letters from the end, so the stem is the
+        # input's prefix that spans the letters left. Transliterating back
+        # would read ш followed by ч as щ, an apostrophe as ь and a Latin
+        # letter as a Cyrillic one.
+        kept = 0
+        length = 0
+        for piece in pieces:
+            if length + len(piece) > len(word):
+                break
+            length += len(piece)
+            kept += 1
+        return original[:kept]
 
     def __regions_russian(self, word):
         """
@@ -5229,7 +5255,14 @@ class RussianStemmer(_LanguageSpecificStemmer):
         rv = ""
 
         vowels = ("A", "U", "E", "a", "e", "i", "o", "u", "y")
-        word = word.replace("i^a", "A").replace("i^u", "U").replace("e`", "E")
+        # й is "i`": it becomes the non-vowel "J" so that its "i" does not
+        # start RV or R1.
+        word = (
+            word.replace("i^a", "A")
+            .replace("i^u", "U")
+            .replace("e`", "E")
+            .replace("i`", "J")
+        )
 
         for i in range(1, len(word)):
             if word[i] not in vowels and word[i - 1] in vowels:
@@ -5246,8 +5279,18 @@ class RussianStemmer(_LanguageSpecificStemmer):
                 rv = word[i + 1 :]
                 break
 
-        r2 = r2.replace("A", "i^a").replace("U", "i^u").replace("E", "e`")
-        rv = rv.replace("A", "i^a").replace("U", "i^u").replace("E", "e`")
+        r2 = (
+            r2.replace("A", "i^a")
+            .replace("U", "i^u")
+            .replace("E", "e`")
+            .replace("J", "i`")
+        )
+        rv = (
+            rv.replace("A", "i^a")
+            .replace("U", "i^u")
+            .replace("E", "e`")
+            .replace("J", "i`")
+        )
 
         return (rv, r2)
 

@@ -71,6 +71,18 @@ class SnowballTest(unittest.TestCase):
         assert stemmer_russian.stem("воюет") == "воюет"
         assert stemmer_russian.stem("горюй") == "горю"
 
+        # й ("i`") is not a vowel, so its "i" does not start RV.
+        assert stemmer_russian.stem("вйте") == "вйте"
+
+        # The stem is cut from the input, so ш followed by ч stays as written
+        # rather than becoming щ, and a character that is not a Russian
+        # letter is kept as it is (#125).
+        assert stemmer_russian.stem("веснушчатый") == "веснушчат"
+        assert stemmer_russian.stem("Кот-д'Ивуару") == "кот-д'ивуар"
+        assert stemmer_russian.stem("О'Коннора") == "о'коннор"
+        assert stemmer_russian.stem("iPhone-ом") == "iphone-ом"
+        assert stemmer_russian.stem("WiFi-сетью") == "wifi-сет"
+
     def test_german(self):
         stemmer_german = SnowballStemmer("german")
         stemmer_german2 = SnowballStemmer("german", ignore_stopwords=True)
