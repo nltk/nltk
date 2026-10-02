@@ -193,6 +193,9 @@ from nltk.xmlsec import parse as safe_parse
 # is under 100 MB), and the index (under 100 KB in reality) is read bounded.
 MAX_PACKAGE_BYTES = 1024 * 1024 * 1024
 MAX_INDEX_BYTES = 64 * 1024 * 1024
+# A package id or subdir component from the index becomes a file name with
+# ".zip.lock" or ".zip.tmp" appended; filesystems allow 255 bytes a component.
+MAX_NAME_BYTES = 200
 
 # A parsed tree costs about twenty times its bytes, and DTD default attributes
 # multiply that further, so the index structure is bounded too. The real index
@@ -463,6 +466,24 @@ class Package:
             raise ValueError(
                 f"Invalid package id {id!r}: must not contain path separators"
             )
+        # The id and the subdir become file names: bound them well under the
+        # 255 bytes a filesystem allows a component, so an index cannot make
+        # the installer fail on a name it could not have been asked for.
+        for what, value in (("id", id), ("subdir", subdir)):
+            if any(
+                len(part.encode("utf-8")) > MAX_NAME_BYTES for part in value.split("/")
+            ):
+                raise ValueError(
+                    f"Invalid package {what} {sanitize_terminal(repr(value))}: "
+                    f"a path component longer than {MAX_NAME_BYTES} bytes"
+                )
+            # A name a filesystem would store under another name (a trailing
+            # dot or space, a device name, a decomposed spelling) is refused.
+            why = _name_not_as_written(value.replace("\\", "/"))
+            if why is not None:
+                raise ValueError(
+                    f"Invalid package {what} {sanitize_terminal(repr(value))}: {why}"
+                )
 
         self.url = url
         """A URL that can be used to download this package's file."""
@@ -3047,6 +3068,40 @@ def _validate_member(member, root_abs):
     return None
 
 
+def _name_not_as_written(name):
+    """Why a slash-separated *name* would not land on disk as written, or None.
+
+    A component with a trailing dot or space is stored without it on Windows,
+    and a component in a decomposed Unicode spelling is stored composed on a
+    normalising filesystem: each lets one name stand for another, so each is
+    refused on every platform, since an archive extracted anywhere may be
+    carried to such a filesystem (CWE-22, resource poisoning). A component
+    whose stem is a character device name (CON, NUL, COM1 ...) opens the
+    device where such names exist, so it is refused there, the scope
+    ``pathsec._is_windows_device_name`` uses; on POSIX ``con.xml`` is stored
+    as written, nothing stands for anything else, and refusing it would make
+    a real package (propbank ships ``frames/con.xml``) uninstallable for no
+    gain.
+    """
+    import unicodedata
+
+    from nltk.pathsec import _WINDOWS_RESERVED_NAMES
+
+    for part in name.split("/"):
+        if not part:
+            continue
+        if part != part.rstrip(" ."):
+            return "ends in a dot or a space, which a filesystem strips"
+        if (
+            os.name != "posix"
+            and part.split(".", 1)[0].upper() in _WINDOWS_RESERVED_NAMES
+        ):
+            return "is a character device name"
+        if unicodedata.normalize("NFC", part) != part:
+            return "is not in composed (NFC) form, which a filesystem may apply"
+    return None
+
+
 def _member_shape_error(member, root_abs):
     """Phase 1 refusal of a member that pathsec's extractor would refuse only
     while writing, after earlier members are already on disk.
@@ -3060,6 +3115,20 @@ def _member_shape_error(member, root_abs):
     spelled = member.replace("\\", "/")
     if os.pardir in spelled.split("/"):
         return f"Parent reference blocked: {member!r}"
+    # A name a terminal would act on (control, line-break, bidi or invisible
+    # characters) is refused as an index identifier is (CWE-150): on disk it
+    # would forge listing lines and spoof the name the package declares.
+    if sanitize_terminal(member, single_line=True) != member:
+        return (
+            "Member name holds control, line-break, bidi or invisible "
+            f"characters (CWE-150): {sanitize_terminal(repr(member))}"
+        )
+    # A name a target filesystem would change lands under another name (a
+    # trailing dot or space stripped, a device name, a decomposed spelling
+    # composed), so it is refused on every platform, before anything is written.
+    why = _name_not_as_written(spelled)
+    if why is not None:
+        return f"Member name {why}: {sanitize_terminal(repr(member))}"
     if spelled == member:
         return None
     error = _validate_member(spelled, root_abs)
