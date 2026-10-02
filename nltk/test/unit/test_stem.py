@@ -58,6 +58,14 @@ class SnowballTest(unittest.TestCase):
         assert stemmer_russian.stem("градъ") == "градъ"
         assert stemmer_russian.stem("воинъ") == "воинъ"
 
+        # Modern Bulgarian writes ъ as a vowel inside words and in the article
+        # -ът; the Russian vowels do not include it, as in the Snowball
+        # reference, and these stems are the reference's.
+        assert stemmer_russian.stem("пътят") == "пътят"
+        assert stemmer_russian.stem("къщата") == "къщат"
+        assert stemmer_russian.stem("ъгълът") == "ъгълът"
+        assert stemmer_russian.stem("българският") == "българск"
+
         # A suffix must not match across the transliteration of one letter:
         # ю is "i^u", so "ует" must not match the tail of "юет".
         assert stemmer_russian.stem("воюет") == "воюет"
