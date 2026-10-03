@@ -249,9 +249,8 @@ def test_assert_subquadratic_separates_linear_from_quadratic_cpu_work():
 
 
 # === the runner regimes, simulated with real spinning ===
-# Threads spinning in pure Python share the interpreter lock, so a sample or
-# calibration unit taken while they spin costs more CPU time for the same work,
-# as on a drifting macOS core or beside an xdist sibling on the same core.
+# Spinning threads share the interpreter lock, so a sample or calibration unit
+# taken while they spin costs more CPU for the same work, as on a loaded runner.
 
 
 def _work(n):

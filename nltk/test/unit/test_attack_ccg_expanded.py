@@ -1712,8 +1712,7 @@ class TestDeparturesFromThePreFixParser:
 
 
 # ==========================================================================
-# The lexicons shipped with the library: the benign maximum, parsed as
-# develop parsed them
+# The shipped lexicons: the benign maximum, parsed as develop parsed them
 # ==========================================================================
 
 
