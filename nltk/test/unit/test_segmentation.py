@@ -4,6 +4,7 @@ import traceback
 import pytest
 
 from nltk.metrics.segmentation import pk, windowdiff
+from nltk.test.unit import timing
 
 from . import _mp_ctx
 
@@ -177,14 +178,12 @@ def _pk_worker(n):
 def _finishes_within(target, n, deadline=30):
     """Run target(n) in a separate process; return (finished, exitcode)."""
     ctx = _mp_ctx()
-    proc = ctx.Process(target=target, args=(n,))
-    proc.start()
-    proc.join(deadline)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(
+        target, (n,), budget=deadline, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         return False, None
-    return True, proc.exitcode
+    return True, run.exitcode
 
 
 def test_windowdiff_is_linear_not_quadratic():

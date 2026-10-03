@@ -23,12 +23,12 @@ is tagged with a sense identifier, and supplied with context.
 """
 
 
-from defusedxml.ElementTree import fromstring as safe_fromstring
-
 from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
+from nltk.termsec import safe_print
 from nltk.tokenize import *
+from nltk.xmlsec import fromstring as safe_fromstring
 
 # ``(\s+)&(\s+)`` retried by sub over a whitespace run is O(n**2) on a crafted
 # instance block: a run of N spaces followed by ``&`` (with no trailing space)
@@ -158,7 +158,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
                         pass  # Sentence boundary marker.
 
                     else:
-                        print("ACK", cword.tag)
+                        safe_print("ACK", cword.tag)
                         assert False, "expected CDATA or <wf> or <head>"
                     if cword.tail:
                         context += self._word_tokenizer.tokenize(cword.tail)

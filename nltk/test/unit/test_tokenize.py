@@ -10,6 +10,7 @@ from typing import List, Tuple
 
 import pytest
 
+from nltk.test.unit import timing
 from nltk.test.unit.test_quadratic_dos import _assert_subquadratic
 from nltk.tokenize import (
     LegalitySyllableTokenizer,
@@ -389,16 +390,14 @@ class TestTokenize:
         timeout so a regression fails fast instead of hanging the suite.
         """
         ctx = _mp_ctx()
-        proc = ctx.Process(target=_tweet_tokenizer_redos_worker)
-        proc.start()
-        proc.join(60)
-        if proc.is_alive():
-            proc.terminate()
-            proc.join()
+        run = timing.run_in_process(
+            _tweet_tokenizer_redos_worker, (), budget=60, context=ctx, cpu_bound=True
+        )
+        if not run.within_budget:
             raise AssertionError(
                 "TweetTokenizer did not finish in time, possible ReDoS"
             )
-        assert proc.exitcode == 0, f"worker failed (exit code {proc.exitcode})"
+        assert run.exitcode == 0, f"worker failed (exit code {run.exitcode})"
 
     def test_tweet_tokenizer_reduce_len_preserves_non_latin(self):
         """

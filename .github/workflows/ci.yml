@@ -37,7 +37,7 @@ jobs:
       code: ${{ steps.filter.outputs.code }}
     steps:
       - uses: actions/checkout@v7
-      - uses: dorny/paths-filter@v3
+      - uses: dorny/paths-filter@v4
         id: filter
         with:
           filters: |
@@ -152,6 +152,13 @@ jobs:
           pip install --upgrade pip
           pip install --upgrade --requirement requirements-ci.txt
 
+      - name: Give the runner's JDK back its private write bits (Linux)
+        # The Ubuntu image runs `chmod -R 777 /usr/lib/jvm`, so every JVM there
+        # is world-writable and nltk refuses to launch it (CWE-427); restore the
+        # root-only write bits so the real-JVM tests run against a trusted JDK.
+        if: runner.os == 'Linux'
+        run: sudo chmod -R go-w /usr/lib/jvm
+
       - name: Ensure minimal NLTK data for cache
         shell: bash
         run: |
@@ -206,6 +213,15 @@ jobs:
       - name: List contents of third-party dir after download/cache
         shell: bash
         run: ls -lR "${{ env.THIRD_PARTY_DIR }}" || echo "third-party dir not found"
+
+      - name: Trust the third-party tools tree (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          # The trusted-exec chokepoint refuses tools on paths others can write; a
+          # tree unzipped on a cache miss keeps the archive's group-write bits (a
+          # cache restore does not), so normalise it rather than weaken the guard.
+          chmod -R go-w "${{ env.THIRD_PARTY_DIR }}"
 
       - name: Print NLTK data search paths
         shell: bash
@@ -285,7 +301,61 @@ jobs:
         env:
           PYTHONSAFEPATH: "1"
         run: |
-          pytest --numprocesses auto -rsx --doctest-modules nltk
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            # Windows spawn re-bootstraps pytest per subprocess; skip the plugin
+            # autoload scan (seconds per spawn) only here and load needed plugins
+            # explicitly. Set on this command alone so other OSes keep autoload.
+            PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -p xdist -p pytest_mock --numprocesses auto -rsx --doctest-modules nltk
+          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
+            # Files with wall-clock deadlines (proc.join backstops, "< N s" asserts,
+            # the 40 s CoreNLP start) were starved by the parallel workers here, so
+            # they run on their own afterwards; every other test runs as before.
+            quiet=(
+              nltk/test/unit/test_alpino.py
+              nltk/test/unit/test_ccg_lexicon_security.py
+              nltk/test/unit/test_chart_parser.py
+              nltk/test/unit/test_chunk_redos_security.py
+              nltk/test/unit/test_cistem.py
+              nltk/test/unit/test_confusionmatrix.py
+              nltk/test/unit/test_corenlp.py
+              nltk/test/unit/test_corenlp_options_security.py
+              nltk/test/unit/test_distance.py
+              nltk/test/unit/test_everygrams_alloc.py
+              nltk/test/unit/test_featstruct_redos.py
+              nltk/test/unit/test_generate.py
+              nltk/test/unit/test_inference_security.py
+              nltk/test/unit/test_logic.py
+              nltk/test/unit/test_markdown.py
+              nltk/test/unit/test_pathsec_sweep_tag.py
+              nltk/test/unit/test_quadratic_dos.py
+              nltk/test/unit/test_redos_chokepoint_safety.py
+              nltk/test/unit/test_reviews_security.py
+              nltk/test/unit/test_segmentation.py
+              nltk/test/unit/test_sem_evaluate.py
+              nltk/test/unit/test_senseval_security.py
+              nltk/test/unit/test_text.py
+              nltk/test/unit/test_texttiling_security.py
+              nltk/test/unit/test_treetransforms.py
+              nltk/test/unit/test_valuation_redos.py
+              nltk/test/unit/test_xmldocs_security.py
+              nltk/test/unit/translate/test_alignment.py
+              nltk/test/unit/translate/test_gdfa.py
+              nltk/test/unit/translate/test_lepor.py
+              nltk/test/unit/translate/test_meteor.py
+              nltk/test/unit/translate/test_phrase_based_security.py
+            )
+            ignores=()
+            for f in "${quiet[@]}"; do
+              [ -f "$f" ] || { echo "quiet-stage file missing: $f"; exit 1; }
+              ignores+=("--ignore=$f")
+            done
+            rc=0
+            pytest --numprocesses auto "${ignores[@]}" -rsx --doctest-modules nltk || rc=1
+            pytest -rsx "${quiet[@]}" || rc=1
+            exit $rc
+          else
+            pytest --numprocesses auto -rsx --doctest-modules nltk
+          fi
 
   advisory-coverage:
     name: Advisory coverage (GitHub)

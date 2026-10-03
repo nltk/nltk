@@ -52,6 +52,10 @@ def _enforce_single_root(monkeypatch):
     monkeypatch.setattr(nltk.data, "path", [data_root])
     monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
     monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None, raising=False)
+    # staging_tempdir() memoises a process-global scratch dir; clear it so a dir
+    # an earlier test allocated under the ambient root (still "valid" there) does
+    # not leak in, and it is re-allocated under this enforced single root.
+    monkeypatch.setattr(nltk.data, "_STAGING_TEMPDIR", None, raising=False)
     return data_root
 
 
@@ -122,3 +126,20 @@ def pathsec_sandbox(monkeypatch):
         os.chdir(saved_cwd)
         shutil.rmtree(outside, ignore_errors=True)
         shutil.rmtree(data_root, ignore_errors=True)
+
+
+@pytest.fixture
+def trusted_java_stub():
+    """A stub 'java' under $HOME, a private directory chain on every CI runner
+    (a shared temp dir is not), so the trusted spawn accepts it as the JVM and a
+    Popen spy can see what java() would have launched."""
+    root = pathlib.Path(
+        tempfile.mkdtemp(prefix=".nltk_java_stub_", dir=pathlib.Path.home())
+    )
+    stub = root / ("java.exe" if os.name == "nt" else "java")
+    stub.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+    stub.chmod(0o755)
+    try:
+        yield str(stub)
+    finally:
+        shutil.rmtree(root, ignore_errors=True)

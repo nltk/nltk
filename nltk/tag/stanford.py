@@ -22,8 +22,11 @@ import warnings
 from abc import abstractmethod
 from subprocess import PIPE
 
+from nltk import pathsec
 from nltk.data import staging_tempdir
 from nltk.internals import find_file, find_jar, java
+from nltk.pathsec import has_line_unsafe_char
+from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_tool_path
 from nltk.tag.api import TaggerI
 
@@ -77,8 +80,14 @@ class StanfordTagger(TaggerI):
             model_filename, env_vars=("STANFORD_MODELS",), verbose=verbose
         )
         # Fail fast: the model is a JVM subprocess argument, so bound it here as
-        # well as at the hand-off, and never keep an out-of-sandbox path around.
-        validate_tool_path(self._stanford_model, context=f"{type(self).__name__}")
+        # well as at the hand-off, refuse a tamperable or oversized model, and
+        # keep only the checked string, never an out-of-sandbox path or object.
+        self._stanford_model = validate_tool_path(
+            self._stanford_model,
+            context=f"{type(self).__name__}",
+            max_bytes=pathsec.MAX_TOOL_MODEL_BYTES,
+            require_private=True,
+        )
 
         self._encoding = encoding
         self.java_options = java_options
@@ -97,6 +106,22 @@ class StanfordTagger(TaggerI):
     def tag_sents(self, sentences):
         encoding = self._encoding
 
+        # A line break in a token would inject an extra input line and silently
+        # mislabel output (parse_output re-aligns tags by sentence); a tab, NUL
+        # or other control character would be re-split or truncated by the
+        # tool. Refuse them by the shared line-safety rule, then build the
+        # input once and require exactly one separator per sentence gap.
+        for sentence in sentences:
+            for token in sentence:
+                if has_line_unsafe_char(token):
+                    raise ValueError(
+                        "Tokens cannot contain newline characters, nor a tab, "
+                        "another line break, a control character or NUL: %r" % (token,)
+                    )
+        _input = "\n".join(" ".join(x) for x in sentences)
+        if _input.count("\n") != max(len(sentences) - 1, 0) or "\r" in _input:
+            raise ValueError("Tokens cannot contain newline characters.")
+
         input_file_path = None
         java_succeeded = False
         try:
@@ -106,19 +131,28 @@ class StanfordTagger(TaggerI):
             )
             self._input_file_path = input_file_path
 
+            # The model is handed to the JVM subprocess pathsec.open cannot wrap:
+            # re-check it and freeze the checked string BEFORE _cmd reads it, so
+            # the argv never carries a swapped or re-resolving value (GHSA-8mgp).
+            self._stanford_model = validate_tool_path(
+                self._stanford_model,
+                context="StanfordTagger.tag_sents",
+                max_bytes=pathsec.MAX_TOOL_MODEL_BYTES,
+                require_private=True,
+            )
             cmd = list(self._cmd)
             cmd.extend(["-encoding", encoding])
 
-            # Write the actual sentences to the temporary input file
-            with os.fdopen(_input_fh, "wb") as input_fh:
-                _input = "\n".join(" ".join(x) for x in sentences)
-                if isinstance(_input, str) and encoding:
-                    _input = _input.encode(encoding)
+            # mkstemp gives a race-free path inside the pathsec-validated 0700
+            # staging dir; reopen it through pathsec_open (the same chokepoint the
+            # rest of nltk stages tool input through) rather than the raw fd.
+            os.close(_input_fh)
+            if isinstance(_input, str) and encoding:
+                _input = _input.encode(encoding)
+            with pathsec_open(
+                input_file_path, "wb", context="StanfordTagger.tag_sents"
+            ) as input_fh:
                 input_fh.write(_input)
-
-            # ``self._stanford_model`` (from find_file) is handed to the JVM subprocess
-            # pathsec.open cannot wrap; bound it before spawning (GHSA-8mgp-746c-j5xp).
-            validate_tool_path(self._stanford_model, context="StanfordTagger.tag_sents")
 
             # Run the tagger and get the output
             stanpos_output, _stderr = java(

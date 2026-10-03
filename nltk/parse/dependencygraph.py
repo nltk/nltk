@@ -14,7 +14,9 @@ The input is assumed to be in Malt-TAB format
 (https://stp.lingfil.uu.se/~nivre/research/MaltXML.html).
 """
 
+import operator
 import os
+import string
 import subprocess
 import warnings
 from collections import defaultdict
@@ -22,8 +24,11 @@ from itertools import chain
 from pprint import pformat
 
 from nltk.data import make_staging_dir
-from nltk.internals import find_binary
+from nltk.internals import find_binary_absolute
+from nltk.pathsec import has_line_unsafe_char
 from nltk.pathsec import open as _secure_open
+from nltk.pathsec import spawn_trusted
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 
 #################################################################
@@ -170,24 +175,68 @@ class DependencyGraph:
         }
 
         """
+
+        # Neutralise values interpolated into a Graphviz double-quoted string so
+        # a word/relation carrying a quote or newline cannot break out of a label
+        # and corrupt the graph (CWE-116; graphviz has no code execution).
+        def _dot_escape(text):
+            # str.__str__ copies the real characters out of a str subclass whose
+            # __contains__ / replace / __format__ could lie (str() of any other
+            # object may hand back such a subclass too).
+            text = str.__str__(text if isinstance(text, str) else str(text))
+            if "\x00" in text:
+                # a C string ends at NUL: Graphviz would drop the rest of the label
+                raise ValueError("DependencyGraph labels cannot contain NUL: %r" % text)
+            return (
+                text.replace("\\", "\\\\")
+                .replace('"', '\\"')
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+            )
+
         # Start the digraph specification
         s = "digraph G{\n"
         s += "edge [dir=forward]\n"
         s += "node [shape=plaintext]\n"
 
-        # Draw the remaining nodes
-        for node in sorted(self.nodes.values(), key=lambda v: v["address"]):
+        # An address or dependency index is interpolated bare (a DOT node id),
+        # so only an integer may stand there: a string would be a different
+        # node id, or DOT syntax of its own (CWE-116). operator.index admits
+        # every integer type (numpy included) and refuses bool and everything else.
+        def _dot_address(value):
+            if isinstance(value, bool):
+                raise ValueError(
+                    "DependencyGraph addresses must be integers to render as "
+                    "DOT node ids, not %r" % (value,)
+                )
+            try:
+                return operator.index(value)
+            except TypeError:
+                raise ValueError(
+                    "DependencyGraph addresses must be integers to render as "
+                    "DOT node ids, not %r" % (value,)
+                ) from None
+
+        # Draw the remaining nodes (addresses are judged before they are sorted,
+        # so a non-integer one is refused here and never reaches the sort)
+        for node in sorted(
+            self.nodes.values(), key=lambda v: _dot_address(v["address"])
+        ):
+            address = _dot_address(node["address"])
             s += '\n{} [label="{} ({})"]'.format(
-                node["address"],
-                node["address"],
-                node["word"],
+                address,
+                address,
+                _dot_escape(node["word"]),
             )
             for rel, deps in node["deps"].items():
                 for dep in deps:
+                    dep = _dot_address(dep)
                     if rel is not None:
-                        s += '\n{} -> {} [label="{}"]'.format(node["address"], dep, rel)
+                        s += '\n{} -> {} [label="{}"]'.format(
+                            address, dep, _dot_escape(rel)
+                        )
                     else:
-                        s += "\n{} -> {} ".format(node["address"], dep)
+                        s += f"\n{address} -> {dep} "
         s += "\n}"
 
         return s
@@ -581,11 +630,27 @@ class DependencyGraph:
                 "CoNLL(10) or Malt-Tab(4) format".format(style)
             )
 
-        return "".join(
-            template.format(i=i, **node)
-            for i, node in sorted(self.nodes.items())
-            if node["tag"] != "TOP"
-        )
+        # Every value the template interpolates is rendered to a plain str and
+        # judged first: a tab, line break, NUL or other control character would
+        # add a column or a row to the CoNLL file MaltParser trains on (CWE-93).
+        fields = [name for _, name, _, _ in string.Formatter().parse(template) if name]
+        rows = []
+        for i, node in sorted(self.nodes.items()):
+            if node["tag"] == "TOP":
+                continue
+            texts = {}
+            for name in fields:
+                value = i if name == "i" else node[name]
+                texts[name] = str.__str__(
+                    value if isinstance(value, str) else str(value)
+                )
+            # A printable row holds none of the refused characters; only a row
+            # that is not printable pays for the per-field judgement.
+            if not "".join(texts.values()).isprintable():
+                for name in fields:
+                    _conll_field(i, name, texts[name])
+            rows.append(template.format(**texts))
+        return "".join(rows)
 
     def nx_graph(self):
         """Convert the data in a ``nodelist`` into a networkx labeled directed graph."""
@@ -606,6 +671,23 @@ class DependencyGraph:
         return g
 
 
+def _conll_field(address, name, value):
+    """Render one ``to_conll`` field to a plain str, refusing line-unsafe text.
+
+    The copy through ``str.__str__`` means a str subclass (or the str another
+    object renders to) cannot lie through ``__iter__``, ``__contains__`` or
+    ``__format__``: the characters judged are the characters written.
+    """
+    text = str.__str__(value if isinstance(value, str) else str(value))
+    if has_line_unsafe_char(text):
+        raise ValueError(
+            "DependencyGraph.to_conll: node %r field %r contains a tab, line "
+            "break, NUL or other control character, which would add a column "
+            "or a row to the CoNLL output: %r" % (address, name, text)
+        )
+    return text
+
+
 def dot2img(dot_string, t="svg"):
     """
     Create image representation fom dot_string, using the 'dot' program
@@ -619,27 +701,30 @@ def dot2img(dot_string, t="svg"):
     """
 
     try:
-        # Run the absolute path find_binary returns, not the bare name: it
-        # refuses a CWD-relative match, so a planted ./dot cannot be executed
-        # in place of the real Graphviz binary (CWE-426 / CWE-427). The bare
-        # ["dot", ...] used before discarded this validation entirely.
-        dot_binary = find_binary("dot")
+        # Run the absolute path the finder returns, not the bare name: a
+        # CWD-relative match and a '..' component are refused, so a planted
+        # ./dot cannot be executed in place of Graphviz (CWE-426 / CWE-427).
+        dot_binary = find_binary_absolute("dot")
     except LookupError as e:
         raise Exception("Cannot find the dot binary from Graphviz package") from e
+
     try:
-        if t in ["dot", "dot_json", "json", "svg"]:
-            proc = subprocess.run(
-                [dot_binary, "-T%s" % t],
-                capture_output=True,
-                input=dot_string,
-                text=True,
-            )
-        else:
-            proc = subprocess.run(
-                [dot_binary, "-T%s" % t],
-                input=bytes(dot_string, encoding="utf8"),
-            )
-        return proc.stdout
+        # Route through the trusted-exec chokepoint like translate.api: verify
+        # the dot binary is on a path no other local user can swap, refuse a
+        # shell, and scrub the loader environment before exec (CWE-426/427/732).
+        text = t in ["dot", "dot_json", "json", "svg"]
+        proc = spawn_trusted(
+            dot_binary,
+            ["-T%s" % t],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=text,
+        )
+        stdout, _stderr = proc.communicate(
+            dot_string if text else bytes(dot_string, encoding="utf8")
+        )
+        return stdout
     except Exception:
         raise Exception(
             "Cannot create image representation by running dot from string: {}"
@@ -702,7 +787,7 @@ Nov.    NNP     9       VMOD
         # A private staging dir under a data root, not "tree.png" in the CWD.
         outfile = os.path.join(make_staging_dir(prefix="nltk_depgraph_"), "tree.png")
         pylab.savefig(outfile)
-        print(f"saved dependency tree to {outfile}")
+        safe_print(f"saved dependency tree to {outfile}")
         pylab.show()
 
 
@@ -714,29 +799,29 @@ def conll_demo():
     dg = DependencyGraph(conll_data1)
     tree = dg.tree()
     tree.pprint()
-    print(dg)
-    print(dg.to_conll(4))
+    safe_print(dg)
+    safe_print(dg.to_conll(4))
 
 
 def conll_file_demo():
-    print("Mass conll_read demo...")
+    safe_print("Mass conll_read demo...")
     graphs = [DependencyGraph(entry) for entry in conll_data2.split("\n\n") if entry]
     for graph in graphs:
         tree = graph.tree()
-        print("\n")
+        safe_print("\n")
         tree.pprint()
 
 
 def cycle_finding_demo():
     dg = DependencyGraph(treebank_data)
-    print(dg.contains_cycle())
+    safe_print(dg.contains_cycle())
     cyclic_dg = DependencyGraph()
     cyclic_dg.add_node({"word": None, "deps": [1], "rel": "TOP", "address": 0})
     cyclic_dg.add_node({"word": None, "deps": [2], "rel": "NTOP", "address": 1})
     cyclic_dg.add_node({"word": None, "deps": [4], "rel": "NTOP", "address": 2})
     cyclic_dg.add_node({"word": None, "deps": [1], "rel": "NTOP", "address": 3})
     cyclic_dg.add_node({"word": None, "deps": [3], "rel": "NTOP", "address": 4})
-    print(cyclic_dg.contains_cycle())
+    safe_print(cyclic_dg.contains_cycle())
 
 
 treebank_data = """Pierre  NNP     2       NMOD

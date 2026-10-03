@@ -71,6 +71,7 @@ from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.probability import DictionaryProbDist
 from nltk.tabdata import MaxentEncoder
+from nltk.termsec import safe_print, sanitize_terminal
 from nltk.util import OrderedDict
 
 __docformat__ = "epytext en"
@@ -176,11 +177,11 @@ class MaxentClassifier(ClassifierI):
         pdist = self.prob_classify(featureset)
         labels = sorted(pdist.samples(), key=pdist.prob, reverse=True)
         labels = labels[:columns]
-        print(
+        safe_print(
             "  Feature".ljust(descr_width)
             + "".join("%8s" % (("%s" % l)[:7]) for l in labels)
         )
-        print("  " + "-" * (descr_width - 2 + 8 * len(labels)))
+        safe_print("  " + "-" * (descr_width - 2 + 8 * len(labels)))
         sums = defaultdict(int)
         for i, label in enumerate(labels):
             feature_vector = self._encoding.encode(featureset, label)
@@ -197,13 +198,13 @@ class MaxentClassifier(ClassifierI):
                 descr += " (%s)" % f_val  # hack
                 if len(descr) > 47:
                     descr = descr[:44] + "..."
-                print(TEMPLATE % (descr, i * 8 * " ", score))
+                safe_print(TEMPLATE % (descr, i * 8 * " ", score))
                 sums[label] += score
-        print("  " + "-" * (descr_width - 1 + 8 * len(labels)))
-        print(
+        safe_print("  " + "-" * (descr_width - 1 + 8 * len(labels)))
+        safe_print(
             "  TOTAL:".ljust(descr_width) + "".join("%8.3f" % sums[l] for l in labels)
         )
-        print(
+        safe_print(
             "  PROBS:".ljust(descr_width)
             + "".join("%8.3f" % pdist.prob(l) for l in labels)
         )
@@ -236,7 +237,7 @@ class MaxentClassifier(ClassifierI):
         elif show == "neg":
             fids = [fid for fid in fids if self._weights[fid] < 0]
         for fid in fids[:n]:
-            print(f"{self._weights[fid]:8.3f} {self._encoding.describe(fid)}")
+            safe_print(f"{self._weights[fid]:8.3f} {self._encoding.describe(fid)}")
 
     def __repr__(self):
         return "<ConditionalExponentialClassifier: %d labels, %d features>" % (
@@ -1078,11 +1079,11 @@ def train_maxent_classifier_with_gis(
     del empirical_fcount
 
     if trace > 0:
-        print("  ==> Training (%d iterations)" % cutoffs["max_iter"])
+        safe_print("  ==> Training (%d iterations)" % cutoffs["max_iter"])
     if trace > 2:
-        print()
-        print("      Iteration    Log Likelihood    Accuracy")
-        print("      ---------------------------------------")
+        safe_print()
+        safe_print("      Iteration    Log Likelihood    Accuracy")
+        safe_print("      ---------------------------------------")
 
     # Train the classifier.
     try:
@@ -1091,7 +1092,7 @@ def train_maxent_classifier_with_gis(
                 ll = cutoffchecker.ll or log_likelihood(classifier, train_toks)
                 acc = cutoffchecker.acc or accuracy(classifier, train_toks)
                 iternum = cutoffchecker.iter
-                print("     %9d    %14.5f    %9.3f" % (iternum, ll, acc))
+                safe_print("     %9d    %14.5f    %9.3f" % (iternum, ll, acc))
 
             # Use the model to estimate the number of times each
             # feature should occur in the training data.
@@ -1115,12 +1116,12 @@ def train_maxent_classifier_with_gis(
                 break
 
     except KeyboardInterrupt:
-        print("      Training stopped: keyboard interrupt")
+        safe_print("      Training stopped: keyboard interrupt")
 
     if trace > 2:
         ll = log_likelihood(classifier, train_toks)
         acc = accuracy(classifier, train_toks)
-        print(f"         Final    {ll:14.5f}    {acc:9.3f}")
+        safe_print(f"         Final    {ll:14.5f}    {acc:9.3f}")
 
     # Return the classifier.
     return classifier
@@ -1196,11 +1197,11 @@ def train_maxent_classifier_with_iis(
     classifier = ConditionalExponentialClassifier(encoding, weights)
 
     if trace > 0:
-        print("  ==> Training (%d iterations)" % cutoffs["max_iter"])
+        safe_print("  ==> Training (%d iterations)" % cutoffs["max_iter"])
     if trace > 2:
-        print()
-        print("      Iteration    Log Likelihood    Accuracy")
-        print("      ---------------------------------------")
+        safe_print()
+        safe_print("      Iteration    Log Likelihood    Accuracy")
+        safe_print("      ---------------------------------------")
 
     # Train the classifier.
     try:
@@ -1209,7 +1210,7 @@ def train_maxent_classifier_with_iis(
                 ll = cutoffchecker.ll or log_likelihood(classifier, train_toks)
                 acc = cutoffchecker.acc or accuracy(classifier, train_toks)
                 iternum = cutoffchecker.iter
-                print("     %9d    %14.5f    %9.3f" % (iternum, ll, acc))
+                safe_print("     %9d    %14.5f    %9.3f" % (iternum, ll, acc))
 
             # Calculate the deltas for this iteration, using Newton's method.
             deltas = calculate_deltas(
@@ -1233,12 +1234,12 @@ def train_maxent_classifier_with_iis(
                 break
 
     except KeyboardInterrupt:
-        print("      Training stopped: keyboard interrupt")
+        safe_print("      Training stopped: keyboard interrupt")
 
     if trace > 2:
         ll = log_likelihood(classifier, train_toks)
         acc = accuracy(classifier, train_toks)
-        print(f"         Final    {ll:14.5f}    {acc:9.3f}")
+        safe_print(f"         Final    {ll:14.5f}    {acc:9.3f}")
 
     # Return the classifier.
     return classifier
@@ -1488,7 +1489,7 @@ def train_maxent_classifier_with_megam(
     try:
         os.remove(trainfile_name)
     except OSError as e:
-        print(f"Warning: unable to delete {trainfile_name}: {e}")
+        safe_print(f"Warning: unable to delete {trainfile_name}: {e}")
     # Remove the private staging directory so it does not leak per call.
     shutil.rmtree(stagedir, ignore_errors=True)
 
@@ -1580,26 +1581,85 @@ class TadmMaxentClassifier(MaxentClassifier):
 
 
 def load_maxent_params(tab_dir):
+    """Read maxent classifier parameters from the tab files in *tab_dir*.
+
+    *tab_dir* is a ``PathPointer`` (what ``nltk.data.find`` returns) or a
+    filesystem path; a path is wrapped in a ``FileSystemPathPointer`` so the
+    reads go through the pathsec sandbox and a directory outside every data
+    root is refused with ``PermissionError`` rather than read
+    (GHSA-59f9-gqg8-mqpj, CVE-2026-15367).
+    """
     import numpy
 
-    from nltk.data import open_datafile
+    from nltk.data import FileSystemPathPointer, PathPointer, open_datafile
     from nltk.tabdata import MaxentDecoder
 
+    if not isinstance(tab_dir, PathPointer):
+        tab_dir = FileSystemPathPointer(os.fspath(tab_dir))
+
     mdec = MaxentDecoder()
-    # Use .join() to reach the files regardless of zip/real FS.
-    with open_datafile(tab_dir, "weights.txt") as f:
-        wgt = numpy.array(list(map(numpy.float64, mdec.txt2list(f))))
 
-    with open_datafile(tab_dir, "mapping.tab") as f:
-        mpg = mdec.tupkey2dict(f)
+    def read(name, decode):
+        # open_datafile uses .join() to reach the file regardless of zip/real
+        # FS and reads it as UTF-8, which is what save_maxent_params writes.
+        try:
+            with open_datafile(tab_dir, name) as f:
+                return decode(f)
+        except UnicodeDecodeError as exc:
+            # The reader decodes block by block, so the first bad byte stops
+            # the read; name the file and the fault instead of a codec trace.
+            raise ValueError(
+                f"load_maxent_params: {name} in "
+                f"{sanitize_terminal(str(tab_dir), single_line=True)!r} is not "
+                f"UTF-8 ({exc.reason} at byte {exc.start} of the block read); "
+                "the tab files are written as UTF-8 by save_maxent_params"
+            ) from exc
 
-    with open_datafile(tab_dir, "labels.txt") as f:
-        lab = mdec.txt2list(f)
-
-    with open_datafile(tab_dir, "alwayson.tab") as f:
-        aon = mdec.tab2ivdict(f)
-
+    wgt = read(
+        "weights.txt", lambda f: numpy.array(list(map(numpy.float64, mdec.txt2list(f))))
+    )
+    mpg = read("mapping.tab", mdec.tupkey2dict)
+    lab = read("labels.txt", mdec.txt2list)
+    aon = read("alwayson.tab", mdec.tab2ivdict)
     return wgt, mpg, lab, aon
+
+
+def _holds_tab_file_separator(value):
+    """True when the str *value* holds a tab or a row boundary of the tab files.
+
+    A tab separates columns. A row ends at any boundary ``str.splitlines``
+    recognises (LF, CR, CR LF, the vertical and form feeds, the file, group
+    and record separators, NEL and the line and paragraph separators), since
+    that is how the loader's stream reader splits the files back into rows.
+    """
+    return bool(value) and ("\t" in value or value.splitlines() != [value])
+
+
+def _reject_tab_file_separators(mpg, lab, aon):
+    """Refuse a feature name, feature value, label or always-on label holding a
+    tab or row boundary before any parameter file is written.
+
+    The tab files cannot carry one: a tab adds a column and a row boundary
+    adds a row, so the saved model would reload as a different model (a label
+    with a line break reloads as two labels) or not reload at all. Refusing it
+    at the sink keeps the artifact faithful to the classifier (CWE-93, the
+    structured-output class the megam and tadm writers already refuse).
+    """
+
+    def check(value, what):
+        if isinstance(value, str) and _holds_tab_file_separator(value):
+            raise ValueError(
+                f"save_maxent_params: {what} {value!r} contains a tab or line "
+                "break, which the tab files cannot carry"
+            )
+
+    for key in mpg:
+        for part in key if isinstance(key, tuple) else (key,):
+            check(part, "feature name, value or label")
+    for label in lab:
+        check(label, "label")
+    for label in aon or ():
+        check(label, "always-on label")
 
 
 def save_maxent_params(wgt, mpg, lab, aon, tab_dir: str | None = None) -> str:
@@ -1610,14 +1670,18 @@ def save_maxent_params(wgt, mpg, lab, aon, tab_dir: str | None = None) -> str:
     (CWE-377/378), and one pathsec refuses anyway. Default instead to a fresh
     private (mode 0700), unpredictably-named directory. A caller-supplied
     ``tab_dir`` is validated against the NLTK data sandbox before the directory
-    is created or any file is written (GHSA-8mgp-746c-j5xp).
+    is created or any file is written (GHSA-8mgp-746c-j5xp). A feature name,
+    feature value or label holding a tab or line break is refused first, since
+    the tab files could not carry it and the model would not reload faithfully.
 
     :param tab_dir: destination directory; defaults to a fresh private one.
     :type tab_dir: str or None
     :return: the directory the parameter files were written to.
     :rtype: str
+    :raises ValueError: if a name, value or label holds a tab or line break.
     """
     menc = MaxentEncoder()
+    _reject_tab_file_separators(mpg, lab, aon)
     if tab_dir is None:
         tab_dir = make_staging_dir(prefix="nltk_maxent_params_")
     validate_path(tab_dir, context="save_maxent_params")
@@ -1626,27 +1690,28 @@ def save_maxent_params(wgt, mpg, lab, aon, tab_dir: str | None = None) -> str:
         # matching the private default staging dir.
         os.mkdir(tab_dir, 0o700)
 
-    print(f"Saving Maxent parameters in {tab_dir}")
+    safe_print(f"Saving Maxent parameters in {tab_dir}")
 
     # newline="" writes LF, not the platform default, so the tab files reload
     # cleanly on Windows (a default text write there emits CRLF, leaving a stray
     # \r on every reloaded token).
-    with pathsec_open(
-        f"{tab_dir}/weights.txt", "w", context="save_maxent_params", newline=""
-    ) as f:
-        f.write(f"{menc.list2txt(map(repr, wgt.tolist()))}")
-    with pathsec_open(
-        f"{tab_dir}/mapping.tab", "w", context="save_maxent_params", newline=""
-    ) as f:
-        f.write(f"{menc.tupdict2tab(mpg)}")
-    with pathsec_open(
-        f"{tab_dir}/labels.txt", "w", context="save_maxent_params", newline=""
-    ) as f:
-        f.write(f"{menc.list2txt(lab)}")
-    with pathsec_open(
-        f"{tab_dir}/alwayson.tab", "w", context="save_maxent_params", newline=""
-    ) as f:
-        f.write(f"{menc.ivdict2tab(aon)}")
+    # encoding="utf-8" because load_maxent_params reads the files as UTF-8; the
+    # locale default (cp1252 on Windows) cannot carry a non-ASCII feature name
+    # or writes bytes that the loader then cannot decode.
+    def _write(name, text):
+        with pathsec_open(
+            f"{tab_dir}/{name}",
+            "w",
+            context="save_maxent_params",
+            encoding="utf-8",
+            newline="",
+        ) as f:
+            f.write(text)
+
+    _write("weights.txt", menc.list2txt(map(repr, wgt.tolist())))
+    _write("mapping.tab", menc.tupdict2tab(mpg))
+    _write("labels.txt", menc.list2txt(lab))
+    _write("alwayson.tab", menc.ivdict2tab(aon))
     return tab_dir
 
 

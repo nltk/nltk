@@ -37,7 +37,7 @@ from functools import reduce
 from optparse import OptionParser
 
 from nltk import redos
-from nltk.internals import find_binary_iter
+from nltk.internals import find_binary_absolute
 from nltk.pathsec import TrustError, has_line_unsafe_char, spawn_trusted
 from nltk.sem.drt import (
     DRS,
@@ -56,6 +56,7 @@ from nltk.sem.logic import (
     UnexpectedTokenException,
     Variable,
 )
+from nltk.termsec import safe_print
 
 
 class Boxer:
@@ -286,16 +287,17 @@ class Boxer:
         # candidate and use the first absolute one (an absolute bin_dir, the
         # CANDC environment variable, or a $PATH lookup), none of which resolve
         # against the CWD.
-        for binary in find_binary_iter(
-            name,
-            path_to_bin=bin_dir,
-            env_vars=["CANDC"],
-            url="http://svn.ask.it.usyd.edu.au/trac/candc/",
-            binary_names=[name, name + ".exe"],
-            verbose=verbose,
-        ):
-            if os.path.isabs(binary):
-                return binary
+        try:
+            return find_binary_absolute(
+                name,
+                path_to_bin=bin_dir,
+                env_vars=["CANDC"],
+                url="http://svn.ask.it.usyd.edu.au/trac/candc/",
+                binary_names=[name, name + ".exe"],
+                verbose=verbose,
+            )
+        except LookupError:
+            pass
         raise LookupError(
             "No absolute %r binary found. Pass an absolute bin_dir to Boxer(...) "
             "or set the CANDC environment variable to an absolute directory that "
@@ -313,10 +315,10 @@ class Boxer:
         :return: stdout
         """
         if verbose:
-            print("Calling:", binary)
-            print("Args:", args)
-            print("Input:", input_str)
-            print("Command:", binary + " " + " ".join(args))
+            safe_print("Calling:", binary)
+            safe_print("Args:", args)
+            safe_print("Input:", input_str)
+            safe_print("Command:", binary + " " + " ".join(args))
 
         # Route through the trusted-exec chokepoint: verify the candc/boxer binary
         # is on a path no other local user can swap, refuse a shell, and scrub the
@@ -344,11 +346,11 @@ class Boxer:
             ) from e
 
         if verbose:
-            print("Return code:", p.returncode)
+            safe_print("Return code:", p.returncode)
             if stdout:
-                print("stdout:\n", stdout, "\n")
+                safe_print("stdout:\n", stdout, "\n")
             if stderr:
-                print("stderr:\n", stderr, "\n")
+                safe_print("stderr:\n", stderr, "\n")
         if p.returncode != 0:
             raise Exception(
                 "ERROR CALLING: {} {}\nReturncode: {}\n{}".format(
@@ -1671,10 +1673,10 @@ if __name__ == "__main__":
         args[0].split(r"\n"), question=options.question, verbose=options.verbose
     )
     if drs is None:
-        print(None)
+        safe_print(None)
     else:
         drs = drs.simplify().eliminate_equality()
         if options.fol:
-            print(drs.fol().normalize())
+            safe_print(drs.fol().normalize())
         else:
             drs.pretty_print()

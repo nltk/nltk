@@ -33,7 +33,7 @@ def _chomsky_front_pop_quadratic():
             treemod.MAX_TREE_DEPTH = limit
 
     small, big = 2000, 8000  # big == 4 * small
-    ratio = scaling_ratio(op, small, big)
+    ratio = scaling_ratio(op, small, big, cpu_bound=True)  # the sink computes
     detail = "chomsky_normal_form scales %.1fx over 4x input (%d->%d children)" % (
         ratio,
         small,

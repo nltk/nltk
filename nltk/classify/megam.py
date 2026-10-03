@@ -26,8 +26,9 @@ import math
 import numbers
 import subprocess
 
-from nltk.internals import find_binary
+from nltk.internals import find_binary_absolute
 from nltk.pathsec import TrustError, spawn_trusted
+from nltk.termsec import safe_print
 
 try:
     import numpy
@@ -52,7 +53,9 @@ def config_megam(bin=None):
     :type bin: str
     """
     global _megam_bin
-    _megam_bin = find_binary(
+    # Accept only an absolute binary: a relative ``bin`` resolves against the CWD
+    # and would be executed from there (untrusted search path, CWE-426/CWE-427).
+    _megam_bin = find_binary_absolute(
         "megam",
         bin,
         env_vars=["MEGAM"],
@@ -211,8 +214,8 @@ def call_megam(args):
 
     # Check the return code.
     if p.returncode != 0:
-        print()
-        print(stderr)
+        safe_print()
+        safe_print(stderr)
         raise OSError("megam command failed!")
 
     if isinstance(stdout, str):

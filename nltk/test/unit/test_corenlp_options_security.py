@@ -18,16 +18,21 @@ runs before any jar lookup or JVM spawn). Every allowlisted operational flag wit
 a safe value must pass; every path-bearing, smuggled or unknown flag must be
 refused with ValueError."""
 
+import http.server
 import os
+import threading
+import time
 
 import pytest
 
 from nltk.parse.corenlp import (
+    CoreNLPParser,
     CoreNLPServer,
     CoreNLPServerError,
     _validate_corenlp_options,
     try_port,
 )
+from nltk.termsec import sanitize_terminal
 
 # Reuse the ~115 adversarial JVM / tool-wrapper payload corpora (agents, @argfile,
 # -XX:OnError, class/module path, NUL/unicode/DEL smuggling, hostile model paths):
@@ -42,6 +47,7 @@ from nltk.test.unit.test_java_per_call_options_security import (
     DANGEROUS_CMD,
     UNICODE_WS_CMD,
 )
+from nltk.test.unit.timing import budget
 
 
 def _as_options(payload):
@@ -419,6 +425,18 @@ def _real_corenlp_available():
         return False
 
 
+@pytest.fixture(scope="module", autouse=True)
+def _restore_nltk_data_path():
+    # _make_corenlp_server trusts the CoreNLP dirs by prepending them to
+    # nltk.data.path; restoring it in place also revokes that trust (pathsec
+    # compares the path by value; pinned in test_pathsec).
+    import nltk
+
+    saved = list(nltk.data.path)
+    yield
+    nltk.data.path[:] = saved
+
+
 def _make_corenlp_server(corenlp_options, port=None):
     import nltk
 
@@ -431,29 +449,153 @@ def _make_corenlp_server(corenlp_options, port=None):
     return CoreNLPServer(corenlp_options=corenlp_options, port=port)
 
 
+# The annotators the live server preloads. Preload constructs each annotator
+# but never runs it, so the warm-up below runs them once before any test does.
+_PRELOAD = "tokenize,ssplit,pos,lemma,ner,parse,depparse"
+
+# How CoreNLP 4.5.1 explains a request it timed out: an HTTP 500 whose text
+# body starts with this (StanfordCoreNLPServer.CoreNLPHandler.handle).
+_TIMED_OUT = "CoreNLP request timed out"
+
+# Wall-clock bound on taking a fresh JVM from "ready" to "has annotated". A hang
+# detector around a real process, so it stays on the wall clock by design.
+_WARMUP_DEADLINE = 180.0
+_RETRY_PAUSE = 0.5
+_LOG_TAIL_CHARS = 4000
+
+# A document no 1 ms per-request timeout can finish: it makes the real server
+# answer the timeout 500 on demand, the shape of the Windows CI failure.
+_LONG_DOC = "The quick brown fox jumps over the lazy dog. " * 500
+
+
+class _ServerLog:
+    """The launched JVM's stdout and stderr, captured to one file (the wrapper's
+    default is devnull), so a failing wrapper call can show what the server said."""
+
+    def __init__(self, path):
+        self.path = path
+        self.handle = open(path, "wb")
+
+    def tail(self):
+        """The end of the log, escaped for the terminal and cut to a bound."""
+        with open(self.path, "rb") as f:
+            f.seek(0, os.SEEK_END)
+            f.seek(max(0, f.tell() - 4 * _LOG_TAIL_CHARS))
+            data = f.read()
+        text = sanitize_terminal(data.decode("utf-8", errors="replace"))
+        return text[-_LOG_TAIL_CHARS:]
+
+    def close(self):
+        self.handle.close()
+
+
+class _ServerLogReporter:
+    """Adds the server log tail to the report of a test that failed with the
+    live server up, so a wrapper call that fails shows what the JVM said next to
+    the traceback. Registered only while the live_server fixture is alive."""
+
+    def __init__(self, log):
+        self.log = log
+
+    @pytest.hookimpl(hookwrapper=True)
+    def pytest_runtest_makereport(self, item, call):
+        outcome = yield
+        report = outcome.get_result()
+        if (
+            report.when == "call"
+            and report.failed
+            and "live_server" in getattr(item, "fixturenames", ())
+        ):
+            report.sections.append(("CoreNLP server log (tail)", self.log.tail()))
+
+
+class _WarmUpFailed(AssertionError):
+    """The warm-up could not get a 2xx; carries every attempt and the log tail."""
+
+    def __init__(self, message, attempts):
+        super().__init__(message)
+        self.attempts = attempts
+
+
+def _is_timeout(exc):
+    """True for the error the wrapper raises when the server timed a request out."""
+    return _TIMED_OUT in str(exc)
+
+
+def _warm_up(server, log, probes, text="The quick brown fox.", deadline=None):
+    """Make the fresh server annotate once per probe (a properties dict) before
+    any test does; returns the attempts as ``(annotators, seconds, outcome)``.
+
+    The first run of the tokenizer loads and JITs a 1.6 MB generated lexer class
+    (about half a second of CPU; preload never runs it), which a starved CI
+    runner can stretch past the server's own 15 s per-request budget, answered
+    as HTTP 500 'CoreNLP request timed out' to whichever test calls first. Such
+    a timeout is retried until *deadline* (the server finishes the work anyway,
+    so the retry finds it done); any other failure stops here with the server's
+    explanation and the tail of its log.
+    """
+    import requests
+
+    if deadline is None:
+        deadline = _WARMUP_DEADLINE
+    parser = CoreNLPParser(url=server.url)
+    attempts = []
+    stop_at = time.monotonic() + deadline
+    for properties in probes:
+        annotators = properties.get("annotators", "")
+        while True:
+            started = time.monotonic()
+            try:
+                parser.api_call(text, properties=properties)
+            except requests.exceptions.RequestException as e:
+                attempts.append((annotators, time.monotonic() - started, str(e)))
+                if _is_timeout(e) and time.monotonic() < stop_at:
+                    time.sleep(_RETRY_PAUSE)
+                    continue
+                raise _WarmUpFailed(
+                    f"warm-up of {annotators!r} failed after {len(attempts)} "
+                    f"attempt(s): {e}\n=== CoreNLP server log (tail) ===\n"
+                    f"{log.tail()}",
+                    attempts,
+                ) from e
+            attempts.append((annotators, time.monotonic() - started, "200"))
+            break
+    return attempts
+
+
 @pytest.fixture(scope="module")
-def live_server():
+def live_server(request, tmp_path_factory):
     # One real server for every wrapper-function test, on an ephemeral port (never
     # the default 9000, which test_corenlp.py binds and races under xdist); the
     # preloaded annotators + allowlisted -srparser/-maxCharLength=-1 must start clean.
     pytest.importorskip("requests")
+    log = _ServerLog(str(tmp_path_factory.mktemp("corenlp") / "server.log"))
+    reporter = _ServerLogReporter(log)
+    request.config.pluginmanager.register(reporter, name=f"corenlp-log-{id(log)}")
     srv = _make_corenlp_server(
-        [
-            "-preload",
-            "tokenize,ssplit,pos,lemma,ner,parse,depparse",
-            "-srparser",
-            "-maxCharLength=-1",
-        ],
+        ["-preload", _PRELOAD, "-srparser", "-maxCharLength=-1"],
         port=try_port(),
     )
     # start() inside the try: a readiness failure raises but leaves the JVM
     # running, so stop() must run if the process was ever launched.
     try:
-        srv.start()
+        try:
+            srv.start(stdout=log.handle, stderr=log.handle)
+        except CoreNLPServerError as e:
+            pytest.fail(
+                f"the server did not start: {e}\n"
+                f"=== CoreNLP server log (tail) ===\n{log.tail()}"
+            )
+        srv.log = log
+        srv.warmup = _warm_up(
+            srv, log, [{"annotators": "tokenize,ssplit"}, {"annotators": _PRELOAD}]
+        )
         yield srv
     finally:
         if getattr(srv, "popen", None) is not None:
             srv.stop()
+        request.config.pluginmanager.unregister(reporter)
+        log.close()
 
 
 @pytest.mark.skipif(
@@ -544,6 +686,88 @@ class TestRealServerLaunch:
         )
         assert list(d.make_tree(resp["sentences"][0]).triples())
 
+    def test_real_non_2xx_answer_carries_the_server_explanation(self, live_server):
+        """A per-request 'timeout' of 1 ms on a 500-sentence document makes the
+        real server time the annotation out and answer HTTP 500 with its reason
+        in the body, the exact shape of the Windows CI failure, which the wrapper
+        used to discard. The error is still requests' HTTPError."""
+        import requests
+
+        parser = CoreNLPParser(url=live_server.url)
+        with pytest.raises(requests.exceptions.HTTPError) as info:
+            parser.api_call(
+                _LONG_DOC,
+                properties={"annotators": "tokenize,ssplit,pos", "timeout": "1"},
+            )
+        message = str(info.value)
+        assert info.value.response.status_code == 500
+        assert message.startswith("500 Server Error: ")
+        assert f"the CoreNLP server said: '{_TIMED_OUT}" in message, message
+        assert "Your document may be too long" in message
+        assert _is_timeout(info.value)
+        # A caller that wants the raw body still has it on the response.
+        assert info.value.response.text.startswith(_TIMED_OUT)
+
+    def test_live_server_annotated_before_any_test_ran(self, live_server):
+        """The fixture contract behind the Windows CI flake: by the time a test
+        runs, the server has annotated once with the tokenizer and once with the
+        whole preloaded pipeline, so no test's first call pays the cold-start
+        cost against the server's 15 s per-request budget."""
+        done = [
+            annotators
+            for annotators, _, outcome in live_server.warmup
+            if outcome == "200"
+        ]
+        assert done == ["tokenize,ssplit", _PRELOAD], live_server.warmup
+
+    def test_warm_up_retries_a_timed_out_annotation_then_reports_with_the_log(
+        self, live_server
+    ):
+        """The retry path of the fixture's warm-up, driven by the real server: a
+        probe the server cannot finish inside a 1 ms per-request timeout is
+        retried until the deadline, then reported with the server's own words
+        and the tail of its log, where the JVM's own trace of the timeout is."""
+        with budget(60.0, "warm-up give-up", cpu_bound=False):
+            with pytest.raises(_WarmUpFailed) as info:
+                _warm_up(
+                    live_server,
+                    live_server.log,
+                    [{"annotators": "tokenize,ssplit,pos", "timeout": "1"}],
+                    text=_LONG_DOC,
+                    deadline=3.0,
+                )
+        attempts = info.value.attempts
+        assert len(attempts) >= 2, attempts
+        assert all(_TIMED_OUT in outcome for _, _, outcome in attempts), attempts
+        message = str(info.value)
+        assert f"after {len(attempts)} attempt(s)" in message
+        assert "=== CoreNLP server log (tail) ===" in message
+        # The JVM logged the timeout to the captured stderr; the tail shows it.
+        assert "TimeoutException" in message, message[-_LOG_TAIL_CHARS:]
+        # The server is still fine: a normal request after the give-up succeeds.
+        toks = list(CoreNLPParser(url=live_server.url).tokenize("The dog barks."))
+        assert toks[:3] == ["The", "dog", "barks"], toks
+
+    def test_a_timed_out_answer_is_told_apart_from_another_failure(self, live_server):
+        # _is_timeout keys the retry on the server's words, not on the status:
+        # a 500 for another reason must not be retried as a slow start.
+        import requests
+
+        parser = CoreNLPParser(url=live_server.url)
+        with pytest.raises(requests.exceptions.HTTPError) as timed_out:
+            parser.api_call(
+                _LONG_DOC,
+                properties={"annotators": "tokenize,ssplit,pos", "timeout": "1"},
+            )
+        assert _is_timeout(timed_out.value)
+        with pytest.raises(requests.exceptions.HTTPError) as other:
+            # An outputFormat the server does not know fails inside the handler
+            # with the exception's class and message, not the timeout text.
+            parser.api_call("The dog barks.", properties={"outputFormat": "bogus"})
+        assert other.value.response.status_code == 500
+        assert "the CoreNLP server said: '" in str(other.value)
+        assert not _is_timeout(other.value), str(other.value)
+
     def test_real_server_context_manager(self):
         # The documented "with CoreNLPServer(...) as server" form starts the server
         # on __enter__ and stops it on __exit__ (its own ephemeral port).
@@ -573,6 +797,234 @@ class TestRealServerLaunch:
         srv.java_options = ["-javaagent:/tmp/evil.jar"]
         with pytest.raises(ValueError):
             srv.start()
+
+
+def _raw(status_line, body=b"", headers=(), length=None):
+    """Raw HTTP response bytes, for full control of status line and headers.
+    ``length=None`` sends the true Content-Length, ``False`` none at all."""
+    lines = [status_line, *headers]
+    if length is None:
+        length = len(body)
+    if length is not False:
+        lines.append(f"Content-Length: {length}")
+    return ("\r\n".join(lines) + "\r\n\r\n").encode("latin-1") + body
+
+
+_E = chr(0x1B)  # ESC
+_RLO = chr(0x202E)  # RIGHT-TO-LEFT OVERRIDE
+_TEXT = ("Content-Type: text/plain; charset=utf-8",)
+_MEG = b"A" * (1 << 20)
+_CHUNKS = [b"B" * (1 << 16)] * 16
+# CSI colour, OSC-8 hyperlink, OSC-52 clipboard write: live if ever printed raw.
+_ESCAPES = (
+    f"{_E}[31mFAIL{_E}[0m {_E}]8;;http://evil.example{_E}\\click{_E}]8;;{_E}\\ "
+    f"{_E}]52;c;ZXZpbA==" + chr(0x07)
+).encode("utf-8")
+_500 = "HTTP/1.1 500 Internal Server Error"
+
+# What a hostile or broken server may answer the wrapper, by request path.
+HOSTILE = {
+    "/esc": _raw(_500, _ESCAPES, _TEXT),
+    "/bidi": _raw(_500, f"ok {_RLO}live".encode(), _TEXT),
+    "/huge": _raw(_500, _MEG, _TEXT),
+    "/chunked": _raw(
+        _500,
+        b"".join(f"{len(c):x}\r\n".encode("ascii") + c + b"\r\n" for c in _CHUNKS)
+        + b"0\r\n\r\n",
+        (*_TEXT, "Transfer-Encoding: chunked"),
+        length=False,
+    ),
+    "/empty": _raw(_500, b"", _TEXT),
+    "/nul-and-latin1": _raw(
+        _500, b"caf" + bytes([0xE9, 0x20, 0xFF, 0xFE, 0x00]), _TEXT
+    ),
+    "/bogus-charset": _raw(
+        _500, b"caf" + bytes([0xE9]), ("Content-Type: text/plain; charset=bogus",)
+    ),
+    "/not-a-text-codec": _raw(
+        _500, b"zipped?", ("Content-Type: text/plain; charset=zlib_codec",)
+    ),
+    "/utf16": _raw(
+        _500, "sixteen".encode("utf-16"), ("Content-Type: text/plain; charset=utf-16",)
+    ),
+    "/no-content-type": _raw(_500, _ESCAPES, ()),
+    "/newlines": _raw(_500, b"line one\r\nline two\nE   line three\tcol", _TEXT),
+    "/status-esc": _raw(f"HTTP/1.1 500 {_E}[2J{_E}[Hwiped", b"x", _TEXT),
+    "/status-long": _raw("HTTP/1.1 500 " + "R" * 5000, b"x", _TEXT),
+    "/status-999": _raw("HTTP/1.1 999 Beyond", b"nine", _TEXT),
+    "/status-304": _raw("HTTP/1.1 304 Not Modified", b"", ()),
+    "/status-400": _raw("HTTP/1.1 400 Bad Request", b"Request is too long", _TEXT),
+    "/lying-long": _raw(_500, b"ten bytes!", _TEXT, length=1 << 20),
+    "/lying-short": _raw(_500, _MEG, _TEXT, length=5),
+    "/bad-status-line": b"HTTP/1.1 ABC\r\n\r\n",
+    "/garbage": b"not http at all\r\n\r\n",
+}
+
+
+class _HostileHandler(http.server.BaseHTTPRequestHandler):
+    def do_POST(self):
+        self.rfile.read(int(self.headers.get("Content-Length") or 0))
+        try:
+            self.wfile.write(HOSTILE[self.path.split("?", 1)[0]])
+            self.wfile.flush()
+        except OSError:
+            pass  # the client stopped reading a lying body; nothing more to do
+
+    def log_message(self, *args):
+        pass  # keep the pytest output free of per-request lines
+
+
+class _HostileServer(http.server.ThreadingHTTPServer):
+    daemon_threads = True
+
+    def handle_error(self, request, client_address):
+        pass  # a client that drops a lying body is the expected outcome here
+
+
+@pytest.fixture(scope="module")
+def hostile_http():
+    pytest.importorskip("requests")
+    server = _HostileServer(("127.0.0.1", 0), _HostileHandler)
+    thread = threading.Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        yield f"http://127.0.0.1:{server.server_address[1]}"
+    finally:
+        server.shutdown()
+        server.server_close()
+        thread.join(5)
+
+
+class TestHostileServerAnswers:
+    """The body of a non-2xx answer is now part of the error, so a hostile or
+    broken server gets a say in a traceback. Every case is served by a real HTTP
+    server on an ephemeral port (nothing in the wrapper or in requests is
+    patched): the explanation must reach the message escaped, single-line and
+    capped, and a lying or malformed answer must fail fast as a requests error.
+    """
+
+    def _call(self, base, path):
+        import requests
+
+        parser = CoreNLPParser(url=base + path)
+        with budget(30.0, f"the {path} answer", cpu_bound=False):
+            with pytest.raises(requests.exceptions.RequestException) as info:
+                parser.api_call(
+                    "The quick brown fox.", properties={"annotators": "tokenize"}
+                )
+        return info.value
+
+    def _explanation(self, exc):
+        return str(exc).split("the CoreNLP server said: ", 1)[1]
+
+    def test_terminal_escapes_in_the_body_are_neutralised(self, hostile_http):
+        import requests
+
+        e = self._call(hostile_http, "/esc")
+        assert isinstance(e, requests.exceptions.HTTPError)
+        assert e.response.status_code == 500
+        message = str(e)
+        assert _E not in message and chr(0x07) not in message
+        assert "\\x1b]8;;http://evil.example" in message
+        assert "\\x1b]52;c;" in message
+        assert message.startswith("500 Server Error: Internal Server Error for url: ")
+
+    def test_a_bidi_override_in_the_body_is_neutralised(self, hostile_http):
+        e = self._call(hostile_http, "/bidi")
+        assert _RLO not in str(e)
+        assert "ok \\u202elive" in str(e)
+
+    def test_a_megabyte_body_is_capped_but_kept_on_the_response(self, hostile_http):
+        e = self._call(hostile_http, "/huge")
+        message = str(e)
+        assert len(message) < 1000, len(message)
+        assert "..." in self._explanation(e)
+        assert "(1048576 bytes)" in message
+        assert len(e.response.content) == 1 << 20
+
+    def test_a_chunked_megabyte_body_is_capped(self, hostile_http):
+        e = self._call(hostile_http, "/chunked")
+        assert len(str(e)) < 1000, len(str(e))
+        assert "(1048576 bytes)" in str(e)
+
+    def test_an_empty_body_is_named_as_such(self, hostile_http):
+        e = self._call(hostile_http, "/empty")
+        assert self._explanation(e) == "an empty body (0 bytes)"
+
+    def test_undecodable_bytes_and_nul_do_not_raise(self, hostile_http):
+        e = self._call(hostile_http, "/nul-and-latin1")
+        explanation = self._explanation(e)
+        assert explanation.startswith("'caf")
+        assert chr(0) not in explanation and "\\x00" in explanation
+
+    def test_a_charset_the_codec_registry_rejects_falls_back(self, hostile_http):
+        e = self._call(hostile_http, "/bogus-charset")
+        assert "'caf" + chr(0xE9) + "'" in str(e)
+        e = self._call(hostile_http, "/not-a-text-codec")
+        assert "'zipped?'" in str(e)
+
+    def test_a_declared_charset_is_honoured(self, hostile_http):
+        e = self._call(hostile_http, "/utf16")
+        assert "'sixteen'" in str(e)
+
+    def test_a_missing_content_type_still_escapes(self, hostile_http):
+        e = self._call(hostile_http, "/no-content-type")
+        assert _E not in str(e) and "\\x1b[31mFAIL" in str(e)
+
+    def test_newlines_and_tabs_cannot_forge_report_lines(self, hostile_http):
+        e = self._call(hostile_http, "/newlines")
+        explanation = self._explanation(e)
+        assert "\n" not in explanation and "\r" not in explanation
+        assert "\t" not in explanation
+        assert "line one\\x0d\\x0aline two\\x0aE   line three\\x09col" in explanation
+
+    def test_a_hostile_status_line_reason_is_neutralised(self, hostile_http):
+        e = self._call(hostile_http, "/status-esc")
+        assert _E not in str(e)
+        assert str(e).startswith("500 Server Error: \\x1b[2J\\x1b[Hwiped for url: ")
+
+    def test_an_overlong_reason_phrase_is_capped(self, hostile_http):
+        e = self._call(hostile_http, "/status-long")
+        head = str(e).split(" for url: ", 1)[0]
+        assert head.startswith("500 Server Error: RRRR") and head.endswith("...")
+        assert len(head) < 200, len(head)
+
+    def test_a_status_outside_2xx_4xx_5xx_is_an_error_too(self, hostile_http):
+        import requests
+
+        e = self._call(hostile_http, "/status-999")
+        assert isinstance(e, requests.exceptions.HTTPError)
+        assert str(e).startswith("999 Unexpected Status: Beyond for url: ")
+        assert "'nine' (4 bytes)" in str(e)
+        e = self._call(hostile_http, "/status-304")
+        assert isinstance(e, requests.exceptions.HTTPError)
+        assert str(e).startswith("304 Unexpected Status: Not Modified for url: ")
+        assert self._explanation(e) == "an empty body (0 bytes)"
+
+    def test_a_4xx_is_a_client_error_with_the_explanation(self, hostile_http):
+        e = self._call(hostile_http, "/status-400")
+        assert str(e).startswith("400 Client Error: Bad Request for url: ")
+        assert "'Request is too long' (19 bytes)" in str(e)
+
+    def test_a_body_shorter_than_its_content_length_fails_fast(self, hostile_http):
+        import requests
+
+        e = self._call(hostile_http, "/lying-long")
+        # Nothing to explain: requests reports the truncated transfer itself.
+        assert not isinstance(e, requests.exceptions.HTTPError), str(e)
+
+    def test_a_body_longer_than_its_content_length_is_cut_at_the_header(
+        self, hostile_http
+    ):
+        e = self._call(hostile_http, "/lying-short")
+        assert "'AAAAA' (5 bytes)" in str(e)
+
+    def test_a_malformed_status_line_fails_fast(self, hostile_http):
+        import requests
+
+        for path in ("/bad-status-line", "/garbage"):
+            e = self._call(hostile_http, path)
+            assert not isinstance(e, requests.exceptions.HTTPError), str(e)
 
 
 class TestCoreNLPServerError:

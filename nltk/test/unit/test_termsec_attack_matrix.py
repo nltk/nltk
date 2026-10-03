@@ -16,9 +16,20 @@ fully readable and cannot be silently mangled by an editor or a merge. The
 a regression that stops escaping a class is caught rather than mirrored away.
 """
 
+import io
+import itertools
+import random
+
 import pytest
 
-from nltk.termsec import _bidi_is_balanced, sanitize_csv_field, sanitize_terminal
+from nltk.csvsec import SafeCsvWriter
+from nltk.termsec import (
+    _bidi_is_balanced,
+    safe_print,
+    sanitize_csv_field,
+    sanitize_terminal,
+)
+from nltk.test.unit.test_quadratic_dos import _assert_subquadratic
 
 ESC, CSI8 = "\x1b", "\x9b"
 RLO, LRO = chr(0x202E), chr(0x202D)
@@ -197,6 +208,46 @@ LEGIT = {
 }
 
 
+# Payloads carried over from #3850's terminal and CSV matrices when its copies of
+# these tests were folded in here: variants the named entries above did not spell
+# out (8-bit and BEL-terminated forms, cursor and erase controls, DEL, form feed).
+EXTRA_ATTACKS = [
+    "\x1b[1;1H",
+    "\x1b[2K",
+    "\x1b[?25l",
+    "\x1b]0;pwned\x07",
+    "\x1b]8;;https://evil.example\x07click\x1b]8;;\x07",
+    "\x1bPq\x1b\\",
+    "\x9b2J",
+    "\x9d0;title\x07",
+    "\x90payload",
+    "\x07",
+    "\x08\x08\x08\x08\x08\x08\x08\x08\x08\x08overwrite",
+    "line1\rSPOOF",
+    "\x0cformfeed",
+    "\x7fdel",
+    "\u202eif(admin)",
+    "\u202dgpj.evil\u202c",
+    "a\u2067b",
+    "a\u2069b",
+    "a\u202ab",
+    "a\u202cb",
+    'access="user";\u2067 admin\u202e only\u2069',
+]
+EXTRA_LEGIT = [
+    "café ☕ résumé",
+    "مرحبا",
+    "שלום",
+    "emoji 😀🎉 😀",
+    "tabs\tand\nnewlines",
+    "RT @user: normal tweet #nlp",
+    "user \u2066مرحبا\u2069 posted",
+    "x \u202bשלום\u202c y",
+]
+ATTACKS.update({f"from-3850-{i:02d}": p for i, p in enumerate(EXTRA_ATTACKS)})
+LEGIT.update({f"from-3850-{i:02d}": p for i, p in enumerate(EXTRA_LEGIT)})
+
+
 class TestDetectorHasTeeth:
     """The detector must flag a raw dangerous char and clear legitimate text, or
     the neutralisation assertions below would pass vacuously."""
@@ -286,9 +337,54 @@ class TestCsvInjection:
         # float() accepts these but a spreadsheet would not treat them as a number
         assert sanitize_csv_field(bad).startswith("'")
 
-    @pytest.mark.parametrize("num", ["-3.5", "+2", "-1e5", "+1.2E10", "0", "3.14"])
+    @pytest.mark.parametrize(
+        "num",
+        [
+            "-3.5",
+            "+2",
+            "-1e5",
+            "+1.2E10",
+            "0",
+            "3.14",
+            "+3.14",
+            "+3.2",
+            "-0.0",
+            "-42",
+            "-5",
+            "42",
+        ],
+    )
     def test_genuine_number_kept(self, num):
         assert sanitize_csv_field(num) == num
+
+    @pytest.mark.parametrize(
+        "payload",
+        [
+            "=1+1",
+            "=cmd|'/c calc'!A1",
+            '=HYPERLINK("http://evil","x")',
+            "@SUM(1+1)*cmd",
+            "+cmd",
+            "-cmd|'/c calc'",
+            "\t=leading_tab",
+            "  =leading_space",
+            "=2+5+cmd|' /C calc'!A0",
+            '=cmd|"/c calc"!A1',
+            "@SUM(1+1)",
+            "  =leading_space_formula",
+            "\t=leading_tab_formula",
+        ],
+    )
+    def test_real_world_formula_payloads_defused(self, payload):
+        # carried over from #3850: the apostrophe is the only thing prepended
+        out = sanitize_csv_field(payload)
+        assert out.startswith("'") and out == "'" + payload
+
+    @pytest.mark.parametrize(
+        "text", ["hello world", "RT @user: hi", "normal tweet", "", "café ☕"]
+    )
+    def test_benign_cells_unchanged(self, text):
+        assert sanitize_csv_field(text) == text
 
     def test_exact_safe_primitives_pass_with_type_preserved(self):
         # str() of an EXACT int/float/bool/None cannot carry a payload, so the
@@ -600,3 +696,216 @@ class TestNumericBombs:
 
         with pytest.raises(TypeError):
             safe_print("a", "b", sep=12345)
+
+
+# === An override is always escaped: the pop that closed it must not survive ===
+# Every override, alone or inside every embedding and isolate, with and without
+# its own PDF, nested once and twice: the output holds no live control and is a
+# fixed point. Balanced embeddings and isolates with no override stay unchanged.
+_WRAPPERS = {
+    "bare": ("", ""),
+    "lre": (LRE, PDF),
+    "rle": (RLE, PDF),
+    "lri": (LRI, PDI),
+    "rli": (RLI, PDI),
+    "fsi": (FSI, PDI),
+}
+_OVERRIDES = {"lro": LRO, "rlo": RLO}
+
+
+def _override_cases():
+    cases = {}
+    for wn, (open_, close) in _WRAPPERS.items():
+        for on, ov in _OVERRIDES.items():
+            cases[f"{wn}-{on}-closed"] = open_ + "a" + ov + "evil" + PDF + "b" + close
+            cases[f"{wn}-{on}-open"] = open_ + "a" + ov + "evil" + close
+            cases[f"{wn}-{on}-twice"] = open_ + ov + "x" + ov + "y" + PDF + PDF + close
+            cases[f"{wn}-{on}-after-balanced"] = (
+                open_ + LRE + "ok" + PDF + ov + "evil" + PDF + close
+            )
+    return cases
+
+
+_OVERRIDE_CASES = _override_cases()
+
+
+class TestOverrideCloserNeverSurvives:
+    @pytest.mark.parametrize("name", sorted(_OVERRIDE_CASES))
+    def test_no_live_control_and_a_fixed_point(self, name):
+        payload = _OVERRIDE_CASES[name]
+        once = sanitize_terminal(payload)
+        assert not _has_live_control(once), f"{name}: {once!r}"
+        assert sanitize_terminal(once) == once
+        assert sanitize_terminal(payload, single_line=True) == once
+        cell = sanitize_csv_field("x" + payload)
+        assert not _has_live_control(cell)
+
+    @pytest.mark.parametrize("name", sorted(_WRAPPERS))
+    def test_balanced_wrappers_without_an_override_are_unchanged(self, name):
+        open_, close = _WRAPPERS[name]
+        text = "a" + open_ + "inner" + close + "b"
+        assert sanitize_terminal(text) == text
+
+
+# === The override rule under every shape the sanitiser can meet ===
+# An independent judge of the output, re-derived rather than imported: every live
+# bidi control left in it must be free of overrides and strictly nested.
+_STRUCTURAL = [LRE, RLE, LRO, RLO, PDF, LRI, RLI, FSI, PDI]
+_BIDI_CHARS = set(_STRUCTURAL) | {LRM, RLM, ALM}
+_RANDOM_ALPHABET = _STRUCTURAL + [
+    LRM,
+    RLM,
+    ALM,
+    "a",
+    ESC,
+    "\t",
+    "\n",
+    LSEP,
+    chr(0x05D0),
+    "1",
+    ",",
+    '"',
+]
+
+
+def _live_bidi(text):
+    return [c for c in text if c in _BIDI_CHARS]
+
+
+def _strictly_nested(controls):
+    stack = []
+    for c in controls:
+        if c in (LRE, RLE, LRO, RLO):
+            stack.append(PDF)
+        elif c in (LRI, RLI, FSI):
+            stack.append(PDI)
+        elif c in (PDF, PDI):
+            if not stack or stack[-1] != c:
+                return False
+            stack.pop()
+    return not stack
+
+
+def _written_only_rule_live_count(text):
+    """How many bidi controls the rule BEFORE this branch left live: all of the
+    non-overrides when the text balances as written, none otherwise."""
+    if _bidi_is_balanced(text):
+        return sum(1 for c in text if c in _BIDI_CHARS and c not in (LRO, RLO))
+    return 0
+
+
+def _assert_output_is_safe(text, *, single_line=False):
+    out = sanitize_terminal(text, single_line=single_line)
+    live = _live_bidi(out)
+    assert LRO not in live and RLO not in live, (text, out)
+    assert _strictly_nested(live), (text, out)
+    assert sanitize_terminal(out, single_line=single_line) == out, (text, out)
+    assert len(live) <= _written_only_rule_live_count(text), (text, out)
+    cell = sanitize_csv_field(text, single_line=single_line)
+    assert _strictly_nested(_live_bidi(cell)) and LRO not in cell and RLO not in cell
+    return out
+
+
+class TestOverrideRuleInvariants:
+    def test_the_judge_has_teeth(self):
+        assert not _strictly_nested([PDF])
+        assert not _strictly_nested([LRE, LRI, PDF, PDI])
+        assert not _strictly_nested([LRO, PDF, PDF])
+        assert _strictly_nested([LRE, LRI, PDI, PDF])
+        assert _live_bidi("a" + LRO + "b" + PDF) == [LRO, PDF]
+        assert _written_only_rule_live_count(LRO + "x" + PDF) == 1  # the stray pop
+        assert _written_only_rule_live_count(LRE + "x") == 0
+
+    @pytest.mark.parametrize("length", [1, 2, 3, 4])
+    def test_every_short_string_of_controls(self, length):
+        # exhaustive: every string of the nine structural controls and a letter
+        for tup in itertools.product(_STRUCTURAL + ["a"], repeat=length):
+            text = "".join(tup)
+            _assert_output_is_safe(text)
+            _assert_output_is_safe(text, single_line=True)
+
+    @pytest.mark.parametrize("seed", [1, 2, 3, 4, 5])
+    def test_random_mixes_with_marks_escapes_and_line_breaks(self, seed):
+        rng = random.Random(seed)
+        for _ in range(3000):
+            text = "".join(
+                rng.choice(_RANDOM_ALPHABET) for _ in range(rng.randint(1, 24))
+            )
+            _assert_output_is_safe(text, single_line=bool(rng.getrandbits(1)))
+
+    @pytest.mark.parametrize("depth", [1, 125, 126, 300, 5000])
+    @pytest.mark.parametrize("opener, closer", [(LRE, PDF), (RLI, PDI)])
+    def test_an_override_at_the_bottom_of_deep_nesting(self, depth, opener, closer):
+        # UAX #9 stops honouring embeddings past depth 125; the sanitiser must
+        # not, or a pop below that depth would slip through as legitimate.
+        text = opener * depth + LRO + "x" + PDF + closer * depth
+        out = _assert_output_is_safe(text)
+        assert not _has_live_control(out)
+        benign = opener * depth + "x" + closer * depth
+        assert sanitize_terminal(benign) == benign
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            LRE + RLI + FSI + "x" + PDI + PDI + PDF,
+            chr(0x05E9) + LRE + chr(0x05DC) + PDF + chr(0x05D5) + RLM,
+            RLI + chr(0x0627) + LRE + "abc" + PDF + chr(0x0644) + PDI,
+            LRM + ALM + RLM,
+        ],
+    )
+    def test_override_free_nesting_still_passes_unchanged(self, text):
+        assert sanitize_terminal(text) == text
+        assert sanitize_terminal(text, single_line=True) == text
+
+    @pytest.mark.parametrize("seed", [11, 12, 13])
+    def test_a_safe_print_line_balances_as_a_whole(self, seed):
+        # values, sep and end are sanitised one by one; the line they form must
+        # still hold no override and no stray pop, whatever the pieces
+        rng = random.Random(seed)
+
+        def piece(n):
+            return "".join(rng.choice(_RANDOM_ALPHABET) for _ in range(n))
+
+        for _ in range(1500):
+            values = [piece(rng.randint(0, 8)) for _ in range(rng.randint(1, 4))]
+            sep, end = piece(rng.randint(0, 3)), piece(rng.randint(0, 3)) + "\n"
+            buf = io.StringIO()
+            safe_print(*values, sep=sep, end=end, file=buf)
+            live = _live_bidi(buf.getvalue())
+            assert LRO not in live and RLO not in live, values
+            assert _strictly_nested(live), values
+            row = io.StringIO()
+            SafeCsvWriter(row).writerow(values)
+            live = _live_bidi(row.getvalue())
+            assert LRO not in live and RLO not in live and _strictly_nested(live)
+
+    @pytest.mark.parametrize(
+        "payload",
+        [LRO + "gpj.evil" + PDF, LRE + RLO + "x" + PDF + PDF, RLI + LRO + PDF + PDI],
+    )
+    def test_a_lying_str_subclass_cannot_keep_the_pop_live(self, payload):
+        class Liar(str):
+            def __str__(self):
+                return self
+
+            def __iter__(self):
+                return iter("clean")
+
+            def __contains__(self, item):
+                return False
+
+            def isprintable(self):
+                return True
+
+        out = sanitize_terminal(Liar(payload))
+        assert type(out) is str
+        assert not _has_live_control(out)
+        assert out == sanitize_terminal(payload)
+
+    def test_the_double_balance_check_stays_linear(self):
+        unit = LRE + "a" + LRO + "b" + PDF + PDF
+
+        def op(n):
+            sanitize_terminal(unit * (n // len(unit)))
+
+        _assert_subquadratic(op, 100_000, 400_000)
