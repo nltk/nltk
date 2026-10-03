@@ -171,6 +171,47 @@ class TestFlatChainScaling:
         assert str(cat) == "(((((((S/S)\\S)/.S)\\,S)/_S)\\_,S)/,.S)"
 
 
+class TestPreFixShapesAtTheCap:
+    """The two shapes the tail re-slicing made quadratic, at the largest
+    size the cap admits: the parser before the cursor rewrite (kept verbatim
+    in test_advisory_probes) needed 6.6 s for the flat chain and 38.7 s for
+    the nested primitive on a 2020 laptop, where the cursor parser needs
+    1.8 s and 2.7 s. Must-pass cases: each parses inside a budget to the
+    category the text spells."""
+
+    def test_flat_chain_at_the_cap_parses_to_its_chain(self):
+        line = _chain(FLAT_BIG)
+        assert len(line.split("=> ")[1].strip()) == 2 * FLAT_BIG + 1 < MAX_PARSE_LEN
+        with timing.budget(10, "the flat chain the old parser needed 6.6 s for"):
+            lex = fromstring(line)
+        cat = lex.categories("w")[0].categ()
+        assert _applications(cat) == FLAT_BIG
+        # walked, not printed: str() of a category this deep recurses
+        for _ in range(FLAT_BIG):
+            assert isinstance(cat, FunctionalCategory)
+            assert str(cat.arg()) == "S" and str(cat.dir()) == "/"
+            cat = cat.res()
+        assert isinstance(cat, PrimitiveCategory) and str(cat) == "S"
+
+    def test_nested_primitive_at_the_cap_parses_to_its_primitive(self):
+        from nltk.test.unit.security_probes.ghsa_89p3_fcch_88ph import (
+            NESTING,
+            _nested_lexicon,
+        )
+
+        text = _nested_lexicon(MAX_PARSE_LEN)
+        category = text.split("=> ")[1].strip()
+        assert len(category) == MAX_PARSE_LEN
+        with timing.budget(10, "the nested primitive the old parser needed 38.7 s for"):
+            lex = fromstring(text)
+        cat = lex.categories("w")[0].categ()
+        assert isinstance(cat, PrimitiveCategory)
+        inner = category[NESTING:-NESTING]
+        assert inner.startswith("S[") and inner.endswith("]")
+        assert cat.categ() == "S" and cat.restrs() == inner[2:-1].split(",")
+        assert len(cat.restrs()) == (MAX_PARSE_LEN - 2 * NESTING - 4) // 2 + 1
+
+
 class TestBracketScaling:
     # matchBrackets re-sliced its tail one character at a time pre-fix, so a
     # bracketed chain, sibling groups and nests were quadratic as well
@@ -1670,3 +1711,73 @@ class TestDeparturesFromThePreFixParser:
         assert len(old.restrs()) == (MAX_PARSE_LEN - 4) // 2 + 1
         with pytest.raises(ValueError, match="MAX_PARSE_LEN"):
             augParseCategory(over, ["S"], {})
+
+
+# ==========================================================================
+# The lexicons shipped with the library: the benign maximum, parsed as
+# develop parsed them
+# ==========================================================================
+
+
+def _parsed_categories(lex):
+    return sorted(
+        (word, sorted(str(token.categ()) for token in lex.categories(word)))
+        for word in lex._entries
+    )
+
+
+def _digest(lex):
+    import hashlib
+
+    return hashlib.sha256(repr(_parsed_categories(lex)).encode("utf-8")).hexdigest()
+
+
+class TestShippedLexicons:
+    """Every CCG lexicon the library ships is small (the largest, in
+    nltk/test/ccg.doctest, is 1,026 characters, 30 entries, its longest
+    category 25 characters against a 100,000 character cap), and each must
+    parse to exactly the categories develop parsed it to, pinned by digest."""
+
+    DOCTEST_LEXICON = (
+        "6820c7c7f8e8ac4363789b78acca0c9169b8a2e59e38f3fa4ac4c789e44594a2",
+        "eadaadac5acdd5af91e0a6416ee60668bedbb38f2ac5afad87fd0dcf91511586",
+    )
+
+    def test_module_lexicons_parse_as_develop_parsed_them(self):
+        assert _digest(ccglex.openccg_tinytiny) == (
+            "a3213ba6ab1beb17e8549b5e280af795047bc943e6d6a02ea63515fa4bed4041"
+        )
+        assert _digest(chart.lex) == (
+            "7389012cdf2651322e9a4315dd66518d12d3e8e2558aeda422883a441e7b86af"
+        )
+        assert (
+            len(ccglex.openccg_tinytiny._entries) == 18
+            and len(chart.lex._entries) == 12
+        )
+
+    def test_doctest_lexicons_parse_as_develop_parsed_them(self):
+        text = (pathlib.Path(nltk.test.__file__).parent / "ccg.doctest").read_text(
+            encoding="utf-8"
+        )
+        sources = [
+            example.source
+            for example in doctest.DocTestParser().get_examples(text)
+            if "fromstring(" in example.source and ":-" in example.source
+        ]
+        assert len(sources) == 2
+        digests, sizes = [], []
+        for source in sources:
+            literal = re.search(r"fromstring\(\s*('''.*?''')", source, re.S)
+            block = ast.literal_eval(literal.group(1))
+            with timing.budget(1, "a shipped lexicon"):
+                lex = fromstring(block)
+            digests.append(_digest(lex))
+            sizes.append((len(block), len(lex._entries)))
+        assert tuple(digests) == self.DOCTEST_LEXICON
+        assert sizes == [(612, 25), (1026, 30)]
+        longest = max(
+            len(str(token.categ()))
+            for word in lex._entries
+            for token in lex.categories(word)
+        )
+        assert longest == 25 < MAX_PARSE_LEN

@@ -60,9 +60,12 @@ QUADRATIC_RATIO = timing.QUADRATIC_RATIO
 #: interpreter actually worked: descheduling by a loaded runner stretches only
 #: the wall clock; a call that sleeps or waits on a child spends almost none.
 timed_both = timing.cpu_and_wall
-#: Fastest-of-reps op(big) over op(small): ~4x linear, ~16x quadratic. A wall
-#: clock stall once halved a 16x quadratic to 7.8x on a macOS runner (the r53h
-#: teeth flipped FIXED), hence CPU time: see nltk.test.unit.timing.scaling_ratio.
+#: op(big) over op(small), paired by rep and normalised by a calibration unit
+#: beside each sample: ~4x linear, ~16x quadratic. A wall clock stall once
+#: halved a 16x quadratic to 7.8x on a macOS runner (the r53h teeth flipped
+#: FIXED), hence CPU time; the fastest run of each side taken separately let a
+#: speed change between the sides read a linear sink at 10x and a quadratic
+#: oracle at 7.4x, hence the pairing: see nltk.test.unit.timing.scaling_ratio.
 scaling_ratio = timing.scaling_ratio
 
 
