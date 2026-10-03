@@ -565,8 +565,10 @@ class TestTeeth:
         assert out.strip() == "GRAPHVIZ-STUB -Tsvg"
 
 
-def test_reason_api_is_available_on_every_platform(tmp_path):
-    missing = str(tmp_path / "nowhere" / "dot")
+def test_reason_api_is_available_on_every_platform(home):
+    # under a private chain, so the first reason is the missing file itself,
+    # not the shared sticky /tmp that holds pytest's tmp_path on Linux
+    missing = str(home / "nowhere" / "dot")
     reason = pathsec.untrusted_executable_reason(missing)
     assert reason and "cannot be inspected" in reason
     assert pathsec.resolve_trusted_executable(missing) is None
