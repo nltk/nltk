@@ -316,32 +316,18 @@ class _Sibling:
         return False
 
 
-class _Profile:
-    """How a regime sink is sized on one platform's runners: the clean CPU
-    seconds of one small call and the calibration readings the size is taken
-    from (the fastest of them, so a slow reading cannot undersize it)."""
-
-    def __init__(self, name, small_seconds, readings):
-        self.name, self.small_seconds, self.readings = name, small_seconds, readings
+#: Clean CPU seconds of one small call of a regime sink: twice the floor of
+#: the rule, so a core that speeds up after the sizing (the macOS runners
+#: drift within a second) still leaves the clean sample at the floor.
+_REGIME_SMALL_SECONDS = 0.2
 
 
-#: The runners differ in what the sizing must absorb. Linux: steady cores,
-#: the clean call sits at the floor. macOS: the core rate drifts within a
-#: second, so the clean call is 1.5 times the floor, from the fastest of
-#: three readings. Windows: process CPU time moves in 15.6 ms steps, so
-#: the clean call is twice the floor, a step under eight per cent of it.
-_PROFILES = {
-    "darwin": _Profile("macos", 0.15, 3),
-    "win32": _Profile("windows", 0.2, 3),
-    "linux": _Profile("linux", 0.1, 3),
-}
-_PROFILE = _PROFILES.get(sys.platform, _Profile(sys.platform, 0.2, 3))
-
-
-def _regime_sizes(profile=_PROFILE):
-    """``(small, big)`` iterations sized on this core for ``profile``."""
-    rate = min(timing.calibration_rate() for _ in range(profile.readings))
-    small = int(profile.small_seconds / (rate / timing.CALIBRATION_CHUNK))
+def _regime_sizes():
+    """``(small, big)`` iterations sized on this core so a clean small call
+    costs about ``_REGIME_SMALL_SECONDS`` of CPU time, from the fastest of
+    three calibration readings so a slow reading cannot undersize it."""
+    rate = min(timing.calibration_rate() for _ in range(3))
+    small = int(_REGIME_SMALL_SECONDS / (rate / timing.CALIBRATION_CHUNK))
     return small, 4 * small
 
 
@@ -350,7 +336,7 @@ def _regime_samples(sink, spin_at):
     n, big)`` says whether the siblings spin from the start of that call."""
     if not getattr(sys, "_is_gil_enabled", lambda: True)():
         pytest.skip("the regimes are simulated with turns at the interpreter lock")
-    small, big = _regime_sizes(_PROFILE)
+    small, big = _regime_sizes()
     calls = []
     with _Sibling() as siblings:
         # a regime that begins loaded was loaded before the measurement
@@ -387,8 +373,7 @@ def _verdicts(samples):
     )
 
 
-@pytest.mark.parametrize("platform", [_PROFILE.name])
-def test_regime_a_lasting_slowdown_from_the_first_big_run_on(platform):
+def test_regime_a_lasting_slowdown_from_the_first_big_run_on():
     # the core slows for good once the first big run starts, so only the
     # first small block is fast: the old rule reads a linear sink at 12x,
     # paired and normalised it reads near 4x
@@ -409,10 +394,7 @@ def test_regime_a_lasting_slowdown_from_the_first_big_run_on(platform):
     )
 
 
-@pytest.mark.parametrize("platform", [_PROFILE.name])
-def test_regime_a_sibling_through_the_small_blocks_that_idles_for_the_last_big_run(
-    platform,
-):
+def test_regime_a_sibling_through_the_small_blocks_that_idles_for_the_last_big_run():
     # the ubuntu shape: a sibling shares the core until the last big run, so
     # the old rule reads the fastest big (alone) against a shared small block,
     # a 16x quadratic sink under 8x; paired by rep two wholly shared pairs read 16x
@@ -435,8 +417,7 @@ def test_regime_a_sibling_through_the_small_blocks_that_idles_for_the_last_big_r
     )
 
 
-@pytest.mark.parametrize("platform", [_PROFILE.name])
-def test_regime_a_fast_window_for_one_small_block(platform):
+def test_regime_a_fast_window_for_one_small_block():
     # the macOS shape: one fast window that a single small block gets. The
     # old rule keeps that block as the small side and reads a linear sink at
     # 16x; paired by rep the window is one pair of three and the median is near 4x
