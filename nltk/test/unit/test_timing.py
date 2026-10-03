@@ -215,6 +215,41 @@ def test_paired_ratio_sees_a_quadratic_whose_last_big_run_got_the_core_alone():
     assert timing.paired_ratio(samples, cpu_bound=True) == pytest.approx(16.0)
 
 
+def test_paired_ratio_reads_a_lasting_slowdown_from_the_first_big_run_on():
+    # the shape of the macOS 3.12 cell of #3949's third run: the core slows
+    # for good as the first big run starts (2.4 ms a chunk before, 7 ms
+    # after), so the old rule reads the fast first block against the
+    # slowed big runs at 8.9x for a linear sink; paired it reads 4.9x
+    samples = [
+        _sample(0.125, 1.168, small_rate=0.00243, big_rate=0.0047),
+        _sample(0.230, 1.120, small_rate=0.0070, big_rate=0.0070),
+        _sample(0.226, 1.115, small_rate=0.00779, big_rate=0.00692),
+    ]
+    assert _min_of_each_side(samples) == pytest.approx(8.92)
+    assert 4.5 < timing.paired_ratio(samples, cpu_bound=True) < 5.5
+
+
+def test_paired_ratio_reads_a_fast_window_for_one_small_block():
+    # the shape of develop's readings of the tree printer (10.4x on macOS
+    # 3.13, 8.0x on Windows 3.10): the core runs slow throughout except for
+    # one window that one small block gets; the old rule keeps that block
+    # as the small side, paired it is one pair of three
+    slow, fast = 0.0025, 0.0020
+    samples = [
+        _sample(0.25, 1.0, small_rate=slow, big_rate=slow),
+        _sample(0.125, 1.0, small_rate=slow, big_rate=slow),
+        _sample(0.25, 1.0, small_rate=slow, big_rate=slow),
+    ]
+    assert _min_of_each_side(samples) == 8.0
+    assert timing.paired_ratio(samples, cpu_bound=True) == 4.0
+    # the units beside the fast block read the slow rate when the window
+    # is shorter than the block, as on macOS, where the block fell under
+    # the floor: the old rule read 10.4x, paired it is still one pair
+    samples[1] = _sample(0.096, 1.0, small_rate=fast, big_rate=slow)
+    assert _min_of_each_side(samples) == pytest.approx(10.0)
+    assert timing.paired_ratio(samples, cpu_bound=True) == 4.0
+
+
 def test_paired_ratio_judges_a_waiting_op_on_the_wall_clock_too():
     # CPU seconds say 1x, the wall clock says 16x: a sink that sleeps n**2
     # must still read quadratic, so the higher ratio is kept when the big
@@ -367,6 +402,9 @@ def _quadratic(n, small):
 
 
 def _verdicts(samples):
+    """The paired reading, and the old rule's for the message: what the old
+    rule reads of a simulated regime depends on the host's scheduling and is
+    pinned on recorded samples in the fixed-number tests above instead."""
     return (
         timing.paired_ratio(samples, cpu_bound=True),
         _min_of_each_side(samples),
@@ -375,29 +413,25 @@ def _verdicts(samples):
 
 def test_regime_a_lasting_slowdown_from_the_first_big_run_on():
     # the core slows for good once the first big run starts, so only the
-    # first small block is fast: the old rule reads a linear sink at 12x,
-    # paired and normalised it reads near 4x
+    # first small block is fast: paired and normalised, a linear sink reads
+    # near 4x and a quadratic one near 16x
     def slow_from_first_big(index, n, big):
         return index >= timing.SMALL_BLOCK
 
     samples = _regime_samples(_linear, slow_from_first_big)
     assert samples[1].small_cpu >= 1.5 * samples[0].small_cpu, samples
     paired, old = _verdicts(samples)
-    assert paired < timing.QUADRATIC_RATIO <= old, (paired, old, samples)
-    # the quadratic sink reads over the bar under both rules in this regime
+    assert paired < timing.QUADRATIC_RATIO, (paired, old, samples)
     samples = _regime_samples(_quadratic, slow_from_first_big)
+    assert samples[1].small_cpu >= 1.5 * samples[0].small_cpu, samples
     paired, old = _verdicts(samples)
-    assert paired >= timing.QUADRATIC_RATIO and old >= timing.QUADRATIC_RATIO, (
-        paired,
-        old,
-        samples,
-    )
+    assert paired >= timing.QUADRATIC_RATIO, (paired, old, samples)
 
 
 def test_regime_a_sibling_through_the_small_blocks_that_idles_for_the_last_big_run():
-    # the ubuntu shape: a sibling shares the core until the last big run, so
-    # the old rule reads the fastest big (alone) against a shared small block,
-    # a 16x quadratic sink under 8x; paired by rep two wholly shared pairs read 16x
+    # the ubuntu shape: a sibling shares the core until the last big run
+    # starts; paired by rep two wholly shared pairs read a quadratic sink at
+    # 16x and a linear one at 4x
     last_big = 3 * (timing.SMALL_BLOCK + 1) - 1
 
     def shared_until_last_big(index, n, big):
@@ -406,21 +440,17 @@ def test_regime_a_sibling_through_the_small_blocks_that_idles_for_the_last_big_r
     samples = _regime_samples(_quadratic, shared_until_last_big)
     assert samples[0].big_cpu >= 1.5 * samples[2].big_cpu, samples
     paired, old = _verdicts(samples)
-    assert old < timing.QUADRATIC_RATIO <= paired, (paired, old, samples)
-    # the linear sink stays under the bar under both rules in this regime
+    assert paired >= timing.QUADRATIC_RATIO, (paired, old, samples)
     samples = _regime_samples(_linear, shared_until_last_big)
+    assert samples[0].big_cpu >= 1.5 * samples[2].big_cpu, samples
     paired, old = _verdicts(samples)
-    assert paired < timing.QUADRATIC_RATIO and old < timing.QUADRATIC_RATIO, (
-        paired,
-        old,
-        samples,
-    )
+    assert paired < timing.QUADRATIC_RATIO, (paired, old, samples)
 
 
 def test_regime_a_fast_window_for_one_small_block():
-    # the macOS shape: one fast window that a single small block gets. The
-    # old rule keeps that block as the small side and reads a linear sink at
-    # 16x; paired by rep the window is one pair of three and the median is near 4x
+    # the macOS shape: one fast window that a single small block gets;
+    # paired by rep the window is one pair of three and the median reads a
+    # linear sink near 4x and a quadratic one near 16x
     second_block = range(timing.SMALL_BLOCK + 1, 2 * timing.SMALL_BLOCK + 1)
 
     def slow_except_second_block(index, n, big):
@@ -429,15 +459,11 @@ def test_regime_a_fast_window_for_one_small_block():
     samples = _regime_samples(_linear, slow_except_second_block)
     assert samples[0].small_cpu >= 1.5 * samples[1].small_cpu, samples
     paired, old = _verdicts(samples)
-    assert paired < timing.QUADRATIC_RATIO <= old, (paired, old, samples)
-    # the quadratic sink reads over the bar under both rules in this regime
+    assert paired < timing.QUADRATIC_RATIO, (paired, old, samples)
     samples = _regime_samples(_quadratic, slow_except_second_block)
+    assert samples[0].small_cpu >= 1.5 * samples[1].small_cpu, samples
     paired, old = _verdicts(samples)
-    assert paired >= timing.QUADRATIC_RATIO and old >= timing.QUADRATIC_RATIO, (
-        paired,
-        old,
-        samples,
-    )
+    assert paired >= timing.QUADRATIC_RATIO, (paired, old, samples)
 
 
 # ---- child processes and threads --------------------------------------------
