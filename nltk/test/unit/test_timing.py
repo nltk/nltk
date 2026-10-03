@@ -364,31 +364,92 @@ def _regime_sizes():
     return small, 4 * small
 
 
+#: A steady sample's inflation, read off its own CPU seconds against the
+#: clean cost, must agree within this with the inflation its units read.
+_REGIME_AGREEMENT = 1.5
+
+#: Simulations of a regime before the host is judged unable to deliver it.
+_REGIME_ATTEMPTS = 3
+
+
+def _states(spin_at, small, big, calls):
+    """The regime's state (siblings on or off) at the start of each call."""
+    return [spin_at(i, n, big) for i, n in enumerate(calls)]
+
+
+def _steady(states, index, width):
+    """Whether the sample starting at call ``index`` and ``width`` calls wide
+    was wholly inside one state, with no toggle at either edge, so the units
+    beside it read the load it bore."""
+    before = states[index - 1] if index else states[0]
+    after = states[index + width] if index + width < len(states) else states[-1]
+    inside = states[index : index + width]
+    return all(x == inside[0] for x in inside) and before == inside[0] == after
+
+
 def _regime_samples(sink, spin_at):
     """Samples of ``sink(n, small)`` under a regime: ``spin_at(call_index,
-    n, big)`` says whether the siblings spin from the start of that call."""
+    n, big)`` says whether the sibling spins from the start of that call.
+
+    The sibling takes its turns at the lock only when the host schedules
+    it, and a saturated runner may deschedule it for part of a sample, so
+    the load the sample bore and the load the units beside it read differ:
+    on the macOS runners beside a full parallel pytest run that happened
+    in 3 of 192 trials and the paired rule, fed a mismatched sample, read
+    a linear sink at 8.2x and a quadratic one at 7.8x. Each steady sample
+    (no toggle at its edges) is therefore checked: its CPU seconds against
+    the clean cost must agree within ``_REGIME_AGREEMENT`` with the rate
+    its units read against the clean rate. A simulation the host did not
+    deliver is repeated, at most ``_REGIME_ATTEMPTS`` times, and the
+    verdict is read from the one it did; the thresholds are never touched.
+    """
     if not getattr(sys, "_is_gil_enabled", lambda: True)():
         pytest.skip("the regimes are simulated with turns at the interpreter lock")
     small, big = _regime_sizes()
-    calls = []
-    with _Sibling() as siblings:
-        # a regime that begins loaded was loaded before the measurement
-        # started, as a sibling worker already runs when a test begins, so
-        # the first calibration unit reads the loaded rate too
-        if spin_at(0, small, big):
-            siblings.spinning.set()
+    clean_rate = min(timing.calibration_rate() for _ in range(3))
+    clean = {
+        n: min(timing.cpu_and_wall(sink, n, small)[0] for _ in range(2))
+        for n in (small, big)
+    }
+    width = {small: timing.SMALL_BLOCK, big: 1}
+    failures = []
+    for _ in range(_REGIME_ATTEMPTS):
+        calls = []
+        with _Sibling() as sibling:
+            # a regime that begins loaded was loaded before the measurement
+            # started, so the first calibration unit reads the loaded rate too
+            if spin_at(0, small, big):
+                sibling.spinning.set()
 
-        def op(n):
-            if spin_at(len(calls), n, big):
-                siblings.spinning.set()
-            else:
-                siblings.spinning.clear()
-            calls.append(n)
-            sink(n, small)
+            def op(n):
+                if spin_at(len(calls), n, big):
+                    sibling.spinning.set()
+                else:
+                    sibling.spinning.clear()
+                calls.append(n)
+                sink(n, small)
 
-        samples = timing.scaling_samples(op, small, big)
-    assert len(calls) == 3 * (timing.SMALL_BLOCK + 1), calls
-    return samples
+            samples = timing.scaling_samples(op, small, big)
+        assert len(calls) == 3 * (timing.SMALL_BLOCK + 1), calls
+        states = _states(spin_at, small, big, calls)
+        mismatched = []
+        for rep, sample in enumerate(samples):
+            start = rep * (timing.SMALL_BLOCK + 1)
+            for n, cpu, rate, index in (
+                (small, sample.small_cpu, sample.small_rate, start),
+                (big, sample.big_cpu, sample.big_rate, start + timing.SMALL_BLOCK),
+            ):
+                if not _steady(states, index, width[n]):
+                    continue
+                borne, read = cpu / clean[n], rate / clean_rate
+                if max(borne, read) > _REGIME_AGREEMENT * min(borne, read):
+                    mismatched.append((rep, n, round(borne, 2), round(read, 2)))
+        if not mismatched:
+            return samples
+        failures.append((mismatched, samples))
+    pytest.fail(
+        f"the host did not deliver the regime in {_REGIME_ATTEMPTS} attempts: {failures}"
+    )
 
 
 def _linear(n, small):
