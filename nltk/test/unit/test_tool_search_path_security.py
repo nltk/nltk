@@ -2119,34 +2119,63 @@ class TestBeyondTheReview:
         assert _same(_resolve(), install / "prover9")
 
     @pytest.mark.skipif(os.name != "posix", reason="symlinks and POSIX ownership")
-    def test_a_parent_component_hidden_in_a_symlink_target_is_refused_at_spawn(
+    def test_a_symlink_target_is_judged_by_its_resolved_chain_not_its_text(
         self, box, private_dir, monkeypatch
     ):
+        """A '..' inside a symlink's own text is resolved as the kernel does
+        (the holding directory is already resolved, so '..' is its real parent)
+        and the target is then judged by the chain it lands in: a private file
+        runs by its resolved path, a file in a world-writable directory is
+        refused, whether the link spells it relative, absolute or in two hops.
+        That is the Homebrew ``bin/dot -> ../Cellar/.../bin/dot`` shape (#3887
+        refused it, which broke every standard Graphviz install)."""
         planted = _exec_file(private_dir / "box", "prover9")
         world = private_dir / "world"
-        _exec_file(world, "prover9")
+        decoy = _exec_file(world, "prover9")
         os.chmod(world, 0o777)
         try:
             links = {
-                "relative": os.path.join(os.pardir, "box", "prover9"),
-                "absolute_into_writable": str(world / "prover9"),
-                "two_hop": os.path.join("mid", "prover9"),
+                "relative": (os.path.join(os.pardir, "box", "prover9"), planted),
+                "two_hop": (os.path.join("mid", "prover9"), planted),
+                "absolute_into_writable": (str(world / "prover9"), None),
+                "relative_into_writable": (
+                    os.path.join(os.pardir, "world", "prover9"),
+                    None,
+                ),
+                "two_hop_into_writable": (os.path.join("wmid", "prover9"), None),
             }
-            for label, target in links.items():
+            for label, (target, expected) in links.items():
                 holder = private_dir / label
                 holder.mkdir()
                 if label == "two_hop":
                     os.symlink(os.path.join(os.pardir, "box"), holder / "mid")
+                if label == "two_hop_into_writable":
+                    os.symlink(os.path.join(os.pardir, "world"), holder / "wmid")
                 os.symlink(target, holder / "prover9")
                 monkeypatch.setenv("PROVER9", str(holder))
                 # no lexical '..': the config gate passes the link itself
                 got = _resolve()
                 assert _same(got, holder / "prover9"), (label, got)
-                # the spawn follows every hop and refuses the '..' or the
-                # writable directory the target lives in
-                assert pathsec.resolve_trusted_executable(got) is None, label
-                with pytest.raises(pathsec.TrustError):
-                    pathsec.spawn_trusted(got, [])
+                real = pathsec.resolve_trusted_executable(got)
+                if expected is not None:
+                    # the spawn follows every hop into the private box and
+                    # runs the resolved file, never the link's text
+                    assert _same(real, expected) and not _inside(real, world), label
+                    assert pathsec.untrusted_executable_reason(got) is None, label
+                    proc = pathsec.spawn_trusted(
+                        got, [], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                    )
+                    assert _same(proc.args[0], expected), label
+                    assert "PWNED" in proc.communicate()[0].decode(), label
+                else:
+                    # every hop is followed and the writable directory the
+                    # target lives in is what refuses it, by name
+                    assert real is None, label
+                    reason = pathsec.untrusted_executable_reason(got)
+                    assert "world-writable" in reason and str(world) in reason, label
+                    with pytest.raises(pathsec.TrustError, match="world-writable"):
+                        pathsec.spawn_trusted(got, [])
+            assert os.path.exists(decoy)
         finally:
             os.chmod(world, 0o700)
         # the honest link, to an absolute private file, resolves to that file
@@ -2154,6 +2183,10 @@ class TestBeyondTheReview:
         honest.mkdir()
         os.symlink(planted, honest / "prover9")
         assert _same(pathsec.resolve_trusted_executable(honest / "prover9"), planted)
+        # the caller's own '..' is still never folded, even to a trusted file
+        spelled = str(private_dir / "box" / os.pardir / "box" / "prover9")
+        assert pathsec.resolve_trusted_executable(spelled) is None
+        assert "'..'" in pathsec.untrusted_executable_reason(spelled)
 
     def test_path_entry_spellings_never_reach_the_cwd(self, box, tmp_path, monkeypatch):
         good = _exec_file(tmp_path / "bin", "prover9")
