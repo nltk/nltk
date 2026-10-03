@@ -200,7 +200,7 @@ class TestPreFixShapesAtTheCap:
         )
 
         text = _nested_lexicon(MAX_PARSE_LEN)
-        category = text.split("=> ")[1].strip()
+        category = text.splitlines()[1].split("=> ")[1].strip()
         assert len(category) == MAX_PARSE_LEN
         with timing.budget(10, "the nested primitive the old parser needed 38.7 s for"):
             lex = fromstring(text)
