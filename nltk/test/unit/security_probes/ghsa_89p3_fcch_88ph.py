@@ -19,15 +19,20 @@ FLAT_BIG = 4 * FLAT_SMALL
 
 #: Entries of the flat chain in the lexicon the op parses: one entry's small run
 #: sat at the 0.1 s floor on the macOS and Windows runners, where the ratio
-#: degenerates into a budget on the big run; see flat_lexicon.
-FLAT_ENTRIES = 3
+#: degenerates into a budget on the big run, and three entries measured 0.23 s
+#: on the macOS runner; four keep it at least 2.5 times the floor there. See
+#: flat_lexicon.
+FLAT_ENTRIES = 4
 
 
 def flat_lexicon(n):
     """A lexicon of FLAT_ENTRIES words, each a flat chain of ``n`` applications."""
     chain = "S" + "/S" * n
-    words = ("w", "v", "u", "t", "s", "r")[:FLAT_ENTRIES]
+    words = _WORDS[:FLAT_ENTRIES]
     return ":- S\n" + "".join(word + " => " + chain + "\n" for word in words)
+
+
+_WORDS = ("w", "v", "u", "t", "s", "r")
 
 
 #: Bracket depth of the nested leg. The pre-fix parser re-sliced the bracketed
@@ -35,15 +40,21 @@ def flat_lexicon(n):
 #: work per character; 80 keeps the fixed parser's small run off the floor.
 NESTING = 80
 
+#: Entries of the nested category in the lexicon the op parses: one entry's
+#: small run measured 0.17 s on the macOS runner, 1.7 times the floor; two
+#: keep it over 2.5 times the floor there. The category itself is at the cap.
+NESTED_ENTRIES = 2
+
 
 def _nested_lexicon(chars):
-    """A lexicon whose one entry is a primitive with a long subscript list,
-    wrapped in NESTING brackets, ``chars`` characters of category in all."""
+    """A lexicon of NESTED_ENTRIES words, each a primitive with a long
+    subscript list wrapped in NESTING brackets, ``chars`` characters of
+    category in all."""
     inner = chars - 2 * NESTING
     subscripts = "a," * ((inner - 4) // 2) + "a"
-    return (
-        ":- S\nw => " + "(" * NESTING + "S[" + subscripts + "]" + ")" * NESTING + "\n"
-    )
+    category = "(" * NESTING + "S[" + subscripts + "]" + ")" * NESTING
+    words = _WORDS[:NESTED_ENTRIES]
+    return ":- S\n" + "".join(word + " => " + category + "\n" for word in words)
 
 
 @probe("GHSA-89p3-fcch-88ph")
