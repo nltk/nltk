@@ -394,12 +394,15 @@ class TestShapeCost:
         return tree
 
     # The small side of every scaling probe here is sized to cost at least
-    # 2.5 times the rule's 0.1 s floor on the fastest hosted runner (the
-    # macOS cells, two to three times faster than a 2020 laptop, where the
-    # earlier 2,000-leaf and 5,000-token sides dropped under the floor and
-    # the check degenerated into a fixed budget on the big run): a 16,000
-    # leaf flat tree, a 4,096 leaf balanced tree and 20,000 token crossing
-    # shapes cost 0.85 to 1.0 s a call on that laptop.
+    # 2.5 times the rule's 0.1 s floor on the fastest hosted runners (the
+    # macOS and Windows cells, two to four times faster than a 2020 laptop,
+    # where the earlier 2,000-leaf and 5,000-token sides dropped under the
+    # floor and the check degenerated into a fixed budget on the big run).
+    # Measured there, idle and beside a parallel pytest run: a 16,000 leaf
+    # flat tree 0.30 to 0.47 s a call, an 8,192 leaf balanced tree over
+    # 0.5 s (4,096 leaves measured 0.22 s), a 20,000 token chain 0.31 to
+    # 0.52 s and a 40,000 token interleaved pair over 0.35 s (20,000 tokens
+    # measured 0.17 s).
     @pytest.mark.parametrize("rtl", [False, True])
     def test_width_is_linear(self, rtl):
         trees = {n: self._flat(n, "ذهب") for n in (16_000, 64_000)}
@@ -411,11 +414,11 @@ class TestShapeCost:
         )
 
     def test_balanced_width_is_subquadratic(self):
-        trees = {n: self._balanced(n) for n in (4096, 16_384)}
+        trees = {n: self._balanced(n) for n in (8192, 32_768)}
         assert_subquadratic(
             lambda n: TreePrettyPrinter(trees[n], rtl=True).text(),
-            4096,
-            16_384,
+            8192,
+            32_768,
             cpu_bound=True,
         )
 
@@ -559,18 +562,18 @@ class TestCrossingCost:
         assert drawn_crossings(big.text(unicodelines=True)) == 39_999
 
     def test_one_branch_over_thousands_of_lines_is_linear(self):
-        trees = {n: self._interleaved(n) for n in (20_000, 80_000)}
+        trees = {n: self._interleaved(n) for n in (40_000, 160_000)}
         assert_subquadratic(
             lambda n: TreePrettyPrinter(*trees[n], rtl=True).text(),
-            20_000,
-            80_000,
+            40_000,
+            160_000,
             cpu_bound=True,
         )
         small = TreePrettyPrinter(*self._interleaved(400))
         assert self._crossing_last(small) == 200
         assert (
-            drawn_crossings(TreePrettyPrinter(*trees[80_000]).text(unicodelines=True))
-            == 40_000
+            drawn_crossings(TreePrettyPrinter(*trees[160_000]).text(unicodelines=True))
+            == 80_000
         )
 
     def test_the_shape_the_removed_sweep_needed_seconds_for_is_drawn_in_a_budget(
@@ -582,13 +585,15 @@ class TestCrossingCost:
         # nodes times rows times columns. Over the finished grid of the
         # chain it is quadratic in the tokens (0.2 s at 1,000 tokens, 0.74 s
         # at 2,000, 3.2 s at 4,000 and about 50 s at 16,000 on a 2020
-        # laptop), while the sweep that replaced it is bounded by the grid:
-        # 16,000 tokens are drawn in under a second there with every
-        # crossing found and moved last.
-        drawn = {n: TreePrettyPrinter(*self._chain(n)) for n in (1000, 4000)}
+        # laptop; 1,000 tokens cost 0.04 s on the macOS runner, under the
+        # floor, so the quadratic is read from 2,000 tokens), while the
+        # sweep that replaced it is bounded by the grid: 16,000 tokens are
+        # drawn in under a second there with every crossing found and moved
+        # last.
+        drawn = {n: TreePrettyPrinter(*self._chain(n)) for n in (2000, 8000)}
         assert (
             scaling_ratio(
-                lambda n: _pre_fix_crossing_sweep(drawn[n]), 1000, 4000, cpu_bound=True
+                lambda n: _pre_fix_crossing_sweep(drawn[n]), 2000, 8000, cpu_bound=True
             )
             >= QUADRATIC_RATIO
         )
