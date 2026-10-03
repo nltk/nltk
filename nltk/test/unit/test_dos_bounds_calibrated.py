@@ -30,7 +30,6 @@ installed the one test that reads it is skipped, never the bound checks.
 import functools
 import inspect
 import os
-import tempfile
 
 import pytest
 
@@ -813,14 +812,27 @@ class TestXMLCorpusViewCalibrated:
     MAX_XML_PATH_LENGTH 4096 against 149 chars (mte_teip5), over every XML file
     of the shipped corpora plus semcor, propbank, nombank and both framenets."""
 
+    @pytest.fixture(autouse=True)
+    def _fixture_root(self, tmp_path):
+        # A corpus file lives inside a registered data root: a bare temp dir
+        # is refused by pathsec on Linux (/tmp is shared), as it should be.
+        from nltk.test.unit.security_probes._base import register_data_root
+
+        self._root = tmp_path
+        self._n = 0
+        undo = register_data_root(str(tmp_path))
+        try:
+            yield
+        finally:
+            undo()
+
     def _read(self, text, tagspec="(?!x)x"):
         from nltk.corpus.reader.xmldocs import XMLCorpusView
 
-        d = tempfile.mkdtemp(dir=os.environ.get("TMPDIR", "/tmp"))
-        path = os.path.join(d, "doc.xml")
-        with open(path, "w", encoding="utf-8") as fh:
-            fh.write(text)
-        return list(XMLCorpusView(path, tagspec))
+        self._n += 1
+        path = self._root / ("doc%d.xml" % self._n)
+        path.write_text(text, encoding="utf-8")
+        return list(XMLCorpusView(str(path), tagspec))
 
     @staticmethod
     def _nested(depth, name="a", inner=""):
