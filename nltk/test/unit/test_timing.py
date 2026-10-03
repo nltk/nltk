@@ -202,10 +202,9 @@ def test_paired_ratio_keeps_the_floor_on_the_normalised_small_seconds():
 
 
 def test_paired_ratio_sees_a_quadratic_whose_last_big_run_got_the_core_alone():
-    # the shape of the ubuntu reading on develop: an xdist sibling shared
-    # the core through the small blocks and the first big runs, then idled
-    # for the last big run, so the fastest big against the slowest small read
-    # a 16x oracle at 5.3x; paired by rep and normalised it reads 16x
+    # the ubuntu shape on develop: a sibling shared the core until the last
+    # big run, so the fastest big against the slowest small read a 16x oracle
+    # at 5.3x; paired by rep and normalised it reads 16x
     shared, alone = 0.003, 0.001
     samples = [
         _sample(0.3, 4.8, small_rate=shared, big_rate=shared),
@@ -224,10 +223,9 @@ def test_paired_ratio_judges_a_waiting_op_on_the_wall_clock_too():
     assert timing.paired_ratio(sleeping) == 16.0
     assert timing.paired_ratio(sleeping, cpu_bound=False) == 16.0
     assert timing.paired_ratio(sleeping, cpu_bound=True) == 1.0
-    # a computing op whose wall clock was stretched by a descheduled stretch
-    # is judged on its CPU seconds, where it is the 4x it is, as long as it
-    # kept the CPU for half its wall time; stalled longer than it worked it
-    # is treated as waiting, the side that never hides a hang
+    # a computing op stretched by a descheduled stretch is judged on its CPU
+    # seconds while it kept the CPU for half its wall time; stalled longer
+    # than it worked it is treated as waiting, the side that never hides a hang
     computing = [_sample(0.2, 0.8, small_wall=0.2, big_wall=1.2)] * 3
     assert timing.paired_ratio(computing) == 4.0
     stalled = [_sample(0.2, 0.8, small_wall=0.2, big_wall=3.0)] * 3
@@ -250,18 +248,10 @@ def test_assert_subquadratic_separates_linear_from_quadratic_cpu_work():
     assert "ScalingSample(" in str(failure.value)
 
 
-# ---- the runner regimes, simulated with real spinning -----------------------
-# A hosted runner changes the core's rate while a scaling test runs: the
-# macOS runners drift two to three times within a second, and under xdist a
-# sibling worker on the other hyperthread shares the core for stretches and
-# then idles. Both are simulated here inside the measured process: threads
-# spinning in pure Python take their turns at the interpreter lock, so while
-# they spin the process accumulates their CPU seconds beside the measured
-# thread's, and every sample and calibration unit taken in that stretch costs
-# more CPU time for the same work, as it does on the runner. The sinks are
-# fixed amounts of pure-Python work: a linear one and a quadratic one doing
-# the same work at the small size, so the linear sink is 4x and the
-# quadratic 16x of work on every machine.
+# === the runner regimes, simulated with real spinning ===
+# Threads spinning in pure Python share the interpreter lock, so a sample or
+# calibration unit taken while they spin costs more CPU time for the same work,
+# as on a drifting macOS core or beside an xdist sibling on the same core.
 
 
 def _work(n):
@@ -359,10 +349,9 @@ def _verdicts(samples):
 
 
 def test_regime_a_lasting_slowdown_from_the_first_big_run_on():
-    # the core slows for good once the first big run starts: every big run
-    # and every later small block is slow, only the first small block is
-    # fast. The fastest small against the fastest big is the old rule's 12x
-    # for a linear sink; paired and normalised it reads near 4x.
+    # the core slows for good once the first big run starts, so only the
+    # first small block is fast: the old rule reads a linear sink at 12x,
+    # paired and normalised it reads near 4x
     def slow_from_first_big(index, n, big):
         return index >= timing.SMALL_BLOCK
 
@@ -381,10 +370,9 @@ def test_regime_a_lasting_slowdown_from_the_first_big_run_on():
 
 
 def test_regime_a_sibling_through_the_small_blocks_that_idles_for_the_last_big_run():
-    # the ubuntu shape: a sibling shares the core from the first call until
-    # the last big run starts. The old rule reads the fastest big (alone)
-    # against a shared small block: a 16x quadratic sink under 8x. Paired
-    # by rep two of the three pairs are wholly shared and read 16x.
+    # the ubuntu shape: a sibling shares the core until the last big run, so
+    # the old rule reads the fastest big (alone) against a shared small block,
+    # a 16x quadratic sink under 8x; paired by rep two wholly shared pairs read 16x
     last_big = 3 * (timing.SMALL_BLOCK + 1) - 1
 
     def shared_until_last_big(index, n, big):
@@ -405,10 +393,9 @@ def test_regime_a_sibling_through_the_small_blocks_that_idles_for_the_last_big_r
 
 
 def test_regime_a_fast_window_for_one_small_block():
-    # the macOS shape: the core runs slow throughout except for one window
-    # that one small block, and nothing else, gets. The old rule keeps that
-    # block as the small side and reads a linear sink at 16x; paired by rep
-    # the window is one of three pairs and the median reads near 4x.
+    # the macOS shape: one fast window that a single small block gets. The
+    # old rule keeps that block as the small side and reads a linear sink at
+    # 16x; paired by rep the window is one pair of three and the median is near 4x
     second_block = range(timing.SMALL_BLOCK + 1, 2 * timing.SMALL_BLOCK + 1)
 
     def slow_except_second_block(index, n, big):

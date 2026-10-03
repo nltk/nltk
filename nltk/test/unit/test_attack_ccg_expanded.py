@@ -140,9 +140,7 @@ def _rows(text):
     return rows
 
 
-# ==========================================================================
-# GHSA-89p3-fcch-88ph: the flat application chain
-# ==========================================================================
+# === GHSA-89p3-fcch-88ph: the flat application chain ===
 
 
 class TestFlatChainScaling:

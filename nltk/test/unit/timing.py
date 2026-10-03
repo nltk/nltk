@@ -133,10 +133,9 @@ def within_budget(func, seconds, repeats=3, cpu_bound=None):
     return best < seconds and min(wall for _, wall in runs) < ceiling, best
 
 
-#: CPU seconds of fixed pure-Python work each calibration unit accumulates
-#: beside a sample of ``scaling_ratio``: enough for the CPU clock to resolve
-#: it (Windows reports process CPU time in 15.6 ms steps) and short against
-#: the samples, so a unit reads the core's rate at the moment of its sample.
+#: CPU seconds of fixed pure-Python work in each calibration unit beside a
+#: ``scaling_ratio`` sample: long enough for Windows's 15.6 ms CPU clock to
+#: resolve, short enough to read the core's rate at the moment of the sample.
 CALIBRATION_SECONDS = 0.1
 
 #: Loop iterations of one calibration chunk, a fixed amount of pure-Python

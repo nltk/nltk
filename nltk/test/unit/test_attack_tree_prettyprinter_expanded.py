@@ -393,16 +393,9 @@ class TestShapeCost:
             tree = Tree("S%d" % i, [tree, Tree("N", ["w"])])
         return tree
 
-    # The small side of every scaling probe here is sized to cost at least
-    # 2.5 times the rule's 0.1 s floor on the fastest hosted runners (the
-    # macOS and Windows cells, two to four times faster than a 2020 laptop,
-    # where the earlier 2,000-leaf and 5,000-token sides dropped under the
-    # floor and the check degenerated into a fixed budget on the big run).
-    # Measured there, idle and beside a parallel pytest run: a 16,000 leaf
-    # flat tree 0.30 to 0.47 s a call, an 8,192 leaf balanced tree over
-    # 0.5 s (4,096 leaves measured 0.22 s), a 20,000 token chain 0.31 to
-    # 0.52 s and a 40,000 token interleaved pair over 0.35 s (20,000 tokens
-    # measured 0.17 s).
+    # Every small side here costs at least 2.5 times the 0.1 s floor on the
+    # fastest hosted runners (measured 0.30 to 0.52 s a call, idle and beside
+    # a parallel pytest run), so the ratio never degenerates into a budget.
     @pytest.mark.parametrize("rtl", [False, True])
     def test_width_is_linear(self, rtl):
         trees = {n: self._flat(n, "ذهب") for n in (16_000, 64_000)}
@@ -579,17 +572,9 @@ class TestCrossingCost:
     def test_the_shape_the_removed_sweep_needed_seconds_for_is_drawn_in_a_budget(
         self,
     ):
-        # The crossing check adb1e02f8 removed, executed as it was written
-        # with its tuple test translated to the ids the grid holds, rebuilt
-        # two sets over every row and column of the grid for every node:
-        # nodes times rows times columns. Over the finished grid of the
-        # chain it is quadratic in the tokens (0.2 s at 1,000 tokens, 0.74 s
-        # at 2,000, 3.2 s at 4,000 and about 50 s at 16,000 on a 2020
-        # laptop; 1,000 tokens cost 0.04 s on the macOS runner, under the
-        # floor, so the quadratic is read from 2,000 tokens), while the
-        # sweep that replaced it is bounded by the grid: 16,000 tokens are
-        # drawn in under a second there with every crossing found and moved
-        # last.
+        # The removed crossing check rebuilt two sets over the whole grid per
+        # node, quadratic in the tokens (0.74 s at 2,000, about 50 s at
+        # 16,000); the sweep that replaced it draws 16,000 in under a second.
         drawn = {n: TreePrettyPrinter(*self._chain(n)) for n in (2000, 8000)}
         assert (
             scaling_ratio(
