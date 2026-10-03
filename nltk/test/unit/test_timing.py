@@ -8,7 +8,7 @@ is charged its CPU time, so a descheduled interpreter does not inflate it, and
 a waiting block is charged its wall time, so a hang that sleeps or blocks is
 still seen. Real sleeps and real spinning, nothing mocked."""
 
-import hashlib
+import sys
 import threading
 import time
 
@@ -248,9 +248,9 @@ def test_assert_subquadratic_separates_linear_from_quadratic_cpu_work():
     assert "ScalingSample(" in str(failure.value)
 
 
-# === the runner regimes, simulated with real work on sibling threads ===
-# While the siblings hash, their CPU seconds accrue to the process clock beside
-# the measured thread's, so every sample and unit costs more for the same work.
+# === the runner regimes, simulated with a sibling thread at the lock ===
+# While the sibling takes its turns, every sample and calibration unit of the
+# measured thread costs more CPU seconds for the same work, as on a loaded runner.
 
 
 def _work(n):
@@ -260,71 +260,99 @@ def _work(n):
     return x
 
 
-class _Siblings:
-    """``count`` threads that hash a buffer while ``spinning`` is set.
+class _Sibling:
+    """One thread that takes turns at the interpreter lock while ``spinning``
+    is set, holding it for about ``HOLD_INTERVALS`` switch intervals at a
+    time inside a C call that the eval loop cannot interrupt.
 
-    The hashing runs in C with the interpreter lock released, so a sibling
-    works on its own core continuously and touches the lock only once per
-    buffer: its CPU seconds reach the process clock steadily, the same for a
-    long sample as for a short calibration unit, as a worker on the other
-    hyperthread of a hosted runner's core costs the measured thread
-    throughput steadily. Threads that spun in pure Python took turns at the
-    lock instead, and the turns were not fair: on the ubuntu runners the
-    measured thread was starved through one unit (99 ms a chunk against 2.3)
-    and left alone through a whole rep, so the load the unit read and the
-    load its sample bore differed and two regime tests read a linear sink
-    at 11x. The buffer is sized so one hash takes about 20 ms: a toggle of
-    the regime lands within that of the call that makes it.
+    Two threads at the lock alternate strictly: the holder releases at the
+    first eval-breaker check after the other has waited a switch interval,
+    and waits until the other has taken it. The measured thread, in pure
+    Python, is interrupted after one interval plus the time the host takes
+    to schedule the waiting sibling (up to 10 ms on a saturated runner);
+    the sibling, inside ``sum(range(n))``, after the call returns, about
+    five intervals. So for every second the measured thread computes, the
+    process clock gains two and a half to five from the sibling, on any
+    platform, whatever the host's load (the turns are a property of the
+    lock, not of free cores) and the same for a long sample as for a short
+    calibration unit. Two siblings spinning in pure Python took unfair
+    turns on the ubuntu runners (one thread starved through a unit);
+    siblings hashing on their own cores got none on the three-core macOS
+    runners under xdist, so a unit and the sample beside it read different
+    loads; a hold of two and a half intervals sagged to 1.9x under a
+    saturating load, under the 2x the old rule's reading of a slowed linear
+    sink needs to reach 8x.
     """
 
-    BUFFER = bytes(16 * 1024 * 1024)
+    HOLD_INTERVALS = 5
 
-    def __init__(self, count):
+    def __init__(self):
         self.spinning, self.stopped = threading.Event(), False
-        self.threads = [
-            threading.Thread(target=self._run, daemon=True) for _ in range(count)
-        ]
+        self.thread = threading.Thread(target=self._run, daemon=True)
+        hold = self.HOLD_INTERVALS * sys.getswitchinterval()
+        n = 100_000
+        while True:
+            started = time.perf_counter()
+            sum(range(n))
+            took = time.perf_counter() - started
+            if took >= hold:
+                break
+            n *= 2
+        self.n = int(n * hold / took)
 
     def _run(self):
         while not self.stopped:
             if self.spinning.wait(0.01):
-                hashlib.sha256(self.BUFFER).digest()
+                sum(range(self.n))
 
     def __enter__(self):
-        for thread in self.threads:
-            thread.start()
+        self.thread.start()
         return self
 
     def __exit__(self, *exc):
         self.stopped = True
         self.spinning.set()
-        for thread in self.threads:
-            thread.join()
+        self.thread.join()
         return False
 
 
-_REGIME_SIBLINGS = 2
+class _Profile:
+    """How a regime sink is sized on one platform's runners: the clean CPU
+    seconds of one small call and the calibration readings the size is taken
+    from (the fastest of them, so a slow reading cannot undersize it)."""
 
-#: Clean CPU seconds of one small call of a regime sink: the floor of the
-#: rule, so the clean sample is the one the floor would take as it stands
-#: and the slowed samples, two siblings on, sit well over it on any core.
-_REGIME_SMALL_SECONDS = 0.1
+    def __init__(self, name, small_seconds, readings):
+        self.name, self.small_seconds, self.readings = name, small_seconds, readings
 
 
-def _regime_sizes():
-    """``(small, big)`` iterations sized on this core so a clean small call
-    costs about ``_REGIME_SMALL_SECONDS`` of CPU time."""
-    per_iteration = timing.calibration_rate() / timing.CALIBRATION_CHUNK
-    small = int(_REGIME_SMALL_SECONDS / per_iteration)
+#: The runners differ in what the sizing must absorb. Linux: steady cores,
+#: the clean call sits at the floor. macOS: the core rate drifts within a
+#: second, so the clean call is 1.5 times the floor, from the fastest of
+#: three readings. Windows: process CPU time moves in 15.6 ms steps, so
+#: the clean call is twice the floor, a step under eight per cent of it.
+_PROFILES = {
+    "darwin": _Profile("macos", 0.15, 3),
+    "win32": _Profile("windows", 0.2, 3),
+    "linux": _Profile("linux", 0.1, 3),
+}
+_PROFILE = _PROFILES.get(sys.platform, _Profile(sys.platform, 0.2, 3))
+
+
+def _regime_sizes(profile=_PROFILE):
+    """``(small, big)`` iterations sized on this core for ``profile``."""
+    rate = min(timing.calibration_rate() for _ in range(profile.readings))
+    small = int(profile.small_seconds / (rate / timing.CALIBRATION_CHUNK))
     return small, 4 * small
 
 
 def _regime_samples(sink, spin_at):
     """Samples of ``sink(n, small)`` under a regime: ``spin_at(call_index,
     n, big)`` says whether the siblings spin from the start of that call."""
-    small, big = _regime_sizes()
+    if not getattr(sys, "_is_gil_enabled", lambda: True)():
+        pytest.skip("the regimes are simulated with turns at the interpreter lock")
+    small, big = _regime_sizes(_PROFILE)
     calls = []
-    with _Siblings(_REGIME_SIBLINGS) as siblings:
+    with _Sibling() as siblings:
         # a regime that begins loaded was loaded before the measurement
         # started, as a sibling worker already runs when a test begins, so
         # the first calibration unit reads the loaded rate too
@@ -359,7 +387,8 @@ def _verdicts(samples):
     )
 
 
-def test_regime_a_lasting_slowdown_from_the_first_big_run_on():
+@pytest.mark.parametrize("platform", [_PROFILE.name])
+def test_regime_a_lasting_slowdown_from_the_first_big_run_on(platform):
     # the core slows for good once the first big run starts, so only the
     # first small block is fast: the old rule reads a linear sink at 12x,
     # paired and normalised it reads near 4x
@@ -380,7 +409,10 @@ def test_regime_a_lasting_slowdown_from_the_first_big_run_on():
     )
 
 
-def test_regime_a_sibling_through_the_small_blocks_that_idles_for_the_last_big_run():
+@pytest.mark.parametrize("platform", [_PROFILE.name])
+def test_regime_a_sibling_through_the_small_blocks_that_idles_for_the_last_big_run(
+    platform,
+):
     # the ubuntu shape: a sibling shares the core until the last big run, so
     # the old rule reads the fastest big (alone) against a shared small block,
     # a 16x quadratic sink under 8x; paired by rep two wholly shared pairs read 16x
@@ -403,7 +435,8 @@ def test_regime_a_sibling_through_the_small_blocks_that_idles_for_the_last_big_r
     )
 
 
-def test_regime_a_fast_window_for_one_small_block():
+@pytest.mark.parametrize("platform", [_PROFILE.name])
+def test_regime_a_fast_window_for_one_small_block(platform):
     # the macOS shape: one fast window that a single small block gets. The
     # old rule keeps that block as the small side and reads a linear sink at
     # 16x; paired by rep the window is one pair of three and the median is near 4x
