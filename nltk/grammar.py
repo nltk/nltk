@@ -1507,11 +1507,9 @@ def standard_nonterm_parser(string, pos):
 # Reading Dependency Grammars
 #################################################################
 
-# A quoted token (lhs or rhs terminal) is at most 512 chars and an arrow at most
-# 8 (->, -->, ==>): the validator and the splitter below carry the same bounds,
-# so a production that validates is split whole and an oversized token is
-# refused up front rather than silently dropped. The longest shipped terminal
-# (the dependency doctests, demos and tests) is 9 chars.
+# A quoted token is at most 512 chars and an arrow at most 8: the validator and
+# the splitter carry the same bounds, so an oversized token is refused up front
+# rather than silently dropped. The longest shipped terminal is 9 chars.
 _READ_DG_RE = redos.compile(
     r"""^\s*                # leading whitespace
                               ('[^']{1,512}')\s*  # single-quoted lhs

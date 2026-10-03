@@ -120,10 +120,9 @@ MAX_PATTERN_LENGTH = 100_000
 #: crash, a native stack overflow on some builds); a legitimate pattern is shallow.
 MAX_NESTING_DEPTH = 100
 
-#: Max number of capturing groups. The engine's compile cost is roughly quadratic
-#: in the capturing-group count, so a source like ``"()" * 25000`` burns tens of
-#: seconds of pure compile before any match (the match-time timeout never fires);
-#: a legitimate pattern has few. Non-capturing ``(?:...)`` groups are not counted.
+#: Max number of capturing groups: compile cost is roughly quadratic in them, so
+#: ``"()" * 25000`` burns tens of seconds before the match-time timeout can fire.
+#: Non-capturing ``(?:...)`` groups are not counted.
 MAX_GROUP_COUNT = 1000
 
 #: Max expansion of a counted repetition. The engine expands ``(group){n}`` into

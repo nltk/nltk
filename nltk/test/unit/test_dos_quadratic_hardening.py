@@ -1030,9 +1030,8 @@ class TestCompiledPatternReanchoringBounded:
 # bounded and cannot step over another open tag of their own kind ----------------
 
 #: The pre-fix (develop) patterns, verbatim: the oracle for faithfulness and the
-#: teeth. An earlier form of the fix, ``[^>]{0,1024}`` and ``.{0,8192}?``, was
-#: O(n*bound) on the unterminated-attribute trigger (120 KB ran into the 5 s
-#: backstop) and silently dropped the four real paragraphs over 8 KB.
+#: teeth. An earlier fix, ``[^>]{0,1024}`` and ``.{0,8192}?``, was O(n*bound) on
+#: the unterminated trigger and silently dropped the four paragraphs over 8 KB.
 _PL196X_PREFIX = {
     "PARA": r"<p(?: [^>]*){0,1}>(.*?)</p>",
     "SENT": r"<s(?: [^>]*){0,1}>(.*?)</s>",
@@ -1087,10 +1086,9 @@ class TestPl196xAttributeRunBounded:
 
     @pytest.mark.parametrize("name", sorted(_PL196X_OPEN))
     def test_attribute_bound_has_teeth(self, name, monkeypatch):
-        # The bounded pattern finishes the trigger well inside the default
-        # backstop; the verbatim pre-fix pattern runs into a 0.5 s backstop on
-        # the same trigger (untimed, 5000 opens ran past 5 s), so the bound,
-        # not the timeout, is the fix.
+        # The bounded pattern finishes the trigger well inside the backstop; the
+        # verbatim pre-fix pattern runs into a 0.5 s backstop on the same
+        # trigger (5000 opens ran past 5 s untimed): the bound is the fix.
         import nltk.redos as redos_mod
 
         pat, tag = self._pattern(name), _PL196X_OPEN[name]

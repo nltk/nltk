@@ -178,15 +178,9 @@ class TestTEICorpusViewQuadratic:  # GHSA-8mpw -- has MULTIPLE quadratic directi
 
     @pytest.mark.parametrize("tag", ["<p>", "<w>"])
     def test_direction3_lazy_regex_is_bounded(self, tag, monkeypatch):
-        # PARA/SENT/WORD `.*?` findall over many unclosed tags was O(k*n) and is
-        # not linearised by the regex engine. The shipped patterns now bound the
-        # body (a <p>/<s> body to 16384 pieces of at most 4096 tag-free chars
-        # each, calibrated on the corpus's longest paragraph of 10399 chars and
-        # 577 pieces; a <w>/<c> body to 1024 chars with no `<`) and cannot step
-        # over the next open tag of their own kind, so the scan is linear and
-        # completes well inside the redos backstop; the same pattern with the
-        # bound removed still runs into the backstop, which pins that the bound
-        # (not the timeout) is the fix.
+        # PARA/SENT/WORD `.*?` findall over many unclosed tags was O(k*n); the
+        # shipped patterns bound each body and stop at the next open tag of their
+        # kind, so the scan is linear while the unbounded form hits the backstop.
         import nltk.redos as redos_mod
         from nltk import redos
         from nltk.corpus.reader.pl196x import PARA, WORD
@@ -1070,10 +1064,9 @@ class TestReviewsFeaturesQuadratic:  # reviews.py FEATURES
 
 class TestLinThesaurusKeyQuadratic:  # lin.py _key_re: engine still backtracks
     def test_key_line_is_bounded(self, monkeypatch):
-        # The key is extracted from the start of an entry's first line, so the
-        # shipped pattern is \A-pinned: one attempt per line, linear, no backstop
-        # needed. The same pattern without the pin re-anchors at every `(` and
-        # still runs into the backstop, which pins that the pin is the fix.
+        # The key starts an entry's first line, so the shipped pattern is
+        # \A-pinned: one attempt per line, linear. Without the pin it re-anchors
+        # at every `(` and still runs into the backstop: the pin is the fix.
         import nltk.redos as redos_mod
         from nltk import redos
         from nltk.corpus.reader.lin import LinThesaurusCorpusReader
@@ -1330,11 +1323,9 @@ class TestValuationLeadingWhitespaceRuns:  # sem/evaluate.py, the three splitter
         ):  # fmt: skip
             assert rx.pattern != _PRE_FIX[key]
             _same_results(_PRE_FIX[key], rx.pattern, op, texts, rx.flags)
-        # The one deliberate difference of the tuple pattern: its run now
-        # excludes the `(` anchor (so a crafted paren run is O(n), not
-        # O(n*bound)), and a nested `(` therefore ends a candidate tuple instead
-        # of being swallowed into it. Nothing shipped nests parens in a
-        # valuation; read_valuation refuses such a line outright.
+        # The tuple pattern's one deliberate difference: its run excludes the
+        # `(` anchor (a crafted paren run is O(n), not O(n*bound)), so a nested
+        # `(` ends a candidate tuple; read_valuation refuses such a line anyway.
         from nltk import redos
 
         nested = [

@@ -66,11 +66,9 @@ from nltk.util import binary_search_file as _binary_search_file
 #: Positive infinity (for similarity functions)
 _INF = 1e300
 
-#: Max hypernym-chain depth walked by the directly-recursive Synset walkers
-#: (max_depth/min_depth/hypernym_paths/hypernym_distances). The hypernym graph is
-#: untrusted corpus content; a cycle or an over-deep chain would otherwise recurse
-#: without bound (CWE-400/674). Real chains are ~20 deep; a crafted graph is
-#: refused with a clear ValueError well before the interpreter recursion limit.
+#: Max hypernym-chain depth the recursive Synset walkers follow: the graph is
+#: corpus content, so a cycle or an over-deep chain would otherwise recurse
+#: without bound (CWE-400/674). Real chains are about 20 deep.
 _MAX_HYPERNYM_DEPTH = 256
 
 

@@ -17,27 +17,9 @@ from nltk.pathsec import open as pathsec_open
 # stdlib nor the ``regex`` optimiser linearises findall's multi-start scan, so
 # compile them through ``redos`` for a wall-clock backstop that bounds the CPU a
 # crafted block can burn instead of letting it grow without limit.
-# Bound the lazy bodies AND the attribute runs: a repeated open tag with no close,
-# or with no `>`, re-scans the rest of the document at every open, O(n**2) under
-# findall (CWE-407). Keeping `<` out of the attribute run and out of every
-# tag-free run of the body, and refusing to step over another `<p`/`<s` open
-# (the `<(?!p[ >])` alternative), stops every scan at the next tag of its own
-# kind, so a crafted block costs O(n) rather than O(n*bound): with a plain
-# `[^>]{0,1024}` and `.{0,8192}?` a `<p ` repeated with its `>` omitted ran 120 KB
-# into the 5 s backstop. The body is an unrolled loop of pieces, each a
-# possessive tag-free run of at most 4096 chars that must end at a `<` or at
-# the end of the block (so a longer run is no match, not two pieces), or one
-# `<` that does not open another tag of the same kind; the `+` keeps the
-# engine from re-splitting a run. Measured on the shipped corpus (all ten
-# files): the widest attribute run is 337 chars (a <w> carrying id, lemma and
-# a 300-char ana list; <c> peaks at 27, <p> and <s> carry none), the longest
-# <p> body is 10399 chars and the longest <s> body 7926 (both hold the nested
-# <w>/<c> markup: at most 350 chars between two `<` and at most 577 pieces),
-# and the longest <w>/<c> body is 41 chars with no `<` in it. So {0,1024} is 3x
-# the widest run, {1,4096} 11x the longest tag-free run, {0,16384} 28x the most
-# pieces and {0,1024} 25x the longest word; an earlier `.{0,8192}?` body
-# silently dropped the four paragraphs over 8 KB. A <p>, <s>, <w> or <c> never
-# nests its own kind in TEI P4.
+# Each body is an unrolled run of possessive tag-free pieces that stops at the
+# next tag of its own kind, and `<` is kept out of the attribute run, so a crafted
+# block is O(n), not O(n*bound) (CWE-407); the bounds are calibrated on the corpus.
 PARA = redos.compile(
     r"<p(?: [^<>]{0,1024}){0,1}>"
     r"((?:[^<]{1,4096}+(?![^<])|<(?!p[ >])){0,16384}?)</p>"

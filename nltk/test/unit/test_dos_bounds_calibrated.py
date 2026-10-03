@@ -71,14 +71,9 @@ def _source_has(module_name, literal):
     assert literal in src, (module_name, literal)
 
 
-# --- the calibration table ---------------------------------------------------
-#
-# name: (module, shipped pattern or attribute, pre-fix pattern, op, bound,
-#        at_bound(n) -> input whose bounded quantity is exactly n,
-#        real-data maximum, real-shaped input at that maximum, data source,
-#        trigger(n) with the required literal absent,
-#        trigger_present(n) with the literal present once,
-#        n at which the PRE-FIX form ran past 5 s untimed)
+# The calibration table, name: (module, shipped pattern or attribute, pre-fix
+# pattern, op, bound, at_bound(n), real-data maximum, real-shaped input, data
+# source, trigger(n) literal absent, trigger_present(n), pre-fix size past 5 s)
 
 _S = {}
 
@@ -621,9 +616,8 @@ class TestDependencyGrammarRefusal:
 
     def test_refusal_has_teeth(self, monkeypatch):
         # With both pre-fix forms restored the 513-char terminal is accepted
-        # (and, pre-fix, parsed whole); with only the validator restored the
-        # splitter's gap check still refuses it rather than building an
-        # epsilon production.
+        # and parsed whole; with only the validator restored the splitter's gap
+        # check still refuses it rather than building an epsilon production.
         import nltk.grammar as G
 
         src = "'" + "a" * 513 + "' -> 'b'"

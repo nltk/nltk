@@ -90,12 +90,9 @@ class VerbnetCorpusReader(XMLCorpusReader):
     _SHORTID_RE = redos.compile(r"[\d.\-]+$")
     """Regular expression that matches shortids"""
 
-    # Bound the tag tail and keep `<` out of it: a crafted file repeating
-    # `<MEMBER name=".." wn=".."` with no `>` re-scanned to end of file at every
-    # anchor, O(n**2) under finditer (CWE-407), and excluding the anchor stops
-    # each scan at the next tag, O(n) rather than O(n*bound). Measured over
-    # verbnet and verbnet3: the longest tail after wn="..." is 78 chars and the
-    # longest whole MEMBER tag 219.
+    # A repeated `<MEMBER` with no `>` re-scanned to end of file at every anchor,
+    # O(n**2) (CWE-407); keeping `<` out of the tail stops each scan at the next
+    # tag, O(n). The longest tail in verbnet and verbnet3 is 78 chars.
     _INDEX_RE = redos.compile(
         r'<MEMBER name="\??([^"]+)" wn="([^"]*)"[^<>]{1,1024}>|'
         r'<VNSUBCLASS ID="([^"]+)"/?>'

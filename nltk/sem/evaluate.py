@@ -192,8 +192,7 @@ class Valuation(dict):
 # when no whitespace precedes it, which no split or tuple ever started inside.
 #: Max length in characters of one parenthesised tuple expression in a
 #: valuation set; mirrors the {1,1024} run in _TUPLES_RE below. The longest
-#: shipped tuple (grammars/sample_grammars/valuation1.val, the semantics
-#: doctests and the sem demos) is 8 chars.
+#: shipped tuple (valuation1.val, the doctests and the demos) is 8 chars.
 MAX_TUPLE_LENGTH = 1024
 
 _VAL_SPLIT_RE = redos.compile(r"(?:(?<!\s)\s*)?(?<!=)=+>\s*")
@@ -203,7 +202,6 @@ _TUPLES_RE = redos.compile(
                                 (\([^()]{1,1024}\))  # tuple-expression; bounded run
                                                      # that excludes its `(` anchor:
                                                      # unclosed parens were quadratic
-                                                     # under findall, then O(n*bound)
                                                      # with `[^)]` (CWE-407)
                                 \s*""",
     re.VERBOSE,
@@ -232,10 +230,9 @@ def _read_valuation_line(s):
     if value.startswith("{"):
         value = value[1:-1]
         tuple_strings = _TUPLES_RE.findall(value)
-        # Every "(" must open a matched tuple: a tuple over MAX_TUPLE_LENGTH
-        # chars (or an unclosed one) finds no match above, and silently reading
-        # the set as comma-separated scalars would reinterpret the relation, so
-        # refuse it instead. str.count is one O(n) pass.
+        # Every "(" must open a matched tuple: an oversized or unclosed one finds
+        # no match above, and reading the set as scalars would silently
+        # reinterpret the relation, so refuse it. str.count is one O(n) pass.
         if value.count("(") != len(tuple_strings):
             raise ValueError(
                 f"tuple expression is unclosed or longer than MAX_TUPLE_LENGTH "

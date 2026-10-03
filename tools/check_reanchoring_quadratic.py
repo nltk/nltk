@@ -6,15 +6,15 @@
 # For license information, see LICENSE.TXT
 """Fail if a re-anchoring regex operation runs an UNBOUNDED wide scan.
 
-A re-anchoring op -- ``redos.sub``/``subn``/``finditer``/``findall``/``split``/
-``search`` -- retries its match at O(n) positions in the input. If the pattern
+A re-anchoring op (``redos.sub``/``subn``/``finditer``/``findall``/``split``/
+``search``) retries its match at O(n) positions in the input. If the pattern
 pairs a repeatable anchor with an unbounded "wide" run (``[^X]*``/``[^X]+``,
 ``.*``/``.*?``, ``\\S*``/``\\D*``/``\\W*``, and the lowercase shorthand runs
 ``\\s*``/``\\d+``/``\\w*``, which re-anchor the same way) that scans toward a terminator the
 attacker can omit, every anchor position triggers an O(n) forward scan -> O(n**2)
 (CWE-400/407). The ``nltk.redos`` wall-clock timeout is only a BACKSTOP for this
 shape (it still burns a full timeout window per malicious call AND raises
-``TimeoutError`` on legitimately-large VALID input), so it is NOT a fix -- the fix
+``TimeoutError`` on legitimately-large VALID input), so it is NOT a fix; the fix
 is a ``{0,N}`` bound on the run (e.g. ``[^)]*`` -> ``[^)]{0,400}``).
 
 This is the class that let the YCOE reader (``(CODE|ID)[^)]*`` under ``sub``, PR
@@ -39,13 +39,9 @@ _EXEMPT_FILES = (os.path.join("nltk", "redos.py"),)
 # match/fullmatch anchor once and are excluded.
 _REANCHOR_OPS = frozenset({"sub", "subn", "finditer", "findall", "split", "search"})
 
-# The dangerous unbounded "wide" runs: a negated class, dot, or a category
-# escape carrying a ``*``/``+`` (no upper bound). The lowercase shorthand runs
-# (``\s*``, ``\d+``, ``\w*``) are narrower than their negated counterparts but
-# re-anchor exactly the same way (a leading ``\s*`` under split/findall was
-# retried from every position of a whitespace run, #3947), so they are guarded
-# too. A bounded ``{0,N}`` run has no ``*``/``+`` and so does not match -- that
-# is exactly the fix.
+# The unbounded "wide" runs: a negated class, dot, category escape or lowercase
+# shorthand (``\s*``, ``\d+``, ``\w*``) carrying ``*`` or ``+``; the shorthands
+# re-anchor the same way (#3947). A bounded ``{0,N}`` run does not match: the fix.
 _WIDE_RUN = re.compile(
     r"""
       \[\^[^\]]*\][*+]        # [^...]* or [^...]+   (negated class)
@@ -55,14 +51,9 @@ _WIDE_RUN = re.compile(
     re.VERBOSE,
 )
 
-# Sites reviewed and judged safe DESPITE an unbounded wide run (the anchor cannot
-# repeat O(n) times, the run cannot re-scan, or the input is not attacker length).
-# Keyed by (relpath, pattern) -> reason. Fixed sites carry a ``{0,N}`` bound and
-# are NOT listed here (they no longer match _WIDE_RUN). Populate deliberately:
-# the O(n**2) shape needs a repeatable anchor whose inner class does NOT contain
-# the run's terminator, so a run whose anchor re-introduces the terminator, or a
-# run with no terminator to re-scan, or one fed only short code-built input, is
-# linear/benign.
+# Sites judged safe despite an unbounded wide run, (relpath, pattern) -> reason:
+# the anchor cannot repeat O(n) times, the run cannot re-scan, or the input is
+# never attacker length. Fixed sites carry a ``{0,N}`` bound and are not listed.
 _REVIEWED: dict[tuple[str, str], str] = {
     ("nltk/app/chunkparser_app.py", "((\\\\.|[^#])*)(#.*)?"): (
         "GUI grammar input; the .* is an optional trailing group with no repeating "
@@ -225,7 +216,6 @@ _REVIEWED: dict[tuple[str, str], str] = {
         "                                (\\([^()]{1,1024}\\))  # tuple-expression; bounded run\n"
         "                                                     # that excludes its `(` anchor:\n"
         "                                                     # unclosed parens were quadratic\n"
-        "                                                     # under findall, then O(n*bound)\n"
         "                                                     # with `[^)]` (CWE-407)\n"
         "                                \\s*",
     ): (
@@ -310,11 +300,9 @@ def check_file(path, relpath):
         except SyntaxError:
             return []
 
-    # Pass 1: map a variable to the literal it was redos.compile()d from, so that
-    # ``PAT = redos.compile(...); PAT.finditer(...)`` is checked too (the op is a
-    # method on the compiled TimedPattern, not an inline redos.<op> call). A class
-    # attribute (``_KEY_RE = redos.compile(...)`` in a class body, used later as
-    # ``self._KEY_RE.sub`` or ``Cls._KEY_RE.sub``) is keyed by its bare name too.
+    # Pass 1: map a variable to the literal it was redos.compile()d from, so a
+    # method call on the compiled pattern is checked too; a class attribute used
+    # as ``self._KEY_RE.sub`` or ``Cls._KEY_RE.sub`` is keyed by its bare name.
     compiled = {}
     for node in ast.walk(tree):
         if isinstance(node, ast.Assign) and isinstance(node.value, ast.Call):

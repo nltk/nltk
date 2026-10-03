@@ -255,13 +255,9 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
         # convert XML to sexpr notation
         t = ALPINO_NODE.sub(lambda m: _alpino_node_to_sexpr(m, ordered), t)
         t = redos.sub(r"  </node>", r")", t)
-        # Bound the greedy runs: a repeated `<sentence>`/`<alpino_ds` anchor whose
-        # `.*` has no closing tag re-scans a crafted giant line -> O(n**2) (CWE-407).
-        # Keeping the anchor out of the run (the tempered `(?!<sentence>).`, and
-        # `[^<>]` for the tag tail) stops each scan at the next anchor, so a
-        # crafted line is O(n) rather than O(n*bound). Measured on the shipped
-        # corpus: the longest <sentence> body is 512 chars and the longest
-        # <alpino_ds ...> tail 24, one of each per tree.
+        # Keeping the anchor out of each run stops a scan at the next anchor, so
+        # a crafted line is O(n), not O(n*bound) (CWE-407); the shipped corpus
+        # peaks at 512 chars of <sentence> body and 24 of <alpino_ds> tail.
         t = redos.sub(r"<sentence>(?:(?!<sentence>).){0,8192}</sentence>", r"", t)
         t = redos.sub(r"</?alpino_ds[^<>]{0,1024}>", r"", t)
         return t

@@ -308,10 +308,9 @@ class XML_Tool:
                 while len(line):
                     line = fr.readline()
                     text = line.decode("utf-8")
-                    # Bound the token: `nkjp:`*N with no space is O(n**2) (CWE-407);
-                    # the tempered `(?!nkjp:)` keeps a scan from crossing the next
-                    # anchor, O(n) rather than O(n*bound). A real token never holds
-                    # a second `nkjp:` prefix.
+                    # `nkjp:`*N with no space was O(n**2) (CWE-407); the tempered
+                    # `(?!nkjp:)` stops a scan at the next anchor, O(n) not
+                    # O(n*bound). A real token never holds a second `nkjp:`.
                     x = redos.split(
                         r"nkjp:(?:(?!nkjp:)[^ ]){0,256} ", text
                     )  # in all files
