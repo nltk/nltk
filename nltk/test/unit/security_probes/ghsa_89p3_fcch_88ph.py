@@ -24,15 +24,15 @@ FLAT_BIG = 4 * FLAT_SMALL
 #: flat_lexicon.
 FLAT_ENTRIES = 4
 
+#: Words of the lexicons, in the order the entries take them.
+_WORDS = ("w", "v", "u", "t", "s", "r")
+
 
 def flat_lexicon(n):
     """A lexicon of FLAT_ENTRIES words, each a flat chain of ``n`` applications."""
     chain = "S" + "/S" * n
     words = _WORDS[:FLAT_ENTRIES]
     return ":- S\n" + "".join(word + " => " + chain + "\n" for word in words)
-
-
-_WORDS = ("w", "v", "u", "t", "s", "r")
 
 
 #: Bracket depth of the nested leg. The pre-fix parser re-sliced the bracketed
