@@ -8,7 +8,7 @@ is charged its CPU time, so a descheduled interpreter does not inflate it, and
 a waiting block is charged its wall time, so a hang that sleeps or blocks is
 still seen. Real sleeps and real spinning, nothing mocked."""
 
-import sys
+import hashlib
 import threading
 import time
 
@@ -248,9 +248,9 @@ def test_assert_subquadratic_separates_linear_from_quadratic_cpu_work():
     assert "ScalingSample(" in str(failure.value)
 
 
-# === the runner regimes, simulated with real spinning ===
-# Spinning threads share the interpreter lock, so a sample or calibration unit
-# taken while they spin costs more CPU for the same work, as on a loaded runner.
+# === the runner regimes, simulated with real work on sibling threads ===
+# While the siblings hash, their CPU seconds accrue to the process clock beside
+# the measured thread's, so every sample and unit costs more for the same work.
 
 
 def _work(n):
@@ -261,7 +261,23 @@ def _work(n):
 
 
 class _Siblings:
-    """``count`` threads that spin in pure Python while ``spinning`` is set."""
+    """``count`` threads that hash a buffer while ``spinning`` is set.
+
+    The hashing runs in C with the interpreter lock released, so a sibling
+    works on its own core continuously and touches the lock only once per
+    buffer: its CPU seconds reach the process clock steadily, the same for a
+    long sample as for a short calibration unit, as a worker on the other
+    hyperthread of a hosted runner's core costs the measured thread
+    throughput steadily. Threads that spun in pure Python took turns at the
+    lock instead, and the turns were not fair: on the ubuntu runners the
+    measured thread was starved through one unit (99 ms a chunk against 2.3)
+    and left alone through a whole rep, so the load the unit read and the
+    load its sample bore differed and two regime tests read a linear sink
+    at 11x. The buffer is sized so one hash takes about 20 ms: a toggle of
+    the regime lands within that of the call that makes it.
+    """
+
+    BUFFER = bytes(16 * 1024 * 1024)
 
     def __init__(self, count):
         self.spinning, self.stopped = threading.Event(), False
@@ -270,11 +286,9 @@ class _Siblings:
         ]
 
     def _run(self):
-        # a sibling holds the lock for whole switch intervals, as a worker
-        # process on the other hyperthread holds its share of the core
         while not self.stopped:
             if self.spinning.wait(0.01):
-                _work(40_000)
+                hashlib.sha256(self.BUFFER).digest()
 
     def __enter__(self):
         for thread in self.threads:
@@ -308,8 +322,6 @@ def _regime_sizes():
 def _regime_samples(sink, spin_at):
     """Samples of ``sink(n, small)`` under a regime: ``spin_at(call_index,
     n, big)`` says whether the siblings spin from the start of that call."""
-    if not getattr(sys, "_is_gil_enabled", lambda: True)():
-        pytest.skip("the regimes are simulated with threads taking turns at the GIL")
     small, big = _regime_sizes()
     calls = []
     with _Siblings(_REGIME_SIBLINGS) as siblings:
