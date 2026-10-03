@@ -5,11 +5,13 @@ See also nltk/test/tokenize.doctest
 
 import hashlib
 import os
+import random
 from typing import List, Tuple
 
 import pytest
 
 from nltk.test.unit import timing
+from nltk.test.unit.test_quadratic_dos import _assert_subquadratic
 from nltk.tokenize import (
     LegalitySyllableTokenizer,
     StanfordSegmenter,
@@ -20,7 +22,7 @@ from nltk.tokenize import (
     sent_tokenize,
     word_tokenize,
 )
-from nltk.tokenize.simple import CharTokenizer
+from nltk.tokenize.simple import CharTokenizer, LineTokenizer
 from nltk.tokenize.treebank import TreebankWordDetokenizer
 
 from . import _mp_ctx
@@ -1071,6 +1073,13 @@ class TestTokenize:
             (10, 11),
         ]
 
+    @pytest.mark.parametrize("blanklines", ["keep", "discard", "discard-eof"])
+    def test_line_tokenizer_span_tokenize(self, blanklines: str) -> None:
+        text = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
+        tokenizer = LineTokenizer(blanklines=blanklines)
+        spans = list(tokenizer.span_tokenize(text))
+        assert [text[start:end] for start, end in spans] == tokenizer.tokenize(text)
+
 
 class TestStanfordSegmenterClasspathValidation:
     def _make_segmenter(self, classpath):
@@ -1358,3 +1367,97 @@ class TestTreebankWordDetokenizer:
     def test_issue_3210_ellipsis_preserved(self):
         """The mid-string period fix must not disturb ellipsis tokens (#3210)."""
         assert self.detok.detokenize(["wait", "...", "what"]) == "wait...what"
+
+
+# Every line boundary str.splitlines recognises, so LineTokenizer.span_tokenize
+# is judged against the same walk tokenize() takes, not against LF alone.
+_LINE_BOUNDARIES = {
+    "LF": chr(0x0A),
+    "CR": chr(0x0D),
+    "CRLF": chr(0x0D) + chr(0x0A),
+    "VT": chr(0x0B),
+    "FF": chr(0x0C),
+    "FS": chr(0x1C),
+    "GS": chr(0x1D),
+    "RS": chr(0x1E),
+    "NEL": chr(0x85),
+    "LS": chr(0x2028),
+    "PS": chr(0x2029),
+}
+_LINE_MODES = ["keep", "discard", "discard-eof"]
+
+
+def _spans_slice_to_tokens(tokenizer, text):
+    spans = list(tokenizer.span_tokenize(text))
+    assert [text[start:end] for start, end in spans] == tokenizer.tokenize(text), text
+    assert all(0 <= start <= end <= len(text) for start, end in spans), spans
+    assert spans == sorted(spans), spans
+
+
+class TestLineTokenizerSpans:
+    """span_tokenize must satisfy the TokenizerI contract in every blanklines
+    mode: each span slices back to the token tokenize() returns."""
+
+    @pytest.mark.parametrize("blanklines", _LINE_MODES)
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "",
+            "abc",
+            "a\nb",
+            "a\nb\n",
+            "\nabc",
+            "\n\nabc",
+            "a\n\n\nb",
+            "\n\n\n",
+            "a\n  \nb",
+            "a\n  ",
+            "a\\nb",
+            "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks.",
+        ],
+    )
+    def test_shapes_around_blank_and_edge_lines(self, blanklines, text):
+        _spans_slice_to_tokens(LineTokenizer(blanklines=blanklines), text)
+
+    @pytest.mark.parametrize("blanklines", _LINE_MODES)
+    @pytest.mark.parametrize("name", sorted(_LINE_BOUNDARIES))
+    def test_every_boundary_leading_trailing_and_doubled(self, blanklines, name):
+        b = _LINE_BOUNDARIES[name]
+        tokenizer = LineTokenizer(blanklines=blanklines)
+        for text in (b + "x", "x" + b, "one" + b + "two" + b + b + "three", b + b):
+            _spans_slice_to_tokens(tokenizer, text)
+
+    @pytest.mark.parametrize("blanklines", _LINE_MODES)
+    def test_random_mixes_of_all_boundaries(self, blanklines):
+        rng = random.Random(3919)
+        alphabet = list(_LINE_BOUNDARIES.values()) + ["a", " ", "\t", "b"]
+        tokenizer = LineTokenizer(blanklines=blanklines)
+        for _ in range(3000):
+            text = "".join(rng.choice(alphabet) for _ in range(rng.randint(0, 12)))
+            _spans_slice_to_tokens(tokenizer, text)
+
+    def test_discard_eof_drops_only_a_blank_last_line(self):
+        tokenizer = LineTokenizer(blanklines="discard-eof")
+        assert list(tokenizer.span_tokenize("a\n\nb\n  ")) == [(0, 1), (2, 2), (3, 4)]
+        assert list(tokenizer.span_tokenize("a\n\nb")) == [(0, 1), (2, 2), (3, 4)]
+
+    @pytest.mark.parametrize("blanklines", _LINE_MODES)
+    @pytest.mark.parametrize(
+        "shape",
+        [lambda n: "ab\n" * (n // 3), lambda n: "\n" * n, lambda n: "x" * n],
+        ids=["short-lines", "only-newlines", "one-long-line"],
+    )
+    def test_hostile_shapes_stay_linear(self, blanklines, shape):
+        tokenizer = LineTokenizer(blanklines=blanklines)
+
+        def op(n):
+            for _ in tokenizer.span_tokenize(shape(n)):
+                pass
+
+        _assert_subquadratic(op, 100_000, 400_000)
+
+    def test_a_large_file_of_short_lines_completes(self):
+        # the regexp path this replaced ran through the redos timeout and raised
+        # TimeoutError on a benign 3 MB input of short lines in discard mode
+        text = "ab\n" * 1_000_000
+        assert sum(1 for _ in LineTokenizer("discard").span_tokenize(text)) == 1_000_000
