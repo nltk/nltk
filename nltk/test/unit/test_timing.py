@@ -216,10 +216,9 @@ def test_paired_ratio_sees_a_quadratic_whose_last_big_run_got_the_core_alone():
 
 
 def test_paired_ratio_reads_a_lasting_slowdown_from_the_first_big_run_on():
-    # the shape of the macOS 3.12 cell of #3949's third run: the core slows
-    # for good as the first big run starts (2.4 ms a chunk before, 7 ms
-    # after), so the old rule reads the fast first block against the
-    # slowed big runs at 8.9x for a linear sink; paired it reads 4.9x
+    # the macOS 3.12 cell of #3949's third run: the core slows for good as
+    # the first big run starts (2.4 ms a chunk before, 7 ms after), and the
+    # old rule reads a linear sink at 8.9x off the fast first block
     samples = [
         _sample(0.125, 1.168, small_rate=0.00243, big_rate=0.0047),
         _sample(0.230, 1.120, small_rate=0.0070, big_rate=0.0070),
@@ -230,10 +229,9 @@ def test_paired_ratio_reads_a_lasting_slowdown_from_the_first_big_run_on():
 
 
 def test_paired_ratio_reads_a_fast_window_for_one_small_block():
-    # the shape of develop's readings of the tree printer (10.4x on macOS
-    # 3.13, 8.0x on Windows 3.10): the core runs slow throughout except for
-    # one window that one small block gets; the old rule keeps that block
-    # as the small side, paired it is one pair of three
+    # develop's readings of the tree printer (10.4x on macOS 3.13, 8.0x on
+    # Windows 3.10): one fast window that one small block gets, which the
+    # old rule keeps as the small side; paired it is one pair of three
     slow, fast = 0.0025, 0.0020
     samples = [
         _sample(0.25, 1.0, small_rate=slow, big_rate=slow),
