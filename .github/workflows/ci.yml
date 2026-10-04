@@ -152,6 +152,33 @@ jobs:
           pip install --upgrade pip
           pip install --upgrade --requirement requirements-ci.txt
 
+      - name: Install Graphviz (the real dot for the trusted-spawn tests)
+        shell: bash
+        run: |
+          # The Graphviz tests run the real dot, never a stub: apt on Linux (a
+          # root-owned /usr/bin/dot), choco on Windows, brew on macOS. Homebrew
+          # installs bin/dot as a ../Cellar/... link and sets g+w for the admin
+          # group on its prefix, which the trusted spawn refuses (another admin
+          # could swap the binary); the runner owns the prefix, so the chain is
+          # made private here exactly as an operator would, and the link stays
+          # so the default refusal and follow_link_parents=True run against it.
+          if [ "${{ runner.os }}" = "Linux" ]; then
+            sudo apt-get update -qq && sudo apt-get install -y -qq graphviz
+            dot -V
+          elif [ "${{ runner.os }}" = "macOS" ]; then
+            brew install graphviz
+            prefix="$(brew --prefix)"
+            chmod g-w,o-w "$prefix" "$prefix/bin" "$prefix/Cellar" "$prefix/Cellar/graphviz" "$prefix"/Cellar/graphviz/* "$prefix"/Cellar/graphviz/*/bin
+            ls -la "$prefix/bin/dot" "$prefix"/Cellar/graphviz/*/bin/dot
+            dot -V
+          else
+            choco install graphviz -y --no-progress
+            bin="$(ls -d /c/Program\ Files/Graphviz*/bin | head -1)"
+            "$bin/dot.exe" -c
+            "$bin/dot.exe" -V
+            cygpath -w "$bin" >> "$GITHUB_PATH"
+          fi
+
       - name: Give the runner's JDK back its private write bits (Linux)
         # The Ubuntu image runs `chmod -R 777 /usr/lib/jvm`, so every JVM there
         # is world-writable and nltk refuses to launch it (CWE-427); restore the
@@ -300,6 +327,8 @@ jobs:
         shell: bash
         env:
           PYTHONSAFEPATH: "1"
+          # the real Graphviz tests fail, rather than skip, without a dot
+          NLTK_CI_REQUIRE_GRAPHVIZ: "1"
         run: |
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
             # Windows spawn re-bootstraps pytest per subprocess; skip the plugin
