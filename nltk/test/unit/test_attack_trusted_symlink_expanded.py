@@ -1167,11 +1167,11 @@ class TestKeywordSurface:
         pass, on any platform."""
         import inspect
 
-        from nltk.internals import config_java, find_binary_absolute, java
-        from nltk.tag.hunpos import HunposTagger
-        from nltk.inference.prover9 import Prover9Command
         from nltk.classify.megam import config_megam
         from nltk.classify.tadm import config_tadm
+        from nltk.inference.prover9 import Prover9Command
+        from nltk.internals import config_java, find_binary_absolute, java
+        from nltk.tag.hunpos import HunposTagger
 
         for kw in (KEYWORD, PRIVATE_KEYWORD):
             with pytest.raises(TypeError):
