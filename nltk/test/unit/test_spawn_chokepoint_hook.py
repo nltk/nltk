@@ -196,6 +196,59 @@ def test_unrelated_attributes_and_the_reviewed_marker_are_not_flagged(tmp_path):
     assert checker._violations(str(clean)) == []
 
 
+RESERVED = {
+    "keyword": (
+        "from nltk.pathsec import spawn_trusted\n"
+        "spawn_trusted('/x', [], _follow_link_parents=True)\n"
+    ),
+    "dict_splat": (
+        "from nltk.pathsec import spawn_trusted\n"
+        "spawn_trusted('/x', [], **{'_follow_link_parents': True})\n"
+    ),
+    "private_resolver": (
+        "from nltk import pathsec\n"
+        "pathsec._resolve_trusted('/x', _follow_link_parents=True)\n"
+    ),
+    "bare_name": "_follow_link_parents = True\n",
+    "attribute": "import nltk.pathsec as p\np.spawn_trusted._follow_link_parents\n",
+    "getattr_string": (
+        "import nltk.pathsec as p\nflag = getattr(p, '_follow_link_parents')\n"
+    ),
+}
+
+
+@pytest.mark.parametrize("form, source", sorted(RESERVED.items()))
+def test_the_private_graphviz_walk_is_refused_in_any_other_module(
+    tmp_path, form, source
+):
+    # the kernel-style '..' walk is reserved for dot2img: a wrapper that
+    # names the private keyword, however it spells it, is one violation
+    checker = _load_checker()
+    planted = tmp_path / "planted.py"
+    planted.write_text(source, encoding="utf-8")
+    problems = checker._violations(str(planted))
+    assert len(problems) == 1, (form, problems)
+    assert "_follow_link_parents is reserved for the Graphviz caller" in problems[0]
+
+
+def test_the_graphviz_caller_and_nothing_else_passes_the_private_walk():
+    checker = _load_checker()
+    caller = os.path.join("nltk", "parse", "dependencygraph.py")
+    assert checker._PRIVATE_KEYWORD_CALLERS == {caller}
+    assert checker._violations(os.path.join(REPO, caller)) == []
+    with open(os.path.join(REPO, caller), encoding="utf-8") as fh:
+        assert "_follow_link_parents=follow_link_parents" in fh.read()
+    for other in (
+        os.path.join("nltk", "translate", "api.py"),
+        os.path.join("nltk", "internals.py"),
+        os.path.join("nltk", "tag", "hunpos.py"),
+        os.path.join("nltk", "inference", "prover9.py"),
+    ):
+        with open(os.path.join(REPO, other), encoding="utf-8") as fh:
+            assert "_follow_link_parents" not in fh.read(), other
+        assert checker._violations(os.path.join(REPO, other)) == [], other
+
+
 def test_pathsec_itself_is_the_only_allowed_file():
     checker = _load_checker()
     guarded = list(checker._guarded_files())

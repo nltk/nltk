@@ -30,6 +30,12 @@ source handed to ``exec``/``eval``/``compile``; every one of these is a
 violation. A deliberate, reviewed exception may be annotated with a trailing
 ``# spawn ok: <reason>`` comment on the same line.
 
+The private ``_follow_link_parents`` keyword of ``spawn_trusted`` (the
+kernel-style walk of a ``..`` inside a symlink's text, which ``dot2img``
+exposes to the user as ``follow_link_parents``) is reserved for the Graphviz
+caller: any reference to that name in another module is a violation, so no
+other tool wrapper can opt out of the default refusal.
+
 Usage: ``python tools/check_all_spawns_through_pathsec.py`` (exit 1 on any
 violation).
 """
@@ -48,6 +54,10 @@ _EXEMPT_PREFIXES = (os.path.join("nltk", "test"),)
 _ALLOWED_FILES = {os.path.join("nltk", "pathsec.py")}
 
 SUPPRESS_MARKER = "# spawn ok"
+
+# The private spawn keyword and the only non-test module that may name it.
+_PRIVATE_SPAWN_KEYWORD = "_follow_link_parents"
+_PRIVATE_KEYWORD_CALLERS = {os.path.join("nltk", "parse", "dependencygraph.py")}
 
 _SPAWNING = {
     "subprocess": {
@@ -255,6 +265,44 @@ def _smuggled(call, bindings):
     return None
 
 
+def _names_private_keyword(node):
+    """The node spells the private spawn keyword: as a keyword argument, a
+    string (``**{"_follow_link_parents": True}``, ``getattr``/``setattr``), or
+    a bare name or attribute."""
+    if isinstance(node, ast.keyword):
+        return node.arg == _PRIVATE_SPAWN_KEYWORD
+    if isinstance(node, ast.Constant):
+        return node.value == _PRIVATE_SPAWN_KEYWORD
+    if isinstance(node, ast.Name):
+        return node.id == _PRIVATE_SPAWN_KEYWORD
+    if isinstance(node, ast.Attribute):
+        return node.attr == _PRIVATE_SPAWN_KEYWORD
+    return False
+
+
+def _is_private_keyword_caller(path):
+    path = os.path.normpath(path)
+    return any(
+        path == caller or path.endswith(os.sep + caller)
+        for caller in _PRIVATE_KEYWORD_CALLERS
+    )
+
+
+def _private_keyword_violations(path, tree):
+    if _is_private_keyword_caller(path):
+        return []
+    found = []
+    for node in ast.walk(tree):
+        if _names_private_keyword(node):
+            lineno = getattr(node, "lineno", None)
+            found.append(
+                f"{path}:{lineno}: {_PRIVATE_SPAWN_KEYWORD} is reserved for the "
+                "Graphviz caller (nltk.parse.dependencygraph.dot2img); every other "
+                "tool wrapper keeps the default refusal of a '..' in a symlink"
+            )
+    return found
+
+
 def _violations(path):
     with open(path, encoding="utf-8") as fh:
         source = fh.read()
@@ -264,7 +312,7 @@ def _violations(path):
         return [f"{path}:{exc.lineno}: cannot parse ({exc.msg})"]
     lines = source.splitlines()
     bindings = _bindings(tree)
-    found = []
+    found = _private_keyword_violations(path, tree)
     seen = set()
     for node in ast.walk(tree):
         if not isinstance(node, ast.Call):
