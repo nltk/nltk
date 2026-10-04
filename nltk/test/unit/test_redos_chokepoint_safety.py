@@ -284,7 +284,11 @@ class TestTimeoutIsTheGuarantee:
         ):
             with pytest.raises(TimeoutError):
                 call()
-        assert tp.match(self.BAIT, timeout=0.3) is None
+        # the anchored match fails fast in about 150 ms of work; against a
+        # 0.3 s cap that is a wall-clock race a loaded Windows runner lost
+        # once in 60 runs, so measure the work the way the suite does
+        with timing.budget(2.0, cpu_bound=True):
+            assert tp.match(self.BAIT, timeout=None) is None
 
     def test_backtracking_methods_fire_the_timeout(self):
         # The methods that scan the whole input (all but anchored ``match``,
