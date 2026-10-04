@@ -1162,35 +1162,58 @@ class TestKeywordSurface:
                 dependencygraph.dot2img(GRAPH, follow_link_parents=value)
         assert seen == [False, True]
 
-    def test_no_other_wrapper_accepts_the_keyword(self, home, monkeypatch):
-        """Every other tool wrapper keeps the default: a Homebrew-shaped
-        ``..`` link is refused by name and there is no keyword to pass."""
+    def test_no_other_wrapper_accepts_the_keyword(self):
+        """Every other tool wrapper keeps the default: there is no keyword to
+        pass, on any platform."""
         import inspect
 
-        from nltk.internals import config_java, find_binary_absolute
+        from nltk.internals import config_java, find_binary_absolute, java
         from nltk.tag.hunpos import HunposTagger
+        from nltk.inference.prover9 import Prover9Command
+        from nltk.classify.megam import config_megam
+        from nltk.classify.tadm import config_tadm
 
-        real = _tool(f"{home}/Cellar/tool/1/bin/tool")
-        _ln("../Cellar/tool/1/bin/tool", f"{home}/bin/java")
-        _ln("../Cellar/tool/1/bin/tool", f"{home}/bin/prover9")
-        _ln("../Cellar/tool/1/bin/tool", f"{home}/bin/hunpos-tag")
-        monkeypatch.setenv("PATH", f"{home}/bin")
-        monkeypatch.delenv("JAVA_HOME", raising=False)
-        monkeypatch.delenv("JAVAHOME", raising=False)
         for kw in (KEYWORD, PRIVATE_KEYWORD):
             with pytest.raises(TypeError):
                 config_java(**{kw: True})
             with pytest.raises(TypeError):
                 find_binary_absolute("prover9", **{kw: True})
-            params = inspect.signature(HunposTagger.__init__).parameters
-            assert kw not in params
-            assert not any(p.kind is p.VAR_KEYWORD for p in params.values())
+            with pytest.raises(TypeError):
+                config_megam(**{kw: True})
+            with pytest.raises(TypeError):
+                config_tadm(**{kw: True})
+            for fn in (
+                HunposTagger.__init__,
+                Prover9Command.__init__,
+                java,
+                pathsec.resolve_trusted_executable,
+                pathsec.untrusted_executable_reason,
+            ):
+                params = inspect.signature(fn).parameters
+                assert kw not in params, fn
+                assert not any(p.kind is p.VAR_KEYWORD for p in params.values()), fn
+
+    @POSIX
+    def test_a_homebrew_shaped_link_stays_refused_for_every_other_tool(
+        self, home, monkeypatch
+    ):
+        """java, prover9 and hunpos found behind a ``..`` link: the finder
+        hands the link over, the default spawn refuses it by name, and the
+        error never suggests a keyword they do not have."""
+        from nltk.internals import find_binary_absolute
+
+        real = _tool(f"{home}/Cellar/tool/1/bin/tool")
+        for name in ("java", "prover9", "hunpos-tag"):
+            _ln("../Cellar/tool/1/bin/tool", f"{home}/bin/{name}")
+        monkeypatch.setenv("PATH", f"{home}/bin")
+        monkeypatch.delenv("JAVA_HOME", raising=False)
+        monkeypatch.delenv("JAVAHOME", raising=False)
         for name in ("java", "prover9", "hunpos-tag"):
             found = find_binary_absolute(name, binary_names=[name])
             assert _same(found, f"{home}/bin/{name}")
             with pytest.raises(pathsec.TrustError, match="not followed by default"):
                 pathsec.spawn_trusted(found, [])
-        assert _ran(home) == []
+        assert _ran(home) == [] and os.path.exists(real)
 
 
 @POSIX
@@ -1222,6 +1245,176 @@ def test_only_the_graphviz_caller_names_the_private_walk():
 
 
 # --------------------------------------------------------------------------- #
+# The real Graphviz: nothing stubbed. CI installs it on every runner and sets  #
+# NLTK_CI_REQUIRE_GRAPHVIZ so a missing or refused dot fails, never skips.     #
+# --------------------------------------------------------------------------- #
+
+PNG = b"\x89PNG\r\n\x1a\n"
+
+
+def _required():
+    return bool(os.environ.get("NLTK_CI_REQUIRE_GRAPHVIZ"))
+
+
+def _real_dot():
+    """The Graphviz ``dot`` on PATH, resolved absolute by the finder."""
+    from nltk.internals import find_binary_absolute
+
+    try:
+        return find_binary_absolute("dot")
+    except LookupError:
+        if _required():
+            pytest.fail(
+                "NLTK_CI_REQUIRE_GRAPHVIZ is set but no Graphviz dot is on PATH"
+            )
+        pytest.skip("no Graphviz dot on PATH")
+
+
+def _valid_svg(text):
+    """A real rendering of GRAPH: well-formed XML, an svg root, both labels."""
+    import xml.etree.ElementTree as ET
+
+    root = ET.fromstring(text)
+    assert root.tag.endswith("svg") and "</svg>" in text
+    labels = {el.text or "" for el in root.iter() if el.tag.endswith("text")}
+    # dot2img's GRAPH labels its nodes a and b, DependencyGraph "1 (a)" / "2 (b)"
+    assert all(any(name in label for label in labels) for name in "ab"), labels
+    return text
+
+
+def _graph_objects():
+    from nltk.parse.dependencygraph import DependencyGraph
+    from nltk.translate.api import AlignedSent, Alignment
+
+    dg = DependencyGraph("a N 2\nb V 0")
+    sent = AlignedSent(["a"], ["b"], Alignment.fromstring("0-0"))
+    return dg, sent
+
+
+class TestRealGraphviz:
+    def test_the_installed_dot_renders_or_its_refusal_is_caught(self):
+        """The dot as installed (apt: a root-owned file; choco: a .exe; brew:
+        a ``bin/dot -> ../Cellar/...`` link): a trusted file renders in both
+        modes; the Homebrew link is refused by default with the keyword named
+        and renders under it; anything else refused is reported with its
+        reason in both modes, and in CI that is a failure to fix in the
+        workflow (the chain is made private), never a skip."""
+        from nltk.parse.dependencygraph import dot2img
+
+        dot = _real_dot()
+        reason, link_parent = pathsec._refusal(dot)
+        if reason is not None and not link_parent:
+            for kw in ({}, {KEYWORD: True}):
+                with pytest.raises(Exception, match="Cannot create image") as excinfo:
+                    dot2img(GRAPH, **kw)
+                assert reason in str(excinfo.value)
+                assert isinstance(excinfo.value.__cause__, pathsec.TrustError)
+            message = f"the installed dot {dot!r} is refused: {reason}"
+            if _required():
+                pytest.fail(message)
+            pytest.skip(message)
+        dg, sent = _graph_objects()
+        if link_parent:
+            for call in (
+                lambda: dot2img(GRAPH),
+                dg._repr_svg_,
+                sent._repr_svg_,
+                dg.to_image,
+                sent.to_image,
+            ):
+                with pytest.raises(Exception, match="Cannot create image") as excinfo:
+                    call()
+                message = str(excinfo.value)
+                assert "not followed by default" in message
+                assert f"dot2img(..., {KEYWORD}=True)" in message
+                assert excinfo.value.__cause__.link_parent is True
+        else:
+            _valid_svg(dot2img(GRAPH))
+            assert dot2img(GRAPH, "png")[:8] == PNG
+            _valid_svg(dg._repr_svg_())
+            _valid_svg(sent._repr_svg_())
+        _valid_svg(dot2img(GRAPH, follow_link_parents=True))
+        assert dot2img(GRAPH, "png", follow_link_parents=True)[:8] == PNG
+        _valid_svg(dg.to_image(follow_link_parents=True))
+        _valid_svg(sent.to_image(follow_link_parents=True))
+        assert dg.to_image("png", follow_link_parents=True)[:8] == PNG
+        assert sent.to_image("png", follow_link_parents=True)[:8] == PNG
+
+    @POSIX
+    def test_the_installed_dot_behind_a_homebrew_shaped_chain(self, home, monkeypatch):
+        """The real binary at the end of a real ``bin/dot -> ../Cellar/
+        graphviz/<v>/bin/dot`` chain built here: refused by default with the
+        link, its ``..`` and the keyword named, the TrustError as the cause;
+        valid SVG and PNG under the keyword, through dot2img and both
+        to_image methods; the two-hop sibling link too. The same real binary
+        behind a world-writable directory is refused in both modes with that
+        reason and without the keyword."""
+        from nltk.parse.dependencygraph import dot2img
+
+        dot = _real_dot()
+        real = pathsec._resolve_trusted(dot, _follow_link_parents=True)
+        if real is None:
+            message = f"the installed dot {dot!r} is refused: {_reason(dot, 'keyword')}"
+            if _required():
+                pytest.fail(message)
+            pytest.skip(message)
+        cellar = f"{home}/usr/local/Cellar/graphviz/14.1.2/bin"
+        _ln(real, f"{cellar}/dot")
+        _ln("dot", f"{cellar}/circo")
+        _ln("../Cellar/graphviz/14.1.2/bin/dot", f"{home}/usr/local/bin/dot")
+        _ln("../Cellar/graphviz/14.1.2/bin/circo", f"{home}/usr/local/bin/circo")
+        monkeypatch.setenv("PATH", f"{home}/usr/local/bin")
+        dg, sent = _graph_objects()
+        for call in (
+            lambda: dot2img(GRAPH),
+            lambda: dot2img(GRAPH, "png"),
+            dg._repr_svg_,
+            sent._repr_svg_,
+            dg.to_image,
+            sent.to_image,
+        ):
+            with pytest.raises(Exception, match="Cannot create image") as excinfo:
+                call()
+            message = str(excinfo.value)
+            assert f"symlink {home}/usr/local/bin/dot" in message.replace("'", "")
+            assert "'../Cellar/graphviz/14.1.2/bin/dot'" in message
+            assert "not followed by default" in message
+            assert f"dot2img(..., {KEYWORD}=True)" in message
+            cause = excinfo.value.__cause__
+            assert isinstance(cause, pathsec.TrustError) and cause.link_parent is True
+        _valid_svg(dot2img(GRAPH, follow_link_parents=True))
+        assert dot2img(GRAPH, "png", follow_link_parents=True)[:8] == PNG
+        _valid_svg(dg.to_image(follow_link_parents=True))
+        _valid_svg(sent.to_image(follow_link_parents=True))
+        assert dg.to_image("png", follow_link_parents=True)[:8] == PNG
+        circo = f"{home}/usr/local/bin/circo"
+        assert pathsec.resolve_trusted_executable(circo) is None
+        proc = pathsec.spawn_trusted(
+            circo,
+            ["-Tsvg"],
+            _follow_link_parents=True,
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+        assert _same(proc.args[0], real)
+        _valid_svg(proc.communicate(GRAPH.encode())[0].decode())
+        # the same real binary behind a world-writable directory
+        _dir(f"{home}/ww")
+        _ln(real, f"{home}/ww/dot")
+        os.chmod(f"{home}/ww", 0o777)
+        _ln("../ww/dot", f"{home}/sbin/dot")
+        monkeypatch.setenv("PATH", f"{home}/sbin")
+        for kw in ({}, {KEYWORD: True}):
+            with pytest.raises(Exception, match="Cannot create image") as excinfo:
+                dot2img(GRAPH, **kw)
+            message = str(excinfo.value)
+            assert "world-writable" in message and f"{home}/ww" in message
+            assert KEYWORD not in message
+            assert excinfo.value.__cause__.link_parent is False
+
+
+# --------------------------------------------------------------------------- #
 # Windows: junctions and reparse points, best-effort by design, both modes.    #
 # --------------------------------------------------------------------------- #
 
@@ -1248,7 +1441,8 @@ class TestWindowsJunctions:
         entry = str(tmp_path / "junc" / "dot.exe")
         got = _resolve(entry, mode)
         assert got is not None and os.path.isfile(got)
-        assert os.path.samefile(got, real) and "junc" not in got.lower()
+        assert os.path.samefile(got, real)
+        assert "junc" not in [part.lower() for part in Path(got).parts]
         assert _reason(entry, mode) is None
 
     @pytest.mark.parametrize("mode", MODES)

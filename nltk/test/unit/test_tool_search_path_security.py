@@ -1068,9 +1068,20 @@ class TestDot:
     def test_real_dot_renders_through_the_trusted_spawn(self, tmp_path):
         import nltk.parse.dependencygraph as dg
 
-        svg = dg.dot2img("digraph { a -> b }", "svg")
+        dot = internals.find_binary_absolute("dot")
+        reason, link_parent = pathsec._refusal(dot)
+        if link_parent:
+            # a Homebrew-style link on PATH: refused by default, by name
+            with pytest.raises(Exception, match="follow_link_parents=True"):
+                dg.dot2img("digraph { a -> b }", "svg")
+        elif reason is not None:
+            pytest.skip(f"the installed dot is refused: {reason}")
+        else:
+            svg = dg.dot2img("digraph { a -> b }", "svg")
+            assert "<svg" in svg and "</svg>" in svg
+        svg = dg.dot2img("digraph { a -> b }", "svg", follow_link_parents=True)
         assert "<svg" in svg and "</svg>" in svg
-        png = dg.dot2img("digraph { a -> b }", "png")
+        png = dg.dot2img("digraph { a -> b }", "png", follow_link_parents=True)
         assert png[:8] == b"\x89PNG\r\n\x1a\n"
 
 
