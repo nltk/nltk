@@ -1333,9 +1333,11 @@ class TestJavaSpawn:
         monkeypatch.setattr(internals, "_java_bin", str(links / "java_in"))
         with pytest.raises(_Spawned):
             internals.java(["Main"])
-        # the resolved binary is what runs, by its real path, not the link
-        assert _same(seen["cmd"][0], real) and not os.path.islink(seen["cmd"][0])
-        assert seen["kwargs"]["executable"] == seen["cmd"][0]
+        # the resolved binary is what runs (executable=); argv[0] is the link
+        # the caller invoked, as the kernel passes it to a multi-call binary
+        run = seen["kwargs"]["executable"]
+        assert _same(run, real) and not os.path.islink(run)
+        assert seen["cmd"][0] == str(links / "java_in")
 
 
 class TestTrustedJavaStubFixture:

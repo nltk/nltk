@@ -554,7 +554,8 @@ class TestClimbingLayouts:
         assert not os.path.islink(got)  # the resolved path, never the link
         assert _reason(entry, "keyword") is None
         proc, out = _run(entry, "keyword")
-        assert _same(proc.args[0], real) and proc.args[0] == got
+        # argv[0] is the invoked path, as the kernel passes it; the inode run is real
+        assert proc.args[0] == entry and _same(proc.args[0], real)
         assert out.strip() == "GRAPHVIZ-STUB -Tsvg", (layout, out)
         assert _ran(home) == [real + ".ran"]
         os.unlink(real + ".ran")
@@ -580,7 +581,7 @@ class TestClimbingLayouts:
         assert got is not None and _same(got, real), (layout, mode, got)
         assert not os.path.islink(got) and _reason(entry, mode) is None
         proc, out = _run(entry, mode)
-        assert proc.args[0] == got and out.strip() == "GRAPHVIZ-STUB -Tsvg"
+        assert proc.args[0] == entry and out.strip() == "GRAPHVIZ-STUB -Tsvg"
         assert _ran(home) == [real + ".ran"]
         os.unlink(real + ".ran")
         assert _dot2img(monkeypatch, bindir, mode).strip() == "GRAPHVIZ-STUB -Tsvg"
@@ -1052,13 +1053,70 @@ class TestTeeth:
         monkeypatch.setattr(pathsec, "_resolve_trusted", resolve)
         proc, out = _run(Path(entry), "keyword")
         assert calls == [(entry, {PRIVATE_KEYWORD: True})]
-        assert proc.args[0] == os.path.realpath(real)
+        assert proc.args[0] == entry  # the invoked path, read once
         assert out.strip() == "GRAPHVIZ-STUB -Tsvg"
 
 
 # --------------------------------------------------------------------------- #
 # The keyword is a bool, accepted only where documented, and nowhere else.     #
 # --------------------------------------------------------------------------- #
+
+
+class TestInvokedName:
+    """What reaches ``execve``: the inode run is the verified resolved file
+    (``executable=``), argv[0] is the verified path the caller invoked. A
+    multi-call binary dispatches on argv[0] (Debian's ``/usr/bin/dot`` is a
+    link to ``libgvc6-config-update``), so the resolved path there would make
+    dot refuse to run; a shell stub cannot see argv[0], the real dot on the
+    Linux runners does, in ``TestRealGraphviz``."""
+
+    @staticmethod
+    def _capture(monkeypatch):
+        seen = {}
+        true_popen = subprocess.Popen
+
+        def popen(args, **kw):
+            seen["args"], seen["executable"] = list(args), kw.get("executable")
+            return true_popen(args, **kw)
+
+        monkeypatch.setattr(pathsec.subprocess, "Popen", popen)
+        return seen
+
+    @pytest.mark.parametrize("layout", sorted(CLIMBING), ids=sorted(CLIMBING))
+    def test_a_climbing_link_runs_its_target_under_the_invoked_name(
+        self, home, monkeypatch, layout
+    ):
+        bindir, entry, real = CLIMBING[layout](home)
+        seen = self._capture(monkeypatch)
+        proc, out = _run(entry, "keyword")
+        assert seen["args"] == [entry, "-Tsvg"]
+        assert _same(seen["executable"], real) and not os.path.islink(
+            seen["executable"]
+        )
+        assert out.strip() == "GRAPHVIZ-STUB -Tsvg"
+
+    @pytest.mark.parametrize("mode", MODES)
+    def test_a_debian_multicall_link_keeps_its_own_name(self, home, monkeypatch, mode):
+        """``dot``, ``neato`` and ``circo`` are links to one binary; each runs
+        the shared inode under its own name, which is what tells the binary
+        which program to be."""
+        bindir, entry, real = multicall(home)
+        for name in ("dot", "neato", "circo"):
+            seen = self._capture(monkeypatch)
+            proc, out = _run(f"{bindir}/{name}", mode)
+            assert seen["args"][0] == f"{bindir}/{name}", (mode, name, seen)
+            assert _same(seen["executable"], real)
+            assert out.strip() == "GRAPHVIZ-STUB -Tsvg"
+
+    @pytest.mark.parametrize("mode", MODES)
+    def test_a_path_like_is_invoked_by_its_text_read_once(
+        self, home, monkeypatch, mode
+    ):
+        real = _tool(f"{home}/real/dot")
+        entry = _ln(real, f"{home}/bin/dot")  # absolute link, no '..'
+        seen = self._capture(monkeypatch)
+        _run(Path(entry), mode)
+        assert seen["args"][0] == entry and _same(seen["executable"], real)
 
 
 class TestKeywordSurface:

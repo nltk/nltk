@@ -627,7 +627,10 @@ def spawn_trusted(target, args=(), *, _follow_link_parents=False, **popen_kw):
 
     ``shell`` may not be set (a shell would re-interpret the command); ``env``
     defaults to :func:`safe_env` and ``close_fds`` to True. The resolved path is
-    what gets executed, and argv[0] is that same resolved path.
+    what gets executed (``executable=``); argv[0] is the verified path the
+    caller invoked, as the kernel passes it, because a multi-call binary
+    chooses what to be from that name (Debian's ``/usr/bin/dot`` is a link to
+    ``libgvc6-config-update``, which refuses to run under its own name).
 
     Executing the resolved path is race-free against the in-scope attacker
     (another unprivileged local user). :func:`resolve_trusted_executable` has
@@ -678,7 +681,9 @@ def spawn_trusted(target, args=(), *, _follow_link_parents=False, **popen_kw):
         )
         err.link_parent = link_parent
         raise err
-    return subprocess.Popen([real, *args], executable=real, **popen_kw)
+    # argv[0] is data for the program, not a lookup: the inode run is `real`
+    invoked = probe if isinstance(probe, str) else real
+    return subprocess.Popen([invoked, *args], executable=real, **popen_kw)
 
 
 def _get_allowed_roots():
