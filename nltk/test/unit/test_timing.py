@@ -711,6 +711,8 @@ def test_regime_a_clock_that_jumps_backwards_is_refused(monkeypatch, clock_class
     monkeypatch.setattr(timing, "_calibration_chunk", chunk_then_jump_back)
     with pytest.raises(ValueError, match="CPU clock advanced -"):
         timing.calibration_rate()
+    # at its first chunk, not at the hard deadline a stopped clock waits for
+    assert clock.wall == pytest.approx(2000.0 + _CLEAN_CHUNK)
 
 
 @pytest.mark.parametrize(
