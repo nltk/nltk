@@ -241,8 +241,38 @@ class DependencyGraph:
 
         return s
 
+    def to_image(self, t="svg", *, follow_link_parents=False):
+        """Render the graph with the Graphviz ``dot`` program, as
+        :func:`dot2img` does on :meth:`to_dot`; ``t`` is the output format.
+
+        ``follow_link_parents`` is the keyword that :func:`dot2img` documents:
+        off by default, a ``dot`` installed as a symlink whose text climbs with
+        ``..`` (Homebrew's ``bin/dot -> ../Cellar/graphviz/<v>/bin/dot``) is
+        refused outright; pass ``True`` explicitly to resolve that link the way
+        the kernel does, with every directory on the resolved chain verified.
+
+        >>> from nltk.test.setup_fixt import check_binary
+        >>> check_binary('dot')
+        >>> dg = DependencyGraph(
+        ...     'John N 2\\n'
+        ...     'loves V 0\\n'
+        ...     'Mary N 2'
+        ... )
+        >>> dg.to_image().split('\\n')[0]
+        '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'
+        >>> dg.to_image('png')[:4]
+        b'\\x89PNG'
+        """
+        return dot2img(self.to_dot(), t, follow_link_parents=follow_link_parents)
+
     def _repr_svg_(self):
         """Show SVG representation of the transducer (IPython magic).
+
+        IPython calls this with no arguments, so it renders through
+        :meth:`to_image` with its defaults: a ``dot`` behind a ``..`` symlink
+        is refused here, and only an explicit ``to_image(follow_link_parents=
+        True)`` call can resolve it.
+
         >>> from nltk.test.setup_fixt import check_binary
         >>> check_binary('dot')
         >>> dg = DependencyGraph(
@@ -254,8 +284,7 @@ class DependencyGraph:
         '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'
 
         """
-        dot_string = self.to_dot()
-        return dot2img(dot_string)
+        return self.to_image()
 
     def __str__(self):
         return pformat(self.nodes)
@@ -688,7 +717,18 @@ def _conll_field(address, name, value):
     return text
 
 
-def dot2img(dot_string, t="svg"):
+#: The one sentence a Graphviz refusal adds when, and only when, the refused
+#: check was a ``..`` inside a symlink's text that the keyword would resolve.
+_LINK_PARENT_ADVICE = (
+    "The dot binary is reached through a symlink whose text climbs with '..' "
+    "(Homebrew's bin/dot -> ../Cellar/graphviz/<v>/bin/dot shape), which NLTK "
+    "does not follow by default; pass dot2img(..., follow_link_parents=True) "
+    "(or to_image(follow_link_parents=True)) to resolve that link the way the "
+    "kernel does, with every directory on the resolved path still verified."
+)
+
+
+def dot2img(dot_string, t="svg", *, follow_link_parents=False):
     """
     Create image representation fom dot_string, using the 'dot' program
     from the Graphviz package.
@@ -698,7 +738,37 @@ def dot2img(dot_string, t="svg"):
 
     Note that the "capture_output" option of subprocess.run() is only available
     with text formats (like svg), but not with binary image formats (like png).
+
+    ``dot`` is found absolute-only on ``PATH`` and run through
+    :func:`nltk.pathsec.spawn_trusted`, which verifies that every directory
+    and symlink from the root down to the binary, and the binary itself, is
+    owned by you or root and writable by nobody else, and refuses outright a
+    ``..`` component anywhere, including inside a symlink's own text. Homebrew
+    installs ``dot`` as exactly such a link (``/usr/local/bin/dot ->
+    ../Cellar/graphviz/<v>/bin/dot``, or under ``/opt/homebrew``), so by
+    default it is refused with the reason in the exception message.
+
+    ``follow_link_parents`` (keyword-only, off by default, must be a ``bool``)
+    resolves a ``..`` inside a symlink's text the way the kernel does, stepping
+    to the real parent of the already-resolved directory holding the link, and
+    then verifies every directory descended into, every further link hop and
+    its owner, the hop bound and the final regular file exactly as before. It
+    is off by default because a link's text is content on disk that the default
+    walk does not interpret, and it is accepted only here, for Graphviz: no
+    other tool wrapper has it. A ``..`` in the path you supply yourself is
+    refused in both modes. Example::
+
+        >>> from nltk.parse.dependencygraph import dot2img  # doctest: +SKIP
+        >>> dot2img("digraph { a -> b }")  # doctest: +SKIP
+        Traceback (most recent call last):
+        Exception: Cannot create image representation by running dot ...
+        >>> svg = dot2img("digraph { a -> b }", follow_link_parents=True)  # doctest: +SKIP
     """
+    if type(follow_link_parents) is not bool:
+        raise TypeError(
+            "follow_link_parents must be True or False, not "
+            f"{type(follow_link_parents).__name__}"
+        )
 
     try:
         # Run the absolute path the finder returns, not the bare name: a
@@ -709,13 +779,14 @@ def dot2img(dot_string, t="svg"):
         raise Exception("Cannot find the dot binary from Graphviz package") from e
 
     try:
-        # Route through the trusted-exec chokepoint like translate.api: verify
-        # the dot binary is on a path no other local user can swap, refuse a
-        # shell, and scrub the loader environment before exec (CWE-426/427/732).
+        # Route through the trusted-exec chokepoint (AlignedSent renders through
+        # here too): verify the dot binary is on a path no other local user can
+        # swap, refuse a shell, scrub the loader environment (CWE-426/427/732).
         text = t in ["dot", "dot_json", "json", "svg"]
         proc = spawn_trusted(
             dot_binary,
             ["-T%s" % t],
+            _follow_link_parents=follow_link_parents,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -728,9 +799,10 @@ def dot2img(dot_string, t="svg"):
     except TrustError as e:
         # the reason (which directory or link failed which check) is what the
         # operator needs to see; it used to be hidden behind the generic message
+        advice = f" {_LINK_PARENT_ADVICE}" if e.link_parent else ""
         raise Exception(
             "Cannot create image representation by running dot from string: "
-            f"{dot_string}: {e}"
+            f"{dot_string}: {e}{advice}"
         ) from e
     except Exception as e:
         raise Exception(
