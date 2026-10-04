@@ -138,8 +138,9 @@ def within_budget(func, seconds, repeats=3, cpu_bound=None):
 #: resolve, short enough to read the core's rate at the moment of the sample.
 CALIBRATION_SECONDS = 0.1
 
-#: Loop iterations of one calibration chunk, a fixed amount of pure-Python
-#: work; a unit times whole chunks and reports the CPU seconds one costs.
+#: Loop iterations of one calibration chunk: a fixed amount of pure-Python
+#: work, short against CALIBRATION_SECONDS (a unit ends on a whole chunk, so
+#: the chunk is its overshoot) and long enough that the loop is the cost.
 CALIBRATION_CHUNK = 50_000
 
 
@@ -162,12 +163,20 @@ def calibration_rate():
     in that stretch must be normalised by.
     """
     chunks, start = 0, time.process_time()
+    wall_start = time.perf_counter()
     while True:
         _calibration_chunk()
         chunks += 1
         elapsed = time.process_time() - start
         if elapsed >= CALIBRATION_SECONDS:
             return elapsed / chunks
+        # a CPU clock that stopped or went backwards: refuse, never spin on
+        waited = time.perf_counter() - wall_start
+        if elapsed < 0 or waited >= hard_deadline_for(CALIBRATION_SECONDS):
+            raise ValueError(
+                f"the CPU clock advanced {elapsed:.3f}s over {chunks} chunks "
+                f"in {waited:.0f}s of wall time"
+            )
 
 
 class ScalingSample:
@@ -254,9 +263,28 @@ def paired_ratio(samples, noise_floor=0.1, cpu_bound=None):
     seconds on a calm machine. Wall seconds are paired the same way without
     the rate (a wait does not speed up with the core); a waiting op keeps the
     higher of its two ratios, so the fallback only tightens.
+
+    A sample the clocks could not resolve (a big run or a rate that did not
+    advance the clock, a clock that went backwards, a reading that is not
+    finite) is refused with ``ValueError``, never read as a ratio; a small
+    block under resolution keeps the floor. A load that is on for the samples
+    of one side only and off for every unit beside them leaves no trace in
+    the rates and is read at face value, as the old rule read it: that is the
+    limit of any calibration placed beside a sample.
     """
     if not samples:
         raise ValueError("no samples")
+    for s in samples:
+        readings = (s.small_cpu, s.small_wall, s.small_rate)
+        readings += (s.big_cpu, s.big_wall, s.big_rate)
+        # a reading that is not finite, a big run or a rate that did not
+        # advance the clock, or a clock that went backwards: refuse
+        if (
+            any(v - v != 0 for v in readings)
+            or min(s.big_cpu, s.big_wall, s.small_rate, s.big_rate) <= 0
+            or min(s.small_cpu, s.small_wall) < 0
+        ):
+            raise ValueError(f"unresolvable sample: {s!r}")
     reference = _median([s.small_rate for s in samples] + [s.big_rate for s in samples])
     cpu_ratios, wall_ratios, shares = [], [], []
     for s in samples:
