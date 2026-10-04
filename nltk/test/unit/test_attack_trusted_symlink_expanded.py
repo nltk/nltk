@@ -1062,6 +1062,7 @@ class TestTeeth:
 # --------------------------------------------------------------------------- #
 
 
+@POSIX
 class TestInvokedName:
     """What reaches ``execve``: the inode run is the verified resolved file
     (``executable=``), argv[0] is the verified path the caller invoked. A

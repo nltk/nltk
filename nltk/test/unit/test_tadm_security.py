@@ -53,7 +53,8 @@ def test_call_tadm_refuses_untrusted_binary(tmp_path, monkeypatch):
 
 def test_call_tadm_reaches_spawn_for_a_trusted_binary(monkeypatch):
     """Benign control: a tadm binary under a private staged root reaches the
-    (trapped) spawn with an absolute, resolved argv[0] and no shell."""
+    (trapped) spawn running the resolved binary under an absolute argv[0], the
+    path it was called by, and no shell."""
     binp = _mkbin(os.path.join(_staging(), "inst"))
     monkeypatch.setattr(tadm, "_tadm_bin", binp)
 
@@ -66,7 +67,13 @@ def test_call_tadm_reaches_spawn_for_a_trusted_binary(monkeypatch):
             return b"", b""
 
     def _fake_popen(cmd, *a, **k):
-        calls.append(SimpleNamespace(argv=list(cmd), shell=k.get("shell", False)))
+        calls.append(
+            SimpleNamespace(
+                argv=list(cmd),
+                shell=k.get("shell", False),
+                executable=k.get("executable"),
+            )
+        )
         return _FakeProc()
 
     monkeypatch.setattr(ps.subprocess, "Popen", _fake_popen)
@@ -74,5 +81,8 @@ def test_call_tadm_reaches_spawn_for_a_trusted_binary(monkeypatch):
     assert len(calls) == 1
     assert calls[0].shell is False
     assert os.path.isabs(calls[0].argv[0])
-    assert calls[0].argv[0] == os.path.realpath(binp)
+    # the verified resolved file runs (executable=); argv[0] is the path as called
+    run = calls[0].executable
+    assert run == os.path.realpath(binp) and not os.path.islink(run)
+    assert calls[0].argv[0] == binp
     assert calls[0].argv[1:] == ["-monitor", "/dev/null"]
