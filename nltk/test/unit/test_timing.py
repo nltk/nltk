@@ -297,7 +297,8 @@ _LOADED = 3.0
 class _FakeClock:
     """``process_time`` and ``perf_counter`` that advance only when a fake op
     or calibration chunk charges its clean cost times the current load, so
-    the real ``cpu_and_wall`` and ``calibration_rate`` read exact numbers."""
+    the real ``cpu_and_wall`` and ``calibration_rate`` read exact numbers. A
+    wait advances the wall clock alone, by its own length."""
 
     def __init__(self):
         self.cpu, self.wall, self.load = 1000.0, 2000.0, 1.0
@@ -311,6 +312,9 @@ class _FakeClock:
     def charge(self, clean_seconds):
         self.cpu += clean_seconds * self.load
         self.wall += clean_seconds * self.load
+
+    def wait(self, seconds):
+        self.wall += seconds
 
 
 def _regime_samples(monkeypatch, sink, spin_at):
@@ -437,14 +441,21 @@ def _phases(load):
 
 
 def _replay(
-    monkeypatch, sink, load_of_call, load_of_unit=None, clock=None, tamper=None
+    monkeypatch,
+    sink,
+    load_of_call,
+    load_of_unit=None,
+    clock=None,
+    tamper=None,
+    waits=None,
 ):
     """Samples of ``sink(n)`` through the real ``scaling_samples`` on a fake clock.
 
     ``load_of_call(index)`` is the load of the call at that index, or a list of
     ``(share, load)`` phases charged in turn; ``load_of_unit(index)`` the load
     of the unit measured before the call at ``index`` (that call's first load
-    unless given); ``tamper(index, clock)`` runs before the call at ``index``.
+    unless given); ``tamper(index, clock)`` runs before the call at ``index``;
+    ``waits(n)`` the wall seconds the op then waits, which no load stretches.
     """
     clock, calls = clock or _FakeClock(), []
     if load_of_unit is None:
@@ -452,7 +463,7 @@ def _replay(
         def load_of_unit(index):
             return _phases(load_of_call(index))[0][1]
 
-    def chunk():
+    def calibration_chunk():
         clock.load = load_of_unit(len(calls))
         clock.charge(_CLEAN_CHUNK)
 
@@ -464,9 +475,11 @@ def _replay(
         for share, load in _phases(load_of_call(index)):
             clock.load = load
             clock.charge(sink(n) * share)
+        if waits is not None:
+            clock.wait(waits(n))
 
     monkeypatch.setattr(timing, "time", clock)
-    monkeypatch.setattr(timing, "_calibration_chunk", chunk)
+    monkeypatch.setattr(timing, "_calibration_chunk", calibration_chunk)
     samples = timing.scaling_samples(op, 1, 4)
     assert len(calls) == 3 * (timing.SMALL_BLOCK + 1), calls
     return samples
@@ -695,7 +708,7 @@ def test_regime_a_clock_that_jumps_backwards_is_refused(monkeypatch):
 @pytest.mark.parametrize(
     "broken",
     [
-        _sample(0.2, 0.0),
+        _sample(0.2, 0.0, big_wall=0.0),
         _sample(0.2, -0.2),
         _sample(-0.2, 0.8),
         _sample(0.2, 0.8, big_rate=0.0),
@@ -705,7 +718,7 @@ def test_regime_a_clock_that_jumps_backwards_is_refused(monkeypatch):
         _sample(0.2, 0.8, big_wall=0.0),
     ],
     ids=[
-        "big run read no CPU time",
+        "big run read no CPU or wall time",
         "big run read negative CPU time",
         "small block read negative CPU time",
         "zero rate",
@@ -716,8 +729,9 @@ def test_regime_a_clock_that_jumps_backwards_is_refused(monkeypatch):
     ],
 )
 def test_paired_ratio_refuses_a_sample_it_cannot_resolve(broken):
-    # read as ratios these were 0.0, -0.67, 48 (floored), ZeroDivisionError, a
-    # negative ratio, nan, inf and 4.0: a probe reports FIXED on most of them
+    # alone these read 0.0, -1.0, 8.0, ZeroDivisionError, 4.0, nan, inf and
+    # 4.0 before the refusal, and beside two clean reps the median hid all
+    # but nan and the zero rate: each is refused on its own
     samples = [_sample(0.2, 0.8), broken, _sample(0.2, 0.8)]
     with pytest.raises(ValueError, match="unresolvable sample") as refusal:
         timing.paired_ratio(samples, cpu_bound=True)
@@ -726,13 +740,52 @@ def test_paired_ratio_refuses_a_sample_it_cannot_resolve(broken):
         timing.paired_ratio(samples)
 
 
-def test_paired_ratio_keeps_a_small_block_under_resolution_on_the_floor():
+def test_paired_ratio_reads_a_cpu_reading_inside_one_tick_at_face_value():
     # a small block that read no CPU time at all is the floor's case, not a
     # refusal: the verdict is the budget on the big run, as on develop
     samples = [_sample(0.0, 0.3)] * 3
     assert timing.paired_ratio(samples, cpu_bound=True) == pytest.approx(3.0)
     samples = [_sample(0.0, 0.3, small_wall=0.0)] * 3
     assert timing.paired_ratio(samples) == pytest.approx(3.0)
+    # nor is a big run that read no CPU time while the wall clock ran: under
+    # one Windows tick it reads far under the bar, and waiting it is judged
+    # on the wall clock, the 4x of its 0.2 s and 0.8 s waits
+    samples = [_sample(0.0, 0.0, small_wall=0.2, big_wall=0.8)] * 3
+    assert timing.paired_ratio(samples, cpu_bound=True) == 0.0
+    assert timing.paired_ratio(samples) == 4.0
+    assert timing.paired_ratio(samples, cpu_bound=False) == 4.0
+
+
+# === a sink that mostly waits, on a fine and on a coarse CPU clock ===
+# Replayed like the regimes above: its CPU readings sit inside one tick of
+# a clock in 15.6 ms steps, and the rule must read them, not refuse them.
+
+
+def _slow_from_first_big(index):
+    return _LOADED if index >= timing.SMALL_BLOCK else 1.0
+
+
+@pytest.mark.parametrize("clock_class", [_FakeClock, _QuantisedClock])
+def test_regime_a_waiting_sink_is_judged_on_the_wall_clock_on_any_cpu_clock(
+    monkeypatch, clock_class
+):
+    # a sink that computes a sliver and then waits: on a clock in 15.6 ms
+    # steps its CPU readings sit inside one tick, often at zero, and must be
+    # read, not refused; undeclared or declared waiting, the wall decides
+    for sink, expected in ((_linear, 4.0), (_quadratic, 16.0)):
+        samples = _replay(
+            monkeypatch,
+            lambda n, sink=sink: 0.0005 * sink(n),
+            _slow_from_first_big,
+            clock=clock_class(),
+            waits=sink,
+        )
+        if clock_class is _QuantisedClock:
+            assert any(s.big_cpu == 0 for s in samples), samples
+        assert timing.paired_ratio(samples) == pytest.approx(expected)
+        assert timing.paired_ratio(samples, cpu_bound=False) == pytest.approx(expected)
+        # declared computing it is read on its CPU sliver: the caller's word
+        assert timing.paired_ratio(samples, cpu_bound=True) < 1.0
 
 
 # ---- child processes and threads --------------------------------------------

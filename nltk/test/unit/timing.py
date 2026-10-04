@@ -45,6 +45,7 @@ small block measured next to it. The thresholds, the floor, the 4x jump and
 the reps are unchanged.
 """
 
+import math
 import threading
 import time
 
@@ -264,25 +265,28 @@ def paired_ratio(samples, noise_floor=0.1, cpu_bound=None):
     the rate (a wait does not speed up with the core); a waiting op keeps the
     higher of its two ratios, so the fallback only tightens.
 
-    A sample the clocks could not resolve (a big run or a rate that did not
-    advance the clock, a clock that went backwards, a reading that is not
-    finite) is refused with ``ValueError``, never read as a ratio; a small
-    block under resolution keeps the floor. A load that is on for the samples
-    of one side only and off for every unit beside them leaves no trace in
-    the rates and is read at face value, as the old rule read it: that is the
-    limit of any calibration placed beside a sample.
+    A sample the clocks could not resolve (a reading that is not finite, a
+    clock that went backwards, a rate that read nothing, a big run the wall
+    clock did not see) is refused with ``ValueError``, never read as a ratio.
+    A CPU reading inside one tick of the clock (Windows counts process time
+    in 15.6 ms steps) is read at face value on either side, as on develop: a
+    small block there keeps the floor, a big run there reads far under the
+    bar, and a waiting op is judged on the wall clock. A load that is on for
+    the samples of one side only and off for every unit beside them leaves
+    no trace in the rates and is read at face value, as the old rule read
+    it: that is the limit of any calibration placed beside a sample.
     """
     if not samples:
         raise ValueError("no samples")
     for s in samples:
         readings = (s.small_cpu, s.small_wall, s.small_rate)
         readings += (s.big_cpu, s.big_wall, s.big_rate)
-        # a reading that is not finite, a big run or a rate that did not
-        # advance the clock, or a clock that went backwards: refuse
+        # not finite, a clock that went backwards, a rate that read nothing
+        # or a big run the wall clock did not see: refuse, never read a ratio
         if (
-            any(v - v != 0 for v in readings)
-            or min(s.big_cpu, s.big_wall, s.small_rate, s.big_rate) <= 0
-            or min(s.small_cpu, s.small_wall) < 0
+            not all(math.isfinite(v) for v in readings)
+            or min(readings) < 0
+            or min(s.big_wall, s.small_rate, s.big_rate) <= 0
         ):
             raise ValueError(f"unresolvable sample: {s!r}")
     reference = _median([s.small_rate for s in samples] + [s.big_rate for s in samples])
@@ -292,7 +296,7 @@ def paired_ratio(samples, noise_floor=0.1, cpu_bound=None):
         big_cpu = s.big_cpu * reference / s.big_rate
         cpu_ratios.append(big_cpu / max(small_cpu, noise_floor))
         wall_ratios.append(s.big_wall / max(s.small_wall, noise_floor))
-        shares.append(s.big_cpu / s.big_wall if s.big_wall else 1.0)
+        shares.append(s.big_cpu / s.big_wall)
     cpu_ratio, wall_ratio = _median(cpu_ratios), _median(wall_ratios)
     if cpu_bound is True:
         return cpu_ratio
