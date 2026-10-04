@@ -157,6 +157,17 @@ def _link_owner_problem(path, st):
     return None
 
 
+def _link_text_problem(path, link):
+    """Why the text *link* read from the symlink at *path* may not be walked,
+    or None: a control character (NUL, a line break, an escape) is never part
+    of an installed tool's link and would only hide a component in a report."""
+    if any(ord(ch) < 32 or ord(ch) == 127 for ch in link):
+        return (
+            f"symlink {path!r} points to {link!r}, which contains a control character"
+        )
+    return None
+
+
 class _Why(list):
     """The reasons a refusal collects. ``link_parent`` is set when the one
     refused component was a ``..`` inside a symlink's text, the case the
@@ -244,7 +255,8 @@ def _resolve_private(
     and, by default, inside a symlink's own text as well, so the Homebrew
     ``bin/dot -> ../Cellar/graphviz/<v>/bin/dot`` shape is refused with a
     reason naming the link and its ``..``. Every symlink met must be owned by
-    us or root before its text is read.
+    us or root before its text is read, and the text may hold no control
+    character.
 
     ``_follow_link_parents`` is reserved for the Graphviz entry points
     (``nltk.parse.dependencygraph.dot2img``), which expose it to the user as
@@ -322,6 +334,10 @@ def _resolve_private(
             except OSError as exc:
                 _note(why, f"symlink {nxt!r} cannot be read ({exc})")
                 return None
+            problem = _link_text_problem(nxt, link)
+            if problem is not None:
+                _note(why, problem)
+                return None
             # Re-resolve the target from the root (an absolute link replaces the
             # base; a relative one joins onto its holding dir), so every ancestor
             # of the target is checked too. Hop-bounded against symlink loops.
@@ -347,8 +363,10 @@ def resolve_trusted_executable(target):
     the way must be owned by us or root, no ``..`` may appear in the target
     or in any link's text (see :func:`_resolve_private`), and the final target
     must be a REGULAR file owned by us or root with no group/world write bit
-    (:func:`_private_stat`). The returned path is fully resolved, so callers
-    should execute THAT, not the original name. A same-UID attacker and root are out of scope (they already control
+    (:func:`_private_stat`), checked on a descriptor opened with
+    ``O_NOFOLLOW`` so the inode judged is the one at that path. The returned
+    path is fully resolved, so callers should execute THAT, not the original
+    name. A same-UID attacker and root are out of scope (they already control
     the process). There is no keyword here: the kernel-style ``..`` walk is a
     private entry point reserved for the Graphviz callers.
 
@@ -362,6 +380,34 @@ def resolve_trusted_executable(target):
     return _resolve_trusted(target)
 
 
+def _open_verified(real, why):
+    """The ``fstat`` of *real* opened with ``O_NOFOLLOW`` (and ``O_NONBLOCK``,
+    so a FIFO cannot stall the check), or None with the reason noted: the
+    owner, mode and type judged are those of the inode at that path at the
+    moment it was opened, and a symlink swapped in as the final component
+    fails the open instead of being followed."""
+    flags = (
+        os.O_RDONLY
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_NONBLOCK", 0)
+        | getattr(os, "O_CLOEXEC", 0)
+    )
+    try:
+        fd = os.open(real, flags)
+    except (OSError, ValueError) as exc:
+        _note(why, f"{real!r} cannot be opened for verification ({exc})")
+        return None
+    try:
+        return os.fstat(fd)
+    finally:
+        os.close(fd)
+
+
+def _same_inode(a, b):
+    """Two stat results name one inode on one device."""
+    return (a.st_dev, a.st_ino) == (b.st_dev, b.st_ino)
+
+
 def _resolve_trusted(target, why=None, *, _follow_link_parents=False):
     """:func:`resolve_trusted_executable`, recording the reason for a refusal
     in the list *why* when one is given. ``_follow_link_parents`` is the
@@ -372,9 +418,18 @@ def _resolve_trusted(target, why=None, *, _follow_link_parents=False):
     if real is None:
         return None
     try:
-        st = os.stat(real)
+        before = os.lstat(real)
     except (OSError, ValueError) as exc:
         _note(why, f"{real!r} cannot be inspected ({exc})")
+        return None
+    if not stat.S_ISREG(before.st_mode):
+        _note(why, f"{real!r} is not a regular file")
+        return None
+    st = _open_verified(real, why)
+    if st is None:
+        return None
+    if not _same_inode(before, st):
+        _note(why, f"{real!r} changed while it was being verified")
         return None
     if not stat.S_ISREG(st.st_mode):
         _note(why, f"{real!r} is not a regular file")
