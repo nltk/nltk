@@ -6,10 +6,9 @@
 """The timing rule the DoS budget and scaling tests rely on: a CPU-bound block
 is charged its CPU time, so a descheduled interpreter does not inflate it, and
 a waiting block is charged its wall time, so a hang that sleeps or blocks is
-still seen. Real sleeps and real spinning, nothing mocked."""
+still seen. Real sleeps and real spinning; only the runner regimes at the
+end replay on a fake clock, through the real measurement."""
 
-import sys
-import threading
 import time
 
 import pytest
@@ -281,187 +280,147 @@ def test_assert_subquadratic_separates_linear_from_quadratic_cpu_work():
     assert "ScalingSample(" in str(failure.value)
 
 
-# === the runner regimes, simulated with a sibling thread at the lock ===
-# While the sibling takes its turns, every sample and calibration unit of the
-# measured thread costs more CPU seconds for the same work, as on a loaded runner.
+# === the runner regimes, replayed through the real measurement on a fake clock ===
+# A regime says which calls run loaded; the fake clock then advances by the
+# clean cost of every call and calibration chunk times its load, exactly.
+
+#: CPU seconds one calibration chunk costs on the fake clock's clean core.
+_CLEAN_CHUNK = 0.002
+
+#: Clean CPU seconds of one small call of a regime sink: twice the rule's floor.
+_CLEAN_SMALL = 0.2
+
+#: What a loaded stretch multiplies every cost by, a unit's as a sample's.
+_LOADED = 3.0
 
 
-def _work(n):
-    x = 0
-    for _ in range(n):
-        x += 1
-    return x
-
-
-class _Sibling:
-    """One thread that takes turns at the interpreter lock while ``spinning``
-    is set, holding it for about ``HOLD_INTERVALS`` switch intervals at a
-    time inside a C call that the eval loop cannot interrupt.
-
-    Two threads at the lock alternate strictly: the holder releases at the
-    first eval-breaker check after the other has waited a switch interval,
-    and waits until the other has taken it. The measured thread, in pure
-    Python, is interrupted after one interval plus the time the host takes
-    to schedule the waiting sibling (up to 10 ms on a saturated runner);
-    the sibling, inside ``sum(range(n))``, after the call returns, about
-    five intervals. So for every second the measured thread computes, the
-    process clock gains two and a half to five from the sibling, on any
-    platform, whatever the host's load (the turns are a property of the
-    lock, not of free cores) and the same for a long sample as for a short
-    calibration unit. Two siblings spinning in pure Python took unfair
-    turns on the ubuntu runners (one thread starved through a unit);
-    siblings hashing on their own cores got none on the three-core macOS
-    runners under xdist, so a unit and the sample beside it read different
-    loads; a hold of two and a half intervals sagged to 1.9x under a
-    saturating load, under the 2x the old rule's reading of a slowed linear
-    sink needs to reach 8x.
-    """
-
-    HOLD_INTERVALS = 5
+class _FakeClock:
+    """``process_time`` and ``perf_counter`` that advance only when a fake op
+    or calibration chunk charges its clean cost times the current load, so
+    the real ``cpu_and_wall`` and ``calibration_rate`` read exact numbers."""
 
     def __init__(self):
-        self.spinning, self.stopped = threading.Event(), False
-        self.thread = threading.Thread(target=self._run, daemon=True)
-        hold = self.HOLD_INTERVALS * sys.getswitchinterval()
-        n = 100_000
-        while True:
-            started = time.perf_counter()
-            sum(range(n))
-            took = time.perf_counter() - started
-            if took >= hold:
-                break
-            n *= 2
-        self.n = int(n * hold / took)
+        self.cpu, self.wall, self.load = 1000.0, 2000.0, 1.0
 
-    def _run(self):
-        while not self.stopped:
-            if self.spinning.wait(0.01):
-                sum(range(self.n))
+    def process_time(self):
+        return self.cpu
 
-    def __enter__(self):
-        self.thread.start()
-        return self
+    def perf_counter(self):
+        return self.wall
 
-    def __exit__(self, *exc):
-        self.stopped = True
-        self.spinning.set()
-        self.thread.join()
-        return False
+    def charge(self, clean_seconds):
+        self.cpu += clean_seconds * self.load
+        self.wall += clean_seconds * self.load
 
 
-#: Clean CPU seconds of one small call of a regime sink: twice the floor of
-#: the rule, so a core that speeds up after the sizing (the macOS runners
-#: drift within a second) still leaves the clean sample at the floor.
-_REGIME_SMALL_SECONDS = 0.2
+def _regime_samples(monkeypatch, sink, spin_at):
+    """Samples of ``sink(n)`` under a regime through the real ``scaling_samples``:
+    ``spin_at(index)`` says whether the call at that index runs loaded, and a
+    calibration unit bears the load of the call that follows it."""
+    clock, calls = _FakeClock(), []
 
+    def chunk():
+        clock.load = _LOADED if spin_at(len(calls)) else 1.0
+        clock.charge(_CLEAN_CHUNK)
 
-def _regime_sizes():
-    """``(small, big)`` iterations sized on this core so a clean small call
-    costs about ``_REGIME_SMALL_SECONDS`` of CPU time, from the fastest of
-    three calibration readings so a slow reading cannot undersize it."""
-    rate = min(timing.calibration_rate() for _ in range(3))
-    small = int(_REGIME_SMALL_SECONDS / (rate / timing.CALIBRATION_CHUNK))
-    return small, 4 * small
+    def op(n):
+        clock.load = _LOADED if spin_at(len(calls)) else 1.0
+        calls.append(n)
+        clock.charge(sink(n))
 
-
-def _regime_samples(sink, spin_at):
-    """Samples of ``sink(n, small)`` under a regime: ``spin_at(call_index,
-    n, big)`` says whether the siblings spin from the start of that call."""
-    if not getattr(sys, "_is_gil_enabled", lambda: True)():
-        pytest.skip("the regimes are simulated with turns at the interpreter lock")
-    small, big = _regime_sizes()
-    calls = []
-    with _Sibling() as siblings:
-        # a regime that begins loaded was loaded before the measurement
-        # started, as a sibling worker already runs when a test begins, so
-        # the first calibration unit reads the loaded rate too
-        if spin_at(0, small, big):
-            siblings.spinning.set()
-
-        def op(n):
-            if spin_at(len(calls), n, big):
-                siblings.spinning.set()
-            else:
-                siblings.spinning.clear()
-            calls.append(n)
-            sink(n, small)
-
-        samples = timing.scaling_samples(op, small, big)
+    # only the clock and the chunk are replaced: the sampling, the pairing,
+    # the calibration loop and the rule run unchanged on the numbers they read
+    monkeypatch.setattr(timing, "time", clock)
+    monkeypatch.setattr(timing, "_calibration_chunk", chunk)
+    samples = timing.scaling_samples(op, 1, 4)
     assert len(calls) == 3 * (timing.SMALL_BLOCK + 1), calls
     return samples
 
 
-def _linear(n, small):
-    _work(n)
+def _linear(n):
+    return _CLEAN_SMALL * n
 
 
-def _quadratic(n, small):
-    _work(n * n // small)
+def _quadratic(n):
+    return _CLEAN_SMALL * n * n
+
+
+def _per_rep(samples):
+    """Each rep's reading, the numbers ``paired_ratio`` takes the median of:
+    the big run over the small block beside it, each by the rate its units
+    read (the reference rate cancels; no small block here is under the floor)."""
+    return [(s.big_cpu / s.big_rate) / (s.small_cpu / s.small_rate) for s in samples]
 
 
 def _verdicts(samples):
-    """The paired reading, and the old rule's for the message: what the old
-    rule reads of a simulated regime depends on the host's scheduling and is
-    pinned on recorded samples in the fixed-number tests above instead."""
-    return (
-        timing.paired_ratio(samples, cpu_bound=True),
-        _min_of_each_side(samples),
-    )
+    """The paired reading and the old rule's of the same samples."""
+    return timing.paired_ratio(samples, cpu_bound=True), _min_of_each_side(samples)
 
 
-def test_regime_a_lasting_slowdown_from_the_first_big_run_on():
-    # the core slows for good once the first big run starts, so only the
-    # first small block is fast: paired and normalised, a linear sink reads
-    # near 4x and a quadratic one near 16x
-    def slow_from_first_big(index, n, big):
+def test_regime_a_lasting_slowdown_from_the_first_big_run_on(monkeypatch):
+    # the core slows for good as the first big run starts, so only the first
+    # small block is fast; the old rule holds it against every big run and
+    # reads a linear sink at 12x, paired it is the first rep of three
+    def slow_from_first_big(index):
         return index >= timing.SMALL_BLOCK
 
-    samples = _regime_samples(_linear, slow_from_first_big)
-    assert samples[1].small_cpu >= 1.5 * samples[0].small_cpu, samples
+    samples = _regime_samples(monkeypatch, _linear, slow_from_first_big)
+    assert _per_rep(samples) == pytest.approx([8.0, 4.0, 4.0])
     paired, old = _verdicts(samples)
-    assert paired < timing.QUADRATIC_RATIO, (paired, old, samples)
-    samples = _regime_samples(_quadratic, slow_from_first_big)
-    assert samples[1].small_cpu >= 1.5 * samples[0].small_cpu, samples
+    assert paired == pytest.approx(4.0) and paired < timing.QUADRATIC_RATIO
+    assert old == pytest.approx(12.0)
+    samples = _regime_samples(monkeypatch, _quadratic, slow_from_first_big)
+    assert _per_rep(samples) == pytest.approx([32.0, 16.0, 16.0])
     paired, old = _verdicts(samples)
-    assert paired >= timing.QUADRATIC_RATIO, (paired, old, samples)
+    assert paired == pytest.approx(16.0) and paired >= timing.QUADRATIC_RATIO
+    assert old == pytest.approx(48.0)
 
 
-def test_regime_a_sibling_through_the_small_blocks_that_idles_for_the_last_big_run():
-    # the ubuntu shape: a sibling shares the core until the last big run
-    # starts; paired by rep two wholly shared pairs read a quadratic sink at
-    # 16x and a linear one at 4x
+def test_regime_a_sibling_through_the_small_blocks_that_idles_for_the_last_big_run(
+    monkeypatch,
+):
+    # the ubuntu shape: a sibling shares the core until the last big run, so
+    # the old rule holds the one fast big run against the slowed small blocks
+    # and reads a quadratic sink at 5.3x; paired it is the last rep of three
     last_big = 3 * (timing.SMALL_BLOCK + 1) - 1
 
-    def shared_until_last_big(index, n, big):
+    def shared_until_last_big(index):
         return index < last_big
 
-    samples = _regime_samples(_quadratic, shared_until_last_big)
-    assert samples[0].big_cpu >= 1.5 * samples[2].big_cpu, samples
+    samples = _regime_samples(monkeypatch, _quadratic, shared_until_last_big)
+    assert _per_rep(samples) == pytest.approx([16.0, 16.0, 32 / 3])
     paired, old = _verdicts(samples)
-    assert paired >= timing.QUADRATIC_RATIO, (paired, old, samples)
-    samples = _regime_samples(_linear, shared_until_last_big)
-    assert samples[0].big_cpu >= 1.5 * samples[2].big_cpu, samples
+    assert paired == pytest.approx(16.0) and paired >= timing.QUADRATIC_RATIO
+    assert old == pytest.approx(16 / 3)
+    samples = _regime_samples(monkeypatch, _linear, shared_until_last_big)
+    assert _per_rep(samples) == pytest.approx([4.0, 4.0, 8 / 3])
     paired, old = _verdicts(samples)
-    assert paired < timing.QUADRATIC_RATIO, (paired, old, samples)
+    assert paired == pytest.approx(4.0) and paired < timing.QUADRATIC_RATIO
+    assert old == pytest.approx(4 / 3)
 
 
-def test_regime_a_fast_window_for_one_small_block():
-    # the macOS shape: one fast window that a single small block gets;
-    # paired by rep the window is one pair of three and the median reads a
-    # linear sink near 4x and a quadratic one near 16x
+def test_regime_a_fast_window_for_one_small_block(monkeypatch):
+    # the macOS shape: one fast window that the second small block alone
+    # gets; the old rule keeps it as the small side and reads a linear sink
+    # at 12x, paired it is one rep of three
     second_block = range(timing.SMALL_BLOCK + 1, 2 * timing.SMALL_BLOCK + 1)
 
-    def slow_except_second_block(index, n, big):
+    def slow_except_second_block(index):
         return index not in second_block
 
-    samples = _regime_samples(_linear, slow_except_second_block)
-    assert samples[0].small_cpu >= 1.5 * samples[1].small_cpu, samples
+    samples = _regime_samples(monkeypatch, _linear, slow_except_second_block)
+    # the 8.0: the units beside the fast block straddle its edges and read the
+    # mean of both states, so the block is normalised by 2x while it bore 1x;
+    # the median rescues the verdict
+    assert _per_rep(samples) == pytest.approx([6.0, 8.0, 4.0])
     paired, old = _verdicts(samples)
-    assert paired < timing.QUADRATIC_RATIO, (paired, old, samples)
-    samples = _regime_samples(_quadratic, slow_except_second_block)
-    assert samples[0].small_cpu >= 1.5 * samples[1].small_cpu, samples
+    assert paired == pytest.approx(6.0) and paired < timing.QUADRATIC_RATIO
+    assert old == pytest.approx(12.0)
+    samples = _regime_samples(monkeypatch, _quadratic, slow_except_second_block)
+    assert _per_rep(samples) == pytest.approx([24.0, 32.0, 16.0])
     paired, old = _verdicts(samples)
-    assert paired >= timing.QUADRATIC_RATIO, (paired, old, samples)
+    assert paired == pytest.approx(24.0) and paired >= timing.QUADRATIC_RATIO
+    assert old == pytest.approx(48.0)
 
 
 # ---- child processes and threads --------------------------------------------
