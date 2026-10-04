@@ -106,7 +106,15 @@ _ENV_KEEP = frozenset(
 
 
 class TrustError(OSError):
-    """Raised by :func:`spawn_trusted` when the target fails verification."""
+    """Raised by :func:`spawn_trusted` when the target fails verification.
+
+    ``link_parent`` is True when the one check that refused the target was a
+    ``..`` inside a symlink's own text (the Homebrew ``bin/dot ->
+    ../Cellar/...`` shape) and the kernel-style walk, with every directory on
+    the resolved chain verified, would have accepted it. Only the Graphviz
+    entry points can enable that walk, so only they act on this flag."""
+
+    link_parent = False
 
 
 def _private_stat(st):
@@ -138,8 +146,8 @@ def _why_not_private(path, st, what):
 
 
 def _link_owner_problem(path, st):
-    """A symlink is trusted content only when we or root created it: why the
-    link at *path* (lstat result *st*) is not, or None when it is."""
+    """A symlink's text is followed only when we or root created the link: why
+    the link at *path* (lstat result *st*) fails that, or None when it passes."""
     me = os.geteuid()
     if st.st_uid not in (me, 0):
         return (
@@ -147,6 +155,14 @@ def _link_owner_problem(path, st):
             "or root"
         )
     return None
+
+
+class _Why(list):
+    """The reasons a refusal collects. ``link_parent`` is set when the one
+    refused component was a ``..`` inside a symlink's text, the case the
+    private ``_follow_link_parents`` walk resolves."""
+
+    link_parent = False
 
 
 def _note(why, reason):
@@ -206,7 +222,9 @@ def is_private_dir(path):
     return _private_dir_problem(path) is None
 
 
-def _resolve_private(path, _hops=0, why=None, _in_link=False):
+def _resolve_private(
+    path, _hops=0, why=None, _link=None, *, _follow_link_parents=False
+):
     """Resolve *path* one component at a time, following each symlink hop and
     applying :func:`is_private_dir` to every directory encountered (including
     each intermediate link's holding directory and its target's ancestors).
@@ -220,22 +238,36 @@ def _resolve_private(path, _hops=0, why=None, _in_link=False):
     scratch output goes through :func:`nltk.data.make_staging_dir`, which stages
     inside a private data root, never in ``/tmp``.
 
-    A ``..`` in the caller's *path* is refused, never folded: ``os.path.abspath``
-    collapses it lexically before symlinks resolve, which would skip a link, and
-    a tool location is never allowed one. A ``..`` in a symlink's own text is
-    different: the link lives in a verified private directory and is owned by
-    us or root (checked here on every hop), and the directory holding it is
-    already fully resolved, so each ``..`` steps to that directory's real
-    parent, exactly as the kernel resolves it, and whatever the text then
-    descends into is checked like every other component. This is what the
-    standard package layouts do: Homebrew's ``bin/dot -> ../Cellar/graphviz/
-    <v>/bin/dot``, the python.org ``bin/python3 -> ../../../Library/...``, a
-    Debian ``circo -> dot`` sibling link. The chain is bounded by
+    A ``..`` component met anywhere is refused, never folded: in the caller's
+    *path* because ``os.path.abspath`` collapses it lexically before symlinks
+    resolve, which would skip a link, and a tool location is never allowed one;
+    and, by default, inside a symlink's own text as well, so the Homebrew
+    ``bin/dot -> ../Cellar/graphviz/<v>/bin/dot`` shape is refused with a
+    reason naming the link and its ``..``. Every symlink met must be owned by
+    us or root before its text is read.
+
+    ``_follow_link_parents`` is reserved for the Graphviz entry points
+    (``nltk.parse.dependencygraph.dot2img``), which expose it to the user as
+    a keyword that is off by default; no other tool wrapper can pass it. When
+    True, a ``..`` inside a symlink's text is resolved the way the kernel
+    resolves it: the directory holding the link is already fully resolved, so
+    the ``..`` steps to that directory's real parent (the root's parent is the
+    root), and every directory the text then descends into, every further
+    link hop and its owner, the hop bound and the final regular file are
+    verified exactly as in the default walk. A ``..`` in the caller's own
+    *path* is refused in both modes. The chain is bounded by
     ``_MAX_LINK_HOPS`` (the kernel's ELOOP limit), so a loop is refused.
 
     When ``why`` is a list, the single reason for a refusal is appended to it,
-    naming the check and the path that failed it.
+    naming the check and the path that failed it; a :class:`_Why` also learns
+    whether that reason was the default ``..``-in-link refusal. *_link* is the
+    symlink whose text is being walked, None for the caller's own path.
     """
+    if type(_follow_link_parents) is not bool:
+        raise TypeError(
+            "_follow_link_parents must be a bool, not "
+            f"{type(_follow_link_parents).__name__}"
+        )
     if _hops > _MAX_LINK_HOPS:
         _note(why, f"symlink chain longer than {_MAX_LINK_HOPS} hops (a loop?)")
         return None
@@ -254,12 +286,21 @@ def _resolve_private(path, _hops=0, why=None, _in_link=False):
         if not part or part == os.curdir:  # '' and '.' are inert
             continue
         if part == os.pardir:
-            if not _in_link:  # the caller's own '..' is never folded; refused
+            if _link is None:  # the caller's own '..' is never folded; refused
                 _note(why, f"{text!r} contains a '..' component")
                 return None
-            # inside a trusted link's text: `cur` is resolved, so its parent is
-            # its real parent (and the root's parent is the root), as the kernel
-            # has it; the directories descended into next are checked as usual
+            if not _follow_link_parents:
+                _note(
+                    why,
+                    f"symlink {_link[0]!r} points to {_link[1]!r}, whose '..' "
+                    "component is not followed by default",
+                )
+                if isinstance(why, _Why):
+                    why.link_parent = True
+                return None
+            # `cur` is resolved, so its parent is its real parent (the root's is
+            # the root), as the kernel has it; what the text descends into next
+            # is verified like every other component
             cur = os.path.dirname(cur)
             continue
         if not is_private_dir(cur):  # the directory that holds `part`
@@ -285,7 +326,11 @@ def _resolve_private(path, _hops=0, why=None, _in_link=False):
             # base; a relative one joins onto its holding dir), so every ancestor
             # of the target is checked too. Hop-bounded against symlink loops.
             nxt = _resolve_private(
-                os.path.join(cur, link), _hops + 1, why=why, _in_link=True
+                os.path.join(cur, link),
+                _hops + 1,
+                why=why,
+                _link=(nxt, link),
+                _follow_link_parents=_follow_link_parents,
             )
             if nxt is None:
                 return None
@@ -298,11 +343,14 @@ def resolve_trusted_executable(target):
     can substitute it before it runs, else None (CWE-426/CWE-427/CWE-732).
 
     POSIX: every directory from the root down to the target (following each
-    symlink hop) must be private (:func:`is_private_dir`), and the final target
+    symlink hop) must be private (:func:`is_private_dir`), every symlink on
+    the way must be owned by us or root, no ``..`` may appear in the target
+    or in any link's text (see :func:`_resolve_private`), and the final target
     must be a REGULAR file owned by us or root with no group/world write bit
     (:func:`_private_stat`). The returned path is fully resolved, so callers
-    should execute THAT, not the original name. A same-UID attacker and root are
-    out of scope (they already control the process).
+    should execute THAT, not the original name. A same-UID attacker and root are out of scope (they already control
+    the process). There is no keyword here: the kernel-style ``..`` walk is a
+    private entry point reserved for the Graphviz callers.
 
     Non-POSIX (Windows): best-effort (see :func:`_resolve_trusted_nonposix`). The
     POSIX ownership check cannot run and NLTK does not assume win32security for a
@@ -314,12 +362,13 @@ def resolve_trusted_executable(target):
     return _resolve_trusted(target)
 
 
-def _resolve_trusted(target, why=None):
+def _resolve_trusted(target, why=None, *, _follow_link_parents=False):
     """:func:`resolve_trusted_executable`, recording the reason for a refusal
-    in the list *why* when one is given."""
+    in the list *why* when one is given. ``_follow_link_parents`` is the
+    private Graphviz-only walk of :func:`_resolve_private`."""
     if os.name != "posix":
         return _resolve_trusted_nonposix(target, why)
-    real = _resolve_private(target, why=why)
+    real = _resolve_private(target, why=why, _follow_link_parents=_follow_link_parents)
     if real is None:
         return None
     try:
@@ -348,16 +397,37 @@ _TRUST_HINT = (
 )
 
 
+def _refusal(target, *, _follow_link_parents=False):
+    """``(reason, link_parent)`` for a refused *target*, or ``(None, False)``
+    when it is accepted. *reason* names the check and the path that failed
+    it. *link_parent* is True only when the one failed check was the default
+    refusal of a ``..`` inside a symlink's text AND the kernel-style walk,
+    with the whole resolved chain verified, would accept the target; when it
+    would not, the reason says what that walk refuses instead, so a refusal
+    that the keyword cannot help is never presented as one it could."""
+    why = _Why()
+    if _resolve_trusted(target, why, _follow_link_parents=_follow_link_parents):
+        return None, False
+    reason = "; ".join(why) if why else f"{target!r} is not a trusted executable"
+    if not why.link_parent:
+        return reason, False
+    again = _Why()
+    if _resolve_trusted(target, again, _follow_link_parents=True) is not None:
+        return reason, True
+    followed = "; ".join(again) or "refused by the trust check"
+    return (
+        f"{reason}; followed as the kernel does, it is still refused: {followed}",
+        False,
+    )
+
+
 def untrusted_executable_reason(target):
     """Why :func:`resolve_trusted_executable` refuses *target*: one sentence
     naming the check and the path that failed it, or None when it is trusted.
 
     Diagnostic only: the spawn executes what :func:`resolve_trusted_executable`
     returned, never a path from this second walk."""
-    why = []
-    if _resolve_trusted(target, why) is not None:
-        return None
-    return "; ".join(why) if why else f"{target!r} is not a trusted executable"
+    return _refusal(target)[0]
 
 
 def _plain_path_text(value):
@@ -496,7 +566,7 @@ def safe_env():
     return env
 
 
-def spawn_trusted(target, args=(), **popen_kw):
+def spawn_trusted(target, args=(), *, _follow_link_parents=False, **popen_kw):
     """Verify *target* with :func:`resolve_trusted_executable` and start it with
     :class:`subprocess.Popen`, raising :class:`TrustError` if it is untrusted.
 
@@ -513,7 +583,20 @@ def spawn_trusted(target, args=(), **popen_kw):
     this process, so no exec-time trick would contain them. This is why no
     ``/proc/self/fd`` fexecve dance is used; it would only harden that
     out-of-scope race while adding a Linux-only, magic-symlink exec path.
+
+    ``_follow_link_parents`` is private and reserved for the Graphviz entry
+    points (``nltk.parse.dependencygraph.dot2img`` is the one site that passes
+    it, after checking it is a bool); it is not part of the public signature
+    of any other tool wrapper, and a CI guard refuses any other reference.
+    When True a ``..`` inside a symlink's text is resolved as the kernel does
+    and the whole resolved chain is verified (see :func:`_resolve_private`);
+    when False, the default, that ``..`` is refused outright.
     """
+    if type(_follow_link_parents) is not bool:
+        raise TypeError(
+            "_follow_link_parents must be a bool, not "
+            f"{type(_follow_link_parents).__name__}"
+        )
     if popen_kw.get("shell"):
         raise ValueError(
             "Security Violation [spawn_trusted]: shell=True is refused; a shell "
@@ -528,12 +611,18 @@ def spawn_trusted(target, args=(), **popen_kw):
     # explains. A non-str target is passed on as it is and refused as before.
     text = _plain_path_text(target)
     probe = target if text is None else text
-    real = resolve_trusted_executable(probe)
+    if _follow_link_parents:
+        real = _resolve_trusted(probe, _follow_link_parents=True)
+    else:
+        real = resolve_trusted_executable(probe)
     if real is None:
-        reason = untrusted_executable_reason(probe) or "refused by the trust check"
-        raise TrustError(
-            f"refusing to execute untrusted path: {target!r}: {reason}. {_TRUST_HINT}"
+        reason, link_parent = _refusal(probe, _follow_link_parents=_follow_link_parents)
+        err = TrustError(
+            f"refusing to execute untrusted path: {target!r}: "
+            f"{reason or 'refused by the trust check'}. {_TRUST_HINT}"
         )
+        err.link_parent = link_parent
+        raise err
     return subprocess.Popen([real, *args], executable=real, **popen_kw)
 
 
