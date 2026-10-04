@@ -17,23 +17,10 @@ from ._base import (
 FLAT_SMALL = 12499
 FLAT_BIG = 4 * FLAT_SMALL
 
-#: Entries of the flat chain in the lexicon the op parses: one entry's small run
-#: sat at the 0.1 s floor on the macOS and Windows runners, where the ratio
-#: degenerates into a budget on the big run, and three entries measured 0.23 s
-#: on the macOS runner; four keep it at least 2.5 times the floor there. See
-#: flat_lexicon.
+#: Entries of the flat chain in the lexicon the op parses: one entry's small
+#: run sat at the 0.1 s floor on the macOS and Windows runners and three read
+#: 0.23 s on macOS; four keep it over 2.5 times the floor. See flat_lexicon.
 FLAT_ENTRIES = 4
-
-#: Words of the lexicons, in the order the entries take them.
-_WORDS = ("w", "v", "u", "t", "s", "r")
-
-
-def flat_lexicon(n):
-    """A lexicon of FLAT_ENTRIES words, each a flat chain of ``n`` applications."""
-    chain = "S" + "/S" * n
-    words = _WORDS[:FLAT_ENTRIES]
-    return ":- S\n" + "".join(word + " => " + chain + "\n" for word in words)
-
 
 #: Bracket depth of the nested leg. The pre-fix parser re-sliced the bracketed
 #: text per character and did so again at every level, so the depth sets the
@@ -44,6 +31,16 @@ NESTING = 80
 #: small run measured 0.17 s on the macOS runner, 1.7 times the floor; two
 #: keep it over 2.5 times the floor there. The category itself is at the cap.
 NESTED_ENTRIES = 2
+
+#: Words of the lexicons, in the order the entries take them.
+_WORDS = ("w", "v", "u", "t", "s", "r")
+
+
+def flat_lexicon(n):
+    """A lexicon of FLAT_ENTRIES words, each a flat chain of ``n`` applications."""
+    chain = "S" + "/S" * n
+    words = _WORDS[:FLAT_ENTRIES]
+    return ":- S\n" + "".join(word + " => " + chain + "\n" for word in words)
 
 
 def _nested_lexicon(chars):
