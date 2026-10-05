@@ -252,15 +252,6 @@ def chain_at_the_bound(r):
     return f"{r}/l{n - 1}", f"{r}/l{n - 1}/dot", real
 
 
-def parent_of_a_writable_dir_is_not_inside_it(r):
-    """``bin/dot -> ../ww/../real/dot``: ``ww/..`` is ``ww``'s parent whatever
-    ``ww`` holds, and nothing in ``ww`` is ever descended into or read."""
-    real = _tool(f"{r}/real/dot")
-    _dir(f"{r}/ww", 0o777)
-    _ln("../ww/../real/dot", f"{r}/bin/dot")
-    return f"{r}/bin", f"{r}/bin/dot", real
-
-
 def dotdot_landing_on_a_dir_link(r):
     """``bin/dot -> ../lib/dot`` where ``lib -> ../real_lib`` is itself a
     directory link with ``..``: a ``..`` that lands on a link, two climbs."""
@@ -327,7 +318,6 @@ CLIMBING = {
     "overclimb_clamps_at_root": overclimb_clamps_at_root,
     "inert_components": inert_components,
     "chain_at_the_bound": chain_at_the_bound,
-    "parent_of_a_writable_dir_is_not_inside_it": parent_of_a_writable_dir_is_not_inside_it,
     "dotdot_landing_on_a_dir_link": dotdot_landing_on_a_dir_link,
     "absolute_text_with_dotdot": absolute_text_with_dotdot,
     "dotdot_after_a_mid_path_dir_link": dotdot_after_a_mid_path_dir_link,
@@ -581,6 +571,56 @@ def dangling_component_before_a_dotdot(r):
     return f"{r}/bin", f"{r}/bin/dot", None, "cannot be inspected", f"{r}/ghost"
 
 
+def dotdot_out_of_a_writable_dir(r):
+    """``bin/dot -> ../ww/../real/dot``, ``ww`` 0777: the kernel would step
+    out of ``ww`` to its parent; the walk asks the directory a ``..`` is
+    applied to what it asks every directory on the way, and ``ww`` fails."""
+    real = _tool(f"{r}/real/dot")
+    _dir(f"{r}/ww", 0o777)
+    _ln("../ww/../real/dot", f"{r}/bin/dot")
+    return f"{r}/bin", f"{r}/bin/dot", real, "world-writable", f"{r}/ww"
+
+
+def dotdot_after_a_regular_file(r):
+    """``bin/dot -> ../afile/../real/dot``: the kernel refuses ``afile/..``
+    (ENOTDIR), and so does the walk, naming ``afile``."""
+    real = _tool(f"{r}/real/dot")
+    Path(f"{r}/afile").write_text("x", encoding="utf-8")
+    _ln("../afile/../real/dot", f"{r}/bin/dot")
+    return f"{r}/bin", f"{r}/bin/dot", real, "is not a directory", f"{r}/afile"
+
+
+def dotdot_after_a_link_to_a_file(r):
+    """``bin/dot -> ../flink/../real/dot``, ``flink -> afile``: the link is
+    followed first, so the ``..`` lands on a regular file (ENOTDIR)."""
+    real = _tool(f"{r}/real/dot")
+    Path(f"{r}/afile").write_text("x", encoding="utf-8")
+    _ln(f"{r}/afile", f"{r}/flink")
+    _ln("../flink/../real/dot", f"{r}/bin/dot")
+    return f"{r}/bin", f"{r}/bin/dot", real, "is not a directory", f"{r}/afile"
+
+
+def dotdot_out_of_an_unsearchable_dir(r):
+    """``bin/dot -> ../noexec/../real/dot``, ``noexec`` 0600: private, but the
+    kernel may not search it (EACCES), and the walk refuses it as well."""
+    if os.geteuid() == 0:
+        pytest.skip("root searches any directory, as the kernel lets it")
+    real = _tool(f"{r}/real/dot")
+    _dir(f"{r}/noexec", 0o600)
+    _ln("../noexec/../real/dot", f"{r}/bin/dot")
+    return f"{r}/bin", f"{r}/bin/dot", real, "not searchable", f"{r}/noexec"
+
+
+#: The spoofs whose ``..`` is applied to a directory that may not take it:
+#: refused by the check on that directory, which the teeth remove.
+DOTDOT_BASE = (
+    "dotdot_out_of_a_writable_dir",
+    "dotdot_after_a_regular_file",
+    "dotdot_after_a_link_to_a_file",
+    "dotdot_out_of_an_unsearchable_dir",
+)
+
+
 #: Spoofs, each planting the check named by its last two fields: refused by
 #: that check, the reason naming it and the path.
 SPOOF = {
@@ -609,6 +649,10 @@ SPOOF = {
     "dotdot_after_a_dir_link_lands_on_a_writable_file": dotdot_after_a_dir_link_lands_on_a_writable_file,
     "dotdot_after_a_mid_path_dir_link_into_writable": dotdot_after_a_mid_path_dir_link_into_writable,
     "dangling_component_before_a_dotdot": dangling_component_before_a_dotdot,
+    "dotdot_out_of_a_writable_dir": dotdot_out_of_a_writable_dir,
+    "dotdot_after_a_regular_file": dotdot_after_a_regular_file,
+    "dotdot_after_a_link_to_a_file": dotdot_after_a_link_to_a_file,
+    "dotdot_out_of_an_unsearchable_dir": dotdot_out_of_an_unsearchable_dir,
 }
 
 
@@ -789,7 +833,12 @@ class TestSpoofLayoutsAreRefused:
         reason = _reason(entry)
         # refused by the check the layout plants, never by a '..' as such
         assert check in reason and named in reason, (layout, mode, reason)
-        assert "'..'" not in reason, (layout, mode, reason)
+        assert "contains a '..' component" not in reason, (layout, mode, reason)
+        if layout in DOTDOT_BASE:
+            assert reason.endswith(
+                f": the '..' in symlink {entry!r} -> {os.readlink(entry)!r} "
+                "is applied to it"
+            ), (layout, reason)
         with pytest.raises(pathsec.TrustError) as excinfo:
             _run(entry)
         message = str(excinfo.value)
@@ -1310,6 +1359,7 @@ class TestTeeth:
             "dotdot_landing_on_a_dir_link_into_writable",
             "absolute_text_with_dotdot_into_writable",
             "dotdot_after_a_mid_path_dir_link_into_writable",
+            "dotdot_out_of_a_writable_dir",
         ],
     )
     def test_without_the_directory_check_a_writable_dir_runs(
@@ -1354,6 +1404,31 @@ class TestTeeth:
         assert "control character" in _reason(entry)
         monkeypatch.setattr(pathsec, "_link_text_problem", lambda path, link: None)
         assert _resolve(entry) == os.path.realpath(real), shape
+
+    @pytest.mark.parametrize("layout", DOTDOT_BASE)
+    def test_without_the_dotdot_base_check_the_dotdot_is_folded_past(
+        self, home, monkeypatch, layout
+    ):
+        """Drop the check on the directory a link's ``..`` is applied to and
+        each of these resolves to the file beyond it: ``..`` folded past a
+        writable directory, a regular file, a link to one, or a directory
+        the kernel may not search."""
+        _, entry, real, check, named = SPOOF[layout](home)
+        assert _resolve(entry) is None and named in _reason(entry), layout
+        monkeypatch.setattr(pathsec, "_dotdot_base_problem", lambda path: None)
+        got = _resolve(entry)
+        assert got is not None and _same(got, real), (layout, got)
+
+    def test_without_the_search_check_an_unsearchable_dir_is_folded_past(
+        self, home, monkeypatch
+    ):
+        """The search half alone: with ``os.access`` answering yes, the
+        private but unsearchable ``noexec`` takes the ``..``."""
+        _, entry, real, check, named = dotdot_out_of_an_unsearchable_dir(home)
+        assert check in _reason(entry) and named in _reason(entry)
+        monkeypatch.setattr(pathsec.os, "access", lambda *args, **kwargs: True)
+        got = _resolve(entry)
+        assert got is not None and _same(got, real), got
 
     def test_with_a_lexical_fold_the_dir_link_spoof_runs_its_decoy(
         self, home, monkeypatch

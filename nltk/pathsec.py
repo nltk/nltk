@@ -185,6 +185,20 @@ def _private_dir_problem(path):
     return _why_not_private(path, st, "directory")
 
 
+def _dotdot_base_problem(path):
+    """Why a ``..`` from a link's text may not be applied to the resolved
+    directory *path*, or None. The kernel applies ``..`` only to a directory
+    it may search (else ENOTDIR or EACCES); the walk also asks of it what it
+    asks of every other directory on the way (:func:`is_private_dir`)."""
+    if not is_private_dir(path):
+        return _private_dir_problem(path) or f"directory {path!r} is not private"
+    if os.name == "posix":
+        effective = os.access in os.supports_effective_ids
+        if not os.access(path, os.X_OK, effective_ids=effective):
+            return f"directory {path!r} is not searchable (no execute permission)"
+    return None
+
+
 def _is_junction(st):
     """Windows: the ``lstat`` result is a directory junction. NTFS reports one
     as a directory rather than a symlink, so ``S_ISLNK`` misses it and only the
@@ -243,7 +257,10 @@ def _resolve_private(path, _hops=0, why=None, _link=None):
     parent of the directory already resolved (never the lexical parent), so the
     Homebrew ``bin/dot -> ../Cellar/graphviz/<v>/bin/dot`` and Debian
     ``/usr/bin/dot -> ../sbin/libgvc6-config-update`` shapes resolve, and every
-    directory descended into after it is checked as usual. Every symlink met
+    directory descended into after it is checked as usual. The directory the
+    ``..`` is applied to must itself be private and searchable, so a regular
+    file, a link to one, or a directory the kernel may not search refuses it
+    (the kernel's ENOTDIR or EACCES), never folded past. Every symlink met
     must be owned by us or root before its text is read, and the text may hold
     no control character.
     The chain is bounded by ``_MAX_LINK_HOPS`` (the kernel's ELOOP limit), so a
@@ -274,8 +291,17 @@ def _resolve_private(path, _hops=0, why=None, _link=None):
             if _link is None:  # the caller's own '..' is refused, never folded
                 _note(why, f"{text!r} contains a '..' component")
                 return None
-            # a link's '..' steps to the real parent, as the kernel does: `cur`
-            # is resolved and every ancestor was verified on the way down
+            # a link's '..' steps to the real parent of `cur` (resolved, every
+            # ancestor verified on the way down), out of a private directory the
+            # kernel could search, else it is refused as the kernel would refuse it
+            problem = _dotdot_base_problem(cur)
+            if problem is not None:
+                _note(
+                    why,
+                    f"{problem}: the '..' in symlink {_link[0]!r} -> "
+                    f"{_link[1]!r} is applied to it",
+                )
+                return None
             cur = os.path.dirname(cur)
             continue
         if not is_private_dir(cur):  # the directory that holds `part`
