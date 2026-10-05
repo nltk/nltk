@@ -41,10 +41,12 @@ directly (a linear sink read 10x, a quadratic oracle 7.4x), so ``scaling_ratio``
 interleaves its samples, measures a short calibration unit of fixed
 pure-Python work beside each one, normalises every sample by the rate its
 units read, and takes the median over the reps of each big run against the
-small block measured next to it. The thresholds, the floor, the 4x jump and
-the reps are unchanged.
+small block measured next to it; when those reps read on both sides of the
+bar, more are taken so that two misread reps cannot carry the median. The
+thresholds, the floor, the 4x jump and the reps are unchanged.
 """
 
+import math
 import threading
 import time
 
@@ -138,8 +140,9 @@ def within_budget(func, seconds, repeats=3, cpu_bound=None):
 #: resolve, short enough to read the core's rate at the moment of the sample.
 CALIBRATION_SECONDS = 0.1
 
-#: Loop iterations of one calibration chunk, a fixed amount of pure-Python
-#: work; a unit times whole chunks and reports the CPU seconds one costs.
+#: Loop iterations of one calibration chunk: a fixed amount of pure-Python
+#: work, short against CALIBRATION_SECONDS (a unit ends on a whole chunk, so
+#: the chunk is its overshoot) and long enough that the loop is the cost.
 CALIBRATION_CHUNK = 50_000
 
 
@@ -162,12 +165,20 @@ def calibration_rate():
     in that stretch must be normalised by.
     """
     chunks, start = 0, time.process_time()
+    wall_start = time.perf_counter()
     while True:
         _calibration_chunk()
         chunks += 1
         elapsed = time.process_time() - start
         if elapsed >= CALIBRATION_SECONDS:
             return elapsed / chunks
+        # a CPU clock that stopped or went backwards: refuse, never spin on
+        waited = time.perf_counter() - wall_start
+        if elapsed < 0 or waited >= hard_deadline_for(CALIBRATION_SECONDS):
+            raise ValueError(
+                f"the CPU clock advanced {elapsed:.3f}s over {chunks} chunks "
+                f"in {waited:.0f}s of wall time"
+            )
 
 
 class ScalingSample:
@@ -254,9 +265,50 @@ def paired_ratio(samples, noise_floor=0.1, cpu_bound=None):
     seconds on a calm machine. Wall seconds are paired the same way without
     the rate (a wait does not speed up with the core); a waiting op keeps the
     higher of its two ratios, so the fallback only tightens.
+
+    A sample the clocks could not resolve (a reading that is not finite, a
+    clock that went backwards, a rate that read nothing, a big run the wall
+    clock did not see) is refused with ``ValueError``, never read as a ratio.
+    A CPU reading inside one tick of the clock (Windows counts process time
+    in 15.6 ms steps) is read at face value on either side, as on develop: a
+    small block there keeps the floor, a big run there reads far under the
+    bar, and a waiting op is judged on the wall clock. A load that is on for
+    the samples of one side only and off for every unit beside them leaves
+    no trace in the rates and is read at face value, as the old rule read
+    it: that is the limit of any calibration placed beside a sample, and why
+    :func:`settled_samples` takes more reps when the first ones disagree.
     """
+    cpu_ratios, wall_ratios, shares = _per_rep_ratios(samples, noise_floor)
+    cpu_ratio = _median(cpu_ratios)
+    if _wall_counts(cpu_bound, shares):
+        return max(cpu_ratio, _median(wall_ratios))
+    return cpu_ratio
+
+
+def _wall_counts(cpu_bound, shares):
+    """Whether the wall reading is judged too: declared waiting, or undeclared
+    with the big runs under ``CPU_BOUND_SHARE`` of their wall time on the CPU."""
+    return cpu_bound is False or (
+        cpu_bound is None and _median(shares) < CPU_BOUND_SHARE
+    )
+
+
+def _per_rep_ratios(samples, noise_floor):
+    """Each rep's normalised CPU reading, its wall reading and its big run's
+    CPU share, after refusing a sample the clocks could not resolve."""
     if not samples:
         raise ValueError("no samples")
+    for s in samples:
+        readings = (s.small_cpu, s.small_wall, s.small_rate)
+        readings += (s.big_cpu, s.big_wall, s.big_rate)
+        # not finite, a clock that went backwards, a rate that read nothing
+        # or a big run the wall clock did not see: refuse, never read a ratio
+        if (
+            not all(math.isfinite(v) for v in readings)
+            or min(readings) < 0
+            or min(s.big_wall, s.small_rate, s.big_rate) <= 0
+        ):
+            raise ValueError(f"unresolvable sample: {s!r}")
     reference = _median([s.small_rate for s in samples] + [s.big_rate for s in samples])
     cpu_ratios, wall_ratios, shares = [], [], []
     for s in samples:
@@ -264,16 +316,38 @@ def paired_ratio(samples, noise_floor=0.1, cpu_bound=None):
         big_cpu = s.big_cpu * reference / s.big_rate
         cpu_ratios.append(big_cpu / max(small_cpu, noise_floor))
         wall_ratios.append(s.big_wall / max(s.small_wall, noise_floor))
-        shares.append(s.big_cpu / s.big_wall if s.big_wall else 1.0)
-    cpu_ratio, wall_ratio = _median(cpu_ratios), _median(wall_ratios)
-    if cpu_bound is True:
-        return cpu_ratio
-    if cpu_bound is False or _median(shares) < CPU_BOUND_SHARE:
-        return max(cpu_ratio, wall_ratio)
-    return cpu_ratio
+        shares.append(s.big_cpu / s.big_wall)
+    return cpu_ratios, wall_ratios, shares
 
 
-def scaling_ratio(op, small, big, reps=3, noise_floor=0.1, cpu_bound=None):
+def settled_samples(
+    op, small, big, reps=3, noise_floor=0.1, cpu_bound=None, factor=QUADRATIC_RATIO
+):
+    """``scaling_samples``, with ``reps - 1`` more when the first reps disagree.
+
+    A load the units beside a sample do not see (a slow stretch inside a big
+    run, a sibling through one small block) moves that rep's reading alone,
+    and with three reps two such reps carry the median: a linear sink whose
+    big runs of two reps were slowed read 10.9x on a macOS runner, and two
+    slowed small blocks read a quadratic oracle at 5.3x. When the per-rep
+    readings fall on both sides of ``factor``, ``reps - 1`` more reps are
+    measured and the median is read over all ``2 * reps - 1``, which any
+    ``reps - 1`` misread reps cannot carry. When the first reps all fall on
+    one side, more reps could not move the median off it, so none are taken.
+    """
+    samples = scaling_samples(op, small, big, reps=reps)
+    cpu_ratios, wall_ratios, shares = _per_rep_ratios(samples, noise_floor)
+    judged = [cpu_ratios]
+    if _wall_counts(cpu_bound, shares):
+        judged.append(wall_ratios)
+    if any(min(r) < factor <= max(r) for r in judged):
+        samples += scaling_samples(op, small, big, reps=reps - 1)
+    return samples
+
+
+def scaling_ratio(
+    op, small, big, reps=3, noise_floor=0.1, cpu_bound=None, factor=QUADRATIC_RATIO
+):
     """``op(big)`` over ``op(small)`` (``big`` == 4*``small``), paired by rep.
 
     A load-invariant scaling factor: a linear sink is ~4x, a pre-patch O(n**2)
@@ -292,20 +366,19 @@ def scaling_ratio(op, small, big, reps=3, noise_floor=0.1, cpu_bound=None):
     CPU-bound op is judged in CPU time; an op that mostly waits is judged on
     the wall clock and the higher of the two ratios is kept, so the fallback
     only tightens. ``cpu_bound`` declares the op's kind and skips the
-    heuristic. See :func:`scaling_samples` and :func:`paired_ratio`.
+    heuristic. When the reps read on both sides of ``factor`` (the bar the
+    caller judges by) more are taken. See :func:`settled_samples`,
+    :func:`scaling_samples` and :func:`paired_ratio`.
     """
-    return paired_ratio(
-        scaling_samples(op, small, big, reps=reps),
-        noise_floor=noise_floor,
-        cpu_bound=cpu_bound,
-    )
+    samples = settled_samples(op, small, big, reps, noise_floor, cpu_bound, factor)
+    return paired_ratio(samples, noise_floor=noise_floor, cpu_bound=cpu_bound)
 
 
 def assert_subquadratic(
     op, small, big, factor=QUADRATIC_RATIO, noise_floor=0.1, reps=3, cpu_bound=None
 ):
     """Assert ``op(big)`` (big == 4*small) costs under ``factor`` times ``op(small)``."""
-    samples = scaling_samples(op, small, big, reps=reps)
+    samples = settled_samples(op, small, big, reps, noise_floor, cpu_bound, factor)
     ratio = paired_ratio(samples, noise_floor=noise_floor, cpu_bound=cpu_bound)
     assert ratio < factor, (small, big, ratio, samples)
 

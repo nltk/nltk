@@ -288,7 +288,9 @@ class TestTimeoutIsTheGuarantee:
         # 0.3 s cap that is a wall-clock race a loaded Windows runner lost
         # once in 60 runs, so measure the work the way the suite does
         with timing.budget(2.0, cpu_bound=True):
-            assert tp.match(self.BAIT, timeout=None) is None
+            # the suite's hard deadline as the cap: a lost fast failure is a
+            # TimeoutError after 60 s, not a job that runs to its limit
+            assert tp.match(self.BAIT, timeout=timing.hard_deadline_for(2.0)) is None
 
     def test_backtracking_methods_fire_the_timeout(self):
         # The methods that scan the whole input (all but anchored ``match``,
