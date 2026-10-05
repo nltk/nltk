@@ -767,9 +767,8 @@ def test_paired_ratio_reads_a_cpu_reading_inside_one_tick_at_face_value():
 
 
 # === a waiting sink, fewer reps, every declaration, the unit's chunks ===
-# Replayed like the regimes above: a sink that mostly waits on a fine and a
-# coarse CPU clock, the recorded regimes with one or two reps and each
-# declaration, and calibration units of very many chunks or of one.
+# Replayed like the regimes above: a waiting sink on a fine and a coarse CPU
+# clock, one or two reps, each declaration, and units of many chunks or one.
 
 
 def _slow_from_first_big(index):
