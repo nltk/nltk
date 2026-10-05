@@ -8,32 +8,26 @@
 #3887 made every executed binary go through ``pathsec.spawn_trusted``, whose
 resolver refuses any ``..`` it meets, including one inside a symlink's own
 text. That is how the standard package layouts are built: Homebrew's
-``bin/dot -> ../Cellar/graphviz/<v>/bin/dot``, the python.org ``bin/python3 ->
+``bin/dot -> ../Cellar/graphviz/<v>/bin/dot``, Debian's ``/usr/bin/dot ->
+../sbin/libgvc6-config-update``, the python.org ``bin/python3 ->
 ../../../Library/...``, so ``dot2img`` refuses every such Graphviz install
 (ekaf, #3887 comment 5969235326).
 
-The default stays that refusal: a ``..`` met anywhere, in the caller's path or
-in a link's text, is refused outright with a reason naming it, and nothing is
-executed. The one way through is the keyword-only ``follow_link_parents=True``
-on the Graphviz entry points (``dot2img``, ``DependencyGraph.to_image``,
-``AlignedSent.to_image``), which the user passes explicitly per call; it
-reaches ``spawn_trusted`` through the private ``_follow_link_parents`` walk
-that resolves a ``..`` inside a link's text the way the kernel does and then
-verifies every directory on the resolved chain, every link hop and its owner,
-the hop bound and the final regular file. No other tool wrapper has the
-keyword. Real files, real links, real ``chmod``, a canary binary that writes a
-marker when it runs: every standard layout is refused by default with the
-keyword named, runs the canary under the keyword and returns its real output;
-every spoof is refused in BOTH modes with the reason naming the check and the
-path, never naming the keyword, and the canary never runs; the teeth show
-that removing each check lets a named spoof through.
+This harness pins what the trusted spawn does with each layout: a ``..`` met
+anywhere, in the caller's path or in a link's text, is refused outright with
+a reason naming the link, its text and the ``..``, and nothing is executed; a
+layout with no ``..`` runs its real file under the name it was invoked by.
+Real files, real links, real ``chmod``, a canary binary that writes a marker
+when it runs: every climbing layout is refused by name; every plain layout
+runs the canary and returns its real output; every spoof is refused with the
+reason naming the check and the path, and the canary never runs; the teeth
+show that removing each check lets a named spoof through.
 """
 import os
 import shutil
 import socket
 import stat
 import subprocess
-import sys
 import tempfile
 from pathlib import Path
 
@@ -47,13 +41,12 @@ POSIX = pytest.mark.skipif(
 WINDOWS = pytest.mark.skipif(
     os.name != "nt", reason="NTFS junctions and reparse points need Windows"
 )
-MODES = ("default", "keyword")
+#: The walks a parametrized test runs: the default walk is the only one.
+MODES = ("default",)
 
 #: The canary: swallows stdin, drops a marker beside the file that ran, echoes.
 STUB = '#!/bin/sh\ncat >/dev/null\n: > "$0.ran" 2>/dev/null\necho "GRAPHVIZ-STUB $*"\n'
 GRAPH = "digraph { a -> b }"
-KEYWORD = "follow_link_parents"
-PRIVATE_KEYWORD = "_follow_link_parents"
 
 
 @pytest.fixture
@@ -109,48 +102,59 @@ def _ran(root):
     )
 
 
-def _resolve(entry, mode):
-    if mode == "keyword":
-        return pathsec._resolve_trusted(entry, _follow_link_parents=True)
+def _resolve(entry):
     return pathsec.resolve_trusted_executable(entry)
 
 
-def _walk(entry, mode, why):
+def _walk(entry, why):
     """One verification walk, recording its reason in *why* as it happens."""
-    return pathsec._resolve_trusted(
-        entry, why, _follow_link_parents=(mode == "keyword")
+    return pathsec._resolve_trusted(entry, why)
+
+
+def _reason(entry):
+    return pathsec.untrusted_executable_reason(entry)
+
+
+def _dotdot_reason(link):
+    """The exact reason the walk gives for the ``..`` in *link*'s own text."""
+    return (
+        f"symlink {link!r} points to {os.readlink(link)!r}, whose '..' "
+        "component is not followed by default"
     )
 
 
-def _reason(entry, mode):
-    return pathsec._refusal(entry, _follow_link_parents=(mode == "keyword"))[0]
+def _first_link(entry):
+    """The first symlink on *entry*'s own path: the one whose text is read."""
+    parts = Path(entry).parts
+    for i in range(1, len(parts) + 1):
+        cur = os.path.join(*parts[:i])
+        if os.path.islink(cur):
+            return cur
+    return None
 
 
-def _run(entry, mode):
-    kw = {PRIVATE_KEYWORD: True} if mode == "keyword" else {}
+def _run(entry):
     proc = pathsec.spawn_trusted(
         entry,
         ["-Tsvg"],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        **kw,
     )
     out = proc.communicate(GRAPH.encode())[0].decode()
     return proc, out
 
 
-def _dot2img(monkeypatch, bindir, mode):
+def _dot2img(monkeypatch, bindir):
     from nltk.parse import dependencygraph
 
     monkeypatch.setenv("PATH", bindir)
-    kw = {KEYWORD: True} if mode == "keyword" else {}
-    return dependencygraph.dot2img(GRAPH, "svg", **kw)
+    return dependencygraph.dot2img(GRAPH, "svg")
 
 
-# --------------------------------------------------------------------------- #
+# =========================================================================== #
 # Layouts: (bin dir to put on PATH, entry to run, real file or None).           #
-# --------------------------------------------------------------------------- #
+# =========================================================================== #
 
 
 def homebrew(r):
@@ -217,7 +221,7 @@ def pythonorg_three_up(r):
 
 
 def overclimb_clamps_at_root(r):
-    """More ``..`` than the depth: the kernel stays at ``/``, so does the walk."""
+    """More ``..`` than the depth: the kernel stays at ``/``."""
     real = _tool(f"{r}/real/dot")
     _ln("../" * 40 + real.lstrip("/"), f"{r}/bin/dot")
     return f"{r}/bin", f"{r}/bin/dot", real
@@ -256,8 +260,7 @@ def dotdot_landing_on_a_dir_link(r):
     return f"{r}/pkg/bin", f"{r}/pkg/bin/dot", real
 
 
-#: Layouts with a ``..`` in some link's text: refused by default, run under
-#: the keyword.
+#: Layouts with a ``..`` in some link's text: refused, naming that link.
 CLIMBING = {
     "homebrew": homebrew,
     "homebrew_apple_silicon": homebrew_apple_silicon,
@@ -310,7 +313,7 @@ def hard_linked_private_binary(r):
     return f"{r}/bin", f"{r}/bin/dot", real
 
 
-#: Layouts with no ``..`` anywhere: run in both modes.
+#: Layouts with no ``..`` anywhere: they run.
 PLAIN = {
     "multicall": multicall,
     "absolute_link": absolute_link,
@@ -473,8 +476,9 @@ def escape_in_link_text(r):
     return f"{r}/bin", f"{r}/bin/dot", real, "control character", f"{r}/bin/dot"
 
 
-#: Spoofs with a ``..`` somewhere in the chain, or none: refused in both
-#: modes, by the check named.
+#: Spoofs, each planting the check named by its last two fields: refused, by
+#: that check, or at the ``..`` of the entry link when the walk meets it first
+#: (:data:`REFUSED_AT_THE_DOTDOT`).
 SPOOF = {
     "group_writable_target_dir": group_writable_target_dir,
     "world_writable_sticky_target_dir": world_writable_sticky_target_dir,
@@ -498,6 +502,27 @@ SPOOF = {
     "escape_in_link_text": escape_in_link_text,
 }
 
+#: The spoofs whose entry link's own text climbs with ``..`` before the check
+#: they plant: the walk refuses them at that ``..``, naming the link.
+REFUSED_AT_THE_DOTDOT = frozenset(
+    {
+        "group_writable_target_dir",
+        "world_writable_sticky_target_dir",
+        "world_writable_intermediate_dir",
+        "group_writable_target_file",
+        "world_writable_target_file",
+        "symlink_loop",
+        "chain_over_the_bound",
+        "dangling",
+        "link_to_a_directory",
+        "link_to_a_fifo",
+        "link_to_a_socket",
+        "writable_dir_descended_into_through_dotdot",
+        "climb_above_the_root_into_writable_and_back",
+        "dotdot_landing_on_a_dir_link_into_writable",
+    }
+)
+
 
 def _foreign_lstat(victim, uid):
     """An ``lstat`` that reports *victim* as owned by *uid*."""
@@ -514,168 +539,154 @@ def _foreign_lstat(victim, uid):
     return lstat
 
 
-# --------------------------------------------------------------------------- #
-# Climbing layouts: refused by default, naming the '..'; run under the keyword. #
-# --------------------------------------------------------------------------- #
+# =========================================================================== #
+# Climbing layouts: refused, naming the link, its text and its '..'.           #
+# =========================================================================== #
 
 
 @POSIX
 class TestClimbingLayouts:
     @pytest.mark.parametrize("layout", sorted(CLIMBING), ids=sorted(CLIMBING))
-    def test_refused_by_default_naming_the_link_and_its_dotdot(
+    def test_refused_naming_the_link_its_text_and_its_dotdot(
         self, home, monkeypatch, layout
     ):
         bindir, entry, real = CLIMBING[layout](home)
+        assert _same(entry, real), layout  # the kernel would reach the real file
         assert pathsec.resolve_trusted_executable(entry) is None, layout
         reason = pathsec.untrusted_executable_reason(entry)
-        assert "'..' component is not followed by default" in reason, (layout, reason)
-        assert "symlink " in reason and "points to" in reason
+        assert reason == _dotdot_reason(_first_link(entry)), (layout, reason)
         with pytest.raises(pathsec.TrustError) as excinfo:
-            _run(entry, "default")
-        assert excinfo.value.link_parent is True
-        assert reason in str(excinfo.value) and "chmod g-w,o-w" in str(excinfo.value)
-        if os.path.basename(entry) == "dot" and os.path.isfile(entry):
-            # the Graphviz entry point names the keyword and the call
-            with pytest.raises(Exception, match="Cannot create image") as excinfo:
-                _dot2img(monkeypatch, bindir, "default")
-            message = str(excinfo.value)
-            assert reason in message and f"dot2img(..., {KEYWORD}=True)" in message
-            assert isinstance(excinfo.value.__cause__, pathsec.TrustError)
-        assert _ran(home) == [], layout
-
-    @pytest.mark.parametrize("layout", sorted(CLIMBING), ids=sorted(CLIMBING))
-    def test_runs_under_the_keyword_by_its_resolved_path(
-        self, home, monkeypatch, layout
-    ):
-        bindir, entry, real = CLIMBING[layout](home)
-        assert os.path.realpath(entry) != entry  # a link somewhere on the way
-        got = _resolve(entry, "keyword")
-        assert got is not None and _same(got, real), (layout, got)
-        assert not os.path.islink(got)  # the resolved path, never the link
-        assert _reason(entry, "keyword") is None
-        proc, out = _run(entry, "keyword")
-        # argv[0] is the invoked path, as the kernel passes it; the inode run is real
-        assert proc.args[0] == entry and _same(proc.args[0], real)
-        assert out.strip() == "GRAPHVIZ-STUB -Tsvg", (layout, out)
-        assert _ran(home) == [real + ".ran"]
-        os.unlink(real + ".ran")
+            _run(entry)
+        message = str(excinfo.value)
+        assert message.startswith(
+            f"refusing to execute untrusted path: {entry!r}: {reason}. "
+        )
+        assert "chmod g-w,o-w" in message
         # the OS's own lookup has its own ELOOP limit (32 on macOS, 40 on
-        # Linux), so the PATH finder sees the chain at the bound only where the
-        # OS follows it; the walker and the spawn above did either way
+        # Linux), so the PATH finder sees the chain at the bound only where
+        # the OS follows it; the walk and the spawn above refused it either way
         if os.path.basename(entry) == "dot" and os.path.isfile(entry):
-            assert (
-                _dot2img(monkeypatch, bindir, "keyword").strip()
-                == "GRAPHVIZ-STUB -Tsvg"
-            )
-            assert _ran(home) == [real + ".ran"]
+            # the Graphviz entry point surfaces the same reason, its cause the
+            # TrustError
+            with pytest.raises(Exception, match="Cannot create image") as excinfo:
+                _dot2img(monkeypatch, bindir)
+            assert reason in str(excinfo.value)
+            assert isinstance(excinfo.value.__cause__, pathsec.TrustError)
         else:
             assert layout in ("homebrew_sibling_two_hops", "chain_at_the_bound")
+        assert _ran(home) == [], layout
 
     @pytest.mark.parametrize("layout", sorted(PLAIN), ids=sorted(PLAIN))
     @pytest.mark.parametrize("mode", MODES)
-    def test_a_layout_without_dotdot_runs_in_both_modes(
+    def test_a_layout_without_dotdot_runs_by_its_resolved_path(
         self, home, monkeypatch, layout, mode
     ):
         bindir, entry, real = PLAIN[layout](home)
-        got = _resolve(entry, mode)
+        got = _resolve(entry)
         assert got is not None and _same(got, real), (layout, mode, got)
-        assert not os.path.islink(got) and _reason(entry, mode) is None
-        proc, out = _run(entry, mode)
+        assert not os.path.islink(got) and _reason(entry) is None
+        proc, out = _run(entry)
         assert proc.args[0] == entry and out.strip() == "GRAPHVIZ-STUB -Tsvg"
         assert _ran(home) == [real + ".ran"]
         os.unlink(real + ".ran")
-        assert _dot2img(monkeypatch, bindir, mode).strip() == "GRAPHVIZ-STUB -Tsvg"
+        assert _dot2img(monkeypatch, bindir).strip() == "GRAPHVIZ-STUB -Tsvg"
 
     def test_ekaf_reproduction_on_the_homebrew_layout(self, home, monkeypatch):
-        """The exact two lines from the report, with the Homebrew shape on
-        PATH: refused with the keyword named; the keyword renders."""
-        bindir, _, real = homebrew(home)
+        """The call from the report, with the Homebrew shape on PATH: refused,
+        the message naming the link, its text and its ``..``."""
+        bindir, entry, real = homebrew(home)
         monkeypatch.setenv("PATH", bindir)
         from nltk.parse.dependencygraph import dot2img
 
-        with pytest.raises(Exception, match=f"dot2img\\(\\.\\.\\., {KEYWORD}=True\\)"):
+        with pytest.raises(Exception, match="Cannot create image") as excinfo:
             dot2img(GRAPH)
-        assert _ran(home) == []
-        assert dot2img(GRAPH, follow_link_parents=True).strip() == "GRAPHVIZ-STUB -Tsvg"
-        assert _ran(home) == [real + ".ran"]
+        message = str(excinfo.value)
+        assert _dotdot_reason(entry) in message
+        assert "'../Cellar/graphviz/15.1.1/bin/dot'" in message
+        assert isinstance(excinfo.value.__cause__, pathsec.TrustError)
+        assert _ran(home) == [] and os.path.isfile(real)
 
-    def test_the_graph_entry_points_on_the_homebrew_layout(self, home, monkeypatch):
-        """``DependencyGraph`` and ``AlignedSent``: the IPython hook takes no
-        argument and is refused; ``to_image`` with the keyword renders."""
+    def test_the_display_hooks_on_the_homebrew_layout(self, home, monkeypatch):
+        """``DependencyGraph._repr_svg_`` (through dot2img) and
+        ``AlignedSent._repr_svg_`` (its own trusted spawn): both refused with
+        the reason, the TrustError as the cause."""
         from nltk.parse.dependencygraph import DependencyGraph
         from nltk.translate.api import AlignedSent, Alignment
 
-        bindir, _, real = homebrew(home)
+        bindir, entry, real = homebrew(home)
         monkeypatch.setenv("PATH", bindir)
         dg = DependencyGraph("John N 2\nloves V 0\nMary N 2")
         sent = AlignedSent(["a"], ["b"], Alignment.fromstring("0-0"))
-        for hook in (dg._repr_svg_, sent._repr_svg_, dg.to_image, sent.to_image):
-            with pytest.raises(Exception, match="not followed by default") as excinfo:
+        for hook in (dg._repr_svg_, sent._repr_svg_):
+            with pytest.raises(Exception) as excinfo:
                 hook()
-            assert f"{KEYWORD}=True" in str(excinfo.value)
+            assert _dotdot_reason(entry) in str(excinfo.value), hook
+            assert isinstance(excinfo.value.__cause__, pathsec.TrustError)
         assert _ran(home) == []
-        for method in (dg.to_image, sent.to_image):
-            assert method(follow_link_parents=True).strip() == "GRAPHVIZ-STUB -Tsvg"
-            assert (
-                method("png", follow_link_parents=True).strip()
-                == b"GRAPHVIZ-STUB -Tpng"
-            )
-        assert _ran(home) == [real + ".ran"]
 
-    def test_a_link_before_the_dotdot_is_resolved_first_never_folded(self, home):
+    def test_a_dotdot_after_a_link_is_refused_never_folded(self, home):
         """``holder/dot -> sub/../real`` with ``holder/sub`` a link to another
         private directory: the kernel resolves ``sub`` first, so ``..`` is
-        that directory's parent and ``real`` is the file beside it. A lexical
-        fold would have run ``holder/real`` instead, a different file."""
+        that directory's parent, while a lexical fold names ``holder/real``,
+        a different file. The walk does neither: the ``..`` is refused."""
         kernel = _tool(f"{home}/other/real")
         folded = _tool(f"{home}/holder/real")
         _dir(f"{home}/other/inner")
         _ln(f"{home}/other/inner", f"{home}/holder/sub")
         entry = _ln("sub/../real", f"{home}/holder/dot")
-        assert pathsec.resolve_trusted_executable(entry) is None
-        got = _resolve(entry, "keyword")
-        assert _same(got, kernel) and not _same(got, folded)
-        assert _same(os.path.realpath(entry), kernel)  # the OS agrees
+        assert _same(os.path.realpath(entry), kernel)  # the OS
         joined = os.path.join(f"{home}/holder", "sub/../real")
-        assert _same(os.path.normpath(joined), folded)  # what folding gives
+        assert _same(os.path.normpath(joined), folded)  # a lexical fold
+        assert pathsec.resolve_trusted_executable(entry) is None
+        assert pathsec.untrusted_executable_reason(entry) == _dotdot_reason(entry)
+        with pytest.raises(pathsec.TrustError, match="'..' component"):
+            _run(entry)
+        assert _ran(home) == []
 
     @pytest.mark.parametrize(
         "spelling", ["case_fold", "nfd_for_nfc"], ids=["case_fold", "nfd_for_nfc"]
     )
-    def test_a_lookalike_component_is_judged_on_the_filesystem(self, home, spelling):
+    def test_a_lookalike_component_after_a_dotdot_is_never_reached(
+        self, home, spelling
+    ):
         """``../REAL/dot`` for ``real``, ``cafe`` + combining acute for ``caf``
-        + e-acute: on a case- or normalisation-insensitive filesystem (macOS)
-        the spelled component names the same verified directory and the
-        resolved file is the same inode as the real tool; elsewhere it names
-        nothing and is refused. Neither mode runs anything unverified."""
+        + e-acute: whatever the filesystem would map the spelled component to,
+        the ``..`` before it is refused first, by name."""
         if spelling == "case_fold":
             real_dir, spelled = "real", "REAL"
         else:
             real_dir, spelled = "caf" + chr(0xE9), "cafe" + chr(0x301)
-        real = _tool(f"{home}/{real_dir}/dot")
+        _tool(f"{home}/{real_dir}/dot")
         entry = _ln(f"../{spelled}/dot", f"{home}/bin/dot")
         assert pathsec.resolve_trusted_executable(entry) is None
-        assert "'..' component" in pathsec.untrusted_executable_reason(entry)
-        got = _resolve(entry, "keyword")
-        if got is None:
-            assert "cannot be inspected" in _reason(entry, "keyword")
-            with pytest.raises(pathsec.TrustError, match="cannot be inspected"):
-                _run(entry, "keyword")
-            assert _ran(home) == []
-        else:
-            assert os.path.samefile(got, real) and not os.path.islink(got)
-            assert pathsec.is_private_dir(os.path.dirname(got))
-            proc, out = _run(entry, "keyword")
-            assert out.strip() == "GRAPHVIZ-STUB -Tsvg"
-            assert [os.path.samefile(p[: -len(".ran")], real) for p in _ran(home)] == [
-                True
-            ]
+        assert pathsec.untrusted_executable_reason(entry) == _dotdot_reason(entry)
+        with pytest.raises(pathsec.TrustError, match="'..' component"):
+            _run(entry)
+        assert _ran(home) == []
+
+    def test_a_homebrew_shaped_link_is_refused_for_every_tool(self, home, monkeypatch):
+        """java, prover9 and hunpos found behind a ``..`` link: the finder
+        hands the link over and the spawn refuses it by name, as for dot."""
+        from nltk.internals import find_binary_absolute
+
+        real = _tool(f"{home}/Cellar/tool/1/bin/tool")
+        for name in ("java", "prover9", "hunpos-tag"):
+            _ln("../Cellar/tool/1/bin/tool", f"{home}/bin/{name}")
+        monkeypatch.setenv("PATH", f"{home}/bin")
+        monkeypatch.delenv("JAVA_HOME", raising=False)
+        monkeypatch.delenv("JAVAHOME", raising=False)
+        for name in ("java", "prover9", "hunpos-tag"):
+            found = find_binary_absolute(name, binary_names=[name])
+            assert found == f"{home}/bin/{name}"
+            with pytest.raises(pathsec.TrustError) as excinfo:
+                pathsec.spawn_trusted(found, [])
+            assert _dotdot_reason(found) in str(excinfo.value)
+        assert _ran(home) == [] and os.path.exists(real)
 
 
-# --------------------------------------------------------------------------- #
-# Every spoof is refused in both modes, with the reason naming the check and   #
-# the path, never the keyword, and nothing runs.                               #
-# --------------------------------------------------------------------------- #
+# =========================================================================== #
+# Spoofs: refused with the reason naming the check and the path; none runs.   #
+# =========================================================================== #
 
 
 @POSIX
@@ -684,48 +695,70 @@ class TestSpoofLayoutsAreRefused:
     @pytest.mark.parametrize("mode", MODES)
     def test_refused_with_the_reason(self, home, monkeypatch, layout, mode):
         bindir, entry, real, check, named = SPOOF[layout](home)
-        assert _resolve(entry, mode) is None, (layout, mode)
-        reason = _reason(entry, mode)
-        assert check in reason and named in reason, (layout, mode, reason)
+        assert _resolve(entry) is None, (layout, mode)
+        reason = _reason(entry)
+        if layout in REFUSED_AT_THE_DOTDOT:
+            assert reason == _dotdot_reason(entry), (layout, mode, reason)
+        else:
+            assert check in reason and named in reason, (layout, mode, reason)
         with pytest.raises(pathsec.TrustError) as excinfo:
-            _run(entry, mode)
+            _run(entry)
         message = str(excinfo.value)
         assert message.startswith("refusing to execute untrusted path")
         assert reason in message and "chmod g-w,o-w" in message
-        # the keyword would not help, so it is never suggested
-        assert excinfo.value.link_parent is False
-        assert KEYWORD not in message
         if real is not None and os.path.isfile(entry):
             # the Graphviz entry point surfaces the same reason, and the
             # trusted spawn is its cause
             with pytest.raises(Exception, match="Cannot create image") as excinfo:
-                _dot2img(monkeypatch, bindir, mode)
+                _dot2img(monkeypatch, bindir)
             assert reason in str(excinfo.value)
-            assert KEYWORD not in str(excinfo.value)
             assert isinstance(excinfo.value.__cause__, pathsec.TrustError)
         assert _ran(home) == [], (layout, mode)
 
     @pytest.mark.parametrize("mode", MODES)
     def test_a_link_owned_by_another_user_is_refused(self, home, monkeypatch, mode):
         """Simulated (no root here): ``lstat`` of one link reports a foreign
-        uid, at the entry and in the middle of a chain. Its holder is private,
-        so this is the link-owner check alone."""
+        uid, at the entry and in the middle of a chain of absolute links.
+        Its holder is private, so this is the link-owner check alone."""
         real = _tool(f"{home}/real/dot")
-        mid = _ln("../real/dot", f"{home}/mid/dot")
-        entry = _ln("../mid/dot", f"{home}/bin/dot")
-        assert _same(_resolve(entry, "keyword"), real)
+        mid = _ln(real, f"{home}/mid/dot")
+        entry = _ln(mid, f"{home}/bin/dot")
+        assert _same(_resolve(entry), real)
         foreign = os.geteuid() + 4242
         for victim in (entry, mid):
             monkeypatch.setattr(pathsec.os, "lstat", _foreign_lstat(victim, foreign))
-            assert _resolve(entry, mode) is None, (victim, mode)
-            reason = _reason(entry, mode)
+            assert _resolve(entry) is None, (victim, mode)
+            reason = _reason(entry)
             assert f"symlink {victim!r} is owned by uid {foreign}" in reason, mode
-            with pytest.raises(pathsec.TrustError, match="owned by uid") as excinfo:
-                _run(entry, mode)
-            assert KEYWORD not in str(excinfo.value)
+            with pytest.raises(pathsec.TrustError, match="owned by uid"):
+                _run(entry)
             monkeypatch.undo()
         assert _ran(home) == []
-        assert _same(_resolve(entry, "keyword"), real)
+        assert _same(_resolve(entry), real)
+
+    @pytest.mark.parametrize("mode", MODES)
+    def test_a_foreign_link_is_refused_before_its_text_is_read(
+        self, home, monkeypatch, mode
+    ):
+        """A link another user owns whose text climbs with ``..``: the owner
+        is judged on ``lstat`` before ``readlink``, so the reason is the
+        owner, and the text is never read."""
+        _tool(f"{home}/real/dot")
+        entry = _ln("../real/dot", f"{home}/bin/dot")
+        foreign = os.geteuid() + 4242
+        monkeypatch.setattr(pathsec.os, "lstat", _foreign_lstat(entry, foreign))
+        true_readlink = os.readlink
+        read = []
+
+        def readlink(path, *args, **kwargs):
+            read.append(os.fspath(path))
+            return true_readlink(path, *args, **kwargs)
+
+        monkeypatch.setattr(pathsec.os, "readlink", readlink)
+        reason = _reason(entry)
+        assert reason.startswith(f"symlink {entry!r} is owned by uid {foreign}")
+        assert read == [], mode
+        assert _ran(home) == []
 
     @pytest.mark.parametrize("mode", MODES)
     def test_a_root_owned_link_in_a_writable_dir_and_the_reverse(
@@ -734,13 +767,13 @@ class TestSpoofLayoutsAreRefused:
         """A link root created in a directory anyone can write: the directory
         refuses it (the link can be swapped). A link another user created in
         a root-owned directory: the link owner refuses it."""
-        real = _tool(f"{home}/real/dot")
+        _tool(f"{home}/real/dot")
         _dir(f"{home}/ww")
         entry = _ln("../real/dot", f"{home}/ww/dot")
         os.chmod(f"{home}/ww", 0o777)
         monkeypatch.setattr(pathsec.os, "lstat", _foreign_lstat(entry, 0))
-        assert _resolve(entry, mode) is None
-        reason = _reason(entry, mode)
+        assert _resolve(entry) is None
+        reason = _reason(entry)
         assert "world-writable" in reason and f"{home}/ww" in reason
         monkeypatch.undo()
         os.chmod(f"{home}/ww", 0o755)
@@ -758,67 +791,68 @@ class TestSpoofLayoutsAreRefused:
         monkeypatch.setattr(
             pathsec.os, "lstat", _foreign_lstat(entry, os.geteuid() + 4242)
         )
-        assert _resolve(entry, mode) is None
-        reason = _reason(entry, mode)
-        assert f"symlink {entry!r} is owned by uid" in reason
+        assert _resolve(entry) is None
+        reason = _reason(entry)
+        assert f"symlink {entry!r} is owned by uid" in reason, mode
         with pytest.raises(pathsec.TrustError, match="owned by uid"):
-            _run(entry, mode)
+            _run(entry)
         assert _ran(home) == []
 
     @pytest.mark.parametrize("mode", MODES)
-    def test_a_climb_into_the_shared_tmp_is_refused(self, home, mode):
-        """``bin/dot -> ../../..(to /)/tmp/<dir>/dot``: the sticky ``/tmp``
-        on the way is world-writable, so the chain is refused there."""
+    def test_a_link_into_the_shared_tmp_is_refused(self, home, mode):
+        """``bin/dot`` pointing into a directory planted in the sticky
+        ``/tmp``: climbing there with ``..`` is refused at the ``..``; naming
+        it absolutely is refused at ``/tmp``, which is world-writable."""
         tmp = "/tmp"
         if not (os.path.isdir(tmp) and os.stat(tmp).st_mode & stat.S_ISVTX):
             pytest.skip("/tmp is not a sticky world-writable dir here")
         plant = tempfile.mkdtemp(prefix="nltk_symlink_spoof_", dir=tmp)
         try:
             real = _tool(f"{plant}/dot")
-            entry = _ln("../" * 40 + real.lstrip("/"), f"{home}/bin/dot")
-            assert _resolve(entry, mode) is None
-            reason = _reason(entry, mode)
-            assert "world-writable" in reason and "tmp" in reason
-            with pytest.raises(pathsec.TrustError) as excinfo:
-                _run(entry, mode)
-            assert KEYWORD not in str(excinfo.value)
+            climbing = _ln("../" * 40 + real.lstrip("/"), f"{home}/bin/dot")
+            absolute = _ln(real, f"{home}/abs/dot")
+            assert _resolve(climbing) is None and _resolve(absolute) is None
+            assert _reason(climbing) == _dotdot_reason(climbing), mode
+            reason = _reason(absolute)
+            assert "world-writable" in reason and "tmp" in reason, mode
+            for entry in (climbing, absolute):
+                with pytest.raises(pathsec.TrustError):
+                    _run(entry)
             assert not os.path.exists(real + ".ran")
         finally:
             shutil.rmtree(plant, ignore_errors=True)
 
     @pytest.mark.parametrize("mode", MODES)
     def test_the_callers_own_dotdot_is_never_folded(self, home, mode):
-        """A ``..`` in the target the caller hands over is refused in both
-        modes, even when it folds to a trusted file and even when it is the
-        resolved path of a link: an unresolved name before it could hide a
-        link, and a configured location is never allowed one."""
+        """A ``..`` in the target the caller hands over is refused, even when
+        it folds to a trusted file and even when it is the resolved path of a
+        link: an unresolved name before it could hide a link, and a
+        configured location is never allowed one."""
         real = _tool(f"{home}/real/dot")
-        entry = _ln("../real/dot", f"{home}/bin/dot")
-        resolved = _resolve(entry, "keyword")
+        entry = _ln(real, f"{home}/bin/dot")
+        resolved = _resolve(entry)
+        assert _same(resolved, real)
         for spelled in (
             f"{home}/bin/../real/dot",
             f"{home}/real/../real/dot",
             os.path.join(os.path.dirname(resolved), os.pardir, "real", "dot"),
         ):
             assert _same(os.path.realpath(spelled), real)
-            assert _resolve(spelled, mode) is None, (spelled, mode)
-            reason = _reason(spelled, mode)
-            assert "'..' component" in reason and "not followed" not in reason
-            with pytest.raises(pathsec.TrustError, match="'..' component") as excinfo:
-                _run(spelled, mode)
-            assert KEYWORD not in str(excinfo.value)
+            assert _resolve(spelled) is None, (spelled, mode)
+            assert _reason(spelled) == f"{spelled!r} contains a '..' component"
+            with pytest.raises(pathsec.TrustError, match="'..' component"):
+                _run(spelled)
         assert _ran(home) == []
 
     def test_relative_and_odd_targets_name_their_reason(self, home):
         real = _tool(f"{home}/bin/dot")
-        for mode in MODES:
-            assert "not absolute" in _reason("bin/dot", mode)
-            assert "NUL" in _reason(real + "\x00", mode)
-            assert "not a str path" in _reason(7, mode)
-            assert "not a str path" in _reason(None, mode)
-            missing = f"{home}/nowhere/dot"
-            assert "cannot be inspected" in _reason(missing, mode)
-            assert _reason(real, mode) is None
+        assert "not absolute" in _reason("bin/dot")
+        assert "NUL" in _reason(real + "\x00")
+        assert "not a str path" in _reason(7)
+        assert "not a str path" in _reason(None)
+        missing = f"{home}/nowhere/dot"
+        assert "cannot be inspected" in _reason(missing)
+        assert _reason(real) is None
 
     @pytest.mark.parametrize("mode", MODES)
     def test_a_hop_repointed_between_lstat_and_readlink_is_rewalked(
@@ -831,22 +865,22 @@ class TestSpoofLayoutsAreRefused:
         real = _tool(f"{home}/real/dot")
         decoy = _tool(f"{home}/ww/dot")
         os.chmod(f"{home}/ww", 0o777)
-        mid = _ln("../real/dot", f"{home}/mid/dot")
-        entry = _ln("../mid/dot", f"{home}/bin/dot")
+        mid = _ln(real, f"{home}/mid/dot")
+        entry = _ln(mid, f"{home}/bin/dot")
         true_readlink = os.readlink
 
         def readlink(path, *args, **kwargs):
-            if os.fspath(path) == mid and true_readlink(mid) == "../real/dot":
+            if os.fspath(path) == mid and true_readlink(mid) == real:
                 os.unlink(mid)
-                os.symlink("../ww/dot", mid)
+                os.symlink(decoy, mid)
             return true_readlink(path, *args, **kwargs)
 
         monkeypatch.setattr(pathsec.os, "readlink", readlink)
-        assert _resolve(entry, mode) is None
-        reason = _reason(entry, mode)
-        assert "world-writable" in reason and f"{home}/ww" in reason
+        assert _resolve(entry) is None
+        reason = _reason(entry)
+        assert "world-writable" in reason and f"{home}/ww" in reason, mode
         with pytest.raises(pathsec.TrustError, match="world-writable"):
-            _run(entry, mode)
+            _run(entry)
         assert _ran(home) == [] and os.path.exists(decoy) and os.path.exists(real)
 
     @pytest.mark.parametrize("mode", MODES)
@@ -860,7 +894,7 @@ class TestSpoofLayoutsAreRefused:
         real = _tool(f"{home}/real/dot")
         decoy = _tool(f"{home}/ww/dot")
         os.chmod(f"{home}/ww", 0o777)
-        entry = real if mode == "default" else _ln("../real/dot", f"{home}/bin/dot")
+        entry = real
         true_lstat = os.lstat
         seen = []
 
@@ -875,18 +909,18 @@ class TestSpoofLayoutsAreRefused:
 
         monkeypatch.setattr(pathsec.os, "lstat", lstat)
         why = pathsec._Why()
-        assert _walk(entry, mode, why) is None
+        assert _walk(entry, why) is None
         swapped = len(seen)  # os.path.islink below goes through the patch too
         assert os.path.islink(real) and swapped == 2
-        assert "cannot be opened for verification" in "; ".join(why)
+        assert "cannot be opened for verification" in "; ".join(why), mode
         os.unlink(real)
         _tool(real)
         seen.clear()
         # the spawn is refused; its diagnostic walk runs after the swap, so the
         # reason it reports is the link it now finds, into the writable dir
         with pytest.raises(pathsec.TrustError, match="world-writable") as excinfo:
-            _run(entry, mode)
-        assert f"{home}/ww" in str(excinfo.value) and KEYWORD not in str(excinfo.value)
+            _run(entry)
+        assert f"{home}/ww" in str(excinfo.value)
         assert _ran(home) == []
 
     @pytest.mark.parametrize("mode", MODES)
@@ -897,7 +931,7 @@ class TestSpoofLayoutsAreRefused:
         the inode opened is not the one inspected, and that is the reason."""
         real = _tool(f"{home}/real/dot")
         other = _tool(f"{home}/real/other")
-        entry = real if mode == "default" else _ln("../real/dot", f"{home}/bin/dot")
+        entry = real
         true_lstat = os.lstat
         seen = []
 
@@ -910,30 +944,20 @@ class TestSpoofLayoutsAreRefused:
             return st
 
         monkeypatch.setattr(pathsec.os, "lstat", lstat)
-        assert _resolve(entry, mode) is None
+        assert _resolve(entry) is None
         _tool(other)
         seen.clear()
-        assert "changed while it was being verified" in _reason(entry, mode)
+        assert "changed while it was being verified" in _reason(entry), mode
         assert _ran(home) == []
 
 
-# --------------------------------------------------------------------------- #
+# =========================================================================== #
 # Teeth: removing each check lets a named spoof through.                       #
-# --------------------------------------------------------------------------- #
+# =========================================================================== #
 
 
 @POSIX
 class TestTeeth:
-    def test_without_the_default_dotdot_refusal_the_homebrew_layout_runs(self, home):
-        """The only difference between the default walk and the private one is
-        the refusal of a ``..`` in a link's text: take it away and Homebrew's
-        chain resolves to the real file. The default therefore IS that check."""
-        _, entry, real = homebrew(home)
-        assert pathsec.resolve_trusted_executable(entry) is None
-        assert pathsec._resolve_private(entry) is None
-        assert _same(pathsec._resolve_private(entry, _follow_link_parents=True), real)
-        assert _same(pathsec._resolve_trusted(entry, _follow_link_parents=True), real)
-
     @pytest.mark.parametrize("mode", MODES)
     def test_without_the_link_owner_check_a_foreign_link_runs(
         self, home, monkeypatch, mode
@@ -943,35 +967,38 @@ class TestTeeth:
         monkeypatch.setattr(
             pathsec.os, "lstat", _foreign_lstat(entry, os.geteuid() + 4242)
         )
-        assert _resolve(entry, mode) is None
+        assert _resolve(entry) is None, mode
         monkeypatch.setattr(pathsec, "_link_owner_problem", lambda path, st: None)
-        assert _same(_resolve(entry, mode), real)
+        assert _same(_resolve(entry), real), mode
 
     def test_without_the_hop_bound_an_overlong_chain_runs(self, home, monkeypatch):
-        _, entry, real, _, _ = chain_over_the_bound(home)
-        assert _resolve(entry, "keyword") is None
+        """Absolute links, no ``..``, so the bound alone refuses the chain one
+        hop over it; the chain exactly at it resolves."""
+        real = _tool(f"{home}/real/dot")
+        hops = [real]
+        for i in range(pathsec._MAX_LINK_HOPS + 1):
+            hops.append(_ln(hops[-1], f"{home}/l{i}/dot"))
+        at_the_bound, over_it = hops[-2], hops[-1]
+        assert _same(_resolve(at_the_bound), real)
+        assert _resolve(over_it) is None
+        assert "longer than" in _reason(over_it)
         monkeypatch.setattr(pathsec, "_MAX_LINK_HOPS", 10_000)
-        assert _same(_resolve(entry, "keyword"), real)
+        assert _same(_resolve(over_it), real)
 
-    def test_without_the_directory_check_a_dotdot_into_a_writable_dir_runs(
-        self, home, monkeypatch
+    @pytest.mark.parametrize(
+        "layout",
+        ["absolute_link_into_writable", "hard_link_in_a_writable_dir"],
+        ids=["absolute_link_into_writable", "hard_link_in_a_writable_dir"],
+    )
+    def test_without_the_directory_check_a_writable_dir_runs(
+        self, home, monkeypatch, layout
     ):
-        """Under the keyword the directory check is what refuses a ``..`` that
-        lands in a writable directory."""
-        _, entry, real, _, _ = group_writable_target_dir(home)
-        assert _resolve(entry, "keyword") is None
+        _, entry, real, _, _ = SPOOF[layout](home)
+        assert _resolve(entry) is None
+        assert "world-writable" in _reason(entry)
         monkeypatch.setattr(pathsec, "is_private_dir", lambda path: True)
-        assert _same(_resolve(entry, "keyword"), real)
-        # and the default still refuses it, at the '..'
-        assert "not followed by default" in pathsec.untrusted_executable_reason(entry)
-
-    def test_without_the_directory_check_a_climb_out_and_back_runs(
-        self, home, monkeypatch
-    ):
-        _, entry, real, _, _ = climb_above_the_root_into_writable_and_back(home)
-        assert _resolve(entry, "keyword") is None
-        monkeypatch.setattr(pathsec, "is_private_dir", lambda path: True)
-        assert _same(_resolve(entry, "keyword"), real)
+        got = _resolve(entry)  # the hard link is its own name for the one inode
+        assert got is not None and os.path.samefile(got, real)
 
     @pytest.mark.parametrize("mode", MODES)
     def test_without_the_file_check_a_writable_target_runs(
@@ -979,17 +1006,21 @@ class TestTeeth:
     ):
         real = _tool(f"{home}/real/dot", 0o775)
         entry = _ln(real, f"{home}/bin/dot")
-        assert _resolve(entry, mode) is None
+        assert _resolve(entry) is None, mode
         monkeypatch.setattr(pathsec, "_private_stat", lambda st: True)
-        assert _same(_resolve(entry, mode), real)
+        assert _same(_resolve(entry), real), mode
 
     def test_without_the_control_character_check_a_newline_link_runs(
         self, home, monkeypatch
     ):
-        _, entry, real, _, _ = newline_in_link_text(home)
-        assert _resolve(entry, "keyword") is None
+        """An absolute link whose text holds a line break, to a real private
+        file in a directory named with one."""
+        real = _tool(f"{home}/re\nal/dot")
+        entry = _ln(real, f"{home}/bin/dot")
+        assert _resolve(entry) is None
+        assert "control character" in _reason(entry)
         monkeypatch.setattr(pathsec, "_link_text_problem", lambda path, link: None)
-        assert _same(_resolve(entry, "keyword"), real)
+        assert _same(_resolve(entry), real)
 
     @pytest.mark.parametrize("mode", MODES)
     def test_without_the_open_check_a_swapped_final_component_runs(
@@ -1001,7 +1032,7 @@ class TestTeeth:
         real = _tool(f"{home}/real/dot")
         decoy = _tool(f"{home}/ww/dot")
         os.chmod(f"{home}/ww", 0o777)
-        entry = real if mode == "default" else _ln("../real/dot", f"{home}/bin/dot")
+        entry = real
         true_lstat = os.lstat
         seen = []
 
@@ -1019,8 +1050,8 @@ class TestTeeth:
         # the inode comparison against what was inspected
         monkeypatch.setattr(pathsec, "_open_verified", lambda real, why: os.stat(real))
         why = pathsec._Why()
-        assert _walk(entry, mode, why) is None
-        assert "changed while it was being verified" in "; ".join(why)
+        assert _walk(entry, why) is None
+        assert "changed while it was being verified" in "; ".join(why), mode
         os.unlink(real)
         _tool(real)
         seen.clear()
@@ -1028,38 +1059,39 @@ class TestTeeth:
         monkeypatch.setattr(pathsec.os, "lstat", lstat)
         monkeypatch.setattr(pathsec, "_same_inode", lambda a, b: True)
         why = pathsec._Why()
-        assert _walk(entry, mode, why) is None
-        assert "cannot be opened for verification" in "; ".join(why)
+        assert _walk(entry, why) is None
+        assert "cannot be opened for verification" in "; ".join(why), mode
         os.unlink(real)
         _tool(real)
         seen.clear()
         # both gone: the decoy is what the returned path now names
         monkeypatch.setattr(pathsec, "_open_verified", lambda real, why: os.stat(real))
-        got = _resolve(entry, mode)
+        got = _resolve(entry)
         assert got == real and os.path.realpath(got) == os.path.realpath(decoy)
 
     def test_the_spawn_runs_what_the_resolver_returned(self, home, monkeypatch):
-        """The reason is a second, diagnostic walk; the spawn executes the one
-        path the resolver returned, read once from a path-like."""
+        """The reason is a second, diagnostic walk on a refusal only; the
+        spawn walks once and executes the one path the resolver returned,
+        read once from a path-like."""
         real = _tool(f"{home}/real/dot")
-        entry = _ln("../real/dot", f"{home}/bin/dot")
+        entry = _ln(real, f"{home}/bin/dot")
         calls = []
         true_resolve = pathsec._resolve_trusted
 
-        def resolve(target, why=None, **kw):
-            calls.append((target, kw))
-            return true_resolve(target, why, **kw)
+        def resolve(target, why=None):
+            calls.append(target)
+            return true_resolve(target, why)
 
         monkeypatch.setattr(pathsec, "_resolve_trusted", resolve)
-        proc, out = _run(Path(entry), "keyword")
-        assert calls == [(entry, {PRIVATE_KEYWORD: True})]
+        proc, out = _run(Path(entry))
+        assert calls == [entry]
         assert proc.args[0] == entry  # the invoked path, read once
         assert out.strip() == "GRAPHVIZ-STUB -Tsvg"
 
 
-# --------------------------------------------------------------------------- #
-# The keyword is a bool, accepted only where documented, and nowhere else.     #
-# --------------------------------------------------------------------------- #
+# =========================================================================== #
+# What reaches execve: argv[0] as invoked, the verified inode as executable.   #
+# =========================================================================== #
 
 
 @POSIX
@@ -1068,8 +1100,8 @@ class TestInvokedName:
     (``executable=``), argv[0] is the verified path the caller invoked. A
     multi-call binary dispatches on argv[0] (Debian's ``/usr/bin/dot`` is a
     link to ``libgvc6-config-update``), so the resolved path there would make
-    dot refuse to run; a shell stub cannot see argv[0], the real dot on the
-    Linux runners does, in ``TestRealGraphviz``."""
+    dot refuse to run; a shell stub cannot see argv[0], so these tests pin
+    what is passed at the ``Popen`` call."""
 
     @staticmethod
     def _capture(monkeypatch):
@@ -1083,17 +1115,16 @@ class TestInvokedName:
         monkeypatch.setattr(pathsec.subprocess, "Popen", popen)
         return seen
 
-    @pytest.mark.parametrize("layout", sorted(CLIMBING), ids=sorted(CLIMBING))
-    def test_a_climbing_link_runs_its_target_under_the_invoked_name(
+    @pytest.mark.parametrize("layout", sorted(PLAIN), ids=sorted(PLAIN))
+    def test_a_linked_tool_runs_its_target_under_the_invoked_name(
         self, home, monkeypatch, layout
     ):
-        bindir, entry, real = CLIMBING[layout](home)
+        bindir, entry, real = PLAIN[layout](home)
         seen = self._capture(monkeypatch)
-        proc, out = _run(entry, "keyword")
+        proc, out = _run(entry)
         assert seen["args"] == [entry, "-Tsvg"]
-        assert _same(seen["executable"], real) and not os.path.islink(
-            seen["executable"]
-        )
+        assert _same(seen["executable"], real)
+        assert not os.path.islink(seen["executable"])
         assert out.strip() == "GRAPHVIZ-STUB -Tsvg"
 
     @pytest.mark.parametrize("mode", MODES)
@@ -1104,7 +1135,7 @@ class TestInvokedName:
         bindir, entry, real = multicall(home)
         for name in ("dot", "neato", "circo"):
             seen = self._capture(monkeypatch)
-            proc, out = _run(f"{bindir}/{name}", mode)
+            proc, out = _run(f"{bindir}/{name}")
             assert seen["args"][0] == f"{bindir}/{name}", (mode, name, seen)
             assert _same(seen["executable"], real)
             assert out.strip() == "GRAPHVIZ-STUB -Tsvg"
@@ -1116,197 +1147,13 @@ class TestInvokedName:
         real = _tool(f"{home}/real/dot")
         entry = _ln(real, f"{home}/bin/dot")  # absolute link, no '..'
         seen = self._capture(monkeypatch)
-        _run(Path(entry), mode)
-        assert seen["args"][0] == entry and _same(seen["executable"], real)
+        _run(Path(entry))
+        assert seen["args"][0] == entry and _same(seen["executable"], real), mode
 
 
-class TestKeywordSurface:
-    @pytest.mark.parametrize(
-        "value",
-        [
-            "True",
-            1,
-            1.0,
-            object(),
-            [True],
-            type("Lying", (), {"__bool__": lambda self: True})(),
-        ],
-        ids=["str", "int", "float", "object", "list", "lying_bool"],
-    )
-    def test_anything_but_a_bool_is_refused_before_any_lookup(self, value, monkeypatch):
-        from nltk.parse.dependencygraph import DependencyGraph, dot2img
-        from nltk.translate.api import AlignedSent, Alignment
-
-        monkeypatch.setenv("PATH", "")
-        dg = DependencyGraph("John N 2\nloves V 0\nMary N 2")
-        sent = AlignedSent(["a"], ["b"], Alignment.fromstring("0-0"))
-        with pytest.raises(TypeError, match=KEYWORD):
-            dot2img(GRAPH, follow_link_parents=value)
-        with pytest.raises(TypeError, match=KEYWORD):
-            dg.to_image(follow_link_parents=value)
-        with pytest.raises(TypeError, match=KEYWORD):
-            sent.to_image(follow_link_parents=value)
-        with pytest.raises(TypeError, match=PRIVATE_KEYWORD):
-            pathsec.spawn_trusted("/x", [], _follow_link_parents=value)
-        with pytest.raises(TypeError, match=PRIVATE_KEYWORD):
-            pathsec._resolve_private("/x", _follow_link_parents=value)
-
-    def test_the_keyword_is_keyword_only_everywhere(self):
-        from nltk.parse.dependencygraph import DependencyGraph, dot2img
-        from nltk.translate.api import AlignedSent, Alignment
-
-        dg = DependencyGraph("John N 2\nloves V 0\nMary N 2")
-        sent = AlignedSent(["a"], ["b"], Alignment.fromstring("0-0"))
-        with pytest.raises(TypeError):
-            dot2img(GRAPH, "svg", True)
-        with pytest.raises(TypeError):
-            dg.to_image("svg", True)
-        with pytest.raises(TypeError):
-            sent.to_image("svg", True)
-        with pytest.raises(TypeError):
-            pathsec.spawn_trusted("/x", [], True)
-        with pytest.raises(TypeError):
-            pathsec._resolve_trusted("/x", None, True)
-
-    def test_the_repr_hooks_take_no_argument_and_use_the_defaults(self, monkeypatch):
-        """IPython calls ``_repr_svg_()`` bare; an attribute named like the
-        keyword on the instance has no effect; ``dot2img`` sees False."""
-        import inspect
-
-        from nltk.parse import dependencygraph
-        from nltk.parse.dependencygraph import DependencyGraph
-        from nltk.translate.api import AlignedSent, Alignment
-
-        dg = DependencyGraph("John N 2\nloves V 0\nMary N 2")
-        sent = AlignedSent(["a"], ["b"], Alignment.fromstring("0-0"))
-        for hook in (dg._repr_svg_, sent._repr_svg_):
-            assert list(inspect.signature(hook).parameters) == []
-            with pytest.raises(TypeError):
-                hook(follow_link_parents=True)
-        seen = []
-
-        def record(dot_string, t="svg", *, follow_link_parents=False):
-            seen.append(follow_link_parents)
-            return "<svg/>"
-
-        monkeypatch.setattr(dependencygraph, "dot2img", record)
-        for obj in (dg, sent):
-            setattr(obj, KEYWORD, True)
-            setattr(obj, PRIVATE_KEYWORD, True)
-            obj.__dict__[KEYWORD] = True
-            assert obj._repr_svg_() == "<svg/>"
-            assert obj.to_image() == "<svg/>"
-        assert seen == [False, False, False, False]
-        # the signature defaults are off at every entry point
-        for fn in (dependencygraph.DependencyGraph.to_image, AlignedSent.to_image):
-            assert inspect.signature(fn).parameters[KEYWORD].default is False
-            assert (
-                inspect.signature(fn).parameters[KEYWORD].kind
-                is inspect.Parameter.KEYWORD_ONLY
-            )
-
-    def test_dot2img_forwards_exactly_the_checked_bool(self, monkeypatch):
-        from nltk.parse import dependencygraph
-
-        seen = []
-
-        def record(target, args, **kw):
-            seen.append(kw.get(PRIVATE_KEYWORD))
-            raise pathsec.TrustError("stop")
-
-        monkeypatch.setattr(dependencygraph, "find_binary_absolute", lambda name: "/x")
-        monkeypatch.setattr(dependencygraph, "spawn_trusted", record)
-        for value in (False, True):
-            with pytest.raises(Exception, match="Cannot create image"):
-                dependencygraph.dot2img(GRAPH, follow_link_parents=value)
-        assert seen == [False, True]
-
-    def test_no_other_wrapper_accepts_the_keyword(self):
-        """Every other tool wrapper keeps the default: there is no keyword to
-        pass, on any platform."""
-        import inspect
-
-        from nltk.classify.megam import config_megam
-        from nltk.classify.tadm import config_tadm
-        from nltk.inference.prover9 import Prover9Command
-        from nltk.internals import config_java, find_binary_absolute, java
-        from nltk.tag.hunpos import HunposTagger
-
-        for kw in (KEYWORD, PRIVATE_KEYWORD):
-            with pytest.raises(TypeError):
-                config_java(**{kw: True})
-            with pytest.raises(TypeError):
-                find_binary_absolute("prover9", **{kw: True})
-            with pytest.raises(TypeError):
-                config_megam(**{kw: True})
-            with pytest.raises(TypeError):
-                config_tadm(**{kw: True})
-            for fn in (
-                HunposTagger.__init__,
-                Prover9Command.__init__,
-                java,
-                pathsec.resolve_trusted_executable,
-                pathsec.untrusted_executable_reason,
-            ):
-                params = inspect.signature(fn).parameters
-                assert kw not in params, fn
-                assert not any(p.kind is p.VAR_KEYWORD for p in params.values()), fn
-
-    @POSIX
-    def test_a_homebrew_shaped_link_stays_refused_for_every_other_tool(
-        self, home, monkeypatch
-    ):
-        """java, prover9 and hunpos found behind a ``..`` link: the finder
-        hands the link over, the default spawn refuses it by name, and the
-        error never suggests a keyword they do not have."""
-        from nltk.internals import find_binary_absolute
-
-        real = _tool(f"{home}/Cellar/tool/1/bin/tool")
-        for name in ("java", "prover9", "hunpos-tag"):
-            _ln("../Cellar/tool/1/bin/tool", f"{home}/bin/{name}")
-        monkeypatch.setenv("PATH", f"{home}/bin")
-        monkeypatch.delenv("JAVA_HOME", raising=False)
-        monkeypatch.delenv("JAVAHOME", raising=False)
-        for name in ("java", "prover9", "hunpos-tag"):
-            found = find_binary_absolute(name, binary_names=[name])
-            assert _same(found, f"{home}/bin/{name}")
-            with pytest.raises(pathsec.TrustError, match="not followed by default"):
-                pathsec.spawn_trusted(found, [])
-        assert _ran(home) == [] and os.path.exists(real)
-
-
-@POSIX
-def test_only_the_graphviz_caller_names_the_private_walk():
-    """``git grep`` of the private keyword: its definition and threading in
-    pathsec, the one Graphviz caller, the CI guard and the tests, nothing else.
-    A new wrapper that picked it up would fail here and in the guard."""
-    import nltk
-
-    repo = os.path.dirname(os.path.dirname(os.path.abspath(nltk.__file__)))
-    allowed = {
-        os.path.join("nltk", "pathsec.py"),
-        os.path.join("nltk", "parse", "dependencygraph.py"),
-        os.path.join("tools", "check_all_spawns_through_pathsec.py"),
-    }
-    hits = set()
-    for top in ("nltk", "tools"):
-        for dirpath, _, names in os.walk(os.path.join(repo, top)):
-            for name in names:
-                if not name.endswith(".py"):
-                    continue
-                path = os.path.join(dirpath, name)
-                with open(path, encoding="utf-8", errors="replace") as fh:
-                    if PRIVATE_KEYWORD in fh.read():
-                        hits.add(os.path.relpath(path, repo))
-    tests = {h for h in hits if h.startswith(os.path.join("nltk", "test"))}
-    assert hits - tests == allowed, sorted(hits - tests)
-    assert os.path.join("nltk", "translate", "api.py") not in hits
-
-
-# --------------------------------------------------------------------------- #
-# The real Graphviz: nothing stubbed. CI installs it on every runner and sets  #
-# NLTK_CI_REQUIRE_GRAPHVIZ so a missing or refused dot fails, never skips.     #
-# --------------------------------------------------------------------------- #
+# =========================================================================== #
+# The real Graphviz, nothing stubbed (CI sets NLTK_CI_REQUIRE_GRAPHVIZ).      #
+# =========================================================================== #
 
 PNG = b"\x89PNG\r\n\x1a\n"
 
@@ -1341,141 +1188,103 @@ def _valid_svg(text):
     return text
 
 
-def _graph_objects():
-    from nltk.parse.dependencygraph import DependencyGraph
+def _entry_points():
+    """Every way NLTK runs dot: dot2img (svg and png) and both display hooks."""
+    from nltk.parse.dependencygraph import DependencyGraph, dot2img
     from nltk.translate.api import AlignedSent, Alignment
 
     dg = DependencyGraph("a N 2\nb V 0")
     sent = AlignedSent(["a"], ["b"], Alignment.fromstring("0-0"))
-    return dg, sent
+    return {
+        "dot2img svg": lambda: dot2img(GRAPH),
+        "dot2img png": lambda: dot2img(GRAPH, "png"),
+        "DependencyGraph._repr_svg_": dg._repr_svg_,
+        "AlignedSent._repr_svg_": sent._repr_svg_,
+    }
+
+
+def _chain_private(path):
+    """Every directory above *path*, as named, is private."""
+    return all(pathsec.is_private_dir(str(p)) for p in Path(path).parents)
+
+
+def _all_refused(reason):
+    """Every entry point raises with *reason* in its message, the TrustError
+    as its cause."""
+    for name, call in _entry_points().items():
+        with pytest.raises(Exception) as excinfo:
+            call()
+        assert reason in str(excinfo.value), (name, str(excinfo.value))
+        assert isinstance(excinfo.value.__cause__, pathsec.TrustError), name
 
 
 class TestRealGraphviz:
-    def test_the_installed_dot_renders_or_its_refusal_is_caught(self):
-        """The dot as installed (apt: a root-owned file; choco: a .exe; brew:
-        a ``bin/dot -> ../Cellar/...`` link): a trusted file renders in both
-        modes; the Homebrew link is refused by default with the keyword named
-        and renders under it; anything else refused is reported with its
-        reason in both modes, and in CI that is a failure to fix in the
-        workflow (the chain is made private), never a skip."""
-        from nltk.parse.dependencygraph import dot2img
-
+    def test_the_installed_dot_renders_or_is_refused_by_its_shape(self):
+        """The dot as installed. A plain trusted file (choco's ``dot.exe``)
+        renders well-formed SVG and PNG through dot2img and both display
+        hooks. A symlink whose own text climbs with ``..`` (apt's
+        ``/usr/bin/dot -> ../sbin/libgvc6-config-update``, Homebrew's
+        ``bin/dot -> ../Cellar/graphviz/<v>/bin/dot``) is refused through
+        every entry point, with the link, its text and its ``..`` named once
+        the directories above it are private, as CI makes them. Any other
+        refusal is reported through every entry point too, and fails in CI."""
         dot = _real_dot()
-        reason, link_parent = pathsec._refusal(dot)
-        if reason is not None and not link_parent:
-            for kw in ({}, {KEYWORD: True}):
-                with pytest.raises(Exception, match="Cannot create image") as excinfo:
-                    dot2img(GRAPH, **kw)
-                assert reason in str(excinfo.value)
-                assert isinstance(excinfo.value.__cause__, pathsec.TrustError)
-            message = f"the installed dot {dot!r} is refused: {reason}"
-            if _required():
-                pytest.fail(message)
-            pytest.skip(message)
-        dg, sent = _graph_objects()
-        if link_parent:
-            for call in (
-                lambda: dot2img(GRAPH),
-                dg._repr_svg_,
-                sent._repr_svg_,
-                dg.to_image,
-                sent.to_image,
-            ):
-                with pytest.raises(Exception, match="Cannot create image") as excinfo:
-                    call()
-                message = str(excinfo.value)
-                assert "not followed by default" in message
-                assert f"dot2img(..., {KEYWORD}=True)" in message
-                assert excinfo.value.__cause__.link_parent is True
-        else:
-            _valid_svg(dot2img(GRAPH))
-            assert dot2img(GRAPH, "png")[:8] == PNG
-            _valid_svg(dg._repr_svg_())
-            _valid_svg(sent._repr_svg_())
-        _valid_svg(dot2img(GRAPH, follow_link_parents=True))
-        assert dot2img(GRAPH, "png", follow_link_parents=True)[:8] == PNG
-        _valid_svg(dg.to_image(follow_link_parents=True))
-        _valid_svg(sent.to_image(follow_link_parents=True))
-        assert dg.to_image("png", follow_link_parents=True)[:8] == PNG
-        assert sent.to_image("png", follow_link_parents=True)[:8] == PNG
+        reason = pathsec.untrusted_executable_reason(dot)
+        link = os.readlink(dot) if os.path.islink(dot) else ""
+        if os.pardir in Path(link).parts:
+            assert reason is not None, f"{dot!r} -> {link!r} was accepted"
+            _all_refused(reason)
+            if _required() or _chain_private(dot):
+                assert reason == _dotdot_reason(dot)
+            return
+        if reason is None:
+            calls = _entry_points()
+            _valid_svg(calls["dot2img svg"]())
+            assert calls["dot2img png"]()[:8] == PNG
+            _valid_svg(calls["DependencyGraph._repr_svg_"]())
+            _valid_svg(calls["AlignedSent._repr_svg_"]())
+            return
+        _all_refused(reason)
+        if _required():
+            pytest.fail(f"the installed dot {dot!r} is refused: {reason}")
 
     @POSIX
     def test_the_installed_dot_behind_a_homebrew_shaped_chain(self, home, monkeypatch):
-        """The real binary at the end of a real ``bin/dot -> ../Cellar/
-        graphviz/<v>/bin/dot`` chain built here: refused by default with the
-        link, its ``..`` and the keyword named, the TrustError as the cause;
-        valid SVG and PNG under the keyword, through dot2img and both
-        to_image methods; the two-hop sibling link too. The same real binary
-        behind a world-writable directory is refused in both modes with that
-        reason and without the keyword."""
-        from nltk.parse.dependencygraph import dot2img
-
-        dot = _real_dot()
-        real = pathsec._resolve_trusted(dot, _follow_link_parents=True)
-        if real is None:
-            message = f"the installed dot {dot!r} is refused: {_reason(dot, 'keyword')}"
-            if _required():
-                pytest.fail(message)
-            pytest.skip(message)
+        """The real binary, by its resolved path, at the end of a real
+        ``bin/dot -> ../Cellar/graphviz/<v>/bin/dot`` chain built here, and
+        the two-hop ``bin/circo``: refused through every entry point with the
+        link, its text and its ``..`` named. The same binary behind a
+        world-writable directory is refused with that reason."""
+        real = os.path.realpath(_real_dot())
         cellar = f"{home}/usr/local/Cellar/graphviz/14.1.2/bin"
         _ln(real, f"{cellar}/dot")
         _ln("dot", f"{cellar}/circo")
-        _ln("../Cellar/graphviz/14.1.2/bin/dot", f"{home}/usr/local/bin/dot")
-        _ln("../Cellar/graphviz/14.1.2/bin/circo", f"{home}/usr/local/bin/circo")
-        monkeypatch.setenv("PATH", f"{home}/usr/local/bin")
-        dg, sent = _graph_objects()
-        for call in (
-            lambda: dot2img(GRAPH),
-            lambda: dot2img(GRAPH, "png"),
-            dg._repr_svg_,
-            sent._repr_svg_,
-            dg.to_image,
-            sent.to_image,
-        ):
-            with pytest.raises(Exception, match="Cannot create image") as excinfo:
-                call()
-            message = str(excinfo.value)
-            assert f"symlink {home}/usr/local/bin/dot" in message.replace("'", "")
-            assert "'../Cellar/graphviz/14.1.2/bin/dot'" in message
-            assert "not followed by default" in message
-            assert f"dot2img(..., {KEYWORD}=True)" in message
-            cause = excinfo.value.__cause__
-            assert isinstance(cause, pathsec.TrustError) and cause.link_parent is True
-        _valid_svg(dot2img(GRAPH, follow_link_parents=True))
-        assert dot2img(GRAPH, "png", follow_link_parents=True)[:8] == PNG
-        _valid_svg(dg.to_image(follow_link_parents=True))
-        _valid_svg(sent.to_image(follow_link_parents=True))
-        assert dg.to_image("png", follow_link_parents=True)[:8] == PNG
-        circo = f"{home}/usr/local/bin/circo"
-        assert pathsec.resolve_trusted_executable(circo) is None
-        proc = pathsec.spawn_trusted(
-            circo,
-            ["-Tsvg"],
-            _follow_link_parents=True,
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+        brew = _ln("../Cellar/graphviz/14.1.2/bin/dot", f"{home}/usr/local/bin/dot")
+        circo = _ln(
+            "../Cellar/graphviz/14.1.2/bin/circo", f"{home}/usr/local/bin/circo"
         )
-        assert _same(proc.args[0], real)
-        _valid_svg(proc.communicate(GRAPH.encode())[0].decode())
+        monkeypatch.setenv("PATH", f"{home}/usr/local/bin")
+        reason = pathsec.untrusted_executable_reason(brew)
+        assert reason == _dotdot_reason(brew)
+        assert "'../Cellar/graphviz/14.1.2/bin/dot'" in reason
+        _all_refused(reason)
+        assert pathsec.untrusted_executable_reason(circo) == _dotdot_reason(circo)
+        with pytest.raises(pathsec.TrustError, match="'..' component"):
+            pathsec.spawn_trusted(circo, ["-Tsvg"])
         # the same real binary behind a world-writable directory
         _dir(f"{home}/ww")
         _ln(real, f"{home}/ww/dot")
         os.chmod(f"{home}/ww", 0o777)
-        _ln("../ww/dot", f"{home}/sbin/dot")
+        _ln(f"{home}/ww/dot", f"{home}/sbin/dot")
         monkeypatch.setenv("PATH", f"{home}/sbin")
-        for kw in ({}, {KEYWORD: True}):
-            with pytest.raises(Exception, match="Cannot create image") as excinfo:
-                dot2img(GRAPH, **kw)
-            message = str(excinfo.value)
-            assert "world-writable" in message and f"{home}/ww" in message
-            assert KEYWORD not in message
-            assert excinfo.value.__cause__.link_parent is False
+        reason = pathsec.untrusted_executable_reason(f"{home}/sbin/dot")
+        assert "world-writable" in reason and f"{home}/ww" in reason
+        _all_refused(reason)
 
 
-# --------------------------------------------------------------------------- #
-# Windows: junctions and reparse points, best-effort by design, both modes.    #
-# --------------------------------------------------------------------------- #
+# =========================================================================== #
+# Windows: junctions and reparse points, best-effort by design.                #
+# =========================================================================== #
 
 
 @WINDOWS
@@ -1498,11 +1307,11 @@ class TestWindowsJunctions:
         real.write_bytes(b"MZ")
         self._junction(tmp_path / "real", tmp_path / "junc")
         entry = str(tmp_path / "junc" / "dot.exe")
-        got = _resolve(entry, mode)
-        assert got is not None and os.path.isfile(got)
+        got = _resolve(entry)
+        assert got is not None and os.path.isfile(got), mode
         assert os.path.samefile(got, real)
         assert "junc" not in [part.lower() for part in Path(got).parts]
-        assert _reason(entry, mode) is None
+        assert _reason(entry) is None
 
     @pytest.mark.parametrize("mode", MODES)
     def test_a_dangling_junction_is_refused_with_the_reason(self, tmp_path, mode):
@@ -1510,8 +1319,8 @@ class TestWindowsJunctions:
         self._junction(tmp_path / "gone", tmp_path / "junc")
         os.rmdir(tmp_path / "gone")
         entry = str(tmp_path / "junc" / "dot.exe")
-        assert _resolve(entry, mode) is None
-        assert "cannot be inspected" in _reason(entry, mode)
+        assert _resolve(entry) is None, mode
+        assert "cannot be inspected" in _reason(entry)
         with pytest.raises(pathsec.TrustError, match="cannot be inspected"):
             pathsec.spawn_trusted(entry, [])
 
@@ -1520,8 +1329,8 @@ class TestWindowsJunctions:
         (tmp_path / "adir").mkdir()
         self._junction(tmp_path / "adir", tmp_path / "junc")
         entry = str(tmp_path / "junc")
-        assert _resolve(entry, mode) is None
-        assert "not a regular file" in _reason(entry, mode)
+        assert _resolve(entry) is None, mode
+        assert "not a regular file" in _reason(entry)
 
 
 def test_reason_api_is_available_on_every_platform(home):

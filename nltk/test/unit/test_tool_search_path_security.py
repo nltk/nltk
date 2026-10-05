@@ -1044,19 +1044,6 @@ class TestDot:
             dg.dot2img("digraph { a -> b }", "svg")
         assert _same(seen["target"], good) and not _inside(seen["target"], box)
         assert seen["args"] == ["-Tsvg"] and not seen["kwargs"].get("shell")
-        # the private Graphviz-only walk is off unless the user passes the
-        # keyword explicitly, and the IPython hook cannot pass it
-        assert seen["kwargs"].get("_follow_link_parents") is False
-        graph = dg.DependencyGraph("John N 2\nloves V 0\nMary N 2")
-        with pytest.raises(Exception, match="Cannot create image representation"):
-            graph._repr_svg_()
-        assert seen["kwargs"].get("_follow_link_parents") is False
-        with pytest.raises(Exception, match="Cannot create image representation"):
-            graph.to_image()
-        assert seen["kwargs"].get("_follow_link_parents") is False
-        with pytest.raises(Exception, match="Cannot create image representation"):
-            graph.to_image(follow_link_parents=True)
-        assert seen["kwargs"].get("_follow_link_parents") is True
         # a format string with shell metacharacters stays one argv item, no shell
         hostile = "svg; touch " + str(tmp_path / "pwned")
         with pytest.raises(Exception, match="Cannot create image representation"):
@@ -1069,20 +1056,30 @@ class TestDot:
         import nltk.parse.dependencygraph as dg
 
         dot = internals.find_binary_absolute("dot")
-        reason, link_parent = pathsec._refusal(dot)
-        if link_parent:
-            # a Homebrew-style link on PATH: refused by default, by name
-            with pytest.raises(Exception, match="follow_link_parents=True"):
-                dg.dot2img("digraph { a -> b }", "svg")
-        elif reason is not None:
-            pytest.skip(f"the installed dot is refused: {reason}")
-        else:
+        reason = pathsec.untrusted_executable_reason(dot)
+        link = os.readlink(dot) if os.path.islink(dot) else ""
+        if reason is None and os.pardir not in link.split(os.sep):
+            # a plain trusted file (choco's dot.exe): it renders
             svg = dg.dot2img("digraph { a -> b }", "svg")
             assert "<svg" in svg and "</svg>" in svg
-        svg = dg.dot2img("digraph { a -> b }", "svg", follow_link_parents=True)
-        assert "<svg" in svg and "</svg>" in svg
-        png = dg.dot2img("digraph { a -> b }", "png", follow_link_parents=True)
-        assert png[:8] == b"\x89PNG\r\n\x1a\n"
+            png = dg.dot2img("digraph { a -> b }", "png")
+            assert png[:8] == b"\x89PNG\r\n\x1a\n"
+            return
+        with pytest.raises(
+            Exception, match="Cannot create image representation"
+        ) as exc:
+            dg.dot2img("digraph { a -> b }", "svg")
+        assert reason is not None and reason in str(exc.value)
+        assert isinstance(exc.value.__cause__, pathsec.TrustError)
+        # CI makes each install's chain private, so the one refusal left there
+        # is apt's /usr/bin/dot -> ../sbin/libgvc6-config-update or Homebrew's
+        # bin/dot -> ../Cellar/...: the link whose own text climbs with '..'
+        if os.environ.get("NLTK_CI_REQUIRE_GRAPHVIZ"):
+            assert os.pardir in link.split(os.sep), (dot, link, reason)
+            assert reason == (
+                f"symlink {dot!r} points to {link!r}, whose '..' component is "
+                "not followed by default"
+            )
 
 
 class TestSvnRevision:
@@ -1751,7 +1748,6 @@ class TestAlignedSentDot:
     def test_repr_svg_resolves_dot_absolute_and_spawns_trusted(
         self, box, tmp_path, monkeypatch
     ):
-        from nltk.parse import dependencygraph
         from nltk.translate import api as translate_api
         from nltk.translate.api import AlignedSent, Alignment
 
@@ -1766,23 +1762,12 @@ class TestAlignedSentDot:
             seen["target"], seen["args"], seen["kwargs"] = target, list(args), kwargs
             raise _Spawned(target)
 
-        # AlignedSent renders through dot2img, the one place NLTK runs dot
-        monkeypatch.setattr(dependencygraph, "spawn_trusted", _record)
-        assert not hasattr(translate_api, "spawn_trusted")
-        assert not hasattr(translate_api, "find_binary_absolute")
+        monkeypatch.setattr(translate_api, "spawn_trusted", _record)
         sent = AlignedSent(["a"], ["b"], Alignment.fromstring("0-0"))
-        with pytest.raises(Exception, match="Cannot create image representation"):
+        with pytest.raises(_Spawned):
             sent._repr_svg_()
         assert _same(seen["target"], good) and not _inside(seen["target"], box)
         assert seen["args"] == ["-Tsvg"] and not seen["kwargs"].get("shell")
-        # the IPython hook and to_image's default never enable the private walk
-        assert seen["kwargs"].get("_follow_link_parents") is False
-        with pytest.raises(Exception, match="Cannot create image representation"):
-            sent.to_image()
-        assert seen["kwargs"].get("_follow_link_parents") is False
-        with pytest.raises(Exception, match="Cannot create image representation"):
-            sent.to_image(follow_link_parents=True)
-        assert seen["kwargs"].get("_follow_link_parents") is True
         # with only the CWD decoy reachable it is refused, never run
         monkeypatch.setenv("PATH", str(tmp_path / "empty"))
         seen.clear()
@@ -2160,30 +2145,24 @@ class TestBeyondTheReview:
     def test_a_parent_component_hidden_in_a_symlink_target_is_refused_at_spawn(
         self, box, private_dir, monkeypatch
     ):
-        """The #3887 rule, unchanged by default: a '..' inside a symlink's own
-        text is refused outright at spawn, with the reason naming the link
-        and its '..', even when the chain it would resolve to is private
-        (the Homebrew ``bin/dot -> ../Cellar/.../bin/dot`` shape). Only the
-        private Graphviz-only walk resolves it, and then judges the target by
-        the chain it lands in: a private file runs by its resolved path, a
-        file in a world-writable directory is refused by name, whether the
-        link spells it relative, absolute or in two hops."""
+        """The #3887 rule: a '..' inside a symlink's own text is refused
+        outright at spawn, with the reason naming the link and its '..', even
+        when the chain it would resolve to is private (the Homebrew ``bin/dot
+        -> ../Cellar/.../bin/dot`` shape); a link into a world-writable
+        directory with no '..' is refused there, by name."""
         planted = _exec_file(private_dir / "box", "prover9")
         world = private_dir / "world"
         decoy = _exec_file(world, "prover9")
         os.chmod(world, 0o777)
         try:
             links = {
-                "relative": (os.path.join(os.pardir, "box", "prover9"), planted),
-                "two_hop": (os.path.join("mid", "prover9"), planted),
-                "absolute_into_writable": (str(world / "prover9"), None),
-                "relative_into_writable": (
-                    os.path.join(os.pardir, "world", "prover9"),
-                    None,
-                ),
-                "two_hop_into_writable": (os.path.join("wmid", "prover9"), None),
+                "relative": os.path.join(os.pardir, "box", "prover9"),
+                "two_hop": os.path.join("mid", "prover9"),
+                "absolute_into_writable": str(world / "prover9"),
+                "relative_into_writable": os.path.join(os.pardir, "world", "prover9"),
+                "two_hop_into_writable": os.path.join("wmid", "prover9"),
             }
-            for label, (target, expected) in links.items():
+            for label, target in links.items():
                 holder = private_dir / label
                 holder.mkdir()
                 if label == "two_hop":
@@ -2195,8 +2174,8 @@ class TestBeyondTheReview:
                 # no lexical '..': the config gate passes the link itself
                 got = _resolve()
                 assert _same(got, holder / "prover9"), (label, got)
-                # the default spawn follows every hop and refuses the '..' in
-                # a link's text, or the writable directory the target lives in
+                # the spawn follows every hop and refuses the '..' in a link's
+                # text, or the writable directory the target lives in
                 assert pathsec.resolve_trusted_executable(got) is None, label
                 reason = pathsec.untrusted_executable_reason(got)
                 if label == "absolute_into_writable":
@@ -2206,24 +2185,6 @@ class TestBeyondTheReview:
                 with pytest.raises(pathsec.TrustError) as excinfo:
                     pathsec.spawn_trusted(got, [])
                 assert reason in str(excinfo.value), label
-                assert excinfo.value.link_parent is (expected is not None), label
-                # the private walk: the chain decides, never the link's text
-                real = pathsec._resolve_trusted(got, _follow_link_parents=True)
-                if expected is not None:
-                    assert _same(real, expected) and not _inside(real, world), label
-                    proc = pathsec.spawn_trusted(
-                        got,
-                        [],
-                        _follow_link_parents=True,
-                        stdout=subprocess.PIPE,
-                        stderr=subprocess.PIPE,
-                    )
-                    assert _same(proc.args[0], expected), label
-                    assert "PWNED" in proc.communicate()[0].decode(), label
-                else:
-                    assert real is None, label
-                    with pytest.raises(pathsec.TrustError, match="world-writable"):
-                        pathsec.spawn_trusted(got, [], _follow_link_parents=True)
             assert os.path.exists(decoy)
         finally:
             os.chmod(world, 0o700)
@@ -2232,11 +2193,10 @@ class TestBeyondTheReview:
         honest.mkdir()
         os.symlink(planted, honest / "prover9")
         assert _same(pathsec.resolve_trusted_executable(honest / "prover9"), planted)
-        # the caller's own '..' is never folded, in either walk
+        # the caller's own '..' is never folded
         spelled = str(private_dir / "box" / os.pardir / "box" / "prover9")
         assert pathsec.resolve_trusted_executable(spelled) is None
-        assert pathsec._resolve_trusted(spelled, _follow_link_parents=True) is None
-        assert "'..'" in pathsec.untrusted_executable_reason(spelled)
+        assert "'..' component" in pathsec.untrusted_executable_reason(spelled)
 
     def test_path_entry_spellings_never_reach_the_cwd(self, box, tmp_path, monkeypatch):
         good = _exec_file(tmp_path / "bin", "prover9")
