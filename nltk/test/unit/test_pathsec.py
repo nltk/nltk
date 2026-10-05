@@ -1367,11 +1367,9 @@ def test_symlink_with_relative_parent():
 
 
 def test_argv0_is_caller_supplied_name():
-    # Copy the interpreter into the private tree: sys.executable lives
-    # under a CI-owned path (e.g. /opt/hostedtoolcache) whose directory
-    # chain is not private, so symlinking to it would be refused by
-    # resolve_trusted_executable before argv[0] is even reached.
-    import shutil as _shutil
+    # A real program behind a link reports the argv[0] it was given: POSIX sh
+    # prints it as $0 under -c (/bin/sh is root's, a private chain everywhere;
+    # macOS has no /proc), Windows python reads it from its command line.
     import subprocess
     import sys
 
@@ -1380,19 +1378,20 @@ def test_argv0_is_caller_supplied_name():
         os.chmod(base, 0o700)
         bin_dir = os.path.join(base, "bin")
         os.mkdir(bin_dir, 0o700)
-        real = os.path.join(base, "python")
-        _shutil.copyfile(sys.executable, real)
-        os.chmod(real, 0o755)
         link = os.path.join(bin_dir, "myprog")
-        os.symlink(real, link)  # link resolves to the copied ELF binary
-        # CPython forces sys.argv[0] == "-c" under -c, so read the raw
-        # kernel-level argv from /proc/self/cmdline instead.
-        code = (
-            "import sys; sys.stdout.write("
-            "open('/proc/self/cmdline','rb').read().split(b'\\x00')[0].decode())"
-        )
-        proc = pathsec.spawn_trusted(link, ["-c", code], stdout=subprocess.PIPE)
+        env = pathsec.safe_env()
+        if os.name == "posix":
+            os.symlink("/bin/sh", link)
+            args = ["-c", 'printf %s "$0"']
+        else:
+            os.symlink(sys.executable, link)
+            args = ["-c", "import sys; sys.stdout.write(sys.orig_argv[0])"]
+            env["SYSTEMROOT"] = os.environ.get("SYSTEMROOT", r"C:\Windows")
+        real = pathsec.resolve_trusted_executable(link)
+        assert real is not None and not os.path.islink(real)
+        proc = pathsec.spawn_trusted(link, args, stdout=subprocess.PIPE, env=env)
         out, _ = proc.communicate()
-        assert out.decode() == link
+        assert out.decode() == link and proc.returncode == 0
+        assert proc.args[0] == link and real != link
     finally:
         shutil.rmtree(base, ignore_errors=True)
