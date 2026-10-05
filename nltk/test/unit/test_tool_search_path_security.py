@@ -1055,10 +1055,31 @@ class TestDot:
     def test_real_dot_renders_through_the_trusted_spawn(self, tmp_path):
         import nltk.parse.dependencygraph as dg
 
-        svg = dg.dot2img("digraph { a -> b }", "svg")
-        assert "<svg" in svg and "</svg>" in svg
-        png = dg.dot2img("digraph { a -> b }", "png")
-        assert png[:8] == b"\x89PNG\r\n\x1a\n"
+        dot = internals.find_binary_absolute("dot")
+        reason = pathsec.untrusted_executable_reason(dot)
+        link = os.readlink(dot) if os.path.islink(dot) else ""
+        if reason is None and os.pardir not in link.split(os.sep):
+            # a plain trusted file (choco's dot.exe): it renders
+            svg = dg.dot2img("digraph { a -> b }", "svg")
+            assert "<svg" in svg and "</svg>" in svg
+            png = dg.dot2img("digraph { a -> b }", "png")
+            assert png[:8] == b"\x89PNG\r\n\x1a\n"
+            return
+        with pytest.raises(
+            Exception, match="Cannot create image representation"
+        ) as exc:
+            dg.dot2img("digraph { a -> b }", "svg")
+        assert reason is not None and reason in str(exc.value)
+        assert isinstance(exc.value.__cause__, pathsec.TrustError)
+        # CI makes each install's chain private, so the one refusal left there
+        # is apt's /usr/bin/dot -> ../sbin/libgvc6-config-update or Homebrew's
+        # bin/dot -> ../Cellar/...: the link whose own text climbs with '..'
+        if os.environ.get("NLTK_CI_REQUIRE_GRAPHVIZ"):
+            assert os.pardir in link.split(os.sep), (dot, link, reason)
+            assert reason == (
+                f"symlink {dot!r} points to {link!r}, whose '..' component is "
+                "not followed by default"
+            )
 
 
 class TestSvnRevision:
@@ -1309,9 +1330,11 @@ class TestJavaSpawn:
         monkeypatch.setattr(internals, "_java_bin", str(links / "java_in"))
         with pytest.raises(_Spawned):
             internals.java(["Main"])
-        # the resolved binary is what runs, by its real path, not the link
-        assert _same(seen["cmd"][0], real) and not os.path.islink(seen["cmd"][0])
-        assert seen["kwargs"]["executable"] == seen["cmd"][0]
+        # the resolved binary is what runs (executable=); argv[0] is the link
+        # the caller invoked, as the kernel passes it to a multi-call binary
+        run = seen["kwargs"]["executable"]
+        assert _same(run, real) and not os.path.islink(run)
+        assert seen["cmd"][0] == str(links / "java_in")
 
 
 class TestTrustedJavaStubFixture:
@@ -2122,31 +2145,47 @@ class TestBeyondTheReview:
     def test_a_parent_component_hidden_in_a_symlink_target_is_refused_at_spawn(
         self, box, private_dir, monkeypatch
     ):
+        """The #3887 rule: a '..' inside a symlink's own text is refused
+        outright at spawn, with the reason naming the link and its '..', even
+        when the chain it would resolve to is private (the Homebrew ``bin/dot
+        -> ../Cellar/.../bin/dot`` shape); a link into a world-writable
+        directory with no '..' is refused there, by name."""
         planted = _exec_file(private_dir / "box", "prover9")
         world = private_dir / "world"
-        _exec_file(world, "prover9")
+        decoy = _exec_file(world, "prover9")
         os.chmod(world, 0o777)
         try:
             links = {
                 "relative": os.path.join(os.pardir, "box", "prover9"),
-                "absolute_into_writable": str(world / "prover9"),
                 "two_hop": os.path.join("mid", "prover9"),
+                "absolute_into_writable": str(world / "prover9"),
+                "relative_into_writable": os.path.join(os.pardir, "world", "prover9"),
+                "two_hop_into_writable": os.path.join("wmid", "prover9"),
             }
             for label, target in links.items():
                 holder = private_dir / label
                 holder.mkdir()
                 if label == "two_hop":
                     os.symlink(os.path.join(os.pardir, "box"), holder / "mid")
+                if label == "two_hop_into_writable":
+                    os.symlink(os.path.join(os.pardir, "world"), holder / "wmid")
                 os.symlink(target, holder / "prover9")
                 monkeypatch.setenv("PROVER9", str(holder))
                 # no lexical '..': the config gate passes the link itself
                 got = _resolve()
                 assert _same(got, holder / "prover9"), (label, got)
-                # the spawn follows every hop and refuses the '..' or the
-                # writable directory the target lives in
+                # the spawn follows every hop and refuses the '..' in a link's
+                # text, or the writable directory the target lives in
                 assert pathsec.resolve_trusted_executable(got) is None, label
-                with pytest.raises(pathsec.TrustError):
+                reason = pathsec.untrusted_executable_reason(got)
+                if label == "absolute_into_writable":
+                    assert "world-writable" in reason and str(world) in reason
+                else:
+                    assert "'..' component is not followed by default" in reason
+                with pytest.raises(pathsec.TrustError) as excinfo:
                     pathsec.spawn_trusted(got, [])
+                assert reason in str(excinfo.value), label
+            assert os.path.exists(decoy)
         finally:
             os.chmod(world, 0o700)
         # the honest link, to an absolute private file, resolves to that file
@@ -2154,6 +2193,10 @@ class TestBeyondTheReview:
         honest.mkdir()
         os.symlink(planted, honest / "prover9")
         assert _same(pathsec.resolve_trusted_executable(honest / "prover9"), planted)
+        # the caller's own '..' is never folded
+        spelled = str(private_dir / "box" / os.pardir / "box" / "prover9")
+        assert pathsec.resolve_trusted_executable(spelled) is None
+        assert "'..' component" in pathsec.untrusted_executable_reason(spelled)
 
     def test_path_entry_spellings_never_reach_the_cwd(self, box, tmp_path, monkeypatch):
         good = _exec_file(tmp_path / "bin", "prover9")

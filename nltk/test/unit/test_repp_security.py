@@ -147,7 +147,8 @@ def test_execute_refuses_untrusted_repp_binary(tmp_path):
 
 def test_execute_reaches_spawn_for_a_trusted_binary(monkeypatch):
     """Benign control: a REPP binary under a private staged root reaches the
-    (trapped) spawn with an absolute, fully-resolved argv[0] and no shell."""
+    (trapped) spawn running the fully-resolved binary under an absolute argv[0],
+    the path it was called by, and no shell."""
     from types import SimpleNamespace
 
     import nltk.pathsec as ps
@@ -178,7 +179,11 @@ def test_execute_reaches_spawn_for_a_trusted_binary(monkeypatch):
     assert len(calls) == 1
     assert calls[0].shell is False
     assert os.path.isabs(calls[0].argv[0])
-    assert calls[0].argv[0] == os.path.realpath(str(reppdir / "src" / "repp"))
+    # the verified resolved file runs (executable=); argv[0] is the path as called
+    called = str(reppdir / "src" / "repp")
+    run = calls[0].executable
+    assert run == os.path.realpath(called) and not os.path.islink(run)
+    assert calls[0].argv[0] == called
 
 
 # --- Layer-6 input guard: REPP reads one sentence per line (CWE-93) ------------

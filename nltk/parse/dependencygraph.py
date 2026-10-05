@@ -25,7 +25,7 @@ from pprint import pformat
 
 from nltk.data import make_staging_dir
 from nltk.internals import find_binary_absolute
-from nltk.pathsec import has_line_unsafe_char
+from nltk.pathsec import TrustError, has_line_unsafe_char
 from nltk.pathsec import open as _secure_open
 from nltk.pathsec import spawn_trusted
 from nltk.termsec import safe_print
@@ -725,11 +725,18 @@ def dot2img(dot_string, t="svg"):
             dot_string if text else bytes(dot_string, encoding="utf8")
         )
         return stdout
-    except Exception:
+    except TrustError as e:
+        # the reason (which directory or link failed which check) is what the
+        # operator needs to see; it used to be hidden behind the generic message
+        raise Exception(
+            "Cannot create image representation by running dot from string: "
+            f"{dot_string}: {e}"
+        ) from e
+    except Exception as e:
         raise Exception(
             "Cannot create image representation by running dot from string: {}"
             "".format(dot_string)
-        )
+        ) from e
 
 
 class DependencyGraphError(Exception):
