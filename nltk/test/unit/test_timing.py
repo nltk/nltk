@@ -883,6 +883,159 @@ def test_regime_a_unit_of_many_chunks_or_of_one_reads_the_rate(monkeypatch, chun
     assert timing.paired_ratio(samples, cpu_bound=True) == pytest.approx(16.0)
 
 
+# === two misread reps of three, and the reps taken when the reps disagree ===
+# A load the units do not see moves one rep's reading; settled_samples takes
+# reps - 1 more reps when the readings straddle the bar the caller judges by.
+
+
+def _measure(monkeypatch, sink, load_of_call, measure, waits=None):
+    """``measure(op)`` on the fake clock, every unit clean: ``(result, calls)``."""
+    clock, calls = _FakeClock(), []
+
+    def calibration_chunk():
+        clock.load = 1.0
+        clock.charge(_CLEAN_CHUNK)
+
+    def op(n):
+        index = len(calls)
+        calls.append(n)
+        clock.load = load_of_call(index)
+        clock.charge(sink(n))
+        if waits is not None:
+            clock.wait(waits(n) * clock.load)
+
+    monkeypatch.setattr(timing, "time", clock)
+    monkeypatch.setattr(timing, "_calibration_chunk", calibration_chunk)
+    return measure(op), calls
+
+
+def _loaded_in_reps(*reps, side):
+    """Loaded for the big run, or the small block, of the reps given (0 based)."""
+    width = timing.SMALL_BLOCK + 1
+
+    def load(index):
+        rep, position = divmod(index, width)
+        on_big = position == timing.SMALL_BLOCK
+        hit = rep in reps and (on_big if side == "big" else not on_big)
+        return _LOADED if hit else 1.0
+
+    return load
+
+
+def _reps_taken(calls):
+    return len(calls) // (timing.SMALL_BLOCK + 1)
+
+
+def test_paired_ratio_reads_two_slowed_big_runs_of_three_as_the_macos_cell_did():
+    # Python 3.10 on macOS, job 111562502681 of run 37245434587: two big runs
+    # slowed 2.4x and 3.3x while their units read within 16% (10.87x at the
+    # log's full precision, 10.90x from the three decimals it printed)
+    red = [
+        _sample(0.136, 1.593, 0.00217, 0.00211, small_wall=0.350, big_wall=3.046),
+        _sample(0.116, 0.490, 0.00213, 0.00223, small_wall=0.175, big_wall=0.768),
+        _sample(0.117, 1.189, 0.00206, 0.00192, small_wall=0.187, big_wall=1.897),
+    ]
+    assert timing.paired_ratio(red, cpu_bound=True) == pytest.approx(10.90, abs=0.01)
+    assert _min_of_each_side(red) == pytest.approx(4.22, abs=0.01)
+    # its reps read on both sides of the bar, so two more are taken: read as
+    # the calm rep was, the median of five reads the sink linear
+    readings = timing._per_rep_ratios(red, 0.1)[0]
+    assert min(readings) < timing.QUADRATIC_RATIO <= max(readings)
+    five = red + [red[1], red[1]]
+    assert timing.paired_ratio(five, cpu_bound=True) == pytest.approx(4.03, abs=0.01)
+
+
+@pytest.mark.parametrize(
+    "sink, side, expected",
+    [(_linear, "big", 4.0), (_quadratic, "small", 16.0)],
+    ids=["linear sink, two slowed big runs", "quadratic sink, two slowed blocks"],
+)
+def test_scaling_ratio_takes_two_more_reps_when_two_of_three_are_misread(
+    monkeypatch, sink, side, expected
+):
+    # three reps read [12, 4, 12], a false red, or [5.3, 16, 5.3], a quadratic
+    # read as linear; with two more reps the median of five reads the sink,
+    # and so does assert_subquadratic, which passes the one and fails the other
+    load = _loaded_in_reps(0, 2, side=side)
+    ratio, calls = _measure(
+        monkeypatch,
+        sink,
+        load,
+        lambda op: timing.scaling_ratio(op, 1, 4, cpu_bound=True),
+    )
+    assert _reps_taken(calls) == 5 and ratio == pytest.approx(expected)
+
+    def check(op):
+        timing.assert_subquadratic(op, 1, 4, cpu_bound=True)
+
+    if sink is _linear:
+        _measure(monkeypatch, sink, load, check)
+    else:
+        with pytest.raises(AssertionError, match="ScalingSample"):
+            _measure(monkeypatch, sink, load, check)
+
+
+def test_scaling_ratio_takes_no_more_reps_when_every_rep_agrees(monkeypatch):
+    # every rep on one side of the bar: three reps are all it costs, as on 1830
+    # of 1832 readings across the hosted runners, idle and beside a parallel run
+    for sink, expected in ((_linear, 4.0), (_quadratic, 16.0)):
+        ratio, calls = _measure(
+            monkeypatch,
+            sink,
+            lambda i: 1.0,
+            lambda op: timing.scaling_ratio(op, 1, 4, cpu_bound=True),
+        )
+        assert _reps_taken(calls) == 3 and ratio == pytest.approx(expected)
+    # one misread rep straddles the bar too and takes two more; the median of
+    # three had outvoted it already, and the median of five still does
+    ratio, calls = _measure(
+        monkeypatch,
+        _linear,
+        _loaded_in_reps(0, side="big"),
+        lambda op: timing.scaling_ratio(op, 1, 4, cpu_bound=True),
+    )
+    assert _reps_taken(calls) == 5 and ratio == pytest.approx(4.0)
+
+
+@pytest.mark.parametrize(
+    "factor, reps, taken",
+    [(10.0, 3, 5), (16.0, 3, 3), (3.0, 3, 3), (8.0, 2, 3), (8.0, 1, 1)],
+)
+def test_settled_samples_judges_by_the_callers_bar_and_reps(
+    monkeypatch, factor, reps, taken
+):
+    # per-rep readings [12, 4, 12] straddle a bar of 10 but not one of 16 or
+    # of 3; two reps that disagree take one more, and one rep never takes more
+    def settle(op):
+        return timing.settled_samples(
+            op, 1, 4, reps=reps, cpu_bound=True, factor=factor
+        )
+
+    samples, calls = _measure(
+        monkeypatch, _linear, _loaded_in_reps(0, 2, side="big"), settle
+    )
+    assert len(samples) == _reps_taken(calls) == taken
+
+
+@pytest.mark.parametrize("cpu_bound", [None, False])
+def test_settled_samples_judges_a_waiting_op_by_its_wall_readings(
+    monkeypatch, cpu_bound
+):
+    # a sink that computes a fixed sliver and waits n: its CPU readings agree,
+    # and only its wall readings move, [1.3, 4, 1.3] with the wait slowed in the
+    # small blocks of two reps and [12, 4, 12] in two big runs, which straddle
+    for side, taken, expected in (("small", 3, 4 / _LOADED), ("big", 5, 4.0)):
+        ratio, calls = _measure(
+            monkeypatch,
+            lambda n: 0.0001,
+            _loaded_in_reps(0, 2, side=side),
+            lambda op: timing.scaling_ratio(op, 1, 4, cpu_bound=cpu_bound),
+            waits=_linear,
+        )
+        assert _reps_taken(calls) == taken
+        assert ratio == pytest.approx(expected, rel=0.01)
+
+
 # ---- child processes and threads --------------------------------------------
 def _spin_child(seconds):
     spin(seconds)
