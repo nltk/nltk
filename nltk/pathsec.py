@@ -192,8 +192,15 @@ def _resolve_private(path, _hops=0):
     for part in text.split(os.sep):
         if not part or part == os.curdir:  # '' and '.' are inert
             continue
-        if part == os.pardir:  # '..' is never folded here; refuse it
-            return None
+        if part == os.pardir:
+            # Caller-supplied '..' is refused (folding it lexically would
+            # skip symlinks). A '..' inside a symlink target must be
+            # resolved against the already-resolved prefix, like the
+            # kernel.
+            if _hops == 0:  # '..' is never folded here; refuse it
+                return None
+            cur = os.path.dirname(cur)
+            continue
         if not is_private_dir(cur):  # the directory that holds `part`
             return None
         nxt = os.path.join(cur, part)
@@ -409,7 +416,7 @@ def spawn_trusted(target, args=(), **popen_kw):
     real = resolve_trusted_executable(target)
     if real is None:
         raise TrustError(f"refusing to execute untrusted path: {target!r}")
-    return subprocess.Popen([real, *args], executable=real, **popen_kw)
+    return subprocess.Popen([target, *args], executable=real, **popen_kw)
 
 
 def _get_allowed_roots():
