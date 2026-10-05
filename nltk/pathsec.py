@@ -185,6 +185,20 @@ def _private_dir_problem(path):
     return _why_not_private(path, st, "directory")
 
 
+def _dotdot_base_problem(path):
+    """Why a ``..`` from a link's text may not be applied to the resolved
+    directory *path*, or None. The kernel applies ``..`` only to a directory
+    it may search (else ENOTDIR or EACCES); the walk also asks of it what it
+    asks of every other directory on the way (:func:`is_private_dir`)."""
+    if not is_private_dir(path):
+        return _private_dir_problem(path) or f"directory {path!r} is not private"
+    if os.name == "posix":
+        effective = os.access in os.supports_effective_ids
+        if not os.access(path, os.X_OK, effective_ids=effective):
+            return f"directory {path!r} is not searchable (no execute permission)"
+    return None
+
+
 def _is_junction(st):
     """Windows: the ``lstat`` result is a directory junction. NTFS reports one
     as a directory rather than a symlink, so ``S_ISLNK`` misses it and only the
@@ -236,13 +250,19 @@ def _resolve_private(path, _hops=0, why=None, _link=None):
     scratch output goes through :func:`nltk.data.make_staging_dir`, which stages
     inside a private data root, never in ``/tmp``.
 
-    A ``..`` component met anywhere is refused, never folded: in the caller's
-    *path* because ``os.path.abspath`` collapses it lexically before symlinks
-    resolve, which would skip a link, and a tool location is never allowed one;
-    and inside a symlink's own text as well, so the Homebrew ``bin/dot ->
-    ../Cellar/graphviz/<v>/bin/dot`` shape is refused with a reason naming the
-    link, its text and the ``..``. Every symlink met must be owned by us or
-    root before its text is read, and the text may hold no control character.
+    A ``..`` in the caller's *path* is refused, never folded:
+    ``os.path.abspath`` collapses it lexically before symlinks resolve, which
+    would skip a link, and a tool location is never given one. A ``..`` inside
+    a symlink's own text is folded the way the kernel folds it, to the real
+    parent of the directory already resolved (never the lexical parent), so the
+    Homebrew ``bin/dot -> ../Cellar/graphviz/<v>/bin/dot`` and Debian
+    ``/usr/bin/dot -> ../sbin/libgvc6-config-update`` shapes resolve, and every
+    directory descended into after it is checked as usual. The directory the
+    ``..`` is applied to must itself be private and searchable, so a regular
+    file, a link to one, or a directory the kernel may not search refuses it
+    (the kernel's ENOTDIR or EACCES), never folded past. Every symlink met
+    must be owned by us or root before its text is read, and the text may hold
+    no control character.
     The chain is bounded by ``_MAX_LINK_HOPS`` (the kernel's ELOOP limit), so a
     loop is refused.
 
@@ -267,16 +287,23 @@ def _resolve_private(path, _hops=0, why=None, _link=None):
     for part in text.split(os.sep):
         if not part or part == os.curdir:  # '' and '.' are inert
             continue
-        if part == os.pardir:  # '..' is never folded here; refuse it
-            if _link is None:
+        if part == os.pardir:
+            if _link is None:  # the caller's own '..' is refused, never folded
                 _note(why, f"{text!r} contains a '..' component")
-            else:
+                return None
+            # a link's '..' steps to the real parent of `cur` (resolved, every
+            # ancestor verified on the way down), out of a private directory the
+            # kernel could search, else it is refused as the kernel would refuse it
+            problem = _dotdot_base_problem(cur)
+            if problem is not None:
                 _note(
                     why,
-                    f"symlink {_link[0]!r} points to {_link[1]!r}, whose '..' "
-                    "component is not followed by default",
+                    f"{problem}: the '..' in symlink {_link[0]!r} -> "
+                    f"{_link[1]!r} is applied to it",
                 )
-            return None
+                return None
+            cur = os.path.dirname(cur)
+            continue
         if not is_private_dir(cur):  # the directory that holds `part`
             _note(why, _private_dir_problem(cur) or f"directory {cur!r} is not private")
             return None
@@ -319,8 +346,9 @@ def resolve_trusted_executable(target):
     POSIX: every directory from the root down to the target (following each
     symlink hop) must be private (:func:`is_private_dir`), every symlink on
     the way must be owned by us or root, no ``..`` may appear in the target
-    or in any link's text (see :func:`_resolve_private`), and the final target
-    must be a REGULAR file owned by us or root with no group/world write bit
+    (a link's own ``..`` is folded as the kernel does, see
+    :func:`_resolve_private`), and the final target must be a REGULAR file
+    owned by us or root with no group/world write bit
     (:func:`_private_stat`), checked on a descriptor opened with
     ``O_NOFOLLOW`` so the inode judged is the one at that path. The returned
     path is fully resolved, so callers should execute THAT, not the original

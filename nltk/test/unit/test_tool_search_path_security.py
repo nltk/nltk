@@ -1051,35 +1051,45 @@ class TestDot:
         assert seen["args"] == ["-T" + hostile] and not seen["kwargs"].get("shell")
         assert not (tmp_path / "pwned").exists()
 
-    @pytest.mark.skipif(not shutil.which("dot"), reason="needs a real Graphviz dot")
-    def test_real_dot_renders_through_the_trusted_spawn(self, tmp_path):
+    @pytest.mark.skipif(
+        not shutil.which("dot") and not os.environ.get("NLTK_CI_REQUIRE_GRAPHVIZ"),
+        reason="needs a real Graphviz dot",
+    )
+    def test_real_dot_renders_through_the_trusted_spawn(self, tmp_path, monkeypatch):
         import nltk.parse.dependencygraph as dg
 
         dot = internals.find_binary_absolute("dot")
         reason = pathsec.untrusted_executable_reason(dot)
-        link = os.readlink(dot) if os.path.islink(dot) else ""
-        if reason is None and os.pardir not in link.split(os.sep):
-            # a plain trusted file (choco's dot.exe): it renders
-            svg = dg.dot2img("digraph { a -> b }", "svg")
-            assert "<svg" in svg and "</svg>" in svg
-            png = dg.dot2img("digraph { a -> b }", "png")
-            assert png[:8] == b"\x89PNG\r\n\x1a\n"
-            return
-        with pytest.raises(
-            Exception, match="Cannot create image representation"
-        ) as exc:
-            dg.dot2img("digraph { a -> b }", "svg")
-        assert reason is not None and reason in str(exc.value)
-        assert isinstance(exc.value.__cause__, pathsec.TrustError)
-        # CI makes each install's chain private, so the one refusal left there
-        # is apt's /usr/bin/dot -> ../sbin/libgvc6-config-update or Homebrew's
-        # bin/dot -> ../Cellar/...: the link whose own text climbs with '..'
-        if os.environ.get("NLTK_CI_REQUIRE_GRAPHVIZ"):
-            assert os.pardir in link.split(os.sep), (dot, link, reason)
-            assert reason == (
-                f"symlink {dot!r} points to {link!r}, whose '..' component is "
-                "not followed by default"
-            )
+        if reason is not None:
+            # a chain another account can write (an Intel brew prefix left
+            # g+w): refused with the reason; in CI, where each chain is made
+            # private, that is a failure
+            with pytest.raises(
+                Exception, match="Cannot create image representation"
+            ) as exc:
+                dg.dot2img("digraph { a -> b }", "svg")
+            assert reason in str(exc.value)
+            assert isinstance(exc.value.__cause__, pathsec.TrustError)
+            assert not os.environ.get("NLTK_CI_REQUIRE_GRAPHVIZ"), reason
+            pytest.skip(f"the installed dot {dot!r} is refused: {reason}")
+        # every install shape renders: apt's multi-call /usr/bin/dot ->
+        # ../sbin/libgvc6-config-update, brew's bin/dot -> ../Cellar/..., dot.exe
+        real = pathsec.resolve_trusted_executable(dot)
+        seen = []
+        true_popen = subprocess.Popen
+
+        def popen(args, **kw):
+            seen.append((list(args)[0], kw.get("executable")))
+            return true_popen(args, **kw)
+
+        monkeypatch.setattr(pathsec.subprocess, "Popen", popen)
+        svg = dg.dot2img("digraph { a -> b }", "svg")
+        assert "<svg" in svg and "</svg>" in svg
+        png = dg.dot2img("digraph { a -> b }", "png")
+        assert png[:8] == b"\x89PNG\r\n\x1a\n"
+        # argv[0] is the path as invoked, the name a multi-call binary reads;
+        # the inode run is the verified resolved file
+        assert seen == [(dot, real)] * 2, seen
 
 
 class TestSvnRevision:
@@ -2142,15 +2152,16 @@ class TestBeyondTheReview:
         assert _same(_resolve(), install / "prover9")
 
     @pytest.mark.skipif(os.name != "posix", reason="symlinks and POSIX ownership")
-    def test_a_parent_component_hidden_in_a_symlink_target_is_refused_at_spawn(
+    def test_a_parent_component_in_a_symlink_target_is_folded_at_spawn(
         self, box, private_dir, monkeypatch
     ):
-        """The #3887 rule: a '..' inside a symlink's own text is refused
-        outright at spawn, with the reason naming the link and its '..', even
-        when the chain it would resolve to is private (the Homebrew ``bin/dot
-        -> ../Cellar/.../bin/dot`` shape); a link into a world-writable
-        directory with no '..' is refused there, by name."""
-        planted = _exec_file(private_dir / "box", "prover9")
+        """A '..' inside a symlink's own text is folded at spawn the way the
+        kernel folds it (the Homebrew ``bin/dot -> ../Cellar/.../bin/dot``
+        shape): a private chain runs the file the kernel reaches, under the
+        name invoked; a chain into a world-writable directory, with a '..' or
+        without, is refused there, by name. The caller's own '..' is never
+        folded."""
+        planted = _exec_file(private_dir / "box", "prover9", marker="LEGIT")
         world = private_dir / "world"
         decoy = _exec_file(world, "prover9")
         os.chmod(world, 0o777)
@@ -2174,14 +2185,23 @@ class TestBeyondTheReview:
                 # no lexical '..': the config gate passes the link itself
                 got = _resolve()
                 assert _same(got, holder / "prover9"), (label, got)
-                # the spawn follows every hop and refuses the '..' in a link's
-                # text, or the writable directory the target lives in
+                # the spawn follows every hop, folding a link's '..' as the
+                # kernel does: the private chain runs, the writable one is refused
+                if label in ("relative", "two_hop"):
+                    real = pathsec.resolve_trusted_executable(got)
+                    assert real == os.path.realpath(got) and _same(real, planted)
+                    assert not os.path.islink(real), label
+                    assert pathsec.untrusted_executable_reason(got) is None, label
+                    proc = pathsec.spawn_trusted(
+                        got, [], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                    )
+                    out = proc.communicate()[0].decode()
+                    assert proc.args[0] == os.fspath(got), label
+                    assert "LEGIT" in out and "PWNED" not in out, label
+                    continue
                 assert pathsec.resolve_trusted_executable(got) is None, label
                 reason = pathsec.untrusted_executable_reason(got)
-                if label == "absolute_into_writable":
-                    assert "world-writable" in reason and str(world) in reason
-                else:
-                    assert "'..' component is not followed by default" in reason
+                assert "world-writable" in reason and str(world) in reason, label
                 with pytest.raises(pathsec.TrustError) as excinfo:
                     pathsec.spawn_trusted(got, [])
                 assert reason in str(excinfo.value), label

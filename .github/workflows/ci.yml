@@ -156,8 +156,8 @@ jobs:
         shell: bash
         run: |
           # the real dot, never a stub: apt and brew install it as a link whose text
-          # climbs with '..', which the tests assert is refused; brew's prefix is g+w
-          # for admin, so its chain is made private as an operator would, link kept
+          # climbs with '..', which the tests assert renders by that name; brew's prefix
+          # is g+w for admin, so its chain is made private as an operator would, link kept
           if [ "${{ runner.os }}" = "Linux" ]; then
             sudo apt-get update -qq && sudo apt-get install -y -qq graphviz
             ls -la "$(command -v dot)"

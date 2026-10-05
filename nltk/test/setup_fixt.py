@@ -13,8 +13,8 @@ def check_binary(binary: str, **args):
     from nltk.pathsec import untrusted_executable_reason
 
     # the doctests run the tool through the trusted spawn, so a found binary it
-    # refuses (apt's or Homebrew's dot, a link whose text climbs with '..')
-    # skips with the reason; the real-Graphviz tests assert that refusal
+    # refuses, for whatever reason, skips with that reason; a refused dot fails
+    # the real-Graphviz tests instead, which CI runs with every chain private
     reason = untrusted_executable_reason(path)
     if reason is not None:
         pytest.skip(
