@@ -8,8 +8,11 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+import subprocess
 from collections import namedtuple
 
+from nltk.internals import find_binary_absolute
+from nltk.pathsec import TrustError, spawn_trusted
 from nltk.termsec import sanitize_terminal
 
 
@@ -147,32 +150,39 @@ class AlignedSent:
 
         return s
 
-    def to_image(self, t="svg", *, follow_link_parents=False):
-        """Render the alignment with the Graphviz ``dot`` program through
-        :func:`nltk.parse.dependencygraph.dot2img`, the one place NLTK runs
-        ``dot``; ``t`` is the output format (``svg`` by default).
-
-        ``follow_link_parents`` is :func:`dot2img`'s keyword: off by default,
-        a ``dot`` installed as a symlink whose text climbs with ``..``
-        (Homebrew's ``bin/dot -> ../Cellar/graphviz/<v>/bin/dot``) is refused
-        outright with the reason in the exception; pass ``True`` explicitly to
-        resolve that link the way the kernel does, with every directory on the
-        resolved chain verified.
-        """
-        from nltk.parse.dependencygraph import dot2img
-
-        return dot2img(self._to_dot(), t, follow_link_parents=follow_link_parents)
-
     def _repr_svg_(self):
         """
         Ipython magic : show SVG representation of this ``AlignedSent``.
-
-        IPython calls this with no arguments, so it renders through
-        :meth:`to_image` with its defaults; only an explicit
-        ``to_image(follow_link_parents=True)`` call can resolve a ``dot``
-        behind a ``..`` symlink.
         """
-        return self.to_image()
+        dot_string = self._to_dot().encode("utf8")
+        output_format = "svg"
+        try:
+            # Resolve to an absolute path with no '..' component; a CWD-relative
+            # match is refused, so a planted ./dot cannot be run in place of the
+            # real Graphviz binary (CWE-426 / CWE-427).
+            dot_binary = find_binary_absolute("dot")
+        except LookupError as e:
+            raise Exception("Cannot find the dot binary from Graphviz package") from e
+        try:
+            # Route through the trusted-exec chokepoint: verify the dot binary is
+            # on a path no other local user can swap, refuse a shell, and scrub the
+            # loader environment before exec (CWE-426/427/732).
+            process = spawn_trusted(
+                dot_binary,
+                [f"-T{output_format}"],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+            )
+        except (OSError, TrustError) as e:
+            raise Exception(
+                f"Refusing to run the Graphviz dot binary {dot_binary!r}: it is "
+                "not on a trusted path (install it where only you or root can "
+                f"write), or it could not be executed ({e})."
+            ) from e
+        out, err = process.communicate(dot_string)
+
+        return out.decode("utf8")
 
     def __str__(self):
         """
