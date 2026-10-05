@@ -130,6 +130,19 @@ def _runs(home, entry, real):
     return got
 
 
+def _refused(home, entry, check, named):
+    """*entry* is refused by the walk and the spawn, the reason naming *check*
+    and *named*, and nothing runs."""
+    assert _resolve(entry) is None, entry
+    reason = _reason(entry)
+    assert check in reason and named in reason, (entry, reason)
+    with pytest.raises(pathsec.TrustError) as excinfo:
+        _run(entry)
+    assert reason in str(excinfo.value), entry
+    assert _ran(home) == [], entry
+    return reason
+
+
 def _run(entry):
     proc = pathsec.spawn_trusted(
         entry,
@@ -257,6 +270,49 @@ def dotdot_landing_on_a_dir_link(r):
     return f"{r}/pkg/bin", f"{r}/pkg/bin/dot", real
 
 
+def absolute_text_with_dotdot(r):
+    """``bin/dot -> <r>/opt/../etc/dot``: an absolute text with a ``..`` in
+    it, the ``/opt/../etc/x`` shape, folded at ``opt``'s real parent."""
+    real = _tool(f"{r}/etc/dot")
+    _dir(f"{r}/opt")
+    _ln(f"{r}/opt/../etc/dot", f"{r}/bin/dot")
+    return f"{r}/bin", f"{r}/bin/dot", real
+
+
+def dotdot_after_a_mid_path_dir_link(r):
+    """The caller's ``pkg/lib/dot`` passes ``pkg/lib -> <r>/other/inner``, a
+    directory link in the middle of the path; ``dot`` there is a link to
+    ``../real``. The kernel applies that ``..`` to the link target's parent,
+    ``other``; the lexical parent ``pkg/real`` holds a decoy that never runs."""
+    real = _tool(f"{r}/other/real")
+    _tool(f"{r}/pkg/real")
+    _dir(f"{r}/other/inner")
+    _ln(f"{r}/other/inner", f"{r}/pkg/lib")
+    _ln("../real", f"{r}/other/inner/dot")
+    return f"{r}/pkg/lib", f"{r}/pkg/lib/dot", real
+
+
+def dot_and_slash_runs_mixed(r):
+    """``./``, ``//`` and ``..`` interleaved, stepping in and out of ``bin``."""
+    real = _tool(f"{r}/real/dot")
+    _ln(".//..//.//bin/./..//real//./dot", f"{r}/bin/dot")
+    return f"{r}/bin", f"{r}/bin/dot", real
+
+
+def _hops_last_climbing(r, n):
+    """*n* links: the innermost (followed last) climbs with ``..`` to the real
+    file, every other one names the next absolutely."""
+    real = _tool(f"{r}/real/dot")
+    _ln("../real/dot", f"{r}/l0/dot")
+    for i in range(1, n):
+        _ln(f"{r}/l{i - 1}/dot", f"{r}/l{i}/dot")
+    return f"{r}/l{n - 1}", f"{r}/l{n - 1}/dot", real
+
+
+def forty_hops_the_last_climbing(r):
+    return _hops_last_climbing(r, pathsec._MAX_LINK_HOPS)
+
+
 #: Layouts with a ``..`` in some link's text: folded as the kernel folds it,
 #: they resolve to the kernel's ``realpath`` and run.
 CLIMBING = {
@@ -273,6 +329,10 @@ CLIMBING = {
     "chain_at_the_bound": chain_at_the_bound,
     "parent_of_a_writable_dir_is_not_inside_it": parent_of_a_writable_dir_is_not_inside_it,
     "dotdot_landing_on_a_dir_link": dotdot_landing_on_a_dir_link,
+    "absolute_text_with_dotdot": absolute_text_with_dotdot,
+    "dotdot_after_a_mid_path_dir_link": dotdot_after_a_mid_path_dir_link,
+    "dot_and_slash_runs_mixed": dot_and_slash_runs_mixed,
+    "forty_hops_the_last_climbing": forty_hops_the_last_climbing,
 }
 
 
@@ -474,6 +534,53 @@ def escape_in_link_text(r):
     return f"{r}/bin", f"{r}/bin/dot", real, "control character", f"{r}/bin/dot"
 
 
+def forty_one_hops_the_last_climbing(r):
+    bindir, entry, real = _hops_last_climbing(r, pathsec._MAX_LINK_HOPS + 1)
+    return bindir, entry, real, "longer than", "hops"
+
+
+def absolute_text_with_dotdot_into_writable(r):
+    """``bin/dot -> <r>/opt/../ww/dot``, ``ww`` 0777."""
+    real = _tool(f"{r}/ww/dot")
+    os.chmod(f"{r}/ww", 0o777)
+    _dir(f"{r}/opt")
+    _ln(f"{r}/opt/../ww/dot", f"{r}/bin/dot")
+    return f"{r}/bin", f"{r}/bin/dot", real, "world-writable", f"{r}/ww"
+
+
+def dotdot_after_a_dir_link_lands_on_a_writable_file(r):
+    """``holder/dot -> sub/../tool`` with ``holder/sub -> <r>/other/inner``:
+    the kernel's ``tool`` is ``other/tool``, group-writable; the lexical fold
+    names ``holder/tool``, a private decoy that would pass every check."""
+    real = _tool(f"{r}/other/tool", 0o775)
+    _tool(f"{r}/holder/tool")
+    _dir(f"{r}/other/inner")
+    _ln(f"{r}/other/inner", f"{r}/holder/sub")
+    _ln("sub/../tool", f"{r}/holder/dot")
+    return f"{r}/holder", f"{r}/holder/dot", real, "group-writable", f"{r}/other/tool"
+
+
+def dotdot_after_a_mid_path_dir_link_into_writable(r):
+    """The caller's ``pkg/lib/dot`` passes ``pkg/lib -> <r>/other/inner``;
+    ``dot`` there is ``../ww/dot``, which the kernel reads as ``other/ww/dot``,
+    ``other/ww`` 0777. The lexical ``pkg/ww/dot`` is a private decoy."""
+    real = _tool(f"{r}/other/ww/dot")
+    os.chmod(f"{r}/other/ww", 0o777)
+    _tool(f"{r}/pkg/ww/dot")
+    _dir(f"{r}/other/inner")
+    _ln(f"{r}/other/inner", f"{r}/pkg/lib")
+    _ln("../ww/dot", f"{r}/other/inner/dot")
+    return f"{r}/pkg/lib", f"{r}/pkg/lib/dot", real, "world-writable", f"{r}/other/ww"
+
+
+def dangling_component_before_a_dotdot(r):
+    """``bin/dot -> ../ghost/../real/dot`` with no ``ghost``: the kernel stops
+    at ``ghost`` (ENOENT), and so does the walk."""
+    _tool(f"{r}/real/dot")
+    _ln("../ghost/../real/dot", f"{r}/bin/dot")
+    return f"{r}/bin", f"{r}/bin/dot", None, "cannot be inspected", f"{r}/ghost"
+
+
 #: Spoofs, each planting the check named by its last two fields: refused by
 #: that check, the reason naming it and the path.
 SPOOF = {
@@ -497,6 +604,11 @@ SPOOF = {
     "hard_link_in_a_writable_dir": hard_link_in_a_writable_dir,
     "newline_in_link_text": newline_in_link_text,
     "escape_in_link_text": escape_in_link_text,
+    "forty_one_hops_the_last_climbing": forty_one_hops_the_last_climbing,
+    "absolute_text_with_dotdot_into_writable": absolute_text_with_dotdot_into_writable,
+    "dotdot_after_a_dir_link_lands_on_a_writable_file": dotdot_after_a_dir_link_lands_on_a_writable_file,
+    "dotdot_after_a_mid_path_dir_link_into_writable": dotdot_after_a_mid_path_dir_link_into_writable,
+    "dangling_component_before_a_dotdot": dangling_component_before_a_dotdot,
 }
 
 
@@ -537,7 +649,7 @@ class TestClimbingLayouts:
         if os.path.exists(entry):
             assert os.path.samefile(entry, got), layout
         else:
-            assert layout == "chain_at_the_bound"
+            assert layout in ("chain_at_the_bound", "forty_hops_the_last_climbing")
         proc, out = _run(entry)
         # argv[0] is the invoked path, as the kernel passes it; the inode run is real
         assert proc.args[0] == entry and _same(proc.args[0], real)
@@ -550,7 +662,11 @@ class TestClimbingLayouts:
             assert _dot2img(monkeypatch, bindir).strip() == "GRAPHVIZ-STUB -Tsvg"
             assert _ran(home) == [real + ".ran"]
         else:
-            assert layout in ("homebrew_sibling_two_hops", "chain_at_the_bound")
+            assert layout in (
+                "homebrew_sibling_two_hops",
+                "chain_at_the_bound",
+                "forty_hops_the_last_climbing",
+            )
 
     @pytest.mark.parametrize("layout", sorted(PLAIN), ids=sorted(PLAIN))
     @pytest.mark.parametrize("mode", MODES)
@@ -776,6 +892,10 @@ class TestSpoofLayoutsAreRefused:
         with pytest.raises(pathsec.TrustError, match="owned by uid"):
             _run(entry)
         assert _ran(home) == []
+        # the control: root's link in that root-owned private directory runs
+        monkeypatch.setattr(pathsec.os, "lstat", _foreign_lstat(entry, 0))
+        assert _resolve(entry) == os.path.realpath(entry), mode
+        _runs(home, entry, f"{home}/real/dot")
 
     @pytest.mark.parametrize("mode", MODES)
     def test_a_link_into_the_shared_tmp_is_refused(self, home, mode):
@@ -811,6 +931,17 @@ class TestSpoofLayoutsAreRefused:
         entry = _ln("../real/dot", f"{home}/bin/dot")
         resolved = _resolve(entry)
         assert resolved == os.path.realpath(entry) and _same(resolved, real)
+        # a '..' after a link to a directory in the middle of the path: the
+        # kernel would take that link target's parent; the walk refuses it
+        _dir(f"{home}/other/inner")
+        kernel = _tool(f"{home}/other/real/dot")
+        _ln(f"{home}/other/inner", f"{home}/holder/sub")
+        after_a_link = f"{home}/holder/sub/../real/dot"
+        assert _same(os.path.realpath(after_a_link), kernel)
+        assert _resolve(after_a_link) is None
+        assert _reason(after_a_link) == f"{after_a_link!r} contains a '..' component"
+        with pytest.raises(pathsec.TrustError, match="'..' component"):
+            _run(after_a_link)
         for spelled in (
             f"{home}/bin/../real/dot",
             f"{home}/real/../real/dot",
@@ -822,6 +953,195 @@ class TestSpoofLayoutsAreRefused:
             with pytest.raises(pathsec.TrustError, match="'..' component"):
                 _run(spelled)
         assert _ran(home) == []
+
+    def test_a_fold_onto_a_root_owned_boundary_judges_each_child(
+        self, home, monkeypatch
+    ):
+        """A mount-like boundary, simulated: ``mnt`` reported as owned by root
+        (``stat`` says uid 0) and private, holding a group-writable ``gw`` and
+        a private ``ok``. ``mnt/pkg/bin/dot -> ../../gw/dot`` folds onto
+        ``mnt`` and is refused at ``gw``; ``mnt/pkg/bin/ok -> ../../ok/dot``
+        runs."""
+        mnt = _dir(f"{home}/mnt")
+        bad = _tool(f"{mnt}/gw/dot")
+        os.chmod(f"{mnt}/gw", 0o775)
+        good = _tool(f"{mnt}/ok/dot")
+        refused = _ln("../../gw/dot", f"{mnt}/pkg/bin/dot")
+        runs = _ln("../../ok/dot", f"{mnt}/pkg/bin/ok")
+        true_stat = os.stat
+
+        def root_mnt(path, *args, **kwargs):
+            st = true_stat(path, *args, **kwargs)
+            if os.fspath(path) == mnt:
+                fields = list(st)
+                fields[stat.ST_UID] = 0
+                st = os.stat_result(tuple(fields))
+            return st
+
+        monkeypatch.setattr(pathsec.os, "stat", root_mnt)
+        assert pathsec._private_dir_problem(mnt) is None and os.stat(mnt).st_uid == 0
+        _refused(home, refused, "group-writable", f"{mnt}/gw")
+        _runs(home, runs, good)
+        assert not os.path.exists(bad + ".ran")
+
+    def test_a_hop_retargeted_between_readlink_and_the_descent_is_rewalked(
+        self, home, monkeypatch
+    ):
+        """TOCTOU after the text is read: ``bin/dot -> ../pkg/dot`` is read,
+        then, before the walk descends, ``pkg`` is swapped for a link into a
+        world-writable directory holding a decoy. The descent ``lstat``s each
+        component afresh, meets the new link and refuses ``ww``."""
+        _tool(f"{home}/pkg/dot")
+        decoy = _tool(f"{home}/ww/dot")
+        os.chmod(f"{home}/ww", 0o777)
+        entry = _ln("../pkg/dot", f"{home}/bin/dot")
+        true_readlink = os.readlink
+        swapped = []
+
+        def readlink(path, *args, **kwargs):
+            text = true_readlink(path, *args, **kwargs)
+            if os.fspath(path) == entry and not swapped:
+                os.rename(f"{home}/pkg", f"{home}/pkg.orig")
+                os.symlink(f"{home}/ww", f"{home}/pkg")
+                swapped.append(text)
+            return text
+
+        monkeypatch.setattr(pathsec.os, "readlink", readlink)
+        why = pathsec._Why()
+        assert _walk(entry, why) is None and swapped == ["../pkg/dot"]
+        reason = "; ".join(why)
+        assert "world-writable" in reason and f"{home}/ww" in reason
+        monkeypatch.undo()
+        with pytest.raises(pathsec.TrustError, match="world-writable"):
+            _run(entry)
+        assert _ran(home) == [] and os.path.exists(decoy)
+        assert os.path.isfile(f"{home}/pkg.orig/dot") and os.path.islink(f"{home}/pkg")
+
+    @pytest.mark.parametrize("swap", ["link", "rename"])
+    def test_a_climbing_entrys_final_file_swapped_is_refused(
+        self, home, monkeypatch, swap
+    ):
+        """The final-component swap behind a ``..`` link: ``bin/dot ->
+        ../real/dot``, and between the ``lstat`` that saw a regular file and
+        the ``open``, ``real/dot`` becomes a link to a decoy in a
+        world-writable directory (``O_NOFOLLOW`` refuses the open) or is
+        renamed over by another file (the inode check refuses it)."""
+        real = _tool(f"{home}/real/dot")
+        decoy = _tool(f"{home}/ww/dot")
+        other = _tool(f"{home}/real/other")
+        os.chmod(f"{home}/ww", 0o777)
+        entry = _ln("../real/dot", f"{home}/bin/dot")
+        true_lstat = os.lstat
+        seen = []
+
+        def lstat(path, *args, **kwargs):
+            st = true_lstat(path, *args, **kwargs)
+            if os.fspath(path) == real:
+                seen.append(path)
+                if len(seen) == 2:  # the resolver's own lstat, after the walk
+                    if swap == "link":
+                        os.unlink(real)
+                        os.symlink(decoy, real)
+                    else:
+                        os.replace(other, real)
+            return st
+
+        monkeypatch.setattr(pathsec.os, "lstat", lstat)
+        why = pathsec._Why()
+        assert _walk(entry, why) is None and len(seen) == 2
+        expected = {
+            "link": "cannot be opened for verification",
+            "rename": "changed while it was being verified",
+        }[swap]
+        assert expected in "; ".join(why) and real in "; ".join(why), swap
+        monkeypatch.undo()
+        assert _ran(home) == []
+
+    def test_a_nul_in_link_text_is_refused_as_a_control_character(
+        self, home, monkeypatch
+    ):
+        """No filesystem stores a NUL in a link's text (``symlink`` refuses
+        it), so a ``readlink`` returning one is simulated: the walk refuses it
+        by the control-character check, naming the link. The newline twin is
+        a real link (``newline_in_link_text``)."""
+        _tool(f"{home}/real/dot")
+        with pytest.raises(ValueError):
+            os.symlink("../real\x00/dot", f"{home}/bin/nul")
+        entry = _ln("../real/dot", f"{home}/bin/dot")
+        true_readlink = os.readlink
+
+        def readlink(path, *args, **kwargs):
+            text = true_readlink(path, *args, **kwargs)
+            if os.fspath(path) == entry:
+                text = text.replace("/dot", "\x00/dot")
+            return text
+
+        monkeypatch.setattr(pathsec.os, "readlink", readlink)
+        reason = _refused(home, entry, "control character", entry)
+        assert "\\x00" in reason
+
+    def test_a_lying_str_subclass_target_is_read_once(self, home):
+        """A ``str`` subclass whose methods all name a decoy in a
+        world-writable directory: its real characters, a ``..`` link to the
+        private tool, are what is checked and run, and argv[0] is a plain
+        ``str`` of them."""
+        real = _tool(f"{home}/real/dot")
+        decoy = _tool(f"{home}/ww/dot")
+        os.chmod(f"{home}/ww", 0o777)
+        entry = _ln("../real/dot", f"{home}/bin/dot")
+
+        class Liar(str):
+            def __fspath__(self):
+                return decoy
+
+            def __str__(self):
+                return decoy
+
+            def split(self, *args, **kwargs):
+                return decoy.split(*args, **kwargs)
+
+            def startswith(self, *args, **kwargs):
+                return True
+
+            def __contains__(self, item):
+                return False
+
+            def __eq__(self, other):
+                return True
+
+            __hash__ = str.__hash__
+
+        proc, out = _run(Liar(entry))
+        assert type(proc.args[0]) is str and str.__eq__(proc.args[0], entry)
+        assert out.strip() == "GRAPHVIZ-STUB -Tsvg"
+        assert _ran(home) == [real + ".ran"] and not os.path.exists(decoy + ".ran")
+
+    def test_a_path_like_that_flips_is_read_once(self, home):
+        """A path-like naming the ``..`` link on its first read and a decoy in
+        a world-writable directory on every later one: read once, the link
+        runs; the decoy first is refused, whatever follows."""
+        real = _tool(f"{home}/real/dot")
+        decoy = _tool(f"{home}/ww/dot")
+        os.chmod(f"{home}/ww", 0o777)
+        entry = _ln("../real/dot", f"{home}/bin/dot")
+
+        class Flip(os.PathLike):
+            def __init__(self, *answers):
+                self.answers, self.calls = answers, 0
+
+            def __fspath__(self):
+                self.calls += 1
+                return self.answers[min(self.calls, len(self.answers)) - 1]
+
+        flip = Flip(entry, decoy)
+        proc, out = _run(flip)
+        assert flip.calls == 1 and proc.args[0] == entry
+        assert _ran(home) == [real + ".ran"]
+        os.unlink(real + ".ran")
+        flip = Flip(decoy, entry)
+        with pytest.raises(pathsec.TrustError, match="world-writable"):
+            _run(flip)
+        assert flip.calls == 1 and _ran(home) == []
 
     def test_relative_and_odd_targets_name_their_reason(self, home):
         real = _tool(f"{home}/bin/dot")
@@ -966,7 +1286,9 @@ class TestTeeth:
         monkeypatch.setattr(pathsec, "_MAX_LINK_HOPS", 10_000)
         assert _same(_resolve(over_it), real)
 
-    @pytest.mark.parametrize("layout", ["chain_over_the_bound"])
+    @pytest.mark.parametrize(
+        "layout", ["chain_over_the_bound", "forty_one_hops_the_last_climbing"]
+    )
     def test_without_the_hop_bound_a_climbing_chain_over_it_runs(
         self, home, monkeypatch, layout
     ):
@@ -986,6 +1308,8 @@ class TestTeeth:
             "writable_dir_descended_into_through_dotdot",
             "climb_above_the_root_into_writable_and_back",
             "dotdot_landing_on_a_dir_link_into_writable",
+            "absolute_text_with_dotdot_into_writable",
+            "dotdot_after_a_mid_path_dir_link_into_writable",
         ],
     )
     def test_without_the_directory_check_a_writable_dir_runs(
@@ -1003,6 +1327,7 @@ class TestTeeth:
         [
             "group_writable_target_file",
             "world_writable_target_file",
+            "dotdot_after_a_dir_link_lands_on_a_writable_file",
         ],
     )
     def test_without_the_file_check_a_writable_target_runs(
@@ -1029,6 +1354,47 @@ class TestTeeth:
         assert "control character" in _reason(entry)
         monkeypatch.setattr(pathsec, "_link_text_problem", lambda path, link: None)
         assert _resolve(entry) == os.path.realpath(real), shape
+
+    def test_with_a_lexical_fold_the_dir_link_spoof_runs_its_decoy(
+        self, home, monkeypatch
+    ):
+        """The fold steps to the real parent of the resolved directory: fold
+        a link's text lexically instead and ``holder/dot -> sub/../tool``
+        names ``holder/tool``, the private decoy, while the kernel's
+        ``other/tool`` is the group-writable file that refuses it."""
+        _, entry, real, check, named = dotdot_after_a_dir_link_lands_on_a_writable_file(
+            home
+        )
+        assert _resolve(entry) is None and named in _reason(entry)
+        true_walk = pathsec._resolve_private
+
+        def lexical(path, _hops=0, why=None, _link=None):
+            if _link is not None:
+                path = os.path.normpath(path)
+            return true_walk(path, _hops, why=why, _link=_link)
+
+        monkeypatch.setattr(pathsec, "_resolve_private", lexical)
+        got = _resolve(entry)
+        assert got == f"{home}/holder/tool" and not _same(got, real)
+
+    def test_without_the_callers_dotdot_refusal_a_typed_dotdot_runs(
+        self, home, monkeypatch
+    ):
+        """Treat the caller's own ``..`` as a link's and the typed
+        ``holder/sub/../real/dot`` (``sub`` a directory link) resolves; the
+        refusal is the one thing that stops it."""
+        _dir(f"{home}/other/inner")
+        kernel = _tool(f"{home}/other/real/dot")
+        _ln(f"{home}/other/inner", f"{home}/holder/sub")
+        typed = f"{home}/holder/sub/../real/dot"
+        assert _resolve(typed) is None and "'..' component" in _reason(typed)
+        true_walk = pathsec._resolve_private
+
+        def as_a_link(path, _hops=0, why=None, _link=None):
+            return true_walk(path, _hops, why=why, _link=_link or ("typed", path))
+
+        monkeypatch.setattr(pathsec, "_resolve_private", as_a_link)
+        assert _resolve(typed) == os.path.realpath(kernel)
 
     @pytest.mark.parametrize("mode", MODES)
     def test_without_the_open_check_a_swapped_final_component_runs(
