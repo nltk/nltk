@@ -1345,6 +1345,9 @@ class TestInPlaceDataPathRestoreRevokesTrust:
 
 
 def test_symlink_with_relative_parent():
+    # A symlink whose target uses '..' must resolve, as long as every
+    # directory on the way is private. Stage under $HOME, not /tmp:
+    # is_private_dir deliberately rejects world-writable sticky dirs.
     base = tempfile.mkdtemp(prefix="nltk-pathsec-", dir=os.path.expanduser("~"))
     try:
         os.chmod(base, 0o700)
@@ -1364,6 +1367,11 @@ def test_symlink_with_relative_parent():
 
 
 def test_argv0_is_caller_supplied_name():
+    # Copy the interpreter into the private tree: sys.executable lives
+    # under a CI-owned path (e.g. /opt/hostedtoolcache) whose directory
+    # chain is not private, so symlinking to it would be refused by
+    # resolve_trusted_executable before argv[0] is even reached.
+    import shutil as _shutil
     import subprocess
     import sys
 
@@ -1372,8 +1380,11 @@ def test_argv0_is_caller_supplied_name():
         os.chmod(base, 0o700)
         bin_dir = os.path.join(base, "bin")
         os.mkdir(bin_dir, 0o700)
+        real = os.path.join(base, "python")
+        _shutil.copyfile(sys.executable, real)
+        os.chmod(real, 0o755)
         link = os.path.join(bin_dir, "myprog")
-        os.symlink(sys.executable, link)  # link resolves to an ELF binary
+        os.symlink(real, link)  # link resolves to the copied ELF binary
         # CPython forces sys.argv[0] == "-c" under -c, so read the raw
         # kernel-level argv from /proc/self/cmdline instead.
         code = (
