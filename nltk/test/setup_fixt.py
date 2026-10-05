@@ -7,9 +7,20 @@ def check_binary(binary: str, **args):
     import pytest
 
     try:
-        find_binary(binary, **args)
+        path = find_binary(binary, **args)
     except LookupError:
         pytest.skip(f"Skipping test because the {binary} binary was not found.")
+    from nltk.pathsec import untrusted_executable_reason
+
+    # the doctests run the tool through the trusted spawn, so a found binary it
+    # refuses (apt's or Homebrew's dot, a link whose text climbs with '..')
+    # skips with the reason; the real-Graphviz tests assert that refusal
+    reason = untrusted_executable_reason(path)
+    if reason is not None:
+        pytest.skip(
+            f"Skipping test because the {binary} binary at {path!r} is refused by "
+            f"the trusted spawn: {reason}"
+        )
 
 
 def check_jar(name_pattern: str, **args):

@@ -468,8 +468,10 @@ def test_spawn_trusted_defaults_are_safe(_popen_spy):
     call = _popen_spy[0]
     assert call.shell is False
     assert call.close_fds is True
+    # the verified resolved file runs (executable=); argv[0] is the path as called
     assert call.executable == os.path.realpath("/bin/sh")
-    assert call.argv[0] == "/bin/sh"  # argv[0] is the caller-supplied name
+    assert not os.path.islink(call.executable)
+    assert call.argv[0] == "/bin/sh"
     assert not call.executable.startswith("/proc/")  # no /proc/self/fd indirection
     assert "LD_PRELOAD" not in (call.env or {})
     # PATH is the deny-sentinel: non-empty, absolute, resolves no command.
