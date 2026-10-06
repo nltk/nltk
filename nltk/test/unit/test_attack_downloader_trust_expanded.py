@@ -20,11 +20,14 @@ What is trusted, and on what evidence (from ``nltk/data.py`` and
   enforcement.
 * D2, the way down: every directory from the root to the one holding the
   resource passes the same test, and so does a resource that is itself a
-  directory, the corpus root the readers open files under (section 1).
+  directory, the corpus root the readers open files under (section 1),
+  with every entry under it, since readers open those by path and through
+  sqlite3 as well as through the pointer (section 11).
 * D3, the resource: a file or an archive is read only when this account or
   root owns it and no group or world write bit is set, judged by ``find()``
   by name and again on the opened descriptor at every read through a
-  pointer (section 1), so a swap after the check changes nothing.
+  pointer (section 1), an archive member read included (section 11), so a
+  swap after the check changes nothing.
 * D4, the read: ``pathsec.open`` opens with ``O_NOFOLLOW``, refuses a
   multiply-linked file, a device, a FIFO, a socket or a directory, and
   re-validates the opened descriptor's real path against the allowed roots.
@@ -64,8 +67,17 @@ re-running the download with extraction over an existing archive-only
 install, was answered with up-to-date and extracted nothing (D5, D8); a
 plain file standing where the package directory belongs was left in place
 by the stale cleanup, so the repair failed on ENOTDIR every time (D6).
+
+Found by the final adversarial pass, and fixed on this branch (section 11):
+a directory under a corpus root that another account could write let it
+trade the installer's files, and readers that open by path (Crubadan, Lin,
+the PanLex sqlite3 database) loaded files under a corpus root that another
+account could have written (D2); an archive read after ``find()`` was never
+judged again, so one made writable, or a whole root swapped through a
+writable parent, was read (D3).
 """
 
+import contextlib
 import gzip
 import os
 import pickle
@@ -73,6 +85,7 @@ import shutil
 import stat
 import unicodedata
 import zipfile
+import zlib
 
 import pytest
 
@@ -360,10 +373,16 @@ class TestCorpusRootAndFilesThroughIt:
                 text = refused_by_find(name)
                 assert "Found but could not read" in text
             os.chmod(unpacked, 0o755)
+            pointer = nltk.data.find("corpora/tiny").join("words.txt")
             os.chmod(unpacked / "words.txt", 0o666)
             assert fresh_status(index, dl) == STALE
+            # a pointer taken before is refused at the read; the corpus root
+            # is refused by find() for the file under it, by name
             with pytest.raises(PermissionError, match="writable by, or owned by"):
-                nltk.data.find("corpora/tiny").join("words.txt").open()
+                pointer.open()
+            text = refused_by_find("corpora/tiny")
+            assert f"- {str(unpacked / 'words.txt')!r}" in text
+            assert "Found but could not read" in text
             text = refused_by_find("corpora/tiny/words.txt")
             assert "Found but could not read" in text
             # this account cannot repair another account's install (its
@@ -1303,3 +1322,282 @@ class TestTheCycleForReal:
         shutil.rmtree(unpacked)
         result, text = run_download(index, dl, "tiny", quiet=True, extract=False)
         assert result is True and not unpacked.exists()
+
+
+# ===========================================================================
+# 11. The final adversarial pass: two accounts and a third party, on disk
+# ===========================================================================
+OTHER_UID = os.geteuid() + 4242 if hasattr(os, "geteuid") else None
+
+
+@contextlib.contextmanager
+def _owned_by(uid, *paths):
+    """Every ``os.stat``, ``os.lstat`` and ``os.fstat`` made in the block
+    reports each path's inode as owned by *uid*: the other owner a host with
+    one account cannot stage (as ``_foreign_lstat`` does for the trusted
+    symlink walk). The kernel still serves this account the bytes, so what is
+    refused is refused by the owner rule alone."""
+    keys = set()
+    for path in paths:
+        st = os.lstat(path)
+        keys.add((st.st_dev, st.st_ino))
+    real = {name: getattr(os, name) for name in ("stat", "lstat", "fstat")}
+
+    def owned(fn):
+        def inner(*args, **kwargs):
+            st = fn(*args, **kwargs)
+            if (st.st_dev, st.st_ino) in keys:
+                fields = list(st)
+                fields[stat.ST_UID] = uid
+                st = os.stat_result(tuple(fields))
+            return st
+
+        return inner
+
+    for name, fn in real.items():
+        setattr(os, name, owned(fn))
+    try:
+        yield
+    finally:
+        for name, fn in real.items():
+            setattr(os, name, fn)
+
+
+def _forge_crc(prefix, crc):
+    """*prefix* and four more bytes whose CRC-32 is *crc*. CRC-32 is affine
+    over GF(2), so the four bytes solve a linear system: a stored member of
+    the same name, size and CRC holding other bytes, the shape an archive
+    swapped under a cached central directory needs to be read at all."""
+    base = zlib.crc32(prefix + bytes(4))
+    basis = []
+    for bit in range(32):
+        vec = zlib.crc32(prefix + (1 << bit).to_bytes(4, "little")) ^ base
+        tag = 1 << bit
+        for b_vec, b_tag in basis:
+            if vec ^ b_vec < vec:
+                vec, tag = vec ^ b_vec, tag ^ b_tag
+        if vec:
+            basis.append((vec, tag))
+            basis.sort(reverse=True)
+    want, tag = base ^ crc, 0
+    for b_vec, b_tag in basis:
+        if want ^ b_vec < want:
+            want, tag = want ^ b_vec, tag ^ b_tag
+    forged = prefix + tag.to_bytes(4, "little")
+    assert zlib.crc32(forged) == crc
+    return forged
+
+
+PLANTED = _forge_crc(b"PLANTED\nbytes", zlib.crc32(WORDS))
+assert len(PLANTED) == len(WORDS) and PLANTED != WORDS
+
+
+def _stored(data, pid="tiny"):
+    return make_zip([(f"{pid}/", b""), (f"{pid}/words.txt", data)], zipfile.ZIP_STORED)
+
+
+def _zipped_install(root, data=WORDS):
+    """A package left zipped (the wordnet shape) laid down in a private root
+    by this account, as the downloader leaves it: the archive 0600."""
+    corpora = root / "corpora"
+    corpora.mkdir(mode=0o755, exist_ok=True)
+    archive = corpora / "tiny.zip"
+    archive.write_bytes(_stored(data))
+    os.chmod(archive, 0o600)
+    return archive
+
+
+@POSIX_NON_ROOT
+class TestTheFinalPass:
+    """What the last adversarial pass found open on this branch, each case
+    driven the way the other account or the third party would drive it, and
+    the owner half of the two-account rule pinned beside the mode half."""
+
+    def test_a_writable_directory_below_a_corpus_root_refuses_the_root(
+        self, box, monkeypatch
+    ):
+        """Only the corpus root itself was judged, so a directory under it
+        that another account can write let that account trade the
+        installer's files (a.txt and b.txt here), and the readers, which open
+        files under the root, were served the traded bytes."""
+        root, outside, dl, server = box
+        index, unpacked, archive = install_extracted(
+            box,
+            members=[
+                ("tiny/", b""),
+                ("tiny/words.txt", WORDS),
+                ("tiny/sub/", b""),
+                ("tiny/sub/a.txt", WORDS),
+                ("tiny/sub/b.txt", b"b" * len(WORDS)),
+            ],
+        )
+        monkeypatch.setattr(nltk.data, "path", [str(dl)])
+        sub = unpacked / "sub"
+        assert nltk.data.find("corpora/tiny").join("sub/a.txt").open().read() == WORDS
+        os.chmod(sub, 0o777)
+        (sub / "a.txt").rename(sub / "held")
+        (sub / "b.txt").rename(sub / "a.txt")
+        (sub / "held").rename(sub / "b.txt")
+        text = refused_by_find("corpora/tiny")
+        assert f"- {str(sub)!r}" in text and f"chmod go-w {str(sub)!r}" in text
+        assert "download the packages it holds again (force=True)" in text
+        with pytest.warns(RuntimeWarning, match="writable by, or owned by"):
+            with pytest.raises(LookupError):
+                WordListCorpusReader(nltk.data.find("corpora/tiny"), ["sub/a.txt"])
+        os.chmod(archive, 0)
+        try:
+            assert "Found but could not read" in refused_by_find("corpora/tiny")
+        finally:
+            os.chmod(archive, 0o600)
+        # chmod alone keeps the trade (what the message warns of); a forced
+        # download as the installer puts the genuine bytes back
+        os.chmod(sub, 0o755)
+        assert nltk.data.find("corpora/tiny").join("sub/a.txt").open().read() != WORDS
+        with _umask(0o022):
+            result, text = run_download(
+                index, dl, "tiny", quiet=True, extract=True, force=True
+            )
+        assert result is True, text
+        assert nltk.data.find("corpora/tiny").join("sub/a.txt").open().read() == WORDS
+
+    @pytest.mark.parametrize("how", ["world-writable", "group-writable", "other-owner"])
+    def test_a_reader_that_opens_by_path_is_handed_only_a_judged_tree(
+        self, box, monkeypatch, how
+    ):
+        """CrubadanCorpusReader, LinThesaurusCorpusReader and the sqlite3
+        PanLex reader open files under the corpus root by path, past the
+        pointer's descriptor check; a file under the root that another
+        account could have written was loaded through them."""
+        from nltk.corpus.reader import CrubadanCorpusReader
+        from nltk.corpus.reader.lin import LinThesaurusCorpusReader
+        from nltk.corpus.reader.panlex_lite import PanLexLiteCorpusReader
+
+        root, outside, dl, server = box
+        crubadan, lin, panlex = (dl / "corpora" / n for n in ("crubadan", "lin", "pl"))
+        for d in (crubadan, lin, panlex):
+            d.mkdir(parents=True)
+        (crubadan / "table.txt").write_bytes(b"pl\tpln\tPlanted\n")
+        (crubadan / "pl-3grams.txt").write_bytes(b"1 abc\n")
+        (lin / "simA.lsp").write_bytes(b'("planted" (desc 0.5) "x" 0.1)\n')
+        import sqlite3
+
+        with contextlib.closing(sqlite3.connect(str(panlex / "db.sqlite"))) as db:
+            db.execute("CREATE TABLE lv (uid TEXT, lv INTEGER)")
+            db.execute("INSERT INTO lv VALUES ('pln-000', 1)")
+            db.commit()
+        monkeypatch.setattr(nltk.data, "path", [str(dl)])
+        victims = [crubadan / "table.txt", lin / "simA.lsp", panlex / "db.sqlite"]
+        # private, each reader is served
+        assert CrubadanCorpusReader(nltk.data.find("corpora/crubadan"), r".*").langs()
+        LinThesaurusCorpusReader(nltk.data.find("corpora/lin"))
+        assert PanLexLiteCorpusReader(nltk.data.find("corpora/pl"))._uid_lv
+        mode = {"world-writable": 0o666, "group-writable": 0o664}.get(how, 0o644)
+        for victim in victims:
+            os.chmod(victim, mode)
+        owner = _owned_by(OTHER_UID, *victims) if how == "other-owner" else None
+        with owner or contextlib.nullcontext():
+            for name, victim in zip(("crubadan", "lin", "pl"), victims):
+                text = refused_by_find(f"corpora/{name}")
+                assert f"- {str(victim)!r}" in text
+
+    def test_an_archive_changed_after_find_is_refused_at_the_read(
+        self, box, monkeypatch
+    ):
+        """find() judged an archive by name; ZipFilePathPointer reopens it at
+        every read and was never judged again, so an archive made writable
+        and rewritten, or replaced by another account's, after find() was
+        read. Same name, size and CRC: the zip reader's own checks pass."""
+        root, outside, dl, server = box
+        archive = _zipped_install(dl)
+        monkeypatch.setattr(nltk.data, "path", [str(dl)])
+        pointer = nltk.data.find("corpora/tiny/words.txt")
+        directory = nltk.data.find("corpora/tiny.zip/tiny/")
+        assert isinstance(pointer, nltk.data.ZipFilePathPointer)
+        assert pointer.open().read() == WORDS
+        os.chmod(archive, 0o666)
+        with open(archive, "r+b") as fh:
+            fh.write(_stored(PLANTED))
+        for read in (pointer.open, directory.join("words.txt").open):
+            with pytest.raises(PermissionError, match="writable by, or owned by"):
+                read()
+        os.chmod(archive, 0o600)
+        archive.unlink()
+        archive.write_bytes(_stored(WORDS))
+        os.chmod(archive, 0o600)
+        assert pointer.open().read() == WORDS
+        with _owned_by(OTHER_UID, archive):
+            with pytest.raises(PermissionError, match="writable by, or owned by"):
+                pointer.open()
+        # root's archive is trusted like this account's own
+        with _owned_by(0, archive):
+            assert pointer.open().read() == WORDS
+
+    def test_a_root_swapped_through_a_writable_parent_after_find(
+        self, box, monkeypatch
+    ):
+        """A data root is judged by itself, not by its parent: a third party
+        who can write the (non-sticky) parent renames the root away after
+        find() and puts its own tree there. Every read through a pointer or
+        an archive is then judged on the descriptor, and a fresh find()
+        refuses the new root."""
+        root, outside, dl, server = box
+        parent = dl / "shared"
+        parent.mkdir()
+        os.chmod(parent, 0o777)
+        data = parent / "nltk_data"
+        data.mkdir(mode=0o755)
+        _zipped_install(data)
+        (data / "corpora" / "flat").mkdir()
+        (data / "corpora" / "flat" / "words.txt").write_bytes(WORDS)
+        monkeypatch.setattr(nltk.data, "path", [str(data)])
+        pointer = nltk.data.find("corpora/tiny/words.txt")
+        flat = nltk.data.find("corpora/flat")
+        assert pointer.open().read() == WORDS
+        data.rename(parent / "moved")
+        data.mkdir(mode=0o755)
+        theirs = _zipped_install(data, PLANTED)
+        os.chmod(theirs, 0o644)
+        (data / "corpora" / "flat").mkdir()
+        planted = data / "corpora" / "flat" / "words.txt"
+        planted.write_bytes(PLANTED)
+        entries = (data, data / "corpora", data / "corpora" / "flat", theirs, planted)
+        with _owned_by(OTHER_UID, *entries):
+            for read in (pointer.open, flat.join("words.txt").open):
+                with pytest.raises(PermissionError, match="writable by, or owned by"):
+                    read()
+            refused_by_find("corpora/tiny/words.txt")
+            refused_by_find("corpora/flat")
+
+    def test_the_owner_half_of_the_rule(self, box, monkeypatch):
+        """The mode half is pinned above; here the other owner, stood in by
+        the stat calls: a root, corpora directory, corpus root, file or
+        archive another account owns is refused, root's is served."""
+        root, outside, dl, server = box
+        index, unpacked, archive = install_extracted(box)
+        monkeypatch.setattr(nltk.data, "path", [str(dl)])
+        words = unpacked / "words.txt"
+        for entry in (dl, dl / "corpora"):
+            with _owned_by(OTHER_UID, entry):
+                refused_by_find("corpora/tiny/words.txt")
+        # the tree refused, the installer's own archive beside it serves; to
+        # the account the archive is closed to, nothing does
+        for entry in (unpacked, words):
+            with _owned_by(OTHER_UID, entry):
+                archive_serves_instead("corpora/tiny/words.txt", archive)
+                os.chmod(archive, 0)
+                try:
+                    text = refused_by_find("corpora/tiny/words.txt")
+                    assert "Found but could not read" in text
+                finally:
+                    os.chmod(archive, 0o600)
+        with _owned_by(OTHER_UID, archive):
+            with pytest.warns(RuntimeWarning, match="writable by, or owned by"):
+                with pytest.raises(LookupError):
+                    nltk.data.find("corpora/tiny.zip/tiny/words.txt")
+        os.chmod(archive, 0)  # the reader the installer's archive is closed to
+        try:
+            with _owned_by(0, dl, dl / "corpora", unpacked, words, archive):
+                assert nltk.data.find("corpora/tiny/words.txt").open().read() == WORDS
+                assert fresh_status(index, dl) == INSTALLED
+        finally:
+            os.chmod(archive, 0o600)

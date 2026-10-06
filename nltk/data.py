@@ -739,6 +739,39 @@ def _refuse_file_not_ours(stream, path):
     return stream
 
 
+def _first_entry_not_ours(top):
+    """The first entry under the directory *top* that another account could
+    have written, or None. By ``lstat``: a directory, file or special entry
+    owned by neither this account nor root, or carrying a group or world
+    write bit; a link whose own owner is another account (its target is
+    judged where it is read); a directory that cannot be listed but can be
+    searched, since its files could be opened unseen. A corpus root is read
+    whole (by pointer, by path, through sqlite3), so it is judged whole, the
+    way ``Downloader.status()`` judges an extracted tree. POSIX."""
+    from nltk import pathsec
+
+    unlisted = []
+    for current, dirs, files in os.walk(top, onerror=unlisted.append):
+        for name in dirs + files:
+            entry = os.path.join(current, name)
+            try:
+                st = os.lstat(entry)
+            except FileNotFoundError:
+                continue
+            except OSError:
+                return entry
+            if stat.S_ISLNK(st.st_mode):
+                if st.st_uid not in (os.geteuid(), 0):
+                    return entry
+            elif not pathsec._private_stat(st):
+                return entry
+    for error in unlisted:
+        where = getattr(error, "filename", None) or top
+        if os.access(where, os.X_OK):
+            return where
+    return None
+
+
 class PathPointer(metaclass=ABCMeta):
     """
     An abstract base class for 'path pointers,' used by NLTK's data
@@ -1332,10 +1365,13 @@ def find(resource_name, paths=None):
             if not pathsec.is_private_dir(cur):
                 return cur
         # A resource that is itself a directory (a corpus root the readers
-        # open files under) is judged like the directories on the way to it.
+        # open files under) is judged like the directories on the way to it,
+        # and so is every entry under it: readers open those by path as well.
         resource = below.rstrip(os.sep)
-        if os.path.isdir(resource) and not pathsec.is_private_dir(resource):
-            return resource
+        if os.path.isdir(resource):
+            if not pathsec.is_private_dir(resource):
+                return resource
+            return _first_entry_not_ours(resource)
         return None
 
     def _file_not_ours(path):
@@ -1535,7 +1571,8 @@ def find(resource_name, paths=None):
         msg += (
             "\n  Make each one private to its owner, e.g.:"
             + "".join("\n    chmod go-w %r" % d for d in _refused_writable)
-            + "\n"
+            + "\n  then download the packages it holds again (force=True): a"
+            + "\n  file changed while it was writable keeps the change.\n"
         )
 
     if _package_present_but_entry_missing:
@@ -2024,8 +2061,12 @@ class OpenOnDemandZipFile(ZipFile):
     def read(self, name):
         assert self.fp is None
         _check_decompression_bomb(self.getinfo(name))
-        # This will be validated by pathsec.open
-        self.fp = _secure_open(self.filename, "rb")
+        # Validated by pathsec.open, then judged on the opened descriptor like
+        # every resource file: an archive made writable, or swapped for another
+        # account's, after find() is refused at the read.
+        self.fp = _refuse_file_not_ours(
+            _secure_open(self.filename, "rb"), self.filename
+        )
         try:
             # Delegate to the secured base read(), which also streams the member's
             # ACTUAL bytes under the cap (CWE-409), not a raw one-shot read.
