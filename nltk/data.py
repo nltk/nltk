@@ -1861,10 +1861,15 @@ def _refuse_retired_pickle(protocol, path_, format):
 
 def switch_punkt(lang="english"):
     """
-    Return a pickle-free Punkt tokenizer instead of loading a pickle.
+    Return the pickle-free Punkt tokenizer (punkt_tab). A load of the
+    retired pickle is refused (CVE-2024-39705):
 
     >>> import nltk
-    >>> tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+    >>> nltk.data.load('tokenizers/punkt/english.pickle')  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    ValueError: Refusing to load 'tokenizers/punkt/english.pickle': 'tokenizers/punkt' is a retired pickle package ... nltk.download('punkt_tab'), then nltk.tokenize.PunktTokenizer('english')...
+    >>> tokenizer = nltk.data.switch_punkt('english')
     >>> print(tokenizer.tokenize("Hello! How are you?"))
     ['Hello!', 'How are you?']
     """
@@ -1875,12 +1880,17 @@ def switch_punkt(lang="english"):
 
 def switch_chunker(fmt="multiclass"):
     """
-    Return a pickle-free Named Entity Chunker instead of loading a pickle.
+    Return the pickle-free Named Entity Chunker (maxent_ne_chunker_tab). A
+    load of the retired pickle is refused (CVE-2024-39705):
 
     >>> import nltk
     >>> from nltk.corpus import treebank
     >>> from pprint import pprint
-    >>> chunker = nltk.data.load('chunkers/maxent_ne_chunker/PY3/english_ace_multiclass.pickle')
+    >>> nltk.data.load('chunkers/maxent_ne_chunker/PY3/english_ace_multiclass.pickle')  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    ValueError: Refusing to load 'chunkers/maxent_ne_chunker/PY3/english_ace_multiclass.pickle': 'chunkers/maxent_ne_chunker' is a retired pickle package ... nltk.download('maxent_ne_chunker_tab'), then nltk.chunk.ne_chunker()...
+    >>> chunker = nltk.data.switch_chunker('multiclass')
     >>> pprint(chunker.parse(treebank.tagged_sents()[2][8:14])) # doctest: +NORMALIZE_WHITESPACE
     Tree('S', [('chairman', 'NN'), ('of', 'IN'), Tree('ORGANIZATION', [('Consolidated', 'NNP'), ('Gold', 'NNP'), ('Fields', 'NNP')]), ('PLC', 'NNP')])
 
@@ -1892,11 +1902,16 @@ def switch_chunker(fmt="multiclass"):
 
 def switch_t_tagger():
     """
-    Return a pickle-free Treebank Pos Tagger instead of loading a pickle.
+    Return the pickle-free Treebank Pos Tagger (maxent_treebank_pos_tagger_tab).
+    A load of the retired pickle is refused (CVE-2024-39705):
 
     >>> import nltk
     >>> from nltk.tokenize import word_tokenize
-    >>> tagger = nltk.data.load('taggers/maxent_treebank_pos_tagger/PY3/english.pickle')
+    >>> nltk.data.load('taggers/maxent_treebank_pos_tagger/PY3/english.pickle')  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    ValueError: Refusing to load 'taggers/maxent_treebank_pos_tagger/PY3/english.pickle': 'taggers/maxent_treebank_pos_tagger' is a retired pickle package ... nltk.download('maxent_treebank_pos_tagger_tab'), then nltk.classify.maxent.maxent_pos_tagger()...
+    >>> tagger = nltk.data.switch_t_tagger()
     >>> print(tagger.tag(word_tokenize("Hello, how are you?")))
     [('Hello', 'NNP'), (',', ','), ('how', 'WRB'), ('are', 'VBP'), ('you', 'PRP'), ('?', '.')]
 
@@ -1908,11 +1923,16 @@ def switch_t_tagger():
 
 def switch_p_tagger(lang):
     """
-    Return a pickle-free Averaged Perceptron Tagger instead of loading a pickle.
+    Return the pickle-free Averaged Perceptron Tagger (averaged_perceptron_tagger_eng,
+    or _rus for "ru"). A load of the retired pickle is refused (CVE-2024-39705):
 
     >>> import nltk
     >>> from nltk.tokenize import word_tokenize
-    >>> tagger = nltk.data.load('taggers/averaged_perceptron_tagger/averaged_perceptron_tagger.pickle')
+    >>> nltk.data.load('taggers/averaged_perceptron_tagger/averaged_perceptron_tagger.pickle')  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    ValueError: Refusing to load 'taggers/averaged_perceptron_tagger/averaged_perceptron_tagger.pickle': 'taggers/averaged_perceptron_tagger' is a retired pickle package ... nltk.download('averaged_perceptron_tagger_eng'), then nltk.tag.PerceptronTagger()...
+    >>> tagger = nltk.data.switch_p_tagger('eng')
     >>> print(tagger.tag(word_tokenize("Hello, how are you?")))
     [('Hello', 'NNP'), (',', ','), ('how', 'WRB'), ('are', 'VBP'), ('you', 'PRP'), ('?', '.')]
 

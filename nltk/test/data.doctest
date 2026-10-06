@@ -30,8 +30,26 @@ Instead, all the unsafe pickle packages are now replaced by classes:
     >>> tokenizer.tokenize('Hello.  This is a test.  It works!')
     ['Hello.', 'This is a test.', 'It works!']
 
+The retired pickle packages (``punkt``, ``averaged_perceptron_tagger``,
+``averaged_perceptron_tagger_ru``, ``maxent_ne_chunker`` and
+``maxent_treebank_pos_tagger``, CVE-2024-39705) are never loaded. Asking
+for one of their pickles, under any spelling of its name and in any
+format, raises a ValueError that names the replacement and the call that
+loads it, before anything is read:
+
+    >>> nltk.data.load('tokenizers/punkt/english.pickle')  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    ValueError: Refusing to load 'tokenizers/punkt/english.pickle': 'tokenizers/punkt' is a retired pickle package ... nltk.download('punkt_tab'), then nltk.tokenize.PunktTokenizer('english')...
+    >>> nltk.data.load('nltk:Tokenizers/PUNKT/PY3/German.pickle', format='raw')  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    ValueError: Refusing to load 'Tokenizers/PUNKT/PY3/German.pickle': 'tokenizers/punkt' is a retired pickle package ... nltk.download('punkt_tab'), then nltk.tokenize.PunktTokenizer('german')...
+    >>> PunktTokenizer('german').tokenize('Er kam um 5 Uhr. Dann ging er.')
+    ['Er kam um 5 Uhr.', 'Dann ging er.']
+
 It is important to note that there should be no space following the
-colon (':') in the URL; 'nltk: tokenizers/punkt/english.pickle' will
+colon (':') in the URL; 'nltk: grammars/sample_grammars/toy.cfg' will
 not work!
 
 The ``nltk:`` protocol is used by default if no protocol is specified.
