@@ -67,6 +67,11 @@ from nltk.pathsec import validate_path as _validate_path
 # anchor only at the start — we'll use search() for safety checks.
 _UNSAFE_NO_PROTOCOL_RE = redos.compile(r"(?:\.\./|\.\.$|^/|\\|[:|])")
 
+#: find() looks for a resource inside a same-named zip at each of this many
+#: leading components; a real resource name is at most five components deep
+#: (``models/<package>/<dir>/<dir>/<file>``) with its archive second.
+MAX_ZIP_FALLBACK_DEPTH = 8
+
 
 def _assert_no_encoded_bypass(name, error_label=None):
     """
@@ -1302,7 +1307,9 @@ def find(resource_name, paths=None):
     # zipfile of the same name.
     if zipfile is None:
         pieces = resource_name.split("/")
-        for i in range(len(pieces)):
+        # Each try is a whole find(); trying every component of a long name made
+        # it quadratic (8 KB of "a/a/..." took 29 s), and real names are shallow.
+        for i in range(min(len(pieces), MAX_ZIP_FALLBACK_DEPTH)):
             modified_name = "/".join(pieces[:i] + [pieces[i] + ".zip"] + pieces[i:])
             try:
                 return find(modified_name, paths)
