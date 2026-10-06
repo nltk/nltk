@@ -852,6 +852,19 @@ def test_r53h_front_mutation_probe_has_teeth():
     assert probe()[0] == probes.FIXED
 
 
+def test_32p6_group_bomb_probe_has_teeth(monkeypatch):
+    """Lift the capturing-group bound; the bomb must reach the engine and compile."""
+    from nltk import redos
+
+    probe = probes.PROBES["GHSA-32p6-cwhc-8r78"]
+    assert probe()[0] == probes.FIXED
+
+    monkeypatch.setattr(redos, "MAX_GROUP_COUNT", 10**9)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "compiled" in evidence
+
+
 def _pre_fix_ccg_parser(compile=re.compile):
     """The CCG category parser as it stood before the cursor rewrite, copied
     verbatim: every step re-sliced the remaining tail and NEXTPRIM_RE and
@@ -1116,6 +1129,145 @@ def test_relative_binary_location_probe_world_writable_phase_has_teeth(monkeypat
     assert probe()[0] == probes.FIXED
 
 
+def test_cj8f_xml_depth_probe_has_teeth(monkeypatch):
+    """Lift both bounds; the per-tag path cost must scale quadratically in depth.
+
+    With only the depth bound lifted the width bound still refuses the 32 KB
+    path of the deep shape, so the probe stays FIXED (defence in depth)."""
+    import nltk.corpus.reader.xmldocs as xmldocs
+
+    probe = probes.PROBES["GHSA-cj8f-5fp3-6m88"]
+    assert probe()[0] == probes.FIXED
+
+    monkeypatch.setattr(xmldocs, "MAX_XML_DEPTH", 10**9)
+    status, evidence = probe()
+    assert status == probes.FIXED and "MAX_XML_PATH_LENGTH" in evidence, evidence
+
+    monkeypatch.setattr(xmldocs, "MAX_XML_PATH_LENGTH", 10**9)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "no depth bound" in evidence
+    # the path handed to the tagspec sums to d**2 characters: 16.0x for 4x depth
+    assert "scales 16.0x" in evidence, evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_cj8f_xml_path_width_probe_has_teeth(monkeypatch):
+    """Lift the width bound alone: the deep shape is still refused by depth, and
+    the wide shape (400 deep, long names, many siblings) must read quadratic."""
+    import nltk.corpus.reader.xmldocs as xmldocs
+
+    probe = probes.PROBES["GHSA-cj8f-5fp3-6m88"]
+    monkeypatch.setattr(xmldocs, "MAX_XML_PATH_LENGTH", 10**9)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "no path width bound" in evidence, evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_53pg_hypernym_walker_probe_has_teeth(monkeypatch):
+    """Neuter the visit check; the cycle and the deep chain must recurse until
+    RecursionError in every walker."""
+    import nltk.corpus.reader.wordnet as wordnet
+
+    probe = probes.PROBES["GHSA-53pg-5qp8-mhvr"]
+    assert probe()[0] == probes.FIXED
+
+    monkeypatch.setattr(wordnet, "_check_hypernym_visit", lambda synset, visited: None)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "RecursionError" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_ffr9_span_tokenize_probe_has_teeth(monkeypatch):
+    """Reintroduce the O(n) front removal in both tokenizer engines; the quote
+    restore must go quadratic and flip the probe."""
+    import nltk.tokenize.destructive as destructive
+    import nltk.tokenize.treebank as treebank
+
+    probe = probes.PROBES["GHSA-ffr9-mgrr-wcvr"]
+    assert probe()[0] == probes.FIXED
+
+    class _FrontPopIterator:
+        # The engines draw the matched quotes through iter()/next(); this
+        # stand-in re-slices the list on every draw, two whole-list copies per
+        # quote, so the O(n) front removal is visible at probe sizes.
+        def __init__(self, items):
+            self.items = list(items)
+
+        def __iter__(self):
+            return self
+
+        def __next__(self):
+            if not self.items:
+                raise StopIteration
+            head = self.items[0]
+            self.items[:] = self.items[1:]
+            return head
+
+    monkeypatch.setattr(destructive, "iter", _FrontPopIterator, raising=False)
+    monkeypatch.setattr(treebank, "iter", _FrontPopIterator, raising=False)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_gpwc_legality_probe_has_teeth(monkeypatch):
+    """A legal onset longer than any token defeats the saturation cut-off, so the
+    onset is reversed on every iteration again (the pre-fix loop)."""
+    from nltk.tokenize import LegalitySyllableTokenizer
+
+    probe = probes.PROBES["GHSA-gpwc-27cw-rh9r"]
+    assert probe()[0] == probes.FIXED
+
+    real = LegalitySyllableTokenizer.find_legal_onsets
+
+    def with_giant_onset(self, words):
+        return real(self, words) | {"x" * 10**6}
+
+    monkeypatch.setattr(
+        LegalitySyllableTokenizer, "find_legal_onsets", with_giant_onset
+    )
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_8fx7_stepping_parser_probe_has_teeth(monkeypatch):
+    """Put back the pre-fix loop that drives step() with no deadline; the parse
+    must run to completion past max_time and flip the probe."""
+    from nltk.parse.recursivedescent import SteppingRecursiveDescentParser
+
+    probe = probes.PROBES["GHSA-8fx7-8jr8-84rv"]
+    assert probe()[0] == probes.FIXED
+
+    def unbounded_parse(self, tokens):
+        tokens = list(tokens)
+        self.initialize(tokens)
+        while self.step() is not None:
+            pass
+        return self.parses()
+
+    monkeypatch.setattr(SteppingRecursiveDescentParser, "parse", unbounded_parse)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "no TimeoutError" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
 @pytest.mark.skipif(os.name != "posix", reason="the planted decoys are shell scripts")
 def test_relative_binary_location_probe_sink_phase_has_teeth(monkeypatch):
     """The advisory's sink (phase 6), run on its own because the probe's earlier
@@ -1272,12 +1424,18 @@ def test_wr3g_zip_hardlink_probe_has_teeth():
     assert probe()[0] == probes.FIXED
 
 
-def test_j8g8_reparse_probe_has_teeth(monkeypatch):
+@pytest.mark.parametrize("ghsa", ["GHSA-j8g8-j4j7-8j54", "GHSA-q4c8-9gwf-255x"])
+def test_readline_reparse_probe_has_teeth(ghsa, monkeypatch):
     """Report a line boundary in every block; readline then re-splits the whole
-    growing buffer each pass (the pre-fix O(n^2)) and the probe flips."""
+    growing buffer each pass (the pre-fix O(n^2)) and the probe flips.
+
+    develop gates the re-split on ``_has_line_boundary`` (the timed regex is
+    gone since #3938). GHSA-q4c8 is a second advisory on the same sink whose
+    probe is the GHSA-j8g8 measurement, so each registered id must flip here.
+    """
     import nltk.data as data
 
-    probe = probes.PROBES["GHSA-j8g8-j4j7-8j54"]
+    probe = probes.PROBES[ghsa]
     assert probe()[0] == probes.FIXED
 
     monkeypatch.setattr(data, "_has_line_boundary", lambda text: True)
