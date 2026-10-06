@@ -934,9 +934,12 @@ def _reject_colliding_members(members, context="zip member"):
             "poisoning)."
         )
 
-    # Folded as a target filesystem folds names: NFKC, case, the trailing dots and
-    # spaces Windows strips, and the ':<>|"?*' zipfile writes as "_" on Windows.
+    # Keyed the way the hardened extractor writes: a backslash is a separator
+    # and empty or "." parts vanish, so "a//b" and "a/./b" are "a/b" as well.
     def _fold(parts):
+        """The parts as a target filesystem stores them: NFKC, case folded,
+        without the trailing dots and spaces Windows strips, and with the
+        ':<>|"?*' zipfile writes as "_" on Windows."""
         return unicodedata.normalize(
             "NFKC",
             "/".join(
@@ -944,8 +947,6 @@ def _reject_colliding_members(members, context="zip member"):
             ),
         ).casefold()
 
-    # Keyed the way the hardened extractor writes: a backslash is a separator
-    # and empty or "." parts vanish, so "a//b" and "a/./b" are "a/b" as well.
     seen, parents = {}, {}
     for name in members:
         text = name.filename if hasattr(name, "filename") else str(name)
