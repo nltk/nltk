@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Corpus Readers
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
@@ -61,6 +61,10 @@ from nltk.corpus.reader.tagged import *
 from nltk.corpus.reader.cmudict import *
 from nltk.corpus.reader.conll import *
 from nltk.corpus.reader.chunked import *
+from nltk.corpus.reader.stopwords_extended import (
+    StopwordsEnglishExtended,
+    StopwordsExtension,
+)
 from nltk.corpus.reader.wordlist import *
 from nltk.corpus.reader.xmldocs import *
 from nltk.corpus.reader.ppattach import *
@@ -120,6 +124,9 @@ __all__ = [
     "CMUDictCorpusReader",
     "ConllChunkCorpusReader",
     "WordListCorpusReader",
+    "StopwordsCorpusReader",
+    "StopwordsExtension",
+    "StopwordsEnglishExtended",
     "PPAttachmentCorpusReader",
     "SensevalCorpusReader",
     "IEERCorpusReader",

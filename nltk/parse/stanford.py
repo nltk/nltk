@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to the Stanford Parser
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Xu <xxu@student.unimelb.edu.au>
 #
 # URL: <https://www.nltk.org/>
@@ -11,15 +11,11 @@ import tempfile
 import warnings
 from subprocess import PIPE
 
-from nltk.internals import (
-    _java_options,
-    config_java,
-    find_jar_iter,
-    find_jars_within_path,
-    java,
-)
+from nltk.data import staging_tempdir
+from nltk.internals import find_jar_iter, find_jars_within_path, java
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
+from nltk.pathsec import validate_model_resource
 from nltk.tree import Tree
 
 _stanford_url = "https://nlp.stanford.edu/software/lex-parser.shtml"
@@ -75,8 +71,19 @@ class GenericStanfordParser(ParserI):
         # self._classpath = (stanford_jar, model_jar)
 
         # Adding logging jar files to classpath
-        stanford_dir = os.path.split(stanford_jar)[0]
-        self._classpath = tuple([model_jar] + find_jars_within_path(stanford_dir))
+        stanford_dir = os.path.dirname(stanford_jar)
+
+        # Place trusted parser and supporting library jars first,
+        # and append the data-only model_jar last to prevent class shadowing (CVE-2026-14582).
+        classpath_jars = [
+            j
+            for j in find_jars_within_path(stanford_dir)
+            if j not in (stanford_jar, model_jar)
+        ]
+        classpath = [stanford_jar] + classpath_jars
+        if model_jar != stanford_jar:
+            classpath.append(model_jar)
+        self._classpath = tuple(classpath)
 
         self.model_path = model_path
         self._encoding = encoding
@@ -119,6 +126,14 @@ class GenericStanfordParser(ParserI):
         :type sentences: list(list(str))
         :rtype: iter(iter(Tree))
         """
+        # Prevent generator exhaustion
+        sentences = list(sentences)
+
+        # Security check: Validate individual tokens before joining
+        for sentence in sentences:
+            for token in sentence:
+                if "\n" in token or "\r" in token:
+                    raise ValueError("Tokens cannot contain newline characters.")
         cmd = [
             self._MAIN_CLASS,
             "-model",
@@ -159,6 +174,12 @@ class GenericStanfordParser(ParserI):
         :type sentences: list(str)
         :rtype: iter(iter(Tree))
         """
+        # Prevent generator exhaustion
+        sentences = list(sentences)
+        # Security check: Validate raw sentence strings
+        for sentence in sentences:
+            if "\n" in sentence or "\r" in sentence:
+                raise ValueError("Sentences cannot contain newline characters.")
         cmd = [
             self._MAIN_CLASS,
             "-model",
@@ -194,6 +215,17 @@ class GenericStanfordParser(ParserI):
         :type sentences: list(list(tuple(str, str)))
         :rtype: iter(iter(Tree))
         """
+        # 1. Prevent generator exhaustion
+        sentences = list(sentences)
+
+        # 2. Security check: Validate both words and tags for newline characters
+        for sentence in sentences:
+            for word, tag in sentence:
+                if "\n" in word or "\r" in word or "\n" in tag or "\r" in tag:
+                    raise ValueError(
+                        "Tokens and tags cannot contain newline characters."
+                    )
+
         tag_separator = "/"
         cmd = [
             self._MAIN_CLASS,
@@ -223,49 +255,110 @@ class GenericStanfordParser(ParserI):
             )
         )
 
+    def _validated_extra_options(self, cmd):
+        """Bound the caller-supplied ``corenlp_options`` before it joins the argv.
+
+        The string is *split* into separate argv elements, so it can append a
+        second ``-model``. Stanford's ``LexicalizedParser`` honours the LAST
+        occurrence, which was verified directly against the JVM, so an injected
+        option silently replaced the model the guard above had just checked and
+        the parser deserialized an arbitrary file instead.
+
+        An option NLTK already set may therefore not be repeated here, and any
+        value that looks like a filesystem path is bounded to the data roots. A
+        value that is not a path (``xml``, ``key=value``) is left alone, since
+        this is a general passthrough for the tool's own settings.
+        """
+        already_set = {
+            argument
+            for argument in cmd
+            if isinstance(argument, str) and argument.startswith("-")
+        }
+        validated = []
+        for token in self.corenlp_options.split():
+            if token.startswith("-"):
+                if token in already_set:
+                    raise ValueError(
+                        f"Security Violation [StanfordParser corenlp_options]: "
+                        f"{token!r} is already set by NLTK and may not be "
+                        "overridden; the tool would honour the injected value."
+                    )
+                validated.append(token)
+                continue
+            if os.path.isabs(token) or "/" in token or "\\" in token:
+                token = validate_model_resource(
+                    token, context="StanfordParser corenlp_options"
+                )
+            validated.append(token)
+        return validated
+
     def _execute(self, cmd, input_, verbose=False):
+        # Bound `-model` here, at the single hand-off to the JVM, so all three
+        # callers are covered and a late reassignment cannot slip past. The argv
+        # entry is replaced with the validated string: __fspath__ may answer
+        # differently on every call, so the object the callers put in `cmd` could
+        # otherwise resolve to a file the guard never saw.
+        model = validate_model_resource(self.model_path, context="StanfordParser model")
+        if "-model" in cmd:
+            cmd[cmd.index("-model") + 1] = model
         encoding = self._encoding
         cmd.extend(["-encoding", encoding])
         if self.corenlp_options:
-            cmd.extend(self.corenlp_options.split())
-
-        default_options = " ".join(_java_options)
-
-        # Configure java.
-        config_java(options=self.java_options, verbose=verbose)
+            cmd.extend(self._validated_extra_options(cmd))
 
         # Windows is incompatible with NamedTemporaryFile() without passing in delete=False.
-        with tempfile.NamedTemporaryFile(mode="wb", delete=False) as input_file:
-            # Write the actual sentences to the temporary input file
-            if isinstance(input_, str) and encoding:
-                input_ = input_.encode(encoding)
-            input_file.write(input_)
-            input_file.flush()
+        input_file_name = None
+        java_succeeded = False
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode="wb", delete=False, dir=staging_tempdir()
+            ) as input_file:
+                input_file_name = input_file.name
+                # Write the actual sentences to the temporary input file
+                if isinstance(input_, str) and encoding:
+                    input_ = input_.encode(encoding)
+                input_file.write(input_)
+                input_file.flush()
 
-            # Run the tagger and get the output.
-            if self._USE_STDIN:
-                input_file.seek(0)
-                stdout, stderr = java(
-                    cmd,
-                    classpath=self._classpath,
-                    stdin=input_file,
-                    stdout=PIPE,
-                    stderr=PIPE,
-                )
-            else:
-                cmd.append(input_file.name)
-                stdout, stderr = java(
-                    cmd, classpath=self._classpath, stdout=PIPE, stderr=PIPE
-                )
+                # Run the tagger and get the output.
+                if self._USE_STDIN:
+                    input_file.seek(0)
+                    stdout, stderr = java(
+                        cmd,
+                        classpath=self._classpath,
+                        stdin=input_file,
+                        stdout=PIPE,
+                        stderr=PIPE,
+                        options=self.java_options,
+                    )
+                else:
+                    cmd.append(input_file_name)
+                    stdout, stderr = java(
+                        cmd,
+                        classpath=self._classpath,
+                        stdout=PIPE,
+                        stderr=PIPE,
+                        options=self.java_options,
+                    )
 
-            stdout = stdout.replace(b"\xc2\xa0", b" ")
-            stdout = stdout.replace(b"\x00\xa0", b" ")
-            stdout = stdout.decode(encoding)
-
-        os.unlink(input_file.name)
-
-        # Return java configurations to their default values.
-        config_java(options=default_options, verbose=False)
+                # java() returns text (universal_newlines=True); only the older
+                # bytes path needs the byte-level NBSP fixups and decode.
+                if isinstance(stdout, bytes):
+                    stdout = stdout.replace(b"\xc2\xa0", b" ")
+                    stdout = stdout.replace(b"\x00\xa0", b" ")
+                    stdout = stdout.decode(encoding)
+                else:
+                    stdout = stdout.replace("\xa0", " ")
+                java_succeeded = True
+        finally:
+            if input_file_name:
+                try:
+                    os.unlink(input_file_name)
+                except FileNotFoundError:
+                    pass
+                except OSError:
+                    if java_succeeded:
+                        raise
 
         return stdout
 

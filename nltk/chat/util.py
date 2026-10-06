@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Chatbot Utilities
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Authors: Steven Bird <stevenbird1@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -10,6 +10,9 @@
 
 import random
 import re
+
+from nltk import redos
+from nltk.termsec import safe_print
 
 reflections = {
     "i am": "you are",
@@ -48,13 +51,18 @@ class Chat:
         :rtype: None
         """
 
-        self._pairs = [(re.compile(x, re.IGNORECASE), y) for (x, y) in pairs]
+        # Each ``x`` is a caller-supplied pattern matched (``pattern.match``
+        # below) against arbitrary, unbounded end-user input, so compile it
+        # through ``redos``: a pattern such as ``(a|a)*z`` would otherwise
+        # backtrack catastrophically on a long message and hang the bot
+        # (CWE-1333). See ``nltk/redos.py``.
+        self._pairs = [(redos.compile(x, re.IGNORECASE), y) for (x, y) in pairs]
         self._reflections = reflections
         self._regex = self._compile_reflections()
 
     def _compile_reflections(self):
         sorted_refl = sorted(self._reflections, key=len, reverse=True)
-        return re.compile(
+        return redos.compile(
             r"\b({})\b".format("|".join(map(re.escape, sorted_refl))), re.IGNORECASE
         )
 
@@ -117,8 +125,8 @@ class Chat:
             try:
                 user_input = input(">")
             except EOFError:
-                print(user_input)
+                safe_print(user_input)
             if user_input:
                 while user_input[-1] in "!.":
                     user_input = user_input[:-1]
-                print(self.respond(user_input))
+                safe_print(self.respond(user_input))

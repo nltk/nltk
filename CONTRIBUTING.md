@@ -31,7 +31,7 @@ important are:
 - [nltk/nltk_book](https://github.com/nltk/nltk_book), source code for the NLTK
   Book.
 
-## Development priorities (old)
+## Development priorities
 
 NLTK consists of the functionality that the Python/NLP community is motivated to contribute.
 Some priority areas for development are listed in the [NLTK Wiki](https://github.com/nltk/nltk/wiki#development).
@@ -57,8 +57,25 @@ repository [nltk/nltk](https://github.com/nltk/nltk/):
 - Clone your forked repository locally
   (`git clone https://github.com/<your-github-username>/nltk.git`);
 - Run `cd nltk` to get to the root directory of the `nltk` code base;
-- Install the dependencies (`pip install -r pip-req.txt`);
-- Install the [pre-commit](https://pre-commit.com) hooks: (`pre-commit install`)
+- Create and activate a virtual environment:
+  ```bash
+  python -m venv venv
+  source venv/bin/activate  # On Windows: venv\Scripts\activate
+  ```
+- Install NLTK in editable mode with dependencies:
+  ```bash
+  pip install -e .
+  pip install -r pip-req.txt
+  ```
+- Install the pre-commit hooks:
+  ```bash
+  pip install pre-commit
+  pre-commit install
+  ```
+- Install the code formatters and linter used by the pre-commit hooks:
+  ```bash
+  pip install black isort ruff pyupgrade
+  ```
 - Download the datasets for running tests
   (`python -m nltk.downloader all`);
 - Create a remote link from your local repository to the
@@ -66,6 +83,31 @@ repository [nltk/nltk](https://github.com/nltk/nltk/):
   (`git remote add upstream https://github.com/nltk/nltk.git`) --
   you will need to use this `upstream` link when updating your local repository
   with all the latest contributions.
+
+### Pre-commit hooks
+
+NLTK uses [pre-commit](https://pre-commit.com) to run code quality checks
+before each commit. The hooks are configured in
+[`.pre-commit-config.yaml`](https://github.com/nltk/nltk/blob/develop/.pre-commit-config.yaml)
+and include:
+
+- [pre-commit-hooks](https://github.com/pre-commit/pre-commit-hooks) -- trailing whitespace, end-of-file fixer, YAML check
+- [pyupgrade](https://github.com/asottile/pyupgrade) -- upgrade syntax to Python 3.10+
+- [black](https://github.com/psf/black) -- code formatting
+- [isort](https://github.com/pycqa/isort) -- import sorting
+- [ruff](https://github.com/astral-sh/ruff-pre-commit) -- fast Python linter with auto-fix
+
+You can run all hooks manually with:
+```bash
+pre-commit run --all-files
+```
+
+Or run the tools individually:
+```bash
+isort nltk/path/to/file.py
+black nltk/path/to/file.py
+ruff check nltk/path/to/file.py
+```
 
 ### GitHub Pull requests
 
@@ -82,7 +124,7 @@ Summary of our git branching model:
 - Do many small commits on that branch locally (`git add files-changed`,
   `git commit -m "Add some change"`);
 - Run the tests to make sure nothing breaks
-  (`tox -e py313` if you are on Python 3.13);
+  (`pytest nltk/test` or `tox -e py313` if you are on Python 3.13);
 - Add your name to the `AUTHORS.md` file as a contributor;
 - Push to your fork on GitHub (with the name as your local branch:
   `git push origin branch-name`);
@@ -146,65 +188,102 @@ the desired feature.
 
 You can use `pytest` to run your tests, no matter which type of test it is:
 
-```
+```bash
 cd nltk/test
-pytest util.doctest  # doctest
+pytest util.doctest        # doctest
 pytest unit/translate/test_nist.py  # unittest
-pytest  # all tests
+pytest                     # all tests
 ```
+
+If your PR only touches a single module, you can run just the relevant test
+file directly with `python -m unittest` without needing pytest:
+
+```bash
+# Run a specific test file
+python -m unittest nltk.test.unit.test_tokenize
+
+# Run a specific test class
+python -m unittest nltk.test.unit.test_tokenize.TestTreebankWordDetokenizer
+
+# Run a specific test method
+python -m unittest nltk.test.unit.test_tokenize.TestTreebankWordDetokenizer.test_contractions
+```
+
+If your PR touches a module that has doctests (inline `>>>` examples in
+docstrings), you can run just those doctests with `python -m doctest`:
+
+```bash
+# Run doctests for a single module
+python -m doctest nltk/metrics/distance.py
+
+# Run with verbose output to see each test
+python -m doctest -v nltk/metrics/distance.py
+
+# Run a specific doctest file from the test suite
+python -m doctest nltk/test/tokenize.doctest
+```
+
+These are faster than running the full test suite and useful for quick
+iteration during development.
 
 
 ## Continuous Integration
 
-**Deprecated:** NLTK uses [Cloudbees](https://nltk.ci.cloudbees.com/) for continuous integration.
+NLTK uses [GitHub Actions](https://github.com/nltk/nltk/actions) for continuous integration.
+See [here](https://docs.github.com/en/actions) for GitHub's documentation.
 
-**Deprecated:** NLTK uses [Travis](https://travis-ci.org/nltk/nltk/) for continuous integration.
-
-NLTK uses [GitHub Actions](https://github.com/nltk/nltk/actions) for continuous integration. See [here](https://docs.github.com/en/actions) for GitHub's documentation.
-
-The [`.github/workflows/ci.yaml`](https://github.com/nltk/nltk/blob/develop/.github/workflows/ci.yaml) file configures the CI:
+The [`.github/workflows/ci.yml`](https://github.com/nltk/nltk/blob/develop/.github/workflows/ci.yml) file configures the CI:
 
  - `on:` section
-   - ensures that this CI is run on code pushes, pull request, or through the GitHub website via a button.
-
- - The `cache_nltk_data` job
-   - performs these steps:
-     - Downloads the `nltk` source code.
-     - Load `nltk_data` via cache.
-       - Otherwise, download all the data packages through `nltk.download('all')`.
-
-  - The `test` job
-    - tests against supported Python versions (`3.10`, `3.11`, `3.12`, `3.13`, `3.14`).
-    - tests on `ubuntu-latest` and `macos-latest`.
-    - relies on the `cache_nltk_data` job to ensure that `nltk_data` is available.
-    - performs these steps:
-      - Downloads the `nltk` source code.
-      - Set up Python using whatever version is being checked in the current execution.
-      - Load module dependencies via cache.
-        - Otherwise, install dependencies via `pip install -U -r requirements-ci.txt`.
-      - Load cached `nltk_data` loaded via `cache_nltk_data`.
-      - Run `pytest --numprocesses auto -rsx nltk/test`.
+   - ensures that this CI is run on code pushes, pull request, or through the GitHub website via `workflow_dispatch`.
 
  - The `pre-commit` job
    - performs these steps:
      - Downloads the `nltk` source code.
-     - Runs pre-commit on all files in the repository. (Similar to `pre-commit run --all-files`)
+     - Runs pre-commit on all files in the repository (black, isort, ruff, pyupgrade).
      - Fails if any hooks performed a change.
 
-#### To test with `tox` locally
+ - The `minimal_download_test` job
+   - verifies that `nltk.download()` works on all platforms (ubuntu, macos, windows).
 
-First setup a new virtual environment, see https://docs.python-guide.org/dev/virtualenvs/
-Then run `tox -e py313`.
+ - The `test` job
+   - tests against supported Python versions (`3.10`, `3.11`, `3.12`, `3.13`, `3.14`).
+   - tests on `ubuntu-latest`, `macos-latest`, and `windows-latest`.
+   - performs these steps:
+     - Downloads the `nltk` source code.
+     - Sets up Python using whatever version is being checked in the current execution.
+     - Installs dependencies via `pip install -r pip-req.txt`.
+     - Downloads `nltk_data`.
+     - Runs `pytest --numprocesses auto -rsx --doctest-modules nltk`.
 
-For example, using `pipenv`:
+#### To run tests locally
 
+Using pytest directly:
+
+```bash
+# Run all tests
+pytest nltk/test
+
+# Run a specific test file
+pytest nltk/test/unit/test_tokenize.py
+
+# Run tests in parallel
+pip install pytest-xdist
+pytest --numprocesses auto nltk/test
 ```
-git clone https://github.com/nltk/nltk.git
-cd nltk
-pipenv install -r pip-req.txt
-pipenv install tox
-tox -e py313
+
+Using tox (to test against a specific Python version):
+
+```bash
+pip install tox
+tox -e py313  # for Python 3.13
 ```
+
+
+## Supported Python Versions
+
+NLTK supports Python `3.10`, `3.11`, `3.12`, `3.13`, and `3.14`.
+See `python_requires` in [setup.py](https://github.com/nltk/nltk/blob/develop/setup.py).
 
 
 # Discussion

@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to the CoreNLP REST API.
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Dmitrijs Milajevs <dimazest@gmail.com>
 #
 # URL: <https://www.nltk.org/>
@@ -8,15 +8,23 @@
 
 import json
 import os
-import re
+import random
 import socket
 import time
 from typing import List, Tuple
 
-from nltk.internals import _java_options, config_java, find_jar_iter, java
+from nltk import redos
+from nltk.internals import (
+    _UNSAFE_OPTION_CHARS,
+    _java_options,
+    config_java,
+    find_jar_iter,
+    java,
+)
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.tag.api import TaggerI
+from nltk.termsec import sanitize_terminal
 from nltk.tokenize.api import TokenizerI
 from nltk.tree import Tree
 
@@ -27,9 +35,261 @@ class CoreNLPServerError(EnvironmentError):
     """Exceptions associated with the Core NLP server."""
 
 
+# The server explains a non-2xx answer in its body (a request that timed out,
+# an exception name, a refused input). That text is the server's own, so it
+# is escaped for the terminal and capped before it enters an exception message.
+_EXPLANATION_BYTES = 2048
+_EXPLANATION_CHARS = 400
+_REASON_CHARS = 120
+_STDERR_TAIL_CHARS = 4000
+
+
+def _one_line(text, limit):
+    """*text* escaped for a single terminal line and cut to *limit* characters."""
+    text = sanitize_terminal(text, single_line=True)
+    if len(text) > limit:
+        text = text[:limit] + "..."
+    return text
+
+
+def _server_explanation(response):
+    """What the server said about a non-2xx answer: the head of the body, decoded
+    with the charset it declared (latin-1 when that is unusable), escaped and
+    capped, with the whole body's size alongside so a truncation is visible."""
+    try:
+        body = response.content or b""
+    except (OSError, ValueError):
+        return "a body that could not be read"
+    head = body[:_EXPLANATION_BYTES]
+    try:
+        text = head.decode(response.encoding or "utf-8", errors="replace")
+    except (LookupError, UnicodeError, TypeError, ValueError):
+        text = head.decode("latin-1")
+    text = _one_line(text.strip(), _EXPLANATION_CHARS)
+    if not text:
+        return f"an empty body ({len(body)} bytes)"
+    return f"'{text}' ({len(body)} bytes)"
+
+
+def _response_error(response):
+    """The error for a non-2xx answer: the status line as ``raise_for_status``
+    words it, then the server's explanation. It is the same ``HTTPError`` type,
+    so a caller catching that (or ``RequestException``) keeps working."""
+    import requests
+
+    status = response.status_code
+    reason = response.reason
+    if isinstance(reason, bytes):
+        reason = reason.decode("iso-8859-1", errors="replace")
+    reason = _one_line(str(reason or ""), _REASON_CHARS)
+    if 400 <= status < 500:
+        kind = "Client Error"
+    elif 500 <= status < 600:
+        kind = "Server Error"
+    else:
+        kind = "Unexpected Status"
+    url = sanitize_terminal(str(response.url), single_line=True)
+    message = (
+        f"{status} {kind}: {reason} for url: {url}; "
+        f"the CoreNLP server said: {_server_explanation(response)}"
+    )
+    return requests.exceptions.HTTPError(message, response=response)
+
+
+# corenlp_options allowlist (CWE-88 / CWE-22 / CWE-502): these are the CoreNLP
+# server's OWN flags (not JVM launcher flags), many taking a filesystem path or
+# loading a serialized model, so forwarding them unchecked is a read/write escape.
+#
+# An allowlist (mirroring java_options) passes only operational flags whose values
+# validate to a safe shape; any other flag, path-bearing or unknown, is refused
+# without enumeration. A caller needing an unlisted flag runs the JVM itself.
+
+# CoreNLP annotator names permitted as an -annotators / -preload value.
+_CORENLP_ANNOTATORS = frozenset(
+    {
+        "tokenize",
+        "cleanxml",
+        "ssplit",
+        "mwt",
+        "docdate",
+        "pos",
+        "lemma",
+        "ner",
+        "regexner",
+        "tokensregex",
+        "entitymentions",
+        "parse",
+        "depparse",
+        "coref",
+        "dcoref",
+        "sentiment",
+        "kbp",
+        "quote",
+        "natlog",
+        "openie",
+        "entitylink",
+        "relation",
+        "gender",
+        "truecase",
+        "udfeats",
+        "sutime",
+    }
+)
+
+# Value shapes. Anchored and bounded so nothing rides a prefix. A token value must
+# NOT start with '-' (a value that looks like a flag could be re-read as one by the
+# server arg parser, i.e. option smuggling); only -maxCharLength may be negative.
+_CORENLP_UINT_RE = redos.compile(r"\A[0-9]{1,7}\Z")
+# Only -maxCharLength takes a signed value (CoreNLP reads any non-positive number
+# as "no limit"); a lone leading '-' before digits cannot smuggle a flag.
+_CORENLP_SIGNED_INT_RE = redos.compile(r"\A-?[0-9]{1,7}\Z")
+_CORENLP_TOKEN_RE = redos.compile(r"\A[A-Za-z0-9_.][A-Za-z0-9._-]{0,63}\Z")
+_CORENLP_URI_RE = redos.compile(r"\A/[A-Za-z0-9._/-]{0,127}\Z")
+_CORENLP_BOOL = frozenset({"true", "false"})
+
+# Allowlisted flags (compared case-folded), grouped by the value they take.
+_CORENLP_INT_FLAGS = frozenset(
+    {"-port", "-status_port", "-timeout", "-threads", "-maxcharlength"}
+)
+_CORENLP_ANNOTATOR_FLAGS = frozenset({"-annotators", "-preload"})
+_CORENLP_TOKEN_FLAGS = frozenset({"-server_id", "-username", "-password"})
+_CORENLP_URI_FLAGS = frozenset({"-uricontext"})
+_CORENLP_BARE_FLAGS = frozenset({"-quiet", "-strict", "-ssl", "-stanford", "-srparser"})
+_CORENLP_VALUE_FLAGS = (
+    _CORENLP_INT_FLAGS
+    | _CORENLP_ANNOTATOR_FLAGS
+    | _CORENLP_TOKEN_FLAGS
+    | _CORENLP_URI_FLAGS
+)
+
+_CORENLP_REFUSAL = (
+    "corenlp_options %s: %r. Only a minimal allowlist of operational "
+    "StanfordCoreNLPServer flags with validated values is accepted; path-bearing "
+    "flags (-serverProperties, -props, -key, -outputDirectory, -<annotator>.model "
+    "and the like), argument files and unknown flags are refused so a populated "
+    "option cannot read or write files outside the data roots or load an "
+    "attacker-controlled serialized model (CWE-88, CWE-22, CWE-502)."
+)
+
+
+def _corenlp_reject(entry, why):
+    raise ValueError(_CORENLP_REFUSAL % (why, entry))
+
+
+def _corenlp_check_scalar(entry):
+    """Reject a non-string (including a str subclass, whose methods could lie),
+    an empty string, or one carrying anything outside
+    printable ASCII (whitespace, a C0/C1 control, DEL, or any non-ASCII byte such
+    as a fullwidth digit, homoglyph, bidi override or zero-width character), a
+    shell metacharacter, or a leading Java argument-file prefix.
+
+    Every allowlisted flag and value is plain printable ASCII, so restricting to
+    that here is a name-agnostic gate that closes unicode-confusable and control
+    character bypasses before any per-flag value shape is even consulted."""
+    if type(entry) is not str or not entry:
+        _corenlp_reject(entry, "contains a non-string or empty entry")
+    if any(
+        c.isspace() or ord(c) < 0x20 or ord(c) > 0x7E or c in _UNSAFE_OPTION_CHARS
+        for c in entry
+    ):
+        _corenlp_reject(
+            entry,
+            "contains whitespace, a control character, a non-ASCII or a shell "
+            "metacharacter",
+        )
+    if entry.startswith("@"):
+        _corenlp_reject(entry, "is a Java argument-file reference")
+
+
+def _validate_corenlp_options(options):
+    """Return *options* unchanged when every entry is an allowlisted CoreNLP server
+    flag with a safe value; raise ValueError otherwise (CWE-88/CWE-22/CWE-502).
+
+    Handles both ``-flag value`` (two tokens) and ``-flag=value`` forms, folds the
+    flag name case, and validates each value: integers for port/timeout/threads,
+    a known-annotator comma list for -annotators/-preload, a plain token for
+    -server_id/-username/-password, a safe uri path for -uriContext, and an
+    optional true/false for the bare flags. A value that itself looks like a flag
+    (option smuggling, e.g. ``-port -serverProperties``) fails its value check.
+    """
+    # Hard-reject str subclasses (and non-str): a subclass could override
+    # startswith/split/lower/__iter__ to validate benign while its real chars
+    # smuggle a hostile flag into the JVM argv (CWE-88). Refuse, do not coerce.
+    opts = list(options)
+    for entry in opts:
+        if type(entry) is not str:
+            _corenlp_reject(entry, "is not a plain str (str subclasses are refused)")
+    i, n = 0, len(opts)
+    while i < n:
+        raw = opts[i]
+        _corenlp_check_scalar(raw)
+        if raw.startswith("-") and "=" in raw:
+            name, inline = raw.split("=", 1)
+        else:
+            name, inline = raw, None
+        flag = name.lower()
+        if not flag.startswith("-"):
+            _corenlp_reject(raw, "expected a flag but found a bare value")
+
+        if flag in _CORENLP_VALUE_FLAGS:
+            if inline is not None:
+                val, step = inline, 1
+            elif i + 1 < n:
+                val, step = opts[i + 1], 2
+            else:
+                _corenlp_reject(raw, "is missing its required value")
+            _corenlp_check_scalar(val)
+            if flag in _CORENLP_INT_FLAGS:
+                # -maxCharLength takes a signed int only in the inline -flag=-1 form;
+                # as two tokens the "-1" reads as a separate option (the smuggling
+                # shape we refuse), so the two-token form must be non-negative.
+                if flag == "-maxcharlength" and inline is not None:
+                    if not _CORENLP_SIGNED_INT_RE.match(val):
+                        _corenlp_reject(raw, "requires an integer, got %r" % val)
+                elif not _CORENLP_UINT_RE.match(val):
+                    _corenlp_reject(
+                        raw, "requires a non-negative integer, got %r" % val
+                    )
+                elif flag in ("-port", "-status_port") and not 1 <= int(val) <= 65535:
+                    _corenlp_reject(raw, "port is out of range 1..65535: %r" % val)
+            elif flag in _CORENLP_ANNOTATOR_FLAGS:
+                toks = val.split(",")
+                if not val or any(t.lower() not in _CORENLP_ANNOTATORS for t in toks):
+                    _corenlp_reject(raw, "has a token that is not a known annotator")
+            elif flag in _CORENLP_TOKEN_FLAGS:
+                if not _CORENLP_TOKEN_RE.match(val):
+                    _corenlp_reject(raw, "value is not a plain token: %r" % val)
+            elif flag in _CORENLP_URI_FLAGS:
+                # ".." is a traversal segment and a leading "//" is a network-path
+                # reference (a host to the URL parser); no real context path has
+                # either, so refuse both on top of the safe-charset check.
+                if not _CORENLP_URI_RE.match(val) or ".." in val or "//" in val:
+                    _corenlp_reject(raw, "value is not a safe uri path: %r" % val)
+            i += step
+            continue
+
+        if flag in _CORENLP_BARE_FLAGS:
+            if inline is not None:
+                if inline.lower() not in _CORENLP_BOOL:
+                    _corenlp_reject(raw, "bare flag accepts only true or false")
+                i += 1
+            elif (
+                i + 1 < n
+                and isinstance(opts[i + 1], str)
+                and opts[i + 1].lower() in _CORENLP_BOOL
+            ):
+                i += 2
+            else:
+                i += 1
+            continue
+
+        _corenlp_reject(raw, "is not an allowlisted flag")
+    return opts
+
+
 def try_port(port=0):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(("", port))
+    sock.bind(("localhost", port))
 
     p = sock.getsockname()[1]
     sock.close()
@@ -52,6 +312,9 @@ class CoreNLPServer:
     ):
         if corenlp_options is None:
             corenlp_options = ["-preload", "tokenize,ssplit,pos,lemma,parse,depparse"]
+        # Reject a hostile corenlp_options before doing any other work; start()
+        # re-validates the final list (including the port we append) at the sink.
+        _validate_corenlp_options(corenlp_options)
 
         jars = list(
             find_jar_iter(
@@ -66,7 +329,9 @@ class CoreNLPServer:
         )
 
         # find the most recent code and model jar
-        stanford_jar = max(jars, key=lambda model_name: re.match(self._JAR, model_name))
+        stanford_jar = max(
+            jars, key=lambda model_name: redos.match(self._JAR, model_name)
+        )
 
         if port is None:
             try:
@@ -90,7 +355,7 @@ class CoreNLPServer:
                 verbose=verbose,
                 is_regex=True,
             ),
-            key=lambda model_name: re.match(self._MODEL_JAR_PATTERN, model_name),
+            key=lambda model_name: redos.match(self._MODEL_JAR_PATTERN, model_name),
         )
 
         self.verbose = verbose
@@ -117,8 +382,11 @@ class CoreNLPServer:
 
         cmd = ["edu.stanford.nlp.pipeline.StanfordCoreNLPServer"]
 
+        # Re-validate corenlp_options at the sink (not only at construction), so a
+        # reassignment cannot slip an unchecked flag past: a path-bearing or unknown
+        # flag is refused (CWE-88 / CWE-22 / CWE-502).
         if self.corenlp_options:
-            cmd.extend(self.corenlp_options)
+            cmd.extend(_validate_corenlp_options(self.corenlp_options))
 
         # Configure java.
         default_options = " ".join(_java_options)
@@ -136,21 +404,24 @@ class CoreNLPServer:
             # Return java configurations to their default values.
             config_java(options=default_options, verbose=self.verbose)
 
-        # Check that the server is istill running.
-        returncode = self.popen.poll()
-        if returncode is not None:
-            _, stderrdata = self.popen.communicate()
-            raise CoreNLPServerError(
-                returncode,
-                "Could not start the server. "
-                "The error was: {}".format(stderrdata.decode("ascii")),
-            )
+        self._raise_if_exited()
 
         for i in range(30):
+            # Jittered backoff so retries don't all land on the same tick; the
+            # first attempt fires immediately.
+            if i > 0:
+                time.sleep(1 + random.uniform(0, 0.5))
+            self._raise_if_exited()
+
             try:
-                response = requests.get(requests.compat.urljoin(self.url, "live"))
-            except requests.exceptions.ConnectionError:
-                time.sleep(1)
+                response = requests.get(
+                    requests.compat.urljoin(self.url, "live"), timeout=5
+                )
+            except (
+                requests.exceptions.ConnectionError,
+                requests.exceptions.Timeout,
+            ):
+                pass
             else:
                 if response.ok:
                     break
@@ -158,15 +429,49 @@ class CoreNLPServer:
             raise CoreNLPServerError("Could not connect to the server.")
 
         for i in range(60):
+            # Jittered backoff so retries don't all land on the same tick; the
+            # first attempt fires immediately.
+            if i > 0:
+                time.sleep(1 + random.uniform(0, 0.5))
+            self._raise_if_exited()
+
             try:
-                response = requests.get(requests.compat.urljoin(self.url, "ready"))
-            except requests.exceptions.ConnectionError:
-                time.sleep(1)
+                response = requests.get(
+                    requests.compat.urljoin(self.url, "ready"), timeout=5
+                )
+            except (
+                requests.exceptions.ConnectionError,
+                requests.exceptions.Timeout,
+            ):
+                pass
             else:
                 if response.ok:
                     break
         else:
             raise CoreNLPServerError("The server is not ready.")
+
+    def _raise_if_exited(self):
+        # A JVM that died after launch (no runtime, out of memory, a crash
+        # loading models) is reported with its exit code at once, not after the
+        # readiness loops time out on a port nothing will ever answer.
+        returncode = self.popen.poll()
+        if returncode is not None:
+            _, stderrdata = self.popen.communicate()
+            # java() runs Popen with universal_newlines=True, so communicate()
+            # already returns text; only decode a bytes-returning path.
+            if isinstance(stderrdata, bytes):
+                stderrdata = stderrdata.decode("utf-8", errors="replace")
+            if stderrdata is None:
+                stderrdata = "(stderr was redirected by the caller; read it there)"
+            # The JVM's output is the tool's, not ours: escaped for the terminal
+            # and cut to its tail, which is where a Java stack trace ends.
+            stderrdata = sanitize_terminal(stderrdata)
+            if len(stderrdata) > _STDERR_TAIL_CHARS:
+                stderrdata = "..." + stderrdata[-_STDERR_TAIL_CHARS:]
+            raise CoreNLPServerError(
+                returncode,
+                f"Could not start the server. The error was: {stderrdata}",
+            )
 
     def stop(self):
         self.popen.terminate()
@@ -271,7 +576,10 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
             timeout=timeout,
         )
 
-        response.raise_for_status()
+        # Any answer but a 2xx is a failure to annotate, and the body is where
+        # the server says why (a timeout, an exception, a refused input).
+        if not 200 <= response.status_code < 300:
+            raise _response_error(response)
 
         return response.json(strict=self.strict_json)
 
@@ -383,7 +691,7 @@ class GenericCoreNLPParser(ParserI, TokenizerI, TaggerI):
 
         return [sentences[0] for sentences in self.raw_tag_sents(sentences, properties)]
 
-    def tag(self, sentence: str, properties=None) -> List[Tuple[str, str]]:
+    def tag(self, sentence: str, properties=None) -> list[tuple[str, str]]:
         """
         Tag a list of tokens.
 

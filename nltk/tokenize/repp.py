@@ -9,12 +9,15 @@
 
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
 
-from nltk.data import ZipFilePathPointer
-from nltk.internals import find_dir
+from nltk import redos
+from nltk.data import ZipFilePathPointer, make_staging_dir
+from nltk.internals import _tool_location, absolute_tool_dir, find_dir
+from nltk.pathsec import TrustError, has_line_unsafe_char, spawn_trusted
 from nltk.tokenize.api import TokenizerI
 
 
@@ -53,8 +56,6 @@ class ReppTokenizer(TokenizerI):
 
     def __init__(self, repp_dir, encoding="utf8"):
         self.repp_dir = self.find_repptokenizer(repp_dir)
-        # Set a directory to store the temporary files.
-        self.working_dir = tempfile.gettempdir()
         # Set an encoding for the input strings.
         self.encoding = encoding
 
@@ -78,22 +79,41 @@ class ReppTokenizer(TokenizerI):
         :return: A list of tuples of tokens
         :rtype: iter(tuple(str))
         """
-        with tempfile.NamedTemporaryFile(
-            prefix="repp_input.", dir=self.working_dir, mode="w", delete=False
-        ) as input_file:
-            # Write sentences to temporary input file.
-            for sent in sentences:
-                input_file.write(str(sent) + "\n")
-            input_file.close()
-            # Generate command to run REPP.
-            cmd = self.generate_repp_command(input_file.name)
-            # Decode the stdout and strips the ending newline.
-            repp_output = self._execute(cmd).decode(self.encoding).strip()
-            for tokenized_sent in self.parse_repp_outputs(repp_output):
-                if not keep_token_positions:
-                    # Removes token position information.
-                    tokenized_sent, starts, ends = zip(*tokenized_sent)
-                yield tokenized_sent
+        # Stage the scratch input inside an allowed nltk.data root, never the
+        # shared system temp dir (world writable, not a pathsec root; CWE-377/378),
+        # and remove it afterwards so the file does not leak (CWE-459). Mirrors
+        # the make_staging_dir migration already applied to boxer/megam/tadm.
+        staging_dir = make_staging_dir(prefix="repp-")
+        try:
+            with tempfile.NamedTemporaryFile(
+                prefix="repp_input.", dir=staging_dir, mode="w", delete=False
+            ) as input_file:
+                # REPP reads one sentence per line; a control character or Unicode
+                # line/paragraph separator in a sentence injects an extra input
+                # line (or a NUL truncates it), so the token stream desynchronises
+                # from the sentence list (CWE-93).
+                for sent in sentences:
+                    text = str(sent)
+                    # REPP splits its stdout on newlines only, so a literal TAB is
+                    # ordinary in-line whitespace here and stays allowed.
+                    if has_line_unsafe_char(text, allow_tab=True):
+                        raise ValueError(
+                            "REPP input sentences must not contain control "
+                            "characters or line separators (newline, NUL, DEL, ...)."
+                        )
+                    input_file.write(text + "\n")
+                input_file.close()
+                # Generate command to run REPP.
+                cmd = self.generate_repp_command(input_file.name)
+                # Decode the stdout and strips the ending newline.
+                repp_output = self._execute(cmd).decode(self.encoding).strip()
+        finally:
+            shutil.rmtree(staging_dir, ignore_errors=True)
+        for tokenized_sent in self.parse_repp_outputs(repp_output):
+            if not keep_token_positions:
+                # Removes token position information.
+                tokenized_sent, starts, ends = zip(*tokenized_sent)
+            yield tokenized_sent
 
     def generate_repp_command(self, inputfilename):
         """
@@ -110,7 +130,19 @@ class ReppTokenizer(TokenizerI):
 
     @staticmethod
     def _execute(cmd):
-        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        # Route the REPP binary through the trusted-exec chokepoint: verify it is
+        # on a path no other local user can swap, refuse a shell, and scrub the
+        # loader environment before exec (CWE-426/427/732).
+        try:
+            p = spawn_trusted(
+                cmd[0], cmd[1:], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
+        except TrustError as e:
+            raise LookupError(
+                f"Refusing to run the REPP tokenizer {cmd[0]!r}: it is not on a "
+                "trusted path. Install REPP where only you (or root) can write "
+                f"({e})."
+            ) from e
         stdout, stderr = p.communicate()
         return stdout
 
@@ -126,7 +158,7 @@ class ReppTokenizer(TokenizerI):
         :return: an iterable of the tokenized sentences as tuples of strings
         :rtype: iter(tuple)
         """
-        line_regex = re.compile(r"^\((\d+), (\d+), (.+)\)$", re.MULTILINE)
+        line_regex = redos.compile(r"^\((\d+), (\d+), (.+)\)$", re.MULTILINE)
         for section in repp_output.split("\n\n"):
             words_with_positions = [
                 (token, int(start), int(end))
@@ -139,11 +171,23 @@ class ReppTokenizer(TokenizerI):
         """
         A module to find REPP tokenizer binary and its *repp.set* config file.
         """
-        if os.path.exists(repp_dirname):  # If a full path is given.
+        # A plain str (find_dir() requires one) that passes pathsec's shared
+        # name checks: no NUL, control character, '..', URL, UNC or '~'.
+        repp_dirname = _tool_location(repp_dirname, "REPP directory")
+        # Only accept an explicit *absolute* directory as-is. A relative name must
+        # not be resolved against the current working directory: an attacker able
+        # to write there could plant a ``<name>/src/repp`` executable and have it
+        # run -- the command path contains a separator, so subprocess executes it
+        # directly -- overriding a trusted ``REPP_TOKENIZER`` (an untrusted search
+        # path, CWE-426). A relative name is resolved through ``REPP_TOKENIZER``.
+        if os.path.isabs(repp_dirname) and os.path.isdir(repp_dirname):
             _repp_dir = repp_dirname
         else:  # Try to find path to REPP directory in environment variables.
             _repp_dir = find_dir(repp_dirname, env_vars=("REPP_TOKENIZER",))
-        # Checks for the REPP binary and erg/repp.set config file.
-        assert os.path.exists(_repp_dir + "/src/repp")
-        assert os.path.exists(_repp_dir + "/erg/repp.set")
+        # whichever source supplied it: absolute, no '..' (spawned as
+        # <dir>/src/repp), and holding the binary and the erg/repp.set config
+        _repp_dir = absolute_tool_dir(_repp_dir, "REPP")
+        for needed in ("src/repp", "erg/repp.set"):
+            if not os.path.isfile(os.path.join(_repp_dir, *needed.split("/"))):
+                raise LookupError(f"REPP directory {_repp_dir!r} has no {needed}")
         return _repp_dir

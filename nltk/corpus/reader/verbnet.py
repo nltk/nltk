@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Verbnet Corpus Reader
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -12,11 +12,15 @@ For details about VerbNet see:
 https://verbs.colorado.edu/~mpalmer/projects/verbnet.html
 """
 
-import re
 import textwrap
 from collections import defaultdict
 
+from nltk import redos
 from nltk.corpus.reader.xmldocs import XMLCorpusReader
+
+#: Bound recursion over nested VNSUBCLASS elements so a deeply nested class file
+#: raises ValueError instead of an uncaught RecursionError (CWE-674).
+MAX_XML_DEPTH = 500
 
 
 class VerbnetCorpusReader(XMLCorpusReader):
@@ -33,8 +37,26 @@ class VerbnetCorpusReader(XMLCorpusReader):
     https://verbs.colorado.edu/~mpalmer/projects/verbnet.html
     """
 
+    #: Supported VerbNet versions.
+    SUPPORTED_VERSIONS = ("2.1", "3.2", "3.3")
+
     # No unicode encoding param, since the data files are all XML.
-    def __init__(self, root, fileids, wrap_etree=False):
+    def __init__(self, root, fileids, wrap_etree=False, version="2.1"):
+        """
+        :param root: The root directory for the corpus.
+        :param fileids: A list or regexp specifying the fileids in the corpus.
+        :param wrap_etree: If true, wrap the ElementTree in an ElementWrapper.
+        :param version: The VerbNet version string (default ``"2.1"``).
+            NLTK ships VerbNet 2.1 via ``nltk.download('verbnet')``.
+            Use ``"3.2"`` or ``"3.3"`` when pointing *root* at a local
+            copy of VerbNet 3.2 or 3.3.
+        """
+        if version not in self.SUPPORTED_VERSIONS:
+            raise ValueError(
+                f"VerbNet version {version!r} is not supported. "
+                f"Supported versions: {self.SUPPORTED_VERSIONS}"
+            )
+        self._version = version
         XMLCorpusReader.__init__(self, root, fileids, wrap_etree)
 
         self._lemma_to_class = defaultdict(list)
@@ -57,13 +79,18 @@ class VerbnetCorpusReader(XMLCorpusReader):
         # runs 2-30 times faster.
         self._quick_index()
 
-    _LONGID_RE = re.compile(r"([^\-\.]*)-([\d+.\-]+)$")
+    @property
+    def version(self):
+        """The VerbNet version string for this corpus instance."""
+        return self._version
+
+    _LONGID_RE = redos.compile(r"([A-Za-z_]+)-([\d.-]+)$")
     """Regular expression that matches (and decomposes) longids"""
 
-    _SHORTID_RE = re.compile(r"[\d+.\-]+$")
+    _SHORTID_RE = redos.compile(r"[\d.\-]+$")
     """Regular expression that matches shortids"""
 
-    _INDEX_RE = re.compile(
+    _INDEX_RE = redos.compile(
         r'<MEMBER name="\??([^"]+)" wn="([^"]*)"[^>]+>|' r'<VNSUBCLASS ID="([^"]+)"/?>'
     )
     """Regular expression used by ``_index()`` to quickly scan the corpus
@@ -266,8 +293,15 @@ class VerbnetCorpusReader(XMLCorpusReader):
         for fileid in self._fileids:
             self._index_helper(self.xml(fileid), fileid)
 
-    def _index_helper(self, xmltree, fileid):
+    def _index_helper(self, xmltree, fileid, _depth=0, max_depth=None):
         """Helper for ``_index()``"""
+        if max_depth is None:
+            max_depth = MAX_XML_DEPTH
+        if _depth > max_depth:
+            raise ValueError(
+                f"VNSUBCLASS nesting exceeds MAX_XML_DEPTH ({max_depth}); "
+                "the input may be adversarially deep."
+            )
         vnclass = xmltree.get("ID")
         self._class_to_fileid[vnclass] = fileid
         self._shortid_to_longid[self.shortid(vnclass)] = vnclass
@@ -276,7 +310,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
             for wn in member.get("wn", "").split():
                 self._wordnet_to_class[wn].append(vnclass)
         for subclass in xmltree.findall("SUBCLASSES/VNSUBCLASS"):
-            self._index_helper(subclass, fileid)
+            self._index_helper(subclass, fileid, _depth + 1, max_depth)
 
     def _quick_index(self):
         """

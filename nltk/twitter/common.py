@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Twitter client
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Lorenzo Rubio <lrnzcig@gmail.com>
 # URL: <https://www.nltk.org/>
@@ -12,9 +12,10 @@ the `twython` library to have been installed.
 """
 import csv
 import gzip
-import json
 
+from nltk.csvsec import sanitize_csv_field
 from nltk.internals import deprecated
+from nltk.jsontags import safe_json_loads
 
 HIER_SEPARATOR = "."
 
@@ -58,30 +59,53 @@ def _get_key_value_composed(field):
     return key, value
 
 
-def _get_entity_recursive(json, entity):
-    if not json:
-        return None
-    elif isinstance(json, dict):
-        for key, value in json.items():
-            if key == entity:
-                return value
-            # 'entities' and 'extended_entities' are wrappers in Twitter json
-            # structure that contain other Twitter objects. See:
-            # https://dev.twitter.com/overview/api/entities-in-twitter-objects
+# 'entities' and 'extended_entities' are wrappers in Twitter json structure
+# that contain other Twitter objects. See:
+# https://dev.twitter.com/overview/api/entities-in-twitter-objects
+_ENTITY_WRAPPERS = ("entities", "extended_entities")
 
-            if key == "entities" or key == "extended_entities":
-                candidate = _get_entity_recursive(value, entity)
-                if candidate is not None:
-                    return candidate
-        return None
-    elif isinstance(json, list):
-        for item in json:
-            candidate = _get_entity_recursive(item, entity)
-            if candidate is not None:
-                return candidate
-        return None
-    else:
-        return None
+
+class _Match:
+    """A direct hit found by the entity walk, carrying the value to return."""
+
+    __slots__ = ("value",)
+
+    def __init__(self, value):
+        self.value = value
+
+
+def _get_entity_recursive(json, entity):
+    """Return the first value keyed *entity* in a pre-order walk of *json*.
+
+    A dict is searched key by key in order; a hit returns its value at once,
+    and a wrapper key (see ``_ENTITY_WRAPPERS``) is descended before the keys
+    after it. A list is searched item by item. A hit whose value is ``None``
+    ends the search of that object and reads as "not here" to the enclosing
+    one. The walk keeps its own stack rather than recursing: a tweet line may
+    nest its wrappers right up to the JSON depth bound, which is above the
+    interpreter's recursion limit, so a hostile line must not be able to turn
+    the walk into a ``RecursionError`` (CWE-674).
+    """
+    stack = [json]
+    while stack:
+        node = stack.pop()
+        if type(node) is _Match:
+            return node.value
+        if not node:
+            continue
+        if isinstance(node, dict):
+            steps = []
+            for key, value in node.items():
+                if key == entity:
+                    if value is not None:
+                        steps.append(_Match(value))
+                    break
+                if key in _ENTITY_WRAPPERS:
+                    steps.append(value)
+            stack.extend(reversed(steps))
+        elif isinstance(node, list):
+            stack.extend(reversed(node))
+    return None
 
 
 def json2csv(
@@ -120,12 +144,13 @@ def json2csv(
     """
     (writer, outf) = _outf_writer(outfile, encoding, errors, gzip_compress)
     # write the list of fields as header
-    writer.writerow(fields)
+    writer.writerow([sanitize_csv_field(c) for c in fields])
     # process the file
     for line in fp:
-        tweet = json.loads(line)
+        # Untrusted tweet line: bound size and nesting depth before parsing.
+        tweet = safe_json_loads(line, context="twitter.json2csv")
         row = extract_fields(tweet, fields)
-        writer.writerow(row)
+        writer.writerow([sanitize_csv_field(c) for c in row])
     outf.close()
 
 
@@ -137,9 +162,13 @@ def outf_writer_compat(outfile, encoding, errors, gzip_compress=False):
 
 def _outf_writer(outfile, encoding, errors, gzip_compress=False):
     if gzip_compress:
-        outf = gzip.open(outfile, "wt", newline="", encoding=encoding, errors=errors)
+        outf = gzip.open(
+            outfile, "wt", newline="", encoding=encoding, errors=errors
+        )  # sandboxed-open ok: operator output path
     else:
-        outf = open(outfile, "w", newline="", encoding=encoding, errors=errors)
+        outf = open(
+            outfile, "w", newline="", encoding=encoding, errors=errors
+        )  # sandboxed-open ok: operator output path
     writer = csv.writer(outf)
     return (writer, outf)
 
@@ -196,9 +225,10 @@ def json2csv_entities(
 
     (writer, outf) = _outf_writer(outfile, encoding, errors, gzip_compress)
     header = get_header_field_list(main_fields, entity_type, entity_fields)
-    writer.writerow(header)
+    writer.writerow([sanitize_csv_field(c) for c in header])
     for line in tweets_file:
-        tweet = json.loads(line)
+        # Untrusted tweet line: bound size and nesting depth before parsing.
+        tweet = safe_json_loads(line, context="twitter.json2csv_entities")
         if _is_composed_key(entity_type):
             key, value = _get_key_value_composed(entity_type)
             object_json = _get_entity_recursive(tweet, key)
@@ -262,9 +292,9 @@ def _write_to_file(object_fields, items, entity_fields, writer):
                     )
                 )
             row += [json_dict[vd]]
-        writer.writerow(row)
+        writer.writerow([sanitize_csv_field(c) for c in row])
         return
     # in general it is a list
     for item in items:
         row = object_fields + extract_fields(item, entity_fields)
-        writer.writerow(row)
+        writer.writerow([sanitize_csv_field(c) for c in row])

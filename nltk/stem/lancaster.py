@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Stemmers
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Tomcavage <stomcava@law.upenn.edu>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -9,9 +9,15 @@
 A word stemmer based on the Lancaster (Paice/Husk) stemming algorithm.
 Paice, Chris D. "Another Stemmer." ACM SIGIR Forum 24.3 (1990): 56-61.
 """
-import re
 
+from nltk import redos
 from nltk.stem.api import StemmerI
+
+#: Longest token the stemmer will process. The rule loop scans the word once per
+#: pass (``__getLastLetter``) and a chainable ``>`` rule can run one pass per two
+#: characters, so a crafted token is O(len**2) (CWE-770). No real word approaches
+#: this, so an over-long token is returned unstemmed rather than pinning a CPU.
+MAX_WORD_LEN = 1000
 
 
 class LancasterStemmer(StemmerI):
@@ -188,7 +194,7 @@ class LancasterStemmer(StemmerI):
         """
         # If there is no argument for the function, use class' own rule tuple.
         rule_tuple = rule_tuple if rule_tuple else self._rule_tuple
-        valid_rule = re.compile(r"^[a-z]+\*?\d[a-z]*[>\.]?$")
+        valid_rule = redos.compile(r"^[a-z]+\*?\d[a-z]*[>\.]?$")
         # Empty any old rules from the rule set before adding new ones
         self.rule_dictionary = {}
 
@@ -207,6 +213,10 @@ class LancasterStemmer(StemmerI):
         word = word.lower()
         word = self.__stripPrefix(word) if self._strip_prefix else word
 
+        # An over-long token makes __doStemming O(len**2); leave it unstemmed.
+        if len(word) > MAX_WORD_LEN:
+            return word
+
         # Save a copy of the original word
         intact_word = word
 
@@ -219,7 +229,7 @@ class LancasterStemmer(StemmerI):
     def __doStemming(self, word, intact_word):
         """Perform the actual word stemming"""
 
-        valid_rule = re.compile(r"^([a-z]+)(\*?)(\d)([a-z]*)([>\.]?)$")
+        valid_rule = redos.compile(r"^([a-z]+)(\*?)(\d)([a-z]*)([>\.]?)$")
 
         proceed = True
 
@@ -275,7 +285,7 @@ class LancasterStemmer(StemmerI):
                                     proceed = False
                                 break
                 # If no rules apply, the word doesn't need any more stemming
-                if rule_was_applied == False:
+                if not rule_was_applied:
                     proceed = False
         return word
 

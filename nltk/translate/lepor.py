@@ -1,6 +1,6 @@
 # Natural Language Toolkit: LEPOR Score
 #
-# Copyright (C) 2001-2023 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Ikram Ul Haq (ulhaqi12)
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -10,12 +10,22 @@
 import math
 import re
 import sys
-from typing import Callable, List
+from collections import defaultdict
+from collections.abc import Callable
+from typing import List
 
 import nltk
 
+#: Work budget for ``alignment``: the total number of candidate reference
+#: positions it may inspect. A token repeated R times yields R candidates
+#: inspected R times, so a same-token sentence is O(len**2) (CWE-770) even though
+#: the earlier fix made per-token *lookup* O(1). Bounding the summed candidate
+#: count (not the raw length) caps that quadratic while leaving genuinely linear
+#: large inputs -- many *distinct* tokens -- untouched. 4M ~= 0.1s of matching.
+MAX_LEPOR_ALIGN_WORK = 4_000_000
 
-def length_penalty(reference: List[str], hypothesis: List[str]) -> float:
+
+def length_penalty(reference: list[str], hypothesis: list[str]) -> float:
     """
     This function calculates the length penalty(LP) for the LEPOR metric, which is defined to embrace the penaltyvfor
     both longer and shorter hypothesis compared with the reference translations.
@@ -41,7 +51,7 @@ def length_penalty(reference: List[str], hypothesis: List[str]) -> float:
         return math.exp(1 - (hyp_len / ref_len))
 
 
-def alignment(ref_tokens: List[str], hyp_tokens: List[str]):
+def alignment(ref_tokens: list[str], hyp_tokens: list[str]):
     """
     This function computes the context-dependent n-gram word alignment tasks that
     takes into account the surrounding context (neighbouring words) of the potential
@@ -63,23 +73,41 @@ def alignment(ref_tokens: List[str], hyp_tokens: List[str]):
     hyp_len = len(hyp_tokens)
     ref_len = len(ref_tokens)
 
+    # Pre-index every reference position by token, in ascending order. Each
+    # hypothesis token can then be matched in O(1) instead of rescanning the
+    # whole reference with ``count``/``index`` once per token, which made the
+    # aligner O(len(ref) * len(hyp)) -- quadratic on large low-overlap inputs.
+    ref_positions = defaultdict(list)
+    for ref_index, ref_token in enumerate(ref_tokens):
+        ref_positions[ref_token].append(ref_index)
+
+    # Bound the summed candidate count: this is exactly the quadratic term a
+    # highly-repeated token drives (CWE-770). Distinct-token inputs stay linear.
+    align_work = 0
+
     for hyp_index, hyp_token in enumerate(hyp_tokens):
+        # Every reference position of this token, in ascending order (same as
+        # the previous ``[i for i, t in enumerate(ref_tokens) if t == token]``).
+        ref_indexes = ref_positions.get(hyp_token, [])
+        align_work += len(ref_indexes)
+        if align_work > MAX_LEPOR_ALIGN_WORK:
+            raise ValueError(
+                f"LEPOR alignment work exceeded {MAX_LEPOR_ALIGN_WORK} candidate "
+                "positions: quadratic in repeated tokens (CWE-770)."
+            )
         # If no match.
-        if ref_tokens.count(hyp_token) == 0:
+        if len(ref_indexes) == 0:
             alignments.append(-1)
         # If only one match.
-        elif ref_tokens.count(hyp_token) == 1:
-            alignments.append(ref_tokens.index(hyp_token))
+        elif len(ref_indexes) == 1:
+            alignments.append(ref_indexes[0])
         # Otherwise, compute the multiple possibilities.
         else:
-            # Keeps an index of where the hypothesis token matches the reference.
-            ref_indexes = [
-                i for i, ref_token in enumerate(ref_tokens) if ref_token == hyp_token
-            ]
-
             # Iterate through the matched tokens, and check if
-            # the one token to the left/right also matches.
-            is_matched = []
+            # the one token to the left/right also matches. Pre-size the flag
+            # list so assigning by index can't raise IndexError when a token
+            # occurs more than once in the reference.
+            is_matched = [False] * len(ref_indexes)
             for ind, ref_index in enumerate(ref_indexes):
                 # The one to the left token also matches.
                 if (
@@ -129,20 +157,13 @@ def alignment(ref_tokens: List[str], hyp_tokens: List[str]):
                         min_index = ref_index
                 alignments.append(min_index)
 
-                for ref_index in ref_indexes:
-                    distance = abs(hyp_index - ref_index)
-                    if distance > min_distance:
-                        min_distance = distance
-                        min_index = ref_index
-                alignments.append(min_index)
-
     # The alignments are one indexed to keep track of the ending slice pointer of the matching ngrams.
     alignments = [a + 1 for a in alignments if a != -1]
     return alignments
 
 
 def ngram_positional_penalty(
-    ref_tokens: List[str], hyp_tokens: List[str]
+    ref_tokens: list[str], hyp_tokens: list[str]
 ) -> (float, float):
     """
     This function calculates the n-gram position difference penalty (NPosPenal) described in the LEPOR paper.
@@ -212,12 +233,12 @@ def harmonic(
 
 
 def sentence_lepor(
-    references: List[str],
+    references: list[str],
     hypothesis: str,
     alpha: float = 1.0,
     beta: float = 1.0,
-    tokenizer: Callable[[str], List[str]] = None,
-) -> List[float]:
+    tokenizer: Callable[[str], list[str]] = None,
+) -> list[float]:
     """
     Calculate LEPOR score a sentence from Han, A. L.-F. (2017).
     LEPOR: An Augmented Machine Translation Evaluation Metric. https://arxiv.org/abs/1703.08748v2
@@ -279,12 +300,12 @@ def sentence_lepor(
 
 
 def corpus_lepor(
-    references: List[List[str]],
-    hypothesis: List[str],
+    references: list[list[str]],
+    hypothesis: list[str],
     alpha: float = 1.0,
     beta: float = 1.0,
-    tokenizer: Callable[[str], List[str]] = None,
-) -> List[List[float]]:
+    tokenizer: Callable[[str], list[str]] = None,
+) -> list[list[float]]:
     """
     Calculate LEPOR score for list of sentences from Han, A. L.-F. (2017).
     LEPOR: An Augmented Machine Translation Evaluation Metric. https://arxiv.org/abs/1703.08748v2

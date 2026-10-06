@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Interface to the Stanford Part-of-speech and Named-Entity Taggers
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Nitin Madnani <nmadnani@ets.org>
 #         Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
 # URL: <https://www.nltk.org/>
@@ -22,7 +22,12 @@ import warnings
 from abc import abstractmethod
 from subprocess import PIPE
 
-from nltk.internals import _java_options, config_java, find_file, find_jar, java
+from nltk import pathsec
+from nltk.data import staging_tempdir
+from nltk.internals import find_file, find_jar, java
+from nltk.pathsec import has_line_unsafe_char
+from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_tool_path
 from nltk.tag.api import TaggerI
 
 _stanford_url = "https://nlp.stanford.edu/software"
@@ -74,6 +79,15 @@ class StanfordTagger(TaggerI):
         self._stanford_model = find_file(
             model_filename, env_vars=("STANFORD_MODELS",), verbose=verbose
         )
+        # Fail fast: the model is a JVM subprocess argument, so bound it here as
+        # well as at the hand-off, refuse a tamperable or oversized model, and
+        # keep only the checked string, never an out-of-sandbox path or object.
+        self._stanford_model = validate_tool_path(
+            self._stanford_model,
+            context=f"{type(self).__name__}",
+            max_bytes=pathsec.MAX_TOOL_MODEL_BYTES,
+            require_private=True,
+        )
 
         self._encoding = encoding
         self.java_options = java_options
@@ -91,34 +105,77 @@ class StanfordTagger(TaggerI):
 
     def tag_sents(self, sentences):
         encoding = self._encoding
-        default_options = " ".join(_java_options)
-        config_java(options=self.java_options, verbose=False)
 
-        # Create a temporary input file
-        _input_fh, self._input_file_path = tempfile.mkstemp(text=True)
-
-        cmd = list(self._cmd)
-        cmd.extend(["-encoding", encoding])
-
-        # Write the actual sentences to the temporary input file
-        _input_fh = os.fdopen(_input_fh, "wb")
+        # A line break in a token would inject an extra input line and silently
+        # mislabel output (parse_output re-aligns tags by sentence); a tab, NUL
+        # or other control character would be re-split or truncated by the
+        # tool. Refuse them by the shared line-safety rule, then build the
+        # input once and require exactly one separator per sentence gap.
+        for sentence in sentences:
+            for token in sentence:
+                if has_line_unsafe_char(token):
+                    raise ValueError(
+                        "Tokens cannot contain newline characters, nor a tab, "
+                        "another line break, a control character or NUL: %r" % (token,)
+                    )
         _input = "\n".join(" ".join(x) for x in sentences)
-        if isinstance(_input, str) and encoding:
-            _input = _input.encode(encoding)
-        _input_fh.write(_input)
-        _input_fh.close()
+        if _input.count("\n") != max(len(sentences) - 1, 0) or "\r" in _input:
+            raise ValueError("Tokens cannot contain newline characters.")
 
-        # Run the tagger and get the output
-        stanpos_output, _stderr = java(
-            cmd, classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE
-        )
-        stanpos_output = stanpos_output.decode(encoding)
+        input_file_path = None
+        java_succeeded = False
+        try:
+            # Create a temporary input file
+            _input_fh, input_file_path = tempfile.mkstemp(
+                text=True, dir=staging_tempdir()
+            )
+            self._input_file_path = input_file_path
 
-        # Delete the temporary file
-        os.unlink(self._input_file_path)
+            # The model is handed to the JVM subprocess pathsec.open cannot wrap:
+            # re-check it and freeze the checked string BEFORE _cmd reads it, so
+            # the argv never carries a swapped or re-resolving value (GHSA-8mgp).
+            self._stanford_model = validate_tool_path(
+                self._stanford_model,
+                context="StanfordTagger.tag_sents",
+                max_bytes=pathsec.MAX_TOOL_MODEL_BYTES,
+                require_private=True,
+            )
+            cmd = list(self._cmd)
+            cmd.extend(["-encoding", encoding])
 
-        # Return java configurations to their default values
-        config_java(options=default_options, verbose=False)
+            # mkstemp gives a race-free path inside the pathsec-validated 0700
+            # staging dir; reopen it through pathsec_open (the same chokepoint the
+            # rest of nltk stages tool input through) rather than the raw fd.
+            os.close(_input_fh)
+            if isinstance(_input, str) and encoding:
+                _input = _input.encode(encoding)
+            with pathsec_open(
+                input_file_path, "wb", context="StanfordTagger.tag_sents"
+            ) as input_fh:
+                input_fh.write(_input)
+
+            # Run the tagger and get the output
+            stanpos_output, _stderr = java(
+                cmd,
+                classpath=self._stanford_jar,
+                stdout=PIPE,
+                stderr=PIPE,
+                options=self.java_options,
+            )
+            # java() returns text (universal_newlines=True), so only decode when
+            # an older/bytes-returning path is in play.
+            if isinstance(stanpos_output, bytes):
+                stanpos_output = stanpos_output.decode(encoding)
+            java_succeeded = True
+        finally:
+            if input_file_path:
+                try:
+                    os.unlink(input_file_path)
+                except FileNotFoundError:
+                    pass
+                except OSError:
+                    if java_succeeded:
+                        raise
 
         return self.parse_output(stanpos_output, sentences)
 

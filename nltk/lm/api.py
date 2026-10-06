@@ -1,11 +1,12 @@
 # Natural Language Toolkit: Language Models
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Authors: Ilia Kurenkov <ilia.kurenkov@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 """Language Model Interface."""
 
+import math
 import random
 import warnings
 from abc import ABCMeta, abstractmethod
@@ -46,7 +47,7 @@ class Smoothing(metaclass=ABCMeta):
 
 def _mean(items):
     """Return average (aka mean) for sequence of items."""
-    return sum(items) / len(items)
+    return math.fsum(items) / len(items)
 
 
 def _random_generator(seed_or_generator):
@@ -65,7 +66,7 @@ def _weighted_choice(population, weights, random_generator=None):
     if len(population) != len(weights):
         raise ValueError("The number of weights does not match the population")
     cum_weights = list(accumulate(weights))
-    total = cum_weights[-1]
+    total = math.fsum(weights)
     threshold = random_generator.random()
     return population[bisect(cum_weights, total * threshold)]
 

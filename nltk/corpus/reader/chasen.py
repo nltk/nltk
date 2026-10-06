@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Masato Hagiwara <hagisan@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -9,6 +9,7 @@ import sys
 from nltk.corpus.reader import util
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
+from nltk.termsec import safe_print
 
 
 class ChasenCorpusReader(CorpusReader):
@@ -131,9 +132,9 @@ def demo():
     from nltk.corpus.util import LazyCorpusLoader
 
     jeita = LazyCorpusLoader("jeita", ChasenCorpusReader, r".*chasen", encoding="utf-8")
-    print("/".join(jeita.words()[22100:22140]))
+    safe_print("/".join(jeita.words()[22100:22140]))
 
-    print(
+    safe_print(
         "\nEOS\n".join(
             "\n".join("{}/{}".format(w[0], w[1].split("\t")[2]) for w in sent)
             for sent in jeita.tagged_sents()[2170:2173]

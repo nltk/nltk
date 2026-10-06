@@ -1,14 +1,16 @@
 # Natural Language Toolkit: Machine Translation
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Uday Krishna <udaykrishna5@gmail.com>
 # Contributor: Tom Aarsen
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 
+from collections import defaultdict
+from collections.abc import Callable, Iterable
 from itertools import chain, product
-from typing import Callable, Iterable, List, Tuple
+from typing import List, Tuple
 
 from nltk.corpus import WordNetCorpusReader, wordnet
 from nltk.stem.api import StemmerI
@@ -19,7 +21,7 @@ def _generate_enums(
     hypothesis: Iterable[str],
     reference: Iterable[str],
     preprocess: Callable[[str], str] = str.lower,
-) -> Tuple[List[Tuple[int, str]], List[Tuple[int, str]]]:
+) -> tuple[list[tuple[int, str]], list[tuple[int, str]]]:
     """
     Takes in pre-tokenized inputs for hypothesis and reference and returns
     enumerated word lists for each of them
@@ -46,7 +48,7 @@ def _generate_enums(
 
 def exact_match(
     hypothesis: Iterable[str], reference: Iterable[str]
-) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
+) -> tuple[list[tuple[int, int]], list[tuple[int, str]], list[tuple[int, str]]]:
     """
     matches exact words in hypothesis and reference
     and returns a word mapping based on the enumerated
@@ -62,9 +64,9 @@ def exact_match(
 
 
 def _match_enums(
-    enum_hypothesis_list: List[Tuple[int, str]],
-    enum_reference_list: List[Tuple[int, str]],
-) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
+    enum_hypothesis_list: list[tuple[int, str]],
+    enum_reference_list: list[tuple[int, str]],
+) -> tuple[list[tuple[int, int]], list[tuple[int, str]], list[tuple[int, str]]]:
     """
     matches exact words in hypothesis and reference and returns
     a word mapping between enum_hypothesis_list and enum_reference_list
@@ -76,23 +78,40 @@ def _match_enums(
              enumerated unmatched reference tuples
     """
     word_match = []
+    # Map each reference word to its positions (ascending). Popping the highest
+    # available position mirrors the original reverse j-scan, which matched each
+    # hypothesis word to the latest still-unused reference word of the same
+    # surface form. This index makes matching O(len_hyp + len_ref) instead of the
+    # original O(len_hyp * len_ref) nested scan, which ran in full for low-overlap
+    # text and let a single scoring call pin a CPU core (CWE-770; CVE-2026-12929).
+    ref_positions = defaultdict(list)
+    for j, (_, ref_word) in enumerate(enum_reference_list):
+        ref_positions[ref_word].append(j)
+
+    matched_hyp_idx = set()
+    matched_ref_idx = set()
     for i in range(len(enum_hypothesis_list))[::-1]:
-        for j in range(len(enum_reference_list))[::-1]:
-            if enum_hypothesis_list[i][1] == enum_reference_list[j][1]:
-                word_match.append(
-                    (enum_hypothesis_list[i][0], enum_reference_list[j][0])
-                )
-                enum_hypothesis_list.pop(i)
-                enum_reference_list.pop(j)
-                break
+        positions = ref_positions.get(enum_hypothesis_list[i][1])
+        if positions:
+            j = positions.pop()
+            matched_hyp_idx.add(i)
+            matched_ref_idx.add(j)
+            word_match.append((enum_hypothesis_list[i][0], enum_reference_list[j][0]))
+
+    enum_hypothesis_list = [
+        pair for i, pair in enumerate(enum_hypothesis_list) if i not in matched_hyp_idx
+    ]
+    enum_reference_list = [
+        pair for j, pair in enumerate(enum_reference_list) if j not in matched_ref_idx
+    ]
     return word_match, enum_hypothesis_list, enum_reference_list
 
 
 def _enum_stem_match(
-    enum_hypothesis_list: List[Tuple[int, str]],
-    enum_reference_list: List[Tuple[int, str]],
+    enum_hypothesis_list: list[tuple[int, str]],
+    enum_reference_list: list[tuple[int, str]],
     stemmer: StemmerI = PorterStemmer(),
-) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
+) -> tuple[list[tuple[int, int]], list[tuple[int, str]], list[tuple[int, str]]]:
     """
     Stems each word and matches them in hypothesis and reference
     and returns a word mapping between enum_hypothesis_list and
@@ -120,7 +139,7 @@ def stem_match(
     hypothesis: Iterable[str],
     reference: Iterable[str],
     stemmer: StemmerI = PorterStemmer(),
-) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
+) -> tuple[list[tuple[int, int]], list[tuple[int, str]], list[tuple[int, str]]]:
     """
     Stems each word and matches them in hypothesis and reference
     and returns a word mapping between hypothesis and reference
@@ -136,10 +155,10 @@ def stem_match(
 
 
 def _enum_wordnetsyn_match(
-    enum_hypothesis_list: List[Tuple[int, str]],
-    enum_reference_list: List[Tuple[int, str]],
+    enum_hypothesis_list: list[tuple[int, str]],
+    enum_reference_list: list[tuple[int, str]],
     wordnet: WordNetCorpusReader = wordnet,
-) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
+) -> tuple[list[tuple[int, int]], list[tuple[int, str]], list[tuple[int, str]]]:
     """
     Matches each word in reference to a word in hypothesis
     if any synonym of a hypothesis word is the exact match
@@ -150,6 +169,18 @@ def _enum_wordnetsyn_match(
     :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
     """
     word_match = []
+    # Index the reference words by surface form (ascending positions), so each
+    # hypothesis word is matched by looking up only its own synonyms rather than
+    # scanning the whole leftover reference list. The original nested scan ran in
+    # full O(len_hyp * len_ref) for low-overlap text (CWE-770; CVE-2026-12929);
+    # this is O(len_hyp * synonyms + len_ref). Taking the highest available
+    # position among the synonyms mirrors the original reverse j-scan.
+    ref_positions = defaultdict(list)
+    for j, (_, ref_word) in enumerate(enum_reference_list):
+        ref_positions[ref_word].append(j)
+
+    matched_hyp_idx = set()
+    matched_ref_idx = set()
     for i in range(len(enum_hypothesis_list))[::-1]:
         hypothesis_syns = set(
             chain.from_iterable(
@@ -161,14 +192,29 @@ def _enum_wordnetsyn_match(
                 for synset in wordnet.synsets(enum_hypothesis_list[i][1])
             )
         ).union({enum_hypothesis_list[i][1]})
-        for j in range(len(enum_reference_list))[::-1]:
-            if enum_reference_list[j][1] in hypothesis_syns:
-                word_match.append(
-                    (enum_hypothesis_list[i][0], enum_reference_list[j][0])
-                )
-                enum_hypothesis_list.pop(i)
-                enum_reference_list.pop(j)
-                break
+
+        # Highest still-available reference position whose word is a synonym.
+        best_j = -1
+        best_word = None
+        for syn in hypothesis_syns:
+            positions = ref_positions.get(syn)
+            if positions and positions[-1] > best_j:
+                best_j = positions[-1]
+                best_word = syn
+        if best_word is not None:
+            ref_positions[best_word].pop()
+            matched_hyp_idx.add(i)
+            matched_ref_idx.add(best_j)
+            word_match.append(
+                (enum_hypothesis_list[i][0], enum_reference_list[best_j][0])
+            )
+
+    enum_hypothesis_list = [
+        pair for i, pair in enumerate(enum_hypothesis_list) if i not in matched_hyp_idx
+    ]
+    enum_reference_list = [
+        pair for j, pair in enumerate(enum_reference_list) if j not in matched_ref_idx
+    ]
     return word_match, enum_hypothesis_list, enum_reference_list
 
 
@@ -176,7 +222,7 @@ def wordnetsyn_match(
     hypothesis: Iterable[str],
     reference: Iterable[str],
     wordnet: WordNetCorpusReader = wordnet,
-) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
+) -> tuple[list[tuple[int, int]], list[tuple[int, str]], list[tuple[int, str]]]:
     """
     Matches each word in reference to a word in hypothesis if any synonym
     of a hypothesis word is the exact match to the reference word.
@@ -193,11 +239,11 @@ def wordnetsyn_match(
 
 
 def _enum_align_words(
-    enum_hypothesis_list: List[Tuple[int, str]],
-    enum_reference_list: List[Tuple[int, str]],
+    enum_hypothesis_list: list[tuple[int, str]],
+    enum_reference_list: list[tuple[int, str]],
     stemmer: StemmerI = PorterStemmer(),
     wordnet: WordNetCorpusReader = wordnet,
-) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
+) -> tuple[list[tuple[int, int]], list[tuple[int, str]], list[tuple[int, str]]]:
     """
     Aligns/matches words in the hypothesis to reference by sequentially
     applying exact match, stemmed match and wordnet based synonym match.
@@ -238,7 +284,7 @@ def align_words(
     reference: Iterable[str],
     stemmer: StemmerI = PorterStemmer(),
     wordnet: WordNetCorpusReader = wordnet,
-) -> Tuple[List[Tuple[int, int]], List[Tuple[int, str]], List[Tuple[int, str]]]:
+) -> tuple[list[tuple[int, int]], list[tuple[int, str]], list[tuple[int, str]]]:
     """
     Aligns/matches words in the hypothesis to reference by sequentially
     applying exact match, stemmed match and wordnet based synonym match.
@@ -257,7 +303,7 @@ def align_words(
     )
 
 
-def _count_chunks(matches: List[Tuple[int, int]]) -> int:
+def _count_chunks(matches: list[tuple[int, int]]) -> int:
     """
     Counts the fewest possible number of chunks such that matched unigrams
     of each chunk are adjacent to each other. This is used to calculate the

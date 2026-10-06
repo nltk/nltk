@@ -2,12 +2,13 @@
 #
 # Author: Long Duong <longdt219@gmail.com>
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 import pickle
 import tempfile
+from collections import deque
 from copy import deepcopy
 from operator import itemgetter
 from os import remove
@@ -21,6 +22,75 @@ except ImportError:
     pass
 
 from nltk.parse import DependencyEvaluator, DependencyGraph, ParserI
+from nltk.pathsec import open as pathsec_open
+from nltk.picklesec import allowlisted_pickle_load, pickle_dump
+from nltk.termsec import safe_print
+
+# A fitted SVC pickle needs only exact numpy/scipy/sklearn globals; whole
+# namespaces exposed real gadgets, so allowlist exact globals (CWE-502).
+_MODEL_ALLOWED_MODULES = ()
+_MODEL_ALLOWED_GLOBALS = (
+    ("sklearn.svm._classes", "SVC"),
+    ("numpy", "ndarray"),
+    ("numpy", "dtype"),
+    ("numpy.core.multiarray", "_reconstruct"),
+    ("numpy._core.multiarray", "_reconstruct"),
+    ("numpy.core.multiarray", "scalar"),
+    ("numpy._core.multiarray", "scalar"),
+    # numpy >= 2.5 pickles a contiguous array via _frombuffer (an in-memory
+    # buffer reshape, no file/code access), not _reconstruct.
+    ("numpy._core.numeric", "_frombuffer"),
+    ("numpy.core.numeric", "_frombuffer"),
+    ("scipy.sparse._csr", "csr_matrix"),
+    ("scipy.sparse.csr", "csr_matrix"),
+    ("scipy.sparse._csc", "csc_matrix"),
+    ("scipy.sparse.csc", "csc_matrix"),
+    ("collections", "defaultdict"),
+    ("collections", "OrderedDict"),
+    ("builtins", "int"),
+    ("builtins", "float"),
+)
+
+# The numpy ``scalar`` reconstructor is a nested-unpickle sink for an
+# object-bearing dtype (CWE-502); picklesec wraps it globally, so only the
+# allowlist above and the object-dtype refusal below are needed here.
+
+
+def _load_transitionparser_model(file):
+    """Load a transition parser model through the allowlisting unpickler, refusing
+    any object dtype numpy array / scalar via ``sanitize=`` (the ``scalar`` wrapper
+    already blocks the reconstruction-time nested unpickle) (CWE-502)."""
+    try:
+        import numpy as _np
+    except ImportError:  # numpy absent -> no numpy array in the graph to inspect
+        sanitize = None
+    else:
+
+        def sanitize(obj):
+            # A fitted SVC carries only numeric numpy arrays / scipy sparse; an
+            # object dtype array or scalar is never legitimate, so refuse it.
+            if isinstance(obj, _np.ndarray):
+                if obj.dtype.hasobject:
+                    raise pickle.UnpicklingError(
+                        "transition parser model holds an object dtype numpy array, "
+                        "which no fitted SVC produces; refusing (CWE-502)"
+                    )
+                return True  # numeric array leaf: do not descend into its elements
+            if isinstance(obj, _np.generic):
+                if obj.dtype.hasobject:
+                    raise pickle.UnpicklingError(
+                        "transition parser model holds an object dtype numpy scalar; "
+                        "refusing (CWE-502)"
+                    )
+                return True
+            return False
+
+    return allowlisted_pickle_load(
+        file,
+        allowed_globals=_MODEL_ALLOWED_GLOBALS,
+        allowed_modules=_MODEL_ALLOWED_MODULES,
+        sanitize=sanitize,
+    )
 
 
 class Configuration:
@@ -44,7 +114,9 @@ class Configuration:
         """
         # dep_graph.nodes contain list of token for a sentence
         self.stack = [0]  # The root element
-        self.buffer = list(range(1, len(dep_graph.nodes)))  # The rest is in the buffer
+        # A deque lets shift/right-arc consume the front in O(1) (CWE-407);
+        # index/len/setitem semantics used elsewhere are unchanged.
+        self.buffer = deque(range(1, len(dep_graph.nodes)))  # The rest is in the buffer
         self.arcs = []  # empty set of arc
         self._tokens = dep_graph.nodes
         self._max_address = len(self.buffer)
@@ -54,7 +126,7 @@ class Configuration:
             "Stack : "
             + str(self.stack)
             + "  Buffer : "
-            + str(self.buffer)
+            + str(list(self.buffer))
             + "   Arcs : "
             + str(self.arcs)
         )
@@ -247,7 +319,7 @@ class Transition:
             conf.arcs.append((idx_wi, relation, idx_wj))
         else:  # arc-eager
             idx_wi = conf.stack[len(conf.stack) - 1]
-            idx_wj = conf.buffer.pop(0)
+            idx_wj = conf.buffer.popleft()
             conf.stack.append(idx_wj)
             conf.arcs.append((idx_wi, relation, idx_wj))
 
@@ -283,7 +355,7 @@ class Transition:
         """
         if len(conf.buffer) <= 0:
             return -1
-        idx_wi = conf.buffer.pop(0)
+        idx_wi = conf.buffer.popleft()
         conf.stack.append(idx_wi)
 
 
@@ -300,7 +372,7 @@ class TransitionParser(ParserI):
         :param algorithm: the algorithm option of this parser. Currently support `arc-standard` and `arc-eager` algorithm
         :type algorithm: str
         """
-        if not (algorithm in [self.ARC_STANDARD, self.ARC_EAGER]):
+        if algorithm not in [self.ARC_STANDARD, self.ARC_EAGER]:
             raise ValueError(
                 " Currently we only support %s and %s "
                 % (self.ARC_STANDARD, self.ARC_EAGER)
@@ -350,6 +422,10 @@ class TransitionParser(ParserI):
                 if parentIdx is not None:
                     arc_list.append((parentIdx, childIdx))
 
+        # Membership test against a set is O(1); testing the list was O(V) inside
+        # the triple loop below, making the whole check O(V**4) (CWE-770).
+        arc_set = set(arc_list)
+
         for parentIdx, childIdx in arc_list:
             # Ensure that childIdx < parentIdx
             if childIdx > parentIdx:
@@ -359,9 +435,9 @@ class TransitionParser(ParserI):
             for k in range(childIdx + 1, parentIdx):
                 for m in range(len(depgraph.nodes)):
                     if (m < childIdx) or (m > parentIdx):
-                        if (k, m) in arc_list:
+                        if (k, m) in arc_set:
                             return False
-                        if (m, k) in arc_list:
+                        if (m, k) in arc_set:
                             return False
         return True
 
@@ -433,8 +509,8 @@ class TransitionParser(ParserI):
                 operation.shift(conf)
                 training_seq.append(key)
 
-        print(" Number of training examples : " + str(len(depgraphs)))
-        print(" Number of valid (projective) examples : " + str(count_proj))
+        safe_print(" Number of training examples : " + str(len(depgraphs)))
+        safe_print(" Number of valid (projective) examples : " + str(count_proj))
         return training_seq
 
     def _create_training_examples_arc_eager(self, depgraphs, input_file):
@@ -497,8 +573,8 @@ class TransitionParser(ParserI):
                 operation.shift(conf)
                 training_seq.append(key)
 
-        print(" Number of training examples : " + str(len(depgraphs)))
-        print(" Number of valid (projective) examples : " + str(countProj))
+        safe_print(" Number of training examples : " + str(len(depgraphs)))
+        safe_print(" Number of valid (projective) examples : " + str(countProj))
         return training_seq
 
     def train(self, depgraphs, modelfile, verbose=True):
@@ -522,6 +598,9 @@ class TransitionParser(ParserI):
             input_file.close()
             # Using the temporary file to train the libsvm classifier
             x_train, y_train = load_svmlight_file(input_file.name)
+            x_train = x_train.astype("float64")
+            x_train.indices = x_train.indices.astype("int32", copy=False)
+            x_train.indptr = x_train.indptr.astype("int32", copy=False)
             # The parameter is set according to the paper:
             # Algorithms for Deterministic Incremental Dependency Parsing by Joakim Nivre
             # Todo : because of probability = True => very slow due to
@@ -537,8 +616,11 @@ class TransitionParser(ParserI):
             )
 
             model.fit(x_train, y_train)
-            # Save the model to file name (as pickle)
-            pickle.dump(model, open(modelfile, "wb"))
+            # Save the model as a pickle. modelfile is caller-supplied, so the
+            # write goes through the pathsec sandbox: an unauthorized destination
+            # is refused before any bytes are written (GHSA-8mgp-746c-j5xp).
+            with pathsec_open(modelfile, "wb", context="TransitionParser.train") as f:
+                pickle_dump(model, f)
         finally:
             remove(input_file.name)
 
@@ -551,8 +633,19 @@ class TransitionParser(ParserI):
         :return: list (DependencyGraph) with the 'head' and 'rel' information
         """
         result = []
-        # First load the model
-        model = pickle.load(open(modelFile, "rb"))
+        # Load the model (a fitted scikit-learn SVC) through the allowlisting
+        # unpickler: only the globals a real SVC pickle needs may be rebuilt, so a
+        # planted os.system / scipy.io.mmwrite raises UnpicklingError (CWE-502).
+        #
+        # modelFile is caller-supplied, so the read goes through the pathsec
+        # sandbox first: an out-of-sandbox path is refused before it is opened
+        # (GHSA-8mgp-746c-j5xp).
+        #
+        # _load_transitionparser_model adds the numpy object-dtype refusal; see
+        # nltk/picklesec.py and the huntr report
+        # https://huntr.com/bounties/38abc191-0525-42a1-96fd-262c1c187012
+        with pathsec_open(modelFile, "rb", context="TransitionParser.parse") as f:
+            model = _load_transitionparser_model(f)
         operation = Transition(self._algorithm)
 
         for depgraph in depgraphs:
@@ -607,19 +700,15 @@ class TransitionParser(ParserI):
 
                     if y_pred in self._match_transition:
                         strTransition = self._match_transition[y_pred]
-                        baseTransition = strTransition.split(":")[0]
+                        # Split on the first colon only: a relation label may
+                        # itself carry one (Universal Dependencies "nmod:poss").
+                        baseTransition, _, relation = strTransition.partition(":")
 
                         if baseTransition == Transition.LEFT_ARC:
-                            if (
-                                operation.left_arc(conf, strTransition.split(":")[1])
-                                != -1
-                            ):
+                            if operation.left_arc(conf, relation) != -1:
                                 break
                         elif baseTransition == Transition.RIGHT_ARC:
-                            if (
-                                operation.right_arc(conf, strTransition.split(":")[1])
-                                != -1
-                            ):
+                            if operation.right_arc(conf, relation) != -1:
                                 break
                         elif baseTransition == Transition.REDUCE:
                             if operation.reduce(conf) != -1:
@@ -740,6 +829,10 @@ def demo():
     A. Check the ARC-STANDARD training
     >>> import tempfile
     >>> import os
+    >>> from nltk.data import make_staging_dir
+    >>> _model_dir = make_staging_dir(prefix='nltk_tp_demo_')
+    >>> std_model = os.path.join(_model_dir, 'temp.arcstd.model')
+    >>> eager_model = os.path.join(_model_dir, 'temp.arceager.model')
     >>> input_file = tempfile.NamedTemporaryFile(prefix='transition_parse.train', dir=tempfile.gettempdir(), delete=False)
 
     >>> parser_std = TransitionParser('arc-standard')
@@ -748,7 +841,7 @@ def demo():
      Number of valid (projective) examples : 1
     SHIFT, LEFTARC:ATT, SHIFT, LEFTARC:SBJ, SHIFT, SHIFT, LEFTARC:ATT, SHIFT, SHIFT, SHIFT, LEFTARC:ATT, RIGHTARC:PC, RIGHTARC:ATT, RIGHTARC:OBJ, SHIFT, RIGHTARC:PU, RIGHTARC:ROOT, SHIFT
 
-    >>> parser_std.train([gold_sent],'temp.arcstd.model', verbose=False)
+    >>> parser_std.train([gold_sent], std_model, verbose=False)
      Number of training examples : 1
      Number of valid (projective) examples : 1
     >>> input_file.close()
@@ -763,7 +856,7 @@ def demo():
      Number of valid (projective) examples : 1
     SHIFT, LEFTARC:ATT, SHIFT, LEFTARC:SBJ, RIGHTARC:ROOT, SHIFT, LEFTARC:ATT, RIGHTARC:OBJ, RIGHTARC:ATT, SHIFT, LEFTARC:ATT, RIGHTARC:PC, REDUCE, REDUCE, REDUCE, RIGHTARC:PU
 
-    >>> parser_eager.train([gold_sent],'temp.arceager.model', verbose=False)
+    >>> parser_eager.train([gold_sent], eager_model, verbose=False)
      Number of training examples : 1
      Number of valid (projective) examples : 1
 
@@ -774,20 +867,20 @@ def demo():
 
     A. Check the ARC-STANDARD parser
 
-    >>> result = parser_std.parse([gold_sent], 'temp.arcstd.model')
+    >>> result = parser_std.parse([gold_sent], std_model)
     >>> de = DependencyEvaluator(result, [gold_sent])
     >>> de.eval() >= (0, 0)
     True
 
     B. Check the ARC-EAGER parser
-    >>> result = parser_eager.parse([gold_sent], 'temp.arceager.model')
+    >>> result = parser_eager.parse([gold_sent], eager_model)
     >>> de = DependencyEvaluator(result, [gold_sent])
     >>> de.eval() >= (0, 0)
     True
 
     Remove test temporary files
-    >>> remove('temp.arceager.model')
-    >>> remove('temp.arcstd.model')
+    >>> remove(eager_model)
+    >>> remove(std_model)
 
     Note that result is very poor because of only one training example.
     """

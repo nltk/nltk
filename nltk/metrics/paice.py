@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Agreement Metrics
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Lauri Hallila <laurihallila@gmail.com>
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
@@ -20,7 +20,10 @@ Chris D. Paice (1994). An evaluation method for stemming algorithms.
 In Proceedings of SIGIR, 42--50.
 """
 
+from collections import defaultdict
 from math import sqrt
+
+from nltk.termsec import safe_print
 
 
 def get_words_from_dictionary(lemmas):
@@ -110,28 +113,54 @@ def _get_derivative(coordinates):
         return float("inf")
 
 
-def _calculate_cut(lemmawords, stems):
-    """Count understemmed and overstemmed pairs for (lemma, stem) pair with common words.
+def _build_stem_index(stems):
+    """Index each word to the stems whose word set contains it, and each stem's
+    size. Built once so ``_calculate`` touches only the stems that share a word
+    with a lemma, instead of rescanning every stem for every lemma
+    (O(|lemmas| * |stems|), quadratic on a large vocabulary -- CWE-770).
+
+    :return: ``(word_to_stems, stem_sizes)`` where ``word_to_stems`` maps a word
+        to the list of stems containing it and ``stem_sizes`` maps a stem to
+        ``len(stems[stem])`` (the raw length, as the original counting used).
+    """
+    word_to_stems = defaultdict(list)
+    stem_sizes = {}
+    for stem in stems:
+        stem_sizes[stem] = len(stems[stem])
+        for word in set(stems[stem]):
+            word_to_stems[word].append(stem)
+    return word_to_stems, stem_sizes
+
+
+def _calculate_cut(lemmawords, word_to_stems, stem_sizes):
+    """Count understemmed and overstemmed pairs for a lemma against the stems.
+
+    Uses the prebuilt ``_build_stem_index`` so only stems sharing a word with
+    ``lemmawords`` are visited. This is exactly equivalent to the previous
+    ``for stem in stems: set(lemmawords) & set(stems[stem])`` scan
+    (``cutcount`` is the number of distinct shared words, ``len(lemmawords)``
+    and ``len(stems[stem])`` are the raw lengths), but linear rather than
+    O(|lemmawords| * |stems|).
 
     :param lemmawords: Set or list of words corresponding to certain lemma.
-    :param stems: A dictionary where keys are stems and values are sets
-    or lists of words corresponding to that stem.
-    :type lemmawords: set(str) or list(str)
-    :type stems: dict(str): set(str)
+    :param word_to_stems: word -> list of stems containing it.
+    :param stem_sizes: stem -> ``len(stems[stem])``.
     :return: Amount of understemmed and overstemmed pairs contributed by words
     existing in both lemmawords and stems.
     :rtype: tuple(float, float)
     """
+    lemmawords_len = len(lemmawords)
+    cut_per_stem = defaultdict(int)
+    for word in set(lemmawords):
+        for stem in word_to_stems.get(word, ()):
+            cut_per_stem[stem] += 1
+
     umt, wmt = 0.0, 0.0
-    for stem in stems:
-        cut = set(lemmawords) & set(stems[stem])
-        if cut:
-            cutcount = len(cut)
-            stemcount = len(stems[stem])
-            # Unachieved merge total
-            umt += cutcount * (len(lemmawords) - cutcount)
-            # Wrongly merged total
-            wmt += cutcount * (stemcount - cutcount)
+    for stem, cutcount in cut_per_stem.items():
+        # Unachieved merge total
+        umt += cutcount * (lemmawords_len - cutcount)
+        # Wrongly merged total
+        wmt += cutcount * (stem_sizes[stem] - cutcount)
     return (umt, wmt)
 
 
@@ -155,6 +184,9 @@ def _calculate(lemmas, stems):
 
     gdmt, gdnt, gumt, gwmt = (0.0, 0.0, 0.0, 0.0)
 
+    # Index the stems once so the lemma loop is linear, not O(|lemmas|*|stems|).
+    word_to_stems, stem_sizes = _build_stem_index(stems)
+
     for lemma in lemmas:
         lemmacount = len(lemmas[lemma])
 
@@ -166,7 +198,7 @@ def _calculate(lemmas, stems):
 
         # For each (lemma, stem) pair with common words, count how many
         # pairs are understemmed and overstemmed.
-        umt, wmt = _calculate_cut(lemmas[lemma], stems)
+        umt, wmt = _calculate_cut(lemmas[lemma], word_to_stems, stem_sizes)
 
         # Add to total undesired and wrongly-merged totals
         gumt += umt
@@ -356,17 +388,17 @@ def demo():
         "ring": ["ring"],
         "rung": ["rung"],
     }
-    print("Words grouped by their lemmas:")
+    safe_print("Words grouped by their lemmas:")
     for lemma in sorted(lemmas):
-        print("{} => {}".format(lemma, " ".join(lemmas[lemma])))
-    print()
-    print("Same words grouped by a stemming algorithm:")
+        safe_print("{} => {}".format(lemma, " ".join(lemmas[lemma])))
+    safe_print()
+    safe_print("Same words grouped by a stemming algorithm:")
     for stem in sorted(stems):
-        print("{} => {}".format(stem, " ".join(stems[stem])))
-    print()
+        safe_print("{} => {}".format(stem, " ".join(stems[stem])))
+    safe_print()
     p = Paice(lemmas, stems)
-    print(p)
-    print()
+    safe_print(p)
+    safe_print()
     # Let's "change" results from a stemming algorithm
     stems = {
         "kneel": ["kneel"],
@@ -376,13 +408,13 @@ def demo():
         "ring": ["ring"],
         "rung": ["rung"],
     }
-    print("Counting stats after changing stemming results:")
+    safe_print("Counting stats after changing stemming results:")
     for stem in sorted(stems):
-        print("{} => {}".format(stem, " ".join(stems[stem])))
-    print()
+        safe_print("{} => {}".format(stem, " ".join(stems[stem])))
+    safe_print()
     p.stems = stems
     p.update()
-    print(p)
+    safe_print(p)
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
@@ -11,6 +11,7 @@ Module for a resolution-based First Order theorem prover.
 """
 
 import operator
+import time
 from collections import defaultdict
 from functools import reduce
 
@@ -29,6 +30,7 @@ from nltk.sem.logic import (
     is_indvar,
     unique_variable,
 )
+from nltk.termsec import safe_print
 
 
 class ProverParseError(Exception):
@@ -38,6 +40,14 @@ class ProverParseError(Exception):
 class ResolutionProver(Prover):
     ANSWER_KEY = "ANSWER"
     _assume_false = True
+    #: Wall-clock limit, in seconds, on a single proof search. First-order
+    #: resolution is only semi-decidable, so a satisfiable goal makes the
+    #: saturation loop derive and append resolvents indefinitely and pin a CPU
+    #: core (CWE-400). Mirroring :class:`nltk.inference.Prover9`'s ``timeout``,
+    #: the search is abandoned and the goal reported unproved once this many
+    #: seconds elapse; set it to ``0`` to disable the limit (the original,
+    #: unbounded behaviour).
+    TIMEOUT = 60
 
     def _prove(self, goal=None, assumptions=None, verbose=False):
         """
@@ -58,7 +68,7 @@ class ResolutionProver(Prover):
                 clauses.extend(clausify(a))
             result, clauses = self._attempt_proof(clauses)
             if verbose:
-                print(ResolutionProverCommand._decorate_clauses(clauses))
+                safe_print(ResolutionProverCommand._decorate_clauses(clauses))
         except RuntimeError as e:
             if self._assume_false and str(e).startswith(
                 "maximum recursion depth exceeded"
@@ -67,7 +77,7 @@ class ResolutionProver(Prover):
                 clauses = []
             else:
                 if verbose:
-                    print(e)
+                    safe_print(e)
                 else:
                     raise e
         return (result, clauses)
@@ -75,6 +85,13 @@ class ResolutionProver(Prover):
     def _attempt_proof(self, clauses):
         # map indices to lists of indices, to store attempted unifications
         tried = defaultdict(list)
+
+        # Bound the saturation search by wall-clock time so an unprovable or
+        # non-terminating goal can't keep deriving resolvents forever and pin a
+        # CPU core (CWE-400). ``deadline`` is ``None`` when the limit is disabled
+        # (TIMEOUT == 0). The cost of an individual unification grows as clauses
+        # accumulate literals, so the deadline is checked on every attempt.
+        deadline = time.monotonic() + self.TIMEOUT if self.TIMEOUT else None
 
         i = 0
         while i < len(clauses):
@@ -90,8 +107,21 @@ class ResolutionProver(Prover):
                     # don't: 1) unify a clause with itself,
                     #       2) use tautologies
                     if i != j and j and not clauses[j].is_tautology():
+                        if deadline is not None and time.monotonic() > deadline:
+                            # Time budget exhausted: report unproved with an empty
+                            # clause set, matching the recursion-exhaustion path in
+                            # _prove. Returning the (possibly huge) accumulated
+                            # clauses would make ResolutionProverCommand.prove()
+                            # decorate/stringify all of them, spending time and
+                            # memory beyond TIMEOUT and undermining the bound.
+                            return (False, [])
                         tried[i].append(j)
-                        newclauses = clauses[i].unify(clauses[j])
+                        try:
+                            newclauses = clauses[i].unify(clauses[j], deadline=deadline)
+                        except _UnifyTimeout:
+                            # A single unification blew past the deadline; stop
+                            # like the between-call check above (unproved, empty).
+                            return (False, [])
                         if newclauses:
                             for newclause in newclauses:
                                 newclause._parents = (i + 1, j + 1)
@@ -156,6 +186,11 @@ class ResolutionProverCommand(BaseProverCommand):
         Decorate the proof output.
         """
         out = ""
+        # No clauses means no proof to show (e.g. when the search is abandoned on
+        # timeout or recursion exhaustion). Return early; ``max(...)`` below would
+        # otherwise raise on an empty sequence.
+        if not clauses:
+            return out
         max_clause_len = max(len(str(clause)) for clause in clauses)
         max_seq_len = len(str(len(clauses)))
         for i in range(len(clauses)):
@@ -177,7 +212,9 @@ class Clause(list):
         self._is_tautology = None
         self._parents = None
 
-    def unify(self, other, bindings=None, used=None, skipped=None, debug=False):
+    def unify(
+        self, other, bindings=None, used=None, skipped=None, debug=False, deadline=None
+    ):
         """
         Attempt to unify this Clause with the other, returning a list of
         resulting, unified, Clauses.
@@ -206,7 +243,7 @@ class Clause(list):
             debug = DebugObject(debug)
 
         newclauses = _iterate_first(
-            self, other, bindings, used, skipped, _complete_unify_path, debug
+            self, other, bindings, used, skipped, _complete_unify_path, debug, deadline
         )
 
         # remove subsumed clauses.  make a list of all indices of subsumed
@@ -337,10 +374,25 @@ class Clause(list):
         return "%s" % self
 
 
-def _iterate_first(first, second, bindings, used, skipped, finalize_method, debug):
+class _UnifyTimeout(Exception):
+    """Raised inside a single ``Clause.unify`` when its ``deadline`` passes.
+
+    Unifying two clauses that share many same-predicate literals explores an
+    exponential number of literal pairings inside one ``unify`` call, which the
+    saturation loop's between-call ``TIMEOUT`` cannot interrupt. Checking the
+    deadline inside the recursion (and aborting via this exception) makes the
+    time bound effective (CWE-407/CWE-400).
+    """
+
+
+def _iterate_first(
+    first, second, bindings, used, skipped, finalize_method, debug, deadline=None
+):
     """
     This method facilitates movement through the terms of 'self'
     """
+    if deadline is not None and time.monotonic() > deadline:
+        raise _UnifyTimeout
     debug.line(f"unify({first},{second}) {bindings}")
 
     if not len(first) or not len(second):  # if no more recursions can be performed
@@ -348,13 +400,20 @@ def _iterate_first(first, second, bindings, used, skipped, finalize_method, debu
     else:
         # explore this 'self' atom
         result = _iterate_second(
-            first, second, bindings, used, skipped, finalize_method, debug + 1
+            first, second, bindings, used, skipped, finalize_method, debug + 1, deadline
         )
 
         # skip this possible 'self' atom
         newskipped = (skipped[0] + [first[0]], skipped[1])
         result += _iterate_first(
-            first[1:], second, bindings, used, newskipped, finalize_method, debug + 1
+            first[1:],
+            second,
+            bindings,
+            used,
+            newskipped,
+            finalize_method,
+            debug + 1,
+            deadline,
         )
 
         try:
@@ -373,6 +432,7 @@ def _iterate_first(first, second, bindings, used, skipped, finalize_method, debu
                 ([], []),
                 finalize_method,
                 debug + 1,
+                deadline,
             )
         except BindingException:
             # the atoms could not be unified,
@@ -381,10 +441,14 @@ def _iterate_first(first, second, bindings, used, skipped, finalize_method, debu
         return result
 
 
-def _iterate_second(first, second, bindings, used, skipped, finalize_method, debug):
+def _iterate_second(
+    first, second, bindings, used, skipped, finalize_method, debug, deadline=None
+):
     """
     This method facilitates movement through the terms of 'other'
     """
+    if deadline is not None and time.monotonic() > deadline:
+        raise _UnifyTimeout
     debug.line(f"unify({first},{second}) {bindings}")
 
     if not len(first) or not len(second):  # if no more recursions can be performed
@@ -393,7 +457,14 @@ def _iterate_second(first, second, bindings, used, skipped, finalize_method, deb
         # skip this possible pairing and move to the next
         newskipped = (skipped[0], skipped[1] + [second[0]])
         result = _iterate_second(
-            first, second[1:], bindings, used, newskipped, finalize_method, debug + 1
+            first,
+            second[1:],
+            bindings,
+            used,
+            newskipped,
+            finalize_method,
+            debug + 1,
+            deadline,
         )
 
         try:
@@ -412,6 +483,7 @@ def _iterate_second(first, second, bindings, used, skipped, finalize_method, deb
                 ([], []),
                 finalize_method,
                 debug + 1,
+                deadline,
             )
         except BindingException:
             # the atoms could not be unified,
@@ -468,6 +540,29 @@ def _unify_terms(a, b, bindings=None, used=None):
 
 def _complete_unify_path(first, second, bindings, used, skipped, debug):
     if used[0] or used[1]:  # if bindings were made along the path
+        # Resolution may remove several literals only if they factor to the
+        # same literal. Removing distinct complementary pairs is unsound:
+        # {P, Q} and {-P, -Q} do not imply the empty clause.
+        # Equality literals are consumed by demodulation, not resolution.
+        resolved = [
+            atom for atom in used[0] if not isinstance(atom, EqualityExpression)
+        ]
+        if resolved:
+            pivot = resolved[0]
+            for atom in resolved[1:]:
+                if isinstance(pivot, NegatedExpression) != isinstance(
+                    atom, NegatedExpression
+                ):
+                    return []
+                left = pivot.term if isinstance(pivot, NegatedExpression) else pivot
+                right = atom.term if isinstance(atom, NegatedExpression) else atom
+                try:
+                    bindings = bindings + most_general_unification(
+                        left.substitute_bindings(bindings),
+                        right.substitute_bindings(bindings),
+                    )
+                except BindingException:
+                    return []
         newclause = Clause(skipped[0] + skipped[1] + first + second)
         debug.line("  -> New Clause: %s" % newclause)
         return [newclause.substitute_bindings(bindings)]
@@ -679,7 +774,7 @@ class DebugObject:
 
     def line(self, line):
         if self.enabled:
-            print("    " * self.indent + line)
+            safe_print("    " * self.indent + line)
 
 
 def testResolutionProver():
@@ -701,58 +796,58 @@ def testResolutionProver():
     p1 = Expression.fromstring(r"all x.(man(x) -> mortal(x))")
     p2 = Expression.fromstring(r"man(Socrates)")
     c = Expression.fromstring(r"mortal(Socrates)")
-    print(f"{p1}, {p2} |- {c}: {ResolutionProver().prove(c, [p1, p2])}")
+    safe_print(f"{p1}, {p2} |- {c}: {ResolutionProver().prove(c, [p1, p2])}")
 
     p1 = Expression.fromstring(r"all x.(man(x) -> walks(x))")
     p2 = Expression.fromstring(r"man(John)")
     c = Expression.fromstring(r"some y.walks(y)")
-    print(f"{p1}, {p2} |- {c}: {ResolutionProver().prove(c, [p1, p2])}")
+    safe_print(f"{p1}, {p2} |- {c}: {ResolutionProver().prove(c, [p1, p2])}")
 
     p = Expression.fromstring(r"some e1.some e2.(believe(e1,john,e2) & walk(e2,mary))")
     c = Expression.fromstring(r"some e0.walk(e0,mary)")
-    print(f"{p} |- {c}: {ResolutionProver().prove(c, [p])}")
+    safe_print(f"{p} |- {c}: {ResolutionProver().prove(c, [p])}")
 
 
 def resolution_test(e):
     f = Expression.fromstring(e)
     t = ResolutionProver().prove(f)
-    print(f"|- {f}: {t}")
+    safe_print(f"|- {f}: {t}")
 
 
 def test_clausify():
     lexpr = Expression.fromstring
 
-    print(clausify(lexpr("P(x) | Q(x)")))
-    print(clausify(lexpr("(P(x) & Q(x)) | R(x)")))
-    print(clausify(lexpr("P(x) | (Q(x) & R(x))")))
-    print(clausify(lexpr("(P(x) & Q(x)) | (R(x) & S(x))")))
+    safe_print(clausify(lexpr("P(x) | Q(x)")))
+    safe_print(clausify(lexpr("(P(x) & Q(x)) | R(x)")))
+    safe_print(clausify(lexpr("P(x) | (Q(x) & R(x))")))
+    safe_print(clausify(lexpr("(P(x) & Q(x)) | (R(x) & S(x))")))
 
-    print(clausify(lexpr("P(x) | Q(x) | R(x)")))
-    print(clausify(lexpr("P(x) | (Q(x) & R(x)) | S(x)")))
+    safe_print(clausify(lexpr("P(x) | Q(x) | R(x)")))
+    safe_print(clausify(lexpr("P(x) | (Q(x) & R(x)) | S(x)")))
 
-    print(clausify(lexpr("exists x.P(x) | Q(x)")))
+    safe_print(clausify(lexpr("exists x.P(x) | Q(x)")))
 
-    print(clausify(lexpr("-(-P(x) & Q(x))")))
-    print(clausify(lexpr("P(x) <-> Q(x)")))
-    print(clausify(lexpr("-(P(x) <-> Q(x))")))
-    print(clausify(lexpr("-(all x.P(x))")))
-    print(clausify(lexpr("-(some x.P(x))")))
+    safe_print(clausify(lexpr("-(-P(x) & Q(x))")))
+    safe_print(clausify(lexpr("P(x) <-> Q(x)")))
+    safe_print(clausify(lexpr("-(P(x) <-> Q(x))")))
+    safe_print(clausify(lexpr("-(all x.P(x))")))
+    safe_print(clausify(lexpr("-(some x.P(x))")))
 
-    print(clausify(lexpr("some x.P(x)")))
-    print(clausify(lexpr("some x.all y.P(x,y)")))
-    print(clausify(lexpr("all y.some x.P(x,y)")))
-    print(clausify(lexpr("all z.all y.some x.P(x,y,z)")))
-    print(clausify(lexpr("all x.(all y.P(x,y) -> -all y.(Q(x,y) -> R(x,y)))")))
+    safe_print(clausify(lexpr("some x.P(x)")))
+    safe_print(clausify(lexpr("some x.all y.P(x,y)")))
+    safe_print(clausify(lexpr("all y.some x.P(x,y)")))
+    safe_print(clausify(lexpr("all z.all y.some x.P(x,y,z)")))
+    safe_print(clausify(lexpr("all x.(all y.P(x,y) -> -all y.(Q(x,y) -> R(x,y)))")))
 
 
 def demo():
     test_clausify()
-    print()
+    safe_print()
     testResolutionProver()
-    print()
+    safe_print()
 
     p = Expression.fromstring("man(x)")
-    print(ResolutionProverCommand(p, [p]).prove())
+    safe_print(ResolutionProverCommand(p, [p]).prove())
 
 
 if __name__ == "__main__":

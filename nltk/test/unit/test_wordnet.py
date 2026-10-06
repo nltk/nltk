@@ -14,6 +14,25 @@ L = wn.lemma
 
 
 class WordnNetDemo(unittest.TestCase):
+
+    def test_value_equality_for_distinct_instances(self):
+        # Guards against deleting __eq__ and falling back to identity equality.
+        synset = S("dog.n.01")
+        distinct_synset = type(synset)(wn)
+        distinct_synset._name = synset._name
+
+        self.assertIsNot(synset, distinct_synset)
+        self.assertEqual(synset, distinct_synset)
+
+    def test_equality_with_incompatible_type_is_false(self):
+        # User-visible behavior: no AttributeError, just a normal failed equality.
+        self.assertNotEqual(S("dog.n.01"), "dog.n.01")
+
+    def test_ordering_with_incompatible_type_raises_typeerror(self):
+        # User-visible behavior for unsupported ordering comparisons.
+        with self.assertRaises(TypeError):
+            S("dog.n.01") < "dog.n.01"
+
     def test_retrieve_synset(self):
         move_synset = S("go.v.21")
         self.assertEqual(move_synset.name(), "move.v.15")

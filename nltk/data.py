@@ -1,6 +1,6 @@
 # Natural Language Toolkit: Utility functions
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 # Author: ekaf (Restricting and switching pickles)
 # URL: <https://www.nltk.org/>
@@ -32,24 +32,195 @@ adds it to a resource cache; and ``retrieve()`` copies a given resource
 to a local file.
 """
 
+import atexit
 import codecs
 import functools
 import os
 import pickle
 import re
+import shutil
+import stat
 import sys
+import tempfile
 import textwrap
-import zipfile
+import urllib.request
 from abc import ABCMeta, abstractmethod
 from gzip import WRITE as GZ_WRITE
 from gzip import GzipFile
 from io import BytesIO, TextIOWrapper
-from urllib.request import url2pathname, urlopen
+from urllib.parse import unquote
+from urllib.request import url2pathname
+
+from nltk import redos
+from nltk.pathsec import ZipFile
+from nltk.pathsec import open as _secure_open
+from nltk.pathsec import urlopen as _secure_urlopen
+from nltk.pathsec import validate_path as _validate_path
 
 # Reject unsafe no-protocol paths: traversal segments, trailing '..', absolute paths,
-# backslashes, Windows drive letters. Use a raw-string pattern and do not anchor only
-# at the start — we'll use search() for safety checks.
-_UNSAFE_NO_PROTOCOL_RE = re.compile(r"(?:\.\./|\.\.$|^/|\\|[A-Za-z]:[/\\])")
+# backslashes, and any ':' or '|'. On Windows url2pathname turns ':' or '|' in the first
+# component into a drive ("a:b" -> "A:b", drive-relative, so os.path.isabs is blind to
+# it) or an alternate data stream, either of which escapes the data root; neither
+# character ever belongs in a legitimate no-protocol resource name (the scheme ':' is
+# stripped upstream by split_resource_url), so refusing them on every platform is both
+# safe and deterministic across the OS test matrix. Use a raw-string pattern and do not
+# anchor only at the start — we'll use search() for safety checks.
+_UNSAFE_NO_PROTOCOL_RE = redos.compile(r"(?:\.\./|\.\.$|^/|\\|[:|])")
+
+
+def _assert_no_encoded_bypass(name, error_label=None):
+    """
+    Reject *name* if its URL-decoded form contains an unsafe pattern that
+    the raw form does not.
+
+    This is the single source of truth for the "did this resource string
+    smuggle traversal or absolute-path characters past the raw-form
+    check via percent-encoding?" question. Downstream code applies
+    :data:`_UNSAFE_NO_PROTOCOL_RE` to the raw resource string, but
+    :func:`url2pathname` decodes percent-escapes when turning the string
+    into a filesystem path, so a payload like ``%2fetc%2fpasswd`` would
+    otherwise pass the raw-form check and then resolve to ``/etc/passwd``
+    on disk. Centralising the encoded check here keeps the encoded /
+    literal policy in lock-step across every call site, which matters
+    because the rule is security-sensitive and we do not want it to
+    drift.
+
+    Only a single :func:`unquote` pass is performed, mirroring what
+    :func:`url2pathname` itself does — decoding repeatedly would change
+    the meaning of legitimate percent-encoded names such as ``%2520``
+    (a literal ``%20``).
+
+    :param name: The resource string to validate.
+    :param error_label: Optional alternative string to embed in the
+        ``ValueError`` message (defaults to ``name``). Useful when the
+        caller wants the error to reference the original outer URL.
+    """
+    decoded = unquote(name)
+    if decoded != name and _UNSAFE_NO_PROTOCOL_RE.search(decoded):
+        label = name if error_label is None else error_label
+        raise ValueError(f"Unsafe resource path: {label!r}")
+
+
+# Python 3.14's url2pathname follows the WHATWG URL rules, so it silently strips
+# ASCII tab / LF / CR and truncates at "#" or "?". Refuse the whole control-char
+# range (C0 0x00-0x1f, DEL 0x7f) plus the Unicode newline-likes (NEL 0x85, line
+# and paragraph separators 0x2028/0x2029) and #/?, not just the three characters
+# stripped today: none belongs in a resource name, and refusing them all means a
+# FUTURE url2pathname that strips a different control cannot splice a "../" the
+# raw-form check never saw. Truncation only ever happens at "#"/"?".
+_URL_REWRITTEN_CHARS_RE = redos.compile(r"[\x00-\x1f\x7f\x85\u2028\u2029#?]")
+
+# A fixed, absolute reference root used only to containment-test what url2pathname
+# produces (never touched on disk, never joined with anything but our own constant).
+# It is a hardcoded literal (no attacker input and no cwd/abspath call reaches it, so
+# it cannot itself become a vector) and is already absolute on its platform: a drive
+# on Windows, a leading separator on POSIX.
+_NO_PROTOCOL_REF_ROOT = (
+    "C:\\nltk-no-protocol-ref-root"
+    if os.name == "nt"
+    else os.sep + "nltk-no-protocol-ref-root"
+)
+# url2pathname may emit either separator (Windows rewrites "/"->"\\"); split on both.
+_PATH_COMPONENT_RE = redos.compile(r"[\\/]")
+
+
+#: readline re-splits a buffer up to this many characters on every pass without
+#: first asking whether the fresh span holds a boundary; past it, it asks.
+_SPLIT_DIRECTLY_BELOW = 8192
+
+
+def _has_line_boundary(text):
+    """True when *text* holds a line boundary ``str.splitlines`` recognises.
+
+    readline asks this of each freshly read span, prefixed with the previous
+    span's last character, before it re-splits a buffer past the bound. The
+    prefix is for a complete line the line buffer carried over: that line ends
+    in a boundary, and without the prefix readline would pull the whole next
+    line before returning it. ``splitlines`` is the definition readline splits
+    by, so asking it keeps the two in lockstep for every boundary (LF, CR,
+    CR LF, the vertical and form feeds, the file, group and record separators,
+    NEL and the line and paragraph separators). It runs in C and is linear in
+    the span, with no regex: a timed regex here cost several times the rest of
+    readline.
+    """
+    return bool(text) and text.splitlines() != [text]
+
+
+def _normalized_path_escapes(name):
+    """
+    Return True if :func:`url2pathname` would rewrite *name* into a path that
+    escapes a data root on the running platform.
+
+    Containment test, the approach path libraries use (Werkzeug ``safe_join``,
+    Django, Flask ``send_from_directory``) rather than enumerating patterns:
+    ``os.path.join`` lets an absolute / drive / drive-relative / UNC result
+    override the reference root, ``normpath`` collapses ``..``, so any escape from
+    the join is an escape from the real data root too. It runs with the
+    interpreter's own ``url2pathname`` + ``os.path``, i.e. the exact sink ``find()``
+    will use, so it is correct on whatever platform it executes on (the Windows
+    drive/``|``/``:`` rewrites are handled ahead of it by :data:`_UNSAFE_NO_PROTOCOL_RE`
+    on every platform). A path component made only of dots and spaces is also
+    refused: Windows strips trailing dots/spaces per component at open time, so
+    ``.. `` (or ``..%20``) opens ``..`` (a traversal ``normpath`` does not model),
+    and no legitimate resource component is dots-and-spaces only.
+    """
+    try:
+        rewritten = url2pathname(name)
+    except Exception:
+        # Fail closed: if the sink cannot even parse the name (url2pathname can
+        # raise ValueError/OSError and, on some versions, IndexError), we cannot
+        # reason about where it points, so refuse it rather than let it through.
+        return True
+    resolved = os.path.normpath(os.path.join(_NO_PROTOCOL_REF_ROOT, rewritten))
+    if resolved != _NO_PROTOCOL_REF_ROOT and not resolved.startswith(
+        _NO_PROTOCOL_REF_ROOT + os.sep
+    ):
+        return True
+    for component in _PATH_COMPONENT_RE.split(rewritten):
+        if component and not component.strip(". "):
+            return True
+    return False
+
+
+def _assert_no_normalized_bypass(name, error_label=None):
+    """
+    Reject *name* if :func:`url2pathname` would rewrite it into an escaping path.
+
+    Sibling of :func:`_assert_no_encoded_bypass`, for the same "the name that was
+    validated must be the name that is used" rule. url2pathname does more than one
+    rewrite and its exact behaviour changes across Python versions (3.14 follows
+    the WHATWG rules: it strips ASCII tab/LF/CR and truncates at ``#``/``?``), so
+    two independent layers guard it rather than one enumerated character list:
+
+    1. Refuse EVERY control character (C0, DEL, NEL and the Unicode line and
+       paragraph separators) plus ``#``/``?`` outright. None belongs in a resource
+       name, and any of them could be stripped or truncated by some url2pathname,
+       splicing a ``../`` or a leading ``/`` the raw-form check never saw
+       (``".\\n./x"`` has no ``../`` yet becomes ``"../x"``) (CWE-22). This layer
+       is version- and platform-agnostic.
+
+    2. Apply the SINK's own transform, then CONTAINMENT-test the result against a
+       fixed reference root, the approach path libraries use (Werkzeug
+       ``safe_join``, Django, Flask ``send_from_directory``) instead of enumerating
+       dangerous patterns. ``os.path.join`` lets an absolute / drive / ``..`` result
+       override the root and ``normpath`` collapses ``..``, so any escape from the
+       join escapes the real data root too. Also reject any path component made only
+       of dots and spaces: Windows strips trailing dots/spaces per component at open
+       time, so ``.. `` (or ``..%20``) opens ``..``, a traversal ``normpath`` does
+       not model, and no legitimate resource component is dots-and-spaces only.
+       (Both live in :func:`_normalized_path_escapes`.) The Windows drive / ``|`` /
+       ``:`` / UNC rewrites are handled ahead of this by :data:`_UNSAFE_NO_PROTOCOL_RE`
+       (which refuses every ``:`` and ``|``) on every platform, so this containment
+       test does not depend on the deprecated ``nturl2path`` to be correct on Windows.
+
+    :param name: The resource string to validate.
+    :param error_label: Optional alternative string for the error message.
+    """
+    label = name if error_label is None else error_label
+    if _URL_REWRITTEN_CHARS_RE.search(name):
+        raise ValueError(f"Unsafe resource path: {label!r}")
+    if _normalized_path_escapes(name):
+        raise ValueError(f"Unsafe resource path: {label!r}")
 
 
 def _reject_unsafe_no_protocol(resource_url):
@@ -59,9 +230,20 @@ def _reject_unsafe_no_protocol(resource_url):
     Note: some no-protocol inputs are interpreted by split_resource_url() as
     file-style paths (e.g., bare Windows drive paths like "C:/foo"). These must
     still be rejected here when they contain unsafe patterns.
+
+    Both the raw and URL-decoded form are validated so that encoded path
+    separators / traversal segments (``%2f``, ``%2e%2e``, ...) cannot
+    bypass the filter and later be decoded by :func:`url2pathname` into
+    a dangerous filesystem path. The encoded-form check is delegated to
+    :func:`_assert_no_encoded_bypass` to keep the policy in one place.
     """
     if _UNSAFE_NO_PROTOCOL_RE.search(resource_url):
         raise ValueError(f"Unsafe resource path: {resource_url!r}")
+    _assert_no_encoded_bypass(resource_url)
+    # The deny-list above requires the two traversal dots to be adjacent; a
+    # control char that url2pathname later strips could split them. Re-check the
+    # normalized form (as find() does) so the no-protocol path can't diverge.
+    _assert_no_normalized_bypass(resource_url)
 
 
 try:
@@ -71,8 +253,26 @@ except ImportError:
 
 from nltk import grammar, sem
 from nltk.internals import deprecated
+from nltk.termsec import safe_print
 
 textwrap_indent = functools.partial(textwrap.indent, prefix="  ")
+
+
+def _is_windows():
+    return os.name == "nt"
+
+
+def _windows_data_paths():
+    return [
+        os.path.join(sys.prefix, "nltk_data"),
+        os.path.join(sys.prefix, "share", "nltk_data"),
+        os.path.join(sys.prefix, "lib", "nltk_data"),
+        os.path.join(os.environ.get("APPDATA", "C:\\"), "nltk_data"),
+        r"C:\nltk_data",
+        r"D:\nltk_data",
+        r"E:\nltk_data",
+    ]
+
 
 ######################################################################
 # Search Path
@@ -87,21 +287,13 @@ path = []
 
 # User-specified locations:
 _paths_from_env = os.environ.get("NLTK_DATA", "").split(os.pathsep)
-path += [d for d in _paths_from_env if d]
+path += [os.path.expanduser(d) for d in _paths_from_env if d]
 if "APPENGINE_RUNTIME" not in os.environ and os.path.expanduser("~/") != "~/":
     path.append(os.path.expanduser("~/nltk_data"))
 
-if sys.platform.startswith("win"):
+if _is_windows():
     # Common locations on Windows:
-    path += [
-        os.path.join(sys.prefix, "nltk_data"),
-        os.path.join(sys.prefix, "share", "nltk_data"),
-        os.path.join(sys.prefix, "lib", "nltk_data"),
-        os.path.join(os.environ.get("APPDATA", "C:\\"), "nltk_data"),
-        r"C:\nltk_data",
-        r"D:\nltk_data",
-        r"E:\nltk_data",
-    ]
+    path += _windows_data_paths()
 else:
     # Common locations on UNIX & OS X:
     path += [
@@ -120,6 +312,210 @@ else:
 ######################################################################
 
 
+_STAGING_TEMPDIR = None
+
+
+def staging_tempdir():
+    """A process-wide scratch directory INSIDE an allowed data root.
+
+    ``tempfile.mkstemp()`` and ``NamedTemporaryFile()`` default to the system
+    temp dir, which on Linux is the shared, world-writable ``/tmp`` and is
+    deliberately NOT a pathsec root. Wrappers that stage an input file for an
+    external tool therefore wrote outside the sandbox. Pass this as ``dir=`` so
+    the scratch file lands inside a root instead.
+
+    Allocated once per process and removed at exit, so callers do not leak a
+    directory per invocation the way a per-call ``make_staging_dir`` would.
+    """
+    global _STAGING_TEMPDIR
+    if _STAGING_TEMPDIR is not None and not _staging_dir_is_still_safe(
+        _STAGING_TEMPDIR
+    ):
+        _STAGING_TEMPDIR = None
+    if _STAGING_TEMPDIR is None:
+        staged = make_staging_dir(prefix="nltk_scratch_")
+        atexit.register(shutil.rmtree, staged, ignore_errors=True)
+        _STAGING_TEMPDIR = staged
+    return _STAGING_TEMPDIR
+
+
+def _staging_dir_is_still_safe(path):
+    """Re-check a cached scratch directory before handing it out again.
+
+    The cache is a module global, so it is only as trustworthy as the directory
+    it names. ``os.path.isdir`` FOLLOWS symlinks, so an attacker who removes the
+    directory and drops a symlink in its place passes that check and every later
+    scratch file lands wherever the link points. ``lstat`` is used instead, and
+    containment is re-verified, so a swapped or poisoned value is discarded and
+    a fresh directory allocated.
+    """
+    from nltk import pathsec
+
+    try:
+        info = os.lstat(path)
+    except OSError:
+        return False
+    # Not stat(): a symlink must be rejected, not followed.
+    if not stat.S_ISDIR(info.st_mode):
+        return False
+    try:
+        pathsec.validate_path(path, context="nltk.data.staging_tempdir")
+    except (PermissionError, ValueError):
+        return False
+    # A scratch dir that has become group- or world-writable is squattable:
+    # another local user can replace a file between the moment this process
+    # creates it and the moment it reads it back (CWE-377/CWE-378). Discard it
+    # and allocate a fresh 0700 one rather than reusing it.
+    if not pathsec.is_private_dir(path):
+        return False
+    return True
+
+
+def make_staging_dir(prefix="nltk_", cleanup=False):
+    """Create a fresh private directory for NLTK's own output, inside a data root.
+
+    NLTK's save helpers default here so their output lands within the security
+    sandbox (every ``nltk.data.path`` entry is an allowed root) on all platforms,
+    including Linux where the shared ``/tmp`` is deliberately not a root. The
+    directory is created with ``tempfile.mkdtemp`` (mode 0700, unpredictable name)
+    under the first ``nltk.data.path`` entry that can be written to.
+
+    :param prefix: filename prefix for the created directory. It is a *name*
+        fragment, not a path: callers build it from values such as a tagger's
+        language code, and ``tempfile.mkdtemp`` simply concatenates it onto
+        *dir*, so a ``..`` inside it would place the directory outside the data
+        root (CWE-22). Path separators and NUL are therefore refused.
+    :type prefix: str
+    :param cleanup: remove the directory when the interpreter exits. Use it for
+        scratch output nobody will look for again; leave it False for a saved
+        model, where deleting the user's artifact would be surprising. Without
+        it every call leaks a directory under the data root, since the name is
+        unpredictable and no caller can find it again to clean up.
+    :return: the absolute path of the created directory.
+
+    See also :func:`staging_tempdir`, which is this function memoised: one
+    shared scratch directory for the whole process, for callers that need a
+    *place* to put a throwaway file rather than a directory of their own.
+    Allocating a fresh directory per throwaway file is what leaked 70 of them on
+    a development machine.
+    :rtype: str
+    :raises ValueError: if *prefix* is not a plain filename fragment.
+    :raises PermissionError: if no ``nltk.data.path`` entry is a writable allowed
+        root, in which case the caller should pass an explicit destination.
+    """
+    prefix = str(prefix)
+    if (
+        "\x00" in prefix
+        or "/" in prefix
+        or "\\" in prefix
+        or os.sep in prefix
+        or (os.altsep and os.altsep in prefix)
+    ):
+        raise ValueError(
+            f"Invalid staging-dir prefix {prefix!r}: a prefix is a filename "
+            "fragment, not a path (no separators or NUL)"
+        )
+    for root in path:
+        base = os.path.expanduser(str(root.path if hasattr(root, "path") else root))
+        try:
+            # Confirm base is inside the pathsec sandbox before creating anything,
+            # so a surprising ~ / $HOME / NLTK_DATA expansion cannot make
+            # os.makedirs build a directory chain, or mkdtemp stage output,
+            # outside the allowed roots. validate_path resolves symlinks the same
+            # way the allowed roots are computed, so this never trusts more than
+            # the sandbox does.
+            _validate_path(base, context="nltk.data.make_staging_dir")
+            os.makedirs(base, exist_ok=True)
+            staged = tempfile.mkdtemp(prefix=prefix, dir=base)
+            try:
+                # Defence in depth: confirm what was actually created is inside
+                # the root just validated, not merely that the base was.
+                _validate_path(staged, context="nltk.data.make_staging_dir")
+            except BaseException:
+                os.rmdir(staged)
+                raise
+            if cleanup:
+                atexit.register(shutil.rmtree, staged, ignore_errors=True)
+            return staged
+        except (OSError, ValueError, PermissionError):
+            continue
+    raise PermissionError(
+        f"No writable in-sandbox NLTK data root to stage output in (tried "
+        f"{len(path)} nltk.data.path entries); pass an explicit destination "
+        "directory."
+    )
+
+
+class _BoundedGzipFile(GzipFile):
+    """A ``GzipFile`` whose ``read()`` refuses a decompression bomb (CWE-409): it
+    tracks how far it has decompressed and enforces nltk's ratio/size policy,
+    measured against the compressed file size when known (else the ``MAX_UNZIP_SIZE``
+    hard cap). Used wherever nltk opens a ``.gz`` for reading, so a raw unbounded
+    ``GzipFile.read`` is never the read path (``gzip_open_unicode``,
+    ``GzipFileSystemPathPointer.open``, the deprecated ``BufferedGzipFile``).
+    Writing is unaffected.
+
+    The guard measures the maximum uncompressed offset reached (``tell()``), not the
+    sum of ``read()`` return sizes, so backward seeks and re-reads (e.g. by
+    ``SeekableUnicodeStreamReader`` or ``pickle``) never inflate the count into a
+    false positive, while a seek-to-end still forces the full member to decompress
+    and is caught. The compressed size is stat-ed once and cached, since re-stat-ing
+    on every ``read()`` is hot for chunked/line iteration.
+    """
+
+    @classmethod
+    def _nltk_wrap_secure_fileobj(cls, filename, fileobj):
+        """Build a reader over an already-opened (path-validated) *fileobj* and make
+        the returned object own it, so closing the reader closes the handle: a plain
+        ``GzipFile`` never closes a fileobj it did not open itself."""
+        gz = cls(filename, "rb", 9, fileobj)
+        gz._nltk_owned_fileobj = fileobj
+        return gz
+
+    def _nltk_compress_size(self):
+        if not hasattr(self, "_nltk_cached_compress_size"):
+            name = self.name
+            self._nltk_cached_compress_size = (
+                os.path.getsize(name)
+                if isinstance(name, str) and os.path.exists(name)
+                else None
+            )
+        return self._nltk_cached_compress_size
+
+    def _nltk_guard_offset(self, reached):
+        # Guard at the high-water uncompressed offset (passed in, never self.tell(),
+        # which IOBase routes through seek() below and would recurse).
+        if reached > getattr(self, "_nltk_read_total", 0):
+            self._nltk_read_total = reached
+            _reject_decompression_total(
+                reached, self._nltk_compress_size(), self.name or "<gzip>", "gzip"
+            )
+
+    def read(self, size=-1):
+        chunk = super().read(size)
+        if chunk:
+            # super().seek(0, CUR) is the parent's cheap post-read offset (no
+            # decompression), bypassing this class's seek() override.
+            self._nltk_guard_offset(super().seek(0, os.SEEK_CUR))
+        return chunk
+
+    def seek(self, offset, whence=os.SEEK_SET):
+        # A forward / SEEK_END seek decompresses-and-discards inside GzipFile's buffer,
+        # never through read(); re-check the landed offset so a bomb cannot slip past.
+        pos = super().seek(offset, whence)
+        self._nltk_guard_offset(pos)
+        return pos
+
+    def close(self):
+        try:
+            super().close()
+        finally:
+            owned = getattr(self, "_nltk_owned_fileobj", None)
+            if owned is not None:
+                self._nltk_owned_fileobj = None
+                owned.close()
+
+
 def gzip_open_unicode(
     filename,
     mode="rb",
@@ -130,7 +526,7 @@ def gzip_open_unicode(
     newline=None,
 ):
     if fileobj is None:
-        fileobj = GzipFile(filename, mode, compresslevel, fileobj)
+        fileobj = _BoundedGzipFile(filename, mode, compresslevel, fileobj)
     return TextIOWrapper(fileobj, encoding, errors, newline)
 
 
@@ -138,7 +534,7 @@ def split_resource_url(resource_url):
     """
     Splits a resource url into "<protocol>:<path>".
 
-    >>> windows = sys.platform.startswith('win')
+    >>> windows = _is_windows()
     >>> split_resource_url('nltk:home/nltk')
     ('nltk', 'home/nltk')
     >>> split_resource_url('nltk:/home/nltk')
@@ -167,7 +563,7 @@ def split_resource_url(resource_url):
         if path_.startswith("/"):
             path_ = "/" + path_.lstrip("/")
     else:
-        path_ = re.sub(r"^/{0,2}", "", path_)
+        path_ = redos.sub(r"^/{0,2}", "", path_)
 
     return protocol, path_
 
@@ -176,7 +572,7 @@ def normalize_resource_url(resource_url):
     r"""
     Normalizes a resource url
 
-    >>> windows = sys.platform.startswith('win')
+    >>> windows = _is_windows()
     >>> os.path.normpath(split_resource_url(normalize_resource_url('file:grammar.fcfg'))[1]) == \
     ... ('\\' if windows else '') + os.path.abspath(os.path.join(os.curdir, 'grammar.fcfg'))
     True
@@ -230,11 +626,17 @@ def normalize_resource_url(resource_url):
 
     # Case 1: nltk:<path>
     if protocol == "nltk":
-        # If "nltk:" is used with an absolute path, treat it as "file://"
-        # Reject Windows drive-letter paths even when explicitly using the nltk: protocol.
-        # This prevents smuggling filesystem paths through nltk: URLs.
-        if re.match(r"^[A-Za-z]:[/\\]", name):
+        # Reject encoded-form bypasses (e.g. ``nltk:%2fetc%2fpasswd``)
+        # before the literal-form routing below interprets the path. The
+        # encoded check is centralised in _assert_no_encoded_bypass so the
+        # encoded / literal policy cannot drift across call sites.
+        _assert_no_encoded_bypass(name, error_label=resource_url)
+        # Reject Windows drive-letter paths even when explicitly using the
+        # nltk: protocol. This prevents smuggling filesystem paths through
+        # nltk: URLs.
+        if redos.match(r"^[A-Za-z]:[/\\]", name):
             raise ValueError(f"Unsafe resource path: {resource_url!r}")
+        # If "nltk:" is used with an absolute path, treat it as "file://"
         if os.path.isabs(name):
             protocol = "file://"
             name = normalize_resource_name(name, False, None)
@@ -263,7 +665,7 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
         be converted to a platform-appropriate path separator.
         Directory trailing slashes are preserved
 
-    >>> windows = sys.platform.startswith('win')
+    >>> windows = _is_windows()
     >>> normalize_resource_name('.', True)
     './'
     >>> normalize_resource_name('./', True)
@@ -281,13 +683,13 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
     >>> windows or normalize_resource_name('/dir/file', True, '/') == '/dir/file'
     True
     """
-    is_dir = bool(re.search(r"[\\/.]$", resource_name)) or resource_name.endswith(
+    is_dir = bool(redos.search(r"[\\/.]$", resource_name)) or resource_name.endswith(
         os.path.sep
     )
-    if sys.platform.startswith("win"):
+    if _is_windows():
         resource_name = resource_name.lstrip("/")
     else:
-        resource_name = re.sub(r"^/+", "/", resource_name)
+        resource_name = redos.sub(r"^/+", "/", resource_name)
     if allow_relative:
         resource_name = os.path.normpath(resource_name)
     else:
@@ -295,7 +697,7 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
             relative_path = os.curdir
         resource_name = os.path.abspath(os.path.join(relative_path, resource_name))
     resource_name = resource_name.replace("\\", "/").replace(os.path.sep, "/")
-    if sys.platform.startswith("win") and os.path.isabs(resource_name):
+    if _is_windows() and os.path.isabs(resource_name):
         resource_name = "/" + resource_name
     if is_dir and not resource_name.endswith("/"):
         resource_name += "/"
@@ -374,20 +776,13 @@ class FileSystemPathPointer(PathPointer, str):
         """The absolute path identified by this path pointer."""
         return self._path
 
-    # ==============================
-    # SECURITY PATCH ENFORCING SANDBOX
-    # ==============================
     def open(self, encoding=None):
         """
         Secure open — prevents absolute direct access outside pointer root.
+        Path validation is enforced by pathsec.open() which checks the
+        resolved path against allowed NLTK data roots.
         """
-        path = os.path.normpath(self._path)
-
-        # Block raw absolute reads such as "/" "C:\\Windows" etc.
-        if os.path.isabs(path) and path != os.path.normpath(self._path):
-            raise ValueError(f"Direct absolute file access blocked: {path}")
-
-        stream = open(self._path, "rb")
+        stream = _secure_open(self._path, "rb")
         if encoding is not None:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream
@@ -422,11 +817,11 @@ class FileSystemPathPointer(PathPointer, str):
 
 
 @deprecated("Use gzip.GzipFile instead as it also uses a buffer.")
-class BufferedGzipFile(GzipFile):
+class BufferedGzipFile(_BoundedGzipFile):
     """A ``GzipFile`` subclass for compatibility with older nltk releases.
 
     Use ``GzipFile`` directly as it also buffers in all supported
-    Python versions.
+    Python versions. (``read()`` is bomb-bounded via ``_BoundedGzipFile``.)
     """
 
     def __init__(
@@ -449,10 +844,217 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
     """
 
     def open(self, encoding=None):
-        stream = GzipFile(self._path, "rb")
-        if encoding:
+        # Validate the path via the sentinel (CWE-22 / CWE-73), then stream the handle
+        # through _BoundedGzipFile so a bomb is capped without buffering it whole (CWE-409).
+        handle = _secure_open(self._path, "rb")
+        try:
+            stream = _BoundedGzipFile._nltk_wrap_secure_fileobj(self._path, handle)
+        except BaseException:
+            handle.close()
+            raise
+        # ``encoding is not None`` (not truthiness) to match
+        # FileSystemPathPointer.open() / ZipFilePathPointer.open().
+        if encoding is not None:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream
+
+
+#: Maximum allowed ratio of a zip member's uncompressed size to its stored
+#: (compressed) size before it is treated as a decompression bomb (CWE-409).
+#: DEFLATE's maximum ratio is ~1032x, reached only by runs of identical bytes,
+#: i.e. payloads crafted purely to maximize expansion; legitimate text/markup
+#: corpora compress a few-fold to a few-hundred-fold at most, well under this.
+#: A member that expands beyond this ratio is rejected. Configurable.
+MAX_UNZIP_RATIO = 1000
+
+#: Optional hard cap (in bytes) on a single zip member's uncompressed size.
+#: ``None`` disables it (the default, so legitimately large corpora are not
+#: affected); set it for a strict absolute limit in hardened deployments.
+MAX_UNZIP_SIZE = None
+
+#: The ratio check is only applied once a member's declared uncompressed size
+#: exceeds this activation threshold, so small files (which cannot exhaust
+#: resources regardless of ratio) are never rejected.
+MAX_UNZIP_ACTIVATION = 32 * 1024 * 1024  # 32 MiB
+
+#: Maximum number of entries an archive may declare (CWE-409). Metadata alone
+#: costs memory and CPU: reading the central directory of an archive with
+#: millions of entries exhausts both without decompressing a single byte, so the
+#: per-member ratio/size limits above never see it. The largest corpus NLTK
+#: ships declares ~15k members, so this leaves ample headroom. Configurable;
+#: ``None`` disables the check.
+MAX_UNZIP_MEMBERS = 100_000
+
+
+def _check_zip_member_count(count, name="<archive>"):
+    """Reject an archive declaring more entries than ``MAX_UNZIP_MEMBERS``.
+
+    A central-directory bomb needs no decompression: the entry table itself is
+    the payload, and every consumer that lists or iterates members pays for it.
+    """
+    if MAX_UNZIP_MEMBERS is not None and count > MAX_UNZIP_MEMBERS:
+        raise ValueError(
+            "Refusing to read zip %r: it declares %d entries, above "
+            "nltk.data.MAX_UNZIP_MEMBERS=%d (central-directory bomb). Raise "
+            "nltk.data.MAX_UNZIP_MEMBERS if this archive is trusted."
+            % (name, count, MAX_UNZIP_MEMBERS)
+        )
+
+
+def _check_zip_total_size(infolist, name="<archive>"):
+    """Reject an archive whose members SUM to a decompression bomb (CWE-409).
+
+    ``_check_decompression_bomb`` runs per member, so an archive of many members
+    each just under ``MAX_UNZIP_ACTIVATION`` (32 MiB) is never ratio-checked and
+    never individually refused, yet the members together expand from a tiny zip
+    to an arbitrarily large total: 40 members of 5 MiB came from a 400 KiB zip,
+    and at the ``MAX_UNZIP_MEMBERS`` limit the total reaches terabytes. Extraction
+    keeps no running byte total, so nothing caught it.
+
+    This applies the same activation-plus-ratio test at the whole-archive level:
+    a large total that expands by more than ``MAX_UNZIP_RATIO`` over the total
+    compressed size is refused. A legitimately large corpus has a modest overall
+    ratio and passes; only an aggregate that looks like a bomb is refused.
+    """
+    # A single real member is already fully covered by the per-member
+    # _check_decompression_bomb (declared size) and the bounded streaming reader
+    # (actual bytes). The aggregate gap this guards is specifically MANY members
+    # that each pass the per-member floor but sum to a bomb, so it only applies
+    # when there is more than one file member. Directory entries (size 0, name
+    # ending in "/") are not real members and are not counted, so a lone big file
+    # shipped with its parent directory entry stays on the per-member path.
+    files = [
+        info
+        for info in infolist
+        if not (getattr(info, "filename", "") or "").endswith("/")
+    ]
+    if len(files) <= 1:
+        return
+    total_uncompressed = 0
+    total_compressed = 0
+    for info in files:
+        total_uncompressed += getattr(info, "file_size", 0) or 0
+        total_compressed += getattr(info, "compress_size", 0) or 0
+    if MAX_UNZIP_SIZE is not None and total_uncompressed > MAX_UNZIP_SIZE:
+        raise ValueError(
+            "Refusing to read zip %r: its members total %d uncompressed bytes, "
+            "above nltk.data.MAX_UNZIP_SIZE=%d."
+            % (name, total_uncompressed, MAX_UNZIP_SIZE)
+        )
+    if (
+        total_uncompressed >= MAX_UNZIP_ACTIVATION
+        and total_compressed > 0
+        and total_uncompressed > MAX_UNZIP_RATIO * total_compressed
+    ):
+        raise ValueError(
+            "Refusing to read suspected zip bomb %r: its members expand %.1fx in "
+            "aggregate (%d -> %d bytes), above nltk.data.MAX_UNZIP_RATIO=%d. Raise "
+            "nltk.data.MAX_UNZIP_RATIO if this archive is trusted."
+            % (
+                name,
+                total_uncompressed / total_compressed,
+                total_compressed,
+                total_uncompressed,
+                MAX_UNZIP_RATIO,
+            )
+        )
+
+
+def _check_decompression_bomb(info):
+    """
+    Reject a zip member that looks like a decompression bomb (CWE-409).
+
+    ``info`` is a ``zipfile.ZipInfo``. A member is refused when its declared
+    uncompressed size exceeds the optional hard cap ``MAX_UNZIP_SIZE``, or when
+    that size is both large (>= ``MAX_UNZIP_ACTIVATION``) and expands by more
+    than ``MAX_UNZIP_RATIO`` over its stored compressed size. This guards the
+    read-into-memory paths (``ZipFilePathPointer.open``,
+    ``OpenOnDemandZipFile.read``) and the on-disk extraction path
+    (``nltk.downloader``) against tiny archives that exhaust RAM or disk.
+    """
+    compress_size = getattr(info, "compress_size", 0) or 0
+    file_size = getattr(info, "file_size", 0) or 0
+    name = getattr(info, "filename", "<member>")
+
+    if MAX_UNZIP_SIZE is not None and file_size > MAX_UNZIP_SIZE:
+        raise ValueError(
+            "Refusing to decompress zip member %r: uncompressed size %d bytes "
+            "exceeds nltk.data.MAX_UNZIP_SIZE=%d." % (name, file_size, MAX_UNZIP_SIZE)
+        )
+
+    if (
+        file_size >= MAX_UNZIP_ACTIVATION
+        and compress_size > 0
+        # integer comparison (no float rounding at the threshold)
+        and file_size > MAX_UNZIP_RATIO * compress_size
+    ):
+        raise ValueError(
+            "Refusing to decompress suspected zip bomb %r: it expands %.1fx "
+            "(%d -> %d bytes), above nltk.data.MAX_UNZIP_RATIO=%d. "
+            "Raise nltk.data.MAX_UNZIP_RATIO if this data is trusted."
+            % (
+                name,
+                file_size / compress_size,
+                compress_size,
+                file_size,
+                MAX_UNZIP_RATIO,
+            )
+        )
+
+
+def _reject_decompression_total(total, compress_size, name, kind):
+    """Raise ValueError if *total* decompressed bytes breach the bomb policy: the
+    optional ``MAX_UNZIP_SIZE`` hard cap, or (when *compress_size* is known and
+    non-zero) an expansion beyond ``MAX_UNZIP_RATIO`` above the ``MAX_UNZIP_ACTIVATION``
+    floor. *kind* (``"zip"`` / ``"gzip"``) only tunes the wording (CWE-409)."""
+    if MAX_UNZIP_SIZE is not None and total > MAX_UNZIP_SIZE:
+        raise ValueError(
+            "Refusing to decompress %r: its %s output exceeds "
+            "nltk.data.MAX_UNZIP_SIZE=%d bytes." % (name, kind, MAX_UNZIP_SIZE)
+        )
+    if (
+        compress_size
+        and total >= MAX_UNZIP_ACTIVATION
+        and (total > MAX_UNZIP_RATIO * compress_size)
+    ):
+        raise ValueError(
+            "Refusing to decompress suspected %s bomb %r: it expands beyond "
+            "nltk.data.MAX_UNZIP_RATIO=%d over the %d-byte compressed input. "
+            "Raise nltk.data.MAX_UNZIP_RATIO if this data is trusted."
+            % (kind, name, MAX_UNZIP_RATIO, compress_size)
+        )
+
+
+def _bounded_stream_read(stream, compress_size, name="<member>", kind="zip"):
+    """Read a decompressing file-like *stream* under the decompression-bomb policy,
+    capping the **actual** bytes it produces against *compress_size* (CWE-409).
+
+    This never trusts a declared/metadata size and never materialises the member
+    through a raw one-shot read: it pulls fixed 1 MiB chunks and refuses once the
+    output is both large (>= ``MAX_UNZIP_ACTIVATION``) and expands beyond
+    ``MAX_UNZIP_RATIO`` over the compressed input, or exceeds the optional
+    ``MAX_UNZIP_SIZE`` hard cap. Returns the decompressed bytes. *kind* only tunes
+    the error wording (``"zip"`` / ``"gzip"``).
+    """
+    out = []
+    total = 0
+    for chunk in iter(lambda: stream.read(1 << 20), b""):
+        total += len(chunk)
+        _reject_decompression_total(total, compress_size, name, kind)
+        out.append(chunk)
+    return b"".join(out)
+
+
+def _bounded_gzip_decompress(gz_bytes, name="<member>"):
+    """Decompress gzip bytes under the decompression-bomb policy (CWE-409).
+
+    ``ZipFilePathPointer.open`` / ``GzipFileSystemPathPointer.open`` wrap a ``.gz``
+    in a ``GzipFile``, a decompression layer :func:`_check_decompression_bomb` (which
+    only inspects declared zip sizes) does not bound. The gzip ISIZE trailer is
+    attacker-forgeable, so the actual-byte streaming cap is the guarantee.
+    """
+    with GzipFile(name, fileobj=BytesIO(gz_bytes)) as gz:
+        return _bounded_stream_read(gz, len(gz_bytes), name, kind="gzip")
 
 
 class ZipFilePathPointer(PathPointer):
@@ -499,7 +1101,7 @@ class ZipFilePathPointer(PathPointer):
     @property
     def zipfile(self):
         """
-        The zipfile.ZipFile object used to access the zip file
+        The ZipFile object used to access the zip file
         containing the entry identified by this path pointer.
         """
         return self._zipfile
@@ -513,10 +1115,13 @@ class ZipFilePathPointer(PathPointer):
         return self._entry
 
     def open(self, encoding=None):
+        _check_decompression_bomb(self._zipfile.getinfo(self._entry))
         data = self._zipfile.read(self._entry)
         stream = BytesIO(data)
         if self._entry.endswith(".gz"):
-            stream = GzipFile(self._entry, fileobj=stream)
+            # The .gz is a SECOND decompression layer the zip-member guard never
+            # sees; bound its output under the same policy (nested bomb, CWE-409).
+            stream = BytesIO(_bounded_gzip_decompress(data, self._entry))
         elif encoding is not None:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream
@@ -614,10 +1219,15 @@ def find(resource_name, paths=None):
     :rtype: str
     """
     resource_name = normalize_resource_name(resource_name, True)
-    # Defense-in-depth: reject traversal/absolute paths even if caller bypassed normalize_resource_url()
-    # Use search() so traversal components anywhere in the resource_name trigger rejection.
+    # Defense-in-depth: reject traversal/absolute paths even if a caller
+    # bypassed normalize_resource_url(). Use search() so traversal
+    # components anywhere in the resource_name trigger rejection. The
+    # URL-decoded form is checked via _assert_no_encoded_bypass to keep
+    # the encoded / literal policy aligned with the other call sites.
     if _UNSAFE_NO_PROTOCOL_RE.search(resource_name):
         raise ValueError(f"Unsafe resource path: {resource_name!r}")
+    _assert_no_encoded_bypass(resource_name)
+    _assert_no_normalized_bypass(resource_name)
 
     # Resolve default paths at runtime in-case the user overrides
     # nltk.data.path
@@ -625,11 +1235,21 @@ def find(resource_name, paths=None):
         paths = path
 
     # Check if the resource name includes a zipfile name
-    m = re.match(r"(.*?\.zip)/?(.*)$", resource_name)
+    # DOTALL matters for termination, not just matching: without it a name
+    # containing a newline never looks like a zip, so the ".zip/" fallback below
+    # recurses on an ever-growing name instead of stopping (CWE-407 / CWE-1333).
+    m = redos.match(r"(.*?\.zip)/?(.*)$", resource_name, re.DOTALL)
     if m:
         zipfile, zipentry = m.groups()
     else:
         zipfile = None
+
+    # Evidence that the *package* exists but the specific entry does not.
+    _package_present_but_entry_missing = []
+
+    def _note_near_miss(where):
+        if where not in _package_present_but_entry_missing:
+            _package_present_but_entry_missing.append(where)
 
     # Check each item in our path
     for path_ in paths:
@@ -639,6 +1259,7 @@ def find(resource_name, paths=None):
                 return ZipFilePathPointer(path_, resource_name)
             except OSError:
                 # resource not in zipfile
+                _note_near_miss(path_)
                 continue
 
         # Is the path item a directory or is resource_name an absolute path?
@@ -650,6 +1271,22 @@ def find(resource_name, paths=None):
                         return GzipFileSystemPathPointer(p)
                     else:
                         return FileSystemPathPointer(p)
+                else:
+                    # If the package exists (either as a directory or as a .zip)
+                    # but the specific requested file doesn't, record a "near miss"
+                    # so the eventual LookupError isn't misleading.
+                    parts = [p for p in resource_name.split("/") if p]
+                    # Only record a "near miss" when there is a sub-entry *within* a
+                    # package (i.e. more than two meaningful path components), so we
+                    # don't misclassify requests for the package root itself.
+                    if len(parts) > 2:
+                        pkg = "/".join(parts[:2])  # e.g. "corpora/stopwords"
+                        pkg_dir = os.path.join(path_, url2pathname(pkg))
+                        pkg_zip = os.path.join(path_, url2pathname(pkg + ".zip"))
+                        if os.path.isdir(pkg_dir):
+                            _note_near_miss(pkg_dir)
+                        elif os.path.isfile(pkg_zip):
+                            _note_near_miss(pkg_zip)
             else:
                 p = os.path.join(path_, url2pathname(zipfile))
                 if os.path.exists(p):
@@ -657,6 +1294,7 @@ def find(resource_name, paths=None):
                         return ZipFilePathPointer(p, zipentry)
                     except OSError:
                         # resource not in zipfile
+                        _note_near_miss(p)
                         continue
 
     # Fallback: if the path doesn't include a zip file, then try
@@ -677,18 +1315,48 @@ def find(resource_name, paths=None):
     if resource_zipname.endswith(".zip"):
         resource_zipname = resource_zipname.rpartition(".")[0]
 
-    # Display a friendly error message if the resource wasn't found:
-    msg = (
-        f"Resource '{resource_zipname}' not found.\n"
-        "Please use the NLTK Downloader to obtain the resource:\n\n"
-        ">>> import nltk\n"
-        f">>> nltk.download('{resource_zipname}')\n"
-    )
+    # HuggingFace fallback: if the corpus is in the HF registry and has
+    # already been downloaded to the HF datasets cache, serve it from there.
+    # Uses local_files_only=True so no network request is made here.
+    try:
+        from nltk.huggingface.dataset import REGISTRY, HFDatasetPathPointer, _is_cached
+
+        if resource_zipname in REGISTRY and _is_cached(resource_zipname):
+            return HFDatasetPathPointer(resource_zipname)
+    except ImportError:
+        pass
+
+    # Display a friendly error message if the resource wasn't found.
+    # If the package appears present but the specific entry is missing, keep
+    # the download hint as a secondary suggestion.
+    if _package_present_but_entry_missing:
+        msg = (
+            f"Resource entry '{resource_name}' not found in installed package "
+            f"'{resource_zipname}'.\n"
+            "The package appears to be installed, but the requested file is missing.\n"
+            "\n"
+            "If you believe the package is corrupted or out of date, you can try "
+            "re-downloading it with the NLTK Downloader:\n\n"
+            ">>> import nltk\n"
+            f">>> nltk.download('{resource_zipname}')\n"
+        )
+    else:
+        msg = (
+            f"Resource '{resource_zipname}' not found.\n"
+            "Please use the NLTK Downloader to obtain the resource:\n\n"
+            ">>> import nltk\n"
+            f">>> nltk.download('{resource_zipname}')\n"
+        )
     msg = textwrap_indent(msg)
 
     msg += "\n  For more information see: https://www.nltk.org/data.html\n"
 
     msg += f"\n  Attempted to load '{resource_name}'\n"
+
+    if _package_present_but_entry_missing:
+        msg += "\n  Package was found in:" + "".join(
+            "\n    - %r" % d for d in _package_present_but_entry_missing
+        )
 
     msg += "\n  Searched in:" + "".join("\n    - %r" % d for d in paths)
     sep = "*" * 70
@@ -712,19 +1380,24 @@ def retrieve(resource_url, filename=None, verbose=True):
         if resource_url.startswith("file:"):
             filename = os.path.split(resource_url)[-1]
         else:
-            filename = re.sub(r"(^\w+:)?.*/", "", resource_url)
+            filename = redos.sub(r"(^\w+:)?.*/", "", resource_url)
     if os.path.exists(filename):
         filename = os.path.abspath(filename)
         raise ValueError("File %r already exists!" % filename)
 
     if verbose:
-        print(f"Retrieving {resource_url!r}, saving to {filename!r}")
+        safe_print(f"Retrieving {resource_url!r}, saving to {filename!r}")
 
     # Open the input & output streams.
     infile = _open(resource_url)
 
-    # Copy infile -> outfile, using 64k blocks.
-    with open(filename, "wb") as outfile:
+    # Copy infile -> outfile, using 64k blocks. Route the write through the
+    # pathsec sentinel so the destination honours the file-access sandbox
+    # (allowed data roots, symlink resolution) instead of the builtin open,
+    # which bypasses it and can write arbitrary local files -- an arbitrary
+    # file write that can escalate to code execution via a planted file
+    # (CWE-22).
+    with _secure_open(filename, "wb") as outfile:
         while True:
             s = infile.read(1024 * 64)  # 64k blocks.
             outfile.write(s)
@@ -776,7 +1449,7 @@ def restricted_pickle_load(string):
     """
     Prevents any class or function from loading.
     """
-    from nltk.app.wordnet_app import RestrictedUnpickler
+    from nltk.picklesec import RestrictedUnpickler
 
     return RestrictedUnpickler(BytesIO(string)).load()
 
@@ -927,14 +1600,14 @@ def load(
         resource_val = _resource_cache.get((resource_url, format))
         if resource_val is not None:
             if verbose:
-                print(f"<<Using cached copy of {resource_url}>>")
+                safe_print(f"<<Using cached copy of resource (format={format})>>")
             return resource_val
 
     protocol, path_ = split_resource_url(resource_url)
 
     if path_[-7:] == ".pickle":
         if verbose:
-            print(f"<<Loading pickle-free alternative to {resource_url}>>")
+            safe_print("<<Loading pickle-free alternative>>")
         fil = os.path.split(path_[:-7])[-1]
         if path_.startswith("tokenizers/punkt"):
             return switch_punkt(fil)
@@ -947,7 +1620,7 @@ def load(
 
     # Let the user know what's going on.
     if verbose:
-        print(f"<<Loading {resource_url}>>")
+        safe_print("<<Loading resource>>")
 
     # Load the resource.
     opened_resource = _open(resource_url)
@@ -957,11 +1630,14 @@ def load(
     elif format == "pickle":
         resource_val = restricted_pickle_load(opened_resource.read())
     elif format == "json":
-        import json
+        from nltk.jsontags import json_tags, safe_json_load
 
-        from nltk.jsontags import json_tags
-
-        resource_val = json.load(opened_resource)
+        # Bound size and structural depth before the recursive C JSON decoder:
+        # a data-root resource is only as trusted as its contents, and deeply
+        # nested JSON can segfault the interpreter (safe_json_load rejects it).
+        resource_val = safe_json_load(
+            opened_resource, context=f"nltk.data.load({resource_url})"
+        )
         tag = None
         if len(resource_val) != 1:
             tag = next(resource_val.keys())
@@ -1045,9 +1721,9 @@ def show_cfg(resource_url, escape="##"):
     for l in lines:
         if l.startswith(escape):
             continue
-        if re.match("^$", l):
+        if redos.match("^$", l):
             continue
-        print(l)
+        safe_print(l)
 
 
 def clear_cache():
@@ -1072,16 +1748,29 @@ def _open(resource_url):
         loaded from.  The default protocol is "nltk:", which searches
         for the file in the the NLTK data package.
     """
-    resource_url = normalize_resource_url(resource_url)
-    protocol, path_ = split_resource_url(resource_url)
+    # Restore "no protocol" handling for internal resilience
+    resource_url = str(resource_url)
+    if ":" not in resource_url:
+        resource_url = "nltk:" + resource_url
 
-    if protocol is None or protocol.lower() == "nltk":
-        return find(path_, path + [""]).open()
-    elif protocol.lower() == "file":
-        # urllib might not use mode='rb', so handle this one ourselves:
-        return find(path_, [""]).open()
+    protocol, path_ = resource_url.split(":", 1)
+
+    if protocol == "nltk":
+        # If find() or .open() raises a ValueError (security) or LookupError,
+        # let it bubble up or handle it based on load() logic.
+        return find(path_).open()
+    elif protocol == "file":
+        local_path = url2pathname(path_)
+        try:
+            # 1. Attempt to use NLTK's standard search paths (Safe/Normalized)
+            return find(local_path).open()
+        except (LookupError, ValueError):
+            # 2. Fallback for absolute paths (e.g., file:///etc/passwd)
+            # This ensures even direct file access hits the pathsec sentinel.
+            return _secure_open(local_path, "rb")
     else:
-        return urlopen(resource_url)
+        # Network protocols (http, https, ftp)
+        return _secure_urlopen(resource_url)
 
 
 ######################################################################
@@ -1120,9 +1809,9 @@ class LazyLoader:
 ######################################################################
 
 
-class OpenOnDemandZipFile(zipfile.ZipFile):
+class OpenOnDemandZipFile(ZipFile):
     """
-    A subclass of ``zipfile.ZipFile`` that closes its file pointer
+    A subclass of ``ZipFile`` that closes its file pointer
     whenever it is not using it; and re-opens it when it needs to read
     data from the zipfile.  This is useful for reducing the number of
     open file handles when many zip files are being accessed at once.
@@ -1134,7 +1823,7 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
     def __init__(self, filename):
         if not isinstance(filename, str):
             raise TypeError("ReopenableZipFile filename must be a string")
-        zipfile.ZipFile.__init__(self, filename)
+        ZipFile.__init__(self, filename)
         assert self.filename == filename
         self.close()
         # After closing a ZipFile object, the _fileRefCnt needs to be cleared
@@ -1143,13 +1832,16 @@ class OpenOnDemandZipFile(zipfile.ZipFile):
 
     def read(self, name):
         assert self.fp is None
-        self.fp = open(self.filename, "rb")
-        value = zipfile.ZipFile.read(self, name)
-        # Ensure that _fileRefCnt needs to be set for Python2and3 compatible code.
-        # Since we only opened one file here, we add 1.
-        self._fileRefCnt += 1
-        self.close()
-        return value
+        _check_decompression_bomb(self.getinfo(name))
+        # This will be validated by pathsec.open
+        self.fp = _secure_open(self.filename, "rb")
+        try:
+            # Delegate to the secured base read(), which also streams the member's
+            # ACTUAL bytes under the cap (CWE-409), not a raw one-shot read.
+            return super().read(name)
+        finally:
+            self.fp.close()
+            self.fp = None
 
     def write(self, *args, **kwargs):
         """:raise NotImplementedError: OpenOnDemandZipfile is read-only"""
@@ -1289,11 +1981,16 @@ class SeekableUnicodeStreamReader:
             return line
 
         readsize = size or 72
-        chars = ""
+        # Collect the spans in a list and join only when a line break shows up
+        # or at end of stream: growing a str in place copied it on every pass
+        # (the residual quadratic the j8g8 probe caught on Windows, CWE-407).
+        parts = []
+        buffered = 0  # characters collected in parts
 
         # If there's a remaining incomplete line in the buffer, add it.
         if self.linebuffer:
-            chars += self.linebuffer.pop()
+            parts.append(self.linebuffer.pop())
+            buffered = len(parts[0])
             self.linebuffer = None
 
         while True:
@@ -1305,23 +2002,32 @@ class SeekableUnicodeStreamReader:
             if new_chars and new_chars.endswith("\r"):
                 new_chars += self._read(1)
 
-            chars += new_chars
-            lines = chars.splitlines(True)
-            if len(lines) > 1:
-                line = lines[0]
-                self.linebuffer = lines[1:]
-                self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
-                self._rewind_checkpoint = startpos
-                break
-            elif len(lines) == 1:
-                line0withend = lines[0]
-                line0withoutend = lines[0].splitlines(False)[0]
-                if line0withend != line0withoutend:  # complete line
-                    line = line0withend
+            # Below the bound, split directly as readline always did (few, bounded
+            # passes). Past it, split only once the fresh span, prefixed with the
+            # previous span's last character, holds a boundary: see _has_line_boundary.
+            tail = parts[-1][-1:] if parts else ""
+            parts.append(new_chars)
+            buffered += len(new_chars)
+            if buffered <= _SPLIT_DIRECTLY_BELOW or _has_line_boundary(
+                tail + new_chars
+            ):
+                chars = "".join(parts)
+                lines = chars.splitlines(True)
+                if len(lines) > 1:
+                    line = lines[0]
+                    self.linebuffer = lines[1:]
+                    self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
+                    self._rewind_checkpoint = startpos
                     break
+                elif len(lines) == 1:
+                    line0withend = lines[0]
+                    line0withoutend = lines[0].splitlines(False)[0]
+                    if line0withend != line0withoutend:  # complete line
+                        line = line0withend
+                        break
 
             if not new_chars or size is not None:
-                line = chars
+                line = "".join(parts)
                 break
 
             # Read successively larger blocks of text.
@@ -1444,6 +2150,10 @@ class SeekableUnicodeStreamReader:
             bytes that will be needed to move forward by ``offset`` chars.
             Defaults to ``offset``.
         """
+        if offset < 0:
+            # the backtracking loop below never reaches a negative count and
+            # would spin forever: the caller's bookkeeping has gone wrong
+            raise ValueError("Negative offsets are not supported")
         if est_bytes is None:
             est_bytes = offset
         bytes = b""
@@ -1601,7 +2311,7 @@ class SeekableUnicodeStreamReader:
 
     def _check_bom(self):
         # Normalize our encoding name
-        enc = re.sub("[ -]", "", self.encoding.lower())
+        enc = redos.sub("[ -]", "", self.encoding.lower())
 
         # Look up our encoding in the BOM table.
         bom_info = self._BOM_TABLE.get(enc)

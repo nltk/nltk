@@ -1,6 +1,6 @@
 # Natural Language Toolkit: First-Order Tableau Theorem Prover
 #
-# Copyright (C) 2001-2025 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
 # URL: <https://www.nltk.org/>
@@ -9,6 +9,8 @@
 """
 Module for a tableau-based First Order theorem prover.
 """
+
+import time
 
 from nltk.inference.api import BaseProverCommand, Prover
 from nltk.internals import Counter
@@ -30,6 +32,7 @@ from nltk.sem.logic import (
     VariableExpression,
     unique_variable,
 )
+from nltk.termsec import safe_print
 
 _counter = Counter()
 
@@ -40,6 +43,25 @@ class ProverParseError(Exception):
 
 class TableauProver(Prover):
     _assume_false = False
+    #: Wall-clock limit, in seconds, on a single proof search. A branching
+    #: tableau can fan out into exponentially many open branches while each stays
+    #: shallow, so the depth bound below is not enough on its own to keep a
+    #: crafted formula from pinning a CPU core (CWE-400). Mirroring
+    #: :class:`nltk.inference.Prover9`'s ``timeout``, the search is abandoned and
+    #: the goal reported unproved once this many seconds elapse; set it to ``0``
+    #: to disable the limit (the original, unbounded behaviour).
+    TIMEOUT = 60
+    #: Deadline (``time.monotonic`` value) for the current proof; set per call in
+    #: :meth:`_prove`. ``None`` means no wall-clock limit is in force.
+    _deadline = None
+    #: Upper bound on the tableau expansion depth (``debug.indent``). The prover
+    #: recurses once per expansion step, so a formula that generates an infinite
+    #: tableau (e.g. ``all x.exists y.succ(x,y)``) recurses without limit until it
+    #: raises an uncaught ``RecursionError`` (crashing the caller) or, with a
+    #: larger stack, hangs (CWE-674 / CWE-770). Stopping at this depth treats the
+    #: branch as not closed (the proof is reported unproved) and keeps the
+    #: recursion well below Python's limit; raise it if you need a deeper proof.
+    MAX_TABLEAU_DEPTH = 200
 
     def _prove(self, goal=None, assumptions=None, verbose=False):
         if not assumptions:
@@ -52,6 +74,7 @@ class TableauProver(Prover):
                 agenda.put(-goal)
             agenda.put_all(assumptions)
             debugger = Debug(verbose)
+            self._deadline = time.monotonic() + self.TIMEOUT if self.TIMEOUT else None
             result = self._attempt_proof(agenda, set(), set(), debugger)
         except RuntimeError as e:
             if self._assume_false and str(e).startswith(
@@ -60,12 +83,27 @@ class TableauProver(Prover):
                 result = False
             else:
                 if verbose:
-                    print(e)
+                    safe_print(e)
                 else:
                     raise e
         return (result, "\n".join(debugger.lines))
 
     def _attempt_proof(self, agenda, accessible_vars, atoms, debug):
+        # Bound the expansion depth so an infinite tableau can't recurse into an
+        # uncaught RecursionError (crashing the caller) or hang (CWE-674/CWE-770).
+        # ``debug.indent`` is incremented once per recursion, so it tracks depth.
+        # Stopping here leaves the branch unclosed, i.e. reports the goal unproved.
+        if debug.indent > self.MAX_TABLEAU_DEPTH:
+            debug.line("MAX DEPTH REACHED")
+            return False
+
+        # Bound the total search by wall-clock time as well: a branching tableau
+        # can fan out without growing deep, so the depth bound alone does not
+        # stop it pinning a CPU core (CWE-400). This runs once per expanded node.
+        if self._deadline is not None and time.monotonic() > self._deadline:
+            debug.line("TIMEOUT REACHED")
+            return False
+
         (current, context), category = agenda.pop_first()
 
         # if there's nothing left in the agenda, and we haven't closed the path
@@ -597,7 +635,7 @@ class Debug:
         self.lines.append(newline)
 
         if self.verbose:
-            print(newline)
+            safe_print(newline)
 
 
 class Categories:
@@ -697,7 +735,7 @@ def tableau_test(c, ps=None, verbose=False):
     pps = [Expression.fromstring(p) for p in ps] if ps else []
     if not ps:
         ps = []
-    print(
+    safe_print(
         "%s |- %s: %s"
         % (", ".join(ps), pc, TableauProver().prove(pc, pps, verbose=verbose))
     )
