@@ -62,7 +62,7 @@ For further information, please see Chapter 3 of the NLTK book.
 import functools
 import re
 
-from nltk.data import load
+from nltk.data import find, load
 from nltk.tokenize.casual import TweetTokenizer, casual_tokenize
 from nltk.tokenize.destructive import NLTKWordTokenizer
 from nltk.tokenize.legality_principle import LegalitySyllableTokenizer
@@ -105,6 +105,32 @@ def _get_punkt_tokenizer(language="english"):
     return PunktTokenizer(language)
 
 
+def punkt_model_available(language="english"):
+    """
+    Return whether a Punkt model for *language* is installed.
+
+    Looks up ``tokenizers/punkt_tab/<language>/`` and does not read the
+    model files. :func:`sent_tokenize` loads that directory, so a true
+    result means the model is present for it.
+
+    :param language: the model name in the Punkt corpus, such as ``english``
+    :rtype: bool
+    """
+    if not _is_punkt_language_name(language):
+        raise ValueError(f"Invalid Punkt language name: {language!r}")
+    try:
+        find(f"tokenizers/punkt_tab/{language}/")
+    except LookupError:
+        return False
+    return True
+
+
+def _is_punkt_language_name(language):
+    if not isinstance(language, str) or not language:
+        return False
+    return all(character.isalnum() or character in "-_" for character in language)
+
+
 # Standard sentence tokenizer.
 def sent_tokenize(text, language="english"):
     """
@@ -114,7 +140,9 @@ def sent_tokenize(text, language="english"):
     for the specified language).
 
     :param text: text to split into sentences
-    :param language: the model name in the Punkt corpus
+    :param language: the model name in the Punkt corpus.
+        :func:`punkt_model_available` reports whether that model is
+        installed, without loading it.
     """
     tokenizer = _get_punkt_tokenizer(language)
     return tokenizer.tokenize(text)
