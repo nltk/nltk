@@ -1877,3 +1877,39 @@ def test_names_no_filesystem_folds_together_are_kept(label, pathsec_sandbox):
 
     first, second = DISTINCT_PAIRS[label]
     assert pathsec._reject_colliding_members([first, second]) is None
+
+
+# ===========================================================================
+# 16. Index names longer than a filesystem can append to
+# ===========================================================================
+@pytest.mark.parametrize(
+    "field, value, refused",
+    [
+        ("id", "p" * downloader.MAX_NAME_BYTES, False),
+        ("id", "p" * (downloader.MAX_NAME_BYTES + 1), True),
+        ("id", chr(0xE9) * (downloader.MAX_NAME_BYTES // 2 + 1), True),
+        ("subdir", "tokenizers/" + "s" * (downloader.MAX_NAME_BYTES + 1), True),
+    ],
+    ids=["id-at-the-bound", "id-past-it", "id-past-it-in-bytes", "subdir-past-it"],
+)
+def test_an_index_name_past_the_byte_bound_refuses_the_index(
+    box, field, value, refused
+):
+    # ".zip.lock" and ".zip.tmp" are appended to a name; the bound keeps every
+    # such file under the 255 bytes a component may have
+    root, outside, dl, server = box
+    pid = value if field == "id" else "longsub"
+    blob = make_zip([(f"{pid}/", b""), (f"{pid}/words.txt", b"alpha\n")])
+    server.body("/pkgs/long.zip", blob)
+    attrs = package_attrs(pid, blob, server.url("/pkgs/long.zip"), subdir="corpora")
+    attrs[field] = value
+    server.body("/index.xml", make_index([attrs]))
+    result, output = run_download(server.url("/index.xml"), dl, pid)
+    if refused:
+        assert result is False, output
+        assert "longer than" in output and server.hits == ["/index.xml"]
+        assert tree(str(dl)) == {}
+    else:
+        assert result is True, output
+        assert (dl / "corpora" / pid / "words.txt").read_bytes() == b"alpha\n"
+    assert_lines_clean(output)
