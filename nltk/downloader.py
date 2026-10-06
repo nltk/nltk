@@ -1604,6 +1604,7 @@ class Downloader:
         # unzipped, then check if it's been fully unzipped.
         if filepath.endswith(".zip"):
             unzipdir = filepath[:-4]
+            zipdir = os.path.dirname(unzipdir)
             if not os.path.exists(unzipdir):
                 return self.NOT_INSTALLED if info.unzip else self.INSTALLED
             if not os.path.isdir(unzipdir):
@@ -1629,6 +1630,24 @@ class Downloader:
                         unzipped_size += st.st_size
             if unzipped_size != info.unzipped_size:
                 return self.STALE
+            # Every file of the verified archive must be there at its size, found
+            # as a reader finds it: the total misses a removed empty file (punkt_tab
+            # ships two), which the tokenizer then reports missing.
+            try:
+                with ZipFile(filepath) as zf:
+                    archived = [m for m in zf.infolist() if not m.is_dir()]
+            except (OSError, ValueError, zipfile.BadZipFile):
+                return self.STALE
+            for member in archived:
+                parts = member.filename.replace("\\", "/").split("/")
+                if os.pardir in parts:
+                    return self.STALE
+                try:
+                    st = os.lstat(os.path.join(zipdir, *parts))
+                except OSError:
+                    return self.STALE
+                if not stat.S_ISREG(st.st_mode) or st.st_size != member.file_size:
+                    return self.STALE
 
         # Otherwise, everything looks good.
         return self.INSTALLED
