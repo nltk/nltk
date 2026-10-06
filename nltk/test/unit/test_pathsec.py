@@ -2,7 +2,10 @@ import builtins
 import io
 import ipaddress
 import os
+import shutil
 import socket
+import subprocess
+import tempfile
 import urllib.request
 import zipfile
 from unittest.mock import MagicMock, patch
@@ -1339,3 +1342,56 @@ class TestInPlaceDataPathRestoreRevokesTrust:
             assert not self._trusted(target)
         finally:
             nltk.data.path[:] = saved
+
+
+def test_symlink_with_relative_parent():
+    # A symlink whose target uses '..' must resolve, as long as every
+    # directory on the way is private. Stage under $HOME, not /tmp:
+    # is_private_dir deliberately rejects world-writable sticky dirs.
+    base = tempfile.mkdtemp(prefix="nltk-pathsec-", dir=os.path.expanduser("~"))
+    try:
+        os.chmod(base, 0o700)
+        real_dir = os.path.join(base, "real")
+        os.mkdir(real_dir, 0o700)
+        bin_dir = os.path.join(base, "bin")
+        os.mkdir(bin_dir, 0o700)
+        target = os.path.join(real_dir, "prog")
+        with open(target, "w") as f:
+            f.write("#!/bin/sh\necho ok\n")
+        os.chmod(target, 0o755)
+        link = os.path.join(bin_dir, "prog")
+        os.symlink("../real/prog", link)
+        assert pathsec.resolve_trusted_executable(link) == os.path.realpath(target)
+    finally:
+        shutil.rmtree(base, ignore_errors=True)
+
+
+def test_argv0_is_caller_supplied_name():
+    # A real program behind a link reports the argv[0] it was given: POSIX sh
+    # prints it as $0 under -c (/bin/sh is root's, a private chain everywhere;
+    # macOS has no /proc), Windows python reads it from its command line.
+    import subprocess
+    import sys
+
+    base = tempfile.mkdtemp(prefix="nltk-pathsec-", dir=os.path.expanduser("~"))
+    try:
+        os.chmod(base, 0o700)
+        bin_dir = os.path.join(base, "bin")
+        os.mkdir(bin_dir, 0o700)
+        link = os.path.join(bin_dir, "myprog")
+        env = pathsec.safe_env()
+        if os.name == "posix":
+            os.symlink("/bin/sh", link)
+            args = ["-c", 'printf %s "$0"']
+        else:
+            os.symlink(sys.executable, link)
+            args = ["-c", "import sys; sys.stdout.write(sys.orig_argv[0])"]
+            env["SYSTEMROOT"] = os.environ.get("SYSTEMROOT", r"C:\Windows")
+        real = pathsec.resolve_trusted_executable(link)
+        assert real is not None and not os.path.islink(real)
+        proc = pathsec.spawn_trusted(link, args, stdout=subprocess.PIPE, env=env)
+        out, _ = proc.communicate()
+        assert out.decode() == link and proc.returncode == 0
+        assert proc.args[0] == link and real != link
+    finally:
+        shutil.rmtree(base, ignore_errors=True)

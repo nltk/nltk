@@ -127,6 +127,7 @@ def test_boxer_call_uses_argv_list_never_shell(monkeypatch):
     def _fake_popen(cmd, *a, **k):
         captured["argv"] = list(cmd)
         captured["shell"] = k.get("shell", False)
+        captured["executable"] = k.get("executable")
         return _FakeProc()
 
     monkeypatch.setattr(ps.subprocess, "Popen", _fake_popen)
@@ -135,7 +136,10 @@ def test_boxer_call_uses_argv_list_never_shell(monkeypatch):
     boxer._call("some stdin input", binary, args=hostile_args)
 
     assert captured["shell"] is False
-    assert captured["argv"][0] == os.path.realpath(binary)  # resolved trusted path
+    # the verified resolved file runs (executable=); argv[0] is the path as called
+    run = captured["executable"]
+    assert run == os.path.realpath(binary) and not os.path.islink(run)
+    assert captured["argv"][0] == binary
     for tok in hostile_args:
         assert tok in captured["argv"]  # literal, not shell-interpreted
 
