@@ -188,6 +188,10 @@ REFUSED_NAMES = {
     "regex-bound": "a{1,99999}",
     "regex-escape": "\\d+",
     "decomposed": "engli" + "s" + chr(0x30C) + "h",
+    # Hangul jamo are letters, so only the NFC rule refuses the decomposed form
+    "decomposed-hangul": unicodedata.normalize(
+        "NFD", chr(0xD55C) + chr(0xAD6D) + chr(0xC5B4)
+    ),
     "long-path": "a/" * 5000,
     "long-name-with-a-slash": "a" * 10_000 + "/",
 }

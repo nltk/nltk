@@ -47,6 +47,7 @@ import io
 import json
 import os
 import runpy
+import stat
 import sys
 import unicodedata
 import warnings
@@ -1513,6 +1514,33 @@ class TestInstalledMeansTheSameToBoth:
         assert hits(server, "punkt_tab") == 2
         assert self._available() is True
 
+    def test_a_directory_in_an_empty_files_place_is_stale_and_repaired(self, box):
+        root, outside, dl, server = box
+        index_url = serve_chain(server)
+        assert run_download(index_url, dl, "punkt")[0] is True
+        empty = dl / "tokenizers" / "punkt_tab" / "english" / "collocations.tab"
+        empty.unlink()
+        empty.mkdir()
+        d = downloader.Downloader(server_index_url=index_url, download_dir=str(dl))
+        assert d.status("punkt_tab", str(dl)) == d.STALE
+        _get_punkt_tokenizer.cache_clear()
+        with pytest.raises(PermissionError, match="Security Violation"):
+            punkt_model_available("english")
+        assert run_download(index_url, dl, "punkt")[0] is True
+        assert empty.is_file() and self._available() is True
+
+    def test_files_resized_to_the_same_total_are_stale(self, box):
+        root, outside, dl, server = box
+        index_url = serve_chain(server)
+        assert run_download(index_url, dl, "punkt")[0] is True
+        model = dl / "tokenizers" / "punkt_tab" / "english"
+        (model / "abbrev_types.txt").write_bytes(b"zz\n")
+        (model / "collocations.tab").write_bytes(b"q")
+        d = downloader.Downloader(server_index_url=index_url, download_dir=str(dl))
+        assert d.status("punkt_tab", str(dl)) == d.STALE
+        assert run_download(index_url, dl, "punkt")[0] is True
+        assert served_split() == SERVED_SPLIT
+
     def test_an_empty_model_directory_is_neither_installed_nor_available(self, box):
         root, outside, dl, server = box
         index_url = serve_chain(server)
@@ -1744,3 +1772,106 @@ def test_the_live_index_installs_a_punkt_tab_the_tokenizers_use(tmp_path, monkey
         assert punkt_model_available("klingon") is False
     finally:
         _get_punkt_tokenizer.cache_clear()
+
+
+# ===========================================================================
+# 14. One index per request, and #3929's extraction, through the chain
+# ===========================================================================
+def test_the_successor_comes_from_the_index_the_request_used(box):
+    root, outside, dl, server = box
+    first = serve_chain(server)
+    second_punkt = punkt_zip(b"second")
+    second_tab = punkt_tab_zip(("punkt_tab/second.txt", b"2"))
+    server.body("/second/punkt.zip", second_punkt)
+    server.body("/second/punkt_tab.zip", second_tab)
+    attrs = [
+        package_attrs(pid, blob, server.url(f"/second/{pid}.zip"), subdir="tokenizers")
+        for pid, blob in (("punkt", second_punkt), ("punkt_tab", second_tab))
+    ]
+    server.body("/second.xml", make_index(attrs))
+    d = downloader.Downloader(server_index_url=first, download_dir=str(dl))
+    with contextlib.redirect_stdout(io.StringIO()):
+        assert d.download("punkt_tab", download_dir=str(dl), quiet=True)
+        # pointed at another index the way nltk.download's own object is
+        d._url = server.url("/second.xml")
+        other = root / "other"
+        other.mkdir()
+        assert d.download("punkt", download_dir=str(other), quiet=True)
+    used_second = "/second/punkt.zip" in server.hits
+    assert ("/second/punkt_tab.zip" in server.hits) == used_second
+    if "_index_url" in vars(downloader.Downloader()):
+        assert used_second  # #3929: an index fetched from another URL is refetched
+    second_file = other / "tokenizers" / "punkt_tab" / "second.txt"
+    assert second_file.exists() == used_second
+
+
+@pytest.mark.skipif(
+    "extract" not in inspect.signature(downloader.Downloader.download).parameters,
+    reason="needs the extract= option of #3929",
+)
+def test_extracting_an_installed_zipped_request_extracts_its_successor(box):
+    root, outside, dl, server = box
+    index_url = serve_chain(
+        server, tab_extra={"unzip": "0"}, punkt_extra={"unzip": "0"}
+    )
+    assert run_download(index_url, dl, "punkt", extract=False)[0] is True
+    assert not (dl / "tokenizers" / "punkt_tab").exists()
+    result, output = run_download(index_url, dl, "punkt", extract=True)
+    assert result is True, output
+    assert (dl / "tokenizers" / "punkt_tab" / "english").is_dir()
+    assert (dl / "tokenizers" / "punkt").is_dir()
+    assert served_split() == SERVED_SPLIT
+    assert_contained(root, outside, dl)
+
+
+# ===========================================================================
+# 15. The collision fold itself, for every pathsec.ZipFile caller
+# ===========================================================================
+FOLDED_PAIRS = {
+    "trailing-dot": ("d/ok.txt", "d/ok.txt."),
+    "trailing-space": ("d/ok.txt", "d/ok.txt "),
+    "trailing-dot-directory": ("d/x/ok.txt", "d/x./ok.txt"),
+    "case": ("d/ok.txt", "d/OK.TXT"),
+    "fullwidth": ("d/ok.txt", "d/" + chr(0xFF4F) + chr(0xFF4B) + ".txt"),
+    "decomposed": (
+        "d/" + CAFE + ".txt",
+        "d/" + unicodedata.normalize("NFD", CAFE) + ".txt",
+    ),
+    "file-and-folded-directory": ("d/x.", "d/x/ok.txt"),
+    **{
+        f"windows-{label}": ("d/a_b.txt", "d/a" + char + "b.txt")
+        for label, char in WINDOWS_UNWRITABLE.items()
+    },
+}
+DISTINCT_PAIRS = {
+    "different-names": ("d/a.txt", "d/b.txt"),
+    "a-dot-inside": ("d/x", "d/x.y"),
+    "two-underscores": ("d/a_b.txt", "d/a__b.txt"),
+    "dots-only-name": ("d/...", "d/x"),
+}
+
+
+@pytest.mark.parametrize("label", sorted(FOLDED_PAIRS))
+def test_names_one_filesystem_stores_as_one_file_are_refused(label, pathsec_sandbox):
+    from nltk import pathsec
+
+    root, outside = pathsec_sandbox
+    first, second = FOLDED_PAIRS[label]
+    with pytest.raises(ValueError, match="resource poisoning"):
+        pathsec._reject_colliding_members([first, second])
+    archive = root / "pair.zip"
+    archive.write_bytes(make_zip([(first, b"ok"), (second, b"EVIL")]))
+    with pathsec.ZipFile(str(archive)) as zf:
+        with pytest.raises((ValueError, PermissionError)):
+            zf.extractall(str(root / "out"))
+    assert not any(
+        kind == stat.S_IFREG for kind, _size in tree(str(root / "out")).values()
+    ), tree(str(root / "out"))
+
+
+@pytest.mark.parametrize("label", sorted(DISTINCT_PAIRS))
+def test_names_no_filesystem_folds_together_are_kept(label, pathsec_sandbox):
+    from nltk import pathsec
+
+    first, second = DISTINCT_PAIRS[label]
+    assert pathsec._reject_colliding_members([first, second]) is None
