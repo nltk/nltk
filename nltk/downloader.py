@@ -3254,6 +3254,13 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None, expected_size=
             except ValueError as e:
                 yield ErrorMessage(filename, str(e))
                 has_violations = True
+            # So must a member the extractor cannot read (encrypted, or an unknown
+            # compression method): opening it reads its header, not its data.
+            try:
+                zf.open(member).close()
+            except (RuntimeError, NotImplementedError, zipfile.BadZipFile) as e:
+                yield ErrorMessage(filename, f"Unreadable member blocked: {e}")
+                has_violations = True
 
         if has_violations:
             return
