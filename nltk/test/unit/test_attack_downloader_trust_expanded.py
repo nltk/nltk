@@ -1345,17 +1345,19 @@ def _owned_by(uid, *paths):
     reports each path's inode as owned by *uid*: the other owner a host with
     one account cannot stage (as ``_foreign_lstat`` does for the trusted
     symlink walk). The kernel still serves this account the bytes, so what is
-    refused is refused by the owner rule alone."""
+    refused is refused by the owner rule alone. An inode is matched with its
+    change time too: a filesystem that reuses the number of a removed file
+    (ext4, tmpfs) must not hand the stand-in to the file that replaced it."""
     keys = set()
     for path in paths:
         st = os.lstat(path)
-        keys.add((st.st_dev, st.st_ino))
+        keys.add((st.st_dev, st.st_ino, st.st_ctime_ns))
     real = {name: getattr(os, name) for name in ("stat", "lstat", "fstat")}
 
     def owned(fn):
         def inner(*args, **kwargs):
             st = fn(*args, **kwargs)
-            if (st.st_dev, st.st_ino) in keys:
+            if (st.st_dev, st.st_ino, st.st_ctime_ns) in keys:
                 fields = list(st)
                 fields[stat.ST_UID] = uid
                 st = os.stat_result(tuple(fields))
@@ -1676,7 +1678,10 @@ class TestTheInstallerSide:
 
     def test_a_subdir_too_long_for_the_filesystem_is_an_error_not_a_crash(self, box):
         root, outside, dl, server = box
-        sub = "/".join(["s" * 200] * 8)
+        # every component within the 200-byte cap, the whole past PATH_MAX
+        # (1024 on macOS, 4096 on Linux)
+        limit = os.pathconf(str(dl), "PC_PATH_MAX")
+        sub = "/".join(["s" * 200] * (limit // 201 + 2))
         index = serve_packages(
             server, [("tiny", tiny_package(), {"unzip": "0", "subdir": sub})]
         )
