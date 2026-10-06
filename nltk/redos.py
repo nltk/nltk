@@ -498,11 +498,12 @@ def check_pattern(src):
             if depth > MAX_NESTING_DEPTH:
                 raise ValueError(depth_msg)
             # Count only capturing groups (the compile cost is quadratic in those):
-            # a plain "(" captures; "(?P<n>" and "(?<n>" are named captures; every
-            # other "(?..." (non-capture, lookaround, flags, comment) does not.
+            # a plain "(" and the named forms "(?P<n>", "(?<n>" and "(?'n'" capture;
+            # every other "(?..." (non-capture, lookaround, flags, comment) does not.
             if (
                 scan[i + 1 : i + 2] != "?"
                 or scan[i + 1 : i + 4] == "?P<"
+                or scan[i + 1 : i + 3] == "?'"
                 or (scan[i + 1 : i + 3] == "?<" and scan[i + 3 : i + 4].isalnum())
             ):
                 group_count += 1
