@@ -3096,25 +3096,22 @@ def _name_not_as_written(name):
     refused on every platform, since an archive extracted anywhere may be
     carried to such a filesystem (CWE-22, resource poisoning). A component
     whose stem is a character device name (CON, NUL, COM1 ...) opens the
-    device where such names exist, so it is refused there, the scope
-    ``pathsec._is_windows_device_name`` uses; on POSIX ``con.xml`` is stored
+    device where such names exist, so it is refused there, by
+    ``pathsec._is_windows_device_name``; on POSIX ``con.xml`` is stored
     as written, nothing stands for anything else, and refusing it would make
     a real package (propbank ships ``frames/con.xml``) uninstallable for no
     gain.
     """
     import unicodedata
 
-    from nltk.pathsec import _WINDOWS_RESERVED_NAMES
+    from nltk.pathsec import _is_windows_device_name
 
     for part in name.split("/"):
         if not part:
             continue
         if part != part.rstrip(" ."):
             return "ends in a dot or a space, which a filesystem strips"
-        if (
-            os.name != "posix"
-            and part.split(".", 1)[0].upper() in _WINDOWS_RESERVED_NAMES
-        ):
+        if _is_windows_device_name(part):
             return "is a character device name"
         if unicodedata.normalize("NFC", part) != part:
             return "is not in composed (NFC) form, which a filesystem may apply"
@@ -3137,11 +3134,10 @@ def _member_shape_error(member, root_abs):
     # A name a terminal would act on (control, line-break, bidi or invisible
     # characters) is refused as an index identifier is (CWE-150): on disk it
     # would forge listing lines and spoof the name the package declares.
-    if sanitize_terminal(member, single_line=True) != member:
-        return (
-            "Member name holds control, line-break, bidi or invisible "
-            f"characters (CWE-150): {sanitize_terminal(repr(member))}"
-        )
+    try:
+        _refuse_unprintable(member, "archive member name")
+    except ValueError as refused:
+        return str(refused)
     # A name a target filesystem would change lands under another name (a
     # trailing dot or space stripped, a device name, a decomposed spelling
     # composed), so it is refused on every platform, before anything is written.
