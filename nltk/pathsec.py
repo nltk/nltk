@@ -106,7 +106,8 @@ _ENV_KEEP = frozenset(
 
 
 class TrustError(OSError):
-    """Raised by :func:`spawn_trusted` when the target fails verification."""
+    """Raised by :func:`spawn_trusted` when the target fails verification; the
+    message names the check and the path that failed it."""
 
 
 def _private_stat(st):
@@ -114,6 +115,88 @@ def _private_stat(st):
     if st.st_uid not in (os.geteuid(), 0):
         return False
     return not (st.st_mode & (stat.S_IWGRP | stat.S_IWOTH))
+
+
+def _owner_mode_text(st):
+    """The facts a refusal names: ``mode 0775, uid 501, gid 80``."""
+    return f"mode {stat.S_IMODE(st.st_mode):04o}, uid {st.st_uid}, gid {st.st_gid}"
+
+
+def _why_not_private(path, st, what):
+    """Why *what* (a directory, file or symlink) at *path* with stat result
+    *st* fails :func:`_private_stat`, as one sentence, or None if it passes."""
+    me = os.geteuid()
+    if st.st_uid not in (me, 0):
+        return (
+            f"{what} {path!r} is owned by uid {st.st_uid}, not by you (uid {me}) "
+            f"or root ({_owner_mode_text(st)})"
+        )
+    if st.st_mode & stat.S_IWOTH:
+        return f"{what} {path!r} is world-writable ({_owner_mode_text(st)})"
+    if st.st_mode & stat.S_IWGRP:
+        return f"{what} {path!r} is group-writable ({_owner_mode_text(st)})"
+    return None
+
+
+def _link_owner_problem(path, st):
+    """A symlink's text is followed only when we or root created the link: why
+    the link at *path* (lstat result *st*) fails that, or None when it passes."""
+    me = os.geteuid()
+    if st.st_uid not in (me, 0):
+        return (
+            f"symlink {path!r} is owned by uid {st.st_uid}, not by you (uid {me}) "
+            "or root"
+        )
+    return None
+
+
+def _link_text_problem(path, link):
+    """Why the text *link* read from the symlink at *path* may not be walked,
+    or None: a control character (NUL, a line break, an escape) is never part
+    of an installed tool's link and would only hide a component in a report."""
+    if any(ord(ch) < 32 or ord(ch) == 127 for ch in link):
+        return (
+            f"symlink {path!r} points to {link!r}, which contains a control character"
+        )
+    return None
+
+
+class _Why(list):
+    """The reasons a refusal collects, in the order the walk met them."""
+
+
+def _note(why, reason):
+    """Record *reason* in the caller's ``why`` list, when one was given."""
+    if why is not None:
+        why.append(reason)
+
+
+def _private_dir_problem(path):
+    """Why *path* is not a private directory (the :func:`is_private_dir`
+    contract), or None when it is."""
+    try:
+        st = os.stat(path)
+    except (OSError, ValueError) as exc:
+        return f"directory {path!r} cannot be inspected ({exc})"
+    if not stat.S_ISDIR(st.st_mode):
+        return f"{path!r} is not a directory"
+    if os.name != "posix":
+        return None
+    return _why_not_private(path, st, "directory")
+
+
+def _dotdot_base_problem(path):
+    """Why a ``..`` from a link's text may not be applied to the resolved
+    directory *path*, or None. The kernel applies ``..`` only to a directory
+    it may search (else ENOTDIR or EACCES); the walk also asks of it what it
+    asks of every other directory on the way (:func:`is_private_dir`)."""
+    if not is_private_dir(path):
+        return _private_dir_problem(path) or f"directory {path!r} is not private"
+    if os.name == "posix":
+        effective = os.access in os.supports_effective_ids
+        if not os.access(path, os.X_OK, effective_ids=effective):
+            return f"directory {path!r} is not searchable (no execute permission)"
+    return None
 
 
 def _is_junction(st):
@@ -147,26 +230,13 @@ def is_private_dir(path):
     unprivileged user namespaces; POSIX ACLs surface in the group bits on Linux
     ext4/xfs but not universally.
     """
-    try:
-        st = os.stat(path)
-    except (OSError, ValueError):
-        return False
-    if not stat.S_ISDIR(st.st_mode):
-        return False
-    if os.name != "posix":
-        # Windows / other: rely on the per-user profile ACLs (no POSIX mode).
-        return True
-    # Must be owned by us (or by root, e.g. a system-wide /usr/share dir).
-    if st.st_uid not in (os.geteuid(), 0):
-        return False
-    # Reject group- or world-writable directories: those let another account
-    # write into (or, without the sticky bit, replace) the directory.
-    if st.st_mode & (stat.S_IWGRP | stat.S_IWOTH):
-        return False
-    return True
+    # POSIX: owned by us or root (a system-wide /usr/share dir) and neither
+    # group- nor world-writable, which would let another account write into or
+    # replace it. Windows: the per-user profile ACLs stand in for the mode.
+    return _private_dir_problem(path) is None
 
 
-def _resolve_private(path, _hops=0):
+def _resolve_private(path, _hops=0, why=None, _link=None):
     """Resolve *path* one component at a time, following each symlink hop and
     applying :func:`is_private_dir` to every directory encountered (including
     each intermediate link's holding directory and its target's ancestors).
@@ -179,37 +249,90 @@ def _resolve_private(path, _hops=0):
     ``/tmp``), so a trusted binary must live under a private root. NLTK's own
     scratch output goes through :func:`nltk.data.make_staging_dir`, which stages
     inside a private data root, never in ``/tmp``.
+
+    A ``..`` in the caller's *path* is refused, never folded:
+    ``os.path.abspath`` collapses it lexically before symlinks resolve, which
+    would skip a link, and a tool location is never given one. A ``..`` inside
+    a symlink's own text is folded the way the kernel folds it, to the real
+    parent of the directory already resolved (never the lexical parent), so the
+    Homebrew ``bin/dot -> ../Cellar/graphviz/<v>/bin/dot`` and Debian
+    ``/usr/bin/dot -> ../sbin/libgvc6-config-update`` shapes resolve, and every
+    directory descended into after it is checked as usual. The directory the
+    ``..`` is applied to must itself be private and searchable, so a regular
+    file, a link to one, or a directory the kernel may not search refuses it
+    (the kernel's ENOTDIR or EACCES), never folded past. Every symlink met
+    must be owned by us or root before its text is read, and the text may hold
+    no control character.
+    The chain is bounded by ``_MAX_LINK_HOPS`` (the kernel's ELOOP limit), so a
+    loop is refused.
+
+    When ``why`` is a list, the single reason for a refusal is appended to it,
+    naming the check and the path that failed it. *_link* is the symlink whose
+    text is being walked, as ``(link, text)``, None for the caller's own path.
     """
     if _hops > _MAX_LINK_HOPS:
+        _note(why, f"symlink chain longer than {_MAX_LINK_HOPS} hops (a loop?)")
         return None
     text = _plain_path_text(path)
-    # Only an absolute, NUL-free path is resolvable. A relative path resolves
-    # against the attacker-controllable CWD; a '..' is refused, not folded, since
-    # os.path.abspath collapses it lexically before symlinks resolve (skips a link).
-    if text is None or "\x00" in text or not os.path.isabs(text):
+    if text is None:
+        _note(why, f"{path!r} is not a str path")
+        return None
+    if "\x00" in text:
+        _note(why, f"{text!r} contains a NUL byte")
+        return None
+    if not os.path.isabs(text):
+        _note(why, f"{text!r} is not absolute (it would resolve against the CWD)")
         return None
     cur = os.sep
     for part in text.split(os.sep):
         if not part or part == os.curdir:  # '' and '.' are inert
             continue
-        if part == os.pardir:  # '..' is never folded here; refuse it
-            return None
+        if part == os.pardir:
+            if _link is None:  # the caller's own '..' is refused, never folded
+                _note(why, f"{text!r} contains a '..' component")
+                return None
+            # a link's '..' steps to the real parent of `cur` (resolved, every
+            # ancestor verified on the way down), out of a private directory the
+            # kernel could search, else it is refused as the kernel would refuse it
+            problem = _dotdot_base_problem(cur)
+            if problem is not None:
+                _note(
+                    why,
+                    f"{problem}: the '..' in symlink {_link[0]!r} -> "
+                    f"{_link[1]!r} is applied to it",
+                )
+                return None
+            cur = os.path.dirname(cur)
+            continue
         if not is_private_dir(cur):  # the directory that holds `part`
+            _note(why, _private_dir_problem(cur) or f"directory {cur!r} is not private")
             return None
         nxt = os.path.join(cur, part)
         try:
             st = os.lstat(nxt)
-        except (OSError, ValueError):
+        except (OSError, ValueError) as exc:
+            _note(why, f"{nxt!r} cannot be inspected ({exc})")
             return None
         if stat.S_ISLNK(st.st_mode):
+            problem = _link_owner_problem(nxt, st)
+            if problem is not None:
+                _note(why, problem)
+                return None
             try:
                 link = os.readlink(nxt)
-            except OSError:
+            except OSError as exc:
+                _note(why, f"symlink {nxt!r} cannot be read ({exc})")
+                return None
+            problem = _link_text_problem(nxt, link)
+            if problem is not None:
+                _note(why, problem)
                 return None
             # Re-resolve the target from the root (an absolute link replaces the
             # base; a relative one joins onto its holding dir), so every ancestor
             # of the target is checked too. Hop-bounded against symlink loops.
-            nxt = _resolve_private(os.path.join(cur, link), _hops + 1)
+            nxt = _resolve_private(
+                os.path.join(cur, link), _hops + 1, why=why, _link=(nxt, link)
+            )
             if nxt is None:
                 return None
         cur = nxt
@@ -221,11 +344,16 @@ def resolve_trusted_executable(target):
     can substitute it before it runs, else None (CWE-426/CWE-427/CWE-732).
 
     POSIX: every directory from the root down to the target (following each
-    symlink hop) must be private (:func:`is_private_dir`), and the final target
-    must be a REGULAR file owned by us or root with no group/world write bit
-    (:func:`_private_stat`). The returned path is fully resolved, so callers
-    should execute THAT, not the original name. A same-UID attacker and root are
-    out of scope (they already control the process).
+    symlink hop) must be private (:func:`is_private_dir`), every symlink on
+    the way must be owned by us or root, no ``..`` may appear in the target
+    (a link's own ``..`` is folded as the kernel does, see
+    :func:`_resolve_private`), and the final target must be a REGULAR file
+    owned by us or root with no group/world write bit
+    (:func:`_private_stat`), checked on a descriptor opened with
+    ``O_NOFOLLOW`` so the inode judged is the one at that path. The returned
+    path is fully resolved, so callers should execute THAT, not the original
+    name. A same-UID attacker and root are out of scope (they already control
+    the process).
 
     Non-POSIX (Windows): best-effort (see :func:`_resolve_trusted_nonposix`). The
     POSIX ownership check cannot run and NLTK does not assume win32security for a
@@ -234,18 +362,96 @@ def resolve_trusted_executable(target):
     CVE-2023-40590) and :func:`spawn_trusted` still refuses a shell and scrubs the
     environment. It does NOT fail closed, so Windows tool wrappers keep working.
     """
+    return _resolve_trusted(target)
+
+
+def _open_verified(real, why):
+    """The ``fstat`` of *real* opened with ``O_NOFOLLOW`` (and ``O_NONBLOCK``,
+    so a FIFO cannot stall the check), or None with the reason noted: the
+    owner, mode and type judged are those of the inode at that path at the
+    moment it was opened, and a symlink swapped in as the final component
+    fails the open instead of being followed."""
+    flags = (
+        os.O_RDONLY
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_NONBLOCK", 0)
+        | getattr(os, "O_CLOEXEC", 0)
+    )
+    try:
+        fd = os.open(real, flags)
+    except (OSError, ValueError) as exc:
+        _note(why, f"{real!r} cannot be opened for verification ({exc})")
+        return None
+    try:
+        return os.fstat(fd)
+    finally:
+        os.close(fd)
+
+
+def _same_inode(a, b):
+    """Two stat results name one inode on one device."""
+    return (a.st_dev, a.st_ino) == (b.st_dev, b.st_ino)
+
+
+def _resolve_trusted(target, why=None):
+    """:func:`resolve_trusted_executable`, recording the reason for a refusal
+    in the list *why* when one is given."""
     if os.name != "posix":
-        return _resolve_trusted_nonposix(target)
-    real = _resolve_private(target)
+        return _resolve_trusted_nonposix(target, why)
+    real = _resolve_private(target, why=why)
     if real is None:
         return None
     try:
-        st = os.stat(real)
-    except (OSError, ValueError):
+        before = os.lstat(real)
+    except (OSError, ValueError) as exc:
+        _note(why, f"{real!r} cannot be inspected ({exc})")
         return None
-    if not stat.S_ISREG(st.st_mode) or not _private_stat(st):
+    if not stat.S_ISREG(before.st_mode):
+        _note(why, f"{real!r} is not a regular file")
+        return None
+    st = _open_verified(real, why)
+    if st is None:
+        return None
+    if not _same_inode(before, st):
+        _note(why, f"{real!r} changed while it was being verified")
+        return None
+    if not stat.S_ISREG(st.st_mode):
+        _note(why, f"{real!r} is not a regular file")
+        return None
+    if not _private_stat(st):
+        _note(
+            why, _why_not_private(real, st, "file") or f"file {real!r} is not private"
+        )
         return None
     return real
+
+
+#: What a refused spawn tells the operator to check, after the exact reason.
+_TRUST_HINT = (
+    "NLTK runs only a regular file that no other local user could have planted "
+    "or swapped: every directory and symlink from the root down to it, and the "
+    "file itself, must be owned by you or root and be neither group- nor "
+    "world-writable (chmod g-w,o-w), and a symlink chain must be short and "
+    "loop-free."
+)
+
+
+def _refusal(target):
+    """The reason *target* is refused, naming the check and the path that
+    failed it, or None when it is accepted."""
+    why = _Why()
+    if _resolve_trusted(target, why) is not None:
+        return None
+    return "; ".join(why) if why else f"{target!r} is not a trusted executable"
+
+
+def untrusted_executable_reason(target):
+    """Why :func:`resolve_trusted_executable` refuses *target*: one sentence
+    naming the check and the path that failed it, or None when it is trusted.
+
+    Diagnostic only: the spawn executes what :func:`resolve_trusted_executable`
+    returned, never a path from this second walk."""
+    return _refusal(target)
 
 
 def _plain_path_text(value):
@@ -270,7 +476,7 @@ def _plain_path_text(value):
     return text
 
 
-def _resolve_trusted_nonposix(target):
+def _resolve_trusted_nonposix(target, why=None):
     """Best-effort resolution on a non-POSIX platform (Windows).
 
     POSIX owner/mode bits do not describe who can write a path, and a real
@@ -283,13 +489,18 @@ def _resolve_trusted_nonposix(target):
     is consulted (that is not a trust boundary)."""
     text = _plain_path_text(target)
     if text is None or "\x00" in text:
+        _note(why, f"{target!r} is not a NUL-free str path")
         return None
     try:
         real = os.path.realpath(text)
         st = os.stat(real)
-    except (OSError, ValueError):
+    except (OSError, ValueError) as exc:
+        _note(why, f"{text!r} cannot be inspected ({exc})")
         return None
-    return real if stat.S_ISREG(st.st_mode) else None
+    if not stat.S_ISREG(st.st_mode):
+        _note(why, f"{real!r} is not a regular file")
+        return None
+    return real
 
 
 def is_trusted_executable(target):
@@ -385,7 +596,10 @@ def spawn_trusted(target, args=(), **popen_kw):
 
     ``shell`` may not be set (a shell would re-interpret the command); ``env``
     defaults to :func:`safe_env` and ``close_fds`` to True. The resolved path is
-    what gets executed, and argv[0] is that same resolved path.
+    what gets executed (``executable=``); argv[0] is the verified path the
+    caller invoked, as the kernel passes it, because a multi-call binary
+    chooses what to be from that name (Debian's ``/usr/bin/dot`` is a link to
+    ``libgvc6-config-update``, which refuses to run under its own name).
 
     Executing the resolved path is race-free against the in-scope attacker
     (another unprivileged local user). :func:`resolve_trusted_executable` has
@@ -406,10 +620,20 @@ def spawn_trusted(target, args=(), **popen_kw):
     popen_kw.setdefault("env", safe_env())
     popen_kw.setdefault("close_fds", True)
 
-    real = resolve_trusted_executable(target)
+    # A path-like is read once (``__fspath__`` may answer differently on a
+    # second call): the text checked is the text run, and the one the refusal
+    # explains. A non-str target is passed on as it is and refused as before.
+    text = _plain_path_text(target)
+    probe = target if text is None else text
+    real = resolve_trusted_executable(probe)
     if real is None:
-        raise TrustError(f"refusing to execute untrusted path: {target!r}")
-    return subprocess.Popen([real, *args], executable=real, **popen_kw)
+        reason = _refusal(probe) or "refused by the trust check"
+        raise TrustError(
+            f"refusing to execute untrusted path: {target!r}: {reason}. {_TRUST_HINT}"
+        )
+    # argv[0] is data for the program, not a lookup: the inode run is `real`
+    invoked = probe if isinstance(probe, str) else real
+    return subprocess.Popen([invoked, *args], executable=real, **popen_kw)
 
 
 def _get_allowed_roots():
