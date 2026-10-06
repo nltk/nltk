@@ -44,6 +44,7 @@ import builtins
 import contextlib
 import inspect
 import io
+import json
 import os
 import runpy
 import sys
@@ -57,6 +58,7 @@ import nltk
 import nltk.data
 from nltk import downloader
 from nltk.test.unit import timing
+from nltk.test.unit.test_attack_allowlist_callers_expanded import _pkg_env
 from nltk.test.unit.test_attack_downloader_zip_expanded import (  # noqa: F401  (box is a fixture)
     BEL,
     CSI8,
@@ -76,6 +78,12 @@ from nltk.test.unit.test_attack_downloader_zip_expanded import (  # noqa: F401  
     patch_declared_size,
     run_download,
     tree,
+)
+from nltk.tokenize import (
+    _get_punkt_tokenizer,
+    punkt_model_available,
+    sent_tokenize,
+    word_tokenize,
 )
 
 HARD_STOP = 128 * 1024 * 1024
@@ -720,6 +728,54 @@ HOSTILE_MEMBERS = {
 }
 if os.name != "posix":
     HOSTILE_MEMBERS["device-name"] = ("punkt_tab/english/CON.txt", b"EVIL")
+# zipfile writes each of these as "_" when it extracts on Windows, so the twin
+# lands on abbrev_types.txt there: refused everywhere, as a case twin is
+WINDOWS_UNWRITABLE = {
+    "colon": ":",
+    "less-than": "<",
+    "greater-than": ">",
+    "pipe": "|",
+    "quote": '"',
+    "question": "?",
+    "star": "*",
+}
+for _label, _char in WINDOWS_UNWRITABLE.items():
+    HOSTILE_MEMBERS[f"windows-{_label}-collision"] = (
+        "punkt_tab/english/abbrev" + _char + "types.txt",
+        b"EVIL",
+    )
+HOSTILE_MEMBERS["file-and-directory"] = ("punkt_tab/english", b"FILE")
+HOSTILE_MEMBERS["nul-cut-name"] = (
+    "punkt_tab/english/abbrev_types.txt" + chr(0) + ".x",
+    b"EVIL",
+)
+
+
+def patch_member(blob, name, *, flag=0, method=None, local_name=None):
+    """Rewrite *name*'s zip headers: OR *flag* into its general purpose bits,
+    set its compression *method*, or give its local header *local_name* (of
+    the same length) while the central directory keeps *name*."""
+    data = bytearray(blob)
+    encoded = name.encode()
+    for signature, length_at, flag_at, method_at, name_at in (
+        (b"PK\x03\x04", 26, 6, 8, 30),
+        (b"PK\x01\x02", 28, 8, 10, 46),
+    ):
+        start = data.find(signature)
+        while start >= 0:
+            size = int.from_bytes(
+                data[start + length_at : start + length_at + 2], "little"
+            )
+            if data[start + name_at : start + name_at + size] == encoded:
+                data[start + flag_at] |= flag
+                if method is not None:
+                    data[start + method_at : start + method_at + 2] = method.to_bytes(
+                        2, "little"
+                    )
+                if local_name is not None and signature == b"PK\x03\x04":
+                    data[start + name_at : start + name_at + size] = local_name.encode()
+            start = data.find(signature, start + 4)
+    return bytes(data)
 
 
 def _hostile_archive(label, server):
@@ -735,12 +791,35 @@ def _hostile_archive(label, server):
     if label == "more-than-the-index-declares":
         blob = punkt_tab_zip(("punkt_tab/english/pad.bin", b"\0" * (3 * 1024 * 1024)))
         return blob, {"unzipped_size": "1000"}
+    if label == "ratio-bomb":
+        return punkt_tab_zip(("punkt_tab/english/bomb.bin", bytes(64 << 20))), {}
+    if label == "member-count-bomb":
+        count = nltk.data.MAX_UNZIP_MEMBERS + 1
+        return (
+            punkt_tab_zip(*[(f"punkt_tab/english/f{i}", b"") for i in range(count)]),
+            {},
+        )
+    # Each fails only when opened: before the phase 1 check the members ahead of
+    # it were already on disk. The local header name differs in case only.
+    blob = punkt_tab_zip(("punkt_tab/english/zz.txt", b"zzz"))
+    if label == "encrypted-member":
+        return patch_member(blob, "punkt_tab/english/zz.txt", flag=1), {}
+    if label == "unknown-compression-method":
+        return patch_member(blob, "punkt_tab/english/zz.txt", method=99), {}
+    if label == "local-header-names-another-file":
+        local = "punkt_tab/english/ZZ.txt"
+        return patch_member(blob, "punkt_tab/english/zz.txt", local_name=local), {}
     raise KeyError(label)
 
 
 ARCHIVE_ATTACKS = sorted(HOSTILE_MEMBERS) + [
     "expands-past-its-declared-size",
     "more-than-the-index-declares",
+    "ratio-bomb",
+    "member-count-bomb",
+    "encrypted-member",
+    "unknown-compression-method",
+    "local-header-names-another-file",
 ]
 
 
@@ -1176,3 +1255,492 @@ def test_the_successor_is_extracted_as_the_request_asks(box):
     assert result is True, output
     assert not (other / "tokenizers" / "punkt_tab").exists()
     assert (other / "tokenizers" / "punkt_tab.zip").is_file()
+
+
+# ===========================================================================
+# 8. Device names: refused where they open a device, kept as written elsewhere
+# ===========================================================================
+DEVICE_MEMBERS = {
+    "conin": "CONIN$",
+    "conout": "CONOUT$",
+    "com-superscript-one": "COM" + chr(0xB9) + ".txt",
+    "lpt-superscript-three": "LPT" + chr(0xB3),
+    "con-space-stem": "CON .txt",
+    "nul-lower": "nul.tab",
+}
+
+
+@pytest.mark.parametrize("label", sorted(DEVICE_MEMBERS))
+def test_a_device_name_member_is_refused_only_where_it_names_a_device(box, label):
+    root, outside, dl, server = box
+    name = DEVICE_MEMBERS[label]
+    blob = punkt_tab_zip(("punkt_tab/english/" + name, b"DEVICE?"))
+    result, output = run_download(serve_chain(server, tab=blob), dl, "punkt")
+    if os.name != "posix":
+        assert result is False, output
+        assert "character device name" in output
+        assert not tab_installed(dl), toks(dl)
+    else:
+        assert result is True, output
+        placed = dl / "tokenizers" / "punkt_tab" / "english" / name
+        assert placed.read_bytes() == b"DEVICE?"
+        assert served_split() == SERVED_SPLIT
+    assert_lines_clean(output)
+    assert_contained(root, outside, dl)
+
+
+# ===========================================================================
+# 9. A hostile index entry for the successor: other archives under its name
+# ===========================================================================
+class TestTheSuccessorEntryLies:
+    @pytest.mark.parametrize("route", ["chain", "direct"])
+    def test_the_successor_entry_serving_the_pickle_archive_is_refused(
+        self, box, route
+    ):
+        root, outside, dl, server = box
+        pickles = punkt_zip(b"HOSTILE")
+        index_url = serve_chain(server, tab=pickles)
+        if route == "direct":
+            assert run_download(index_url, dl, "punkt")[0] is False
+        result, output = run_download(
+            index_url, dl, "punkt" if route == "chain" else "punkt_tab"
+        )
+        assert result is False, output
+        assert "Cross-package overwrite blocked" in output
+        planted = dl / "tokenizers" / "punkt" / "PY3" / "english.pickle"
+        assert planted.read_bytes() == b"not a pickle"
+        assert not tab_installed(dl)
+        assert_contained(root, outside, dl)
+
+    @pytest.mark.parametrize(
+        "top",
+        [
+            "punkt_tab2",
+            "PUNKT_TAB",
+            "tokenizers/punkt_tab",
+            "punkt",
+            "averaged_perceptron_tagger_eng",
+        ],
+    )
+    def test_a_successor_archive_under_another_top_directory_is_refused(self, box, top):
+        root, outside, dl, server = box
+        blob = make_zip(
+            [(top + name[len("punkt_tab") :], data) for name, data in TAB_BASE]
+        )
+        result, output = run_download(serve_chain(server, tab=blob), dl, "punkt")
+        assert result is False, output
+        assert "Cross-package overwrite blocked" in output
+        assert sorted(os.listdir(dl / "tokenizers")) == [
+            "punkt",
+            "punkt.zip",
+            "punkt_tab.zip",
+        ]
+        assert not (dl / top).exists()
+        assert_contained(root, outside, dl)
+
+    def test_a_successor_served_as_a_bare_pickle_is_never_unpickled(self, box):
+        root, outside, dl, server = box
+        marker = outside / "UNPICKLED"
+        payload = unpickling_marker(marker)
+        server.body("/pkgs/punkt_tab.pickle", payload)
+        index_url = serve_chain(
+            server,
+            tab=payload,
+            tab_extra={"url": server.url("/pkgs/punkt_tab.pickle"), "unzip": "0"},
+        )
+        result, output = run_download(index_url, dl, "punkt")
+        assert result is True, output
+        assert (dl / "tokenizers" / "punkt_tab.pickle").read_bytes() == payload
+        with pytest.raises(LookupError):
+            nltk.data.load("tokenizers/punkt_tab.pickle", cache=False)
+        _get_punkt_tokenizer.cache_clear()
+        assert punkt_model_available("english") is False
+        assert not marker.exists()
+
+    def test_a_successor_kept_zipped_still_serves_the_tokenizer(self, box):
+        root, outside, dl, server = box
+        index_url = serve_chain(server, tab_extra={"unzip": "0"})
+        assert run_download(index_url, dl, "punkt")[0] is True
+        assert not (dl / "tokenizers" / "punkt_tab").exists()
+        _get_punkt_tokenizer.cache_clear()
+        assert punkt_model_available("english") is True
+        assert sent_tokenize(SAMPLE, language="english") == SERVED_SPLIT
+        _get_punkt_tokenizer.cache_clear()
+
+    def test_punkt_listed_as_a_collection_holding_itself_installs_once(self, box):
+        root, outside, dl, server = box
+        blob = punkt_tab_zip()
+        server.body("/pkgs/punkt_tab.zip", blob)
+        attrs = package_attrs(
+            "punkt_tab", blob, server.url("/pkgs/punkt_tab.zip"), subdir="tokenizers"
+        )
+        server.body(
+            "/index.xml", make_index([attrs], [("punkt", ["punkt_tab", "punkt"])])
+        )
+        result, output = run_download(server.url("/index.xml"), dl, "punkt")
+        assert result is True, output
+        assert hits(server, "punkt_tab") == 1
+        assert served_split() == SERVED_SPLIT
+
+    def test_a_successor_nested_in_its_own_directory_is_not_a_model(self, box):
+        root, outside, dl, server = box
+        index_url = serve_chain(server, tab_extra={"subdir": "tokenizers/punkt_tab"})
+        assert run_download(index_url, dl, "punkt")[0] is True
+        nested = dl / "tokenizers" / "punkt_tab" / "punkt_tab" / "english"
+        assert (nested / "abbrev_types.txt").is_file()
+        _get_punkt_tokenizer.cache_clear()
+        assert punkt_model_available("english") is False
+        with pytest.raises(LookupError):
+            sent_tokenize(SAMPLE, language="english")
+        assert_contained(root, outside, dl)
+
+
+# ===========================================================================
+# 10. A punkt_tab whose file names are right and whose contents are hostile
+# ===========================================================================
+def _tab_with(file_name, content):
+    target = "punkt_tab/english/" + file_name
+    return make_zip([(n, content if n == target else d) for n, d in TAB_BASE])
+
+
+TERMINAL_LINES = (
+    ESC
+    + "]52;c;aGk="
+    + BEL
+    + "\n"
+    + CSI8
+    + "2J\n"
+    + RLO
+    + "txt.exe\n"
+    + NEL
+    + "\nzzq\n"
+).encode("utf-8")
+#: (file, content, outcome): "loads" splits SAMPLE, "refused" is a ValueError
+#: (UnicodeDecodeError included) from the tokenizer and the availability check alike.
+TAB_CONTENT_ATTACKS = {
+    "abbrev-pickle-opcodes": ("abbrev_types.txt", "pickle", "loads"),
+    "collocations-pickle-opcodes": ("collocations.tab", "pickle", "loads"),
+    "starters-pickle-opcodes": ("sent_starters.txt", "pickle", "loads"),
+    "ortho-pickle-opcodes": ("ortho_context.tab", "pickle", "refused"),
+    "abbrev-terminal-controls": ("abbrev_types.txt", TERMINAL_LINES, "loads"),
+    "starters-terminal-controls": ("sent_starters.txt", TERMINAL_LINES, "loads"),
+    "ortho-not-an-integer": ("ortho_context.tab", b"zzq\tx\n", "refused"),
+    "ortho-integer-past-the-digit-limit": (
+        "ortho_context.tab",
+        b"zzq\t" + b"9" * 5000 + b"\n",
+        "refused",
+    ),
+    "ortho-three-columns": ("ortho_context.tab", b"zzq\t1\t2\n", "refused"),
+    "ortho-no-tab": ("ortho_context.tab", b"zzq\n", "refused"),
+    "abbrev-invalid-utf8": ("abbrev_types.txt", b"zzq\n\xff\xfe\n", "refused"),
+    "abbrev-nul-bytes": ("abbrev_types.txt", b"a\x00b\nzzq\n", "loads"),
+    "abbrev-one-mebibyte-line": (
+        "abbrev_types.txt",
+        b"a" * (1 << 20) + b"\nzzq\n",
+        "loads",
+    ),
+    "abbrev-many-lines": ("abbrev_types.txt", b"x\n" * 200_000 + b"zzq\n", "loads"),
+    "collocations-wide-rows": ("collocations.tab", b"a\tb\tc\td\n" * 1000, "loads"),
+}
+
+
+@pytest.mark.parametrize("label", sorted(TAB_CONTENT_ATTACKS))
+def test_hostile_model_contents_load_inert_or_are_refused(box, capsys, label):
+    root, outside, dl, server = box
+    marker = outside / "UNPICKLED"
+    file_name, content, outcome = TAB_CONTENT_ATTACKS[label]
+    if content == "pickle":
+        content = unpickling_marker(marker) + b"\nzzq\n"
+    index_url = serve_chain(server, tab=_tab_with(file_name, content))
+    assert run_download(index_url, dl, "punkt", quiet=True)[0] is True
+    capsys.readouterr()
+    _get_punkt_tokenizer.cache_clear()
+    with timing.budget(20, "a hostile punkt_tab model loads in bounded time"):
+        if outcome == "loads":
+            assert punkt_model_available("english") is True
+            assert sent_tokenize(SAMPLE, language="english") == SERVED_SPLIT
+        else:
+            with pytest.raises(ValueError):
+                punkt_model_available("english")
+            with pytest.raises(ValueError):
+                sent_tokenize(SAMPLE, language="english")
+    _get_punkt_tokenizer.cache_clear()
+    captured = capsys.readouterr()
+    assert captured.out == "" and captured.err == ""
+    assert not marker.exists()
+    assert_contained(root, outside, dl)
+
+
+# ===========================================================================
+# 11. The downloader and the tokenizer agree on what an installed model is
+# ===========================================================================
+class TestInstalledMeansTheSameToBoth:
+    def _available(self):
+        _get_punkt_tokenizer.cache_clear()
+        try:
+            return punkt_model_available("english")
+        finally:
+            _get_punkt_tokenizer.cache_clear()
+
+    def test_the_chain_turns_an_absent_model_into_an_installed_one(self, box):
+        root, outside, dl, server = box
+        index_url = serve_chain(server)
+        d = downloader.Downloader(server_index_url=index_url, download_dir=str(dl))
+        assert d.status("punkt_tab", str(dl)) == d.NOT_INSTALLED
+        assert self._available() is False
+        assert run_download(index_url, dl, "punkt")[0] is True
+        d.clear_status_cache()
+        assert d.status("punkt_tab", str(dl)) == d.INSTALLED
+        assert self._available() is True
+
+    @pytest.mark.parametrize(
+        "missing", sorted(n.split("/")[-1] for n, _ in TAB_BASE[2:])
+    )
+    def test_a_model_file_removed_is_stale_unavailable_and_refetched(
+        self, box, missing
+    ):
+        root, outside, dl, server = box
+        index_url = serve_chain(server)
+        assert run_download(index_url, dl, "punkt")[0] is True
+        (dl / "tokenizers" / "punkt_tab" / "english" / missing).unlink()
+        d = downloader.Downloader(server_index_url=index_url, download_dir=str(dl))
+        assert d.status("punkt_tab", str(dl)) == d.STALE
+        assert self._available() is False
+        with pytest.raises(LookupError, match="punkt_tab"):
+            sent_tokenize(SAMPLE, language="english")
+        _get_punkt_tokenizer.cache_clear()
+        assert run_download(index_url, dl, "punkt")[0] is True
+        assert hits(server, "punkt_tab") == 2
+        assert self._available() is True
+
+    def test_an_empty_model_directory_is_neither_installed_nor_available(self, box):
+        root, outside, dl, server = box
+        index_url = serve_chain(server)
+        (dl / "tokenizers" / "punkt_tab" / "english").mkdir(parents=True)
+        d = downloader.Downloader(server_index_url=index_url, download_dir=str(dl))
+        assert d.status("punkt_tab", str(dl)) == d.NOT_INSTALLED
+        assert self._available() is False
+        assert run_download(index_url, dl, "punkt")[0] is True
+        assert self._available() is True
+
+
+# ===========================================================================
+# 12. Real archives: every retired package brings a successor that works
+# ===========================================================================
+def _ambient_archive(relative):
+    """The bytes of an installed real archive, from the data roots this test
+    run started with, or None when it is not installed."""
+    for root in _AMBIENT_ROOTS:
+        candidate = os.path.join(root, relative)
+        if os.path.isfile(candidate):
+            with open(candidate, "rb") as handle:
+                return handle.read()
+    return None
+
+
+_AMBIENT_ROOTS = [p for p in nltk.data.path if isinstance(p, str) and os.path.isdir(p)]
+#: retired id: (its pickle-era members, its successor's archive, subdir)
+RETIRED = {
+    "punkt": (
+        ["punkt/english.pickle", "punkt/PY3/english.pickle"],
+        "punkt_tab",
+        "tokenizers",
+    ),
+    "averaged_perceptron_tagger": (
+        ["averaged_perceptron_tagger/averaged_perceptron_tagger.pickle"],
+        "averaged_perceptron_tagger_eng",
+        "taggers",
+    ),
+    "averaged_perceptron_tagger_ru": (
+        ["averaged_perceptron_tagger_ru/averaged_perceptron_tagger_ru.pickle"],
+        "averaged_perceptron_tagger_rus",
+        "taggers",
+    ),
+    "maxent_ne_chunker": (
+        [
+            "maxent_ne_chunker/english_ace_multiclass.pickle",
+            "maxent_ne_chunker/PY3/english_ace_binary.pickle",
+        ],
+        "maxent_ne_chunker_tab",
+        "chunkers",
+    ),
+    "maxent_treebank_pos_tagger": (
+        ["maxent_treebank_pos_tagger/PY3/english.pickle"],
+        "maxent_treebank_pos_tagger_tab",
+        "taggers",
+    ),
+}
+SAMPLES = {
+    "english": "Mr. Smith arrived at 5 p.m. on Jan. 3. He left early, e.g. before lunch.",
+    "german": "Herr Dr. M"
+    + chr(0xFC)
+    + "ller kam am 3. Jan. um 5 Uhr. Er ging z. B. vor dem Essen.",
+    "portuguese": "O Sr. Silva chegou "
+    + chr(0xE0)
+    + "s 5 horas. Ele saiu cedo, i.e. antes do almo"
+    + chr(0xE7)
+    + "o.",
+}
+#: What the real punkt_tab makes of SAMPLES (the released archive, sha256 e57f6418...).
+REAL_SPLITS = {
+    "english": [
+        "Mr. Smith arrived at 5 p.m. on Jan. 3.",
+        "He left early, e.g.",
+        "before lunch.",
+    ],
+    "german": [
+        "Herr Dr. M" + chr(0xFC) + "ller kam am 3.",
+        "Jan.",
+        "um 5 Uhr.",
+        "Er ging z.",
+        "B. vor dem Essen.",
+    ],
+    "portuguese": [
+        "O Sr. Silva chegou " + chr(0xE0) + "s 5 horas.",
+        "Ele saiu cedo, i.e.",
+        "antes do almo" + chr(0xE7) + "o.",
+    ],
+}
+_FUNCTIONAL_CHILD = r"""
+import json, sys
+import nltk, nltk.data
+nltk.data.path[:] = sys.argv[1].split("\n")
+from nltk import ne_chunk, pos_tag
+from nltk.tokenize import punkt_model_available, sent_tokenize, word_tokenize
+samples, pickle_names = json.loads(sys.argv[2])
+out = {"available": {l: punkt_model_available(l) for l in [*samples, "klingon"]}}
+out["sent"] = {l: sent_tokenize(t, language=l) for l, t in samples.items()}
+out["word"] = {l: word_tokenize(t, language=l) for l, t in samples.items()}
+words = word_tokenize("Mark Pedersen works at Google in London.")
+out["pos"] = pos_tag(words)
+out["pos_ru"] = pos_tag(["\u041c\u0430\u043c\u0430", "\u043c\u044b\u043b\u0430"], lang="rus")
+out["ne"] = str(ne_chunk(pos_tag(words)))
+loaded = {}
+for name in pickle_names:
+    model = nltk.data.load(name, cache=False)
+    if hasattr(model, "tokenize"):
+        loaded[name] = model.tokenize(samples["english"])
+    elif hasattr(model, "tag"):
+        loaded[name] = model.tag(words)
+    else:
+        loaded[name] = str(model.parse(pos_tag(words)))
+out["pickle_era_names"] = loaded
+print(json.dumps(out, sort_keys=True))
+"""
+
+
+def _run_functional_child(roots, pickle_names):
+    """Run _FUNCTIONAL_CHILD in a fresh interpreter (no model cached from this
+    one) on *roots*, and return what it reports."""
+    request = json.dumps([SAMPLES, pickle_names])
+    done, run = timing.run_subprocess(
+        [sys.executable, "-c", _FUNCTIONAL_CHILD, "\n".join(roots), request],
+        budget=120,
+        capture_output=True,
+        env=_pkg_env(),
+    )
+    assert done is not None and done.returncode == 0, done and done.stderr
+    return json.loads(done.stdout.decode("utf-8").strip().splitlines()[-1])
+
+
+def test_every_retired_package_brings_its_real_successor_in_a_fresh_process(box):
+    root, outside, dl, server = box
+    archives = {}
+    for old, (members, new, subdir) in RETIRED.items():
+        archives[new] = _ambient_archive(f"{subdir}/{new}.zip")
+    archives["words"] = _ambient_archive("corpora/words.zip")
+    missing = sorted(k for k, v in archives.items() if v is None)
+    if missing:
+        pytest.skip(f"the real archives are not installed here: {missing}")
+    marker = outside / "UNPICKLED"
+    payload = unpickling_marker(marker)
+    packages, pickle_names = [], []
+    for old, (members, new, subdir) in RETIRED.items():
+        dirs = sorted({m.rsplit("/", 1)[0] + "/" for m in members})
+        hostile = make_zip([(d, b"") for d in dirs] + [(m, payload) for m in members])
+        packages.append((old, hostile, subdir))
+        packages.append((new, archives[new], subdir))
+        pickle_names += [f"{subdir}/{m}" for m in members]
+    packages.append(("words", archives["words"], "corpora"))
+    attrs = []
+    for pid, blob, subdir in packages:
+        server.body(f"/pkgs/{pid}.zip", blob)
+        attrs.append(
+            package_attrs(pid, blob, server.url(f"/pkgs/{pid}.zip"), subdir=subdir)
+        )
+    collection = [("popularish", [*RETIRED, "words"])]
+    server.body("/index.xml", make_index(attrs, collection))
+    result, output = run_download(
+        server.url("/index.xml"), dl, "popularish", quiet=True
+    )
+    assert result is True, output
+    for old, (members, new, subdir) in RETIRED.items():
+        assert hits(server, new) == 1, new
+    chained = _run_functional_child([str(dl)], pickle_names)
+    released = _run_functional_child(_AMBIENT_ROOTS, pickle_names)
+    assert chained == released
+    assert chained["available"] == {
+        "english": True,
+        "german": True,
+        "portuguese": True,
+        "klingon": False,
+    }
+    assert chained["sent"] == REAL_SPLITS
+    assert not marker.exists()
+    assert_contained(root, outside, dl)
+
+
+def test_the_real_punkt_tab_flips_availability_for_every_language_it_holds(box):
+    root, outside, dl, server = box
+    blob = _ambient_archive("tokenizers/punkt_tab.zip")
+    if blob is None:
+        pytest.skip("the real punkt_tab archive is not installed here")
+    with zipfile.ZipFile(io.BytesIO(blob)) as zf:
+        languages = sorted(
+            {
+                n.split("/")[1]
+                for n in zf.namelist()
+                if n.count("/") >= 2 and n.endswith(".tab")
+            }
+        )
+    assert len(languages) >= 18 and {"english", "german", "portuguese"} <= set(
+        languages
+    )
+    index_url = serve_chain(server, tab=blob)
+    _get_punkt_tokenizer.cache_clear()
+    assert not any(punkt_model_available(lang) for lang in languages)
+    with pytest.raises(LookupError, match="punkt_tab"):
+        sent_tokenize(SAMPLES["english"], language="english")
+    assert run_download(index_url, dl, "punkt", quiet=True)[0] is True
+    try:
+        assert all(punkt_model_available(lang) for lang in languages)
+        for lang in languages:
+            assert sent_tokenize("A b. C d.", language=lang)
+        for lang, text in SAMPLES.items():
+            assert sent_tokenize(text, language=lang) == REAL_SPLITS[lang]
+            assert word_tokenize(text, language=lang)
+    finally:
+        _get_punkt_tokenizer.cache_clear()
+
+
+# ===========================================================================
+# 13. The live index (needs the network; CI runs it)
+# ===========================================================================
+def test_the_live_index_installs_a_punkt_tab_the_tokenizers_use(tmp_path, monkeypatch):
+    monkeypatch.setenv("NLTK_ALLOW_PROXIED_URLOPEN", "1")
+    target = tmp_path / "nltk_data"
+    d = downloader.Downloader(download_dir=str(target))
+    with contextlib.redirect_stdout(io.StringIO()):
+        assert d.download("punkt", download_dir=str(target), quiet=True) is True
+    assert d.status("punkt", str(target)) == d.INSTALLED
+    assert d.status("punkt_tab", str(target)) == d.INSTALLED
+    monkeypatch.setattr(nltk.data, "path", [str(target)])
+    _get_punkt_tokenizer.cache_clear()
+    try:
+        for lang, text in SAMPLES.items():
+            assert punkt_model_available(lang) is True
+            assert sent_tokenize(text, language=lang) == REAL_SPLITS[lang]
+            assert word_tokenize(text, language=lang)
+        assert punkt_model_available("klingon") is False
+    finally:
+        _get_punkt_tokenizer.cache_clear()
