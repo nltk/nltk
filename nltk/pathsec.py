@@ -894,10 +894,11 @@ _REFUSING_ERRNOS = frozenset(
 
 # On Windows these names are devices wherever they appear, so "<root>\NUL" is
 # the null device rather than a file inside the root, whatever the path says.
+# CONIN$ and CONOUT$ are the console, and COM and LPT take superscript digits.
 _WINDOWS_RESERVED_NAMES = frozenset(
-    ["CON", "PRN", "AUX", "NUL"]
-    + [f"COM{n}" for n in range(1, 10)]
-    + [f"LPT{n}" for n in range(1, 10)]
+    ["CON", "PRN", "AUX", "NUL", "CONIN$", "CONOUT$"]
+    + [f"COM{n}" for n in "123456789\u00b9\u00b2\u00b3"]
+    + [f"LPT{n}" for n in "123456789\u00b9\u00b2\u00b3"]
 )
 
 
@@ -907,6 +908,10 @@ def _is_windows_device_name(raw):
         return False
     leaf = raw.replace("/", "\\").rsplit("\\", 1)[-1]
     return leaf.split(".", 1)[0].strip().upper() in _WINDOWS_RESERVED_NAMES
+
+
+# The characters zipfile replaces with "_" when it extracts on Windows.
+_WINDOWS_UNWRITABLE = str.maketrans(':<>|"?*', "_______")
 
 
 def _reject_colliding_members(members, context="zip member"):
@@ -929,11 +934,14 @@ def _reject_colliding_members(members, context="zip member"):
             "poisoning)."
         )
 
-    # Folded the way a target filesystem folds names: NFKC, case, and the
-    # trailing dots and spaces Windows strips, so "ok.txt." collides with "ok.txt".
+    # Folded as a target filesystem folds names: NFKC, case, the trailing dots and
+    # spaces Windows strips, and the ':<>|"?*' zipfile writes as "_" on Windows.
     def _fold(parts):
         return unicodedata.normalize(
-            "NFKC", "/".join(p.rstrip(" .") or p for p in parts)
+            "NFKC",
+            "/".join(
+                (p.rstrip(" .") or p).translate(_WINDOWS_UNWRITABLE) for p in parts
+            ),
         ).casefold()
 
     # Keyed the way the hardened extractor writes: a backslash is a separator
