@@ -1361,7 +1361,9 @@ class TestTheSuccessorEntryLies:
     def test_a_successor_kept_zipped_still_serves_the_tokenizer(self, box):
         root, outside, dl, server = box
         index_url = serve_chain(server, tab_extra={"unzip": "0"})
-        assert run_download(index_url, dl, "punkt")[0] is True
+        params = inspect.signature(downloader.Downloader.download).parameters
+        keep = {"extract": False} if "extract" in params else {}
+        assert run_download(index_url, dl, "punkt", **keep)[0] is True
         assert not (dl / "tokenizers" / "punkt_tab").exists()
         _get_punkt_tokenizer.cache_clear()
         assert punkt_model_available("english") is True

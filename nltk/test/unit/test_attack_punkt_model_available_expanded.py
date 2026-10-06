@@ -434,12 +434,12 @@ def test_a_data_root_reached_through_a_link_serves_its_model(punkt_root, monkeyp
 
 @POSIX
 def test_a_world_writable_root_is_judged_alike(punkt_root):
-    # every nltk.data.path entry is a data root by develop's policy, writable
-    # or not: the function says what the tokenizer does, nothing looser
+    # develop serves every nltk.data.path entry, #3929 skips a writable one:
+    # under either policy the function says what the tokenizer does
     root, outside = punkt_root
     os.chmod(root, 0o777)
     try:
-        assert assert_parity("english") == ("value", True)
+        assert assert_parity("english") in (("value", True), ("value", False))
     finally:
         os.chmod(root, 0o700)
 
