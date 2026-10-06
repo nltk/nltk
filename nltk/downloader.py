@@ -1007,9 +1007,7 @@ class Downloader:
         # checks. Nothing is looked up first, so a failing index is fetched once.
         if _expanding is None:
             reached = []
-            for msg in self.incr_download(
-                info_or_id, download_dir, force, (), extract
-            ):
+            for msg in self.incr_download(info_or_id, download_dir, force, (), extract):
                 if isinstance(msg, StartPackageMessage):
                     reached.append(msg.package.id)
                 yield msg
