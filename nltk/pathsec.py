@@ -929,16 +929,15 @@ def _reject_colliding_members(members, context="zip member"):
             "poisoning)."
         )
 
-    # Keyed the way the hardened extractor writes: a backslash is a separator
-    # and empty or "." parts vanish, so "a//b" and "a/./b" are "a/b" as well.
-    # Keyed, too, the way a target filesystem folds names: compatibility
-    # normalisation and case (NFKC, casefold) and the trailing dots and
-    # spaces Windows strips, so "ok.txt." and "ok.txt" collide everywhere.
+    # Folded the way a target filesystem folds names: NFKC, case, and the
+    # trailing dots and spaces Windows strips, so "ok.txt." collides with "ok.txt".
     def _fold(parts):
         return unicodedata.normalize(
             "NFKC", "/".join(p.rstrip(" .") or p for p in parts)
         ).casefold()
 
+    # Keyed the way the hardened extractor writes: a backslash is a separator
+    # and empty or "." parts vanish, so "a//b" and "a/./b" are "a/b" as well.
     seen, parents = {}, {}
     for name in members:
         text = name.filename if hasattr(name, "filename") else str(name)

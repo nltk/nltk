@@ -223,12 +223,9 @@ PACKAGE_DEADLINE_CEILING = 2 * 60 * 60
 MAX_UNZIPPED_BYTES = 8 * 1024 * 1024 * 1024
 UNZIPPED_SIZE_SLACK = 1024 * 1024
 
-# Packages this NLTK no longer reads, each with the package that replaced it
-# when the pickles were dropped (CVE-2024-39705): loading the old package's
-# resources is redirected to the new one (nltk.data.load). Asking for the old
-# package installs the new one too (#3394), so code written for the old name,
-# and a collection such as "popular" or "book" that still lists it, gets what
-# the loaders read. The map is one way: a successor never brings the pickles.
+# Retired pickle packages and their replacements (CVE-2024-39705): asking for
+# the old one, directly or through a collection such as "popular", installs the
+# new one too (#3394). One way only: a successor never brings the pickles.
 _SUCCESSORS = {
     "punkt": "punkt_tab",
     "averaged_perceptron_tagger": "averaged_perceptron_tagger_eng",
@@ -913,11 +910,9 @@ class Downloader:
         # below pass the pathsec sandbox (CWE-73, GHSA-p4rw follow-up).
         _authorize_data_dir(download_dir)
 
-        # The caller's own request, not a collection or list being expanded:
-        # download it, then the successor of every package it reached that
-        # this NLTK no longer reads (#3394), into the same directory through
-        # the same checks. Nothing is looked up before the request runs, so a
-        # failing index is fetched once, as before.
+        # The caller's own request (not an expansion): run it, then install the
+        # successor of each retired package it reached (#3394) through the same
+        # checks. Nothing is looked up first, so a failing index is fetched once.
         if _expanding is None:
             reached = []
             for msg in self.incr_download(info_or_id, download_dir, force, ()):
