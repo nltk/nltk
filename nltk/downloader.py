@@ -716,6 +716,39 @@ def _shared_install(download_dir):
     return not (target == home or target.startswith(home + os.sep))
 
 
+def _make_install_dirs(download_dir, subdir):
+    """Create *download_dir* and *subdir* under it, each missing level without
+    a group or world write bit whatever the umask, and return the first of
+    them that another account owns or can write to, or None. Judged the way
+    ``find()`` judges a data root, POSIX under enforcement: the downloader
+    installs only where the data it installs will be read from."""
+    from nltk import pathsec
+
+    target = os.path.abspath(os.path.join(download_dir, subdir))
+    missing = []
+    while not os.path.lexists(target):
+        missing.append(target)
+        parent = os.path.dirname(target)
+        if parent == target:
+            break
+        target = parent
+    for path in reversed(missing):
+        try:
+            os.mkdir(path, 0o755)
+        except FileExistsError:
+            pass
+    if os.name != "posix" or not pathsec.ENFORCE:
+        return None
+    chain = [os.path.abspath(download_dir)]
+    for part in subdir.replace("\\", "/").split("/"):
+        if part and part != os.curdir:
+            chain.append(os.path.join(chain[-1], part))
+    for path in chain:
+        if not pathsec.is_private_dir(path):
+            return path
+    return None
+
+
 class Downloader:
     """
     A class used to access the NLTK data server, which can be used to
@@ -1146,8 +1179,23 @@ class Downloader:
             # second download, the archive having just passed its checksum.
             return not (extract and unzipdir and not os.path.isdir(unzipdir))
 
-        os.makedirs(download_dir, exist_ok=True)
-        os.makedirs(os.path.join(download_dir, info.subdir), exist_ok=True)
+        # Created without a group or world write bit, and refused when another
+        # account can write one: an archive swapped in there between its
+        # checksum and the extraction would be installed as this account's.
+        try:
+            unsafe = _make_install_dirs(download_dir, info.subdir)
+        except OSError as e:
+            yield ErrorMessage(info, f"Cannot create the install directory: {e}")
+            return
+        if unsafe is not None:
+            yield ErrorMessage(
+                info,
+                f"Refusing to install into {unsafe!r}: it is writable by, or "
+                "owned by, another account, so a file swapped in during the "
+                "install would be installed as trusted data. Make it private to "
+                "its owner (chmod go-w).",
+            )
+            return
 
         # Fast path before taking the lock.
         # Do not return "up to date" while another process still holds the install lock.
@@ -1388,6 +1436,7 @@ class Downloader:
                         verbose=False,
                         expected_root=info.id,
                         expected_size=declared_unzipped,
+                        verified=True,
                     ):
                         _touch_lock()
                         msg.package = info
@@ -1582,6 +1631,10 @@ class Downloader:
         except OSError:
             return self.NOT_INSTALLED
         if filestat.st_size != int(info.size):
+            return self.STALE
+        # An archive another account owns or can write may change after its
+        # checksum: stale, so the next download replaces it with a private one.
+        if _not_ours(filestat):
             return self.STALE
 
         # An archive another account installed is private to it (0600): this
@@ -3193,7 +3246,14 @@ def _member_shape_error(member, root_abs):
     return f"{error} (as the extractor splits {member!r})"
 
 
-def _unzip_iter(filename, root, verbose=True, expected_root=None, expected_size=None):
+def _unzip_iter(
+    filename,
+    root,
+    verbose=True,
+    expected_root=None,
+    expected_size=None,
+    verified=False,
+):
     """
     Secure ZIP extraction using validate-then-extract.
 
@@ -3210,6 +3270,11 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None, expected_size=
     package: members declaring more than that plus ``UNZIPPED_SIZE_SLACK``
     are refused before anything is written, and the bytes actually written
     are counted against it as well (CWE-400).
+
+    ``verified`` says the caller checked the archive's checksum by name: the
+    members are then read only from a descriptor that no other account could
+    have changed since (owned by this account or root, no group or world
+    write bit, a single name), or nothing is extracted.
 
     All path comparisons use ``os.path.normcase`` so that the checks
     are case-insensitive on Windows (no-op on POSIX).
@@ -3235,6 +3300,22 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None, expected_size=
         yield ErrorMessage(filename, e)
         # Flush the "Unzipping ..." line here because the try/finally that
         # normally handles this is never entered (zf was never assigned).
+        if verbose:
+            safe_print()
+        return
+
+    # The members are read from this descriptor: an archive another account
+    # owns or can write, or a second name for another file, may hold other
+    # bytes than the ones whose checksum the downloader verified.
+    held = os.fstat(zf.fp.fileno()) if verified else None
+    if held is not None and (_not_ours(held) or held.st_nlink > 1):
+        zf.close()
+        yield ErrorMessage(
+            filename,
+            "Refusing to extract an archive that another account owns or can "
+            "write to, or that has a second name: its bytes may not be the "
+            "ones whose checksum was verified",
+        )
         if verbose:
             safe_print()
         return

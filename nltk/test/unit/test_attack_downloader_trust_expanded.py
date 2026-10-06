@@ -49,7 +49,12 @@ What is trusted, and on what evidence (from ``nltk/data.py`` and
   NFC/NFD, case and file/directory collisions are refused; a symlink entry
   is written as a plain file.
 * D8, extraction policy: a download made as root or outside this account's
-  home is extracted without being asked; the archive stays 0600.
+  home is extracted without being asked; the archive stays 0600. The
+  downloader installs only into directories no other account can write,
+  creates them without a group or world write bit whatever the umask,
+  calls an archive another account owns or can write stale, and extracts
+  only from a descriptor no other account could have changed since the
+  checksum (section 11).
 * D9, content: what passes the above is bytes until a loader accepts it:
   picklesec, jsontags, xmlsec, the decompression ceilings and ``nltk.redos``
   judge the content, whatever its name.
@@ -74,7 +79,11 @@ trade the installer's files, and readers that open by path (Crubadan, Lin,
 the PanLex sqlite3 database) loaded files under a corpus root that another
 account could have written (D2); an archive read after ``find()`` was never
 judged again, so one made writable, or a whole root swapped through a
-writable parent, was read (D3).
+writable parent, was read (D3); the downloader installed into a directory
+another account could write, created its directories under the umask (0775
+under 002, which ``find()`` then refused), and extracted an archive another
+account could rewrite or swap between its checksum and the extraction,
+including through a writable parent of the download directory (D8).
 """
 
 import contextlib
@@ -1396,6 +1405,17 @@ def _stored(data, pid="tiny"):
     return make_zip([(f"{pid}/", b""), (f"{pid}/words.txt", data)], zipfile.ZIP_STORED)
 
 
+def _errors(index, dl, pid="tiny", **kw):
+    """The ErrorMessage texts of a download, whole (the printed form wraps
+    and shortens long paths)."""
+    d = downloader.Downloader(server_index_url=index, download_dir=str(dl))
+    return [
+        str(m.message)
+        for m in d.incr_download(pid, str(dl), **kw)
+        if isinstance(m, downloader.ErrorMessage)
+    ]
+
+
 def _zipped_install(root, data=WORDS):
     """A package left zipped (the wordnet shape) laid down in a private root
     by this account, as the downloader leaves it: the archive 0600."""
@@ -1594,6 +1614,7 @@ class TestTheFinalPass:
             with pytest.warns(RuntimeWarning, match="writable by, or owned by"):
                 with pytest.raises(LookupError):
                     nltk.data.find("corpora/tiny.zip/tiny/words.txt")
+            assert fresh_status(index, dl) == STALE
         os.chmod(archive, 0)  # the reader the installer's archive is closed to
         try:
             with _owned_by(0, dl, dl / "corpora", unpacked, words, archive):
@@ -1601,3 +1622,176 @@ class TestTheFinalPass:
                 assert fresh_status(index, dl) == INSTALLED
         finally:
             os.chmod(archive, 0o600)
+
+
+@POSIX_NON_ROOT
+class TestTheInstallerSide:
+    """The account that installs into a shared root, and the third party who
+    can write near it: the downloader installs only where find() will read,
+    and extracts only bytes no other account could have changed."""
+
+    @pytest.mark.parametrize("where", ["download-dir", "subdir"])
+    @pytest.mark.parametrize("mode", [0o777, 0o775, 0o1777])
+    def test_no_install_into_a_directory_others_can_write(self, box, where, mode):
+        """It was installed into (nltk.data.path already held the directory,
+        so the authorization warning did not stop it), and an archive swapped
+        in there between its checksum and the extraction was installed."""
+        root, outside, dl, server = box
+        index = serve_packages(server, [("tiny", tiny_package(), {"unzip": "0"})])
+        target = dl if where == "download-dir" else dl / "corpora"
+        target.mkdir(exist_ok=True)
+        os.chmod(target, mode)
+        try:
+            errors = _errors(index, dl, extract=True)
+            assert errors and f"Refusing to install into {str(target)!r}" in errors[0]
+            assert "chmod go-w" in errors[0]
+            result, text = run_download(index, dl, "tiny", quiet=True, extract=True)
+            assert result is False, text
+            assert not any(
+                kind == stat.S_IFREG for kind, size in tree(str(dl)).values()
+            )
+            assert server.hits.count("/pkgs/tiny.zip") == 0
+        finally:
+            os.chmod(target, 0o755)
+        result, text = run_download(index, dl, "tiny", quiet=True, extract=True)
+        assert result is True, text
+
+    @pytest.mark.parametrize("mask", [0o002, 0o000])
+    def test_install_directories_are_created_private_whatever_the_umask(
+        self, box, monkeypatch, mask
+    ):
+        """Under umask 002 or 000 the downloader created the data root and
+        corpora/ 0775 or 0777, which find() then refused: the installer's own
+        data was unreadable to it, and under 000 open to every account."""
+        root, outside, dl, server = box
+        index = serve_packages(server, [("tiny", tiny_package(), {"unzip": "0"})])
+        fresh = dl / "a" / "nltk_data"
+        with _umask(mask):
+            result, text = run_download(index, fresh, "tiny", quiet=True, extract=True)
+        assert result is True, text
+        for d in (dl / "a", fresh, fresh / "corpora", fresh / "corpora" / "tiny"):
+            assert _mode(d) == 0o755, (d, oct(_mode(d)))
+        monkeypatch.setattr(nltk.data, "path", [str(fresh)])
+        assert nltk.data.find("corpora/tiny/words.txt").open().read() == WORDS
+
+    def test_a_subdir_too_long_for_the_filesystem_is_an_error_not_a_crash(self, box):
+        root, outside, dl, server = box
+        sub = "/".join(["s" * 200] * 8)
+        index = serve_packages(
+            server, [("tiny", tiny_package(), {"unzip": "0", "subdir": sub})]
+        )
+        result, text = run_download(index, dl, "tiny", quiet=True, extract=True)
+        assert result is False and "Cannot create the install directory" in text
+
+    @pytest.mark.parametrize("how", ["group-writable", "world-writable", "other-owner"])
+    def test_an_archive_others_can_write_is_stale_and_replaced(
+        self, box, monkeypatch, how
+    ):
+        """status() checksummed the archive by name and called it installed;
+        the extraction asked for afterwards (the documented remedy) reopened
+        it, so a group member rewriting it in that window had its bytes
+        installed into the private tree, served to every account."""
+        root, outside, dl, server = box
+        index = serve_packages(server, [("tiny", tiny_package(), {"unzip": "0"})])
+        with _umask(0o022):
+            result, text = run_download(index, dl, "tiny", quiet=True, extract=False)
+        assert result is True, text
+        archive = dl / "corpora" / "tiny.zip"
+        os.chmod(
+            archive, {"group-writable": 0o660, "world-writable": 0o606}.get(how, 0o600)
+        )
+        real_iter = downloader._unzip_iter
+        rewritten = []
+
+        def third_party(filename, *args, **kwargs):
+            # the rewrite lands only while another account may write it: a
+            # group or world write bit, or that account's own file
+            st = os.stat(filename)
+            if st.st_mode & 0o022 or st.st_uid != os.geteuid():
+                with open(filename, "r+b") as fh:
+                    fh.write(tiny_package().replace(WORDS, b"PLANTED-BYTES-17!"))
+                rewritten.append(filename)
+            return real_iter(filename, *args, **kwargs)
+
+        monkeypatch.setattr(downloader, "_unzip_iter", third_party)
+        owner = _owned_by(OTHER_UID, archive) if how == "other-owner" else None
+        with owner or contextlib.nullcontext():
+            assert fresh_status(index, dl) == STALE
+            with _umask(0o022):
+                result, text = run_download(index, dl, "tiny", quiet=True, extract=True)
+        assert result is True, text
+        assert not rewritten, "the extraction read an archive another account held"
+        assert (dl / "corpora" / "tiny" / "words.txt").read_bytes() == WORDS
+        assert _mode(archive) == 0o600 and fresh_status(index, dl) == INSTALLED
+
+    def test_extraction_reads_only_a_descriptor_no_other_account_could_change(
+        self, box, monkeypatch
+    ):
+        """The parent of the download directory another account can write:
+        it swaps its own tree in just before the extractor opens the archive
+        and the real one back right after, so the members were read from its
+        archive and written into the real, private tree, a clean install."""
+        root, outside, dl, server = box
+        parent = dl / "shared"
+        parent.mkdir()
+        os.chmod(parent, 0o777)
+        data = parent / "nltk_data"
+        data.mkdir(mode=0o755)
+        index = serve_packages(server, [("tiny", tiny_package(), {"unzip": "0"})])
+        with _umask(0o022):
+            result, text = run_download(index, data, "tiny", quiet=True, extract=False)
+        assert result is True, text
+        theirs = parent / "theirs"
+        (theirs / "corpora").mkdir(parents=True)
+        evil = theirs / "corpora" / "tiny.zip"
+        evil.write_bytes(tiny_package().replace(WORDS, b"PLANTED-BYTES-17!"))
+        real_iter, real_validate = downloader._unzip_iter, pathsec.validate_zip_archive
+        steps = []
+
+        def swap_in(filename, *args, **kwargs):
+            if not steps:
+                data.rename(parent / "moved")
+                theirs.rename(data)
+                steps.append("in")
+            return real_iter(filename, *args, **kwargs)
+
+        def swap_back(*args, **kwargs):
+            if steps == ["in"]:
+                data.rename(theirs)
+                (parent / "moved").rename(data)
+                steps.append("back")
+            return real_validate(*args, **kwargs)
+
+        monkeypatch.setattr(downloader, "_unzip_iter", swap_in)
+        monkeypatch.setattr(pathsec, "validate_zip_archive", swap_back)
+        with _owned_by(OTHER_UID, theirs, theirs / "corpora", evil):
+            result, text = run_download(index, data, "tiny", quiet=True, extract=True)
+        monkeypatch.setattr(downloader, "_unzip_iter", real_iter)
+        monkeypatch.setattr(pathsec, "validate_zip_archive", real_validate)
+        if steps == ["in"]:  # refused before the window closed: put it back
+            data.rename(theirs)
+            (parent / "moved").rename(data)
+        assert result is False and "Refusing to extract an archive" in text
+        assert not (data / "corpora" / "tiny").exists()
+        assert not (theirs / "corpora" / "tiny").exists()
+        # the direct helper: judged only when the caller verified a checksum
+        mine = dl / "mine.zip"
+        mine.write_bytes(tiny_package())
+        for mode in (0o664, 0o646):
+            os.chmod(mine, mode)
+            out = list(
+                downloader._unzip_iter(str(mine), str(dl / "x"), False, verified=True)
+            )
+            assert any("Refusing to extract" in str(m.message) for m in out), out
+        os.link(mine, dl / "second-name.zip")
+        os.chmod(mine, 0o600)
+        out = list(
+            downloader._unzip_iter(str(mine), str(dl / "x"), False, verified=True)
+        )
+        assert any("second name" in str(m.message) for m in out), out
+        (dl / "second-name.zip").unlink()
+        list(downloader._unzip_iter(str(mine), str(dl / "x"), False, verified=True))
+        assert (dl / "x" / "tiny" / "words.txt").read_bytes() == WORDS
+        os.chmod(mine, 0o664)  # nltk.downloader.unzip() of a file of one's own
+        downloader.unzip(str(mine), str(dl / "y"), verbose=False)
+        assert (dl / "y" / "tiny" / "words.txt").read_bytes() == WORDS
