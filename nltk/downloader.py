@@ -193,6 +193,9 @@ from nltk.xmlsec import parse as safe_parse
 # is under 100 MB), and the index (under 100 KB in reality) is read bounded.
 MAX_PACKAGE_BYTES = 1024 * 1024 * 1024
 MAX_INDEX_BYTES = 64 * 1024 * 1024
+# A package id or subdir component from the index becomes a file name with
+# ".zip.lock" or ".zip.tmp" appended; filesystems allow 255 bytes a component.
+MAX_NAME_BYTES = 200
 
 # A parsed tree costs about twenty times its bytes, and DTD default attributes
 # multiply that further, so the index structure is bounded too. The real index
@@ -219,6 +222,20 @@ PACKAGE_DEADLINE_CEILING = 2 * 60 * 60
 # same server (the largest real package, framenet_v17, unzips to 855 MB).
 MAX_UNZIPPED_BYTES = 8 * 1024 * 1024 * 1024
 UNZIPPED_SIZE_SLACK = 1024 * 1024
+
+# Packages this NLTK no longer reads, each with the package that replaced it
+# when the pickles were dropped (CVE-2024-39705): loading the old package's
+# resources is redirected to the new one (nltk.data.load). Asking for the old
+# package installs the new one too (#3394), so code written for the old name,
+# and a collection such as "popular" or "book" that still lists it, gets what
+# the loaders read. The map is one way: a successor never brings the pickles.
+_SUCCESSORS = {
+    "punkt": "punkt_tab",
+    "averaged_perceptron_tagger": "averaged_perceptron_tagger_eng",
+    "averaged_perceptron_tagger_ru": "averaged_perceptron_tagger_rus",
+    "maxent_ne_chunker": "maxent_ne_chunker_tab",
+    "maxent_treebank_pos_tagger": "maxent_treebank_pos_tagger_tab",
+}
 
 
 def _package_deadline(declared):
@@ -343,6 +360,23 @@ def _one_line_each(text):
     )
 
 
+def _refuse_install_aliases(packages):
+    """Refuse an index in which one package would install into another's
+    place: two archives, or an archive and the directory another unzips to,
+    that are one name on a case-folding or normalising filesystem (macOS,
+    Windows), or a package placed inside the directory another unzips to.
+    Either would overwrite or delete the other's files (resource poisoning);
+    the real index has none."""
+    claimed = []
+    for package in packages:
+        claimed.append(package.filename)
+        if package.filename.endswith(".zip"):
+            # The directory it unzips to is claimed whole, as a file is, so a
+            # path inside it collides as well as a path spelled like it.
+            claimed.append(package.filename[:-4])
+    _reject_colliding_members(claimed, context="data index install path")
+
+
 # urllib2 = nltk.internals.import_from_stdlib('urllib2')
 
 
@@ -449,6 +483,24 @@ class Package:
             raise ValueError(
                 f"Invalid package id {id!r}: must not contain path separators"
             )
+        # The id and the subdir become file names: bound them well under the
+        # 255 bytes a filesystem allows a component, so an index cannot make
+        # the installer fail on a name it could not have been asked for.
+        for what, value in (("id", id), ("subdir", subdir)):
+            if any(
+                len(part.encode("utf-8")) > MAX_NAME_BYTES for part in value.split("/")
+            ):
+                raise ValueError(
+                    f"Invalid package {what} {sanitize_terminal(repr(value))}: "
+                    f"a path component longer than {MAX_NAME_BYTES} bytes"
+                )
+            # A name a filesystem would store under another name (a trailing
+            # dot or space, a device name, a decomposed spelling) is refused.
+            why = _name_not_as_written(value.replace("\\", "/"))
+            if why is not None:
+                raise ValueError(
+                    f"Invalid package {what} {sanitize_terminal(repr(value))}: {why}"
+                )
 
         self.url = url
         """A URL that can be used to download this package's file."""
@@ -848,7 +900,9 @@ class Downloader:
     # downloader in the gui can just kill the download thread anytime
     # it wants.
 
-    def incr_download(self, info_or_id, download_dir=None, force=False, _expanding=()):
+    def incr_download(
+        self, info_or_id, download_dir=None, force=False, _expanding=None
+    ):
         # If they didn't specify a download_dir, then use the default one.
         if download_dir is None:
             download_dir = self._download_dir
@@ -858,6 +912,21 @@ class Downloader:
         # for NLTK data; authorize that specific directory so the reads/writes
         # below pass the pathsec sandbox (CWE-73, GHSA-p4rw follow-up).
         _authorize_data_dir(download_dir)
+
+        # The caller's own request, not a collection or list being expanded:
+        # download it, then the successor of every package it reached that
+        # this NLTK no longer reads (#3394), into the same directory through
+        # the same checks. Nothing is looked up before the request runs, so a
+        # failing index is fetched once, as before.
+        if _expanding is None:
+            reached = []
+            for msg in self.incr_download(info_or_id, download_dir, force, ()):
+                if isinstance(msg, StartPackageMessage):
+                    reached.append(msg.package.id)
+                yield msg
+            for successor in self._successors(reached):
+                yield from self.incr_download(successor, download_dir, force, ())
+            return
 
         # If they gave us a list of ids, then download each one.
         if isinstance(info_or_id, (list, tuple)):
@@ -887,6 +956,22 @@ class Downloader:
         else:
             yield from self._download_package(info, download_dir, force)
 
+    def _successors(self, reached):
+        """The index's package for the successor of each package id in
+        *reached*, unless *reached* holds that successor already. Only the
+        index already loaded is consulted and only a package entry counts: a
+        mirror without the successor, or an index naming a collection there,
+        adds nothing and fetches nothing."""
+        found, seen = [], set(reached)
+        for pid in reached:
+            new = _SUCCESSORS.get(pid) if isinstance(pid, str) else None
+            package = self._packages.get(new)
+            if new in seen or not isinstance(package, Package):
+                continue
+            seen.add(new)
+            found.append(package)
+        return found
+
     def _num_packages(self, item):
         if isinstance(item, Package):
             return 1
@@ -894,7 +979,9 @@ class Downloader:
             return len(item.packages)
 
     def _download_list(self, items, download_dir, force, _expanding=()):
-        # Look up the requested items.
+        # Look up the requested items in a copy: a tuple cannot be assigned
+        # to, and the caller's list is theirs, not a place to keep lookups.
+        items = list(items)
         for i in range(len(items)):
             try:
                 items[i] = self._info_or_id(items[i])
@@ -1359,15 +1446,6 @@ class Downloader:
             return True
 
         else:
-            # Fix for Issue #3394: Redirect or append 'punkt_tab' when 'punkt' is requested.
-            if isinstance(info_or_id, str) and info_or_id == "punkt":
-                info_or_id = ["punkt", "punkt_tab"]
-            elif (
-                isinstance(info_or_id, list)
-                and "punkt" in info_or_id
-                and "punkt_tab" not in info_or_id
-            ):
-                info_or_id.append("punkt_tab")
             # Define a helper function for displaying output:
             def show(s, prefix2=""):
                 # A message is one logical line: flatten its line breaks here,
@@ -1613,7 +1691,9 @@ class Downloader:
 
         # Build a dictionary of packages.
         packages = [Package.fromxml(p) for p in self._index.findall("packages/package")]
-        self._packages = {p.id: p for p in packages}
+        packages = {p.id: p for p in packages}
+        _refuse_install_aliases(packages.values())
+        self._packages = packages
 
         # Build a dictionary of collections.
         collections = [
@@ -3007,6 +3087,40 @@ def _validate_member(member, root_abs):
     return None
 
 
+def _name_not_as_written(name):
+    """Why a slash-separated *name* would not land on disk as written, or None.
+
+    A component with a trailing dot or space is stored without it on Windows,
+    and a component in a decomposed Unicode spelling is stored composed on a
+    normalising filesystem: each lets one name stand for another, so each is
+    refused on every platform, since an archive extracted anywhere may be
+    carried to such a filesystem (CWE-22, resource poisoning). A component
+    whose stem is a character device name (CON, NUL, COM1 ...) opens the
+    device where such names exist, so it is refused there, the scope
+    ``pathsec._is_windows_device_name`` uses; on POSIX ``con.xml`` is stored
+    as written, nothing stands for anything else, and refusing it would make
+    a real package (propbank ships ``frames/con.xml``) uninstallable for no
+    gain.
+    """
+    import unicodedata
+
+    from nltk.pathsec import _WINDOWS_RESERVED_NAMES
+
+    for part in name.split("/"):
+        if not part:
+            continue
+        if part != part.rstrip(" ."):
+            return "ends in a dot or a space, which a filesystem strips"
+        if (
+            os.name != "posix"
+            and part.split(".", 1)[0].upper() in _WINDOWS_RESERVED_NAMES
+        ):
+            return "is a character device name"
+        if unicodedata.normalize("NFC", part) != part:
+            return "is not in composed (NFC) form, which a filesystem may apply"
+    return None
+
+
 def _member_shape_error(member, root_abs):
     """Phase 1 refusal of a member that pathsec's extractor would refuse only
     while writing, after earlier members are already on disk.
@@ -3020,6 +3134,20 @@ def _member_shape_error(member, root_abs):
     spelled = member.replace("\\", "/")
     if os.pardir in spelled.split("/"):
         return f"Parent reference blocked: {member!r}"
+    # A name a terminal would act on (control, line-break, bidi or invisible
+    # characters) is refused as an index identifier is (CWE-150): on disk it
+    # would forge listing lines and spoof the name the package declares.
+    if sanitize_terminal(member, single_line=True) != member:
+        return (
+            "Member name holds control, line-break, bidi or invisible "
+            f"characters (CWE-150): {sanitize_terminal(repr(member))}"
+        )
+    # A name a target filesystem would change lands under another name (a
+    # trailing dot or space stripped, a device name, a decomposed spelling
+    # composed), so it is refused on every platform, before anything is written.
+    why = _name_not_as_written(spelled)
+    if why is not None:
+        return f"Member name {why}: {sanitize_terminal(repr(member))}"
     if spelled == member:
         return None
     error = _validate_member(spelled, root_abs)
