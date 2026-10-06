@@ -34,6 +34,7 @@ to a local file.
 
 import atexit
 import codecs
+import errno
 import functools
 import os
 import pickle
@@ -44,6 +45,7 @@ import sys
 import tempfile
 import textwrap
 import urllib.request
+import warnings
 from abc import ABCMeta, abstractmethod
 from gzip import WRITE as GZ_WRITE
 from gzip import GzipFile
@@ -709,6 +711,67 @@ def normalize_resource_name(resource_name, allow_relative=True, relative_path=No
 ######################################################################
 
 
+def _refuse_file_not_ours(stream, path):
+    """Return *stream*, or close it and refuse a resource file that another
+    account owns or can write to (group or world write bit), judged on the
+    opened descriptor so no swap after the check can change the verdict.
+    This is the verdict ``find()`` gives a file it is asked for directly,
+    carried to every read through a directory pointer (a corpus root) and
+    to the read itself, where a same-name substitute would land. POSIX,
+    under enforcement; root's files are trusted like this account's own."""
+    from nltk import pathsec
+
+    if not pathsec.ENFORCE or os.name != "posix":
+        return stream
+    try:
+        st = os.fstat(stream.fileno())
+    except (OSError, ValueError, AttributeError):
+        return stream
+    if stat.S_ISREG(st.st_mode) and (
+        st.st_uid not in (os.geteuid(), 0) or st.st_mode & (stat.S_IWGRP | stat.S_IWOTH)
+    ):
+        stream.close()
+        raise PermissionError(
+            "NLTK will not read %r: it is writable by, or owned by, another "
+            "account, so a planted or rewritten file would be loaded as trusted "
+            "data. Make it private to its owner (chmod go-w)." % (path,)
+        )
+    return stream
+
+
+def _first_entry_not_ours(top):
+    """The first entry under the directory *top* that another account could
+    have written, or None. By ``lstat``: a directory, file or special entry
+    owned by neither this account nor root, or carrying a group or world
+    write bit; a link whose own owner is another account (its target is
+    judged where it is read); a directory that cannot be listed but can be
+    searched, since its files could be opened unseen. A corpus root is read
+    whole (by pointer, by path, through sqlite3), so it is judged whole, the
+    way ``Downloader.status()`` judges an extracted tree. POSIX."""
+    from nltk import pathsec
+
+    unlisted = []
+    for current, dirs, files in os.walk(top, onerror=unlisted.append):
+        for name in dirs + files:
+            entry = os.path.join(current, name)
+            try:
+                st = os.lstat(entry)
+            except FileNotFoundError:
+                continue
+            except OSError:
+                return entry
+            if stat.S_ISLNK(st.st_mode):
+                if st.st_uid not in (os.geteuid(), 0):
+                    return entry
+            elif not pathsec._private_stat(st):
+                return entry
+    for error in unlisted:
+        where = getattr(error, "filename", None) or top
+        if os.access(where, os.X_OK):
+            return where
+    return None
+
+
 class PathPointer(metaclass=ABCMeta):
     """
     An abstract base class for 'path pointers,' used by NLTK's data
@@ -782,7 +845,7 @@ class FileSystemPathPointer(PathPointer, str):
         Path validation is enforced by pathsec.open() which checks the
         resolved path against allowed NLTK data roots.
         """
-        stream = _secure_open(self._path, "rb")
+        stream = _refuse_file_not_ours(_secure_open(self._path, "rb"), self._path)
         if encoding is not None:
             stream = SeekableUnicodeStreamReader(stream, encoding)
         return stream
@@ -846,7 +909,7 @@ class GzipFileSystemPathPointer(FileSystemPathPointer):
     def open(self, encoding=None):
         # Validate the path via the sentinel (CWE-22 / CWE-73), then stream the handle
         # through _BoundedGzipFile so a bomb is capped without buffering it whole (CWE-409).
-        handle = _secure_open(self._path, "rb")
+        handle = _refuse_file_not_ours(_secure_open(self._path, "rb"), self._path)
         try:
             stream = _BoundedGzipFile._nltk_wrap_secure_fileobj(self._path, handle)
         except BaseException:
@@ -1246,17 +1309,106 @@ def find(resource_name, paths=None):
 
     # Evidence that the *package* exists but the specific entry does not.
     _package_present_but_entry_missing = []
+    # Archives that exist but this account may not read (EACCES/EPERM), as
+    # (archive, search-path entry) pairs, so a permission problem is reported
+    # as one instead of being folded into "not found" (#3928).
+    _found_but_unreadable = []
 
     def _note_near_miss(where):
         if where not in _package_present_but_entry_missing:
             _package_present_but_entry_missing.append(where)
 
+    def _note_unreadable(where, root):
+        if (where, root) not in _found_but_unreadable:
+            _found_but_unreadable.append((where, root))
+
+    def _access_denied(exc):
+        return exc.errno in (errno.EACCES, errno.EPERM)
+
+    # Directories another account can write to, refused as data roots: a file
+    # planted there would be loaded as trusted data, whatever its mode says.
+    _refused_writable = []
+
+    def _note_refused(where):
+        if where not in _refused_writable:
+            _refused_writable.append(where)
+            warnings.warn(
+                "NLTK will not read data from %r: it is writable by, or owned "
+                "by, another account, so a planted or rewritten file would be "
+                "loaded as trusted data. Make it private to its owner "
+                "(chmod go-w)." % (where,),
+                RuntimeWarning,
+                stacklevel=3,
+            )
+
+    def _writable_by_others(root, below=None):
+        """The first existing directory from *root* down to the one holding
+        *below* that another account can write to, or None when each is private.
+        Judged like the downloader judges its download dir, on the directory
+        itself (not its ancestors), and only on POSIX under enforcement."""
+        from nltk import pathsec
+
+        if not pathsec.ENFORCE or os.name != "posix":
+            return None
+        if not pathsec.is_private_dir(root):
+            return root
+        if below is None:
+            return None
+        rel = os.path.relpath(os.path.dirname(below), root)
+        cur = root
+        for part in rel.split(os.sep):
+            if not part or part == os.curdir or part == os.pardir:
+                continue
+            cur = os.path.join(cur, part)
+            if not os.path.isdir(cur):
+                break
+            if not pathsec.is_private_dir(cur):
+                return cur
+        # A resource that is itself a directory (a corpus root the readers
+        # open files under) is judged like the directories on the way to it,
+        # and so is every entry under it: readers open those by path as well.
+        resource = below.rstrip(os.sep)
+        if os.path.isdir(resource):
+            if not pathsec.is_private_dir(resource):
+                return resource
+            return _first_entry_not_ours(resource)
+        return None
+
+    def _file_not_ours(path):
+        """True when the resource file (or archive) at *path*, links followed,
+        is not owned by this account or root, or carries a group or world
+        write bit: a same-name, same-size substitute needs exactly that, and
+        neither find() nor status() verifies bytes. POSIX, under enforcement."""
+        from nltk import pathsec
+
+        if not pathsec.ENFORCE or os.name != "posix":
+            return False
+        try:
+            st = os.stat(path)
+        except OSError:
+            return False
+        if st.st_uid not in (os.geteuid(), 0):
+            return True
+        return bool(st.st_mode & (stat.S_IWGRP | stat.S_IWOTH))
+
     # Check each item in our path
     for path_ in paths:
         # Is the path item a zipfile?
         if path_ and (os.path.isfile(path_) and path_.endswith(".zip")):
+            unsafe = _writable_by_others(os.path.dirname(os.path.abspath(path_)))
+            if unsafe is None and _file_not_ours(path_):
+                unsafe = path_
+            if unsafe is not None:
+                _note_refused(unsafe)
+                continue
             try:
                 return ZipFilePathPointer(path_, resource_name)
+            except PermissionError as e:
+                if _access_denied(e):
+                    _note_unreadable(path_, os.path.dirname(path_))
+                else:
+                    _note_near_miss(path_)
+                continue
             except OSError:
                 # resource not in zipfile
                 _note_near_miss(path_)
@@ -1264,9 +1416,22 @@ def find(resource_name, paths=None):
 
         # Is the path item a directory or is resource_name an absolute path?
         elif not path_ or os.path.isdir(path_):
+            if path_:
+                unsafe = _writable_by_others(path_)
+                if unsafe is not None:
+                    _note_refused(unsafe)
+                    continue
             if zipfile is None:
                 p = os.path.join(path_, url2pathname(resource_name))
                 if os.path.exists(p):
+                    unsafe = _writable_by_others(
+                        path_ or os.path.dirname(os.path.abspath(p)), p
+                    )
+                    if unsafe is None and os.path.isfile(p) and _file_not_ours(p):
+                        unsafe = p
+                    if unsafe is not None:
+                        _note_refused(unsafe)
+                        continue
                     if p.endswith(".gz"):
                         return GzipFileSystemPathPointer(p)
                     else:
@@ -1290,8 +1455,22 @@ def find(resource_name, paths=None):
             else:
                 p = os.path.join(path_, url2pathname(zipfile))
                 if os.path.exists(p):
+                    unsafe = _writable_by_others(
+                        path_ or os.path.dirname(os.path.abspath(p)), p
+                    )
+                    if unsafe is None and _file_not_ours(p):
+                        unsafe = p
+                    if unsafe is not None:
+                        _note_refused(unsafe)
+                        continue
                     try:
                         return ZipFilePathPointer(p, zipentry)
+                    except PermissionError as e:
+                        if _access_denied(e):
+                            _note_unreadable(p, path_ or os.path.dirname(p))
+                        else:
+                            _note_near_miss(p)
+                        continue
                     except OSError:
                         # resource not in zipfile
                         _note_near_miss(p)
@@ -1306,8 +1485,14 @@ def find(resource_name, paths=None):
             modified_name = "/".join(pieces[:i] + [pieces[i] + ".zip"] + pieces[i:])
             try:
                 return find(modified_name, paths)
-            except LookupError:
-                pass
+            except LookupError as e:
+                # Keep a "found but unreadable" verdict from the zip-name retry
+                # so the message names the archive instead of just "not found".
+                for pair in getattr(e, "_nltk_found_but_unreadable", ()):
+                    _note_unreadable(*pair)
+                for where in getattr(e, "_nltk_refused_writable", ()):
+                    if where not in _refused_writable:
+                        _refused_writable.append(where)
 
     # Identify the package (i.e. the .zip file) to download.
     parts = resource_name.split("/")
@@ -1353,6 +1538,43 @@ def find(resource_name, paths=None):
 
     msg += f"\n  Attempted to load '{resource_name}'\n"
 
+    if _found_but_unreadable:
+        msg += "\n  Found but could not read (permission denied):" + "".join(
+            "\n    - %r" % where for where, _ in _found_but_unreadable
+        )
+        roots = []
+        for _, root in _found_but_unreadable:
+            if root not in roots:
+                roots.append(root)
+        msg += (
+            "\n  A downloaded archive is private to the account that installed it"
+            "\n  (mode 0600), so an install made by another account (for example"
+            "\n  as root while building a container image) must be extracted: the"
+            "\n  extracted files are readable by every account and are found"
+            "\n  before the archive (an install made as root or outside the"
+            "\n  installing account's home extracts automatically). Re-run the"
+            "\n  download with extraction, e.g.:"
+            + "".join(
+                "\n    python -m nltk.downloader --extract -d %r %s"
+                % (root, resource_zipname)
+                for root in roots
+            )
+            + "\n  or nltk.download(%r, extract=True)\n" % resource_zipname
+        )
+
+    if _refused_writable:
+        msg += (
+            "\n  Refused, writable by other accounts (a file planted or"
+            + ("\n  rewritten there would be loaded as trusted data):")
+            + "".join("\n    - %r" % d for d in _refused_writable)
+        )
+        msg += (
+            "\n  Make each one private to its owner, e.g.:"
+            + "".join("\n    chmod go-w %r" % d for d in _refused_writable)
+            + "\n  then download the packages it holds again (force=True): a"
+            + "\n  file changed while it was writable keeps the change.\n"
+        )
+
     if _package_present_but_entry_missing:
         msg += "\n  Package was found in:" + "".join(
             "\n    - %r" % d for d in _package_present_but_entry_missing
@@ -1361,7 +1583,13 @@ def find(resource_name, paths=None):
     msg += "\n  Searched in:" + "".join("\n    - %r" % d for d in paths)
     sep = "*" * 70
     resource_not_found = f"\n{sep}\n{msg}\n{sep}\n"
-    raise LookupError(resource_not_found)
+    exc = LookupError(resource_not_found)
+    if _found_but_unreadable:
+        # Carried, not printed: the zip-name retry above reads it back.
+        exc._nltk_found_but_unreadable = tuple(_found_but_unreadable)
+    if _refused_writable:
+        exc._nltk_refused_writable = tuple(_refused_writable)
+    raise exc
 
 
 def retrieve(resource_url, filename=None, verbose=True):
@@ -1833,8 +2061,12 @@ class OpenOnDemandZipFile(ZipFile):
     def read(self, name):
         assert self.fp is None
         _check_decompression_bomb(self.getinfo(name))
-        # This will be validated by pathsec.open
-        self.fp = _secure_open(self.filename, "rb")
+        # Validated by pathsec.open, then judged on the opened descriptor like
+        # every resource file: an archive made writable, or swapped for another
+        # account's, after find() is refused at the read.
+        self.fp = _refuse_file_not_ours(
+            _secure_open(self.filename, "rb"), self.filename
+        )
         try:
             # Delegate to the secured base read(), which also streams the member's
             # ACTUAL bytes under the cap (CWE-409), not a raw one-shot read.

@@ -931,13 +931,21 @@ def _reject_colliding_members(members, context="zip member"):
 
     # Keyed the way the hardened extractor writes: a backslash is a separator
     # and empty or "." parts vanish, so "a//b" and "a/./b" are "a/b" as well.
+    # Keyed, too, the way a target filesystem folds names: compatibility
+    # normalisation and case (NFKC, casefold) and the trailing dots and
+    # spaces Windows strips, so "ok.txt." and "ok.txt" collide everywhere.
+    def _fold(parts):
+        return unicodedata.normalize(
+            "NFKC", "/".join(p.rstrip(" .") or p for p in parts)
+        ).casefold()
+
     seen, parents = {}, {}
     for name in members:
         text = name.filename if hasattr(name, "filename") else str(name)
         parts = [p for p in text.replace("\\", "/").split("/") if p not in ("", ".")]
         if not parts:
             continue  # an empty name is refused by the extractor itself
-        key = unicodedata.normalize("NFC", "/".join(parts)).casefold()
+        key = _fold(parts)
         is_dir = text.endswith("/")
         if key in seen:
             other, other_is_dir = seen[key]
@@ -956,10 +964,7 @@ def _reject_colliding_members(members, context="zip member"):
             parents.setdefault("/".join(parts[:depth]), text)
     # A file that is also a parent directory of another member: one of the two
     # fails half way through an extraction that has already written files.
-    folded = {
-        unicodedata.normalize("NFC", parent).casefold(): member
-        for parent, member in parents.items()
-    }
+    folded = {_fold(parent.split("/")): member for parent, member in parents.items()}
     for key, (text, is_dir) in seen.items():
         if not is_dir and key in folded:
             _refuse(text, folded[key], "are a file and a directory of one name")
