@@ -1526,8 +1526,10 @@ class TestInstalledMeansTheSameToBoth:
         d = downloader.Downloader(server_index_url=index_url, download_dir=str(dl))
         assert d.status("punkt_tab", str(dl)) == d.STALE
         _get_punkt_tokenizer.cache_clear()
-        with pytest.raises(PermissionError, match="Security Violation"):
+        with pytest.raises(PermissionError) as refused:
             punkt_model_available("english")
+        if os.name == "posix":  # Windows refuses to open a directory itself (EACCES)
+            assert "Security Violation" in str(refused.value)
         assert run_download(index_url, dl, "punkt")[0] is True
         assert empty.is_file() and self._available() is True
 

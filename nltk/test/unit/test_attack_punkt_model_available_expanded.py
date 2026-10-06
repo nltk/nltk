@@ -352,7 +352,9 @@ def test_a_directory_in_a_files_place_is_refused_alike(punkt_root):
     (_model_dir(root) / "collocations.tab").unlink()
     (_model_dir(root) / "collocations.tab").mkdir()
     kind, message = assert_parity("english")
-    assert kind == "PermissionError" and "Security Violation" in message
+    assert kind == "PermissionError", (kind, message)
+    if os.name == "posix":  # Windows refuses to open a directory itself (EACCES)
+        assert "Security Violation" in message
 
 
 @POSIX
