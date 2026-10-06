@@ -260,7 +260,7 @@ except ImportError:
 
 from nltk import grammar, sem
 from nltk.internals import deprecated
-from nltk.termsec import safe_print
+from nltk.termsec import safe_print, sanitize_terminal
 
 textwrap_indent = functools.partial(textwrap.indent, prefix="  ")
 
@@ -1689,6 +1689,176 @@ def restricted_pickle_load(string):
     return RestrictedUnpickler(BytesIO(string)).load()
 
 
+#: The pickle packages retired for CVE-2024-39705 (unpickling one can run
+#: arbitrary code), each with the tab package that replaced it.
+_RETIRED_PICKLES = {
+    "tokenizers/punkt": "punkt_tab",
+    "taggers/averaged_perceptron_tagger": "averaged_perceptron_tagger_eng",
+    "taggers/averaged_perceptron_tagger_ru": "averaged_perceptron_tagger_rus",
+    "chunkers/maxent_ne_chunker": "maxent_ne_chunker_tab",
+    "taggers/maxent_treebank_pos_tagger": "maxent_treebank_pos_tagger_tab",
+}
+
+#: A pickle under a package named like one of these (a retired package, or a
+#: tab package beside it, which holds none) is never loaded.
+_PICKLE_ERA_PREFIXES = (
+    "tokenizers/punkt",
+    "chunkers/maxent_ne_chunker",
+    "taggers/maxent_treebank_pos_tagger",
+    "taggers/averaged_perceptron_tagger",
+)
+
+
+def _tab_call(package, stem):
+    """The call that loads the tab replacement of the retired *package*, for
+    its pickle named *stem* (the model the pickle held)."""
+    if package == "tokenizers/punkt":
+        lang = stem if stem.isascii() and stem.isalpha() else "english"
+        return f"nltk.tokenize.PunktTokenizer({lang!r})"
+    if package == "chunkers/maxent_ne_chunker":
+        binary = stem.rsplit("_", 1)[-1] == "binary"
+        return "nltk.chunk.ne_chunker(%s)" % ("'binary'" if binary else "")
+    if package == "taggers/maxent_treebank_pos_tagger":
+        return "nltk.classify.maxent.maxent_pos_tagger()"
+    if package == "taggers/averaged_perceptron_tagger_ru":
+        return "nltk.tag.PerceptronTagger(lang='rus')"
+    return "nltk.tag.PerceptronTagger()"
+
+
+def _folded_parts(name):
+    """The components of *name* as the most lenient filesystem matches them:
+    case folded (macOS, Windows), without the trailing dots and spaces Windows
+    drops, and an archive's ``.zip`` taken as the package it holds."""
+    parts = []
+    for part in name.replace("\\", "/").split("/"):
+        part = part.casefold().rstrip(". ")
+        if part.endswith(".zip"):
+            part = part[: -len(".zip")]
+        if part:
+            parts.append(part)
+    return parts
+
+
+def _resource_names_of(real, real_roots):
+    """The absolute path *real* as a resource name under each of the resolved
+    data roots *real_roots* that holds it, or *real* itself when none does,
+    so that a data root's own location never decides whether a load is
+    refused."""
+    names = []
+    for root in real_roots:
+        try:
+            rel = os.path.relpath(real, root)
+        except ValueError:  # another drive
+            continue
+        if rel != os.pardir and not rel.startswith(os.pardir + os.sep):
+            names.append(rel)
+    return names or [real]
+
+
+def _is_pickle_name(parts):
+    return bool(parts) and parts[-1].endswith((".pickle", ".pickle.gz"))
+
+
+def _retired_pickle(protocol, path_, format):
+    """``(package, stem)`` when a load of *path_* in *format* reaches for a
+    pickle in a retired package, ``("", "")`` for a pickle in a tab package
+    beside one, else None. A resource name is judged as written and decoded
+    once, the way ``find()`` decodes it; a ``file:`` path as the local path
+    ``_open()`` reads. A load that would unpickle is judged again as the file
+    it resolves to under each data root, so a link or a Windows short name is
+    followed. A pair of components anywhere in a name can name the package,
+    so an archive member and a data root that is an archive are judged too."""
+    forms = (url2pathname,) if protocol == "file" else (str, unquote, url2pathname)
+    names = set()
+    for form in forms:
+        try:
+            names.add(form(path_))
+        except (TypeError, ValueError, OSError):
+            continue
+    unpickles = format == "pickle" or any(
+        _is_pickle_name(_folded_parts(name)) for name in names
+    )
+    if not unpickles or protocol not in ("nltk", "file"):
+        return _judge(names, format)
+    roots = [root for root in path if isinstance(root, str)]
+    real_roots = []
+    resolved = set()
+    for root in roots:
+        try:
+            real_roots.append(os.path.realpath(root))
+        except (TypeError, ValueError, OSError):
+            continue
+    for base in [""] if protocol == "file" else roots:
+        for name in names:
+            candidate = os.path.join(base, name)
+            try:
+                if os.path.lexists(candidate):
+                    resolved.add(os.path.realpath(candidate))
+            except (TypeError, ValueError, OSError):
+                continue
+    if protocol == "file":
+        names = {rel for name in names for rel in _resource_names_of(name, real_roots)}
+    for real in resolved:
+        names.update(_resource_names_of(real, real_roots))
+    return _judge(names, format)
+
+
+def _judge(names, format):
+    """The verdict of :func:`_retired_pickle` on the candidate *names*."""
+    found = None
+    for name in names:
+        parts = _folded_parts(name)
+        is_pickle = _is_pickle_name(parts)
+        if not (is_pickle or format == "pickle"):
+            continue
+        stem = parts[-1].split(".", 1)[0] if is_pickle else ""
+        for subdir, package in zip(parts, parts[1:]):
+            key = f"{subdir}/{package}"
+            if key in _RETIRED_PICKLES:
+                # a spelling that names the pickle's model is preferred
+                if not (found and found[0] and found[1]):
+                    found = (key, stem)
+            elif key.startswith(_PICKLE_ERA_PREFIXES) and found is None:
+                found = ("", "")
+    return found
+
+
+def _refuse_retired_pickle(protocol, path_, format):
+    """Raise ValueError when a load reaches for a retired pickle, under any
+    spelling of its name, before the cache, the format or any file is
+    consulted. The error names the tab package that replaced it, the call
+    that loads that package, and the installed copies that can be deleted."""
+    hit = _retired_pickle(protocol, path_, format)
+    if hit is None:
+        return
+    shown = sanitize_terminal(repr(path_))
+    package, stem = hit
+    if not package:
+        raise ValueError(
+            f"Refusing to load {shown}: it is a pickle in a resource tree whose "
+            "pickles were retired (CVE-2024-39705), so NLTK never loads it; the "
+            "tab packages that replaced them hold no pickles."
+        )
+    tab = _RETIRED_PICKLES[package]
+    installed = []
+    for root in path:
+        if isinstance(root, str):
+            base = os.path.join(root, *package.split("/"))
+            for where in (base, base + ".zip"):
+                if where not in installed and os.path.lexists(where):
+                    installed.append(where)
+    remove = ""
+    if installed:
+        listed = ", ".join(sanitize_terminal(repr(p)) for p in installed)
+        remove = f" The retired package is no longer read and can be deleted: {listed}."
+    raise ValueError(
+        f"Refusing to load {shown}: {package!r} is a retired pickle package "
+        "(CVE-2024-39705: unpickling it can run arbitrary code), so NLTK never "
+        f"loads it. Use its replacement: nltk.download({tab!r}), then "
+        f"{_tab_call(package, stem)}.{remove}"
+    )
+
+
 def switch_punkt(lang="english"):
     """
     Return a pickle-free Punkt tokenizer instead of loading a pickle.
@@ -1790,6 +1960,13 @@ def load(
     work, it tries with ISO-8859-1 (Latin-1), unless the ``encoding``
     is specified.
 
+    The pickle packages retired for CVE-2024-39705 (``punkt``,
+    ``averaged_perceptron_tagger``, ``averaged_perceptron_tagger_ru``,
+    ``maxent_ne_chunker`` and ``maxent_treebank_pos_tagger``) are never
+    loaded: a load that reaches for a pickle in one, however the name is
+    spelled and in any format, raises ``ValueError`` before anything is read,
+    naming the tab package that replaced it and the call that loads that.
+
     :type resource_url: str
     :param resource_url: A URL specifying where the resource should be
         loaded from.  The default protocol is "nltk:", which searches
@@ -1812,6 +1989,10 @@ def load(
     :param encoding: the encoding of the input; only used for text formats.
     """
     resource_url = normalize_resource_url(resource_url)
+
+    # A retired pickle is refused under any spelling of its name, before the
+    # cache, the format or any file is consulted (CVE-2024-39705).
+    _refuse_retired_pickle(*split_resource_url(resource_url), format)
 
     # Determine the format of the resource.
     if format == "auto":
@@ -1837,21 +2018,6 @@ def load(
             if verbose:
                 safe_print(f"<<Using cached copy of resource (format={format})>>")
             return resource_val
-
-    protocol, path_ = split_resource_url(resource_url)
-
-    if path_[-7:] == ".pickle":
-        if verbose:
-            safe_print("<<Loading pickle-free alternative>>")
-        fil = os.path.split(path_[:-7])[-1]
-        if path_.startswith("tokenizers/punkt"):
-            return switch_punkt(fil)
-        elif path_.startswith("chunkers/maxent_ne_chunker"):
-            return switch_chunker(fil.split("_")[-1])
-        elif path_.startswith("taggers/maxent_treebank_pos_tagger"):
-            return switch_t_tagger()
-        elif path_.startswith("taggers/averaged_perceptron_tagger"):
-            return switch_p_tagger(fil.split("_")[-1])
 
     # Let the user know what's going on.
     if verbose:
