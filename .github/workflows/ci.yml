@@ -43,6 +43,8 @@ jobs:
           filters: |
             code:
               - '**/*.py'
+              - '**/*.doctest'
+              - 'nltk/test/pytest.ini'
               - 'requirements*.txt'
               - 'setup.py'
               - '.github/workflows/**'
@@ -396,6 +398,17 @@ jobs:
           else
             pytest --numprocesses auto -rsx --doctest-modules nltk
           fi
+
+      - name: Run doctest files
+        if: ${{ !cancelled() }}
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          # "Run pytest" never reads nltk/test/pytest.ini from the repo root, so it
+          # collects none of the .doctest files; run them here with that ini, in
+          # their own step, so a change to the main invocation cannot drop them.
+          pytest -c nltk/test/pytest.ini -rsx -p no:cacheprovider nltk/test/*.doctest
 
   docker-cross-account:
     name: Docker root build, appuser runtime (#3928)
