@@ -242,45 +242,6 @@ class _WordNetObject:
             return NotImplemented
         return self._name < other._name
 
-    def _related_by(self, rels=None):
-        """
-        Compose a set of relations, for ex. part_of, instance hypernyms and has_member:
-        >>> from nltk.corpus import wordnet as wn
-        >>> print(sorted(wn.synset('liverpool.n.01')._related_by({"#p","@i","%m"})))
-        [Synset('city.n.01'), Synset('england.n.01'), Synset('liverpudlian.n.01'), Synset('port.n.01')]
-        """
-        related = []
-        if rels:
-            for rel in rels:
-                related.extend(self._related(rel))
-        return related
-
-    def _broader(self, add_rels=None):
-        """
-        Adding the part holonyms:
-        >>> from nltk.corpus import wordnet as wn
-        >>> print(sorted(wn.synset('accelerator.n.01')._broader(add_rels={"#p"})))
-        [Synset('airplane.n.01'), Synset('car.n.01'), Synset('pedal.n.02')]
-        """
-        rels = self._related("@")
-        if self.pos() == "n":
-            rels.extend(self._related("@i"))
-        rels.extend(self._related_by(add_rels))
-        return rels
-
-    def _narrower(self, add_rels=None):
-        """
-        Return hyponyms + instances:
-        >>> from nltk.corpus import wordnet as wn
-        >>> print(sorted(wn.synset('linguist.n.01')._narrower()))
-        [Synset('bloomfield.n.01'), Synset('chomsky.n.01'), Synset('computational_linguist.n.01'), Synset('de_saussure.n.01'), Synset('firth.n.01'), Synset('grammarian.n.01'), Synset('grimm.n.02'), Synset('hebraist.n.01'), Synset('jakobson.n.01'), Synset('jespersen.n.01'), Synset('lexicographer.n.01'), Synset('neurolinguist.n.01'), Synset('phonetician.n.01'), Synset('phonologist.n.01'), Synset('psycholinguist.n.01'), Synset('sapir.n.01'), Synset('semanticist.n.01'), Synset('sociolinguist.n.01')]
-        """
-        rels = self._related("~")
-        if self.pos() == "n":
-            rels.extend(self._related("~i"))
-        rels.extend(self._related_by(add_rels))
-        return rels
-
 
 class Lemma(_WordNetObject):
     """
@@ -639,6 +600,45 @@ class Synset(_WordNetObject):
                 _visited = _visited | {self}
                 self._min_depth = 1 + min(h.min_depth(_visited) for h in hypernyms)
         return self._min_depth
+
+    def _related_by(self, rels=None):
+        """
+        Compose a set of relations, for ex. part_of, instance hypernyms and has_member:
+        >>> from nltk.corpus import wordnet as wn
+        >>> print(sorted(wn.synset('liverpool.n.01')._related_by({"#p","@i","%m"})))
+        [Synset('city.n.01'), Synset('england.n.01'), Synset('liverpudlian.n.01'), Synset('port.n.01')]
+        """
+        related = []
+        if rels:
+            for rel in rels:
+                related.extend(self._related(rel))
+        return related
+
+    def _broader(self, add_rels=None):
+        """
+        Adding the part holonyms:
+        >>> from nltk.corpus import wordnet as wn
+        >>> print(sorted(wn.synset('accelerator.n.01')._broader(add_rels={"#p"})))
+        [Synset('airplane.n.01'), Synset('car.n.01'), Synset('pedal.n.02')]
+        """
+        rels = self._related("@")
+        if self.pos() == "n":
+            rels.extend(self._related("@i"))
+        rels.extend(self._related_by(add_rels))
+        return rels
+
+    def _narrower(self, add_rels=None):
+        """
+        Return hyponyms + instances:
+        >>> from nltk.corpus import wordnet as wn
+        >>> print(sorted(wn.synset('linguist.n.01')._narrower()))
+        [Synset('bloomfield.n.01'), Synset('chomsky.n.01'), Synset('computational_linguist.n.01'), Synset('de_saussure.n.01'), Synset('firth.n.01'), Synset('grammarian.n.01'), Synset('grimm.n.02'), Synset('hebraist.n.01'), Synset('jakobson.n.01'), Synset('jespersen.n.01'), Synset('lexicographer.n.01'), Synset('neurolinguist.n.01'), Synset('phonetician.n.01'), Synset('phonologist.n.01'), Synset('psycholinguist.n.01'), Synset('sapir.n.01'), Synset('semanticist.n.01'), Synset('sociolinguist.n.01')]
+        """
+        rels = self._related("~")
+        if self.pos() == "n":
+            rels.extend(self._related("~i"))
+        rels.extend(self._related_by(add_rels))
+        return rels
 
     def closure(self, rel, depth=-1):
         """
