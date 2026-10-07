@@ -237,7 +237,7 @@ def sentence_lepor(
     hypothesis: str,
     alpha: float = 1.0,
     beta: float = 1.0,
-    tokenizer: Callable[[str], list[str]] = None,
+    tokenizer: Callable[[str], list[str]] | None = None,
 ) -> list[float]:
     """
     Calculate LEPOR score a sentence from Han, A. L.-F. (2017).
@@ -304,7 +304,7 @@ def corpus_lepor(
     hypothesis: list[str],
     alpha: float = 1.0,
     beta: float = 1.0,
-    tokenizer: Callable[[str], list[str]] = None,
+    tokenizer: Callable[[str], list[str]] | None = None,
 ) -> list[list[float]]:
     """
     Calculate LEPOR score for list of sentences from Han, A. L.-F. (2017).
