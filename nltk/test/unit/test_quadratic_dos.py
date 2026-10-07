@@ -178,17 +178,31 @@ class TestTEICorpusViewQuadratic:  # GHSA-8mpw -- has MULTIPLE quadratic directi
 
     @pytest.mark.parametrize("tag", ["<p>", "<w>"])
     def test_direction3_lazy_regex_is_bounded(self, tag, monkeypatch):
-        # PARA/SENT/WORD `.*?` findall over many unclosed tags is O(k*n) and is
-        # not linearised by the regex engine, so it is bounded by the redos
-        # wall-clock backstop instead of hanging.
+        # PARA/SENT/WORD `.*?` findall over many unclosed tags was O(k*n); the
+        # shipped patterns bound each body and stop at the next open tag of their
+        # kind, so the scan is linear while the unbounded form hits the backstop.
         import nltk.redos as redos_mod
-
-        monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 0.5)
+        from nltk import redos
         from nltk.corpus.reader.pl196x import PARA, WORD
 
         pat = PARA if tag == "<p>" else WORD
+        assert (
+            "{1,4096}+(?![^<])|<(?!p[ >])){0,16384}?"
+            if tag == "<p>"
+            else "([^<]{0,1024})"
+        ) in pat.pattern
+        pat.findall(tag * 60000)  # completes, no TimeoutError
+        _assert_subquadratic(lambda n: pat.findall(tag * n), 15000, 60000)
+
+        # the verbatim pre-fix pattern (an unbounded lazy body) on the same trigger
+        unbounded = redos.compile(
+            r"<p(?: [^>]*){0,1}>(.*?)</p>"
+            if tag == "<p>"
+            else r"<[wc](?: [^>]*){0,1}>(.*?)</[wc]>"
+        )
+        monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 0.5)
         with pytest.raises(TimeoutError):
-            pat.findall(tag * 60000)
+            unbounded.findall(tag * 60000)
 
 
 class TestReadSexprBlockQuadratic:
@@ -1050,13 +1064,22 @@ class TestReviewsFeaturesQuadratic:  # reviews.py FEATURES
 
 class TestLinThesaurusKeyQuadratic:  # lin.py _key_re: engine still backtracks
     def test_key_line_is_bounded(self, monkeypatch):
+        # The key starts an entry's first line, so the shipped pattern is
+        # \A-pinned: one attempt per line, linear. Without the pin it re-anchors
+        # at every `(` and still runs into the backstop: the pin is the fix.
         import nltk.redos as redos_mod
-
-        monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 0.5)
+        from nltk import redos
         from nltk.corpus.reader.lin import LinThesaurusCorpusReader
 
+        pinned = LinThesaurusCorpusReader._key_re
+        assert pinned.pattern.startswith(r"\A")
+        assert pinned.sub(r"\1", "(" * 200000) == "(" * 200000
+        _assert_subquadratic(lambda n: pinned.sub(r"\1", "(" * n), 50000, 200000)
+
+        unpinned = redos.compile(pinned.pattern[len(r"\A") :])
+        monkeypatch.setattr(redos_mod, "DEFAULT_TIMEOUT", 0.5)
         with pytest.raises(TimeoutError):
-            LinThesaurusCorpusReader._key_re.sub(r"\1", "(" * 200000)
+            unpinned.sub(r"\1", "(" * 200000)
 
 
 class TestAlpinoAttrQuadratic:  # bracket_parse.py ALPINO_ATTR
@@ -1272,8 +1295,16 @@ class TestValuationLeadingWhitespaceRuns:  # sem/evaluate.py, the three splitter
     def test_interior_space_run_before_an_open_tuple_is_linear(self):
         from nltk.sem.evaluate import read_valuation
 
+        # the trailing `(c` is an unclosed tuple: it is now refused (a
+        # ValueError naming MAX_TUPLE_LENGTH) rather than read as a scalar,
+        # and the refusal is as linear as the parse
+        def refused(n):
+            with pytest.raises(ValueError, match="MAX_TUPLE_LENGTH"):
+                read_valuation("s => {(a, b)" + " " * n + "(c}")
+
+        _assert_subquadratic(refused, 20000, 80000)
         _assert_subquadratic(
-            lambda n: read_valuation("s => {(a, b)" + " " * n + "(c}"), 20000, 80000
+            lambda n: read_valuation("s => {(a, b)" + " " * n + "(c, d)}"), 20000, 80000
         )
 
     def test_shipped_patterns_match_the_pre_fix_patterns(self):
@@ -1287,11 +1318,26 @@ class TestValuationLeadingWhitespaceRuns:  # sem/evaluate.py, the three splitter
              ["a\na,, ,a,a\t,a a", ",a,\n\ta\na,\n ,aaa", "a, b , c", ",", " , ", "a" + " " * 30 + "b,c",
               "a,,b", " ,a, "]),
             ("tuples", ev._TUPLES_RE, "findall",
-             ["(a) (b)", ",,((a\t(a\t )\t(\t\n\t)(\t )\n", "(( ( )\t(\n\t) (a\n,( )", "(a, b)" + " " * 30 + "(c",
-              " (a)  (b) ", "(a)(b)", "x (a) y", "( )"]),
+             ["(a) (b)", "(a, b)" + " " * 30 + "(c", " (a)  (b) ", "(a)(b)", "x (a) y", "( )",
+              "(\t\n\t)(\t )\n", "(a\n,) ( )"]),
         ):  # fmt: skip
             assert rx.pattern != _PRE_FIX[key]
             _same_results(_PRE_FIX[key], rx.pattern, op, texts, rx.flags)
+        # The tuple pattern's one deliberate difference: its run excludes the
+        # `(` anchor (a crafted paren run is O(n), not O(n*bound)), so a nested
+        # `(` ends a candidate tuple; read_valuation refuses such a line anyway.
+        from nltk import redos
+
+        nested = [
+            ",,((a\t(a\t )\t(\t\n\t)(\t )\n",
+            "(( ( )\t(\n\t) (a\n,( )",
+            "(a\n,( )",
+        ]
+        pre_fix = redos.compile(_PRE_FIX["tuples"], ev._TUPLES_RE.flags)
+        for text in nested:
+            got, old = ev._TUPLES_RE.findall(text), pre_fix.findall(text)
+            assert got != old and all("(" not in t[1:] for t in got), (text, got, old)
+            assert {t for t in old if "(" not in t[1:]} <= set(got), (text, got, old)
 
     def test_pre_fix_patterns_have_teeth(self):
         import re
