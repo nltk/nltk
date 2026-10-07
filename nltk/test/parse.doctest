@@ -63,8 +63,11 @@ Unit tests for the Context Free Grammar class
     ... print(pickle.dumps(p))
     ... """
 
-    >>> # Start a subprocess to simulate pickling in another process
-    >>> proc = subprocess.run([sys.executable, '-c', cmd], stdout=subprocess.PIPE)
+    >>> # Start a subprocess to simulate pickling in another process; it
+    >>> # imports the same nltk as this one, installed or not
+    >>> import os, nltk
+    >>> env = dict(os.environ, PYTHONPATH=os.path.dirname(os.path.dirname(nltk.__file__)))
+    >>> proc = subprocess.run([sys.executable, '-c', cmd], stdout=subprocess.PIPE, env=env, check=True)
     >>> p1 = pickle.loads(eval(proc.stdout))
     >>> p2 = Production('S', ['NP', 'VP'])
     >>> print(hash(p1) == hash(p2))
