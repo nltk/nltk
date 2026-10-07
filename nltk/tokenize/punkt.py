@@ -1812,8 +1812,12 @@ class PunktTokenizer(PunktSentenceTokenizer):
         self.load_lang(lang)
 
     def load_lang(self, lang="english"):
+        """Load the ``punkt_tab`` model for *lang*, a model name such as
+        ``english``: ``ValueError`` for a name that is not one model directory,
+        ``LookupError`` naming the download when the model is not installed."""
         from nltk.data import find
 
+        lang = _punkt_language(lang)
         lang_dir = find(f"tokenizers/punkt_tab/{lang}/")
         self._params = load_punkt_params(lang_dir)
         self._lang = lang
@@ -1843,22 +1847,61 @@ class PunktTokenizer(PunktSentenceTokenizer):
         return save_punkt_params(self._params, dir=self.save_dir)
 
 
+def _punkt_language(lang):
+    """*lang* as an exact str when it can name one ``punkt_tab`` model
+    directory: a single path segment of letters, digits, ``-`` and ``_``, in
+    composed (NFC) form and, on Windows, not a device name. Anything else is
+    refused before ``find()`` sees it: ``english/../german`` would load another
+    model, and a long ``a/a/...`` name costs ``find()`` quadratic time."""
+    import unicodedata
+
+    from nltk.pathsec import _is_windows_device_name
+
+    if not isinstance(lang, str):
+        raise TypeError(f"A Punkt language name is a str, not {type(lang).__name__!r}")
+    # str.__str__ ignores a subclass's overrides: the name checked is the name used.
+    lang = str.__str__(lang)
+    if (
+        not lang
+        or not all(char.isalnum() or char in "-_" for char in lang)
+        or unicodedata.normalize("NFC", lang) != lang
+        or _is_windows_device_name(lang)
+    ):
+        raise ValueError(f"Invalid Punkt language name: {lang!r}")
+    return lang
+
+
+def _open_model_file(lang_dir, file_name):
+    """Open *file_name* of the model in *lang_dir* as text. A file that is
+    not there means the model is not fully installed: a ``LookupError`` that
+    names the download, as for a model that is missing altogether."""
+    try:
+        # .join() reaches the file whether the model is a directory or a zip.
+        model_file = lang_dir.join(file_name)
+    except PermissionError:
+        raise
+    except OSError as missing:
+        raise LookupError(
+            f"The Punkt model in {str(lang_dir)!r} has no {file_name!r}; "
+            "reinstall it with nltk.download('punkt_tab')"
+        ) from missing
+    return model_file.open(encoding="utf-8")
+
+
 def load_punkt_params(lang_dir):
-    from nltk.data import open_datafile
     from nltk.tabdata import PunktDecoder
 
     # Make a new Parameters object:
     params = PunktParameters()
 
     pdec = PunktDecoder()
-    # Use .join() to reach the files regardless of zip/real FS.
-    with open_datafile(lang_dir, "collocations.tab") as f:
+    with _open_model_file(lang_dir, "collocations.tab") as f:
         params.collocations = set(pdec.tab2tups(f))
-    with open_datafile(lang_dir, "sent_starters.txt") as f:
+    with _open_model_file(lang_dir, "sent_starters.txt") as f:
         params.sent_starters = pdec.txt2set(f)
-    with open_datafile(lang_dir, "abbrev_types.txt") as f:
+    with _open_model_file(lang_dir, "abbrev_types.txt") as f:
         params.abbrev_types = pdec.txt2set(f)
-    with open_datafile(lang_dir, "ortho_context.tab") as f:
+    with _open_model_file(lang_dir, "ortho_context.tab") as f:
         params.ortho_context = pdec.tab2intdict(f)
     return params
 

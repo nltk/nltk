@@ -34,7 +34,12 @@ from nltk.test.unit.test_tree_prettyprinter_rtl import (
     crossing_by_geometry,
     drawn_crossings,
 )
-from nltk.test.unit.timing import assert_subquadratic, budget
+from nltk.test.unit.timing import (
+    QUADRATIC_RATIO,
+    assert_subquadratic,
+    budget,
+    scaling_ratio,
+)
 from nltk.tree import ProbabilisticTree, Tree, TreePrettyPrinter
 from nltk.tree.prettyprinter import LRM
 from nltk.tree.tree import MAX_TREE_DEPTH
@@ -119,6 +124,36 @@ def _pr3472_mirror(tree):
         return next(leaves)
 
     return restore(mirror(tree))
+
+
+def _pre_fix_crossing_sweep(drawn):
+    """The crossing check adb1e02f8 removed from ``nodecoords``, executed
+    as written over the finished grid with its ``isinstance(a, tuple)`` test
+    translated to the integer ids the grid holds: for every node with
+    children, two sets rebuilt over every row and every column of the grid,
+    split at the leftmost child's column. Kept as the oracle of the cost the
+    shipped sweep must not have (nodes times rows times columns); what it
+    marks is not the documented rule and is not used."""
+    rows = 1 + max(row for row, _ in drawn.coords.values())
+    cols = 1 + max(col for _, col in drawn.coords.values())
+    matrix = [[None] * cols for _ in range(rows)]
+    for node, (row, col) in drawn.coords.items():
+        matrix[row][col] = node
+    children = {}
+    for child, parent in drawn.edges.items():
+        children.setdefault(parent, []).append(child)
+    crossed = set()
+    for node, kids in children.items():
+        pivot = min(drawn.coords[kid][1] for kid in kids)
+        left = {
+            drawn.edges.get(a) for row in matrix for a in row[:pivot] if a is not None
+        }
+        right = {
+            drawn.edges.get(a) for row in matrix for a in row[pivot:] if a is not None
+        }
+        if left & right:
+            crossed.add(node)
+    return crossed
 
 
 class TestAttachmentOracle:
@@ -358,22 +393,25 @@ class TestShapeCost:
             tree = Tree("S%d" % i, [tree, Tree("N", ["w"])])
         return tree
 
+    # Every small side here costs at least 2.5 times the 0.1 s floor on the
+    # fastest hosted runners (measured 0.30 to 0.52 s a call, idle and beside
+    # a parallel pytest run), so the ratio never degenerates into a budget.
     @pytest.mark.parametrize("rtl", [False, True])
     def test_width_is_linear(self, rtl):
-        trees = {n: self._flat(n, "ذهب") for n in (2000, 8000)}
+        trees = {n: self._flat(n, "ذهب") for n in (16_000, 64_000)}
         assert_subquadratic(
             lambda n: TreePrettyPrinter(trees[n], rtl=rtl).text(),
-            2000,
-            8000,
+            16_000,
+            64_000,
             cpu_bound=True,
         )
 
     def test_balanced_width_is_subquadratic(self):
-        trees = {n: self._balanced(n) for n in (1024, 4096)}
+        trees = {n: self._balanced(n) for n in (8192, 32_768)}
         assert_subquadratic(
             lambda n: TreePrettyPrinter(trees[n], rtl=True).text(),
-            1024,
-            4096,
+            8192,
+            32_768,
             cpu_bound=True,
         )
 
@@ -502,33 +540,59 @@ class TestCrossingCost:
 
     @pytest.mark.parametrize("rtl", [False, True])
     def test_thousands_of_crossing_lines_in_one_row_are_linear(self, rtl):
-        trees = {n: self._chain(n) for n in (5000, 20000)}
+        # 20,000 tokens cost 0.85 s a call on a 2020 laptop: see TestShapeCost
+        trees = {n: self._chain(n) for n in (20_000, 80_000)}
         assert_subquadratic(
             lambda n: TreePrettyPrinter(*trees[n], rtl=rtl).text(),
-            5000,
-            20000,
+            20_000,
+            80_000,
             cpu_bound=True,
         )
         small = TreePrettyPrinter(*self._chain(400), rtl=rtl)
         assert self._crossing_last(small) == 199
         assert drawn_crossings(small.text(unicodelines=True)) == 199
-        big = TreePrettyPrinter(*trees[20000], rtl=rtl)
-        assert drawn_crossings(big.text(unicodelines=True)) == 9999
+        big = TreePrettyPrinter(*trees[80_000], rtl=rtl)
+        assert drawn_crossings(big.text(unicodelines=True)) == 39_999
 
     def test_one_branch_over_thousands_of_lines_is_linear(self):
-        trees = {n: self._interleaved(n) for n in (5000, 20000)}
+        trees = {n: self._interleaved(n) for n in (40_000, 160_000)}
         assert_subquadratic(
             lambda n: TreePrettyPrinter(*trees[n], rtl=True).text(),
-            5000,
-            20000,
+            40_000,
+            160_000,
             cpu_bound=True,
         )
         small = TreePrettyPrinter(*self._interleaved(400))
         assert self._crossing_last(small) == 200
         assert (
-            drawn_crossings(TreePrettyPrinter(*trees[20000]).text(unicodelines=True))
-            == 10000
+            drawn_crossings(TreePrettyPrinter(*trees[160_000]).text(unicodelines=True))
+            == 80_000
         )
+
+    def test_the_shape_the_removed_sweep_needed_seconds_for_is_drawn_in_a_budget(
+        self,
+    ):
+        # The removed crossing check rebuilt two sets over the whole grid per
+        # node, quadratic in the tokens (0.74 s at 2,000, about 50 s at
+        # 16,000); the sweep that replaced it draws 16,000 in under a second.
+        drawn = {n: TreePrettyPrinter(*self._chain(n)) for n in (2000, 8000)}
+        assert (
+            scaling_ratio(
+                lambda n: _pre_fix_crossing_sweep(drawn[n]), 2000, 8000, cpu_bound=True
+            )
+            >= QUADRATIC_RATIO
+        )
+        tree, sentence = self._chain(16_000)
+        with budget(5, "16,000 crossing tokens the removed sweep needed 50 s for"):
+            drawn = TreePrettyPrinter(tree, sentence, rtl=True)
+            text = drawn.text(unicodelines=True)
+        assert drawn_crossings(text) == 7999
+        # the crossing edges, moved last: one line per straddled child, each
+        # up to a node (a preterminal or the root); the sibling test at 400
+        # tokens pins this tail against the brute-force geometry oracle
+        crossing = list(drawn.edges.items())[-7999:]
+        assert len({child for child, _ in crossing}) == 7999
+        assert all(isinstance(drawn.nodes[parent], Tree) for _, parent in crossing)
 
     def test_nested_branches_retire_each_line_once(self):
         tree, sentence = self._nested(400)
@@ -583,3 +647,92 @@ class TestCrossingCost:
         assert self._crossing_last(drawn) == 99
         assert "x" * 5000 in unwrapped and "x" * 5000 not in wrapped
         assert svg.count("x" * 5000) == 50 and "<script" not in svg
+
+
+class TestRealDataMaximum:
+    """The largest tree of the installed treebank sample, the benign maximum
+    a user draws, rendered in every mode and both directions byte for byte as
+    develop rendered it before this harness grew (pinned by digest), inside
+    a budget; the crossing sweep finds nothing to move in a continuous tree."""
+
+    FILE, INDEX, LEAVES, NODES = "wsj_0096.mrg", 46, 271, 440
+    DIGESTS = {
+        (
+            False,
+            "text",
+        ): "5ed7475a00fd0b144c5fd19079c6d52067449ffe16ac9727b2c01dc3312dcd5b",
+        (
+            False,
+            "unicode",
+        ): "d96f41acd0910920459470d1513f65fe4b9f6d865a9cfeac6b67e383bd802a6c",
+        (
+            False,
+            "svg",
+        ): "3b9b6e2102e965097e57a2f25f7908163e4369c185e20f7db3e82b9d3ec1fa18",
+        (
+            False,
+            "print",
+        ): "eb27d4c8cd2614c01e63fc7fc7a4d7c89aa8e18f6b287b0b828d15381577158e",
+        (
+            True,
+            "text",
+        ): "f5d4c9c4737cecfa50197c20b2c2aeb86478e844440da751800b855576340633",
+        (
+            True,
+            "unicode",
+        ): "bb3f9c62ce47ac796fc5dace3ae24dfb133ad544cb3777e665fb662fb0b5d40d",
+        (
+            True,
+            "svg",
+        ): "3fe8d147f745dcc03ce7c6ef78491a465aab336777b9bd7e3e26e62ff5f5e3c8",
+        (
+            True,
+            "print",
+        ): "445e53207c3bc0b7ef1b73b31a68e85e76a0f0f0a0eff0c14f4572d9e526b0c6",
+    }
+
+    @staticmethod
+    def _treebank():
+        import nltk.data
+
+        try:
+            nltk.data.find("corpora/treebank")
+        except LookupError:
+            pytest.skip("treebank corpus not installed")
+        from nltk.corpus import treebank
+
+        return treebank
+
+    def test_the_largest_treebank_tree_is_the_pinned_one(self):
+        treebank = self._treebank()
+        largest = max(
+            (
+                (len(tree.leaves()), len(list(tree.subtrees())), fileid, i)
+                for fileid in treebank.fileids()
+                for i, tree in enumerate(treebank.parsed_sents(fileid))
+            ),
+        )
+        assert largest == (self.LEAVES, self.NODES, self.FILE, self.INDEX)
+
+    @pytest.mark.parametrize("rtl", [False, True])
+    def test_the_largest_treebank_tree_is_drawn_as_develop_drew_it(self, rtl):
+        import hashlib
+
+        tree = self._treebank().parsed_sents(self.FILE)[self.INDEX]
+        assert (len(tree.leaves()), len(list(tree.subtrees()))) == (
+            self.LEAVES,
+            self.NODES,
+        )
+        with budget(10, "the largest treebank tree in four renderings"):
+            drawn = TreePrettyPrinter(tree, rtl=rtl)
+            out = {
+                "text": drawn.text(),
+                "unicode": drawn.text(unicodelines=True),
+                "svg": drawn.svg(),
+                "print": _printed(tree, rtl=rtl),
+            }
+        for mode, text in out.items():
+            digest = hashlib.sha256(text.encode("utf-8")).hexdigest()
+            assert digest == self.DIGESTS[(rtl, mode)], (rtl, mode, digest)
+        assert crossing_by_geometry(drawn) == set()
+        assert drawn_crossings(out["unicode"]) == 0 and not _live(out["print"])

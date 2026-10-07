@@ -1,3 +1,9 @@
+Version 3.10.4 (unreleased)
+
+* Downloaded package archives stay private to the installing account (0600). An install another account must read is extracted: a download made as root or outside the installing account's home extracts on its own, and `nltk.download(..., extract=True)` / `python -m nltk.downloader --extract` (or `--no-extract`) decide explicitly. This also unpacks the packages the index leaves zipped (wordnet, omw-1.4 ...); the extracted files are readable by every account and are found before the archive, and `nltk.download()` called by that account reports the package installed. `find()` now names an archive it cannot read and says how to extract it instead of reporting it "not found" (#3928)
+* `nltk.data.find()` refuses a data root, or a directory on the way to a resource, that another account can write to: a file planted there would be loaded as trusted data. It warns, names the directory and the remedy, and keeps searching later roots. A corpus root is judged with everything under it, and an archive is judged again on the descriptor at every read
+* The downloader installs only into directories no other account can write to, creates them without a group or world write bit whatever the umask, treats an archive another account owns or can write to as stale and downloads it afresh, and extracts only from an archive no other account could have changed since its checksum was verified
+
 Version 3.10.3 2026-08-12
 
 * docs: wrap Chat-80 HOWTO output
