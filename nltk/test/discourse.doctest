@@ -12,7 +12,9 @@ Discourse Checking
 Setup
 =====
 
-    >>> from nltk.test.childes_fixt import setup_module
+    >>> from nltk.test.setup_fixt import check_binary
+    >>> check_binary('mace4')
+    >>> from nltk.test.gluesemantics_malt_fixt import setup_module
     >>> setup_module()
 
 Introduction
