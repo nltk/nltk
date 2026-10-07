@@ -79,7 +79,7 @@ class SklearnClassifier(ClassifierI):
         :rtype: list
         """
         X = self._vectorizer.transform(featuresets)
-        classes = self._encoder.classes_
+        classes = self.labels()
         return [classes[i] for i in self._clf.predict(X)]
 
     def prob_classify_many(self, featuresets):
@@ -98,7 +98,9 @@ class SklearnClassifier(ClassifierI):
 
         :rtype: list
         """
-        return list(self._encoder.classes_)
+        # tolist() gives back the labels as the Python objects they were trained
+        # with ('ham', 3), not as NumPy scalars (np.str_('ham'), np.int64(3))
+        return self._encoder.classes_.tolist()
 
     def train(self, labeled_featuresets):
         """
@@ -117,7 +119,7 @@ class SklearnClassifier(ClassifierI):
         return self
 
     def _make_probdist(self, y_proba):
-        classes = self._encoder.classes_
+        classes = self.labels()
         return DictionaryProbDist({classes[i]: p for i, p in enumerate(y_proba)})
 
 
