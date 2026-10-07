@@ -43,7 +43,6 @@ The set of all threads for a discourse is the Cartesian product of all the readi
 those threads which are consistent (taking into account any background assumptions).
 """
 
-import os
 from abc import ABCMeta, abstractmethod
 from functools import reduce
 from operator import add, and_
@@ -137,9 +136,7 @@ class DrtGlueReadingCommand(ReadingCommand):
         :param depparser: the dependency parser
         """
         if semtype_file is None:
-            semtype_file = os.path.join(
-                "grammars", "sample_grammars", "drt_glue.semtype"
-            )
+            semtype_file = "grammars/sample_grammars/drt_glue.semtype"
         self._glue = DrtGlue(
             semtype_file=semtype_file,
             remove_duplicates=remove_duplicates,
@@ -598,7 +595,7 @@ def discourse_demo(reading_command=None):
     dt.readings(filter=True)
     import nltk.data
 
-    background_file = os.path.join("grammars", "book_grammars", "background.fol")
+    background_file = "grammars/book_grammars/background.fol"
     background = nltk.data.load(background_file)
 
     safe_print()
