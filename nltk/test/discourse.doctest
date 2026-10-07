@@ -519,11 +519,11 @@ Regression Testing from book
     >>> tagger = RegexpTagger(
     ...     [('^(chases|runs)$', 'VB'),
     ...      ('^(a)$', 'ex_quant'),
-    ...      ('^(every)$', 'univ_quant'),
+    ...      ('^(every|Every)$', 'univ_quant'),
     ...      ('^(dog|boy)$', 'NN'),
     ...      ('^(He)$', 'PRP')
     ... ])
-    >>> rc = DrtGlueReadingCommand(depparser=MaltParser(tagger=tagger))
+    >>> rc = DrtGlueReadingCommand(depparser=MaltParser(tagger=tagger.tag))
     >>> dt = DiscourseTester(map(str.split, ['Every dog chases a boy', 'He runs']), rc)
     >>> dt.readings()
     <BLANKLINE>
