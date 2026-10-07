@@ -13,7 +13,7 @@ Setup
 =====
 
     >>> from nltk.test.setup_fixt import check_binary
-    >>> check_binary('mace4')
+    >>> check_binary('mace4', env_vars=['PROVER9'])
     >>> from nltk.test.gluesemantics_malt_fixt import setup_module
     >>> setup_module()
 
