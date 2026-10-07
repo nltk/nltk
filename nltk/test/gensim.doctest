@@ -39,7 +39,7 @@ There are some supporting functions already implemented in Gensim to manipulate 
 For example, to compute the cosine similarity between 2 words:
 
     >>> new_model.wv.similarity('university','school') > 0.3
-    True
+    np.True_
 
 ---------------------------
 Using the pre-trained model
