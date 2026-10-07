@@ -104,14 +104,19 @@ jobs:
     if: needs.changes.outputs.code == 'true'
     outputs:
       python_versions: ${{ steps.set-matrix.outputs.python_versions }}
+      # true on develop, in a merge group, or with the full-matrix label: the
+      # advisory probes run only then (they take minutes per cell)
+      full: ${{ steps.set-matrix.outputs.full }}
     steps:
       - id: set-matrix
         shell: bash
         run: |
           if [[ "${{ github.event_name }}" == "merge_group" ]] || [[ "${{ contains(github.event.pull_request.labels.*.name, 'full-matrix') }}" == "true" ]] || [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
             echo 'python_versions=["3.10", "3.11", "3.12", "3.13", "3.14", "3.14t"]' >> $GITHUB_OUTPUT
+            echo 'full=true' >> $GITHUB_OUTPUT
           else
             echo 'python_versions=["3.14", "3.14t"]' >> $GITHUB_OUTPUT
+            echo 'full=false' >> $GITHUB_OUTPUT
           fi
 
   test:
@@ -324,6 +329,9 @@ jobs:
           pytest -rsx nltk/test/unit/test_path_traversal_security.py
 
       - name: Run advisory-verification probes
+        # Only on a full run (develop, merge group, full-matrix label): the
+        # probes replay every advisory's attack and cost minutes per cell.
+        if: needs.setup-matrix.outputs.full == 'true'
         shell: bash
         env:
           PYTHONSAFEPATH: "1"
@@ -340,12 +348,20 @@ jobs:
           PYTHONSAFEPATH: "1"
           # dot must be installed: the real Graphviz tests fail, never skip
           NLTK_CI_REQUIRE_GRAPHVIZ: "1"
+          FULL_MATRIX: ${{ needs.setup-matrix.outputs.full }}
         run: |
+          # The advisory probes run in their own step above on a full run and
+          # are left out of a reduced run entirely, so the parallel run here
+          # skips the file whenever that step did not run.
+          probes=()
+          if [ "$FULL_MATRIX" != "true" ]; then
+            probes+=("--ignore=nltk/test/unit/test_advisory_probes.py")
+          fi
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
             # Windows spawn re-bootstraps pytest per subprocess; skip the plugin
             # autoload scan (seconds per spawn) only here and load needed plugins
             # explicitly. Set on this command alone so other OSes keep autoload.
-            PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -p xdist -p pytest_mock --numprocesses auto -rsx --doctest-modules nltk
+            PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -p xdist -p pytest_mock --numprocesses auto "${probes[@]}" -rsx --doctest-modules nltk
           elif [ "${{ matrix.os }}" = "macos-latest" ]; then
             # Files with wall-clock deadlines (proc.join backstops, "< N s" asserts,
             # the 40 s CoreNLP start) were starved by the parallel workers here, so
@@ -390,11 +406,11 @@ jobs:
               ignores+=("--ignore=$f")
             done
             rc=0
-            pytest --numprocesses auto "${ignores[@]}" -rsx --doctest-modules nltk || rc=1
+            pytest --numprocesses auto "${ignores[@]}" "${probes[@]}" -rsx --doctest-modules nltk || rc=1
             pytest -rsx "${quiet[@]}" || rc=1
             exit $rc
           else
-            pytest --numprocesses auto -rsx --doctest-modules nltk
+            pytest --numprocesses auto "${probes[@]}" -rsx --doctest-modules nltk
           fi
 
   docker-cross-account:
