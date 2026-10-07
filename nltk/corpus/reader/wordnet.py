@@ -242,6 +242,45 @@ class _WordNetObject:
             return NotImplemented
         return self._name < other._name
 
+    def _related_by(self, rels=None):
+        """
+        Compose a set of relations, for ex. part_of, instance hypernyms and has_member:
+        >>> from nltk.corpus import wordnet as wn
+        >>> print(sorted(wn.synset('liverpool.n.01')._related_by({"#p","@i","%m"})))
+        [Synset('city.n.01'), Synset('england.n.01'), Synset('liverpudlian.n.01'), Synset('port.n.01')]
+        """
+        related = []
+        if rels:
+            for rel in rels:
+                related.extend(self._related(rel))
+        return related
+
+    def _broader(self, add_rels=None):
+        """
+        Adding the part holonyms:
+        >>> from nltk.corpus import wordnet as wn
+        >>> print(sorted(wn.synset('accelerator.n.01')._broader(add_rels={"#p"})))
+        [Synset('airplane.n.01'), Synset('car.n.01'), Synset('pedal.n.02')]
+        """
+        rels = self._related("@")
+        if self.pos() == "n":
+            rels.extend(self._related("@i"))
+        rels.extend(self._related_by(add_rels))
+        return rels
+
+    def _narrower(self, add_rels=None):
+        """
+        Return hyponyms + instances:
+        >>> from nltk.corpus import wordnet as wn
+        >>> print(sorted(wn.synset('linguist.n.01')._narrower()))
+        [Synset('bloomfield.n.01'), Synset('chomsky.n.01'), Synset('computational_linguist.n.01'), Synset('de_saussure.n.01'), Synset('firth.n.01'), Synset('grammarian.n.01'), Synset('grimm.n.02'), Synset('hebraist.n.01'), Synset('jakobson.n.01'), Synset('jespersen.n.01'), Synset('lexicographer.n.01'), Synset('neurolinguist.n.01'), Synset('phonetician.n.01'), Synset('phonologist.n.01'), Synset('psycholinguist.n.01'), Synset('sapir.n.01'), Synset('semanticist.n.01'), Synset('sociolinguist.n.01')]
+        """
+        rels = self._related("~")
+        if self.pos() == "n":
+            rels.extend(self._related("~i"))
+        rels.extend(self._related_by(add_rels))
+        return rels
+
 
 class Lemma(_WordNetObject):
     """
@@ -552,9 +591,7 @@ class Synset(_WordNetObject):
             next_synset = todo.pop()
             if next_synset not in seen:
                 seen.add(next_synset)
-                next_hypernyms = (
-                    next_synset.hypernyms() + next_synset.instance_hypernyms()
-                )
+                next_hypernyms = next_synset._broader()
                 if not next_hypernyms:
                     result.append(next_synset)
                 else:
@@ -578,7 +615,7 @@ class Synset(_WordNetObject):
             _visited = frozenset()
         _check_hypernym_visit(self, _visited)
         if "_max_depth" not in self.__dict__:
-            hypernyms = self.hypernyms() + self.instance_hypernyms()
+            hypernyms = self._broader()
             if not hypernyms:
                 self._max_depth = 0
             else:
@@ -595,7 +632,7 @@ class Synset(_WordNetObject):
             _visited = frozenset()
         _check_hypernym_visit(self, _visited)
         if "_min_depth" not in self.__dict__:
-            hypernyms = self.hypernyms() + self.instance_hypernyms()
+            hypernyms = self._broader()
             if not hypernyms:
                 self._min_depth = 0
             else:
@@ -704,7 +741,7 @@ class Synset(_WordNetObject):
         _check_hypernym_visit(self, _visited)
         paths = []
 
-        hypernyms = self.hypernyms() + self.instance_hypernyms()
+        hypernyms = self._broader()
         if len(hypernyms) == 0:
             paths = [[self]]
 
@@ -814,7 +851,7 @@ class Synset(_WordNetObject):
         _check_hypernym_visit(self, _visited)
         distances = {(self, distance)}
         _visited = _visited | {self}
-        for hypernym in self._hypernyms() + self._instance_hypernyms():
+        for hypernym in self._broader():
             distances |= hypernym.hypernym_distances(
                 distance + 1, simulate_root=False, _visited=_visited
             )
@@ -839,8 +876,7 @@ class Synset(_WordNetObject):
             path[s] = depth
 
             depth += 1
-            queue.extend((hyp, depth) for hyp in s._hypernyms())
-            queue.extend((hyp, depth) for hyp in s._instance_hypernyms())
+            queue.extend((hyp, depth) for hyp in s._broader())
 
         if simulate_root:
             fake_synset = Synset(None)
@@ -1131,7 +1167,7 @@ class Synset(_WordNetObject):
             todo = [
                 hypernym
                 for synset in todo
-                for hypernym in (synset.hypernyms() + synset.instance_hypernyms())
+                for hypernym in (synset._broader())
                 if hypernym not in seen
             ]
 
