@@ -1581,10 +1581,12 @@ Regression Tests
 The following helper functions are used to create and then delete
 testing corpora that are stored in temporary directories.  These
 testing corpora are used to make sure the readers work correctly.
+The directories are made inside the test session's private temporary
+directory, which NLTK trusts as a corpus root (a shared /tmp is not).
 
     >>> import tempfile, os.path, textwrap
     >>> def make_testcorpus(ext='', **fileids):
-    ...     root = tempfile.mkdtemp()
+    ...     root = tempfile.mkdtemp(dir=getfixture('tmp_path'))
     ...     for fileid, contents in fileids.items():
     ...         fileid += ext
     ...         f = open(os.path.join(root, fileid), 'w')

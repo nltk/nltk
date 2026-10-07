@@ -2,11 +2,18 @@
 .. For license information, see LICENSE.TXT
 
     >>> import os.path
+    >>> import shutil
 
     >>> from nltk.corpus.reader import BNCCorpusReader
     >>> import nltk.test
 
-    >>> root = os.path.dirname(nltk.test.__file__)
+A corpus reader opens a root only inside a trusted NLTK data directory, so the
+sample file that ships with the tests is first copied into the test session's
+private temporary directory, which the test suite trusts.
+
+    >>> sample = os.path.join(os.path.dirname(nltk.test.__file__), 'FX8.xml')
+    >>> root = str(getfixture('tmp_path'))
+    >>> _ = shutil.copy(sample, root)
     >>> bnc = BNCCorpusReader(root=root, fileids='FX8.xml')
 
 Checking the word access.

@@ -16,7 +16,9 @@ Unit test cases for ``toolbox``
 ``toolbox.StandardFormat.open()``
 ---------------------------------
     >>> import os, tempfile
-    >>> (fd, fname) = tempfile.mkstemp()
+    >>> # inside the test session's private temporary directory, which NLTK
+    >>> # trusts (a shared /tmp is not)
+    >>> (fd, fname) = tempfile.mkstemp(dir=getfixture('tmp_path'))
     >>> tf = os.fdopen(fd, "w")
     >>> _ = tf.write('\\lx a value\n\\lx another value\n')
     >>> tf.close()

@@ -136,9 +136,10 @@ to get the raw contents of any file, simply use ``format="raw"``:
 Making Local Copies
 ~~~~~~~~~~~~~~~~~~~
 ..  This will not be visible in the html output: create a tempdir to
-    play in.
+    play in, inside the test session's private temporary directory, which
+    NLTK trusts (a shared /tmp is not a trusted root).
     >>> import tempfile, os
-    >>> tempdir = tempfile.mkdtemp()
+    >>> tempdir = tempfile.mkdtemp(dir=getfixture('tmp_path'))
     >>> old_dir = os.path.abspath('.')
     >>> os.chdir(tempdir)
 
@@ -280,10 +281,11 @@ Retrieving other Data Sources
 
 Regression Tests
 ~~~~~~~~~~~~~~~~
-Create a temp dir for tests that write files:
+Create a temp dir for tests that write files, inside the test session's
+private temporary directory, which NLTK trusts (a shared /tmp is not):
 
     >>> import tempfile, os
-    >>> tempdir = tempfile.mkdtemp()
+    >>> tempdir = tempfile.mkdtemp(dir=getfixture('tmp_path'))
     >>> old_dir = os.path.abspath('.')
     >>> os.chdir(tempdir)
 

@@ -481,9 +481,10 @@ The ``models()`` method gives us more information about the surviving thread.
 
 
 ..  This will not be visible in the html output: create a tempdir to
-    play in.
+    play in, inside the test session's private temporary directory, which
+    NLTK trusts (a shared /tmp is not a trusted root).
     >>> import tempfile, os
-    >>> tempdir = tempfile.mkdtemp()
+    >>> tempdir = tempfile.mkdtemp(dir=getfixture('tmp_path'))
     >>> old_dir = os.path.abspath('.')
     >>> os.chdir(tempdir)
 
