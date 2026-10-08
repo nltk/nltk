@@ -1,0 +1,386 @@
+name: Bot PR Check
+
+on:
+  pull_request_target:
+    types: [opened, reopened]
+  issue_comment:
+    types: [created]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  check-bot:
+    if: github.event_name == 'pull_request_target' || (github.event.issue.pull_request && contains(github.event.comment.body, 'verify'))
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+    steps:
+      - name: Check trigger and authorization
+        if: github.event_name == 'issue_comment'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const assoc = context.payload.comment.author_association;
+            if (!['OWNER', 'MEMBER', 'COLLABORATOR'].includes(assoc)) {
+              core.setFailed('Not authorized (association: ' + assoc + ')');
+              return;
+            }
+            if (!context.payload.comment.body.includes('[CI: verify]') &&
+                !context.payload.comment.body.includes('[ci: verify]')) {
+              core.setFailed('No recognized trigger found.');
+            }
+
+      - name: Analyze PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.payload.pull_request
+              ? context.payload.pull_request.number
+              : context.issue.number;
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: prNumber,
+            });
+            const login = pr.user.login;
+            const userType = pr.user.type;
+
+            // Request Copilot code review
+            try {
+              await github.rest.pulls.requestReviewers({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+                reviewers: ['copilot'],
+              });
+              core.info('Copilot review requested.');
+            } catch (e) {
+              core.warning('Could not request Copilot review: ' + e.message);
+            }
+
+            // Fetch the diff for analysis
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: pr.number,
+              per_page: 100,
+            });
+
+            const diff = files.map(f => f.patch || '').join('\n');
+            const filenames = files.map(f => f.filename);
+            const additions = files.reduce((sum, f) => sum + f.additions, 0);
+            const deletions = files.reduce((sum, f) => sum + f.deletions, 0);
+            const addedLines = diff.split('\n').filter(l => l.startsWith('+') && !l.startsWith('+++'));
+            const body = (pr.body || '').toLowerCase();
+            const title = (pr.title || '').toLowerCase();
+
+            // -----------------------------------------------
+            // (i) Bot-like PR signals
+            // -----------------------------------------------
+            const botSignals = [];
+
+            const knownBots = [
+              'dependabot[bot]', 'renovate[bot]', 'pre-commit-ci[bot]',
+              'github-actions[bot]', 'allcontributors[bot]', 'imgbot[bot]',
+              'snyk-bot', 'codecov-commenter', 'copilot-swe-agent[bot]',
+            ];
+            const isBot = userType === 'Bot' ||
+                          login.endsWith('[bot]') ||
+                          login.endsWith('-bot') ||
+                          knownBots.includes(login);
+
+            if (isBot) botSignals.push('Account type is Bot or has bot suffix');
+            if (!pr.body || pr.body.trim().length < 20) botSignals.push('PR body is empty or very short');
+            if (additions > 500 && deletions < 5) botSignals.push('Large additions with almost no deletions (bulk generate pattern)');
+
+            const account = await github.rest.users.getByUsername({ username: login });
+            const created = new Date(account.data.created_at);
+            const ageInDays = (Date.now() - created.getTime()) / (1000 * 60 * 60 * 24);
+            if (ageInDays < 30) botSignals.push('Account is less than 30 days old (created: ' + account.data.created_at + ')');
+            if (account.data.public_repos < 2 && ageInDays < 90) botSignals.push('New account with very few public repos');
+
+            // -----------------------------------------------
+            // (ii) Malicious code signals
+            // -----------------------------------------------
+            const maliciousSignals = [];
+            const suspiciousPatterns = [
+              { pattern: /eval\s*\(/, desc: 'eval() call' },
+              { pattern: /exec\s*\(/, desc: 'exec() call' },
+              { pattern: /subprocess/, desc: 'subprocess usage' },
+              { pattern: /os\.system/, desc: 'os.system() call' },
+              { pattern: /\bpickle\.loads?\b/, desc: 'pickle.load (deserialization risk)' },
+              { pattern: /requests\.get\(|urllib\.request/, desc: 'network request in library code' },
+              { pattern: /base64\.b64decode/, desc: 'base64 decode (possible obfuscation)' },
+              { pattern: /__import__\s*\(/, desc: 'dynamic __import__()' },
+              { pattern: /\.encode\(.*\).*\.decode\(/, desc: 'encode/decode chain (possible obfuscation)' },
+              { pattern: /PRIVATE.KEY|SECRET|PASSWORD|TOKEN/i, desc: 'possible hardcoded secret' },
+              { pattern: /0x[0-9a-f]{20,}/i, desc: 'long hex literal (possible obfuscated payload)' },
+              { pattern: /\\x[0-9a-f]{2}(\\x[0-9a-f]{2}){10,}/i, desc: 'hex-escaped byte sequence' },
+              { pattern: /socket\.connect|socket\.bind/, desc: 'raw socket usage' },
+              { pattern: /ctypes\.|cffi\./, desc: 'native code interface (ctypes/cffi)' },
+            ];
+            for (const { pattern, desc } of suspiciousPatterns) {
+              const matches = diff.match(new RegExp('^\\+.*' + pattern.source, 'gm'));
+              if (matches) {
+                maliciousSignals.push(desc + ' (' + matches.length + ' occurrence' + (matches.length > 1 ? 's' : '') + ')');
+              }
+            }
+            const suspiciousFiles = filenames.filter(f =>
+              f.endsWith('.so') || f.endsWith('.dll') || f.endsWith('.dylib') ||
+              f.endsWith('.exe') || f.endsWith('.bin') || f.endsWith('.whl') ||
+              f.includes('setup.py') || f.includes('setup.cfg') ||
+              f.includes('.github/workflows/')
+            );
+            if (suspiciousFiles.length > 0) {
+              maliciousSignals.push('Modifies sensitive files: ' + suspiciousFiles.join(', '));
+            }
+
+            // -----------------------------------------------
+            // (iii) Security theatre / AI slop signals
+            // -----------------------------------------------
+            const slopSignals = [];
+
+            // AI slop phrases in PR body
+            const slopPhrases = [
+              'as an ai', 'certainly!', 'happy to help', 'great question',
+              'here is', 'i have implemented', 'this comprehensive',
+              'robust solution', 'best practices', 'industry standard',
+              'enterprise-grade', 'production-ready', 'state-of-the-art',
+              'leverage', 'streamline', 'elevate', 'utilize',
+              'in conclusion', 'it is worth noting', 'it should be noted',
+              'this ensures that', 'this makes sure that',
+              'for enhanced', 'for improved', 'for better',
+              'maintainability', 'scalability', 'extensibility',
+              'feel free to', 'don\'t hesitate to', 'let me know if',
+            ];
+            const matchedSlop = slopPhrases.filter(p => body.includes(p));
+            if (matchedSlop.length >= 3) {
+              slopSignals.push('PR body hits ' + matchedSlop.length + ' AI slop phrases: "' + matchedSlop.slice(0, 5).join('", "') + '"');
+            } else if (matchedSlop.length > 0) {
+              for (const phrase of matchedSlop) {
+                slopSignals.push('PR body contains AI slop phrase: "' + phrase + '"');
+              }
+            }
+
+            // Excessive emoji in PR title or body
+            const prText = (pr.title || '') + ' ' + (pr.body || '');
+            const emojiPattern = /[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FE0F}\u{1FA00}-\u{1FA6F}\u{1FA70}-\u{1FAFF}\u{200D}\u{2B50}\u{23F0}-\u{23FA}]/gu;
+            const emojis = prText.match(emojiPattern) || [];
+            if (emojis.length > 5) {
+              slopSignals.push('Excessive emoji in PR text (' + emojis.length + ' emoji) — this is a code library, not a group chat');
+            }
+
+            // Emoji in code diff (almost never legitimate)
+            const codeEmojis = addedLines.filter(l => emojiPattern.test(l) && !l.match(/^\+\s*#/) && !l.match(/^\+\s*"""/));
+            if (codeEmojis.length > 0) {
+              slopSignals.push('Emoji injected into source code (' + codeEmojis.length + ' lines)');
+            }
+
+            // LLM signature patterns
+            const llmSignatures = [
+              { pat: /generated (by|with|using) (ai|gpt|claude|copilot|chatgpt|gemini|llm)/i, desc: 'States it was AI-generated' },
+              { pat: /\bai-generated\b/i, desc: 'Tagged as ai-generated' },
+              { pat: /\bauto-generated\b/i, desc: 'Tagged as auto-generated' },
+            ];
+            for (const { pat, desc } of llmSignatures) {
+              if (pat.test(pr.body || '') || pat.test(pr.title || '')) {
+                slopSignals.push(desc);
+              }
+            }
+
+            // Bullet-point heavy PR body
+            const bulletLines = (pr.body || '').split('\n').filter(l => l.match(/^\s*[-*]\s/));
+            const totalLines = (pr.body || '').split('\n').filter(l => l.trim().length > 0);
+            if (bulletLines.length > 10 && totalLines.length > 0 && bulletLines.length / totalLines.length > 0.7) {
+              slopSignals.push('PR body is ' + Math.round(100 * bulletLines.length / totalLines.length) + '% bullet points (' + bulletLines.length + '/' + totalLines.length + ' lines) — looks like unedited LLM output');
+            }
+
+            // Security theatre in diff
+            const theatrePatterns = [
+              { pattern: /# .{0,5}secur/i, desc: 'Comment mentioning security without substance' },
+              { pattern: /pass\s*#\s*todo/i, desc: 'pass with TODO comment (placeholder security)' },
+              { pattern: /except\s*:\s*pass/, desc: 'Bare except:pass (swallows all errors)' },
+              { pattern: /except\s+Exception\s*:\s*pass/, desc: 'except Exception:pass (swallows errors silently)' },
+              { pattern: /ENFORCE\s*=\s*False/, desc: 'Security enforcement disabled by default' },
+              { pattern: /verify\s*=\s*False/, desc: 'SSL verification disabled' },
+              { pattern: /nosec|noqa.*security|type:\s*ignore/, desc: 'Security check suppression' },
+            ];
+            for (const { pattern, desc } of theatrePatterns) {
+              const matches = diff.match(new RegExp('^\\+.*' + pattern.source, 'gm'));
+              if (matches) slopSignals.push(desc + ' (' + matches.length + ')');
+            }
+
+            // Cosmetic-only changes
+            const onlyComments = files.every(f => {
+              const lines = (f.patch || '').split('\n').filter(l => l.startsWith('+') && !l.startsWith('+++'));
+              return lines.every(l => l.match(/^\+\s*(#|\/\/|\/\*|\*|"""|'''|\s*$)/));
+            });
+            if (onlyComments && files.length > 0) slopSignals.push('PR only adds comments/docstrings — no functional changes at all');
+
+            // Excessive boilerplate
+            if (additions > 100 && deletions === 0 && files.length <= 2) {
+              slopSignals.push('Large additions to few files with zero deletions (possible generated boilerplate)');
+            }
+
+            // -----------------------------------------------
+            // (iv) Vandalism signals
+            // -----------------------------------------------
+            const vandalismSignals = [];
+
+            // Garbage characters injected into source files
+            const garbageLines = addedLines.filter(l =>
+              l.match(/^\+\s*[@#$%^&*!]{3,}/) ||
+              l.match(/^\+\s*[^a-zA-Z0-9\s]{5,}/)
+            );
+            if (garbageLines.length > 0) {
+              vandalismSignals.push('Garbage/nonsense characters injected (' + garbageLines.length + ' line' + (garbageLines.length > 1 ? 's' : '') + ')');
+            }
+
+            // Mass deletion
+            if (deletions > 50 && additions < 5) {
+              vandalismSignals.push('Mass deletion: ' + deletions + ' lines removed, only ' + additions + ' added');
+            }
+
+            // Entire files deleted
+            const deletedFiles = files.filter(f => f.status === 'removed');
+            if (deletedFiles.length > 0) {
+              vandalismSignals.push('Files deleted: ' + deletedFiles.map(f => f.filename).join(', '));
+            }
+
+            // Core files gutted
+            const guttedFiles = files.filter(f =>
+              f.status === 'modified' && f.deletions > 20 && f.additions < 3 &&
+              f.filename.startsWith('nltk/')
+            );
+            if (guttedFiles.length > 0) {
+              vandalismSignals.push('Core files gutted (most content removed): ' + guttedFiles.map(f => f.filename).join(', '));
+            }
+
+            // Offensive language
+            const profanityPattern = /\b(fuck|shit|ass|bitch|damn|crap|idiot|stupid|moron|loser|suck|dick|penis|vagina|nigger|faggot|retard)\b/i;
+            const profanityLines = addedLines.filter(l => profanityPattern.test(l));
+            if (profanityLines.length > 0) {
+              vandalismSignals.push('Offensive language detected (' + profanityLines.length + ' line' + (profanityLines.length > 1 ? 's' : '') + ')');
+            }
+
+            // Test files deleted or blanked
+            const testFilesRemoved = files.filter(f =>
+              (f.status === 'removed' || (f.deletions > 10 && f.additions === 0)) &&
+              (f.filename.includes('test_') || f.filename.includes('/test/'))
+            );
+            if (testFilesRemoved.length > 0) {
+              vandalismSignals.push('Test files deleted or blanked: ' + testFilesRemoved.map(f => f.filename).join(', '));
+            }
+
+            // Vandalism phrases
+            const vandalPhrases = ['vandalism', 'hacked', 'pwned', 'defaced', 'lol', 'yolo delete'];
+            for (const phrase of vandalPhrases) {
+              if (title.includes(phrase) || body.includes(phrase)) {
+                vandalismSignals.push('PR text contains suspicious phrase: "' + phrase + '"');
+              }
+            }
+
+            // Revert without explanation
+            if (title.includes('revert') && (!pr.body || pr.body.trim().length < 20)) {
+              vandalismSignals.push('Revert PR with no explanation');
+            }
+
+            // Placeholder content replacing real code
+            const unrelatedContent = addedLines.filter(l =>
+              l.match(/^\+\s*(lorem ipsum|test123|asdf|qwerty|hello world|foo bar baz)\s*$/i)
+            );
+            if (unrelatedContent.length > 0) {
+              vandalismSignals.push('Placeholder/nonsense content injected (' + unrelatedContent.length + ' lines)');
+            }
+
+            // -----------------------------------------------
+            // Build report — only comment if something was found
+            // -----------------------------------------------
+            const hasBotIssues = botSignals.length > 0;
+            const hasMalicious = maliciousSignals.length > 0;
+            const hasSlop = slopSignals.length > 0;
+            const hasVandalism = vandalismSignals.length > 0;
+
+            if (!hasBotIssues && !hasMalicious && !hasSlop && !hasVandalism) {
+              core.info('PR looks clean. No comment posted.');
+              return;
+            }
+
+            const sections = [];
+
+            if (hasBotIssues) {
+              sections.push(
+                '### Bot Detection\n\n' +
+                'This PR has signals consistent with bot-generated submissions.\n\n' +
+                botSignals.map(s => '- ' + s).join('\n')
+              );
+            }
+
+            if (hasMalicious) {
+              sections.push(
+                '### Suspicious Code\n\n' +
+                'The following patterns were found in the diff. ' +
+                'These are not necessarily malicious, but they warrant careful review ' +
+                'before merging — especially in a library that others install and trust.\n\n' +
+                maliciousSignals.map(s => '- ' + s).join('\n')
+              );
+            }
+
+            if (hasSlop) {
+              sections.push(
+                '### AI Slop / Security Theatre\n\n' +
+                'This PR shows signs of being AI-generated content that was submitted ' +
+                'without meaningful human review, or contains security measures that ' +
+                'look good on the surface but do not actually improve security.\n\n' +
+                slopSignals.map(s => '- ' + s).join('\n')
+              );
+            }
+
+            if (hasVandalism) {
+              sections.push(
+                '### Vandalism\n\n' +
+                'This PR contains changes that look like intentional damage or defacement ' +
+                'rather than a legitimate contribution.\n\n' +
+                vandalismSignals.map(s => '- ' + s).join('\n')
+              );
+            }
+
+            // Severity + closing message
+            const severityParts = [];
+            if (hasVandalism) severityParts.push('vandalism');
+            if (hasMalicious) severityParts.push('suspicious code');
+            if (hasSlop) severityParts.push('AI slop');
+            if (hasBotIssues) severityParts.push('bot activity');
+
+            const closing =
+              'Maintainers: this PR was flagged for **' + severityParts.join(', ') + '**. ' +
+              'Please review the findings above carefully before merging. ' +
+              'If this is a false positive, feel free to disregard this comment.';
+
+            const report =
+              '## Automated PR Review\n\n' +
+              sections.join('\n\n') +
+              '\n\n---\n\n' + closing;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              body: report,
+            });
+
+            // Apply labels
+            const labels = [];
+            if (hasBotIssues) labels.push('bot-pr');
+            if (hasMalicious) labels.push('needs-security-review');
+            if (hasSlop) labels.push('possible-ai-slop');
+            if (hasVandalism) labels.push('vandalism');
+
+            await github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: pr.number,
+              labels: labels,
+            });
