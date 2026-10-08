@@ -780,8 +780,7 @@ class Synset(_WordNetObject):
         if simulate_root:
             fake_synset = Synset(None)
             fake_synset._name = "*ROOT*"
-            fake_synset.hypernyms = lambda: []
-            fake_synset.instance_hypernyms = lambda: []
+            fake_synset._broader = lambda: []
             synsets.append(fake_synset)
 
         try:

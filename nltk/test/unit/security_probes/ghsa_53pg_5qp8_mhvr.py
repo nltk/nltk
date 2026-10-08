@@ -24,8 +24,8 @@ def _node_class():
             self._name = name
             self._up = up
 
-        def _broader(self, add_rels=None):
-            return list(self._up)
+        def _broader(self):
+            return self._up
 
         def hypernyms(self):
             return self._up
