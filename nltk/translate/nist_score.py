@@ -55,10 +55,17 @@ def sentence_nist(references, hypothesis, n=5):
     ...               'of', 'the', 'party']
 
     >>> sentence_nist([reference1, reference2, reference3], hypothesis1) # doctest: +ELLIPSIS
-    3.3709...
+    5.0379...
 
     >>> sentence_nist([reference1, reference2, reference3], hypothesis2) # doctest: +ELLIPSIS
-    1.4619...
+    2.1138...
+
+    These are the scores that mteval-v13a.pl gives for the same tokens. With a
+    single reference the score does not depend on how the references are
+    combined:
+
+    >>> sentence_nist([reference1], hypothesis1) # doctest: +ELLIPSIS
+    2.4477...
 
     :param references: reference sentences
     :type references: list(list(str))
@@ -74,6 +81,13 @@ def corpus_nist(list_of_references, hypotheses, n=5):
     """
     Calculate a single corpus-level NIST score (aka. system-level BLEU) for all
     the hypotheses and their respective references.
+
+    The n-gram information weights are estimated from all the references. Each
+    hypothesis n-gram co-occurs with the references if it appears in any of
+    them, and its count is clipped at the largest count it has in a single
+    reference, as in mteval-v13a.pl. The length penalty compares the length of
+    the hypotheses with the average length of their references, Eqn 3 in
+    Doddington (2002).
 
     :param references: a corpus of lists of reference sentences, w.r.t. hypotheses
     :type references: list(list(list(str)))
@@ -121,42 +135,31 @@ def corpus_nist(list_of_references, hypotheses, n=5):
     nist_precision_numerator_per_ngram = Counter()
     nist_precision_denominator_per_ngram = Counter()
     l_ref, l_sys = 0, 0
-    # For each order of ngram.
-    for i in range(1, n + 1):
-        # Iterate through each hypothesis and their corresponding references.
-        for references, hypothesis in zip(list_of_references, hypotheses):
-            hyp_len = len(hypothesis)
-
-            # Find reference with the best NIST score.
-            nist_score_per_ref = []
+    # Iterate through each hypothesis and their corresponding references.
+    for references, hypothesis in zip(list_of_references, hypotheses):
+        hyp_len = len(hypothesis)
+        l_sys += hyp_len
+        # Eqn 3 in Doddington (2002) compares the hypothesis length with the
+        # average length of the references, mteval-v13a.pl does the same.
+        l_ref += sum(len(reference) for reference in references) / len(references)
+        # For each order of ngram.
+        for i in range(1, n + 1):
+            # Counter of ngrams in hypothesis.
+            hyp_ngrams = Counter(ngrams(hypothesis, i)) if hyp_len >= i else Counter()
+            # A hypothesis ngram co-occurs with the references if it appears in
+            # any of them. Like mteval-v13a.pl, clip its count at the largest
+            # count it has in a single reference.
+            max_ref_ngrams = Counter()
             for reference in references:
-                _ref_len = len(reference)
-                # Counter of ngrams in hypothesis.
-                hyp_ngrams = (
-                    Counter(ngrams(hypothesis, i))
-                    if len(hypothesis) >= i
-                    else Counter()
-                )
-                ref_ngrams = (
-                    Counter(ngrams(reference, i)) if len(reference) >= i else Counter()
-                )
-                ngram_overlaps = hyp_ngrams & ref_ngrams
-                # Precision part of the score in Eqn 3
-                _numerator = sum(
-                    information_weights[_ngram] * count
-                    for _ngram, count in ngram_overlaps.items()
-                )
-                _denominator = sum(hyp_ngrams.values())
-                _precision = 0 if _denominator == 0 else _numerator / _denominator
-                nist_score_per_ref.append(
-                    (_precision, _numerator, _denominator, _ref_len)
-                )
-            # Best reference.
-            precision, numerator, denominator, ref_len = max(nist_score_per_ref)
-            nist_precision_numerator_per_ngram[i] += numerator
-            nist_precision_denominator_per_ngram[i] += denominator
-            l_ref += ref_len
-            l_sys += hyp_len
+                if len(reference) >= i:
+                    max_ref_ngrams |= Counter(ngrams(reference, i))
+            ngram_overlaps = hyp_ngrams & max_ref_ngrams
+            # Precision part of the score in Eqn 3
+            nist_precision_numerator_per_ngram[i] += sum(
+                information_weights[_ngram] * count
+                for _ngram, count in ngram_overlaps.items()
+            )
+            nist_precision_denominator_per_ngram[i] += sum(hyp_ngrams.values())
 
     # Final NIST micro-average mean aggregation.
     nist_precision = 0
