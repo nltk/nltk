@@ -1171,12 +1171,20 @@ uses a different sentence tokenizer as follows:
     ['In', 'the', 'beginning', 'God', 'created', 'the', 'heaven',
      'and', 'the', 'earth']
 
-If you wish to read your own plaintext corpus, which is stored in the
-directory '/usr/share/some-corpus', then you can create a corpus
-reader for it with::
+A corpus reader only opens a root that lies inside an NLTK data
+directory (a directory on ``nltk.data.path``), so your own plaintext
+corpus, stored in the directory '/usr/share/some-corpus', is refused:
+
+    >>> nltk.corpus.PlaintextCorpusReader('/usr/share/some-corpus', r'.*\.txt')
+    Traceback (most recent call last):
+    PermissionError: Security Violation [CorpusReader.__init__]: Unauthorized path ...
+
+Store it under a data directory instead, for example as
+``~/nltk_data/corpora/some-corpus``, then find it the way ``genesis_dir``
+was found above and create a corpus reader for it with::
 
     >>> my_corpus = nltk.corpus.PlaintextCorpusReader(
-    ...     '/usr/share/some-corpus', r'.*\.txt') # doctest: +SKIP
+    ...     nltk.data.find('corpora/some-corpus'), r'.*\.txt') # doctest: +SKIP
 
 For a complete list of corpus reader subclasses, see the API
 documentation for `nltk.corpus.reader`.
@@ -1497,12 +1505,16 @@ Finally, it combines these corpus views using the
 
 When writing a corpus reader for a corpus that is never expected to be
 very large, it can sometimes be appropriate to read the files
-directly, rather than using a corpus view.  For example, the
-`WordListCorpusView` class defines its `words()` method as follows:
+directly, rather than using a corpus view.  For example, a
+`WordListCorpusReader` can define its `words()` method as follows.  It
+reads through `raw()`, which opens each file with the reader's own
+``open()`` and so through ``nltk.pathsec``; never hand a path from
+`abspaths()` to the built-in ``open()``, which skips those checks:
 
     >>> def words(self, fileids=None):
-    ...     return concat([[w for w in open(fileid).read().split('\n') if w]
-    ...                    for fileid in self.abspaths(fileids)])
+    ...     return [w for w in self.raw(fileids).split('\n') if w]
+    >>> words(nltk.corpus.names, 'male.txt')[:3]
+    ['Aamir', 'Aaron', 'Abbey']
 
 (This is usually more appropriate for lexicons than for token corpora.)
 
@@ -1581,17 +1593,20 @@ Regression Tests
 The following helper functions are used to create and then delete
 testing corpora that are stored in temporary directories.  These
 testing corpora are used to make sure the readers work correctly.
-The directories are made inside the test session's private temporary
-directory, which NLTK trusts as a corpus root (a shared /tmp is not).
+Each directory is a private staging directory that ``make_staging_dir``
+creates under an NLTK data directory, the only kind of root a corpus
+reader opens, and removes when Python exits; every file in it is
+written through ``nltk.pathsec``.
 
-    >>> import tempfile, os.path, textwrap
+    >>> import os.path, textwrap
+    >>> from nltk import pathsec
+    >>> from nltk.data import make_staging_dir
     >>> def make_testcorpus(ext='', **fileids):
-    ...     root = tempfile.mkdtemp(dir=getfixture('tmp_path'))
+    ...     root = make_staging_dir(prefix='corpus_howto_', cleanup=True)
     ...     for fileid, contents in fileids.items():
     ...         fileid += ext
-    ...         f = open(os.path.join(root, fileid), 'w')
-    ...         f.write(textwrap.dedent(contents))
-    ...         f.close()
+    ...         with pathsec.open(os.path.join(root, fileid), 'w') as f:
+    ...             f.write(textwrap.dedent(contents))
     ...     return root
     >>> def del_testcorpus(root):
     ...     for fileid in os.listdir(root):
