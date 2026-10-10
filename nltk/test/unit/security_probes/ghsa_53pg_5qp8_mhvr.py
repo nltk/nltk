@@ -14,14 +14,18 @@ WALKERS = ("max_depth", "min_depth", "hypernym_paths", "hypernym_distances")
 
 
 def _node_class():
-    """A synthetic Synset exposing only the hypernym accessors the walkers use,
-    so the graph shape is under the probe's control and no corpus is needed."""
+    """A synthetic Synset exposing only the hypernym accessor the walkers use
+    (``_broader``), so the graph shape is under the probe's control and no
+    corpus is needed."""
     from nltk.corpus.reader.wordnet import Synset
 
     class Node(Synset):
         def __init__(self, name, up):
             self._name = name
             self._up = up
+
+        def _broader(self):
+            return self._up
 
         def hypernyms(self):
             return self._up

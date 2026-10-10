@@ -44,6 +44,7 @@ from nltk.internals import deprecated
 from nltk.probability import FreqDist
 from nltk.tag import map_tag
 from nltk.termsec import safe_print, sanitize_terminal
+from nltk.util import acyclic_breadth_first as _bfs
 from nltk.util import binary_search_file as _binary_search_file
 
 ######################################################################
@@ -552,9 +553,7 @@ class Synset(_WordNetObject):
             next_synset = todo.pop()
             if next_synset not in seen:
                 seen.add(next_synset)
-                next_hypernyms = (
-                    next_synset.hypernyms() + next_synset.instance_hypernyms()
-                )
+                next_hypernyms = next_synset._broader()
                 if not next_hypernyms:
                     result.append(next_synset)
                 else:
@@ -578,7 +577,7 @@ class Synset(_WordNetObject):
             _visited = frozenset()
         _check_hypernym_visit(self, _visited)
         if "_max_depth" not in self.__dict__:
-            hypernyms = self.hypernyms() + self.instance_hypernyms()
+            hypernyms = self._broader()
             if not hypernyms:
                 self._max_depth = 0
             else:
@@ -595,7 +594,7 @@ class Synset(_WordNetObject):
             _visited = frozenset()
         _check_hypernym_visit(self, _visited)
         if "_min_depth" not in self.__dict__:
-            hypernyms = self.hypernyms() + self.instance_hypernyms()
+            hypernyms = self._broader()
             if not hypernyms:
                 self._min_depth = 0
             else:
@@ -632,9 +631,7 @@ class Synset(_WordNetObject):
         UserWarning: Discarded redundant search for Synset('animal.n.01') at depth 7
         """
 
-        from nltk.util import acyclic_breadth_first
-
-        for synset in acyclic_breadth_first(self, rel, depth):
+        for synset in _bfs(self, rel, depth):
             if synset != self:
                 yield synset
 
@@ -704,7 +701,7 @@ class Synset(_WordNetObject):
         _check_hypernym_visit(self, _visited)
         paths = []
 
-        hypernyms = self.hypernyms() + self.instance_hypernyms()
+        hypernyms = self._broader()
         if len(hypernyms) == 0:
             paths = [[self]]
 
@@ -725,21 +722,15 @@ class Synset(_WordNetObject):
         :return: The synsets that are hypernyms of both synsets.
         """
         if not self._all_hypernyms:
-            self._all_hypernyms = {
-                self_synset
-                for self_synsets in self._iter_hypernym_lists()
-                for self_synset in self_synsets
-            }
+            self._all_hypernyms = set(_bfs(self, lambda s: s._broader()))
         if not other._all_hypernyms:
-            other._all_hypernyms = {
-                other_synset
-                for other_synsets in other._iter_hypernym_lists()
-                for other_synset in other_synsets
-            }
+            other._all_hypernyms = set(_bfs(other, lambda s: s._broader()))
         return list(self._all_hypernyms.intersection(other._all_hypernyms))
 
     def lowest_common_hypernyms(self, other, simulate_root=False, use_min_depth=False):
         """
+        NB: this method is not used, and may be deprecated
+
         Get a list of lowest synset(s) that both synsets have as a hypernym.
         When `use_min_depth == False` this means that the synset which appears
         as a hypernym of both `self` and `other` with the lowest maximum depth
@@ -782,8 +773,7 @@ class Synset(_WordNetObject):
         if simulate_root:
             fake_synset = Synset(None)
             fake_synset._name = "*ROOT*"
-            fake_synset.hypernyms = lambda: []
-            fake_synset.instance_hypernyms = lambda: []
+            fake_synset._broader = lambda add_rels=None: []
             synsets.append(fake_synset)
 
         try:
@@ -814,7 +804,7 @@ class Synset(_WordNetObject):
         _check_hypernym_visit(self, _visited)
         distances = {(self, distance)}
         _visited = _visited | {self}
-        for hypernym in self._hypernyms() + self._instance_hypernyms():
+        for hypernym in self._broader():
             distances |= hypernym.hypernym_distances(
                 distance + 1, simulate_root=False, _visited=_visited
             )
@@ -839,8 +829,7 @@ class Synset(_WordNetObject):
             path[s] = depth
 
             depth += 1
-            queue.extend((hyp, depth) for hyp in s._hypernyms())
-            queue.extend((hyp, depth) for hyp in s._instance_hypernyms())
+            queue.extend((hyp, depth) for hyp in s._broader())
 
         if simulate_root:
             fake_synset = Synset(None)
@@ -1119,9 +1108,17 @@ class Synset(_WordNetObject):
 
     def _iter_hypernym_lists(self):
         """
+        NB: this method is no longer used here, and may be deprecated
+
         :return: An iterator over ``Synset`` objects that are either proper
         hypernyms or instance of hypernyms of the synset.
         """
+        warnings.warn(
+            "`_iter_hypernym_lists` is deprecated and will be removed in a future version. "
+            "Use `'_bfs' (or nltk.util.acyclic_breadth_first`) instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
         todo = [self]
         seen = set()
         while todo:
@@ -1131,7 +1128,7 @@ class Synset(_WordNetObject):
             todo = [
                 hypernym
                 for synset in todo
-                for hypernym in (synset.hypernyms() + synset.instance_hypernyms())
+                for hypernym in (synset._broader())
                 if hypernym not in seen
             ]
 
@@ -1145,6 +1142,47 @@ class Synset(_WordNetObject):
         pointer_tuples = self._pointers[relation_symbol]
         r = [get_synset(pos, offset) for pos, offset in pointer_tuples]
         return r
+
+    def _related_by(self, rels=None):
+        """
+        Compose a set of relations, for ex. part_of, instance hypernyms and has_member:
+        >>> from nltk.corpus import wordnet as wn
+        >>> print(sorted(wn.synset('liverpool.n.01')._related_by({"#p","@i","%m"})))
+        [Synset('city.n.01'), Synset('england.n.01'), Synset('liverpudlian.n.01'), Synset('port.n.01')]
+        """
+        related = []
+        if rels:
+            if isinstance(rels, str):
+                rels = [rels]
+            for rel in rels:
+                related.extend(self._related(rel))
+        return related
+
+    def _broader(self, add_rels=None):
+        """
+        Adding the part holonyms:
+        >>> from nltk.corpus import wordnet as wn
+        >>> print(sorted(wn.synset('accelerator.n.01')._broader(add_rels={"#p"})))
+        [Synset('airplane.n.01'), Synset('car.n.01'), Synset('pedal.n.02')]
+        """
+        rels = self._related("@")
+        if self.pos() == "n":
+            rels.extend(self._related("@i"))
+        rels.extend(self._related_by(add_rels))
+        return rels
+
+    def _narrower(self, add_rels=None):
+        """
+        Return hyponyms + instances:
+        >>> from nltk.corpus import wordnet as wn
+        >>> print(sorted(wn.synset('linguist.n.01')._narrower()))
+        [Synset('bloomfield.n.01'), Synset('chomsky.n.01'), Synset('computational_linguist.n.01'), Synset('de_saussure.n.01'), Synset('firth.n.01'), Synset('grammarian.n.01'), Synset('grimm.n.02'), Synset('hebraist.n.01'), Synset('jakobson.n.01'), Synset('jespersen.n.01'), Synset('lexicographer.n.01'), Synset('neurolinguist.n.01'), Synset('phonetician.n.01'), Synset('phonologist.n.01'), Synset('psycholinguist.n.01'), Synset('sapir.n.01'), Synset('semanticist.n.01'), Synset('sociolinguist.n.01')]
+        """
+        rels = self._related("~")
+        if self.pos() == "n":
+            rels.extend(self._related("~i"))
+        rels.extend(self._related_by(add_rels))
+        return rels
 
 
 ######################################################################
