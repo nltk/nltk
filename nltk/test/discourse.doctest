@@ -482,25 +482,29 @@ The ``models()`` method gives us more information about the surviving thread.
     <BLANKLINE>
 
 
-..  This will not be visible in the html output: create a tempdir to
-    play in, inside the test session's private temporary directory, which
-    NLTK trusts (a shared /tmp is not a trusted root).
-    >>> import tempfile, os
-    >>> tempdir = tempfile.mkdtemp(dir=getfixture('tmp_path'))
+In order to play around with your own version of background knowledge,
+you might want to start off with a local copy of ``background.fol``.
+``nltk.data.retrieve()`` only writes inside an NLTK data directory, so
+work in a private staging directory under one, which ``cleanup=True``
+removes when Python exits:
+
+    >>> import os
+    >>> from nltk.data import make_staging_dir
+    >>> tempdir = make_staging_dir(prefix='discourse_howto_', cleanup=True)
     >>> old_dir = os.path.abspath('.')
     >>> os.chdir(tempdir)
-
-In order to play around with your own version of background knowledge,
-you might want to start off with a local copy of ``background.fol``:
 
     >>> nltk.data.retrieve('grammars/book_grammars/background.fol')
     Retrieving 'nltk:grammars/book_grammars/background.fol', saving to 'background.fol'
 
 After you have modified the file, the ``load_fol()`` function will parse
-the strings in the file into expressions of ``nltk.sem.logic``.
+the strings in the file into expressions of ``nltk.sem.logic``.  Read
+the file through ``nltk.pathsec``, not the built-in ``open()``:
 
+    >>> from nltk import pathsec
     >>> from nltk.inference.discourse import load_fol
-    >>> mybg = load_fol(open('background.fol').read())
+    >>> with pathsec.open('background.fol') as f:
+    ...     mybg = load_fol(f.read())
 
 The result can be loaded as an argument of ``add_background()`` in the
 manner shown earlier.
