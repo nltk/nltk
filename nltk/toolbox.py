@@ -438,9 +438,9 @@ def _to_settings_string(node, l, _depth=0, max_depth=None, **kwargs):
             l.append(f"\\+{tag} {text}\n")
         else:
             l.append("\\+%s\n" % tag)
-    for n in node:
-        _to_settings_string(n, l, _depth + 1, max_depth, **kwargs)
-    l.append("\\-%s\n" % tag)
+        for n in node:
+            _to_settings_string(n, l, _depth + 1, max_depth, **kwargs)
+        l.append("\\-%s\n" % tag)
     return
 
 
