@@ -98,8 +98,9 @@ class SklearnClassifier(ClassifierI):
 
         :rtype: list
         """
-        # tolist() gives back the labels as the Python objects they were trained
-        # with ('ham', 3), not as NumPy scalars (np.str_('ham'), np.int64(3))
+        # classes_ is an ndarray on every scikit-learn release; tolist() returns
+        # the labels as the Python objects they were trained with ('ham', 3),
+        # not NumPy scalars, whose repr NumPy 2 changed to np.str_('ham')
         return self._encoder.classes_.tolist()
 
     def train(self, labeled_featuresets):
