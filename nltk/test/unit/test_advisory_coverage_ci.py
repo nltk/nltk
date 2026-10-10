@@ -87,6 +87,7 @@ _DRAFT_WITH_PROBE = {
     "GHSA-7mxv-7h3q-9324",
     "GHSA-wr3g-j6qj-xpgh",
     "GHSA-89p3-fcch-88ph",
+    "GHSA-fg9w-wfp5-j933",
     # Draft algorithmic-DoS advisories fixed and probed in #3895.
     "GHSA-32p6-cwhc-8r78",
     "GHSA-q4c8-9gwf-255x",
