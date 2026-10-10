@@ -536,6 +536,14 @@ def _sort_fields(elem, orders_dicts, _depth=0, max_depth=None):
 
 
 def add_blank_lines(tree, blanks_before, blanks_between, _depth=0, max_depth=None):
+    """
+    Add blank lines before all elements and subelements specified in blank_before.
+
+    :param elem: toolbox data in an elementtree structure
+    :type elem: ElementTree._ElementInterface
+    :param blank_before: elements and subelements to add blank lines before
+    :type blank_before: dict(tuple)
+    """
     if max_depth is None:
         max_depth = MAX_TOOLBOX_DEPTH
     if _depth > max_depth:
@@ -554,23 +562,23 @@ def add_blank_lines(tree, blanks_before, blanks_between, _depth=0, max_depth=Non
                 add_blank_lines(
                     elem, blanks_before, blanks_between, _depth + 1, max_depth
                 )
+    else:
+        last_elem = None
+        for elem in tree:
+            tag = elem.tag
+            if last_elem is not None and last_elem.tag != tag:
+                if tag in before and last_elem is not None:
+                    e = last_elem.getiterator()[-1]
+                    e.text = (e.text or "") + "\n"
             else:
-                last_elem = None
-                for elem in tree:
-                    tag = elem.tag
-                    if last_elem is not None and last_elem.tag != tag:
-                        if tag in before and last_elem is not None:
-                            e = last_elem.getiterator()[-1]
-                            e.text = (e.text or "") + "\n"
-                    else:
-                        if tag in between:
-                            e = last_elem.getiterator()[-1]
-                            e.text = (e.text or "") + "\n"
-                    if len(elem):
-                        add_blank_lines(
-                            elem, blanks_before, blanks_between, _depth + 1, max_depth
-                        )
-                    last_elem = elem
+                if tag in between:
+                    e = last_elem.getiterator()[-1]
+                    e.text = (e.text or "") + "\n"
+            if len(elem):
+                add_blank_lines(
+                    elem, blanks_before, blanks_between, _depth + 1, max_depth
+                )
+            last_elem = elem
 
 
 def demo():
