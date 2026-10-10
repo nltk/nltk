@@ -275,7 +275,15 @@ class TestSyntacticallyHostileNames:
         _assert_parser_model_refused(str(root / ("m" + bad)), bllip_spy)
 
     @pytest.mark.parametrize(
-        "name", ["~/model", "//server/share/model", "file:///etc", "jar:/x"]
+        "name",
+        [
+            "~/model",
+            "//server/share/model",
+            "\\\\server\\share\\model",
+            "file:///etc",
+            "file://localhost/etc/passwd",
+            "jar:/x",
+        ],
     )
     def test_tilde_unc_and_url_are_refused(self, pathsec_sandbox, bllip_spy, name):
         _assert_parser_model_refused(name, bllip_spy)
@@ -356,6 +364,186 @@ class TestBenignInRootModelReachesTheExtensionVerbatim:
         (reranker / "weights.gz").write_bytes(b"w")
         bllip_module.BllipParser.from_unified_model_dir(str(base))
         assert bllip_spy.last.parser_model == str(base / "parser")
+
+
+def _assert_parser_model_blocked(path, spy):
+    """Like _assert_parser_model_refused but also accepts a structural OSError
+    (a zip-member spelling is NotADirectory, not a security refusal), as long as
+    the extension never saw the path."""
+    with pytest.raises((PermissionError, ValueError, OSError)):
+        bllip_module.BllipParser(parser_model=path)
+    assert spy.last is None, f"a blocked parser_model reached the extension: {path!r}"
+
+
+def _case_insensitive_fs(root):
+    """True when the filesystem under *root* folds case (APFS/NTFS default)."""
+    probe = os.path.join(str(root), "CaseProbe")
+    os.makedirs(probe, exist_ok=True)
+    return os.path.isdir(os.path.join(str(root), "caseprobe"))
+
+
+class TestPercentEncodedNames:
+    def test_percent_encoded_outside_path_is_refused(self, pathsec_sandbox, bllip_spy):
+        """Percent escapes are not decoded by the extension; an outside path spelled
+        with them is still refused by containment on the resolved path."""
+        root, outside = pathsec_sandbox
+        target = outside / "p%75nkt"
+        target.mkdir()
+        _assert_parser_model_refused(str(target), bllip_spy)
+
+    def test_percent_encoded_traversal_is_literal_and_refused(
+        self, pathsec_sandbox, bllip_spy
+    ):
+        """%2e%2e is a literal name, not a '..'; it resolves against the CWD,
+        outside the root, and is refused there."""
+        _assert_parser_model_refused("%2e%2e/%2e%2e/etc", bllip_spy)
+        _assert_parser_model_refused("%2f".join(["..", "..", "etc"]), bllip_spy)
+
+    def test_literal_percent_name_in_root_loads(self, pathsec_sandbox, bllip_spy):
+        """A genuine in-root directory whose name contains a percent is a real
+        filename and must still load (percent is not special to the filesystem)."""
+        root, outside = pathsec_sandbox
+        model = root / "my%20model"
+        model.mkdir()
+        (model / "pSgT.txt").write_bytes(b"m")
+        bllip_module.BllipParser(parser_model=str(model))
+        assert bllip_spy.last.parser_model == str(model)
+
+
+class TestTrailingDotAndSpace:
+    @pytest.mark.parametrize("suffix", [".", " ", "..", "  "])
+    def test_trailing_dot_or_space_parser_model_is_refused(
+        self, pathsec_sandbox, bllip_spy, suffix
+    ):
+        root, outside = pathsec_sandbox
+        _assert_parser_model_refused(str(root / "model") + suffix, bllip_spy)
+
+    @pytest.mark.parametrize("suffix", [".", " "])
+    def test_trailing_dot_or_space_reranker_is_refused(
+        self, pathsec_sandbox, bllip_spy, suffix
+    ):
+        root, outside = pathsec_sandbox
+        _assert_reranker_refused(str(root / "features.gz") + suffix, root, bllip_spy)
+
+
+class TestCaseFoldedSpellings:
+    def test_case_swapped_outside_path_is_refused(self, pathsec_sandbox, bllip_spy):
+        """A case-variant spelling of an outside path is judged on the resolved
+        file and refused, whether or not the filesystem folds case."""
+        root, outside = pathsec_sandbox
+        target = outside / "Secret"
+        target.mkdir()
+        _assert_parser_model_refused(str(outside / "SECRET"), bllip_spy)
+        _assert_parser_model_refused(str(outside / "secret"), bllip_spy)
+
+    def test_kelvin_sign_outside_path_is_refused(self, pathsec_sandbox, bllip_spy):
+        """A Kelvin sign (U+212A) folds to 'k' on APFS/NTFS; an outside path
+        spelled with it is still refused by containment."""
+        root, outside = pathsec_sandbox
+        _assert_parser_model_refused(str(outside / "Key"), bllip_spy)
+
+    def test_case_variant_of_in_root_model_resolves_in_root_and_loads(
+        self, pathsec_sandbox, bllip_spy
+    ):
+        """On a case-insensitive filesystem an uppercased spelling resolves to the
+        same in-root directory, so it must load (the check judges the resolved
+        file, not the spelling)."""
+        root, outside = pathsec_sandbox
+        if not _case_insensitive_fs(root):
+            pytest.skip("case-sensitive filesystem")
+        model = root / "realmodel"
+        model.mkdir()
+        (model / "pSgT.txt").write_bytes(b"m")
+        bllip_module.BllipParser(parser_model=str(root / "REALMODEL"))
+        assert bllip_spy.last is not None and bllip_spy.last.parser_model
+
+
+class TestDirectoryInRerankerFilePlace:
+    def test_directory_where_a_reranker_file_is_expected_is_refused(
+        self, pathsec_sandbox, bllip_spy
+    ):
+        """reranker_features is a FILE the loader reads whole; a directory in its
+        place is refused (not a regular file)."""
+        root, outside = pathsec_sandbox
+        a_dir = root / "features_dir"
+        a_dir.mkdir()
+        _assert_reranker_refused(str(a_dir), root, bllip_spy)
+
+
+class TestHardlinkMemberInModelDir:
+    def test_hardlinked_member_pointing_outside_is_refused(
+        self, pathsec_sandbox, bllip_spy
+    ):
+        """A model directory inside a root whose member is a hardlink to an
+        outside file is refused: the loader would read the aliased outside inode
+        and realpath cannot see the alias (CWE-59)."""
+        root, outside = pathsec_sandbox
+        secret = outside / "secret"
+        secret.write_bytes(b"outside bytes")
+        model = root / "hlmodel"
+        model.mkdir()
+        try:
+            os.link(str(secret), str(model / "pSgT.txt"))
+        except OSError:
+            pytest.skip("cannot hardlink across these locations")
+        _assert_parser_model_refused(str(model), bllip_spy)
+
+    def test_model_dir_of_genuine_single_link_files_loads(
+        self, pathsec_sandbox, bllip_spy
+    ):
+        root, outside = pathsec_sandbox
+        model = root / "cleanmodel"
+        model.mkdir()
+        (model / "pSgT.txt").write_bytes(b"m")
+        bllip_module.BllipParser(parser_model=str(model))
+        assert bllip_spy.last.parser_model == str(model)
+
+
+class TestModelDirOwnershipAndMode:
+    @pytest.mark.skipif(os.name != "posix", reason="POSIX ownership check")
+    @pytest.mark.parametrize("mode", [0o777, 0o775, 0o757])
+    def test_group_or_world_writable_model_dir_is_refused(
+        self, pathsec_sandbox, bllip_spy, mode
+    ):
+        """require_private refuses a model directory another local user could
+        write, so a planted or swapped model is never handed to the loader."""
+        root, outside = pathsec_sandbox
+        model = root / "wwmodel"
+        model.mkdir()
+        (model / "pSgT.txt").write_bytes(b"m")
+        os.chmod(str(model), mode)
+        _assert_parser_model_refused(str(model), bllip_spy)
+
+    def test_private_0700_model_dir_loads(self, pathsec_sandbox, bllip_spy):
+        root, outside = pathsec_sandbox
+        model = root / "privmodel"
+        model.mkdir()
+        (model / "pSgT.txt").write_bytes(b"m")
+        if os.name == "posix":
+            os.chmod(str(model), 0o700)
+        bllip_module.BllipParser(parser_model=str(model))
+        assert bllip_spy.last.parser_model == str(model)
+
+
+class TestZipMemberSpelling:
+    def test_zip_member_parser_model_is_refused(self, pathsec_sandbox, bllip_spy):
+        """A 'model.zip/parser' spelling is refused: the bllip loader reads a
+        directory tree, not a zip member, and the path is not a real directory."""
+        root, outside = pathsec_sandbox
+        (root / "model.zip").write_bytes(b"PK\x03\x04")
+        _assert_parser_model_blocked(str(root / "model.zip" / "parser"), bllip_spy)
+
+    def test_zip_member_reranker_is_refused(self, pathsec_sandbox, bllip_spy):
+        root, outside = pathsec_sandbox
+        (root / "r.zip").write_bytes(b"PK\x03\x04")
+        model = _real_model_dir(root)
+        with pytest.raises((PermissionError, ValueError, OSError)):
+            bllip_module.BllipParser(
+                parser_model=model,
+                reranker_features=str(root / "r.zip" / "features.gz"),
+                reranker_weights=str(root / "r.zip" / "weights.gz"),
+            )
+        assert bllip_spy.last is None or bllip_spy.last.reranker is None
 
 
 class TestProbeHasTeeth:
