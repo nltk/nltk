@@ -762,15 +762,15 @@ cycles are mentioned in the output, together with the level where they occur:
     >>> pprint(wn.synset('bound.a.01').acyclic_tree(lambda s:sorted(s.also_sees()),cut_mark='...'))  # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     [Synset('bound.a.01'),
      [Synset('unfree.a.02'),
-      "Cycle(Synset('bound.a.01'),498,...)",
+      "Cycle(Synset('bound.a.01'),-3,...)",
       [Synset('confined.a.02'),
        [Synset('restricted.a.01'),
         [Synset('classified.a.02')],
-        "Cycle(Synset('confined.a.02'),496,...)",
-        "Cycle(Synset('unfree.a.02'),496,...)"],
-       "Cycle(Synset('unfree.a.02'),497,...)"],
-      [Synset('dependent.a.01'), "Cycle(Synset('unfree.a.02'),497,...)"],
-      "Cycle(Synset('restricted.a.01'),498,...)"]]
+        "Cycle(Synset('confined.a.02'),-5,...)",
+        "Cycle(Synset('unfree.a.02'),-5,...)"],
+       "Cycle(Synset('unfree.a.02'),-4,...)"],
+      [Synset('dependent.a.01'), "Cycle(Synset('unfree.a.02'),-4,...)"],
+      "Cycle(Synset('restricted.a.01'),-3,...)"]]
 
 2.2 Better solution: mst()
 ..........................

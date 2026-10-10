@@ -34,15 +34,13 @@ def test_short_chain():
     assert traversal_depth(result) == 1
 
 
-def test_long_chain_does_not_crash_and_respects_cap():
+def test_long_chain_is_refused_not_truncated():
     nodes = [MockNode(str(i)) for i in range(1500)]
     for i in range(1499):
         nodes[i]._children = [nodes[i + 1]]
-    result = list(acyclic_depth_first(nodes[0], lambda x: x.rel(), depth=-1))
-    # Ensure no RecursionError (vulnerability fixed)
-    # Also verify depth is capped at MAX_RECURSION_DEPTH
-    depth = traversal_depth(result)
-    assert depth <= MAX_RECURSION_DEPTH
+    # No RecursionError, and no tree silently cut at MAX_RECURSION_DEPTH either.
+    with pytest.raises(ValueError, match="MAX_RECURSION_DEPTH"):
+        acyclic_depth_first(nodes[0], lambda x: x.rel(), depth=-1)
 
 
 def test_user_can_pass_explicit_depth():
@@ -74,9 +72,8 @@ def test_branches_same_behavior():
     nodes = [MockNode(str(i)) for i in range(1500)]
     for i in range(1499):
         nodes[i]._children = [nodes[i + 1]]
-    result = list(acyclic_branches_depth_first(nodes[0], lambda x: x.rel(), depth=-1))
-    depth = traversal_depth(result)
-    assert depth <= MAX_RECURSION_DEPTH
+    with pytest.raises(ValueError, match="MAX_RECURSION_DEPTH"):
+        acyclic_branches_depth_first(nodes[0], lambda x: x.rel(), depth=-1)
 
 
 def test_dic2tree_short_chain():
@@ -92,17 +89,12 @@ def test_dic2tree_short_chain():
     assert depth == 4
 
 
-def test_dic2tree_long_chain_capped():
+def test_dic2tree_long_chain_refused():
     d = {}
     for i in range(1500):
         d[str(i)] = [str(i + 1)] if i < 1499 else []
-    result = acyclic_dic2tree("0", d)
-    depth = 0
-    current = result
-    while isinstance(current, list) and len(current) > 1:
-        depth += 1
-        current = current[1]
-    assert depth <= MAX_RECURSION_DEPTH
+    with pytest.raises(ValueError, match="MAX_RECURSION_DEPTH"):
+        acyclic_dic2tree("0", d)
 
 
 def test_dic2tree_explicit_depth():
