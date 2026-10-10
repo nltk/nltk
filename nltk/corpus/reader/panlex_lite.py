@@ -43,6 +43,7 @@ class PanLexLiteCorpusReader(CorpusReader):
     """
 
     def __init__(self, root):
+        from nltk.pathsec import open as pathsec_open
         from nltk.pathsec import validate_path
 
         db_path = os.path.join(root, "db.sqlite")
@@ -52,6 +53,18 @@ class PanLexLiteCorpusReader(CorpusReader):
         # pathsec first refuses an out-of-sandbox database, and required_root
         # also blocks a db.sqlite symlink that escapes the root (CWE-59).
         validate_path(db_path, context="PanLexLiteCorpusReader", required_root=root)
+        # sqlite opens the database and its sidecars by name, so open each that
+        # exists through pathsec first: a hardlink or link there is refused.
+        for suffix in ("", "-journal", "-wal", "-shm"):
+            try:
+                pathsec_open(
+                    db_path + suffix,
+                    "rb",
+                    context="PanLexLiteCorpusReader",
+                    required_root=root,
+                ).close()
+            except FileNotFoundError:
+                continue
         self._c = sqlite3.connect(db_path).cursor()
 
         self._uid_lv = {}
