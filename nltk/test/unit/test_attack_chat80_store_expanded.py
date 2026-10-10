@@ -93,7 +93,11 @@ def staged(pathsec_sandbox):
     victim = str(outside / "victim.txt")
     with open(victim, "wb") as f:
         f.write(SENTINEL)
-    return str(root), str(outside), victim
+    # nltk.data.load caches corpora/chat80/*.pl by name, whichever root it came
+    # from; drop the cache both ways so the tiny corpus and the real one never mix.
+    nltk.data.clear_cache()
+    yield str(root), str(outside), victim
+    nltk.data.clear_cache()
 
 
 # =========================================================================
@@ -450,23 +454,28 @@ def test_val_dump_then_restricted_reload_round_trip_records_backend(staged):
     assert sorted(os.listdir(outside)) == ["victim.txt"]
 
 
-def test_val_load_round_trip_reaches_the_valuation_rebuild(staged):
-    """The public val_load reads the store it just wrote through every guard;
-    whether the Valuation rebuild then accepts the derived list-valued symbol
-    is the separately documented pre-existing limitation (see
-    test_full_functionality_smoke), not a containment question."""
+def test_val_load_round_trip_rebuilds_the_dumped_valuation(staged):
+    """The public val_load reads the store it just wrote through every guard and
+    rebuilds the same Valuation, list-valued relation included."""
     from nltk.sem import Valuation
 
     root, outside, _ = staged
     _write_cities(root)
     base = os.path.join(root, "roundtrip")
     chat80.val_dump([chat80.borders], base)
-    try:
-        loaded = chat80.val_load(base)
-    except ValueError as exc:
-        assert "Valuation" in str(exc) or "list" in str(exc) or "set" in str(exc), exc
-    else:
-        assert isinstance(loaded, Valuation) and "borders" in dict(loaded)
+    loaded = chat80.val_load(base)
+    dumped = chat80.make_valuation(
+        chat80.process_bundle([chat80.borders]).values(), read=True
+    )
+    assert type(loaded) is Valuation
+    assert loaded == dumped
+    assert sorted(loaded["border"]) == [
+        ("albania", "greece"),
+        ("bulgaria", "greece"),
+        ("greece", "albania"),
+        ("greece", "bulgaria"),
+    ]
+    assert sorted(os.listdir(outside)) == ["victim.txt"]
 
 
 def test_val_load_reports_a_missing_store_without_touching_anything(staged):
