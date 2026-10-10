@@ -2,18 +2,29 @@
 .. For license information, see LICENSE.TXT
 
     >>> import os.path
-    >>> import shutil
 
+    >>> from nltk import pathsec
     >>> from nltk.corpus.reader import BNCCorpusReader
+    >>> from nltk.data import make_staging_dir
     >>> import nltk.test
 
-A corpus reader opens a root only inside a trusted NLTK data directory, so the
-sample file that ships with the tests is first copied into the test session's
-private temporary directory, which the test suite trusts.
+A corpus reader only opens a root that lies inside an NLTK data directory;
+any other directory, including the one this sample ships in, is refused:
 
-    >>> sample = os.path.join(os.path.dirname(nltk.test.__file__), 'FX8.xml')
-    >>> root = str(getfixture('tmp_path'))
-    >>> _ = shutil.copy(sample, root)
+    >>> test_dir = os.path.dirname(nltk.test.__file__)
+    >>> BNCCorpusReader(root=test_dir, fileids='FX8.xml')
+    Traceback (most recent call last):
+    PermissionError: Security Violation [CorpusReader.__init__]: Unauthorized path ...
+
+So the sample is read through the package-resource guard and written into a
+private staging directory under a data root, the same place to put BNC files
+of your own; both sides of the copy go through ``nltk.pathsec``:
+
+    >>> root = make_staging_dir(prefix='bnc_howto_', cleanup=True)
+    >>> sample = os.path.join(test_dir, 'FX8.xml')
+    >>> with pathsec.open_package_resource(sample, test_dir, mode='rb') as src:
+    ...     with pathsec.open(os.path.join(root, 'FX8.xml'), 'wb') as dst:
+    ...         _ = dst.write(src.read())
     >>> bnc = BNCCorpusReader(root=root, fileids='FX8.xml')
 
 Checking the word access.
