@@ -219,11 +219,13 @@ def test_an_existing_file_is_not_overwritten(pathsec_sandbox, monkeypatch):
         stage_package_resource(str(_SAMPLE), str(_TEST_DIR), prefix="exists_")
 
 
-@pytest.mark.parametrize("prefix", ["../escape_", "a/b_", "nul\x00_"])
+@pytest.mark.parametrize("prefix", ["../staged_escape_", "a/b_", "nul\x00_"])
 def test_a_prefix_cannot_place_the_staging_dir(pathsec_sandbox, prefix):
     root, _outside = pathsec_sandbox
-    before = _entries(root.parent)
     with pytest.raises(ValueError, match="filename fragment"):
         stage_package_resource(str(_SAMPLE), str(_TEST_DIR), prefix=prefix)
-    assert _entries(root.parent) == before
+    # only names this test could create: the temp dir is shared with other workers
+    assert not [
+        name for name in os.listdir(root.parent) if name.startswith("staged_escape_")
+    ]
     assert _entries(root) == []
