@@ -7,6 +7,11 @@
 # For license information, see LICENSE.TXT
 
 from nltk.parse.api import ParserI
+from nltk.pathsec import (
+    MAX_TOOL_MODEL_BYTES,
+    validate_tool_dir,
+    validate_tool_path,
+)
 from nltk.termsec import safe_print
 from nltk.tree import Tree
 
@@ -160,6 +165,37 @@ class BllipParser(ParserI):
         parser_options = parser_options or {}
         reranker_options = reranker_options or {}
 
+        # These paths are caller-supplied and the bllipparser C extension opens
+        # and reads them natively, so they are bounded to the NLTK data roots
+        # first, exactly as every sibling tool wrapper does (GHSA-fg9w-wfp5-j933,
+        # CWE-22/73/400). pathsec.open cannot be used because the extension does
+        # its own open, so the guards validate the path and RETURN the checked
+        # string, and the extension is called on that string: a PathLike may
+        # answer differently on a later __fspath__, so re-reading it would let a
+        # swapped value be opened. parser_model names a model DIRECTORY the loader
+        # reads from; the reranker arguments are files it reads whole, so a
+        # require_private model keeps another local user from planting it and
+        # max_bytes refuses a memory-exhausting model.
+        if parser_model is not None:
+            parser_model = validate_tool_dir(
+                parser_model,
+                context="BllipParser parser model",
+                require_private=True,
+            )
+        if reranker_features and reranker_weights:
+            reranker_features = validate_tool_path(
+                reranker_features,
+                context="BllipParser reranker features",
+                max_bytes=MAX_TOOL_MODEL_BYTES,
+                require_private=True,
+            )
+            reranker_weights = validate_tool_path(
+                reranker_weights,
+                context="BllipParser reranker weights",
+                max_bytes=MAX_TOOL_MODEL_BYTES,
+                require_private=True,
+            )
+
         self.rrp = RerankingParser()
         self.rrp.load_parser_model(parser_model, **parser_options)
         if reranker_features and reranker_weights:
@@ -241,6 +277,16 @@ class BllipParser(ParserI):
         :type reranker_options: dict(str)
         :rtype: BllipParser
         """
+        # get_unified_model_parameters() belongs to the third-party bllipparser
+        # package and joins sub-paths under the caller's model_dir with no data
+        # root check, so model_dir is bounded here before those sub-paths are
+        # derived (GHSA-fg9w-wfp5-j933). The constructor re-validates each derived
+        # path, so this is defense in depth with a clear up-front error.
+        model_dir = validate_tool_dir(
+            model_dir,
+            context="BllipParser unified model directory",
+            require_private=True,
+        )
         (
             parser_model_dir,
             reranker_features_filename,
