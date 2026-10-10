@@ -50,16 +50,14 @@ Note that items are sorted in order of decreasing frequency; two items of the sa
     True
 
 ``nltk.FreqDist`` can be pickled, and loaded back through ``nltk.picklesec``,
-which only rebuilds classes from the modules it is told to expect:
+which only rebuilds classes from the modules it is told to expect.
+``roundtrip`` pickles an object and loads it back with that allowlist:
 
-    >>> import io
+    >>> from functools import partial
     >>> from nltk import picklesec
-    >>> def unpickle(data):
-    ...     return picklesec.allowlisted_pickle_load(
-    ...         io.BytesIO(data), allowed_modules=['nltk.probability'])
+    >>> roundtrip = partial(picklesec.roundtrip, allowed_modules=['nltk.probability'])
     >>> fd1 = nltk.FreqDist(text1)
-    >>> pickled = picklesec.pickle_dumps(fd1)
-    >>> fd1 == unpickle(pickled)
+    >>> fd1 == roundtrip(fd1)
     True
 
 Mathematical operations:
@@ -289,10 +287,10 @@ they don't get smoothed
 ``ConditionalFreqDist`` can be pickled:
 
     >>> pd = MLEProbDist(fd)
-    >>> sorted(pd.samples()) == sorted(unpickle(picklesec.pickle_dumps(pd)).samples())
+    >>> sorted(pd.samples()) == sorted(roundtrip(pd).samples())
     True
     >>> dpd = DictionaryConditionalProbDist({'x': pd})
-    >>> unpickled = unpickle(picklesec.pickle_dumps(dpd))
+    >>> unpickled = roundtrip(dpd)
     >>> dpd['x'].prob('a')
     0.011363636...
     >>> dpd['x'].prob('a') == unpickled['x'].prob('a')
@@ -301,10 +299,10 @@ they don't get smoothed
     >>> cfd['foo']['hello'] += 1
     >>> cfd['foo']['hello'] += 1
     >>> cfd['bar']['hello'] += 1
-    >>> cfd2 = unpickle(picklesec.pickle_dumps(cfd))
+    >>> cfd2 = roundtrip(cfd)
     >>> cfd2 == cfd
     True
     >>> cpd = ConditionalProbDist(cfd, SimpleGoodTuringProbDist)
-    >>> cpd2 = unpickle(picklesec.pickle_dumps(cpd))
+    >>> cpd2 = roundtrip(cpd)
     >>> cpd['foo'].prob('hello') == cpd2['foo'].prob('hello')
     True

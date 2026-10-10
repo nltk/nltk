@@ -14,11 +14,11 @@ Trie
 Trie can be pickled, and loaded back through ``nltk.picklesec``, which only
 rebuilds classes from the modules it is told to expect:
 
-    >>> import io
+    >>> from functools import partial
     >>> from nltk import picklesec
+    >>> roundtrip = partial(picklesec.roundtrip, allowed_modules=['nltk.collections'])
     >>> trie = nltk.collections.Trie(['a'])
-    >>> s = picklesec.pickle_dumps(trie)
-    >>> picklesec.allowlisted_pickle_load(io.BytesIO(s), allowed_modules=['nltk.collections'])
+    >>> roundtrip(trie)
     {'a': {True: None}}
 
 LazyIteratorList

@@ -3,9 +3,8 @@
 
     >>> import os.path
 
-    >>> from nltk import pathsec
     >>> from nltk.corpus.reader import BNCCorpusReader
-    >>> from nltk.data import make_staging_dir
+    >>> from nltk.data import stage_package_resource
     >>> import nltk.test
 
 A corpus reader only opens a root that lies inside an NLTK data directory;
@@ -16,15 +15,14 @@ any other directory, including the one this sample ships in, is refused:
     Traceback (most recent call last):
     PermissionError: Security Violation [CorpusReader.__init__]: Unauthorized path ...
 
-So the sample is read through the package-resource guard and written into a
-private staging directory under a data root, the same place to put BNC files
-of your own; both sides of the copy go through ``nltk.pathsec``:
+So the sample is copied into a private staging directory under a data root,
+the same place to put BNC files of your own. ``stage_package_resource`` reads
+it through the package-resource guard, writes it through ``nltk.pathsec``, and
+returns the copy's path; the directory is removed when Python exits:
 
-    >>> root = make_staging_dir(prefix='bnc_howto_', cleanup=True)
-    >>> sample = os.path.join(test_dir, 'FX8.xml')
-    >>> with pathsec.open_package_resource(sample, test_dir, mode='rb') as src:
-    ...     with pathsec.open(os.path.join(root, 'FX8.xml'), 'wb') as dst:
-    ...         _ = dst.write(src.read())
+    >>> staged = stage_package_resource(os.path.join(test_dir, 'FX8.xml'), test_dir,
+    ...                                 prefix='bnc_howto_')
+    >>> root = os.path.dirname(staged)
     >>> bnc = BNCCorpusReader(root=root, fileids='FX8.xml')
 
 Checking the word access.

@@ -366,13 +366,13 @@ Pickle an MWETokenizer, and load it back through ``nltk.picklesec``, which
 only rebuilds classes from the modules it is told to expect
 
     >>> from nltk.tokenize import MWETokenizer
-    >>> import io
+    >>> from functools import partial
     >>> from nltk import picklesec
+    >>> roundtrip = partial(picklesec.roundtrip,
+    ...                     allowed_modules=['nltk.tokenize.mwe', 'nltk.collections'])
 
     >>> tokenizer = MWETokenizer([('hors', "d'oeuvre")], separator='+')
-    >>> p = picklesec.pickle_dumps(tokenizer)
-    >>> unpickeled = picklesec.allowlisted_pickle_load(
-    ...     io.BytesIO(p), allowed_modules=['nltk.tokenize.mwe', 'nltk.collections'])
+    >>> unpickeled = roundtrip(tokenizer)
     >>> unpickeled.tokenize("An hors d'oeuvre tonight, sir?".split())
     ['An', "hors+d'oeuvre", 'tonight,', 'sir?']
 
