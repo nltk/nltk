@@ -44,6 +44,7 @@ from nltk.internals import deprecated
 from nltk.probability import FreqDist
 from nltk.tag import map_tag
 from nltk.termsec import safe_print, sanitize_terminal
+from nltk.util import acyclic_breadth_first as _bfs
 from nltk.util import binary_search_file as _binary_search_file
 
 ######################################################################
@@ -630,9 +631,7 @@ class Synset(_WordNetObject):
         UserWarning: Discarded redundant search for Synset('animal.n.01') at depth 7
         """
 
-        from nltk.util import acyclic_breadth_first
-
-        for synset in acyclic_breadth_first(self, rel, depth):
+        for synset in _bfs(self, rel, depth):
             if synset != self:
                 yield synset
 
@@ -723,21 +722,15 @@ class Synset(_WordNetObject):
         :return: The synsets that are hypernyms of both synsets.
         """
         if not self._all_hypernyms:
-            self._all_hypernyms = {
-                self_synset
-                for self_synsets in self._iter_hypernym_lists()
-                for self_synset in self_synsets
-            }
+            self._all_hypernyms = set(self._iter_hypernym_lists())
         if not other._all_hypernyms:
-            other._all_hypernyms = {
-                other_synset
-                for other_synsets in other._iter_hypernym_lists()
-                for other_synset in other_synsets
-            }
+            other._all_hypernyms = set(other._iter_hypernym_lists())
         return list(self._all_hypernyms.intersection(other._all_hypernyms))
 
     def lowest_common_hypernyms(self, other, simulate_root=False, use_min_depth=False):
         """
+        NB: this method is not used, and may be deprecated
+
         Get a list of lowest synset(s) that both synsets have as a hypernym.
         When `use_min_depth == False` this means that the synset which appears
         as a hypernym of both `self` and `other` with the lowest maximum depth
@@ -1118,18 +1111,7 @@ class Synset(_WordNetObject):
         :return: An iterator over ``Synset`` objects that are either proper
         hypernyms or instance of hypernyms of the synset.
         """
-        todo = [self]
-        seen = set()
-        while todo:
-            for synset in todo:
-                seen.add(synset)
-            yield todo
-            todo = [
-                hypernym
-                for synset in todo
-                for hypernym in (synset._broader())
-                if hypernym not in seen
-            ]
+        return _bfs(self, lambda s: s._broader())
 
     def __repr__(self):
         return f"{type(self).__name__}('{self._name}')"
@@ -1151,6 +1133,8 @@ class Synset(_WordNetObject):
         """
         related = []
         if rels:
+            if isinstance(rels, str):
+                rels = [rels]
             for rel in rels:
                 related.extend(self._related(rel))
         return related

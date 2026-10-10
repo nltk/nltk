@@ -378,8 +378,9 @@ class TestWordNetHypernymCycle:
             Synset._hypernyms = Synset.hypernyms
             Synset.instance_hypernyms = lambda self: []
             Synset._instance_hypernyms = Synset.instance_hypernyms
-            Synset.broader = lambda self: []
-            Synset._broader = lambda self: [b if self._name == "dog.n.01" else a]
+            Synset._broader = lambda self, add_rels=None: [
+                b if self._name == "dog.n.01" else a
+            ]
             for m in ("_max_depth", "_min_depth"):
                 a.__dict__.pop(m, None)
                 b.__dict__.pop(m, None)
