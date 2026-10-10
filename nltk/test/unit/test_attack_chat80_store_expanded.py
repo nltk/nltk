@@ -93,7 +93,11 @@ def staged(pathsec_sandbox):
     victim = str(outside / "victim.txt")
     with open(victim, "wb") as f:
         f.write(SENTINEL)
-    return str(root), str(outside), victim
+    # nltk.data.load caches corpora/chat80/*.pl by name, whichever root it came
+    # from; drop the cache both ways so the tiny corpus and the real one never mix.
+    nltk.data.clear_cache()
+    yield str(root), str(outside), victim
+    nltk.data.clear_cache()
 
 
 # =========================================================================
