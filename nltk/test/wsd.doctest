@@ -17,16 +17,17 @@ a the definitions of the ambiguous word.
 
 Given an ambiguous word and the context in which the word occurs, Lesk returns
 a Synset with the highest number of overlapping words between the context
-sentence and different definitions from each Synset.
+sentence and different definitions from each Synset. When several Synsets tie,
+the most frequent sense, the one WordNet lists first, is returned.
 
     >>> from nltk.wsd import lesk
     >>> sent = ['I', 'went', 'to', 'the', 'bank', 'to', 'deposit', 'money', '.']
 
     >>> print(lesk(sent, 'bank', 'n'))
-    Synset('savings_bank.n.02')
+    Synset('depository_financial_institution.n.01')
 
     >>> print(lesk(sent, 'bank'))
-    Synset('savings_bank.n.02')
+    Synset('depository_financial_institution.n.01')
 
 The definitions for "bank" are:
 
@@ -56,12 +57,14 @@ The definitions for "bank" are:
 Test disambiguation of POS tagged `able`.
 
     >>> [(s, s.pos()) for s in wn.synsets('able')]
-    [(Synset('able.a.01'), 'a'), (Synset('able.s.02'), 's'), (Synset('able.s.03'), 's'), (Synset('able.s.04'), 's')]
+    [(Synset('able.a.01'), 'a'), (Synset('able.s.01'), 's'), (Synset('able.s.02'), 's'), (Synset('able.s.03'), 's')]
     >>> sent = 'people should be able to marry a person of their choice'.split()
     >>> lesk(sent, 'able')
-    Synset('able.s.04')
+    Synset('able.a.01')
     >>> lesk(sent, 'able', pos='a')
     Synset('able.a.01')
+    >>> lesk(sent, 'able', pos='s')
+    Synset('able.s.01')
 
 Test behavior if there is are no matching senses.
 
