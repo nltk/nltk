@@ -80,7 +80,8 @@ WRITERS = {
 
 
 def _plant_gz(path, text=CANARY):
-    with gzip.open(path, "wt", encoding="utf-8") as fh:
+    # newline="" writes the text byte for byte (no \r\n on Windows)
+    with gzip.open(path, "wt", encoding="utf-8", newline="") as fh:
         fh.write(text)
     return str(path)
 
