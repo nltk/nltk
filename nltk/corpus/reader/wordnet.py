@@ -722,9 +722,9 @@ class Synset(_WordNetObject):
         :return: The synsets that are hypernyms of both synsets.
         """
         if not self._all_hypernyms:
-            self._all_hypernyms = set(self._iter_hypernym_lists())
+            self._all_hypernyms = set(_bfs(self, lambda s: s._broader()))
         if not other._all_hypernyms:
-            other._all_hypernyms = set(other._iter_hypernym_lists())
+            other._all_hypernyms = set(_bfs(other, lambda s: s._broader()))
         return list(self._all_hypernyms.intersection(other._all_hypernyms))
 
     def lowest_common_hypernyms(self, other, simulate_root=False, use_min_depth=False):
@@ -773,7 +773,7 @@ class Synset(_WordNetObject):
         if simulate_root:
             fake_synset = Synset(None)
             fake_synset._name = "*ROOT*"
-            fake_synset._broader = lambda: []
+            fake_synset._broader = lambda add_rels=None: []
             synsets.append(fake_synset)
 
         try:
@@ -1108,10 +1108,29 @@ class Synset(_WordNetObject):
 
     def _iter_hypernym_lists(self):
         """
+        NB: this method is no longer used here, and may be deprecated
+
         :return: An iterator over ``Synset`` objects that are either proper
         hypernyms or instance of hypernyms of the synset.
         """
-        return _bfs(self, lambda s: s._broader())
+        warnings.warn(
+            "`_iter_hypernym_lists` is deprecated and will be removed in a future version. "
+            "Use `'_bfs' (or nltk.util.acyclic_breadth_first`) instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        todo = [self]
+        seen = set()
+        while todo:
+            for synset in todo:
+                seen.add(synset)
+            yield todo
+            todo = [
+                hypernym
+                for synset in todo
+                for hypernym in (synset._broader())
+                if hypernym not in seen
+            ]
 
     def __repr__(self):
         return f"{type(self).__name__}('{self._name}')"
