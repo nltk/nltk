@@ -15,13 +15,22 @@ Unit test cases for ``toolbox``
 
 ``toolbox.StandardFormat.open()``
 ---------------------------------
-    >>> import os, tempfile
-    >>> # inside the test session's private temporary directory, which NLTK
-    >>> # trusts (a shared /tmp is not)
-    >>> (fd, fname) = tempfile.mkstemp(dir=getfixture('tmp_path'))
-    >>> tf = os.fdopen(fd, "w")
-    >>> _ = tf.write('\\lx a value\n\\lx another value\n')
-    >>> tf.close()
+``open()`` reads a file through ``nltk.pathsec``, so only a file inside an
+NLTK data directory; one anywhere else, such as NLTK's own code, is refused:
+
+    >>> import os
+    >>> toolbox.StandardFormat().open(toolbox.__file__)
+    Traceback (most recent call last):
+    PermissionError: Security Violation [toolbox.StandardFormat]: Unauthorized path ...
+
+So the file is written, through ``nltk.pathsec`` as well, into a private
+staging directory under a data directory, removed when Python exits:
+
+    >>> from nltk import pathsec
+    >>> from nltk.data import make_staging_dir
+    >>> fname = os.path.join(make_staging_dir(prefix='toolbox_howto_', cleanup=True), 'test.sfm')
+    >>> with pathsec.open(fname, 'w') as tf:
+    ...     _ = tf.write('\\lx a value\n\\lx another value\n')
     >>> f = toolbox.StandardFormat()
     >>> f.open(fname)
     >>> list(f.fields())
