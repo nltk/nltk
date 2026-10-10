@@ -479,6 +479,18 @@ class _BoundedGzipFile(GzipFile):
         gz._nltk_owned_fileobj = fileobj
         return gz
 
+    @classmethod
+    def _nltk_open_name(cls, filename, mode, compresslevel, context):
+        """Open the gzip file *filename* through pathsec and own the handle."""
+        handle = _open_gzip_name(filename, mode, context)
+        try:
+            gz = cls(filename, mode, compresslevel, handle)
+        except BaseException:
+            handle.close()
+            raise
+        gz._nltk_owned_fileobj = handle
+        return gz
+
     def _nltk_compress_size(self):
         if not hasattr(self, "_nltk_cached_compress_size"):
             name = self.name
@@ -523,6 +535,20 @@ class _BoundedGzipFile(GzipFile):
                 owned.close()
 
 
+def _open_gzip_name(filename, mode, context):
+    """Open the gzip file *filename* the way ``GzipFile`` would, through pathsec.
+
+    Given a name, ``GzipFile`` opens it with the builtin ``open()``, outside the
+    data-root containment and the symlink and hardlink refusal of
+    :func:`nltk.pathsec.open`. This opens it in the binary mode ``GzipFile``
+    would use (``rb`` by default) but through pathsec, for ``GzipFile`` to wrap.
+    """
+    if mode and ("t" in mode or "U" in mode):
+        raise ValueError(f"Invalid mode: {mode!r}")
+    raw_mode = "rb" if not mode else mode if "b" in mode else mode + "b"
+    return _secure_open(filename, raw_mode, context=context)
+
+
 def gzip_open_unicode(
     filename,
     mode="rb",
@@ -533,7 +559,9 @@ def gzip_open_unicode(
     newline=None,
 ):
     if fileobj is None:
-        fileobj = _BoundedGzipFile(filename, mode, compresslevel, fileobj)
+        fileobj = _BoundedGzipFile._nltk_open_name(
+            filename, mode, compresslevel, context="nltk.data.gzip_open_unicode"
+        )
     return TextIOWrapper(fileobj, encoding, errors, newline)
 
 
@@ -896,7 +924,16 @@ class BufferedGzipFile(_BoundedGzipFile):
         self, filename=None, mode=None, compresslevel=9, fileobj=None, **kwargs
     ):
         """Return a buffered gzip file object."""
-        GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
+        if fileobj is not None:
+            GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
+            return
+        handle = _open_gzip_name(filename, mode, "nltk.data.BufferedGzipFile")
+        try:
+            GzipFile.__init__(self, filename, mode, compresslevel, handle)
+        except BaseException:
+            handle.close()
+            raise
+        self._nltk_owned_fileobj = handle
 
     def write(self, data):
         # This is identical to GzipFile.write but does not return
