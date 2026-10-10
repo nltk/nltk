@@ -1444,11 +1444,9 @@ def _reject_tamperable_dir(raw, context):
                 _refuse(entry, "is a junction inside the tool directory")
             if not (stat.S_ISREG(st.st_mode) or stat.S_ISDIR(st.st_mode)):
                 _refuse(entry, "is not a regular file or directory")
-            # A hardlinked member names an inode with no symlink to resolve, so an
-            # in-root alias of an outside file would be read by the tool through
-            # this private directory. realpath cannot see it; st_nlink can. A model
-            # data directory holds genuine single-linked files, so this is refused
-            # like validate_tool_path refuses a hardlinked file (CWE-59).
+            # A hardlinked member aliases an inode that may live outside the roots
+            # and realpath cannot see it, only st_nlink can; model directories hold
+            # single-linked files, so refuse it as validate_tool_path does (CWE-59).
             if stat.S_ISREG(st.st_mode) and st.st_nlink > 1:
                 _refuse(
                     entry,
