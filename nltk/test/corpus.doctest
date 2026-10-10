@@ -1602,7 +1602,9 @@ written through ``nltk.pathsec``.
     >>> from nltk import pathsec
     >>> from nltk.data import make_staging_dir
     >>> def make_testcorpus(ext='', **fileids):
-    ...     root = make_staging_dir(prefix='corpus_howto_', cleanup=True)
+    ...     # abspath: before Python 3.12 the path can keep a data root's mixed
+    ...     # separators on Windows, while a reader's root is normalised
+    ...     root = os.path.abspath(make_staging_dir(prefix='corpus_howto_', cleanup=True))
     ...     for fileid, contents in fileids.items():
     ...         fileid += ext
     ...         with pathsec.open(os.path.join(root, fileid), 'w') as f:
