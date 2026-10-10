@@ -56,6 +56,7 @@ from urllib.request import url2pathname
 from nltk import redos
 from nltk.pathsec import ZipFile
 from nltk.pathsec import open as _secure_open
+from nltk.pathsec import open_package_resource as _open_package_resource
 from nltk.pathsec import urlopen as _secure_urlopen
 from nltk.pathsec import validate_path as _validate_path
 
@@ -451,6 +452,39 @@ def make_staging_dir(prefix="nltk_", cleanup=False):
         f"{len(path)} nltk.data.path entries); pass an explicit destination "
         "directory."
     )
+
+
+def stage_package_resource(path, package_root, *, prefix, cleanup=True):
+    """Copy a file that ships inside NLTK into a fresh staging directory.
+
+    For a sample such as ``nltk/test/FX8.xml`` that a corpus reader can only
+    open from inside a data root. The file is read with
+    :func:`nltk.pathsec.open_package_resource`, so it must lie in
+    *package_root*, itself inside the installed package, and is written with
+    :func:`nltk.pathsec.open` into a new :func:`make_staging_dir` directory
+    under its own name, never over an existing file. Whatever either guard
+    refuses is refused here, and there is no destination to choose.
+
+    :param path: the file to copy, inside *package_root*
+    :param package_root: the package directory *path* must stay inside
+    :param prefix: name prefix of the staging directory
+    :param cleanup: remove the staging directory when Python exits
+    :return: the path of the copy
+    :raises PermissionError: (or ValueError) if a guard refuses the read or
+        the write
+    """
+    context = "nltk.data.stage_package_resource"
+    with _open_package_resource(path, package_root, context, mode="rb") as src:
+        staged = make_staging_dir(prefix=prefix, cleanup=cleanup)
+        dest = os.path.join(staged, os.path.basename(os.path.normpath(path)))
+        try:
+            # required_root: the copy must land inside the new staging directory
+            with _secure_open(dest, "xb", context=context, required_root=staged) as dst:
+                shutil.copyfileobj(src, dst)
+        except BaseException:
+            shutil.rmtree(staged, ignore_errors=True)
+            raise
+    return dest
 
 
 class _BoundedGzipFile(GzipFile):
