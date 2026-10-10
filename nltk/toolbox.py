@@ -568,11 +568,11 @@ def add_blank_lines(tree, blanks_before, blanks_between, _depth=0, max_depth=Non
             tag = elem.tag
             if last_elem is not None and last_elem.tag != tag:
                 if tag in before and last_elem is not None:
-                    e = last_elem.getiterator()[-1]
+                    e = list(last_elem.iter())[-1]
                     e.text = (e.text or "") + "\n"
             else:
-                if tag in between:
-                    e = last_elem.getiterator()[-1]
+                if tag in between and last_elem is not None:
+                    e = list(last_elem.iter())[-1]
                     e.text = (e.text or "") + "\n"
             if len(elem):
                 add_blank_lines(
