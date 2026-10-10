@@ -795,9 +795,25 @@ def val_load(db):
         sys.exit(sanitize_terminal("Cannot read file: {} ({})".format(db + ".db", e)))
     from nltk.sem import Valuation
 
-    val = Valuation(db_in.items())
-    #        val.read(db_in.items())
+    try:
+        stored = list(db_in.items())
+    finally:
+        db_in.close()
+    # val_dump stores make_valuation's Valuation, whose relations are the sorted
+    # Concept.extension lists; the Valuation constructor checks every other value
+    # and refuses lists, so the relations are added the way make_valuation does.
+    val = Valuation(item for item in stored if not _is_extension_list(item[1]))
+    val.update(item for item in stored if _is_extension_list(item[1]))
     return val
+
+
+def _is_extension_list(value):
+    """Whether ``value`` is a ``Concept.extension`` list: strings or string tuples."""
+    return isinstance(value, list) and all(
+        isinstance(item, str)
+        or (isinstance(item, tuple) and all(isinstance(part, str) for part in item))
+        for item in value
+    )
 
 
 # def alpha(str):
