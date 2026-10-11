@@ -1,0 +1,199 @@
+.. Copyright (C) 2001-2026 NLTK Project
+.. For license information, see LICENSE.TXT
+
+================================================
+Interactive Transcription (`nltk.transcribe`)
+================================================
+
+`nltk.transcribe` provides interactive word completion for
+morphologically complex, low-resource oral languages, after the
+algorithm of Lane and Bird (2022, *A Finite State Approach to
+Interactive Transcription*).  This HOWTO reproduces their worked
+example (Example 1, Figure 4) end-to-end.
+
+The setting
+~~~~~~~~~~~
+
+A field linguist and a Bininj Kunwok speaker are co-transcribing audio
+from a tour of an outstation in West Arnhem Land.  The audio has been
+passed through a fine-tuned Allosaurus phone recogniser (Li et al.
+2020), which produces a noisy phone string.  The linguist can already
+identify the high-frequency morph ``kabirri`` ("they") and the Kriol
+loan word ``manme`` ("food") in connected speech.  Everything else is
+a sea of phones.
+
+::
+
+    >>> from nltk.transcribe import (
+    ...     PhoneOrthMapping, WordlistAcceptor, Lexicon,
+    ...     InteractiveTranscriber, Tableau,
+    ...     AnchoredConstraint, LexicalConstraint, EditConstraint,
+    ... )
+
+The phone-to-orthography map handles multigraphs and noisy phone
+output.  In real Kunwinjku one would map e.g. ``ɲ`` -> ``nj``, ``ŋ`` ->
+``ng``; in this toy reproduction we use an identity map.
+
+::
+
+    >>> phones2orth = PhoneOrthMapping({})
+
+The morphological acceptor.  In Lane and Bird (2019) this is a hand-
+written FOMA grammar; here we plug in a simple wordlist.  Subclassing
+:class:`~nltk.transcribe.MorphologicalAcceptor` lets a real FST stand
+in.
+
+::
+
+    >>> acceptor = WordlistAcceptor([
+    ...     "kabirri",            # they
+    ...     "kabirridurrkmirri",  # they-work
+    ...     "kabirriudujmanme",   # they-cook-food
+    ...     "manme",              # food
+    ...     "manmebedberre",      # food-for-the-road
+    ...     "bedberre",           # road
+    ... ])
+
+The lexica that drive the OT constraints.  ``attested`` is the
+top-N% of words in a wider Kunwinjku corpus (bible translation,
+children's books, dictionary examples).  ``topical`` is a small seed
+of words from related recordings about outstation life.
+
+::
+
+    >>> attested = Lexicon([
+    ...     "kabirri", "kabirridurrkmirri", "kabirriudujmanme",
+    ...     "manme", "manmebedberre", "bedberre",
+    ...     "kunwok", "mayh"])
+    >>> topical = Lexicon([
+    ...     "kabirridurrkmirri", "manmebedberre", "kabirriudujmanme"])
+
+Putting it together::
+
+    >>> trans = InteractiveTranscriber(
+    ...     phone_orth=phones2orth, acceptor=acceptor,
+    ...     attested=attested, topical=topical)
+
+
+Iteration (a) -- two known lexemes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The transcriber has identified ``kabirri`` and ``manme`` in the
+utterance.  We pass the phone string and the ordered lexemes to
+``suggest``::
+
+    >>> phone_string = "kabirridurrkmirrikabirriudujmanmebedberre"
+    >>> suggestions = trans.suggest(phone_string, ["kabirri", "manme"])
+
+The model returns the OT-optimal candidate set, ranked by edit count
+then by anchor position.  Deduplicating by surface form so we can see
+the distinct completions proposed::
+
+    >>> seen = set()
+    >>> for s in suggestions:
+    ...     if s.word in seen: continue
+    ...     seen.add(s.word)
+    ...     print(f"{s.anchor!s:8s} -> {s.word:25s} edits={s.edits}")
+    kabirri  -> kabirridurrkmirri         edits=0
+    kabirri  -> kabirriudujmanme          edits=0
+    manme    -> manmebedberre             edits=0
+
+The bare ``kabirri`` and ``manme`` candidates -- which would have
+been correct in isolation -- are filtered out by the Topical
+constraint, which prefers the longer, contextually-supported
+completions.
+
+
+Reading the OT tableau
+~~~~~~~~~~~~~~~~~~~~~~
+
+To see *why* the model proposes what it does, we render the OT
+tableau (Lane and Bird 2022, Figure 4).  Build the candidate set for
+the first ``kabirri`` anchor and pass it through the full constraint
+hierarchy::
+
+    >>> from nltk.transcribe.align import anchor_positions
+    >>> from nltk.transcribe.completion import Suggestion
+    >>> orth = phone_string  # identity phone-to-orth map
+    >>> anchor = anchor_positions(orth, "kabirri")[0]
+    >>> # Build a small candidate set in deterministic order:
+    >>> cands = [
+    ...     Suggestion(word="kabirri", anchor="kabirri",
+    ...                edits=0, start=0, end=7),
+    ...     Suggestion(word="kabirridurrkmirri", anchor="kabirri",
+    ...                edits=0, start=0, end=17),
+    ...     Suggestion(word="bedberre", anchor="kabirri", edits=4),
+    ... ]
+
+    >>> constraints = trans._build_constraints(["kabirri", "manme"])
+    >>> tableau = Tableau(cands, constraints, label=lambda s: s.word)
+    >>> print(tableau.render())  # doctest: +NORMALIZE_WHITESPACE
+    candidate          Anchored  Attested  Topical  Edit<=0  Edit<=1  Edit<=2
+       kabirri            .         .         *!       .        .        .
+    -> kabirridurrkmirri  .         .         .        .        .        .
+       bedberre           *!        .         *        ****     ***      **
+
+The arrow marks the OT-optimal candidate.  ``kabirri`` is anchored and
+attested but not in the topical seed, so it loses to
+``kabirridurrkmirri`` which satisfies all higher-ranked constraints.
+``bedberre`` was added with an artificial high edit count and is
+filtered out as soon as Anchored is applied (it is not anchored on
+either ``kabirri`` or ``manme``).
+
+
+Phone-recognizer noise
+~~~~~~~~~~~~~~~~~~~~~~
+
+A real phone string from Allosaurus contains errors.  Lane and Bird
+(2022, Figure 5) handle this with edit-distance budgets baked into
+the FST cascade; in our Python port the budget is a parameter on
+:class:`InteractiveTranscriber`.  Suppose ``bedberre`` was misrecognised
+as ``betberre``::
+
+    >>> noisy = "kabirridurrkmirrikabirriudujmanmebetberre"
+    >>> noisy_suggestions = trans.suggest(noisy, ["kabirri", "manme"])
+    >>> "kabirridurrkmirri" in {s.word for s in noisy_suggestions}
+    True
+
+The kabirri-anchored completions still survive at zero edits.  The
+manme-anchored ``manmebedberre`` would now require a single edit; the
+edit constraint cascade still prefers the cleaner candidates.
+
+
+Plugging in your own morphological analyser
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Field linguists with an existing FOMA, HFST or pynini analyser may
+plug it in by subclassing
+:class:`~nltk.transcribe.MorphologicalAcceptor`::
+
+    >>> from nltk.transcribe import MorphologicalAcceptor
+    >>> class ToyFstAcceptor(MorphologicalAcceptor):
+    ...     def __init__(self, fst_callable):
+    ...         self._fst = fst_callable
+    ...     def accepts(self, word):
+    ...         return self._fst("accepts", word)
+    ...     def expand(self, lexeme):
+    ...         return self._fst("expand", lexeme)
+    >>> # In practice ``fst_callable`` would be a thin wrapper over
+    >>> # an HFST/FOMA transducer.
+
+References
+~~~~~~~~~~
+
+Bird, S. (2020). Sparse transcription. *Computational Linguistics*,
+46(4), 713-744.
+
+Karttunen, L. (1998). The proper treatment of optimality in
+computational phonology. In *Finite State Methods in Natural
+Language Processing*.
+
+Lane, W. and Bird, S. (2022). A Finite State Approach to Interactive
+Transcription. In *Proceedings of the First Workshop on NLP
+Applications to Field Linguistics*, 1-10.
+
+Li, X. et al. (2020). Universal phone recognition with a multilingual
+allophone system. In *ICASSP*, 8249-8253.
+
+Prince, A. and Smolensky, P. (2004). *Optimality Theory: Constraint
+interaction in generative grammar*. John Wiley & Sons.
