@@ -143,6 +143,12 @@ from nltk.termsec import safe_print, sanitize_terminal
 # shelve picks a dbm backend at runtime (gnu/ndbm/dumb/sqlite3) and sqlite writes
 # rollback/WAL sidecars, so a store path spawns several derived backing files;
 # every candidate name is checked, not just the base the caller passed.
+#: The entry val_dump writes naming every key it stored, so val_load reads
+#: each key by lookup: macOS dbm.ndbm drops one key from iteration whenever a
+#: value is 4096 bytes or more (measured), and iteration is never trusted.
+_STORE_MANIFEST_KEY = "__nltk_keys__"
+_NDBM_UNSAFE_VALUE = 4096
+
 _STORE_SIDECAR_SUFFIXES = (
     "",
     ".db",
@@ -909,6 +915,7 @@ def val_dump(rels, db):
     try:
         _verify_store_files(pins, db, context="chat80.val_dump")
         db_out.update(valuation)
+        db_out[_STORE_MANIFEST_KEY] = sorted(valuation)
     finally:
         db_out.close()
 
@@ -942,7 +949,7 @@ def val_load(db):
     from nltk.sem import Valuation
 
     try:
-        stored = list(db_in.items())
+        stored = _stored_items(db_in, db)
     finally:
         db_in.close()
     # val_dump stores make_valuation's Valuation, whose relations are the sorted
@@ -951,6 +958,48 @@ def val_load(db):
     val = Valuation(item for item in stored if not _is_extension_list(item[1]))
     val.update(item for item in stored if _is_extension_list(item[1]))
     return val
+
+
+def _stored_items(db_in, db):
+    """The (key, value) pairs of a store, read by the manifest val_dump wrote.
+
+    Each manifest key is looked up directly; a manifest that is not a sorted
+    list of distinct names, or that disagrees with the store, is refused. A
+    store without a manifest is iterated as before, except on dbm.ndbm, which
+    silently drops a key when a value is large, so it is refused there.
+    """
+    if _STORE_MANIFEST_KEY in db_in:
+        keys = db_in[_STORE_MANIFEST_KEY]
+        if (
+            not isinstance(keys, list)
+            or not all(type(key) is str for key in keys)
+            or keys != sorted(set(keys))
+            or _STORE_MANIFEST_KEY in keys
+        ):
+            raise ValueError(
+                "chat80 store %s: its key manifest is not the sorted list of "
+                "names val_dump writes" % sanitize_terminal(db)
+            )
+        missing = [key for key in keys if key not in db_in]
+        if missing:
+            raise ValueError(
+                "chat80 store %s: manifest names %d key(s) the store lacks"
+                % (sanitize_terminal(db), len(missing))
+            )
+        if len(db_in) > len(keys) + 1:
+            raise ValueError(
+                "chat80 store %s: holds keys its manifest does not name"
+                % sanitize_terminal(db)
+            )
+        return [(key, db_in[key]) for key in keys]
+    if dbm.whichdb(db) == "dbm.ndbm":
+        raise ValueError(
+            "chat80 store %s has no key manifest and uses dbm.ndbm, which drops "
+            "keys from iteration once a value reaches %d bytes; re-create it with "
+            "val_dump (dbm.sqlite3 or dbm.dumb)"
+            % (sanitize_terminal(db), _NDBM_UNSAFE_VALUE)
+        )
+    return list(db_in.items())
 
 
 def _is_extension_list(value):
