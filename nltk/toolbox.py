@@ -308,6 +308,41 @@ class ToolboxData(StandardFormat):
 
 
 _is_value = redos.compile(r"\S")
+#: What the reader takes for one marker: a run of non white space.
+_one_marker = redos.compile(r"\S+")
+#: A value line the reader would take for a new field: a backslash and a
+#: non white space character just after a line break.
+_marker_line = redos.compile(r"[\r\n]\\\S")
+
+
+def _reads_as_one_marker(mkr):
+    # Every white space character but U+0020 is unprintable, so a printable
+    # marker without a space has none; anything else goes to the regex.
+    if mkr.isprintable():
+        return bool(mkr) and " " not in mkr
+    return redos.fullmatch(_one_marker, mkr) is not None
+
+
+def _check_writable(mkr, value, blocks=False):
+    """Refuse a field that would not read back as itself.
+
+    Standard Format has no escape, so a marker that is empty or holds white
+    space, in a settings file a marker starting with ``+`` or ``-``, and a
+    value with a line that starts with a marker all read back as other fields.
+
+    :raises ValueError: if the field cannot be written faithfully
+    """
+    if (
+        not isinstance(mkr, str)
+        or not _reads_as_one_marker(mkr)
+        or (blocks and mkr[0] in "+-")
+    ):
+        raise ValueError(f"cannot write marker {mkr!r}: it would not read back as one")
+    if "\\" in value and redos.search(_marker_line, value):
+        raise ValueError(
+            f"cannot write the value of marker {mkr!r}: a line in it starts with "
+            "a marker, so it would read back as a separate field"
+        )
 
 
 def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
@@ -324,7 +359,8 @@ def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
     :type errors: str
     :param unicode_fields:
     :type unicode_fields: dict(str) or set(str)
-    :rtype: str
+    :rtype: str, or bytes when ``encoding`` is given
+    :raises ValueError: if a field would read back as other fields
     """
     if tree.tag == "record":
         root = Element("toolbox_data")
@@ -337,12 +373,16 @@ def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
         raise ValueError(
             "if encoding is not specified then neither should unicode_fields"
         )
+    # A blank line between records, none before the first field written.
+    sep = "\n" if encoding is None else "\n".encode(encoding, errors)
     l = []
     for rec in tree:
-        l.append("\n")
+        if l:
+            l.append(sep)
         for field in rec:
             mkr = field.tag
-            value = field.text
+            value = field.text or ""
+            _check_writable(mkr, value)
             if encoding is not None:
                 if unicode_fields is not None and mkr in unicode_fields:
                     cur_encoding = "utf8"
@@ -357,7 +397,7 @@ def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
                     l.append(f"\\{mkr} {value}\n")
                 else:
                     l.append(f"\\{mkr}{value}\n")
-    return "".join(l[1:])
+    return ("" if encoding is None else b"").join(l)
 
 
 class ToolboxSettings(StandardFormat):
@@ -435,6 +475,7 @@ def _to_settings_string(node, l, _depth=0, max_depth=None, **kwargs):
         )
     tag = node.tag
     text = node.text
+    _check_writable(tag, text or "", blocks=True)
     if len(node) == 0:
         if text:
             l.append(f"\\{tag} {text}\n")
