@@ -14,11 +14,29 @@ report FIXED again. Kept in its own module so the block appended to
 ``test_advisory_probes.py`` by sibling pull requests is never touched.
 """
 
+import contextlib
 import sqlite3
 
 import pytest
 
 from nltk.test.unit import security_probes as probes
+
+
+@contextlib.contextmanager
+def _store_checks_removed(chat80, validate=False):
+    """Put the pre-fix sink back: no pinned link check at the store's backing
+    names and no post-open verification (and, with validate, no containment)."""
+    saved = (chat80._pin_store_files, chat80._verify_store_files, chat80.validate_path)
+    try:
+        chat80._pin_store_files = lambda *args, **kwargs: {}
+        chat80._verify_store_files = lambda *args, **kwargs: None
+        if validate:
+            chat80.validate_path = lambda *args, **kwargs: None
+        yield
+    finally:
+        chat80._pin_store_files, chat80._verify_store_files, chat80.validate_path = (
+            saved
+        )
 
 
 def _fixed_or_skip(ghsa):
@@ -46,15 +64,10 @@ def test_xv54_sql_query_store_probe_has_teeth():
     import nltk.sem.chat80 as chat80
 
     probe = _fixed_or_skip("GHSA-xv54-447f-mj22")
-    validate, refuse = chat80.validate_path, chat80._refuse_symlinked_store
-    try:
-        chat80.validate_path = lambda *args, **kwargs: None
-        chat80._refuse_symlinked_store = lambda *args, **kwargs: None
+    with _store_checks_removed(chat80, validate=True):
         status, detail = probe()
         assert status == probes.VULNERABLE, detail
         assert "symlink" in detail
-    finally:
-        chat80.validate_path, chat80._refuse_symlinked_store = validate, refuse
     _all_three_fixed_after(probe)
 
 
@@ -65,14 +78,10 @@ def test_xv54_hardlink_is_held_by_the_store_link_check_alone():
     import nltk.sem.chat80 as chat80
 
     probe = _fixed_or_skip("GHSA-xv54-447f-mj22")
-    real = chat80._refuse_symlinked_store
-    try:
-        chat80._refuse_symlinked_store = lambda *args, **kwargs: None
+    with _store_checks_removed(chat80):
         status, detail = probe()
         assert status == probes.VULNERABLE, detail
         assert "hardlink" in detail
-    finally:
-        chat80._refuse_symlinked_store = real
     _all_three_fixed_after(probe)
 
 
@@ -100,15 +109,10 @@ def test_xmfg_city_db_symlink_probe_has_teeth():
     import nltk.sem.chat80 as chat80
 
     probe = _fixed_or_skip("GHSA-xmfg-f9cm-w86q")
-    validate, refuse = chat80.validate_path, chat80._refuse_symlinked_store
-    try:
-        chat80.validate_path = lambda *args, **kwargs: None
-        chat80._refuse_symlinked_store = lambda *args, **kwargs: None
+    with _store_checks_removed(chat80, validate=True):
         status, detail = probe()
         assert status == probes.VULNERABLE, detail
         assert "sql_query read the outside store" in detail
-    finally:
-        chat80.validate_path, chat80._refuse_symlinked_store = validate, refuse
     _all_three_fixed_after(probe)
 
 
@@ -118,13 +122,9 @@ def test_7j4p_chat80_store_link_probe_has_teeth():
     import nltk.sem.chat80 as chat80
 
     probe = _fixed_or_skip("GHSA-7j4p-88wx-5jrc")
-    real = chat80._refuse_symlinked_store
-    try:
-        chat80._refuse_symlinked_store = lambda *args, **kwargs: None
+    with _store_checks_removed(chat80):
         status, detail = probe()
         assert status == probes.VULNERABLE, detail
-    finally:
-        chat80._refuse_symlinked_store = real
     _all_three_fixed_after(probe)
 
 
