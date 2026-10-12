@@ -125,6 +125,7 @@ current directory.
 
 import dbm
 import io
+import itertools
 import re
 import shelve
 import sys
@@ -795,9 +796,35 @@ def val_load(db):
         sys.exit(sanitize_terminal("Cannot read file: {} ({})".format(db + ".db", e)))
     from nltk.sem import Valuation
 
-    val = Valuation(db_in.items())
-    #        val.read(db_in.items())
+    try:
+        stored = list(db_in.items())
+    finally:
+        db_in.close()
+    # val_dump stores make_valuation's Valuation, whose relations are the sorted
+    # Concept.extension lists; the Valuation constructor checks every other value
+    # and refuses lists, so the relations are added the way make_valuation does.
+    val = Valuation(item for item in stored if not _is_extension_list(item[1]))
+    val.update(item for item in stored if _is_extension_list(item[1]))
     return val
+
+
+def _is_extension_list(value):
+    """Whether ``value`` is a list ``val_dump`` writes: a ``Concept.extension``,
+    the sorted distinct strings of a unary relation or string pairs of a binary one.
+    """
+    if type(value) is not list:
+        return False
+    if not (
+        all(type(item) is str for item in value)
+        or all(
+            type(item) is tuple
+            and len(item) == 2
+            and all(type(part) is str for part in item)
+            for item in value
+        )
+    ):
+        return False
+    return all(a < b for a, b in itertools.pairwise(value))
 
 
 # def alpha(str):
