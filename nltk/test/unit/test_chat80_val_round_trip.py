@@ -20,6 +20,7 @@ import dbm
 import os
 import shelve
 import shutil
+import sys
 
 import pytest
 
@@ -307,15 +308,26 @@ def test_a_store_without_a_manifest_still_loads_on_a_complete_backend(
     assert len(chat80.val_load(base)) == len(_dumped(list(chat80.rels)))
 
 
-def test_a_store_without_a_manifest_is_refused_on_ndbm(stage, monkeypatch):
+@pytest.mark.skipif(sys.platform != "darwin", reason="the loss is in macOS ndbm")
+def test_a_lossy_store_without_a_manifest_is_refused_on_macos_ndbm(stage, monkeypatch):
     pytest.importorskip("dbm.ndbm")
     _use_backend(monkeypatch, "dbm.ndbm")
     base = os.path.join(stage, "old")
-    _write_store(base, {"size": "large"})
+    _write_store(base, {"size": "x" * chat80._NDBM_UNSAFE_VALUE, "small": "v"})
     if dbm.whichdb(base) != "dbm.ndbm":
         pytest.skip("the store was not written by dbm.ndbm")
     with pytest.raises(ValueError, match="dbm.ndbm"):
         chat80.val_load(base)
+
+
+def test_a_small_valued_store_without_a_manifest_still_loads_on_ndbm(
+    stage, monkeypatch
+):
+    pytest.importorskip("dbm.ndbm")
+    _use_backend(monkeypatch, "dbm.ndbm")
+    base = os.path.join(stage, "old_small")
+    _write_store(base, {"size": "large", "n": "1"})
+    assert dict(chat80.val_load(base)) == {"size": "large", "n": "1"}
 
 
 def test_the_manifest_lookup_is_load_bearing_on_ndbm(stage, monkeypatch):
@@ -338,4 +350,45 @@ def test_the_manifest_lookup_is_load_bearing_on_ndbm(stage, monkeypatch):
     assert len(chat80.val_load(base)) == 20
     monkeypatch.setattr(chat80, "_stored_items", lambda db_in, db: list(db_in.items()))
     lost = chat80.val_load(base)
-    assert len(lost) < 21, "the backend iterated completely here, teeth not shown"
+    if len(lost) == 21:
+        pytest.skip("this ndbm build iterates completely; see the simulated teeth")
+    assert len(lost) < 21
+
+
+class _LossyShelf:
+    """A shelf whose iteration drops one key but whose lookups are complete,
+    the shape of the macOS ndbm defect, independent of the platform."""
+
+    def __init__(self, values, manifest=True):
+        self._values = dict(values)
+        if manifest:
+            self._values[chat80._STORE_MANIFEST_KEY] = sorted(values)
+
+    def __iter__(self):
+        return iter(list(self._values)[1:])
+
+    def __len__(self):
+        return len(self._values) - 1
+
+    def __contains__(self, key):
+        return key in self._values
+
+    def __getitem__(self, key):
+        return self._values[key]
+
+    def items(self):
+        for key in self:
+            yield key, self._values[key]
+
+    def raw_value_sizes(self):
+        return [1 for _ in self._values]
+
+
+def test_the_manifest_defeats_a_lossy_iteration_on_every_platform(stage):
+    values = {f"k{i:02d}": "v" for i in range(20)}
+    with_manifest = chat80._stored_items(_LossyShelf(values), os.path.join(stage, "m"))
+    assert sorted(k for k, _ in with_manifest) == sorted(values)
+    without = chat80._stored_items(
+        _LossyShelf(values, manifest=False), os.path.join(stage, "n")
+    )
+    assert len(without) == 19

@@ -59,6 +59,15 @@ def _swap_before(monkeypatch, target, swap):
     monkeypatch.setattr(shelve, "open", opening)
 
 
+pinned = pytest.mark.skipif(
+    os.name == "nt",
+    reason="an open file cannot be swapped on Windows, so no handle is held",
+)
+needs_symlink = pytest.mark.skipif(
+    os.name == "nt", reason="symlinks need privilege on Windows"
+)
+
+
 @pytest.fixture
 def staged(pathsec_sandbox):
     root, outside = pathsec_sandbox
@@ -78,6 +87,7 @@ def _assert_untouched(path):
 # =========================================================================
 # 1. A backing name swapped between the check and the backend open
 # =========================================================================
+@needs_symlink
 @pytest.mark.parametrize("backend", BACKENDS)
 def test_val_load_refuses_a_name_swapped_for_a_symlink_in_the_gap(
     staged, monkeypatch, backend
@@ -104,6 +114,7 @@ def test_val_load_refuses_a_name_swapped_for_a_symlink_in_the_gap(
         chat80.val_load(base)
 
 
+@pinned
 @pytest.mark.parametrize("backend", BACKENDS)
 def test_val_load_refuses_a_name_swapped_for_another_file_in_the_gap(
     staged, monkeypatch, backend
@@ -127,6 +138,7 @@ def test_val_load_refuses_a_name_swapped_for_another_file_in_the_gap(
         chat80.val_load(base)
 
 
+@needs_symlink
 @pytest.mark.parametrize("backend", BACKENDS)
 def test_val_dump_refuses_a_name_swapped_for_a_symlink_in_the_gap(
     staged, monkeypatch, backend
@@ -167,6 +179,7 @@ def test_val_dump_refuses_a_name_swapped_for_a_symlink_in_the_gap(
         chat80.val_dump(rels, base)
 
 
+@needs_symlink
 def test_sql_query_is_bound_to_the_pinned_inode_not_the_name(staged, monkeypatch):
     """After the check the NAME is pointed at a decoy database; the query must
     still answer from the database that passed the check."""
@@ -264,6 +277,7 @@ def test_an_unswapped_store_still_loads_per_backend(staged, monkeypatch, backend
     assert set(val["city_of"]) == {"athens", "bangkok", "berlin"}
 
 
+@pinned
 def test_the_pinned_check_is_load_bearing(staged, monkeypatch):
     """With the post-open verification removed, the swapped-in decoy is read
     back as if it were the store that passed the check."""
@@ -290,6 +304,7 @@ def test_the_pinned_check_is_load_bearing(staged, monkeypatch):
     assert chat80.val_load(base)["size"] == "tiny"
 
 
+@pytest.mark.skipif(not hasattr(os, "mkfifo"), reason="no FIFOs on this platform")
 def test_store_files_are_regular_after_the_open(staged):
     """A FIFO put in place of a backing name is refused by the post-open check
     without blocking the reader."""

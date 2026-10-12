@@ -145,7 +145,7 @@ from nltk.termsec import safe_print, sanitize_terminal
 # every candidate name is checked, not just the base the caller passed.
 #: The entry val_dump writes naming every key it stored, so val_load reads
 #: each key by lookup: macOS dbm.ndbm drops one key from iteration whenever a
-#: value is 4096 bytes or more (measured), and iteration is never trusted.
+#: value is 4096 bytes or more (measured; the large key itself is always seen).
 _STORE_MANIFEST_KEY = "__nltk_keys__"
 _NDBM_UNSAFE_VALUE = 4096
 
@@ -224,6 +224,11 @@ def _pin_store_files(base, context):
         except BaseException:
             _close_pins(pins)
             raise
+    if os.name == "nt":
+        # an open file cannot be replaced or reopened by the backend there, so
+        # the checks run but the handles are not held
+        _close_pins(pins)
+        return {}
     return pins
 
 
@@ -347,6 +352,9 @@ def _restricted_shelve_open(db, flag="r"):
         def items(self):
             for key in inner:
                 yield key, self[key]
+
+        def raw_value_sizes(self):
+            return [len(inner.dict[key]) for key in inner.dict.keys()]
 
         def close(self):
             inner.close()
@@ -965,8 +973,8 @@ def _stored_items(db_in, db):
 
     Each manifest key is looked up directly; a manifest that is not a sorted
     list of distinct names, or that disagrees with the store, is refused. A
-    store without a manifest is iterated as before, except on dbm.ndbm, which
-    silently drops a key when a value is large, so it is refused there.
+    store without a manifest is iterated as before, except on macOS dbm.ndbm
+    holding a large value, where iteration drops a key, so it is refused.
     """
     if _STORE_MANIFEST_KEY in db_in:
         keys = db_in[_STORE_MANIFEST_KEY]
@@ -992,12 +1000,17 @@ def _stored_items(db_in, db):
                 % sanitize_terminal(db)
             )
         return [(key, db_in[key]) for key in keys]
-    if dbm.whichdb(db) == "dbm.ndbm":
+    if (
+        sys.platform == "darwin"
+        and dbm.whichdb(db) == "dbm.ndbm"
+        and max(db_in.raw_value_sizes(), default=0) >= _NDBM_UNSAFE_VALUE
+    ):
+        # the dropped key is never the large one, so a large value seen here
+        # proves the store is one iteration cannot read completely
         raise ValueError(
-            "chat80 store %s has no key manifest and uses dbm.ndbm, which drops "
-            "keys from iteration once a value reaches %d bytes; re-create it with "
-            "val_dump (dbm.sqlite3 or dbm.dumb)"
-            % (sanitize_terminal(db), _NDBM_UNSAFE_VALUE)
+            "chat80 store %s has no key manifest and uses macOS dbm.ndbm, which "
+            "drops a key from iteration once a value reaches %d bytes; re-create "
+            "it with val_dump" % (sanitize_terminal(db), _NDBM_UNSAFE_VALUE)
         )
     return list(db_in.items())
 
