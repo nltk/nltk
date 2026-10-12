@@ -158,13 +158,40 @@ class StandardFormat:
             pass
 
 
+#: Code points beyond ASCII allowed in an XML 1.0 (Fifth Edition) name.
+_XML_NAME_RANGES = (
+    (0xB7, 0xB7),
+    (0xC0, 0xD6),
+    (0xD8, 0xF6),
+    (0xF8, 0x37D),
+    (0x37F, 0x1FFF),
+    (0x203F, 0x2040),
+    (0x2070, 0x218F),
+    (0x2C00, 0x2FEF),
+    (0x3001, 0xD7FF),
+    (0xF900, 0xFDCF),
+    (0xFDF0, 0xFFFD),
+    (0x10000, 0xEFFFF),
+)
+#: A word character that is no XML name character (MICRO SIGN, circled
+#: letters), or one that renders as nothing (joiners, variation selectors).
+_not_name_char = redos.compile(
+    "[^-.0-9A-Z_a-z%s]|\\p{Default_Ignorable_Code_Point}"
+    % "".join("\\U%08X-\\U%08X" % pair for pair in _XML_NAME_RANGES)
+)
+#: A name character an XML name cannot start with.
+_not_name_start = redos.compile(r"^[\d\-.\u0300-\u036F\u203F\u2040]")
+
+
 def _sanitize_marker(mkr):
     if not mkr:
         return "empty"
     # Replace non-word characters with underscores, preserving letters, numbers, hyphens, and dots
     safe = redos.sub(r"[^\w\-.]", "_", mkr)
-    # XML element names cannot start with a digit, hyphen, or dot
-    if redos.match(r"^[\d\-.]", safe):
+    # and the word characters that are not XML name characters or are invisible
+    safe = redos.sub(_not_name_char, "_", safe)
+    # XML element names cannot start with a digit, hyphen, dot or combining mark
+    if redos.match(_not_name_start, safe):
         safe = "_" + safe
     # Mitigate HTML element injection for web viewers / XSS
     if safe.lower() in {"script", "style", "iframe", "object", "embed", "link", "meta"}:
