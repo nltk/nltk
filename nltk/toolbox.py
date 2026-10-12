@@ -173,10 +173,11 @@ _XML_NAME_RANGES = (
     (0xFDF0, 0xFFFD),
     (0x10000, 0xEFFFF),
 )
-#: A word character that is no XML name character (MICRO SIGN, circled
-#: letters), or one that renders as nothing (joiners, variation selectors).
-_not_name_char = redos.compile(
-    "[^-.0-9A-Z_a-z%s]|\\p{Default_Ignorable_Code_Point}"
+#: A character a marker loses: one that is neither a word character nor a
+#: hyphen or dot, a word character that is no XML name character (MICRO SIGN,
+#: circled letters), or one that renders as nothing (joiners, selectors).
+_not_marker_char = redos.compile(
+    "[^\\w\\-.]|[^-.0-9A-Z_a-z%s]|\\p{Default_Ignorable_Code_Point}"
     % "".join("\\U%08X-\\U%08X" % pair for pair in _XML_NAME_RANGES)
 )
 #: A name character an XML name cannot start with.
@@ -186,10 +187,9 @@ _not_name_start = redos.compile(r"^[\d\-.\u0300-\u036F\u203F\u2040]")
 def _sanitize_marker(mkr):
     if not mkr:
         return "empty"
-    # Replace non-word characters with underscores, preserving letters, numbers, hyphens, and dots
-    safe = redos.sub(r"[^\w\-.]", "_", mkr)
+    # Replace non-word characters with underscores, preserving letters, numbers, hyphens, and dots,
     # and the word characters that are not XML name characters or are invisible
-    safe = redos.sub(_not_name_char, "_", safe)
+    safe = redos.sub(_not_marker_char, "_", mkr)
     # XML element names cannot start with a digit, hyphen, dot or combining mark
     if redos.match(_not_name_start, safe):
         safe = "_" + safe
