@@ -535,6 +535,17 @@ def _sort_fields(elem, orders_dicts, _depth=0, max_depth=None):
             _sort_fields(child, orders_dicts, _depth + 1, max_depth)
 
 
+def _last_descendant(elem):
+    """The last element of ``elem``'s subtree in document order.
+
+    Follows last children, so the cost is the length of that path; listing
+    the subtree instead made add_blank_lines quadratic in depth and width.
+    """
+    while len(elem):
+        elem = elem[-1]
+    return elem
+
+
 def add_blank_lines(tree, blanks_before, blanks_between, _depth=0, max_depth=None):
     """
     Add blank lines before all elements and subelements specified in blank_before.
@@ -568,11 +579,11 @@ def add_blank_lines(tree, blanks_before, blanks_between, _depth=0, max_depth=Non
             tag = elem.tag
             if last_elem is not None and last_elem.tag != tag:
                 if tag in before and last_elem is not None:
-                    e = list(last_elem.iter())[-1]
+                    e = _last_descendant(last_elem)
                     e.text = (e.text or "") + "\n"
             else:
                 if tag in between and last_elem is not None:
-                    e = list(last_elem.iter())[-1]
+                    e = _last_descendant(last_elem)
                     e.text = (e.text or "") + "\n"
             if len(elem):
                 add_blank_lines(
