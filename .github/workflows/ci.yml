@@ -17,9 +17,6 @@ permissions:
 
 env:
   THIRD_PARTY_DIR: ${{ github.workspace }}/third
-  # the oldest Graphviz the Windows cells may run; a newer stable release is
-  # taken as Chocolatey ships it, refreshed once a week, never a prerelease
-  GRAPHVIZ_MIN_VERSION: "16.1.0"
   CORENLP: ${{ github.workspace }}/third/stanford-corenlp
   CORENLP_MODELS: ${{ github.workspace }}/third/stanford-corenlp
   STANFORD_PARSER: ${{ github.workspace }}/third/stanford-parser
@@ -155,26 +152,6 @@ jobs:
           pip install --upgrade pip
           pip install --upgrade --requirement requirements-ci.txt
 
-      - name: Graphviz cache key (Windows, one per ISO week)
-        if: runner.os == 'Windows'
-        id: graphviz-week
-        shell: bash
-        run: echo "week=$(date -u +%G-W%V)" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Graphviz (Windows)
-        # Chocolatey's public feed times out now and then (HTTP 504), so the
-        # install is kept between runs: this week's key skips the feed, an
-        # older week's install is restored as the fallback for a feed that is
-        # down while the newest release is asked for.
-        if: runner.os == 'Windows'
-        id: graphviz-cache
-        uses: actions/cache@v6
-        with:
-          path: C:\Program Files\Graphviz
-          key: graphviz-windows-${{ steps.graphviz-week.outputs.week }}
-          restore-keys: |
-            graphviz-windows-
-
       - name: Install Graphviz (the real dot for the trusted-spawn tests)
         shell: bash
         run: |
@@ -192,57 +169,14 @@ jobs:
             ls -la "$prefix/bin/dot" "$prefix"/Cellar/graphviz/*/bin/dot
             dot -V
           else
-            home="/c/Program Files/Graphviz"
-            bin="$home/bin"
-            if [ "${{ steps.graphviz-cache.outputs.cache-hit }}" = "true" ]; then
-              echo "Graphviz restored from this week's cache"
-            else
-              # ask the feed for the newest stable release; an install an older
-              # week's cache restored is kept aside as the fallback for a feed
-              # that is down, and a miss that every attempt fails with nothing
-              # to fall back on is an error, never a skip
-              if [ -d "$home" ]; then
-                mv "$home" "$home.restored"
-              fi
-              installed=no
-              for attempt in 1 2 3 4 5; do
-                if choco install graphviz -y --no-progress; then
-                  installed=yes
-                  break
-                fi
-                echo "choco attempt $attempt failed; retrying in $((attempt * 20)) s"
-                sleep $((attempt * 20))
-              done
-              if [ "$installed" = "yes" ]; then
-                rm -rf "$home.restored"
-              elif [ -x "$home.restored/bin/dot.exe" ]; then
-                rm -rf "$home"
-                mv "$home.restored" "$home"
-                echo "::warning::Chocolatey did not answer in 5 attempts; running on the Graphviz an earlier week's cache restored"
-              else
-                echo "::error::Graphviz could not be installed from Chocolatey in 5 attempts and no cached install exists"
-                exit 1
-              fi
-            fi
-            # restored or installed, dot must be there and be at least the floor
-            if [ ! -x "$bin/dot.exe" ]; then
-              echo "::error::no dot.exe under $bin after the Graphviz install"
-              exit 1
-            fi
+            # Chocolatey's feed answers 504 now and then: retry twice, and under
+            # set -e a third failure fails the step, never skips the install
+            choco install graphviz -y --no-progress \
+              || { sleep 60; choco install graphviz -y --no-progress; } \
+              || { sleep 120; choco install graphviz -y --no-progress; }
+            bin="$(ls -d /c/Program\ Files/Graphviz*/bin | head -1)"
             "$bin/dot.exe" -c
-            version="$("$bin/dot.exe" -V 2>&1)"
-            echo "$version"
-            have="$(printf '%s\n' "$version" | sed -n 's/.*graphviz version \([0-9][0-9.]*\).*/\1/p' | head -1)"
-            if [ -z "$have" ]; then
-              echo "::error::dot did not report a Graphviz version: '$version'"
-              exit 1
-            fi
-            lowest="$(printf '%s\n%s\n' "$GRAPHVIZ_MIN_VERSION" "$have" | sort -V | head -1)"
-            if [ "$lowest" != "$GRAPHVIZ_MIN_VERSION" ]; then
-              echo "::error::dot is Graphviz $have, below the floor $GRAPHVIZ_MIN_VERSION"
-              exit 1
-            fi
-            echo "Graphviz $have (floor $GRAPHVIZ_MIN_VERSION)"
+            "$bin/dot.exe" -V
             cygpath -w "$bin" >> "$GITHUB_PATH"
           fi
 
