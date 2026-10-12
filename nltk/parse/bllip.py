@@ -165,17 +165,9 @@ class BllipParser(ParserI):
         parser_options = parser_options or {}
         reranker_options = reranker_options or {}
 
-        # These paths are caller-supplied and the bllipparser C extension opens
-        # and reads them natively, so they are bounded to the NLTK data roots
-        # first, exactly as every sibling tool wrapper does (GHSA-fg9w-wfp5-j933,
-        # CWE-22/73/400). pathsec.open cannot be used because the extension does
-        # its own open, so the guards validate the path and RETURN the checked
-        # string, and the extension is called on that string: a PathLike may
-        # answer differently on a later __fspath__, so re-reading it would let a
-        # swapped value be opened. parser_model names a model DIRECTORY the loader
-        # reads from; the reranker arguments are files it reads whole, so a
-        # require_private model keeps another local user from planting it and
-        # max_bytes refuses a memory-exhausting model.
+        # The extension opens these caller paths natively, so bound them to the
+        # data roots first and pass the returned string, never the original
+        # object (GHSA-fg9w-wfp5-j933).
         if parser_model is not None:
             parser_model = validate_tool_dir(
                 parser_model,
@@ -277,11 +269,8 @@ class BllipParser(ParserI):
         :type reranker_options: dict(str)
         :rtype: BllipParser
         """
-        # get_unified_model_parameters() belongs to the third-party bllipparser
-        # package and joins sub-paths under the caller's model_dir with no data
-        # root check, so model_dir is bounded here before those sub-paths are
-        # derived (GHSA-fg9w-wfp5-j933). The constructor re-validates each derived
-        # path, so this is defense in depth with a clear up-front error.
+        # The third-party helper derives sub-paths under model_dir unchecked, so
+        # bound model_dir first; the constructor revalidates each derived path.
         model_dir = validate_tool_dir(
             model_dir,
             context="BllipParser unified model directory",
