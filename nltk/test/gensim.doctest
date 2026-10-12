@@ -25,10 +25,20 @@ Here we train a word embedding using the Brown Corpus:
     >>> train_set = brown.sents()[:10000]
     >>> model = gensim.models.Word2Vec(train_set)
 
-It might take some time to train the model. So, after it is trained, it can be saved as follows:
+It might take some time to train the model. So, after it is trained, it can be saved as follows.
+The model goes into a private staging directory under an NLTK data directory, removed when Python
+exits, and is written through ``nltk.pathsec``. Gensim reads it back by name with its own ``open()``,
+so the name is checked with ``pathsec.validate_path`` first; ``Word2Vec.load`` unpickles the file,
+so only load a model you saved yourself:
 
-    >>> model.save('brown.embedding')
-    >>> new_model = gensim.models.Word2Vec.load('brown.embedding')
+    >>> import os
+    >>> from nltk import pathsec
+    >>> from nltk.data import make_staging_dir
+    >>> path = os.path.join(make_staging_dir(prefix='gensim_howto_', cleanup=True), 'brown.embedding')
+    >>> with pathsec.open(path, 'wb') as f:
+    ...     model.save(f)
+    >>> pathsec.validate_path(path)
+    >>> new_model = gensim.models.Word2Vec.load(path)
 
 The model will be the list of words with their embedding. We can easily get the vector representation of a word.
 
@@ -39,7 +49,7 @@ There are some supporting functions already implemented in Gensim to manipulate 
 For example, to compute the cosine similarity between 2 words:
 
     >>> new_model.wv.similarity('university','school') > 0.3
-    True
+    np.True_
 
 ---------------------------
 Using the pre-trained model
@@ -131,9 +141,13 @@ We use this code to get the `word2vec_sample` model.
 |    words = set(brown.words())
 |    print(len(words))
 |
-|    # Output presented word to a temporary file
-|    out_file = 'pruned.word2vec.txt'
-|    with open(out_file,'w') as f:
+|    # Output presented word to a file in a private staging directory
+|    # under an NLTK data directory, written through nltk.pathsec
+|    import os
+|    from nltk import pathsec
+|    from nltk.data import make_staging_dir
+|    out_file = os.path.join(make_staging_dir(prefix='word2vec_'), 'pruned.word2vec.txt')
+|    with pathsec.open(out_file,'w') as f:
 |        word_presented = words.intersection(model.index_to_key)
 |        f.write('{} {}\n'.format(len(word_presented),len(model['word'])))
 |

@@ -137,6 +137,8 @@ Test SklearnClassifier, which requires the scikit-learn package.
     >>> classif = SklearnClassifier(SVC(), sparse=False).train(train_data)
     >>> classif.classify_many(test_data)
     ['ham', 'spam']
+    >>> classif.labels()
+    ['ham', 'spam']
 
 Test the Maximum Entropy classifier training algorithms; they should all
 generate the same results.

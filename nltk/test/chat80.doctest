@@ -152,7 +152,9 @@ Persistence
 ===========
 The functions ``val_dump`` and ``val_load`` are provided to allow a
 valuation to be stored in a persistent database and re-loaded, rather
-than having to be re-computed each time.
+than having to be re-computed each time.  Both check the database path
+with ``nltk.pathsec``, so it must lie inside an NLTK data directory,
+for example a staging directory from ``nltk.data.make_staging_dir()``.
 
 Individuals and Lexical Items
 =============================
@@ -166,8 +168,10 @@ following for each individual constant::
 
    PropN[num=sg, sem=<\P.(P zloty)>] -> 'Zloty'
 
-The set of rules is written to the file ``chat_pnames.fcfg`` in the
-current directory.
+When ``make_valuation()`` is called with ``lexicon=True``, the set of
+rules is written, through ``nltk.pathsec``, to the file
+``chat_pnames.cfg`` in the current directory, which must therefore lie
+inside an NLTK data directory.
 
 SQL Query
 =========

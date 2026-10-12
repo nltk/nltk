@@ -17,6 +17,8 @@ Helpers for safer and/or more explicit pickle usage in NLTK.
   globals. Use it for loading objects whose set of legitimate classes is known
   (e.g. a trained model) so that arbitrary-code gadgets such as ``os.system``
   can never be reconstructed from an untrusted file.
+- pickle_loads / roundtrip: the same allowlisted load for bytes, and a pickle
+  round trip through it, for examples and tests.
 """
 
 from __future__ import annotations
@@ -741,6 +743,51 @@ def allowlisted_pickle_load(
     if sanitize is not None:
         return harden_object_graph(obj, sanitize)
     return obj
+
+
+def pickle_loads(
+    data: bytes,
+    *,
+    allowed_globals: Iterable[tuple[str, str]] = (),
+    allowed_modules: Iterable[str] = (),
+    sanitize: Any = None,
+) -> Any:
+    """Load a pickle from ``data`` (bytes), rebuilding only allowlisted globals.
+
+    The bytes form of :func:`allowlisted_pickle_load`, as :func:`pickle_dumps`
+    is of :func:`pickle_dump`: the same allowlists and guards, nothing more. With
+    no allowlist, no global is rebuilt at all. Unlike the warn-only
+    :func:`pickle_load`, it never runs an unlisted global.
+    """
+    return allowlisted_pickle_load(
+        io.BytesIO(data),
+        allowed_globals=allowed_globals,
+        allowed_modules=allowed_modules,
+        sanitize=sanitize,
+    )
+
+
+def roundtrip(
+    obj: Any,
+    *,
+    allowed_globals: Iterable[tuple[str, str]] = (),
+    allowed_modules: Iterable[str] = (),
+) -> Any:
+    """Pickle ``obj`` and load it back with :func:`pickle_loads`.
+
+    For examples and tests that show an object survives pickling. The load is
+    allowlisted like any other: ``obj`` comes back only if every class it needs
+    is listed, and a ``__reduce__`` gadget is refused, not run. To name the
+    allowlist once, bind it with :func:`functools.partial`::
+
+        roundtrip = partial(picklesec.roundtrip, allowed_modules=["nltk.tree"])
+        roundtrip(tree) == tree
+    """
+    return pickle_loads(
+        pickle_dumps(obj),
+        allowed_globals=allowed_globals,
+        allowed_modules=allowed_modules,
+    )
 
 
 def harden_object_graph(root: Any, visit: Any, *, max_nodes: int = 5_000_000) -> Any:
