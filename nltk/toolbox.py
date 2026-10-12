@@ -531,11 +531,11 @@ def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
 
 
 class ToolboxSettings(StandardFormat):
-    """This class is the base class for settings files.
+    """This class is the base class for settings files."""
 
-    Like ``ToolboxData`` it takes an optional ``filename`` and the
-    ``encoding`` the file is decoded with when it is opened.
-    """
+    def __init__(self, filename=None, encoding=None):
+        """Open ``filename``, if given, decoding it with ``encoding``."""
+        super().__init__(filename, encoding)
 
     def parse(self, encoding=None, errors="strict", **kwargs):
         """
