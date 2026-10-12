@@ -141,6 +141,14 @@ def test_a_set_valued_store_still_loads_through_the_constructor(stage):
         ("athens", "greece"),
         frozenset({"athens"}),
         None,
+        ["athens", ("athens", "greece")],
+        [("athens",), ("bangkok",)],
+        [("athens", "greece", "europe")],
+        [("athens",), ("athens", "greece")],
+        [()],
+        ["bangkok", "athens"],
+        ["athens", "athens"],
+        [("bangkok", "thailand"), ("athens", "greece")],
     ],
     ids=repr,
 )
@@ -157,3 +165,22 @@ def test_an_empty_relation_round_trips(stage):
     loaded = chat80.val_load(base)
     assert loaded == {"sea": [], "athens": "athens"}
     assert type(loaded) is Valuation
+
+
+def test_every_list_the_real_dump_writes_is_a_sorted_extension(stage):
+    rels = list(chat80.rels)
+    _dumped(rels)
+    base = os.path.join(stage, "all")
+    chat80.val_dump(rels, base)
+    with shelve.open(base, "r") as store:
+        lists = [value for value in store.values() if isinstance(value, list)]
+    assert len(lists) >= 19
+    assert all(chat80._is_extension_list(value) for value in lists)
+
+
+def test_a_reordered_real_relation_is_refused(stage):
+    dumped = _dumped([chat80.city])
+    base = os.path.join(stage, "reordered")
+    _write_store(base, {"city": list(reversed(dumped["city"])), "athens": "athens"})
+    with pytest.raises(ValueError, match=r"Unrecognized value for symbol\s+'city'"):
+        chat80.val_load(base)

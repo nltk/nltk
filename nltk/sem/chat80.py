@@ -125,6 +125,7 @@ current directory.
 
 import dbm
 import io
+import itertools
 import re
 import shelve
 import sys
@@ -808,12 +809,22 @@ def val_load(db):
 
 
 def _is_extension_list(value):
-    """Whether ``value`` is a ``Concept.extension`` list: strings or string tuples."""
-    return isinstance(value, list) and all(
-        isinstance(item, str)
-        or (isinstance(item, tuple) and all(isinstance(part, str) for part in item))
-        for item in value
-    )
+    """Whether ``value`` is a list ``val_dump`` writes: a ``Concept.extension``,
+    the sorted distinct strings of a unary relation or string pairs of a binary one.
+    """
+    if type(value) is not list:
+        return False
+    if not (
+        all(type(item) is str for item in value)
+        or all(
+            type(item) is tuple
+            and len(item) == 2
+            and all(type(part) is str for part in item)
+            for item in value
+        )
+    ):
+        return False
+    return all(a < b for a, b in itertools.pairwise(value))
 
 
 # def alpha(str):
