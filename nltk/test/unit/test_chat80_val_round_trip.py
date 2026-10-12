@@ -167,14 +167,21 @@ def test_an_empty_relation_round_trips(stage):
     assert type(loaded) is Valuation
 
 
-def test_every_list_the_real_dump_writes_is_a_sorted_extension(stage):
+@pytest.mark.parametrize("backend", BACKENDS)
+def test_every_list_the_real_dump_writes_is_a_sorted_extension(
+    stage, monkeypatch, backend
+):
+    _use_backend(monkeypatch, backend)
     rels = list(chat80.rels)
-    _dumped(rels)
+    dumped = _dumped(rels)
     base = os.path.join(stage, "all")
     chat80.val_dump(rels, base)
+    # looked up by key: macOS ndbm can skip a key when iterating (see above)
+    keys = [key for key, value in dumped.items() if isinstance(value, list)]
     with shelve.open(base, "r") as store:
-        lists = [value for value in store.values() if isinstance(value, list)]
-    assert len(lists) >= 19
+        lists = [store[key] for key in keys]
+    assert len(lists) == 20
+    assert lists == [dumped[key] for key in keys]
     assert all(chat80._is_extension_list(value) for value in lists)
 
 
