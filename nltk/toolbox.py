@@ -428,10 +428,11 @@ def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
 
 
 class ToolboxSettings(StandardFormat):
-    """This class is the base class for settings files."""
+    """This class is the base class for settings files.
 
-    def __init__(self):
-        super().__init__()
+    Like ``ToolboxData`` it takes an optional ``filename`` and the
+    ``encoding`` the file is decoded with when it is opened.
+    """
 
     def parse(self, encoding=None, errors="strict", **kwargs):
         """
@@ -686,11 +687,10 @@ def demo():
     for field in islice(lexicon.findall("record/lx"), 10):
         safe_print(field.text)
 
-    settings = ToolboxSettings()
     file_path = find("corpora/toolbox/MDF/MDF_AltH.typ")
-    settings.open(file_path)
+    settings = ToolboxSettings(file_path, encoding="cp1252")
     #    settings.open(ZipFilePathPointer(zip_path, entry='toolbox/MDF/MDF_AltH.typ'))
-    tree = settings.parse(unwrap=False, encoding="cp1252")
+    tree = settings.parse(unwrap=False)
     safe_print(tree.find("expset/expMDF/rtfPageSetup/paperSize").text)
     settings_tree = ElementTree(tree)
     safe_print(to_settings_string(settings_tree).encode("utf8"))
