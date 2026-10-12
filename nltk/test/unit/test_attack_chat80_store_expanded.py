@@ -303,7 +303,7 @@ def _finishes_within(seconds, fn):
 
 
 @pytest.mark.skipif(not hasattr(os, "mkfifo"), reason="no FIFOs on this platform")
-@pytest.mark.parametrize("suffix", ["", ".db", "-wal"])
+@pytest.mark.parametrize("suffix", ["", ".db", ".dat", ".dir", ".bak", "-wal"])
 @pytest.mark.parametrize("fn", ["val_load", "val_dump"])
 def test_fifo_at_backing_name_is_refused_without_blocking(staged, suffix, fn):
     root, outside, _ = staged
@@ -483,3 +483,83 @@ def test_val_load_reports_a_missing_store_without_touching_anything(staged):
     with pytest.raises(SystemExit, match="Cannot read file"):
         chat80.val_load(os.path.join(root, "absent"))
     assert not any(n.startswith("absent") for n in os.listdir(root))
+
+
+# =========================================================================
+# Malformed and hostile store files at the backing name (not links)
+# =========================================================================
+@pytest.mark.parametrize("suffix", ["", ".db"])
+def test_directory_at_a_backing_name_is_reported_not_traversed(staged, suffix):
+    """A directory planted where the store file belongs: val_load reports it the
+    way it reports an unreadable store, creates nothing and reads nothing out."""
+    root, outside, _ = staged
+    base = os.path.join(root, "asdir")
+    os.makedirs(base + suffix)
+    finished, exc = _finishes_within(10, lambda: chat80.val_load(base))
+    assert finished and isinstance(exc, REFUSED), exc
+    assert sorted(os.listdir(outside)) == ["victim.txt"]
+
+
+@pytest.mark.parametrize("suffix", ["", ".db"])
+def test_corrupt_store_file_is_reported_cleanly(staged, suffix):
+    """Random bytes where the store belongs: val_load exits with its read error,
+    never a crash that leaks, and touches nothing outside."""
+    root, outside, _ = staged
+    base = os.path.join(root, "corrupt")
+    with open(base + suffix, "wb") as f:
+        f.write(os.urandom(4096))
+    finished, exc = _finishes_within(10, lambda: chat80.val_load(base))
+    assert finished and isinstance(exc, REFUSED), exc
+    assert sorted(os.listdir(outside)) == ["victim.txt"]
+
+
+def test_hostile_sqlite_schema_with_a_trigger_runs_no_code(staged):
+    """A sqlite store with the dbm.sqlite3 layout plus an extra table and a
+    trigger: val_load opens it read-only, so the INSERT trigger can never fire,
+    and sqlite triggers cannot touch the filesystem anyway. The benign value
+    loads (or is refused) and the trigger marker never appears."""
+    root, outside, _ = staged
+    marker = os.path.join(outside, "TRIGGER_FIRED")
+    base = os.path.join(root, "hostile.sqlite")
+    cx = sqlite3.connect(base)
+    cx.execute("CREATE TABLE Dict (key BLOB UNIQUE, value BLOB)")
+    cx.execute("CREATE TABLE secret (x)")
+    cx.execute(
+        "CREATE TRIGGER t AFTER INSERT ON secret "
+        "BEGIN INSERT INTO Dict VALUES ('x', 'y'); END"
+    )
+    cx.execute(
+        "INSERT INTO Dict VALUES (?, ?)",
+        (b"ok", pickle.dumps(["athens", "bangkok"])),
+    )
+    cx.commit()
+    cx.close()
+    if dbm.whichdb(base) != "dbm.sqlite3":
+        pytest.skip("dbm.sqlite3 backend not selected for this file")
+    finished, exc = _finishes_within(10, lambda: list(chat80.val_load(base).items()))
+    assert finished, "val_load hung on a hostile sqlite store"
+    assert exc is None or isinstance(exc, REFUSED), exc
+    assert not os.path.exists(marker)
+    assert sorted(os.listdir(outside)) == ["victim.txt"]
+
+
+def test_oversized_real_sqlite_store_loads_in_bounded_time(staged):
+    """A real (non-sparse) multi-megabyte sqlite store: the read is bounded and
+    runs no code; the large value is a legitimate relation shape, so it loads."""
+    root, outside, _ = staged
+    base = os.path.join(root, "big.sqlite")
+    cx = sqlite3.connect(base)
+    cx.execute("CREATE TABLE Dict (key BLOB UNIQUE, value BLOB)")
+    cx.execute(
+        "INSERT INTO Dict VALUES (?, ?)",
+        (b"city", pickle.dumps(sorted("c%07d" % i for i in range(200000)))),
+    )
+    cx.commit()
+    cx.close()
+    if dbm.whichdb(base) != "dbm.sqlite3":
+        pytest.skip("dbm.sqlite3 backend not selected for this file")
+    assert os.path.getsize(base) > 1024 * 1024
+    finished, exc = _finishes_within(30, lambda: list(chat80.val_load(base).items()))
+    assert finished, "val_load did not finish on an oversized sqlite store"
+    assert exc is None or isinstance(exc, REFUSED), exc
+    assert sorted(os.listdir(outside)) == ["victim.txt"]
