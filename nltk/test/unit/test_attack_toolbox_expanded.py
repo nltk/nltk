@@ -31,6 +31,7 @@ Control characters are built with chr().
 
 import builtins
 import codecs
+import importlib
 import io
 import os
 import pathlib
@@ -47,11 +48,14 @@ from xml.etree.ElementTree import (
 import pytest
 
 import nltk.data
-import nltk.toolbox as tb
 from nltk import redos
 from nltk.corpus.reader.toolbox import ToolboxCorpusReader
 from nltk.data import FileSystemPathPointer
 from nltk.test.unit import timing
+
+#: The module itself: ``import nltk.toolbox as tb`` binds the LazyModule that
+#: nltk/__init__ puts in its place, on which monkeypatch restores a stale copy.
+tb = importlib.import_module("nltk.toolbox")
 
 BOUND = tb.MAX_TOOLBOX_DEPTH
 POSIX = os.name == "posix"
