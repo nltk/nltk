@@ -17,6 +17,8 @@ permissions:
 
 env:
   THIRD_PARTY_DIR: ${{ github.workspace }}/third
+  # the Graphviz release Chocolatey installs on Windows; bump deliberately
+  GRAPHVIZ_VERSION: "16.1.0"
   CORENLP: ${{ github.workspace }}/third/stanford-corenlp
   CORENLP_MODELS: ${{ github.workspace }}/third/stanford-corenlp
   STANFORD_PARSER: ${{ github.workspace }}/third/stanford-parser
@@ -152,6 +154,16 @@ jobs:
           pip install --upgrade pip
           pip install --upgrade --requirement requirements-ci.txt
 
+      - name: Cache Graphviz (Windows, pinned version)
+        # Chocolatey's public feed times out now and then (HTTP 504), so the
+        # pinned install is kept between runs and the feed is only asked on a miss.
+        if: runner.os == 'Windows'
+        id: graphviz-cache
+        uses: actions/cache@v6
+        with:
+          path: C:\Program Files\Graphviz
+          key: graphviz-windows-${{ env.GRAPHVIZ_VERSION }}
+
       - name: Install Graphviz (the real dot for the trusted-spawn tests)
         shell: bash
         run: |
@@ -169,7 +181,13 @@ jobs:
             ls -la "$prefix/bin/dot" "$prefix"/Cellar/graphviz/*/bin/dot
             dot -V
           else
-            choco install graphviz -y --no-progress
+            if [ "${{ steps.graphviz-cache.outputs.cache-hit }}" != "true" ]; then
+              for attempt in 1 2 3 4 5; do
+                choco install graphviz --version "$GRAPHVIZ_VERSION" -y --no-progress && break
+                echo "choco attempt $attempt failed; retrying in $((attempt * 20)) s"
+                sleep $((attempt * 20))
+              done
+            fi
             bin="$(ls -d /c/Program\ Files/Graphviz*/bin | head -1)"
             "$bin/dot.exe" -c
             "$bin/dot.exe" -V
