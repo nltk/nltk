@@ -36,6 +36,7 @@ def _store_with(module, base, relation):
     inner = module.open(base, "n")
     outer = shelve.Shelf(inner)
     outer.update(relation)
+    outer[chat80._STORE_MANIFEST_KEY] = sorted(relation)
     outer.close()
     folder, stem = os.path.split(base)
     return sorted(n for n in os.listdir(folder) if n.startswith(stem))
