@@ -11,6 +11,7 @@ Toolbox databases and settings files.
 """
 
 import codecs
+import locale
 from io import StringIO, TextIOWrapper
 from xml.etree.ElementTree import Element, ElementTree, SubElement, TreeBuilder
 
@@ -30,6 +31,30 @@ MAX_TOOLBOX_DEPTH = 500
 MAX_CHUNK_RECORD_FIELDS = 10_000
 
 
+def _text_encoding(encoding):
+    """Return ``encoding``, or the default ``open()`` decodes with when it is
+    None, once it is known to name a text encoding.
+
+    A codec from bytes to bytes (``zlib_codec``, ``bz2_codec``, ``base64_codec``)
+    or from str to str (``rot_13``) is no text encoding: a PathPointer's reader
+    would decode the file with it, expanding or rewriting its bytes before a
+    line is split (a planted bz2 file of 722 bytes decodes to a gigabyte).
+    ``open()`` and ``str.encode()`` refuse one; ``PathPointer.open()`` and the
+    incremental encoder of the writer do not, so it is refused here, by the
+    test ``open()`` applies, before any file is opened.
+
+    :raises LookupError: if ``encoding`` names no codec, or no text encoding
+    """
+    if encoding is None:
+        return locale.getpreferredencoding(False)
+    if not codecs.lookup(encoding)._is_text_encoding:
+        raise LookupError(
+            f"{encoding!r} is not a text encoding; Toolbox files are read and "
+            "written with text encodings only"
+        )
+    return encoding
+
+
 class StandardFormat:
     """
     Class for reading and processing standard format marker files and strings.
@@ -47,6 +72,7 @@ class StandardFormat:
         :param sfm_file: name of the standard format marker input file
         :type sfm_file: str
         """
+        _text_encoding(self._encoding)
         if isinstance(sfm_file, PathPointer):
             stream = sfm_file.open()
         else:
