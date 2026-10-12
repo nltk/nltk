@@ -474,11 +474,13 @@ def test_a_bom_and_its_byte_order_read_alike_on_every_route(pathsec_sandbox, lab
 
 
 def test_utf16_without_a_bom_reads_no_other_fields(pathsec_sandbox):
-    """Pinned: open() may refuse UTF-16 without a BOM (Python 3.13 does); the
-    PathPointer reader decodes it in the native byte order, as on develop."""
+    """Pinned: open() refuses UTF-16 without a BOM (UnicodeError before Python
+    3.13, its subclass UnicodeDecodeError since); the PathPointer reader
+    decodes it in the native byte order, as on develop."""
     data = TEXT.encode("utf-16-le" if sys.byteorder == "little" else "utf-16-be")
+    refused = ("UnicodeError", "UnicodeDecodeError")
     for route, got in by_route(pathsec_sandbox.root, "n.db", data, "utf-16").items():
-        assert got in (EXPECTED, "UnicodeDecodeError"), (route, got)
+        assert got == EXPECTED or got in refused, (route, got)
 
 
 #: Repeated BOMs: a codec that reads a BOM takes one, the first line drops
