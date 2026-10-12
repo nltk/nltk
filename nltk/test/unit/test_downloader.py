@@ -141,6 +141,24 @@ def test_retry_prompt_typed_answers_are_unchanged(
     assert incr_download.call_count == attempts
 
 
+def test_retry_prompt_without_stdin_answers_no(tmp_path, monkeypatch):
+    """A process started with no stdin at all (fd 0 closed, a service without
+    a console) has ``sys.stdin`` None and input() raises RuntimeError, not
+    EOFError: the prompt takes "n" then too."""
+    monkeypatch.setattr("sys.stdin", None)
+    downloader = Downloader(download_dir=str(tmp_path))
+    output = io.StringIO()
+    with unittest.mock.patch(
+        "nltk.downloader.urlopen", side_effect=URLError(OSError(99, "x"))
+    ):
+        status = downloader.download(
+            "punkt", str(tmp_path), halt_on_error=False, print_error_to=output
+        )
+
+    assert "Error installing package. Retry? [n/y/e]" in output.getvalue()
+    assert status is True and downloader._errors is True
+
+
 def test_build_index(tmp_path):
     """Test building index with both checksums."""
 
