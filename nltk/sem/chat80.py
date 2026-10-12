@@ -129,8 +129,10 @@ import itertools
 import os
 import re
 import shelve
+import shutil
 import stat
 import sys
+import tempfile
 
 import nltk.data
 from nltk import redos
@@ -143,16 +145,16 @@ from nltk.termsec import safe_print, sanitize_terminal
 # shelve picks a dbm backend at runtime (gnu/ndbm/dumb/sqlite3) and sqlite writes
 # rollback/WAL sidecars, so a store path spawns several derived backing files;
 # every candidate name is checked, not just the base the caller passed.
-#: The entry val_dump writes naming every key it stored, so val_load reads
-#: each key by lookup: macOS dbm.ndbm drops one key from iteration whenever a
-#: value is 4096 bytes or more (measured; the large key itself is always seen).
+#: The entry val_dump writes naming every key it stored. val_load reads each
+#: key by lookup and never trusts iteration, which some dbm builds cut short
+#: (a measured ndbm build drops a key once one value reaches 4096 bytes).
 _STORE_MANIFEST_KEY = "__nltk_keys__"
-_NDBM_UNSAFE_VALUE = 4096
 
 _STORE_SIDECAR_SUFFIXES = (
     "",
     ".db",
     ".dir",
+    ".pag",
     ".dat",
     ".bak",
     "-journal",
@@ -224,11 +226,6 @@ def _pin_store_files(base, context):
         except BaseException:
             _close_pins(pins)
             raise
-    if os.name == "nt":
-        # an open file cannot be replaced or reopened by the backend there, so
-        # the checks run but the handles are not held
-        _close_pins(pins)
-        return {}
     return pins
 
 
@@ -352,9 +349,6 @@ def _restricted_shelve_open(db, flag="r"):
         def items(self):
             for key in inner:
                 yield key, self[key]
-
-        def raw_value_sizes(self):
-            return [len(inner.dict[key]) for key in inner.dict.keys()]
 
         def close(self):
             inner.close()
@@ -912,20 +906,60 @@ def val_dump(rels, db):
     # Reject a symlink/hardlink at any derived backing name before shelve creates
     # the store by path (O_NOFOLLOW, GHSA-7j4p).
     _refuse_shared_store_dir(db, context="chat80.val_dump")
+    _refuse_symlinked_store(db, context="chat80.val_dump")
     concepts = process_bundle(rels).values()
     valuation = make_valuation(concepts, read=True)
-    pins = _pin_store_files(db, context="chat80.val_dump")
+    # the backend writes only inside a fresh private directory, then each file
+    # is renamed into place, so no name at the destination is ever opened
+    parent, stem = os.path.split(os.path.abspath(db))
+    staging = tempfile.mkdtemp(prefix=".nltk_chat80_", dir=parent)
     try:
-        db_out = shelve.open(db, "n")
-    except BaseException:
-        _close_pins(pins)
-        raise
-    try:
-        _verify_store_files(pins, db, context="chat80.val_dump")
-        db_out.update(valuation)
-        db_out[_STORE_MANIFEST_KEY] = sorted(valuation)
+        db_out = shelve.open(os.path.join(staging, stem), "n")
+        try:
+            db_out.update(valuation)
+            db_out[_STORE_MANIFEST_KEY] = sorted(valuation)
+        finally:
+            db_out.close()
+        _install_store(staging, stem, db, context="chat80.val_dump")
     finally:
-        db_out.close()
+        shutil.rmtree(staging, ignore_errors=True)
+
+
+def _install_store(staging, stem, db, context):
+    """Move the store files written under *staging* to the backing names of *db*.
+
+    The old backing names are checked as every open checks them, then removed
+    (unlinking a name never follows it), and each new file is renamed onto its
+    name, which replaces whatever is there without following it either. So a
+    name planted at the destination at any point is never written through
+    (CWE-59, CWE-367); one found at the check is refused, and a file changed
+    after its rename is refused by the final identity check.
+    """
+    built = {}
+    for entry in sorted(os.listdir(staging)):
+        suffix = entry[len(stem) :]
+        if not entry.startswith(stem) or suffix not in _STORE_SIDECAR_SUFFIXES:
+            raise OSError(
+                "chat80 store backend wrote %r, which is not a backing name the "
+                "store checks know" % sanitize_terminal(entry)
+            )
+        st = os.lstat(os.path.join(staging, entry))
+        if not stat.S_ISREG(st.st_mode) or st.st_nlink != 1:
+            _refuse_store(entry, context, "was not written as a plain file")
+        built[db + suffix] = (os.path.join(staging, entry), (st.st_dev, st.st_ino))
+    old = _pin_store_files(db, context)
+    _close_pins(old)
+    for name in old:
+        try:
+            os.unlink(name)
+        except FileNotFoundError:
+            pass
+    for name, (path, _identity) in built.items():
+        os.replace(path, name)
+    for name, (_path, identity) in built.items():
+        st = os.lstat(name)
+        if not stat.S_ISREG(st.st_mode) or (st.st_dev, st.st_ino) != identity:
+            _refuse_store(name, context, "was swapped while the store was installed")
 
 
 def val_load(db):
@@ -973,8 +1007,8 @@ def _stored_items(db_in, db):
 
     Each manifest key is looked up directly; a manifest that is not a sorted
     list of distinct names, or that disagrees with the store, is refused. A
-    store without a manifest is iterated as before, except on macOS dbm.ndbm
-    holding a large value, where iteration drops a key, so it is refused.
+    store without a manifest is refused on every backend: its keys could only
+    come from iteration, which is never trusted.
     """
     if _STORE_MANIFEST_KEY in db_in:
         keys = db_in[_STORE_MANIFEST_KEY]
@@ -1000,19 +1034,11 @@ def _stored_items(db_in, db):
                 % sanitize_terminal(db)
             )
         return [(key, db_in[key]) for key in keys]
-    if (
-        sys.platform == "darwin"
-        and dbm.whichdb(db) == "dbm.ndbm"
-        and max(db_in.raw_value_sizes(), default=0) >= _NDBM_UNSAFE_VALUE
-    ):
-        # the dropped key is never the large one, so a large value seen here
-        # proves the store is one iteration cannot read completely
-        raise ValueError(
-            "chat80 store %s has no key manifest and uses macOS dbm.ndbm, which "
-            "drops a key from iteration once a value reaches %d bytes; re-create "
-            "it with val_dump" % (sanitize_terminal(db), _NDBM_UNSAFE_VALUE)
-        )
-    return list(db_in.items())
+    raise ValueError(
+        "chat80 store %s has no key manifest, so its keys could only be read by "
+        "iteration, which some dbm builds cut short; re-create it with val_dump"
+        % sanitize_terminal(db)
+    )
 
 
 def _is_extension_list(value):
