@@ -181,16 +181,41 @@ jobs:
             ls -la "$prefix/bin/dot" "$prefix"/Cellar/graphviz/*/bin/dot
             dot -V
           else
-            if [ "${{ steps.graphviz-cache.outputs.cache-hit }}" != "true" ]; then
+            # the feed is retried on a miss, and a miss that every attempt fails
+            # is an error; nothing below runs without the pinned dot in place
+            if [ "${{ steps.graphviz-cache.outputs.cache-hit }}" = "true" ]; then
+              echo "Graphviz $GRAPHVIZ_VERSION restored from the cache"
+            else
+              installed=no
               for attempt in 1 2 3 4 5; do
-                choco install graphviz --version "$GRAPHVIZ_VERSION" -y --no-progress && break
+                if choco install graphviz --version "$GRAPHVIZ_VERSION" -y --no-progress; then
+                  installed=yes
+                  break
+                fi
                 echo "choco attempt $attempt failed; retrying in $((attempt * 20)) s"
                 sleep $((attempt * 20))
               done
+              if [ "$installed" != "yes" ]; then
+                echo "::error::Graphviz $GRAPHVIZ_VERSION could not be installed from Chocolatey in 5 attempts"
+                exit 1
+              fi
             fi
-            bin="$(ls -d /c/Program\ Files/Graphviz*/bin | head -1)"
+            # restored or installed, dot must be there and be the pinned release
+            bin="/c/Program Files/Graphviz/bin"
+            if [ ! -x "$bin/dot.exe" ]; then
+              echo "::error::no dot.exe under $bin after the Graphviz install"
+              exit 1
+            fi
             "$bin/dot.exe" -c
-            "$bin/dot.exe" -V
+            version="$("$bin/dot.exe" -V 2>&1)"
+            echo "$version"
+            case "$version" in
+              *"graphviz version $GRAPHVIZ_VERSION "*) ;;
+              *)
+                echo "::error::dot reports '$version', not the pinned Graphviz $GRAPHVIZ_VERSION"
+                exit 1
+                ;;
+            esac
             cygpath -w "$bin" >> "$GITHUB_PATH"
           fi
 
