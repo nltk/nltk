@@ -342,21 +342,79 @@ def test_a_long_value_and_a_long_continuation_run_are_kept_whole():
     assert data("\\lx a\n" + "c\n" * 20_000)[1][0].text == "a" + " c" * 20_000
 
 
-def test_a_wide_record_through_the_chunk_parser_ends_at_the_regex_timeout(
-    monkeypatch,
-):
-    """The chunk grammar is the caller's; its rule scan over one record is
-    quadratic (the slowest regex call measured 0.05, 0.17, 0.70 and 2.8 CPU
-    seconds as a record doubled from 7,500 fields), and the redos time limit is
-    what ends it. At 120,000 fields that call is about 16 times the work of
-    30,000, where a fast runner still finished inside 0.2 s."""
+SENSES = "sense: {<sn><ps><ge>*}"
+
+
+def _record_text(fields):
+    """One ``lx`` record of exactly ``fields`` fields: lx, then sn/ps/ge runs."""
+    groups, extra = divmod(fields - 1, 3)
+    return "\\lx a\n" + "\\sn 1\n\\ps n\n\\ge g\n" * groups + "\\ge g\n" * extra
+
+
+def _chunk(text):
     td = tb.ToolboxData()
-    td.open_string("\\lx a\n" + "\\sn 1\n\\ps n\n\\ge g\n" * 30)
-    assert len(td.parse(grammar="sense: {<sn><ps><ge>*}", key="lx")[1]) == 31
-    monkeypatch.setattr(redos, "DEFAULT_TIMEOUT", 0.1)
-    td.open_string("\\lx a\n" + "\\sn 1\n\\ps n\n\\ge g\n" * 40_000)
-    with pytest.raises(TimeoutError):
-        td.parse(grammar="sense: {<sn><ps><ge>*}", key="lx")
+    td.open_string(text)
+    return td.parse(grammar=SENSES, key="lx")
+
+
+def _spy_xform(monkeypatch):
+    """Every pattern a chunk rule applies, as ChunkString.xform receives it."""
+    from nltk.chunk.regexp import ChunkString
+
+    seen, real = [], ChunkString.xform
+
+    def xform(self, regexp, repl):
+        seen.append(regexp)
+        return real(self, regexp, repl)
+
+    monkeypatch.setattr(ChunkString, "xform", xform)
+    return seen
+
+
+def test_a_record_wider_than_the_chunk_bound_is_refused_before_matching(monkeypatch):
+    """The chunk rules rescan the rest of a record for every match (the
+    slowest call took 0.05, 0.17, 0.70 and 2.8 CPU seconds as a record doubled
+    from 7,500 fields), so a record past the bound never reaches them."""
+    seen = _spy_xform(monkeypatch)
+    wide = _record_text(tb.MAX_CHUNK_RECORD_FIELDS + 1)
+    with pytest.raises(ValueError, match="MAX_CHUNK_RECORD_FIELDS"):
+        _chunk(_record_text(5) + wide)
+    assert seen == []
+
+
+def test_a_record_at_the_chunk_bound_is_chunked(monkeypatch):
+    seen = _spy_xform(monkeypatch)
+    record = _chunk(_record_text(tb.MAX_CHUNK_RECORD_FIELDS))[1]
+    assert record[0].tag == "lx"
+    assert [e.tag for e in record[1:]] == ["sense"] * (
+        (tb.MAX_CHUNK_RECORD_FIELDS - 1) // 3
+    )
+    assert seen
+
+
+def test_chunk_bound_teeth(monkeypatch):
+    """With the bound raised the same record reaches the chunk rules."""
+    seen = _spy_xform(monkeypatch)
+    fields = tb.MAX_CHUNK_RECORD_FIELDS + 1
+    monkeypatch.setattr(tb, "MAX_CHUNK_RECORD_FIELDS", fields)
+    # lx, then one sense per sn/ps/ge run; the odd trailing ge joins the last
+    assert len(_chunk(_record_text(fields))[1]) == 1 + (fields - 1) // 3
+    assert seen
+
+
+def test_the_chunk_rules_run_through_redos_with_a_time_limit(monkeypatch):
+    """Defence in depth under the bound: every pattern a rule applies is a
+    redos TimedPattern carrying the module's finite time limit."""
+    seen = _spy_xform(monkeypatch)
+    _chunk(_record_text(31))
+    assert seen and all(isinstance(r, redos.TimedPattern) for r in seen)
+    limits = {r._resolve(redos._UNSET) for r in seen}
+    assert limits == {redos.DEFAULT_TIMEOUT} and 0 < redos.DEFAULT_TIMEOUT < 60
+
+
+def test_chunking_bounded_records_is_linear_in_their_number():
+    texts = {k: _record_text(31) * (100 * k) for k in (1, 4)}
+    timing.assert_subquadratic(lambda k: _chunk(texts[k]), 1, 4, cpu_bound=True)
 
 
 # 3. Markers and structure.
