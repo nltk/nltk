@@ -439,6 +439,54 @@ def _check_writable(mkr, value, blocks=False):
         )
 
 
+def _sfm_line(mkr, value):
+    if redos.search(_is_value, value):
+        return f"\\{mkr} {value}\n"
+    return f"\\{mkr}{value}\n"
+
+
+def _encode_sfm(lines, encoding, errors, unicode_fields):
+    """Encode the ``(marker, line)`` pairs ``to_sfm_string`` writes, ``None``
+    marking a record break, and refuse output the reader would read as other
+    fields.
+
+    One incremental encoder writes a BOM once and keeps a shift state across
+    fields. An error handler (``ignore``, ``backslashreplace``, the byte a
+    ``surrogateescape`` gives) or a ``unicode_fields`` field can change what is
+    written, so the bytes are decoded as the reader decodes a file, in one
+    call, and when that is not the text written they are read back.
+
+    :raises ValueError: if the output would not read back with the markers
+        written
+    """
+    encoder = codecs.getincrementalencoder(_text_encoding(encoding))(errors)
+    chunks = []
+    for mkr, line in lines:
+        if mkr is not None and unicode_fields is not None and mkr in unicode_fields:
+            chunks.append(line.encode("utf8", errors))
+        else:
+            chunks.append(encoder.encode(line))
+    chunks.append(encoder.encode("", final=True))
+    data = b"".join(chunks)
+    seen = codecs.decode(data, encoding, "replace")
+    if seen != "".join(line for _, line in lines):
+        reader = StandardFormat()
+        reader._file = StringIO(seen)
+        read = [mkr for mkr, _ in reader.raw_fields()]
+        written = [mkr for mkr, _ in lines if mkr is not None]
+        if read != written:
+            at = next(
+                (i for i, (got, want) in enumerate(zip(read, written)) if got != want),
+                min(len(read), len(written)),
+            )
+            raise ValueError(
+                f"cannot write marker {written[at] if at < len(written) else None!r}"
+                f" with encoding {encoding!r} and errors {errors!r}: the output "
+                f"reads back as marker {read[at] if at < len(read) else None!r}"
+            )
+    return data
+
+
 def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
     """
     Return a string with a standard format representation of the toolbox
@@ -467,31 +515,19 @@ def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
         raise ValueError(
             "if encoding is not specified then neither should unicode_fields"
         )
-    # A blank line between records, none before the first field written.
-    sep = "\n" if encoding is None else "\n".encode(encoding, errors)
-    l = []
+    lines = []
     for rec in tree:
-        if l:
-            l.append(sep)
+        # A blank line between records, none before the first field written.
+        if lines:
+            lines.append((None, "\n"))
         for field in rec:
             mkr = field.tag
             value = field.text or ""
             _check_writable(mkr, value)
-            if encoding is not None:
-                if unicode_fields is not None and mkr in unicode_fields:
-                    cur_encoding = "utf8"
-                else:
-                    cur_encoding = encoding
-                if redos.search(_is_value, value):
-                    l.append((f"\\{mkr} {value}\n").encode(cur_encoding, errors))
-                else:
-                    l.append((f"\\{mkr}{value}\n").encode(cur_encoding, errors))
-            else:
-                if redos.search(_is_value, value):
-                    l.append(f"\\{mkr} {value}\n")
-                else:
-                    l.append(f"\\{mkr}{value}\n")
-    return ("" if encoding is None else b"").join(l)
+            lines.append((mkr, _sfm_line(mkr, value)))
+    if encoding is None:
+        return "".join(line for _, line in lines)
+    return _encode_sfm(lines, encoding, errors, unicode_fields)
 
 
 class ToolboxSettings(StandardFormat):
