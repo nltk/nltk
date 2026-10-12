@@ -1611,7 +1611,13 @@ class Downloader:
                     self._errors = True
                     if not quiet:
                         print_to("Error installing package. Retry? [n/y/e]")
-                        choice = input().strip()
+                        try:
+                            choice = input().strip()
+                        except EOFError:
+                            # Nobody can answer: stdin is closed, as in a
+                            # Docker or CI build (#3167). Take the answer an
+                            # empty line gives, "n": do not retry.
+                            choice = "n"
                         if choice in ["y", "Y"]:
                             if not self.download(
                                 msg.package.id,
