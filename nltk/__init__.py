@@ -188,21 +188,42 @@ except ImportError:
 else:
     from nltk import cluster
 
-from nltk.downloader import download, download_shell
+
+def download(*args, **kwargs):
+    """Download NLTK data. See ``nltk.downloader.download``."""
+    from nltk.downloader import download as _download
+
+    return _download(*args, **kwargs)
+
+
+def download_shell():
+    """Run the interactive downloader. See ``nltk.downloader.download_shell``."""
+    from nltk.downloader import download_shell as _download_shell
+
+    return _download_shell()
+
 
 # Check if tkinter exists without importing it to avoid crashes after
 # forks on macOS. Only nltk.app, nltk.draw, and demo modules should
 # have top-level tkinter imports. See #2949 for more details.
+# nltk.downloader itself stays unloaded until one of these helpers runs.
+# Importing it here makes `python -m nltk.downloader` warn that the module
+# is already in sys.modules (#2162).
 if importlib.util.find_spec("tkinter"):
-    try:
-        from nltk.downloader import download_gui
-    except RuntimeError as e:
-        import warnings
 
-        warnings.warn(
-            "Corpus downloader GUI not loaded "
-            "(RuntimeError during import: %s)" % sanitize_terminal(e)
-        )
+    def download_gui():
+        """Run the downloader GUI. See ``nltk.downloader.download_gui``."""
+        try:
+            from nltk.downloader import download_gui as _download_gui
+        except RuntimeError as e:
+            import warnings
+
+            warnings.warn(
+                "Corpus downloader GUI not loaded "
+                "(RuntimeError during import: %s)" % sanitize_terminal(e)
+            )
+            raise
+        return _download_gui()
 
 # explicitly import all top-level modules (ensuring
 # they override the same names inadvertently imported
@@ -217,3 +238,12 @@ from nltk import tag, tbl, text, tokenize, translate, tree, util
 # FIXME:  override any accidentally imported demo, see https://github.com/nltk/nltk/issues/2116
 def demo():
     safe_print("To run the demo code for a module, type nltk.module.demo()")
+
+
+def __getattr__(name):
+    """Import ``nltk.downloader`` the first time it is used as a module."""
+    if name == "downloader":
+        module = importlib.import_module("nltk.downloader")
+        globals()["downloader"] = module
+        return module
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
