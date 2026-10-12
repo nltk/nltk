@@ -24,6 +24,11 @@ from nltk.termsec import safe_print
 #: uncaught RecursionError (CWE-674).  Configurable.
 MAX_TOOLBOX_DEPTH = 500
 
+#: Most fields ``ToolboxData.parse(grammar=...)`` chunks in one record: the chunk
+#: rules rescan the rest of a record for every match, so a wider record is
+#: refused before matching (the widest shipped record has 423). Configurable.
+MAX_CHUNK_RECORD_FIELDS = 10_000
+
 
 class StandardFormat:
     """
@@ -319,16 +324,27 @@ class ToolboxData(StandardFormat):
         :type kwargs: dict
         :param kwargs: Keyword arguments passed to ``toolbox.StandardFormat.fields()``
         :rtype: ElementTree._ElementInterface
+        :raises ValueError: if a record has more than ``MAX_CHUNK_RECORD_FIELDS``
+            fields
         """
         from nltk import chunk
         from nltk.tree import Tree
 
         cp = chunk.RegexpParser(grammar, root_label=root_label, trace=trace)
         db = self.parse(**kwargs)
+        records = db.findall("record")
+        widest = max((len(record) for record in records), default=0)
+        if widest > MAX_CHUNK_RECORD_FIELDS:
+            raise ValueError(
+                f"Toolbox record has {widest} fields, more than "
+                f"MAX_CHUNK_RECORD_FIELDS ({MAX_CHUNK_RECORD_FIELDS}); chunking is "
+                "quadratic in a record's width. Raise "
+                "nltk.toolbox.MAX_CHUNK_RECORD_FIELDS to allow it."
+            )
         tb_etree = Element("toolbox_data")
         header = db.find("header")
         tb_etree.append(header)
-        for record in db.findall("record"):
+        for record in records:
             parsed = cp.parse([(elem.text, elem.tag) for elem in record])
             tb_etree.append(self._tree2etree(parsed))
         return tb_etree
