@@ -844,6 +844,68 @@ class TestIndex:
             assert output.count("Downloading collection") <= 2, output
         assert (dl / "corpora" / "tiny" / "words.txt").read_bytes() == WORDS
 
+    @pytest.mark.parametrize(
+        "body",
+        [
+            b"<html><body><h1>502 Bad Gateway</h1><br></body></html>",
+            b"",
+            b'<nltk_data><packages><package id="p" id="q" url="http://127.0.0.1/p.zip"'
+            b' size="1" unzipped_size="1"/></packages><collections/></nltk_data>',
+            make_index(
+                [{"id": "tiny", "subdir": "corpora", "size": "1", "unzipped_size": "1"}]
+            ),
+            make_index(
+                [{"id": "tiny", "url": "http://127.0.0.1/p.zip", "unzipped_size": "1"}]
+            ),
+            make_index([{"id": "tiny", "url": "http://127.0.0.1/p.zip", "size": "1"}]),
+            make_index(
+                [{"url": "http://127.0.0.1/p.zip", "size": "1", "unzipped_size": "1"}]
+            ),
+            b'<nltk_data><packages/><collections><collection name="c">'
+            b'<item ref="tiny"/></collection></collections></nltk_data>',
+        ],
+        ids=[
+            "html error page",
+            "empty body",
+            "duplicate attribute",
+            "package without url",
+            "package without size",
+            "package without unzipped_size",
+            "package without id",
+            "collection without id",
+        ],
+    )
+    def test_an_index_the_downloader_cannot_use_is_reported_and_not_kept(
+        self, box, body
+    ):
+        """A proxy's error page, an empty body or an entry missing what a
+        package needs is a failed download, reported on one clean line, never a
+        ParseError or TypeError traceback; and the refused index is not kept,
+        so the same Downloader installs once the server serves a good one."""
+        root, outside, dl, server = box
+        server.body("/index.xml", body)
+        d = downloader.Downloader(
+            server_index_url=server.url("/index.xml"), download_dir=str(dl)
+        )
+        out, err = io.StringIO(), io.StringIO()
+        with contextlib.redirect_stdout(out):
+            result = d.download("tiny", download_dir=str(dl), print_error_to=err)
+        assert result is False
+        text = out.getvalue() + err.getvalue()
+        assert "Error loading tiny" in text and "index" in text, text
+        assert_lines_clean(text)
+        with pytest.raises(ValueError, match="index"):
+            d.download(
+                "tiny", download_dir=str(dl), print_error_to=err, raise_on_error=True
+            )
+        assert d._index is None and d._packages == {}
+        assert tree(str(dl)) == {}
+        serve_packages(server, [("tiny", make_zip([("tiny/a", b"x")]), {})])
+        with contextlib.redirect_stdout(out):
+            assert d.download("tiny", download_dir=str(dl), print_error_to=err)
+        assert server.hits.count("/index.xml") == 3
+        assert (dl / "corpora" / "tiny" / "a").is_file()
+
 
 # ===========================================================================
 # 3. The terminal: hostile ids, names, refs and reasons through the real paths
