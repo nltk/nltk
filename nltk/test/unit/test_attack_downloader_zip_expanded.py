@@ -2507,3 +2507,70 @@ class TestExtractRouteAttackMatrix:
         monkeypatch.setattr(nltk.data, "path", [str(dl)])
         with nltk.data.find("corpora/tiny/words.txt").open() as fh:
             assert fh.read() == WORDS
+
+
+# ===========================================================================
+# 14. The retry prompt in a run nobody can answer (#3167, #3144)
+# ===========================================================================
+class TestRetryPrompt:
+    """``python -m nltk.downloader <packages>`` asks "Retry? [n/y/e]" after a
+    failed package. In a Docker or Heroku build nobody answers: stdin is at
+    EOF or there is none. Judged by what is installed afterwards."""
+
+    def _serve(self, server):
+        return serve_packages(
+            server,
+            [
+                ("ok1", make_zip([("ok1/a", b"x")]), {}),
+                ("bad", make_zip([("bad/a", b"x")]), {"sha256_checksum": "0" * 64}),
+                ("ok2", make_zip([("ok2/a", b"x")]), {"subdir": "taggers"}),
+            ],
+            collections=[("all", ["ok1", "bad", "ok2"])],
+        )
+
+    @pytest.mark.parametrize("stdin", ["eof", "none"])
+    def test_an_unanswerable_prompt_goes_on_to_the_next_package(
+        self, box, monkeypatch, stdin
+    ):
+        root, outside, dl, server = box
+        monkeypatch.setattr("sys.stdin", io.StringIO("") if stdin == "eof" else None)
+        result, text = run_download(self._serve(server), dl, "all", halt_on_error=False)
+        assert result is True
+        assert text.count("Error installing package. Retry? [n/y/e]") == 1
+        assert "sha256 mismatch" in text
+        assert_lines_clean(text)
+        assert (dl / "corpora" / "ok1" / "a").is_file()
+        assert (dl / "taggers" / "ok2" / "a").is_file()
+        assert not os.path.lexists(dl / "corpora" / "bad")
+        assert not os.path.lexists(dl / "corpora" / "bad.zip")
+
+    def test_e_stops_before_the_next_package(self, box, monkeypatch):
+        root, outside, dl, server = box
+        monkeypatch.setattr("sys.stdin", io.StringIO("e\n"))
+        result, text = run_download(self._serve(server), dl, "all", halt_on_error=False)
+        assert result is False
+        assert (dl / "corpora" / "ok1" / "a").is_file()
+        assert not os.path.lexists(dl / "taggers")
+
+    def test_y_retries_the_failed_package_once(self, box, monkeypatch):
+        root, outside, dl, server = box
+        monkeypatch.setattr("sys.stdin", io.StringIO("y\nn\n"))
+        result, text = run_download(self._serve(server), dl, "all", halt_on_error=False)
+        assert result is True
+        assert text.count("Error installing package. Retry? [n/y/e]") == 2
+        assert server.hits.count("/pkgs/bad.zip") == 2
+        assert (dl / "taggers" / "ok2" / "a").is_file()
+        assert not os.path.lexists(dl / "corpora" / "bad")
+
+    def test_y_after_an_index_failure_retries_the_request(self, box, monkeypatch):
+        root, outside, dl, server = box
+        monkeypatch.setattr("sys.stdin", io.StringIO("y\nn\n"))
+        server.body("/index.xml", b"<html><body>502<br></body></html>")
+        result, text = run_download(
+            server.url("/index.xml"), dl, "tiny", halt_on_error=False
+        )
+        assert result is True
+        assert text.count("Error installing package. Retry? [n/y/e]") == 2
+        assert server.hits.count("/index.xml") == 2
+        assert_lines_clean(text)
+        assert tree(str(dl)) == {}
