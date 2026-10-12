@@ -12,7 +12,7 @@ Toolbox databases and settings files.
 
 import codecs
 import locale
-from io import StringIO, TextIOWrapper
+from io import StringIO
 from xml.etree.ElementTree import Element, ElementTree, SubElement, TreeBuilder
 
 from nltk import redos
@@ -60,6 +60,10 @@ class StandardFormat:
     Class for reading and processing standard format marker files and strings.
     """
 
+    #: A file's lines end at LF, CRLF or CR, as open() reads them; a string's
+    #: at LF only, as StringIO always split them (``toolbox.doctest``).
+    _cr_ends_line = True
+
     def __init__(self, filename=None, encoding=None):
         self._encoding = encoding
         if filename is not None:
@@ -72,24 +76,26 @@ class StandardFormat:
         :param sfm_file: name of the standard format marker input file
         :type sfm_file: str
         """
-        _text_encoding(self._encoding)
+        encoding = _text_encoding(self._encoding)
         if isinstance(sfm_file, PathPointer):
-            stream = sfm_file.open()
+            # Under its underscore name the codec handles a BOM itself, as open()
+            # does: the reader's BOM table would drop it first and then decode a
+            # big endian UTF-16 or UTF-32 file in the native byte order.
+            self._file = sfm_file.open(encoding.replace("-", "_").replace(" ", "_"))
         else:
-            # A bare filename gets what a PathPointer open gives: pathsec
-            # containment with O_NOFOLLOW and hardlink guards (CWE-59, GHSA-cr8c),
-            # and the refusal of a file another account owns or can write.
-            stream = _refuse_file_not_ours(
-                pathsec_open(sfm_file, "rb", context="toolbox.StandardFormat"),
+            # pathsec containment with O_NOFOLLOW and hardlink guards (CWE-59,
+            # GHSA-cr8c), and the refusal a PathPointer open gives a file another
+            # account owns or can write.
+            self._file = _refuse_file_not_ours(
+                pathsec_open(
+                    sfm_file,
+                    "r",
+                    context="toolbox.StandardFormat",
+                    encoding=self._encoding,
+                ),
                 sfm_file,
             )
-        # One decoding for both routes: a line ends at LF, CRLF or CR only, so
-        # U+2028, NEL or a form feed in a value cannot start a new field.
-        try:
-            self._file = TextIOWrapper(stream, encoding=self._encoding, newline=None)
-        except BaseException:
-            stream.close()
-            raise
+        self._cr_ends_line = True
 
     def open_string(self, s):
         """
@@ -99,6 +105,25 @@ class StandardFormat:
         :type s: str
         """
         self._file = StringIO(s)
+        self._cr_ends_line = False
+
+    def _lines(self):
+        """The lines of the open file or string, without their line breaks.
+
+        The text is decoded in one read, so no BOM or shift state is lost
+        where a read would end, and split here rather than by the stream:
+        U+2028, U+2029, NEL, VT, FF, FS, GS and RS end no line on any route.
+        """
+        text = self._file.read()
+        if self._cr_ends_line:
+            text = text.replace("\r\n", "\n").replace("\r", "\n")
+        start, end = 0, len(text)
+        while start < end:
+            stop = text.find("\n", start)
+            if stop < 0:
+                stop = end
+            yield text[start:stop]
+            start = stop + 1
 
     def raw_fields(self):
         """
@@ -115,7 +140,7 @@ class StandardFormat:
         line_pat = redos.compile(line_regexp % "")
         # need to get first line outside the loop for correct handling
         # of the first marker if it spans multiple lines
-        file_iter = iter(self._file)
+        file_iter = self._lines()
         # PEP 479, prevent RuntimeError when StopIteration is raised inside generator
         try:
             line = next(file_iter)

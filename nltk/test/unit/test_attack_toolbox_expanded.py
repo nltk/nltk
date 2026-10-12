@@ -654,13 +654,18 @@ def test_a_unicode_line_break_starts_no_field_on_any_route(pathsec_sandbox, labe
         assert fields == [("lx", "a"), ("ge", "gloss%s\\lx smuggled" % BREAKS[label])]
 
 
+def _develop_line_iteration(monkeypatch):
+    """Put back the line iteration of develop: the stream's own readline."""
+    monkeypatch.setattr(tb.StandardFormat, "_lines", lambda self: iter(self._file))
+
+
 @pytest.mark.parametrize("label", sorted(BREAKS))
-def test_unicode_line_break_teeth(pathsec_sandbox, label):
-    """The PathPointer decoding before this change splits there."""
+def test_unicode_line_break_teeth(pathsec_sandbox, label, monkeypatch):
+    """The PathPointer reader's own line iteration splits there."""
     text = "\\lx a\n\\ge gloss%s\\lx smuggled\n" % BREAKS[label]
     pointer = FileSystemPathPointer(plant(pathsec_sandbox.root, "t.db", text))
-    sf = tb.StandardFormat()
-    sf._file = pointer.open("utf-8")
+    _develop_line_iteration(monkeypatch)
+    sf = tb.StandardFormat(pointer, "utf-8")
     assert [m for m, _ in sf.fields(unwrap=False)] == ["lx", "ge", "lx"]
 
 
@@ -717,7 +722,7 @@ REAL_CRLF = {
 
 
 @pytest.mark.parametrize("rel", sorted(REAL_CRLF))
-def test_real_crlf_files_read_the_same_through_the_corpus_reader(rel):
+def test_real_crlf_files_read_the_same_through_the_corpus_reader(rel, monkeypatch):
     root = _real("corpora/toolbox")
     enc = REAL_CRLF[rel]
     reader = ToolboxCorpusReader(root, [rel], encoding=enc)
@@ -725,8 +730,8 @@ def test_real_crlf_files_read_the_same_through_the_corpus_reader(rel):
     sf = tb.StandardFormat(os.path.join(root, rel), enc)
     assert by_reader == list(sf.fields(unwrap=False))
     assert not any("\r" in value for _, value in by_reader)
-    old = tb.StandardFormat()  # teeth: the decoding before this change
-    old._file = FileSystemPathPointer(os.path.join(root, rel)).open(enc)
+    _develop_line_iteration(monkeypatch)  # teeth: the reader's own lines keep CR
+    old = tb.StandardFormat(FileSystemPathPointer(os.path.join(root, rel)), enc)
     assert any("\r" in value for _, value in old.fields(unwrap=False))
 
 
