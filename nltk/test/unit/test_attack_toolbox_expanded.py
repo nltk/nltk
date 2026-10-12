@@ -345,15 +345,18 @@ def test_a_long_value_and_a_long_continuation_run_are_kept_whole():
 def test_a_wide_record_through_the_chunk_parser_ends_at_the_regex_timeout(
     monkeypatch,
 ):
-    """The chunk grammar is the caller's; on a record of 30,000 fields its
-    rule scan is quadratic, and the redos time limit is what ends it."""
-    monkeypatch.setattr(redos, "DEFAULT_TIMEOUT", 0.2)
+    """The chunk grammar is the caller's; its rule scan over one record is
+    quadratic (the slowest regex call measured 0.05, 0.17, 0.70 and 2.8 CPU
+    seconds as a record doubled from 7,500 fields), and the redos time limit is
+    what ends it. At 120,000 fields that call is about 16 times the work of
+    30,000, where a fast runner still finished inside 0.2 s."""
     td = tb.ToolboxData()
-    td.open_string("\\lx a\n" + "\\sn 1\n\\ps n\n\\ge g\n" * 10_000)
-    with pytest.raises(TimeoutError):
-        td.parse(grammar="sense: {<sn><ps><ge>*}", key="lx")
     td.open_string("\\lx a\n" + "\\sn 1\n\\ps n\n\\ge g\n" * 30)
     assert len(td.parse(grammar="sense: {<sn><ps><ge>*}", key="lx")[1]) == 31
+    monkeypatch.setattr(redos, "DEFAULT_TIMEOUT", 0.1)
+    td.open_string("\\lx a\n" + "\\sn 1\n\\ps n\n\\ge g\n" * 40_000)
+    with pytest.raises(TimeoutError):
+        td.parse(grammar="sense: {<sn><ps><ge>*}", key="lx")
 
 
 # 3. Markers and structure.
