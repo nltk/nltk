@@ -22,6 +22,7 @@ import stat
 import pytest
 
 import nltk.data
+from nltk import pathsec
 from nltk.sem import chat80
 
 SENTINEL = b"SENTINEL-do-not-touch\n"
@@ -437,14 +438,14 @@ def test_the_pinned_check_is_load_bearing(staged, monkeypatch, mutant):
 
     outcome = _swap_before(monkeypatch, base, swap)
     monkeypatch.setattr(
-        chat80, "_verify_store_files", lambda pins, *a, **k: chat80._close_pins(pins)
+        chat80, "_verify_store_files", lambda pins, *a, **k: pathsec.release(pins)
     )
     if mutant == "pins released at once":
         pin = chat80._pin_store_files
         monkeypatch.setattr(
             chat80,
             "_pin_store_files",
-            lambda base, context: chat80._close_pins(pin(base, context)) or {},
+            lambda base, context: pathsec.release(pin(base, context)) or {},
         )
     size = chat80.val_load(base)["size"]
     if outcome.get("held"):

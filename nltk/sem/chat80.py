@@ -129,14 +129,11 @@ import itertools
 import os
 import re
 import shelve
-import shutil
 import stat
 import sys
-import tempfile
 
 import nltk.data
-from nltk import redos
-from nltk.pathsec import is_private_dir
+from nltk import pathsec, redos
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.picklesec import RestrictedUnpickler
@@ -164,136 +161,35 @@ _STORE_SIDECAR_SUFFIXES = (
 )
 
 
-def _refuse_store(name, context, why):
-    raise PermissionError(
-        f"Security Violation [{context}]: store file "
-        f"{sanitize_terminal(str(name))!r} {why}."
+def _store_names(base):
+    """Every backing name a store at *base* may have across the dbm and sqlite
+    backends; the checks cover all of them whichever backend is in use."""
+    return [base + suffix for suffix in _STORE_SIDECAR_SUFFIXES]
+
+
+def _check_store_dir(base, context):
+    """Refuse a store whose directory another account could write or rename.
+
+    Every backend reopens a store's backing names by path after the checks
+    here, so the directory must be private and each ancestor private or sticky
+    (CWE-367); :func:`nltk.pathsec.validate_private_dir` is the judge.
+    """
+    pathsec.validate_private_dir(
+        os.path.dirname(os.path.abspath(base)) or os.curdir, context=context
     )
 
 
-def _refuse_shared_store_dir(base, context):
-    """Refuse a store whose directory another account could write.
-
-    Every backend reopens a store's backing names by path after the checks
-    here, so an account that can write the directory, or rename it from a
-    non-sticky ancestor, could swap a name in between (CWE-367). The store's
-    directory must be private; each ancestor must be private or sticky.
-    """
-    if os.name != "posix":
-        return
-    parent = os.path.realpath(os.path.dirname(os.path.abspath(base)) or os.curdir)
-    if not is_private_dir(parent):
-        _refuse_store(
-            parent,
-            context,
-            "directory is writable by another account, so a backing file could "
-            "be swapped between the check and the open; keep stores in a private "
-            "directory such as one from nltk.data.make_staging_dir()",
-        )
-    current = parent
-    while True:
-        above = os.path.dirname(current)
-        if above == current:
-            return
-        if not is_private_dir(above):
-            mode = os.lstat(above).st_mode
-            if not (mode & stat.S_ISVTX):
-                _refuse_store(
-                    above,
-                    context,
-                    "ancestor directory is writable by another account and not "
-                    "sticky, so the store directory itself could be renamed away",
-                )
-        current = above
-
-
 def _pin_store_files(base, context):
-    """Open every existing backing name of a store through pathsec and keep the
-    handles open across the backend's own open by name.
-
-    ``validate_path`` judges where the PATH resolves, but shelve, dbm and sqlite
-    reopen derived sidecar names themselves (CWE-59, GHSA-7j4p). Each existing
-    name is opened with ``O_NOFOLLOW`` (a symlink or multiply-linked file is
-    refused) and held, so :func:`_verify_store_files` can prove afterwards that
-    the backend saw the same inode. Nothing is created here.
-    """
-    pins = {}
-    for suffix in _STORE_SIDECAR_SUFFIXES:
-        name = base + suffix
-        try:
-            pins[name] = pathsec_open(name, "rb", context=context)
-        except FileNotFoundError:
-            continue
-        except BaseException:
-            _close_pins(pins)
-            raise
-    return pins
-
-
-def _close_pins(pins):
-    for handle in pins.values():
-        handle.close()
+    """Hold every existing backing name of a store open (``O_NOFOLLOW``, no
+    hardlink) across the backend's own open by name, through
+    :func:`nltk.pathsec.pin_files`. Nothing is created."""
+    return pathsec.pin_files(_store_names(base), context=context)
 
 
 def _verify_store_files(pins, base, context):
-    """After the backend opened the store by name, every backing name must be
-    the regular file pinned before it, or a fresh single-linked regular file the
-    backend created; anything else was swapped in between (CWE-367)."""
-    try:
-        for suffix in _STORE_SIDECAR_SUFFIXES:
-            name = base + suffix
-            try:
-                st = os.lstat(name)
-            except FileNotFoundError:
-                continue
-            if not stat.S_ISREG(st.st_mode):
-                _refuse_store(name, context, "is no longer a regular file")
-            if name in pins:
-                pinned = os.fstat(pins[name].fileno())
-                if (st.st_dev, st.st_ino) != (pinned.st_dev, pinned.st_ino):
-                    _refuse_store(
-                        name, context, "was swapped between the check and the open"
-                    )
-            elif st.st_nlink > 1:
-                _refuse_store(name, context, "is a hardlink")
-    finally:
-        _close_pins(pins)
-
-
-def _refuse_symlinked_store(base, context):
-    """Refuse a symlink or hardlink planted at any backing name of a store
-    (the pre-check alone; :func:`_pin_store_files` is what the opens use)."""
-    _close_pins(_pin_store_files(base, context))
-
-
-def _connect_pinned_sqlite_read_only(path, pins):
-    """Connect sqlite read-only to the inode pathsec pinned at *path*.
-
-    The connection is opened on the pinned descriptor's ``/dev/fd`` name as an
-    immutable read-only database, so no later change to the NAME can redirect
-    it (CWE-367); where that is unavailable, by name with a post-open check.
-    """
-    import sqlite3
-
-    handle = pins.get(path)
-    if handle is not None and os.name == "posix" and os.path.isdir("/dev/fd"):
-        uri = "file:/dev/fd/%d?immutable=1&mode=ro" % handle.fileno()
-        try:
-            connection = sqlite3.connect(uri, uri=True)
-            # force the open while the descriptor is still held
-            connection.execute("PRAGMA schema_version").fetchall()
-        except sqlite3.Error:
-            connection = None
-        if connection is not None:
-            _close_pins(pins)
-            return connection
-    connection = sqlite3.connect(path)
-    try:
-        _verify_store_files(pins, path, "chat80.sql_query")
-    except BaseException:
-        connection.close()
-        raise
-    return connection
+    """After the backend opened the store by name, prove it saw the pinned
+    inodes (:func:`nltk.pathsec.verify_pinned`); the pins are released."""
+    pathsec.verify_pinned(pins, _store_names(base), context=context)
 
 
 def _restricted_shelve_open(db, flag="r"):
@@ -314,7 +210,7 @@ def _restricted_shelve_open(db, flag="r"):
     try:
         inner = shelve.open(db, flag)
     except BaseException:
-        _close_pins(pins)
+        pathsec.release(pins)
         raise
     try:
         _verify_store_files(pins, db, context="chat80._restricted_shelve_open")
@@ -655,13 +551,13 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
     validate_path(dbname, context="chat80.cities2table")
     # Reject a symlink/hardlink at the db or its journal/WAL sidecars before
     # sqlite reopens them by path (O_NOFOLLOW, GHSA-7j4p).
-    _refuse_shared_store_dir(dbname, context="chat80.cities2table")
+    _check_store_dir(dbname, context="chat80.cities2table")
     records = _str2records(filename, rel_name)
     pins = _pin_store_files(dbname, context="chat80.cities2table")
     try:
         connection = sqlite3.connect(dbname)
     except BaseException:
-        _close_pins(pins)
+        pathsec.release(pins)
         raise
     try:
         _verify_store_files(pins, dbname, context="chat80.cities2table")
@@ -736,9 +632,10 @@ def sql_query(dbname, query):
         # sit in a data root, and neither the store nor a sqlite sidecar may be
         # a link or special file that the by-path open would follow (GHSA-xv54).
         validate_path(db_path, context="chat80.sql_query")
-        _refuse_shared_store_dir(db_path, context="chat80.sql_query")
-        pins = _pin_store_files(db_path, context="chat80.sql_query")
-        connection = _connect_pinned_sqlite_read_only(db_path, pins)
+        _check_store_dir(db_path, context="chat80.sql_query")
+        connection = pathsec.connect_sqlite_read_only(
+            db_path, names=_store_names(db_path), context="chat80.sql_query"
+        )
         connection.set_authorizer(_sql_query_authorizer)
         cur = connection.cursor()
         return cur.execute(query)
@@ -906,14 +803,17 @@ def val_dump(rels, db):
     validate_path(db, context="chat80.val_dump")
     # Reject a symlink/hardlink at any derived backing name before shelve creates
     # the store by path (O_NOFOLLOW, GHSA-7j4p).
-    _refuse_shared_store_dir(db, context="chat80.val_dump")
-    _refuse_symlinked_store(db, context="chat80.val_dump")
+    _check_store_dir(db, context="chat80.val_dump")
+    # a link planted at any backing name is refused up front (the install
+    # below never follows one either)
+    pathsec.release(_pin_store_files(db, context="chat80.val_dump"))
     concepts = process_bundle(rels).values()
     valuation = make_valuation(concepts, read=True)
-    # the backend writes only inside a fresh private directory, then each file
-    # is renamed into place, so no name at the destination is ever opened
+    # the backend writes only inside a fresh private directory beside the
+    # store, then each file is renamed into place, so no name at the
+    # destination is ever opened
     parent, stem = os.path.split(os.path.abspath(db))
-    staging = tempfile.mkdtemp(prefix=".nltk_chat80_", dir=parent)
+    staging = nltk.data.make_staging_dir(prefix=".nltk_chat80_", dir=parent)
     try:
         db_out = shelve.open(os.path.join(staging, stem), "n")
         try:
@@ -923,18 +823,22 @@ def val_dump(rels, db):
             db_out.close()
         _install_store(staging, stem, db, context="chat80.val_dump")
     finally:
-        shutil.rmtree(staging, ignore_errors=True)
+        try:
+            pathsec.remove_tree(staging, context="chat80.val_dump")
+        except OSError:
+            pass
 
 
 def _install_store(staging, stem, db, context):
     """Move the store files written under *staging* to the backing names of *db*.
 
     The old backing names are checked as every open checks them, then removed
-    (unlinking a name never follows it), and each new file is renamed onto its
-    name, which replaces whatever is there without following it either. So a
-    name planted at the destination at any point is never written through
-    (CWE-59, CWE-367); one found at the check is refused, and a file changed
-    after its rename is refused by the final identity check.
+    with :func:`nltk.pathsec.unlink` (a name is never followed), and each new
+    file is renamed onto its name with :func:`nltk.pathsec.replace`, which
+    replaces whatever is there without following it either and checks the
+    inode after. So a name planted at the destination at any point is never
+    written through (CWE-59, CWE-367); one found at the check is refused, and
+    the whole set is checked again once every rename is done.
     """
     built = {}
     for entry in sorted(os.listdir(staging)):
@@ -945,22 +849,20 @@ def _install_store(staging, stem, db, context):
                 "store checks know" % sanitize_terminal(entry)
             )
         st = os.lstat(os.path.join(staging, entry))
-        if not stat.S_ISREG(st.st_mode) or st.st_nlink != 1:
-            _refuse_store(entry, context, "was not written as a plain file")
         built[db + suffix] = (os.path.join(staging, entry), (st.st_dev, st.st_ino))
     old = _pin_store_files(db, context)
-    _close_pins(old)
+    pathsec.release(old)
     for name in old:
-        try:
-            os.unlink(name)
-        except FileNotFoundError:
-            pass
+        pathsec.unlink(name, context=context)
     for name, (path, _identity) in built.items():
-        os.replace(path, name)
+        pathsec.replace(path, name, context=context)
     for name, (_path, identity) in built.items():
         st = os.lstat(name)
         if not stat.S_ISREG(st.st_mode) or (st.st_dev, st.st_ino) != identity:
-            _refuse_store(name, context, "was swapped while the store was installed")
+            raise PermissionError(
+                f"Security Violation [{context}]: store file "
+                f"{sanitize_terminal(name)!r} was swapped while the store was installed."
+            )
 
 
 def val_load(db):
@@ -975,7 +877,7 @@ def val_load(db):
     # backing files. Validate before touching the filesystem so an
     # out-of-sandbox target is refused up front (GHSA-8mgp-746c-j5xp).
     validate_path(db, context="chat80.val_load")
-    _refuse_shared_store_dir(db, context="chat80.val_load")
+    _check_store_dir(db, context="chat80.val_load")
     # No os.access() gate: it follows a symlink at the derived .db name and its
     # suffix assumes one dbm backend. _restricted_shelve_open opens each backing
     # name with O_NOFOLLOW (GHSA-7j4p); a store it cannot open is reported the

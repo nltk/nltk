@@ -25,18 +25,33 @@ from nltk.test.unit import security_probes as probes
 @contextlib.contextmanager
 def _store_checks_removed(chat80, validate=False):
     """Put the pre-fix sink back: no pinned link check at the store's backing
-    names and no post-open verification (and, with validate, no containment)."""
-    saved = (chat80._pin_store_files, chat80._verify_store_files, chat80.validate_path)
+    names and no post-open verification (and, with validate, no containment).
+    The checks live in nltk.pathsec, which every chat80 store open goes through,
+    so they are removed there."""
+    from nltk import pathsec
+
+    saved = (
+        pathsec.pin_files,
+        pathsec.verify_pinned,
+        chat80.validate_path,
+        pathsec.validate_path,
+    )
     try:
-        chat80._pin_store_files = lambda *args, **kwargs: {}
-        chat80._verify_store_files = lambda *args, **kwargs: None
+        pathsec.pin_files = lambda *args, **kwargs: {}
+        pathsec.verify_pinned = lambda *args, **kwargs: None
         if validate:
+            # both the sink's own containment check and the one the pathsec
+            # sqlite connector repeats on the name it is handed
             chat80.validate_path = lambda *args, **kwargs: None
+            pathsec.validate_path = lambda *args, **kwargs: None
         yield
     finally:
-        chat80._pin_store_files, chat80._verify_store_files, chat80.validate_path = (
-            saved
-        )
+        (
+            pathsec.pin_files,
+            pathsec.verify_pinned,
+            chat80.validate_path,
+            pathsec.validate_path,
+        ) = saved
 
 
 def _fixed_or_skip(ghsa):
