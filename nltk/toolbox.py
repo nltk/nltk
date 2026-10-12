@@ -11,11 +11,11 @@ Toolbox databases and settings files.
 """
 
 import codecs
-from io import StringIO
+from io import StringIO, TextIOWrapper
 from xml.etree.ElementTree import Element, ElementTree, SubElement, TreeBuilder
 
 from nltk import redos
-from nltk.data import PathPointer, find
+from nltk.data import PathPointer, _refuse_file_not_ours, find
 from nltk.pathsec import open as pathsec_open
 from nltk.termsec import safe_print
 
@@ -43,15 +43,22 @@ class StandardFormat:
         :type sfm_file: str
         """
         if isinstance(sfm_file, PathPointer):
-            self._file = sfm_file.open(self._encoding)
+            stream = sfm_file.open()
         else:
-            # A bare string filename bypasses the PathPointer containment above;
-            # open through pathsec (containment + O_NOFOLLOW / hardlink guards) so
-            # a symlink/hardlink cannot resolve outside the data roots (CWE-59,
-            # GHSA-cr8c).
-            self._file = pathsec_open(
-                sfm_file, "r", context="toolbox.StandardFormat", encoding=self._encoding
+            # A bare filename gets what a PathPointer open gives: pathsec
+            # containment with O_NOFOLLOW and hardlink guards (CWE-59, GHSA-cr8c),
+            # and the refusal of a file another account owns or can write.
+            stream = _refuse_file_not_ours(
+                pathsec_open(sfm_file, "rb", context="toolbox.StandardFormat"),
+                sfm_file,
             )
+        # One decoding for both routes: a line ends at LF, CRLF or CR only, so
+        # U+2028, NEL or a form feed in a value cannot start a new field.
+        try:
+            self._file = TextIOWrapper(stream, encoding=self._encoding, newline=None)
+        except BaseException:
+            stream.close()
+            raise
 
     def open_string(self, s):
         """
@@ -72,8 +79,8 @@ class StandardFormat:
         """
         join_string = "\n"
         line_regexp = r"^%s(?:\\(\S+)\s*)?(.*)$"
-        # discard a BOM in the first line
-        first_line_pat = redos.compile(line_regexp % "(?:\xef\xbb\xbf)?")
+        # discard a BOM in the first line: UTF-8 bytes read as Latin-1, or U+FEFF
+        first_line_pat = redos.compile(line_regexp % "(?:\xef\xbb\xbf|\ufeff)?")
         line_pat = redos.compile(line_regexp % "")
         # need to get first line outside the loop for correct handling
         # of the first marker if it spans multiple lines
