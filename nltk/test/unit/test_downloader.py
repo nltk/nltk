@@ -159,6 +159,28 @@ def test_retry_prompt_without_stdin_answers_no(tmp_path, monkeypatch):
     assert status is True and downloader._errors is True
 
 
+@pytest.mark.parametrize("request_", ["punkt", ["punkt", "stopwords"]])
+def test_retry_prompt_y_after_an_index_failure_retries_the_request(
+    tmp_path, monkeypatch, request_
+):
+    """When the index itself cannot be loaded, as in #3167 and #3144, the
+    error carries an id or nothing, not a Package. "y" retries what was asked
+    for instead of crashing on ``msg.package.id``."""
+    monkeypatch.setattr("sys.stdin", io.StringIO("y\nn\n"))
+    downloader = Downloader(download_dir=str(tmp_path))
+    output = io.StringIO()
+    with unittest.mock.patch(
+        "nltk.downloader.urlopen", side_effect=URLError(OSError(99, "x"))
+    ) as urlopen:
+        status = downloader.download(
+            request_, str(tmp_path), halt_on_error=False, print_error_to=output
+        )
+
+    assert output.getvalue().count("Error installing package. Retry? [n/y/e]") == 2
+    assert urlopen.call_count == 2
+    assert status is True and downloader._errors is True
+
+
 def test_build_index(tmp_path):
     """Test building index with both checksums."""
 

@@ -1619,14 +1619,18 @@ class Downloader:
                             # an empty line gives, "n": do not retry.
                             choice = "n"
                         if choice in ["y", "Y"]:
+                            # A failed index lookup carries an id or nothing,
+                            # not a Package: retry what was asked for.
+                            retry = getattr(msg.package, "id", msg.package)
                             if not self.download(
-                                msg.package.id,
+                                retry or info_or_id,
                                 download_dir,
                                 quiet,
                                 force,
                                 prefix,
                                 halt_on_error,
                                 raise_on_error,
+                                print_error_to=print_error_to,
                                 extract=extract,
                             ):
                                 return False
