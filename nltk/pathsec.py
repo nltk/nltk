@@ -2734,7 +2734,10 @@ def pin_files(names, context="pathsec.pin_files"):
     pins = {}
     for name in names:
         try:
-            pins[name] = open(name, "rb", context=context)
+            # the module's own hardened open, defined above, not the builtin
+            pins[name] = open(
+                name, "rb", context=context
+            )  # sandboxed-open ok: pathsec.open
         except FileNotFoundError:
             continue
         except BaseException:
