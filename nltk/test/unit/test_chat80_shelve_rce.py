@@ -112,7 +112,9 @@ def test_restricted_shelf_round_trips_benign_valuations(tmp_path):
             "size",
         ]
         assert restricted["adjacent"] == {("chile", "argentina"), ("uk", "france")}
-        assert dict(restricted.items()) == values
+        loaded = dict(restricted.items())
+        loaded.pop("__nltk_keys__", None)
+        assert loaded == values
     finally:
         restricted.close()
 

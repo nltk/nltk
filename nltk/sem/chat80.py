@@ -145,6 +145,7 @@ from nltk.termsec import safe_print, sanitize_terminal
 # shelve picks a dbm backend at runtime (gnu/ndbm/dumb/sqlite3) and sqlite writes
 # rollback/WAL sidecars, so a store path spawns several derived backing files;
 # every candidate name is checked, not just the base the caller passed.
+
 #: The entry val_dump writes naming every key it stored. val_load reads each
 #: key by lookup and never trusts iteration, which some dbm builds cut short
 #: (a measured ndbm build drops a key once one value reaches 4096 bytes).
