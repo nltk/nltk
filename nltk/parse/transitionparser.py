@@ -836,11 +836,12 @@ def demo():
     A. Check the ARC-STANDARD training
     >>> import tempfile
     >>> import os
+    >>> from nltk import pathsec
     >>> from nltk.data import make_staging_dir
     >>> _model_dir = make_staging_dir(prefix='nltk_tp_demo_')
     >>> std_model = os.path.join(_model_dir, 'temp.arcstd.model')
     >>> eager_model = os.path.join(_model_dir, 'temp.arceager.model')
-    >>> input_file = tempfile.NamedTemporaryFile(prefix='transition_parse.train', dir=tempfile.gettempdir(), delete=False)
+    >>> input_file = tempfile.NamedTemporaryFile(prefix='transition_parse.train', dir=_model_dir, delete=False)
 
     >>> parser_std = TransitionParser('arc-standard')
     >>> print(', '.join(parser_std._create_training_examples_arc_std([gold_sent], input_file)))
@@ -852,11 +853,11 @@ def demo():
      Number of training examples : 1
      Number of valid (projective) examples : 1
     >>> input_file.close()
-    >>> remove(input_file.name)
+    >>> pathsec.unlink(input_file.name)
 
     B. Check the ARC-EAGER training
 
-    >>> input_file = tempfile.NamedTemporaryFile(prefix='transition_parse.train', dir=tempfile.gettempdir(),delete=False)
+    >>> input_file = tempfile.NamedTemporaryFile(prefix='transition_parse.train', dir=_model_dir, delete=False)
     >>> parser_eager = TransitionParser('arc-eager')
     >>> print(', '.join(parser_eager._create_training_examples_arc_eager([gold_sent], input_file)))
      Number of training examples : 1
@@ -868,7 +869,7 @@ def demo():
      Number of valid (projective) examples : 1
 
     >>> input_file.close()
-    >>> remove(input_file.name)
+    >>> pathsec.unlink(input_file.name)
 
     ###################### Check The Parsing Function ########################
 
@@ -886,8 +887,8 @@ def demo():
     True
 
     Remove test temporary files
-    >>> remove(eager_model)
-    >>> remove(std_model)
+    >>> pathsec.unlink(eager_model)
+    >>> pathsec.unlink(std_model)
 
     Note that result is very poor because of only one training example.
     """
