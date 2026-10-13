@@ -7,6 +7,11 @@
 # For license information, see LICENSE.TXT
 
 from nltk.parse.api import ParserI
+from nltk.pathsec import (
+    MAX_TOOL_MODEL_BYTES,
+    validate_tool_dir,
+    validate_tool_path,
+)
 from nltk.termsec import safe_print
 from nltk.tree import Tree
 
@@ -160,6 +165,29 @@ class BllipParser(ParserI):
         parser_options = parser_options or {}
         reranker_options = reranker_options or {}
 
+        # The extension opens these caller paths natively, so bound them to the
+        # data roots first and pass the returned string, never the original
+        # object (GHSA-fg9w-wfp5-j933).
+        if parser_model is not None:
+            parser_model = validate_tool_dir(
+                parser_model,
+                context="BllipParser parser model",
+                require_private=True,
+            )
+        if reranker_features and reranker_weights:
+            reranker_features = validate_tool_path(
+                reranker_features,
+                context="BllipParser reranker features",
+                max_bytes=MAX_TOOL_MODEL_BYTES,
+                require_private=True,
+            )
+            reranker_weights = validate_tool_path(
+                reranker_weights,
+                context="BllipParser reranker weights",
+                max_bytes=MAX_TOOL_MODEL_BYTES,
+                require_private=True,
+            )
+
         self.rrp = RerankingParser()
         self.rrp.load_parser_model(parser_model, **parser_options)
         if reranker_features and reranker_weights:
@@ -241,6 +269,13 @@ class BllipParser(ParserI):
         :type reranker_options: dict(str)
         :rtype: BllipParser
         """
+        # The third-party helper derives sub-paths under model_dir unchecked, so
+        # bound model_dir first; the constructor revalidates each derived path.
+        model_dir = validate_tool_dir(
+            model_dir,
+            context="BllipParser unified model directory",
+            require_private=True,
+        )
         (
             parser_model_dir,
             reranker_features_filename,

@@ -42,7 +42,13 @@ from platform import architecture, system
 from subprocess import PIPE
 
 from nltk.internals import absolute_tool_dir
-from nltk.pathsec import TrustError, has_line_unsafe_char, spawn_trusted
+from nltk.pathsec import (
+    TrustError,
+    has_line_unsafe_char,
+    spawn_trusted,
+    untrusted_executable_reason,
+    validate_tool_data_dir,
+)
 from nltk.tag.api import TaggerI
 
 
@@ -155,9 +161,20 @@ class Senna(TaggerI):
                 f"Unsupported Senna operation(s) {invalid!r}; choose from "
                 f"{self.SUPPORTED_OPERATIONS!r}."
             )
+        # The binary is judged first, as the spawn below judges it; then the
+        # data dir senna reads from -path natively gets the same trust (private
+        # chain, no link or hardlink member) and the checked string is what is
+        # handed over (GHSA-fg9w-wfp5-j933).
+        reason = untrusted_executable_reason(executable)
+        if reason is not None:
+            raise LookupError(
+                "Senna executable %r is not on a trusted path; install senna where "
+                "only you (or root) can write. (%s)" % (executable, reason)
+            )
+        data_dir = validate_tool_data_dir(self._path, context="Senna data directory")
         # spawn_trusted() (below) verifies executable is on a trusted path, refuses
         # a shell, and scrubs the loader environment before exec (CWE-426/427/732).
-        _args = ["-path", self._path, "-usrtokens", "-iobtags"]
+        _args = ["-path", data_dir, "-usrtokens", "-iobtags"]
         _args.extend(["-" + op for op in self.operations])
 
         # A CR/LF in a token adds an input line and breaks the 1:1 sentence->output
