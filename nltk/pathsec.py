@@ -1397,6 +1397,40 @@ def validate_tool_dir(path_input, context="NLTK tool", *, require_private=False)
     return text
 
 
+def validate_tool_data_dir(path_input, context="NLTK tool data"):
+    """Validate a directory an external tool READS natively that lives beside
+    its binary rather than in a data root: SENNA's ``-path`` data dir, REPP's
+    config tree, the C&C ``models`` tree. It gets the trust the binary gets
+    from :func:`resolve_trusted_executable` (absolute, every directory from
+    the root down private, every symlink on the way ours) and the member
+    checks of :func:`validate_tool_dir` (a real directory, no symlink,
+    junction, special file or hardlink inside, everything private, bounded).
+    Returns the resolved ``str`` the caller must hand the tool, never the
+    value it was given (GHSA-fg9w-wfp5-j933). Containment in a data root is
+    not asked for: the install is where the operator put it, as for the
+    binary; off POSIX the path is resolved and the member walk still runs.
+    """
+    text = _as_path_text(path_input, context, error=PermissionError)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
+    if not os.path.isabs(text):
+        raise PermissionError(
+            f"Security Violation [{context}]: {text!r} is not absolute; a tool "
+            "data directory would resolve against the working directory"
+        )
+    if os.name == "posix":
+        why = _Why()
+        real = _resolve_private(text, why=why)
+        if real is None:
+            raise PermissionError(
+                f"Security Violation [{context}]: {text!r} is not on a trusted "
+                f"path: {'; '.join(why) or 'a directory on the way is not private'}"
+            )
+    else:
+        real = os.path.realpath(text)
+    _reject_tamperable_dir(real, context)
+    return real
+
+
 def _reject_tamperable_dir(raw, context):
     """Refuse a directory a tool reads model data from unless it is a real,
     private directory tree (see :func:`validate_tool_dir`). ``raw`` has already
@@ -1445,6 +1479,15 @@ def _reject_tamperable_dir(raw, context):
                 _refuse(entry, "is a junction inside the tool directory")
             if not (stat.S_ISREG(st.st_mode) or stat.S_ISDIR(st.st_mode)):
                 _refuse(entry, "is not a regular file or directory")
+            # A hardlinked member aliases an inode that may live outside the roots
+            # and realpath cannot see it, only st_nlink can; model directories hold
+            # single-linked files, so refuse it as validate_tool_path does (CWE-59).
+            if stat.S_ISREG(st.st_mode) and st.st_nlink > 1:
+                _refuse(
+                    entry,
+                    f"is a hardlink (st_nlink={st.st_nlink}) that may alias an "
+                    "inode outside the data roots",
+                )
             if check_owner and not _private_stat(st):
                 _refuse(entry, "is group/world-writable or not owned by you or root")
 
@@ -2890,6 +2933,7 @@ __all__ = [
     "validate_model_resource",
     "validate_tool_path",
     "validate_tool_dir",
+    "validate_tool_data_dir",
     "open_package_resource",
     "validate_network_url",
     "validate_zip_archive",

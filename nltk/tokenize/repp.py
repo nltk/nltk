@@ -16,7 +16,12 @@ import tempfile
 from nltk import pathsec, redos
 from nltk.data import ZipFilePathPointer, make_staging_dir
 from nltk.internals import _tool_location, absolute_tool_dir, find_dir
-from nltk.pathsec import TrustError, has_line_unsafe_char, spawn_trusted
+from nltk.pathsec import (
+    TrustError,
+    has_line_unsafe_char,
+    spawn_trusted,
+    validate_tool_data_dir,
+)
 from nltk.tokenize.api import TokenizerI
 
 
@@ -123,8 +128,12 @@ class ReppTokenizer(TokenizerI):
         :param inputfilename: path to the input file
         :type inputfilename: str
         """
-        cmd = [self.repp_dir + "/src/repp"]
-        cmd += ["-c", self.repp_dir + "/erg/repp.set"]
+        # repp reads erg/repp.set and the files it names natively: the tree
+        # gets the trust the binary gets and the checked string is what the
+        # command carries (GHSA-fg9w-wfp5-j933).
+        repp_dir = validate_tool_data_dir(self.repp_dir, context="REPP directory")
+        cmd = [repp_dir + "/src/repp"]
+        cmd += ["-c", repp_dir + "/erg/repp.set"]
         cmd += ["--format", "triple"]
         cmd += [inputfilename]
         return cmd
