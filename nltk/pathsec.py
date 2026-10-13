@@ -2848,7 +2848,8 @@ def connect_sqlite_read_only(
     platform exposes descriptors as names the database is opened on the pinned
     descriptor itself (``/dev/fd/N``, immutable, read only) so a later change
     to the NAME cannot redirect it (CWE-367); elsewhere it is opened by name
-    and the names are verified afterwards. The pins are released on return.
+    as a read-only file URI and the names are verified afterwards. The pins
+    are released on return.
     """
     import sqlite3
 
@@ -2868,8 +2869,11 @@ def connect_sqlite_read_only(
         if connection is not None:
             release(pins)
             return connection
+    # by name, still read only: a file URI with mode=ro (the path is
+    # percent-encoded by as_uri, so a '?' or '#' in it cannot add a parameter)
+    uri = Path(os.path.abspath(text)).as_uri() + "?mode=ro"
     try:
-        connection = sqlite3.connect(text)
+        connection = sqlite3.connect(uri, uri=True)
     except BaseException:
         release(pins)
         raise

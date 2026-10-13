@@ -302,6 +302,26 @@ def test_panlex_reader_connection_is_read_only(pathsec_sandbox):
         reader._c.execute("INSERT INTO lv VALUES ('xxx-000', 1)")
 
 
+def test_sqlite_by_name_fallback_is_read_only_too(pathsec_sandbox, monkeypatch):
+    """Where the descriptor-bound open is unavailable (Windows), the database
+    is opened by name as a read-only file URI: a write must still be refused
+    and a read must still work, with a space and a '#' in the path."""
+    root, outside = pathsec_sandbox
+    corpus = root / "pan lex#1"
+    corpus.mkdir()
+    db = corpus / "db.sqlite"
+    _panlex_db(db)
+    real_isdir = os.path.isdir
+    monkeypatch.setattr(
+        pathsec.os.path, "isdir", lambda p: False if p == "/dev/fd" else real_isdir(p)
+    )
+    connection = pathsec.connect_sqlite_read_only(str(db), context="test")
+    assert connection.execute("SELECT uid, lv FROM lv").fetchall() == [("eng-000", 187)]
+    with pytest.raises(sqlite3.OperationalError):
+        connection.execute("INSERT INTO lv VALUES ('xxx-000', 1)")
+    connection.close()
+
+
 @pytest.mark.skipif(not POSIX, reason="symlinks")
 def test_panlex_reader_refuses_a_linked_database(pathsec_sandbox):
     """A link standing as db.sqlite, pointing outside the corpus root, is
