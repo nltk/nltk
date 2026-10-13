@@ -465,14 +465,23 @@ def test_no_gzip_entry_point_hands_a_name_to_a_stdlib_opener(
 
 
 def test_spy_teeth_it_sees_a_library_name_handed_to_sqlite(
-    restricted_sandbox, name_spy
+    restricted_sandbox, name_spy, monkeypatch
 ):
-    # sqlite3.connect has no file object form: the reader checks first, then
-    # passes the name, which the spy must see (so an empty record above means it).
+    # The reader connects through pathsec.connect_sqlite_read_only, whose
+    # frame the spy skips, so it records nothing for the real reader. With
+    # that connector replaced by a bare sqlite3.connect the spy must see the
+    # reader hand the name (so an empty record above means something).
     root = os.path.join(restricted_sandbox, "panlex_lite")
     os.mkdir(root)
     _panlex_db(os.path.join(root, "db.sqlite"))
     del name_spy[:]
+    PanLexLiteCorpusReader(root)
+    assert name_spy == []
+    monkeypatch.setattr(
+        pathsec,
+        "connect_sqlite_read_only",
+        lambda path, names=None, context=None: sqlite3.connect(path),
+    )
     PanLexLiteCorpusReader(root)
     assert ("sqlite3.connect", "panlex_lite.py") in {
         (sink, where.split(":")[0]) for sink, where in name_spy
