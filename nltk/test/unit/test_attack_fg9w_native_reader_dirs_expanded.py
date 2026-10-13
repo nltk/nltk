@@ -11,18 +11,20 @@ tree must be on a private chain like the binary, hold no symlink, junction,
 special file or hardlink, and be private throughout; the checked string is
 what the command carries.
 
-Every fixture is staged under a private data root (``make_staging_dir``),
-never the shared temp dir, which the trust chain refuses on its own; a
-refusal in these tests is therefore due to the planted weakness alone.
+Every fixture is staged under ``$HOME``, a private directory chain on every
+CI runner, never the shared temp dir (world-writable ``/tmp`` on Linux),
+which the trust chain refuses on its own; a refusal in these tests is
+therefore due to the planted weakness alone.
 """
 
 import os
+import shutil
 import stat
+import tempfile
 from platform import architecture, system
 
 import pytest
 
-import nltk.data
 from nltk import pathsec
 from nltk.classify import senna as senna_mod
 from nltk.sem import boxer as boxer_mod
@@ -35,14 +37,16 @@ REFUSED = PermissionError
 
 @pytest.fixture
 def staged(pathsec_sandbox):
-    """A private staging dir inside the enforced sandbox root, plus the
-    out-of-sandbox dir, for links and hardlinks that point outside."""
+    """A fresh private directory under ``$HOME`` for the tool installs, plus
+    the out-of-sandbox dir, for links and hardlinks that point outside. The
+    enforced sandbox root itself is a temp dir, which on a Linux runner sits
+    under world-writable ``/tmp`` and so can never clear the trust chain."""
     root, outside = pathsec_sandbox
+    base = tempfile.mkdtemp(prefix=".nltk_fg9w_dirs_", dir=os.path.expanduser("~"))
     try:
-        base = nltk.data.make_staging_dir(prefix="fg9w_dirs_", cleanup=True)
-    except PermissionError as exc:  # pragma: no cover
-        pytest.skip(f"no writable in-sandbox data root: {exc}")
-    return base, str(outside)
+        yield base, str(outside)
+    finally:
+        shutil.rmtree(base, ignore_errors=True)
 
 
 def _senna_binary_name():
@@ -170,7 +174,7 @@ def test_senna_symlinked_data_dir_is_resolved_like_the_binary(staged, senna_spaw
     with pytest.raises(_Spawned):
         _senna(link).tag_sents([["the"]])
     ((_, argv),) = senna_spawn
-    assert argv[argv.index("-path") + 1] == os.path.realpath(real)
+    assert argv[argv.index("-path") + 1] == os.path.realpath(real) + os.sep
     if NOT_ROOT:
         del senna_spawn[:]
         shared = os.path.join(outside, "shared")
@@ -199,7 +203,9 @@ def test_senna_clean_data_dir_reaches_the_spawn_as_the_checked_string(
     ((_, argv),) = senna_spawn
     handed = argv[argv.index("-path") + 1]
     assert os.path.realpath(handed) == os.path.realpath(tool)
-    assert handed == pathsec.validate_tool_data_dir(tool, context="test")
+    # senna appends "hash/words.lst" to the value verbatim: the separator the
+    # checked string drops is put back, or the real binary cannot find its data
+    assert handed == pathsec.validate_tool_data_dir(tool, context="test") + os.sep
 
 
 @pytest.mark.skipif(not POSIX, reason="symlinks")
