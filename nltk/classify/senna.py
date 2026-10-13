@@ -171,7 +171,11 @@ class Senna(TaggerI):
                 "Senna executable %r is not on a trusted path; install senna where "
                 "only you (or root) can write. (%s)" % (executable, reason)
             )
+        # senna appends "hash/words.lst" and friends to the -path value verbatim,
+        # so the directory it is handed must end in a separator (the checked
+        # string is normalised and carries none).
         data_dir = validate_tool_data_dir(self._path, context="Senna data directory")
+        data_dir += sep
         # spawn_trusted() (below) verifies executable is on a trusted path, refuses
         # a shell, and scrubs the loader environment before exec (CWE-426/427/732).
         _args = ["-path", data_dir, "-usrtokens", "-iobtags"]
