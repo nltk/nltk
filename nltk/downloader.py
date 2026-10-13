@@ -1285,6 +1285,14 @@ class Downloader:
                     age = time.time() - os.stat(lock_filepath).st_mtime
                     if age >= MAX_ZOMBIE_TIME:
                         _safe_remove(lock_filepath)
+                        if _lock_exists():
+                            # a stale lock this account cannot remove would
+                            # otherwise be retried forever: report it instead
+                            yield ErrorMessage(
+                                info,
+                                f"Cannot remove the stale install lock {lock_filepath!r}",
+                            )
+                            return
                         continue
                 except FileNotFoundError:
                     continue

@@ -349,3 +349,76 @@ def test_tool_wrappers_remove_scratch_through_pathsec(module, function):
     assert "pathsec.unlink(" in src or "pathsec.remove_tree(" in src, function
     for bare in ("os.remove(", "os.unlink(", "shutil.rmtree(", "os.rmdir("):
         assert bare not in src, (function, bare)
+
+
+# =========================================================================== #
+# the helpers refuse exactly what pathsec.open refuses, and no more            #
+# =========================================================================== #
+
+
+def test_helpers_accept_every_name_pathsec_open_accepts(pathsec_sandbox):
+    """A name NLTK derived itself can carry a leading dash or a tilde, and on
+    a Windows runner an 8.3 component (RUNNER~1); the tool-path syntax guard
+    refuses those, pathsec.open does not, and the contained operations must
+    side with open, or the downloader could create a lock it cannot remove."""
+    root, outside = pathsec_sandbox
+    odd = root / "x~1" / "-dash"
+    odd.mkdir(parents=True)
+    target = odd / "~tilde.txt"
+    with pathsec.open(str(target), "w", context="test") as handle:
+        handle.write("x")
+    pathsec.ensure_private_dir(str(odd), context="test")
+    pathsec.replace(str(target), str(odd / "-moved.txt"), context="test")
+    pathsec.unlink(str(odd / "-moved.txt"), context="test")
+    pathsec.remove_tree(str(root / "x~1"), context="test")
+    assert not (root / "x~1").exists()
+
+
+def test_downloader_reports_a_stale_lock_it_cannot_remove(tmp_path, monkeypatch):
+    """A lock older than the zombie limit that pathsec.unlink refuses to
+    remove is reported once and the download returns; it was retried forever
+    with no sleep (the Windows cells hung for hours on a RUNNER~1 temp path)."""
+    import threading
+    import time
+
+    from nltk import downloader as dl
+
+    download_dir = str(tmp_path / "download")
+    os.makedirs(os.path.join(download_dir, "corpora"))
+    lock = os.path.join(download_dir, "corpora", "dummy.txt.lock")
+    with open(lock, "w") as handle:
+        handle.write("")
+    stale = time.time() - 10 * 60
+    os.utime(lock, (stale, stale))
+
+    def refuse(path, context="x"):
+        raise PermissionError("Security Violation [test]: refused")
+
+    monkeypatch.setattr(pathsec, "unlink", refuse)
+
+    class DummyInfo:
+        id = "dummy"
+        url = "https://example.com/dummy.txt"
+        size = 1
+        filename = os.path.join("corpora", "dummy.txt")
+        subdir = "corpora"
+        unzip = False
+
+    messages = []
+
+    def run():
+        messages.extend(
+            dl.Downloader(download_dir=download_dir)._download_package(
+                DummyInfo(), download_dir, force=True
+            )
+        )
+
+    worker = threading.Thread(target=run, daemon=True)
+    worker.start()
+    worker.join(timeout=20)
+    assert not worker.is_alive(), "the download spun on the stale lock"
+    assert any(
+        isinstance(m, dl.ErrorMessage) and "stale install lock" in m.message
+        for m in messages
+    ), messages
+    assert os.path.exists(lock), "the lock was not removable, so it is still there"
