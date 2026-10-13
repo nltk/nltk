@@ -15,8 +15,8 @@ import io
 import ipaddress
 import os
 import re
-import socket
 import shutil
+import socket
 import stat
 import subprocess
 import sys
