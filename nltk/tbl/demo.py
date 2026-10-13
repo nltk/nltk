@@ -15,7 +15,7 @@ import time
 from nltk import redos
 from nltk.corpus import treebank
 from nltk.pathsec import open as pathsec_open
-from nltk.pathsec import validate_path
+from nltk.pathsec import validate_tool_path
 from nltk.picklesec import allowlisted_pickle_load, pickle_dump
 from nltk.redos import TimedPattern
 from nltk.tag import BrillTaggerTrainer, RegexpTagger, UnigramTagger
@@ -444,7 +444,14 @@ def _demo_plot(learning_curve_output, teststats, trainstats=None, take=None):
     """Write the learning-curve plot to ``learning_curve_output``.
     matplotlib writes the caller-supplied path itself, so it is validated against the
     NLTK data sandbox first (GHSA-8mgp-746c-j5xp); ``pathsec.open`` can't wrap it."""
-    validate_path(learning_curve_output, context="tbl.demo.learning_curve_output")
+    # matplotlib reopens the name itself, so refuse a hardlinked or special
+    # target too and hand it the checked string (GHSA-fg9w-wfp5-j933).
+    learning_curve_output = validate_tool_path(
+        learning_curve_output,
+        context="tbl.demo.learning_curve_output",
+        for_write=True,
+        must_exist=False,
+    )
     testcurve = [teststats["initialerrors"]]
     for rulescore in teststats["rulescores"]:
         testcurve.append(testcurve[-1] - rulescore)
