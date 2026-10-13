@@ -35,6 +35,11 @@ NESTED_ENTRIES = 2
 #: Words of the lexicons, in the order the entries take them.
 _WORDS = ("w", "v", "u", "t", "s", "r")
 
+#: Entries of the front-loaded lexicon: four put the fixed parser's small run
+#: at 0.09 s on the macOS runner, so twelve keep it over 2.5 times the floor
+#: there. See front_loaded_lexicon.
+FRONT_ENTRIES = 12
+
 
 def flat_lexicon(n):
     """A lexicon of FLAT_ENTRIES words, each a flat chain of ``n`` applications."""
@@ -54,21 +59,54 @@ def _nested_lexicon(chars):
     return ":- S\n" + "".join(word + " => " + category + "\n" for word in words)
 
 
+def front_loaded_lexicon(chars):
+    """A lexicon of FRONT_ENTRIES words, each a category of ``chars``
+    characters: ``chars // 8`` applications, then one primitive whose
+    subscript list fills the rest.
+
+    The pre-fix parser scanned and copied the whole remaining category twice
+    at every application (the trailing ``(.*)`` of APP_RE and NEXTPRIM_RE),
+    so each of these applications walks nearly the whole category: half the
+    flat chain's quadratic term from a quarter of its applications and
+    category objects, so the per-step work the cursor parser shares with it,
+    and the collections those objects trigger, weigh half as much against it.
+    """
+    head = "S" + "/S" * (chars // 8) + "/S["
+    category = head + "a," * ((chars - len(head) - 2) // 2) + "a]"
+    words = ["w%d" % i for i in range(FRONT_ENTRIES)]
+    return ":- S\n" + "".join(word + " => " + category + "\n" for word in words)
+
+
 @probe("GHSA-89p3-fcch-88ph")
 def _ccg_lexicon_quadratic_parse():
-    """Parse the two shapes the tail re-slicing made quadratic, a flat chain
-    and a primitive inside NESTING brackets, confirm each parse stays linear
-    over a 4x input, then confirm an over-cap category is refused.
+    """Parse the three shapes the tail re-slicing made quadratic, a chain
+    whose applications come first, a flat chain and a primitive inside NESTING
+    brackets, confirm each parse stays linear over a 4x input, then confirm an
+    over-cap category is refused.
 
     Pre-fix, matchBrackets/nextCategory/augParseCategory resliced the remaining
     tail (and NEXTPRIM_RE/APP_RE captured it with a trailing ``(.*)``) on every
     step, so parsing a chain of length n copied O(n) characters n times: O(n**2).
-    The fix threads an integer cursor instead. The nested leg exercises
-    matchBrackets, which the flat leg never enters. VULNERABLE if either shape
-    is super-linear or the cap does not hold.
+    The fix threads an integer cursor instead. The front-loaded leg reads that
+    quadratic with the widest margin; the nested leg exercises matchBrackets,
+    which the chains never enter. VULNERABLE if any shape is super-linear or
+    the cap does not hold.
     """
     from nltk.ccg import lexicon
     from nltk.ccg.lexicon import MAX_PARSE_LEN, fromstring
+
+    def front(n):
+        return fromstring(front_loaded_lexicon(n))
+
+    front_ratio = scaling_ratio(
+        front, MAX_PARSE_LEN // 4, MAX_PARSE_LEN, cpu_bound=True
+    )
+    if front_ratio >= QUADRATIC_RATIO:
+        return (
+            VULNERABLE,
+            "front-loaded parse time scales %.1fx for 4x input (quadratic)"
+            % front_ratio,
+        )
 
     def op(n):
         return fromstring(flat_lexicon(n))
@@ -104,6 +142,6 @@ def _ccg_lexicon_quadratic_parse():
     assert lexicon.MAX_PARSE_LEN == MAX_PARSE_LEN and capped
     return (
         FIXED,
-        "scaling %.1fx flat, %.1fx nested (linear); over-cap chain rejected by "
-        "MAX_PARSE_LEN" % (ratio, nested_ratio),
+        "scaling %.1fx front-loaded, %.1fx flat, %.1fx nested (linear); over-cap "
+        "chain rejected by MAX_PARSE_LEN" % (front_ratio, ratio, nested_ratio),
     )

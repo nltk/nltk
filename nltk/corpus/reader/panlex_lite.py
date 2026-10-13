@@ -43,6 +43,7 @@ class PanLexLiteCorpusReader(CorpusReader):
     """
 
     def __init__(self, root):
+        from nltk import pathsec
         from nltk.pathsec import validate_path
 
         db_path = os.path.join(root, "db.sqlite")
@@ -52,7 +53,14 @@ class PanLexLiteCorpusReader(CorpusReader):
         # pathsec first refuses an out-of-sandbox database, and required_root
         # also blocks a db.sqlite symlink that escapes the root (CWE-59).
         validate_path(db_path, context="PanLexLiteCorpusReader", required_root=root)
-        self._c = sqlite3.connect(db_path).cursor()
+        # sqlite reopens the database and its sidecars by name, so the open is
+        # bound to the checked inode (read only, immutable) and the names are
+        # verified after it (CWE-367).
+        self._c = pathsec.connect_sqlite_read_only(
+            db_path,
+            names=[db_path + suffix for suffix in ("", "-journal", "-wal", "-shm")],
+            context="PanLexLiteCorpusReader",
+        ).cursor()
 
         self._uid_lv = {}
         self._lv_uid = {}

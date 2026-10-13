@@ -15,6 +15,7 @@ import io
 import ipaddress
 import os
 import re
+import shutil
 import socket
 import stat
 import subprocess
@@ -2560,6 +2561,330 @@ class ZipFile(zipfile.ZipFile):
             raise
 
 
+# ---------------------------------------------------------------------------
+# Contained file operations: directories NLTK writes into, names it removes or
+# renames, descriptors it pins across a library's own open-by-name.
+# ---------------------------------------------------------------------------
+
+
+def _checked_path_text(value, context):
+    """The one str the contained-operation helpers act on for *value*: a
+    two-faced path object (``.path`` naming one file, ``__fspath__`` another)
+    is refused as :func:`validate_path` refuses it, and a non-path or bytes
+    value is handled as :func:`_as_path_text` handles it. ``__fspath__`` is
+    read exactly once. The helpers then apply the tool-path syntax guard and
+    :func:`validate_path`, so a caller must hand them a canonical name: one
+    NLTK derived under a Windows temp dir can carry an 8.3 alias (RUNNER~1),
+    which the guard refuses, so the deriving code resolves its directory
+    first (see ``nltk.downloader._canonical_dir``).
+    """
+    if not isinstance(value, (str, bytes)) and hasattr(value, "__fspath__"):
+        return _as_path_text(
+            _exact_path_text(value, context), context, error=PermissionError
+        )
+    return _as_path_text(value, context, error=PermissionError)
+
+
+def _shared_ancestor_problem(directory):
+    """Why *directory* or an ancestor would let another account swap a name:
+    the directory itself must be private; an ancestor may also be a sticky
+    shared directory (its entries can only be renamed by their owners)."""
+    problem = _private_dir_problem(directory)
+    if problem is not None:
+        return (
+            f"{problem}; a directory writable by another account lets a name in "
+            "it be swapped between the check and the open"
+        )
+    current = directory
+    while True:
+        above = os.path.dirname(current)
+        if above == current:
+            return None
+        if _private_dir_problem(above) is not None:
+            if not os.lstat(above).st_mode & stat.S_ISVTX:
+                return (
+                    f"ancestor {above!r} is writable by another account and not "
+                    "sticky, so the directory could be renamed away"
+                )
+        current = above
+
+
+def validate_private_dir(directory, context="pathsec.validate_private_dir"):
+    """Refuse a directory that another account could write into or rename.
+
+    Anything NLTK opens by name after a check (a dbm store, a sqlite database
+    and their sidecars) is only as safe as its directory: a writable one lets
+    another local account swap the name between the check and the open
+    (CWE-367). POSIX only; the per-user profile stands in on Windows.
+    """
+    text = _checked_path_text(directory, context)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
+    validate_path(text, context=context)
+    if os.name != "posix":
+        return os.path.realpath(text)
+    real = os.path.realpath(text)
+    problem = _shared_ancestor_problem(real)
+    if problem is not None:
+        raise PermissionError(f"Security Violation [{context}]: {problem}")
+    return real
+
+
+def validate_name_fragment(fragment, what="name fragment"):
+    """Refuse *fragment* unless it is a plain piece of a filename: a prefix or
+    suffix is concatenated onto a directory, so a separator, NUL or ``..`` in it
+    would place the result outside that directory (CWE-22)."""
+    if (
+        not isinstance(fragment, str)
+        or not fragment
+        or "\x00" in fragment
+        or "/" in fragment
+        or "\\" in fragment
+        or os.sep in fragment
+        or (os.altsep and os.altsep in fragment)
+        or fragment in (".", "..")
+    ):
+        raise ValueError(
+            f"Invalid {what} {fragment!r}: a filename fragment, not a path "
+            "(no separators, NUL or '..')"
+        )
+    return fragment
+
+
+def make_private_dir(parent, prefix="nltk_", context="pathsec.make_private_dir"):
+    """Create a fresh mode 0700 directory with an unpredictable name under
+    *parent*, which must be a private directory inside an allowed root.
+
+    This is where NLTK writes a file set before renaming it into place, so no
+    other account may be able to plant a name in it.
+    """
+    validate_name_fragment(prefix, what="directory prefix")
+    real = validate_private_dir(parent, context=context)
+    made = tempfile.mkdtemp(prefix=prefix, dir=real)
+    try:
+        validate_path(made, context=context)
+    except BaseException:
+        os.rmdir(made)
+        raise
+    return made
+
+
+def unlink(path, context="pathsec.unlink"):
+    """Remove the name *path* inside an allowed root without following it: a
+    link is removed as a link, a directory is refused, a missing name is fine."""
+    text = _checked_path_text(path, context)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
+    validate_path(os.path.dirname(os.path.abspath(text)) or os.curdir, context=context)
+    try:
+        st = os.lstat(text)
+    except FileNotFoundError:
+        return
+    if stat.S_ISDIR(st.st_mode):
+        raise PermissionError(
+            f"Security Violation [{context}]: {text!r} is a directory, not a name to unlink"
+        )
+    os.unlink(text)
+
+
+def replace(src, dst, context="pathsec.replace"):
+    """Rename the plain file *src* onto *dst*, both inside allowed roots.
+
+    A rename replaces whatever is at *dst* and never follows it, so a link
+    planted there is overwritten rather than written through (CWE-59). *src*
+    must be a single-linked regular file, and *dst* is checked by inode after.
+    """
+    s_text = _checked_path_text(src, context)
+    _reject_bad_name_syntax(s_text, context, error=PermissionError)
+    d_text = _checked_path_text(dst, context)
+    _reject_bad_name_syntax(d_text, context, error=PermissionError)
+    validate_path(s_text, context=context)
+    validate_path(
+        os.path.dirname(os.path.abspath(d_text)) or os.curdir, context=context
+    )
+    st = os.lstat(s_text)
+    if not stat.S_ISREG(st.st_mode) or st.st_nlink != 1:
+        raise PermissionError(
+            f"Security Violation [{context}]: {s_text!r} is not a single-linked "
+            "regular file"
+        )
+    os.replace(s_text, d_text)
+    after = os.lstat(d_text)
+    if not stat.S_ISREG(after.st_mode) or (after.st_dev, after.st_ino) != (
+        st.st_dev,
+        st.st_ino,
+    ):
+        raise PermissionError(
+            f"Security Violation [{context}]: {d_text!r} was swapped while it was installed"
+        )
+
+
+def remove_tree(path, context="pathsec.remove_tree", ignore_errors=False):
+    """Remove the directory *path* and its contents, inside an allowed root,
+    without following any link: a link planted inside is removed as a link, so
+    a deletion can never be redirected outside the tree (CWE-59).
+
+    Where :func:`shutil.rmtree` is descriptor based (``avoids_symlink_attacks``)
+    it does the removal, so a subdirectory swapped for a link between the
+    listing and the descent is not followed either; elsewhere the tree is
+    walked bottom-up by name without following links. *ignore_errors* keeps a
+    cleanup from masking the error it runs after: removal failures are
+    swallowed, the security refusals above never are.
+    """
+    text = _checked_path_text(path, context)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
+    validate_path(text, context=context)
+    st = os.lstat(text)
+    if stat.S_ISLNK(st.st_mode) or not stat.S_ISDIR(st.st_mode):
+        raise PermissionError(
+            f"Security Violation [{context}]: {text!r} is not a directory to remove"
+        )
+    if shutil.rmtree.avoids_symlink_attacks:
+        shutil.rmtree(text, ignore_errors=ignore_errors)
+        return
+
+    def _remove(op, target):
+        try:
+            op(target)
+        except OSError:
+            if not ignore_errors:
+                raise
+
+    for root, dirs, files in os.walk(text, topdown=False, followlinks=False):
+        for name in files:
+            _remove(os.unlink, os.path.join(root, name))
+        for name in dirs:
+            entry = os.path.join(root, name)
+            _remove(os.unlink if os.path.islink(entry) else os.rmdir, entry)
+    _remove(os.rmdir, text)
+
+
+def ensure_private_dir(path, mode=0o700, context="pathsec.ensure_private_dir"):
+    """Create the caller-named directory *path* inside an allowed root if it
+    is missing (with *mode*, whatever the umask) and refuse it unless it is
+    private: owned by this account or root, no group or world write bit, and
+    every ancestor private or sticky (:func:`validate_private_dir`). For
+    output a caller names, where :func:`make_private_dir` (an unpredictable
+    name) does not apply. Returns the resolved path."""
+    text = _checked_path_text(path, context)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
+    validate_path(text, context=context)
+    if not os.path.isdir(text):
+        try:
+            os.mkdir(text, mode)
+        except FileExistsError:
+            # something else stands at the name: a file is reported as the
+            # name clash it is, a directory raced in is judged below
+            if not os.path.isdir(text):
+                raise
+    return validate_private_dir(text, context=context)
+
+
+def pin_files(names, context="pathsec.pin_files"):
+    """Open every existing name in *names* through :func:`open` and keep the
+    handles, so that after a library has reopened the names itself,
+    :func:`verify_pinned` can prove it saw the same inodes.
+
+    Each open uses ``O_NOFOLLOW`` and refuses a multiply-linked file (CWE-59).
+    Nothing is created. Returns ``{name: handle}`` for the names that exist;
+    close them with :func:`release`.
+    """
+    pins = {}
+    for name in names:
+        try:
+            # the module's own hardened open, defined above, not the builtin
+            pins[name] = open(
+                name, "rb", context=context
+            )  # sandboxed-open ok: pathsec.open
+        except FileNotFoundError:
+            continue
+        except BaseException:
+            release(pins)
+            raise
+    return pins
+
+
+def release(pins):
+    """Close the handles :func:`pin_files` returned."""
+    for handle in pins.values():
+        handle.close()
+
+
+def verify_pinned(pins, names, context="pathsec.verify_pinned"):
+    """After a library opened *names* by path, every name that exists must be
+    the regular file pinned before, or a fresh single-linked regular file the
+    library created; anything else was swapped in between (CWE-367). Closes
+    the pins."""
+    try:
+        for name in names:
+            try:
+                st = os.lstat(name)
+            except FileNotFoundError:
+                continue
+            if not stat.S_ISREG(st.st_mode):
+                raise PermissionError(
+                    f"Security Violation [{context}]: {name!r} is no longer a regular file"
+                )
+            if name in pins:
+                pinned = os.fstat(pins[name].fileno())
+                if (st.st_dev, st.st_ino) != (pinned.st_dev, pinned.st_ino):
+                    raise PermissionError(
+                        f"Security Violation [{context}]: {name!r} was swapped "
+                        "between the check and the open"
+                    )
+            elif st.st_nlink > 1:
+                raise PermissionError(
+                    f"Security Violation [{context}]: {name!r} is a hardlink"
+                )
+    finally:
+        release(pins)
+
+
+def connect_sqlite_read_only(
+    path, names=None, context="pathsec.connect_sqlite_read_only"
+):
+    """A read-only sqlite connection bound to the inode of *path*.
+
+    *names* lists the database and every sidecar name sqlite may reopen by
+    path (the database alone when omitted). They are pinned first; where the
+    platform exposes descriptors as names the database is opened on the pinned
+    descriptor itself (``/dev/fd/N``, immutable, read only) so a later change
+    to the NAME cannot redirect it (CWE-367); elsewhere it is opened by name
+    as a read-only file URI and the names are verified afterwards. The pins
+    are released on return.
+    """
+    import sqlite3
+
+    text = _checked_path_text(path, context)
+    validate_path(text, context=context)
+    names = [text] if names is None else list(names)
+    pins = pin_files(names, context=context)
+    handle = pins.get(text)
+    if handle is not None and os.name == "posix" and os.path.isdir("/dev/fd"):
+        uri = "file:/dev/fd/%d?immutable=1&mode=ro" % handle.fileno()
+        try:
+            connection = sqlite3.connect(uri, uri=True)
+            # force the open while the descriptor is still held
+            connection.execute("PRAGMA schema_version").fetchall()
+        except sqlite3.Error:
+            connection = None
+        if connection is not None:
+            release(pins)
+            return connection
+    # by name, still read only: a file URI with mode=ro (the path is
+    # percent-encoded by as_uri, so a '?' or '#' in it cannot add a parameter)
+    uri = Path(os.path.abspath(text)).as_uri() + "?mode=ro"
+    try:
+        connection = sqlite3.connect(uri, uri=True)
+    except BaseException:
+        release(pins)
+        raise
+    try:
+        verify_pinned(pins, names, context=context)
+    except BaseException:
+        connection.close()
+        raise
+    return connection
+
+
 __all__ = [
     "validate_path",
     "validate_model_resource",
@@ -2572,4 +2897,15 @@ __all__ = [
     "urlopen",
     "ZipFile",
     "ENFORCE",
+    "validate_private_dir",
+    "validate_name_fragment",
+    "make_private_dir",
+    "ensure_private_dir",
+    "unlink",
+    "replace",
+    "remove_tree",
+    "pin_files",
+    "release",
+    "verify_pinned",
+    "connect_sqlite_read_only",
 ]

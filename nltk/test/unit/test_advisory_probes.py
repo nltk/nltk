@@ -1114,7 +1114,9 @@ def test_89p3_cap_removed_probe_has_teeth():
 
 def test_89p3_tail_reslice_probe_has_teeth():
     """Only the linear parse removed: the pre-fix parser behind the cap it
-    lacked, so the probe must flip VULNERABLE through a scaling leg."""
+    lacked, so the probe must flip VULNERABLE through its first scaling leg,
+    the front-loaded chain, which read it at 9.5x to 18.5x on the hosted
+    runners where the flat chain fell to 7.3x."""
     from nltk.ccg import lexicon
 
     probe = probes.PROBES["GHSA-89p3-fcch-88ph"]
@@ -1133,7 +1135,7 @@ def test_89p3_tail_reslice_probe_has_teeth():
         lexicon.augParseCategory = capped_old_augParseCategory
         status, evidence = probe()
         assert status == probes.VULNERABLE, evidence
-        assert "quadratic" in evidence, evidence
+        assert "front-loaded" in evidence and "quadratic" in evidence, evidence
     finally:
         lexicon.augParseCategory = real
     assert probe()[0] == probes.FIXED
