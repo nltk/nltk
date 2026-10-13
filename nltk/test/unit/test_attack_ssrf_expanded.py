@@ -49,6 +49,7 @@ import urllib.request
 import pytest
 
 from nltk import pathsec
+from nltk.util import set_proxy
 
 # =========================================================================== #
 # Fixtures and helpers
@@ -1006,18 +1007,22 @@ def stub_server(monkeypatch, no_real_egress):
         server.server_close()
 
 
-@pytest.fixture(params=["environment"])
+@pytest.fixture(params=["environment", "set_proxy"])
 def credentialed_proxy(request, monkeypatch, stub_server):
     """Configure a stub proxy that wants _PROXY_USER/_PROXY_PASSWORD, with the
-    credentials in HTTP_PROXY and HTTPS_PROXY ("environment"), and return the
-    list of what it receives."""
+    credentials in HTTP_PROXY and HTTPS_PROXY ("environment") or given to
+    nltk.set_proxy ("set_proxy"), and return the list of what it receives."""
     received = []
     proxy = stub_server(_proxy_handler(received))
     address = f"127.0.0.1:{proxy.server_port}"
-    with_credentials = f"http://{_PROXY_USER}:{_PROXY_PASSWORD}@{address}"
-    _use_only_these_proxy_settings(
-        monkeypatch, HTTP_PROXY=with_credentials, HTTPS_PROXY=with_credentials
-    )
+    if request.param == "environment":
+        with_credentials = f"http://{_PROXY_USER}:{_PROXY_PASSWORD}@{address}"
+        _use_only_these_proxy_settings(
+            monkeypatch, HTTP_PROXY=with_credentials, HTTPS_PROXY=with_credentials
+        )
+    else:
+        _use_only_these_proxy_settings(monkeypatch)
+        set_proxy(f"http://{address}", user=_PROXY_USER, password=_PROXY_PASSWORD)
     return received
 
 
@@ -1065,4 +1070,111 @@ def test_proxy_credentials_follow_a_redirect_that_stays_proxied(
         ("GET", url, _PROXY_AUTH),
         ("GET", landing, _PROXY_AUTH),
     ]
+    assert no_real_egress == []
+
+
+def test_proxy_credentials_authenticate_the_https_tunnel(
+    credentialed_proxy, no_real_egress
+):
+    """An HTTPS request goes through a CONNECT tunnel, which urllib opens before
+    any handler sees a response. The credentials, from HTTPS_PROXY or from
+    set_proxy, must be on that CONNECT, and only the proxy gets them."""
+    with pytest.raises(OSError, match="Tunnel connection failed: 502"):
+        pathsec.urlopen("https://93.184.216.34/index.xml", timeout=5)
+    assert credentialed_proxy == [("CONNECT", "93.184.216.34:443", _PROXY_AUTH)]
+    assert no_real_egress == []
+
+
+# Credentials that are URL or header syntax. set_proxy percent-encodes them into
+# the proxy URL and urllib sends them base64-encoded, so each must reach the
+# proxy as data, decoded back exactly.
+_HOSTILE_CREDENTIALS = [
+    ("CORP\\alice", "p@ss:w/rd %"),  # a domain user; URL delimiters in the password
+    ("evil@10.0.0.1:8080/", "s3cret"),  # a user name that reads as another proxy
+    ("alice", "x\r\nX-Injected: 1"),  # a header injection attempt
+    ("alice", "s3cret?#[::1]"),  # query, fragment and IPv6-literal delimiters
+    ("alice", "%40%3A%2F"),  # text that is already percent-encoded stays literal
+    ("jürgen", "pässwörd"),  # non-ASCII, sent as UTF-8
+]
+
+
+@pytest.mark.parametrize(
+    "user,password",
+    _HOSTILE_CREDENTIALS,
+    ids=[
+        "url-delimiters",
+        "authority-in-user",
+        "crlf-in-password",
+        "query-fragment-brackets",
+        "percent-encoded-text",
+        "non-ascii",
+    ],
+)
+@pytest.mark.parametrize("scheme", ["https", "http"])
+def test_set_proxy_hostile_credentials_reach_the_proxy_as_data(
+    scheme, user, password, stub_server, monkeypatch, no_real_egress
+):
+    """The configured proxy gets exactly the credentials given to set_proxy,
+    once, on the CONNECT of an HTTPS tunnel or on a plain HTTP request, with no
+    header injected; nothing else is contacted."""
+    received, header_names = [], []
+
+    class Proxy(_proxy_handler(received, user, password)):
+        def do_GET(self):
+            header_names.extend(name.lower() for name in self.headers)
+            super().do_GET()
+
+        do_CONNECT = do_GET
+
+    proxy = stub_server(Proxy)
+    _use_only_these_proxy_settings(monkeypatch)
+    set_proxy(f"http://127.0.0.1:{proxy.server_port}", user=user, password=password)
+
+    if scheme == "https":
+        with pytest.raises(OSError, match="Tunnel connection failed: 502"):
+            pathsec.urlopen("https://93.184.216.34/index.xml", timeout=5)
+        request = ("CONNECT", "93.184.216.34:443")
+    else:
+        with pathsec.urlopen("http://93.184.216.34/index.xml", timeout=5) as response:
+            assert response.status == 200
+        request = ("GET", "http://93.184.216.34/index.xml")
+    assert received == [(*request, _basic_credentials(user, password))]
+    assert "x-injected" not in header_names
+    assert no_real_egress == []
+
+
+@pytest.mark.parametrize(
+    "proxy_url",
+    [
+        "http://{proxy}/?next=http://{decoy}",
+        "http://{proxy}/#http://{decoy}",
+        "http://{proxy}/http://{decoy}",
+    ],
+    ids=["url-in-query", "url-in-fragment", "url-in-path"],
+)
+def test_set_proxy_credentials_go_to_the_configured_proxy_only(
+    proxy_url, stub_server, monkeypatch, no_real_egress
+):
+    """A proxy URL can hold another URL after its host. set_proxy reads the host
+    with the parser ProxyHandler uses, so the credentials and the CONNECT go to
+    the configured proxy, and the address later in the URL (a second stub) gets
+    nothing."""
+    received, decoy_received = [], []
+    proxy = stub_server(_proxy_handler(received))
+    decoy = stub_server(_proxy_handler(decoy_received))
+    _use_only_these_proxy_settings(monkeypatch)
+    set_proxy(
+        proxy_url.format(
+            proxy=f"127.0.0.1:{proxy.server_port}",
+            decoy=f"127.0.0.1:{decoy.server_port}",
+        ),
+        user=_PROXY_USER,
+        password=_PROXY_PASSWORD,
+    )
+
+    with pytest.raises(OSError) as refused:
+        pathsec.urlopen("https://93.184.216.34/index.xml", timeout=5)
+    assert decoy_received == [], "the credentials went to an address in the URL"
+    assert received == [("CONNECT", "93.184.216.34:443", _PROXY_AUTH)]
+    assert "Tunnel connection failed: 502" in str(refused.value)
     assert no_real_egress == []

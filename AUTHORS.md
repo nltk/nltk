@@ -356,6 +356,7 @@
 - jankesec <https://github.com/jankesec>
 - Daniel Coles <https://github.com/manus-pi>
 - Fodhil Benhiba <https://github.com/F0DH1L>
+- Yashvardhan Thanvi <https://github.com/Thanatos9404>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
