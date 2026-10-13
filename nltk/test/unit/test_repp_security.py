@@ -80,7 +80,8 @@ def test_scratch_input_is_staged_in_a_data_root_and_cleaned_up(monkeypatch):
     assert not hasattr(ReppTokenizer, "working_dir")  # shared-temp attr is gone
 
     tok = object.__new__(ReppTokenizer)
-    tok.repp_dir = "/x"
+    # a real, private config tree: the command builder now validates it
+    tok.repp_dir = str(_make_repp_dir(pathlib.Path(_staging()) / "repp"))
     tok.encoding = "utf8"
 
     captured = {}
@@ -191,7 +192,8 @@ def test_execute_reaches_spawn_for_a_trusted_binary(monkeypatch):
 
 def _detached_tokenizer():
     tok = object.__new__(ReppTokenizer)
-    tok.repp_dir = "/x"
+    # a real, private config tree: the command builder now validates it
+    tok.repp_dir = str(_make_repp_dir(pathlib.Path(_staging()) / "repp"))
     tok.encoding = "utf8"
     return tok
 
