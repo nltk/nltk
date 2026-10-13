@@ -59,6 +59,56 @@ def _malt_learn_mode_model():
         shutil.rmtree(outside, ignore_errors=True)
 
 
+def _repp_config_dir_with_a_planted_link():
+    """Third-pass sibling sink: a directory an external tool READS natively
+    (REPP's config tree, like SENNA's data dir and C&C's models). A symlink
+    planted inside it must be refused while the command is built, before any
+    binary runs; no tool is needed, the command builder is a pure function."""
+    import shutil
+
+    from nltk.tokenize import repp as repp_mod
+
+    if not hasattr(os, "symlink"):
+        return STATIC, "no symlinks on this platform"
+    base = tempfile.mkdtemp(prefix=".nltk_fg9w_repp_", dir=os.path.expanduser("~"))
+    try:
+        tree = os.path.join(base, "repp")
+        os.makedirs(os.path.join(tree, "src"))
+        os.makedirs(os.path.join(tree, "erg"))
+        for name in ("src/repp", "erg/repp.set"):
+            with open(
+                os.path.join(tree, name), "wb"
+            ):  # sandboxed-open ok: probe fixture under ~
+                pass
+        victim = os.path.join(base, "victim.set")
+        with open(victim, "w") as handle:  # sandboxed-open ok: probe fixture under ~
+            handle.write("outside")
+        try:
+            os.symlink(victim, os.path.join(tree, "erg", "planted.set"))
+        except OSError as exc:
+            return STATIC, f"cannot plant a symlink here: {exc}"
+        tokenizer = repp_mod.ReppTokenizer.__new__(repp_mod.ReppTokenizer)
+        tokenizer.repp_dir = tree
+        tokenizer.encoding = "utf8"
+        try:
+            cmd = tokenizer.generate_repp_command(os.path.join(base, "in.txt"))
+        except Exception as exc:
+            if is_security_rejection(exc):
+                return (
+                    FIXED,
+                    "config tree with a planted symlink refused before the binary",
+                )
+            return STATIC, f"non-security failure {type(exc).__name__}: {exc}"
+        if any(tree in str(tok) for tok in cmd):
+            return (
+                VULNERABLE,
+                f"command built over a tree holding a planted link {cmd!r}",
+            )
+        return FIXED, "no tampered tree reached the command"
+    finally:
+        shutil.rmtree(base, ignore_errors=True)
+
+
 @probe("GHSA-fg9w-wfp5-j933")
 def _bllip_model_paths():
     """``BllipParser(parser_model=<outside-root>)`` must be refused before the
@@ -134,7 +184,8 @@ def _bllip_model_paths():
         shutil.rmtree(outside, ignore_errors=True)
 
     malt_result = _malt_learn_mode_model()
-    results = [bllip_result, malt_result]
+    repp_result = _repp_config_dir_with_a_planted_link()
+    results = [bllip_result, malt_result, repp_result]
     for status, detail in results:
         if status == VULNERABLE:
             return VULNERABLE, detail

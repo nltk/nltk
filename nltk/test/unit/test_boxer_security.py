@@ -194,9 +194,23 @@ def test_boxer_scratch_file_staged_in_data_root(monkeypatch):
 # input line would inject or misroute those boundaries (the guard runs pre-spawn).
 
 
+def _staged_models():
+    """A real, private ``models/boxer`` tree: ``_call_candc`` validates the
+    tree it hands candc (GHSA-fg9w-wfp5-j933), so a fake name is refused."""
+    try:
+        base = nltk.data.make_staging_dir(prefix="candc_models_", cleanup=True)
+    except PermissionError as exc:  # pragma: no cover - env-dependent
+        pytest.skip(f"no writable in-sandbox NLTK data root: {exc}")
+    models = os.path.join(base, "models")
+    os.makedirs(os.path.join(models, "boxer"))
+    with open(os.path.join(models, "boxer", "super"), "w") as handle:
+        handle.write("")
+    return models
+
+
 def _candc_boxer(spy):
     boxer = Boxer.__new__(Boxer)
-    boxer._candc_models_path = "/models"
+    boxer._candc_models_path = _staged_models()
     boxer._candc_bin = "/nonexistent/candc"  # never reached for a refused input
     boxer._call = spy
     return boxer
