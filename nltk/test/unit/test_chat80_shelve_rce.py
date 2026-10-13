@@ -44,6 +44,8 @@ class _Gadget:
 def _make_shelf(base, values):
     with shelve.open(base, "n") as shelf:
         shelf.update(values)
+        # as val_dump writes it: the key manifest names every stored key
+        shelf["__nltk_keys__"] = sorted(k for k in shelf.keys() if k != "__nltk_keys__")
 
 
 def _gate_shelf(base):
@@ -105,9 +107,14 @@ def test_restricted_shelf_round_trips_benign_valuations(tmp_path):
 
     restricted = _restricted_shelve_open(base)
     try:
-        assert sorted(restricted.keys()) == ["adjacent", "size"]
+        assert sorted(k for k in restricted.keys() if k != "__nltk_keys__") == [
+            "adjacent",
+            "size",
+        ]
         assert restricted["adjacent"] == {("chile", "argentina"), ("uk", "france")}
-        assert dict(restricted.items()) == values
+        loaded = dict(restricted.items())
+        loaded.pop("__nltk_keys__", None)
+        assert loaded == values
     finally:
         restricted.close()
 
