@@ -109,10 +109,19 @@ def _marker(tmp_path, tag):
 def _plant(module, base, key, raw):
     """Write benign and payload bytes straight into the backend, bypassing
     shelve's pickler so the payload bytes are exactly ``raw``."""
+    from nltk.sem import chat80
+
     db = module.open(base, "n")
     try:
         db[b"ok"] = pickle.dumps(["athens", "bangkok"])
         db[key] = raw
+        names = ["ok"]
+        try:
+            names.append(key.decode() if isinstance(key, bytes) else key)
+        except UnicodeDecodeError:
+            pass
+        names = sorted(set(names))
+        db[chat80._STORE_MANIFEST_KEY.encode()] = pickle.dumps(names)
     finally:
         db.close()
 

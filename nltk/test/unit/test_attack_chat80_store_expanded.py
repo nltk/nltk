@@ -442,7 +442,8 @@ def test_val_dump_then_restricted_reload_round_trip_records_backend(staged):
     shelf = chat80._restricted_shelve_open(base)
     try:
         # val_dump stores the concept labels the bundle yields, not its name
-        assert set(shelf.keys()) == {"albania", "border", "bulgaria", "greece"}
+        keys = set(shelf.keys()) - {chat80._STORE_MANIFEST_KEY}
+        assert keys == {"albania", "border", "bulgaria", "greece"}
         assert set(shelf["border"]) == {
             ("greece", "albania"),
             ("albania", "greece"),

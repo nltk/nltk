@@ -57,25 +57,24 @@ def _use_backend(monkeypatch, name):
 
 
 def _write_store(base, values):
+    """A store as val_dump writes it: the values plus the key manifest."""
     with shelve.open(base, "n") as store:
         store.update(values)
+        store[chat80._STORE_MANIFEST_KEY] = sorted(
+            k for k in values if k != chat80._STORE_MANIFEST_KEY
+        )
 
 
 def _assert_round_trip(base, dumped):
     """``val_load(base)`` must equal the dumped Valuation, pair for pair."""
     loaded = chat80.val_load(base)
     assert type(loaded) is Valuation
+    # the manifest makes the load exact on every backend, ndbm included
+    assert loaded == dumped
     with shelve.open(base, "r") as store:
-        stored = dict(store.items())
-    assert loaded == stored
-    lost = set(dumped) - set(stored)
-    if lost:
-        # macOS ndbm can skip a key when it iterates a store holding a large
-        # value (the plain shelf above skips it too); other backends return all.
-        assert dbm.whichdb(base) == "dbm.ndbm", sorted(lost)
-        assert loaded == {k: v for k, v in dumped.items() if k not in lost}
-    else:
-        assert loaded == dumped
+        stored = {k: v for k, v in store.items() if k != chat80._STORE_MANIFEST_KEY}
+    if dbm.whichdb(base) != "dbm.ndbm":
+        assert loaded == stored
     return loaded
 
 
@@ -191,3 +190,125 @@ def test_a_reordered_real_relation_is_refused(stage):
     _write_store(base, {"city": list(reversed(dumped["city"])), "athens": "athens"})
     with pytest.raises(ValueError, match=r"Unrecognized value for symbol\s+'city'"):
         chat80.val_load(base)
+
+
+# =========================================================================
+# The key manifest: loads never depend on backend iteration
+# =========================================================================
+def _dump_and_load(stage, monkeypatch, backend, values=None):
+    _use_backend(monkeypatch, backend)
+    base = os.path.join(stage, "manifest")
+    if values is None:
+        chat80.val_dump(list(chat80.rels), base)
+    else:
+        _write_store(base, values)
+    return base, chat80.val_load(base)
+
+
+def test_a_store_with_a_large_value_round_trips_through_the_manifest(
+    stage, monkeypatch
+):
+    for backend in BACKENDS:
+        try:
+            _use_backend(monkeypatch, backend)
+        except BaseException:
+            continue
+        base = os.path.join(stage, "big_" + backend.split(".")[1])
+        values = {
+            f"k{i:02d}": ("x" * (1024 * 1024) if i == 10 else "v") for i in range(20)
+        }
+        _write_store(base, values)
+        loaded = chat80.val_load(base)
+        assert len(loaded) == 20, backend
+        assert len(loaded["k10"]) == 1024 * 1024
+
+
+def test_val_dump_writes_a_sorted_manifest_of_every_key(stage):
+    base = os.path.join(stage, "manifest")
+    chat80.val_dump(list(chat80.rels), base)
+    loaded = chat80.val_load(base)
+    store = chat80._restricted_shelve_open(base)
+    try:
+        manifest = store[chat80._STORE_MANIFEST_KEY]
+    finally:
+        store.close()
+    assert manifest == sorted(loaded)
+    assert len(manifest) == len(set(manifest))
+    assert chat80._STORE_MANIFEST_KEY not in loaded
+
+
+def _manifest_store(stage, name, values, manifest):
+    base = os.path.join(stage, name)
+    with shelve.open(base, "n") as store:
+        store.update(values)
+        if manifest is not None:
+            store[chat80._STORE_MANIFEST_KEY] = manifest
+    return base
+
+
+def test_a_manifest_naming_a_missing_key_is_refused(stage):
+    base = _manifest_store(stage, "missing", {"a": "x"}, ["a", "zzz_absent"])
+    with pytest.raises(ValueError, match="manifest names"):
+        chat80.val_load(base)
+
+
+def test_a_store_holding_keys_its_manifest_does_not_name_is_refused(stage):
+    base = _manifest_store(stage, "extra", {"a": "x", "planted": "y"}, ["a"])
+    with pytest.raises(ValueError, match="does not name"):
+        chat80.val_load(base)
+
+
+@pytest.mark.parametrize(
+    "manifest",
+    ["notalist", ["b", "a"], ["a", "a"], [1, 2], [chat80._STORE_MANIFEST_KEY]],
+)
+def test_a_manifest_that_is_not_a_sorted_list_of_names_is_refused(stage, manifest):
+    base = _manifest_store(stage, "shape", {"a": "x", "b": "y"}, manifest)
+    with pytest.raises(ValueError, match="manifest"):
+        chat80.val_load(base)
+
+
+def test_a_store_without_a_manifest_is_refused_on_every_backend(stage, monkeypatch):
+    for backend in BACKENDS:
+        try:
+            _use_backend(monkeypatch, backend)
+        except BaseException:
+            continue
+        base = _manifest_store(
+            stage, "old_" + backend.split(".")[1], {"size": "large"}, None
+        )
+        with pytest.raises(ValueError, match="no key manifest"):
+            chat80.val_load(base)
+
+
+class _LossyShelf:
+    """A shelf whose iteration drops one key but whose lookups are complete,
+    the shape of the measured ndbm defect, independent of the platform."""
+
+    def __init__(self, values, manifest=True):
+        self._values = dict(values)
+        if manifest:
+            self._values[chat80._STORE_MANIFEST_KEY] = sorted(values)
+
+    def __iter__(self):
+        return iter(list(self._values)[1:])
+
+    def __len__(self):
+        return len(self._values) - 1
+
+    def __contains__(self, key):
+        return key in self._values
+
+    def __getitem__(self, key):
+        return self._values[key]
+
+    def items(self):
+        for key in self:
+            yield key, self._values[key]
+
+
+def test_the_manifest_defeats_a_lossy_iteration_on_every_platform(stage):
+    values = {f"k{i:02d}": "v" for i in range(20)}
+    with_manifest = chat80._stored_items(_LossyShelf(values), os.path.join(stage, "m"))
+    assert sorted(k for k, _ in with_manifest) == sorted(values)
+    assert len(list(_LossyShelf(values, manifest=False).items())) == 19
