@@ -673,7 +673,8 @@ def test_an_ordinary_install_is_still_accepted(
     _enrich(kind, tool, inside)
     if name == "repp":
         cmd = run(tool, monkeypatch)
-        assert cmd[cmd.index("-c") + 1].endswith(os.path.join("erg", "repp.set"))
+        # repp spells its config path with "/" on every platform
+        assert cmd[cmd.index("-c") + 1].endswith("/erg/repp.set")
     else:
         with pytest.raises(_Spawned):
             run(tool, monkeypatch)
@@ -691,16 +692,24 @@ def test_the_guard_accepts_the_usual_spellings_of_the_same_directory(staged):
 @pytest.mark.parametrize(
     "spelling", ["dotdot", "nul", "trailing-dot", "trailing-space", "relative"]
 )
-def test_the_guard_refuses_unsafe_spellings_before_touching_the_disk(staged, spelling):
+def test_the_guard_refuses_unsafe_spellings_before_touching_the_disk(
+    staged, spelling, monkeypatch
+):
     base, outside = staged
     tool = _repp_install(base)
-    bad = {
-        "dotdot": os.path.join(tool, "..", "repp"),
-        "nul": tool + "\0",
-        "trailing-dot": tool + ".",
-        "trailing-space": tool + " ",
-        "relative": os.path.relpath(tool),
-    }[spelling]
+    if spelling == "relative":
+        # the install's own name, relative to the working directory beside it
+        # (a Windows runner's cwd and home sit on different drives, so no
+        # relpath across them)
+        monkeypatch.chdir(base)
+        bad = os.path.basename(tool)
+    else:
+        bad = {
+            "dotdot": os.path.join(tool, "..", "repp"),
+            "nul": tool + "\0",
+            "trailing-dot": tool + ".",
+            "trailing-space": tool + " ",
+        }[spelling]
     with pytest.raises(REFUSED, match="Security Violation"):
         pathsec.validate_tool_data_dir(bad, context="test")
 
