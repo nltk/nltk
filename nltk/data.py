@@ -735,9 +735,7 @@ def _refuse_file_not_ours(stream, path):
         st = os.fstat(stream.fileno())
     except (OSError, ValueError, AttributeError):
         return stream
-    if stat.S_ISREG(st.st_mode) and (
-        st.st_uid not in (os.geteuid(), 0) or st.st_mode & (stat.S_IWGRP | stat.S_IWOTH)
-    ):
+    if stat.S_ISREG(st.st_mode) and not pathsec._private_stat(st):
         stream.close()
         raise PermissionError(
             "NLTK will not read %r: it is writable by, or owned by, another "
@@ -1395,9 +1393,7 @@ def find(resource_name, paths=None):
             st = os.stat(path)
         except OSError:
             return False
-        if st.st_uid not in (os.geteuid(), 0):
-            return True
-        return bool(st.st_mode & (stat.S_IWGRP | stat.S_IWOTH))
+        return not pathsec._private_stat(st)
 
     # Check each item in our path
     for path_ in paths:

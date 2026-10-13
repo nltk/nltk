@@ -114,7 +114,7 @@ from collections.abc import Iterator
 from re import Match
 from typing import Any, Dict, List, Optional, Tuple, Union
 
-from nltk import redos
+from nltk import pathsec, redos
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.picklesec import allowlisted_pickle_load
@@ -1928,11 +1928,9 @@ def save_punkt_params(params, dir: str | None = None) -> str:
         from nltk.data import make_staging_dir
 
         dir = make_staging_dir(prefix="nltk_punkt_params_")
-    validate_path(dir, context="save_punkt_params")
-    if not os.path.isdir(dir):
-        # 0700 so a caller-supplied output dir is private regardless of umask,
-        # matching the private default staging dir.
-        os.mkdir(dir, 0o700)
+    # created 0700 if missing and refused unless private, like the default
+    # staging dir: another account must not be able to swap a tab file
+    pathsec.ensure_private_dir(dir, context="save_punkt_params")
     # newline="" writes LF, not the platform default, so the tab files match the
     # installed punkt_tab format and reload cleanly on Windows (a default text
     # write there emits CRLF, leaving a stray \r on every reloaded token).

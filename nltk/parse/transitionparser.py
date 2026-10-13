@@ -11,7 +11,6 @@ import tempfile
 from collections import deque
 from copy import deepcopy
 from operator import itemgetter
-from os import remove
 
 try:
     from numpy import array
@@ -21,6 +20,8 @@ try:
 except ImportError:
     pass
 
+from nltk import pathsec
+from nltk.data import make_staging_dir
 from nltk.parse import DependencyEvaluator, DependencyGraph, ParserI
 from nltk.pathsec import open as pathsec_open
 from nltk.picklesec import allowlisted_pickle_load, pickle_dump
@@ -585,11 +586,13 @@ class TransitionParser(ParserI):
         :type modelfile : str
         """
 
+        # The scratch file lands in a private staging dir inside a data root,
+        # never the shared system temp dir (CWE-377), and is removed after.
+        staging_dir = make_staging_dir(prefix="nltk_tp_train_", cleanup=True)
+        input_file = tempfile.NamedTemporaryFile(
+            prefix="transition_parse.train", dir=staging_dir, delete=False
+        )
         try:
-            input_file = tempfile.NamedTemporaryFile(
-                prefix="transition_parse.train", dir=tempfile.gettempdir(), delete=False
-            )
-
             if self._algorithm == self.ARC_STANDARD:
                 self._create_training_examples_arc_std(depgraphs, input_file)
             else:
@@ -622,7 +625,11 @@ class TransitionParser(ParserI):
             with pathsec_open(modelfile, "wb", context="TransitionParser.train") as f:
                 pickle_dump(model, f)
         finally:
-            remove(input_file.name)
+            input_file.close()
+            pathsec.unlink(input_file.name, context="TransitionParser.train")
+            pathsec.remove_tree(
+                staging_dir, context="TransitionParser.train", ignore_errors=True
+            )
 
     def parse(self, depgraphs, modelFile):
         """
