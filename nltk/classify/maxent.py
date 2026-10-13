@@ -58,10 +58,10 @@ except ImportError:
     pass
 
 import os
-import shutil
 import tempfile
 from collections import defaultdict
 
+from nltk import pathsec
 from nltk.classify.api import ClassifierI
 from nltk.classify.megam import call_megam, parse_megam_weights, write_megam_file
 from nltk.classify.tadm import call_tadm, parse_tadm_weights, write_tadm_file
@@ -1454,7 +1454,7 @@ def train_maxent_classifier_with_megam(
             )
         os.close(fd)
     except (OSError, ValueError) as e:
-        shutil.rmtree(stagedir, ignore_errors=True)
+        pathsec.remove_tree(stagedir, context="maxent.call_megam", ignore_errors=True)
         raise ValueError("Error while creating megam training file: %s" % e) from e
 
     # Run megam on the training file.
@@ -1487,11 +1487,11 @@ def train_maxent_classifier_with_megam(
     # print('./megam_i686.opt ', ' '.join(options))
     # Delete the training file
     try:
-        os.remove(trainfile_name)
+        pathsec.unlink(trainfile_name, context="maxent.call_megam")
     except OSError as e:
         safe_print(f"Warning: unable to delete {trainfile_name}: {e}")
     # Remove the private staging directory so it does not leak per call.
-    shutil.rmtree(stagedir, ignore_errors=True)
+    pathsec.remove_tree(stagedir, context="maxent.call_megam", ignore_errors=True)
 
     # Parse the generated weight vector.
     weights = parse_megam_weights(stdout, encoding.length(), explicit)
@@ -1563,10 +1563,10 @@ class TadmMaxentClassifier(MaxentClassifier):
         ) as weightfile:
             weights = parse_tadm_weights(weightfile)
 
-        os.remove(trainfile_name)
-        os.remove(weightfile_name)
+        pathsec.unlink(trainfile_name, context="maxent.tadm")
+        pathsec.unlink(weightfile_name, context="maxent.tadm")
         # Remove the private staging directory so it does not leak per call.
-        shutil.rmtree(stagedir, ignore_errors=True)
+        pathsec.remove_tree(stagedir, context="maxent.tadm", ignore_errors=True)
 
         # Convert from base-e to base-2 weights.
         weights *= numpy.log2(numpy.e)
@@ -1684,11 +1684,9 @@ def save_maxent_params(wgt, mpg, lab, aon, tab_dir: str | None = None) -> str:
     _reject_tab_file_separators(mpg, lab, aon)
     if tab_dir is None:
         tab_dir = make_staging_dir(prefix="nltk_maxent_params_")
-    validate_path(tab_dir, context="save_maxent_params")
-    if not os.path.isdir(tab_dir):
-        # 0700 so a caller-supplied output dir is private regardless of umask,
-        # matching the private default staging dir.
-        os.mkdir(tab_dir, 0o700)
+    # created 0700 if missing and refused unless private, like the default
+    # staging dir: another account must not be able to swap a tab file
+    pathsec.ensure_private_dir(tab_dir, context="save_maxent_params")
 
     safe_print(f"Saving Maxent parameters in {tab_dir}")
 

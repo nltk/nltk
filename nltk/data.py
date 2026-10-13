@@ -39,10 +39,8 @@ import functools
 import os
 import pickle
 import re
-import shutil
 import stat
 import sys
-import tempfile
 import textwrap
 import urllib.request
 import warnings
@@ -53,7 +51,7 @@ from io import BytesIO, TextIOWrapper
 from urllib.parse import unquote
 from urllib.request import url2pathname
 
-from nltk import redos
+from nltk import pathsec, redos
 from nltk.pathsec import ZipFile
 from nltk.pathsec import open as _secure_open
 from nltk.pathsec import urlopen as _secure_urlopen
@@ -341,7 +339,7 @@ def staging_tempdir():
         _STAGING_TEMPDIR = None
     if _STAGING_TEMPDIR is None:
         staged = make_staging_dir(prefix="nltk_scratch_")
-        atexit.register(shutil.rmtree, staged, ignore_errors=True)
+        atexit.register(_remove_staging_dir, staged)
         _STAGING_TEMPDIR = staged
     return _STAGING_TEMPDIR
 
@@ -378,26 +376,30 @@ def _staging_dir_is_still_safe(path):
     return True
 
 
-def make_staging_dir(prefix="nltk_", cleanup=False):
+def make_staging_dir(prefix="nltk_", cleanup=False, dir=None):
     """Create a fresh private directory for NLTK's own output, inside a data root.
 
     NLTK's save helpers default here so their output lands within the security
     sandbox (every ``nltk.data.path`` entry is an allowed root) on all platforms,
     including Linux where the shared ``/tmp`` is deliberately not a root. The
-    directory is created with ``tempfile.mkdtemp`` (mode 0700, unpredictable name)
-    under the first ``nltk.data.path`` entry that can be written to.
+    directory is created by :func:`nltk.pathsec.make_private_dir` (mode 0700,
+    unpredictable name) under the first ``nltk.data.path`` entry that can be
+    written to, which must itself be private.
 
     :param prefix: filename prefix for the created directory. It is a *name*
         fragment, not a path: callers build it from values such as a tagger's
-        language code, and ``tempfile.mkdtemp`` simply concatenates it onto
-        *dir*, so a ``..`` inside it would place the directory outside the data
-        root (CWE-22). Path separators and NUL are therefore refused.
+        language code, and it is simply concatenated onto the directory, so a
+        ``..`` inside it would place the directory outside the data root
+        (CWE-22). Path separators and NUL are therefore refused.
     :type prefix: str
     :param cleanup: remove the directory when the interpreter exits. Use it for
         scratch output nobody will look for again; leave it False for a saved
         model, where deleting the user's artifact would be surprising. Without
         it every call leaks a directory under the data root, since the name is
         unpredictable and no caller can find it again to clean up.
+    :param dir: create the directory under this private directory inside a
+        data root instead of the first writable root, for output that will be
+        renamed into place beside it.
     :return: the absolute path of the created directory.
 
     See also :func:`staging_tempdir`, which is this function memoised: one
@@ -410,18 +412,14 @@ def make_staging_dir(prefix="nltk_", cleanup=False):
     :raises PermissionError: if no ``nltk.data.path`` entry is a writable allowed
         root, in which case the caller should pass an explicit destination.
     """
-    prefix = str(prefix)
-    if (
-        "\x00" in prefix
-        or "/" in prefix
-        or "\\" in prefix
-        or os.sep in prefix
-        or (os.altsep and os.altsep in prefix)
-    ):
-        raise ValueError(
-            f"Invalid staging-dir prefix {prefix!r}: a prefix is a filename "
-            "fragment, not a path (no separators or NUL)"
+    prefix = pathsec.validate_name_fragment(str(prefix), what="staging-dir prefix")
+    if dir is not None:
+        staged = pathsec.make_private_dir(
+            dir, prefix, context="nltk.data.make_staging_dir"
         )
+        if cleanup:
+            atexit.register(_remove_staging_dir, staged)
+        return staged
     for root in path:
         base = os.path.expanduser(str(root.path if hasattr(root, "path") else root))
         try:
@@ -433,16 +431,13 @@ def make_staging_dir(prefix="nltk_", cleanup=False):
             # the sandbox does.
             _validate_path(base, context="nltk.data.make_staging_dir")
             os.makedirs(base, exist_ok=True)
-            staged = tempfile.mkdtemp(prefix=prefix, dir=base)
-            try:
-                # Defence in depth: confirm what was actually created is inside
-                # the root just validated, not merely that the base was.
-                _validate_path(staged, context="nltk.data.make_staging_dir")
-            except BaseException:
-                os.rmdir(staged)
-                raise
+            # the root itself must be private: a staging directory another
+            # account can reach is where a planted name would wait for a rename
+            staged = pathsec.make_private_dir(
+                base, prefix, context="nltk.data.make_staging_dir"
+            )
             if cleanup:
-                atexit.register(shutil.rmtree, staged, ignore_errors=True)
+                atexit.register(_remove_staging_dir, staged)
             return staged
         except (OSError, ValueError, PermissionError):
             continue
@@ -451,6 +446,14 @@ def make_staging_dir(prefix="nltk_", cleanup=False):
         f"{len(path)} nltk.data.path entries); pass an explicit destination "
         "directory."
     )
+
+
+def _remove_staging_dir(staged):
+    """atexit hook: remove a staging directory through pathsec, quietly."""
+    try:
+        pathsec.remove_tree(staged, context="nltk.data.make_staging_dir")
+    except (OSError, ValueError, PermissionError):
+        pass
 
 
 class _BoundedGzipFile(GzipFile):
@@ -732,9 +735,7 @@ def _refuse_file_not_ours(stream, path):
         st = os.fstat(stream.fileno())
     except (OSError, ValueError, AttributeError):
         return stream
-    if stat.S_ISREG(st.st_mode) and (
-        st.st_uid not in (os.geteuid(), 0) or st.st_mode & (stat.S_IWGRP | stat.S_IWOTH)
-    ):
+    if stat.S_ISREG(st.st_mode) and not pathsec._private_stat(st):
         stream.close()
         raise PermissionError(
             "NLTK will not read %r: it is writable by, or owned by, another "
@@ -1392,9 +1393,7 @@ def find(resource_name, paths=None):
             st = os.stat(path)
         except OSError:
             return False
-        if st.st_uid not in (os.geteuid(), 0):
-            return True
-        return bool(st.st_mode & (stat.S_IWGRP | stat.S_IWOTH))
+        return not pathsec._private_stat(st)
 
     # Check each item in our path
     for path_ in paths:

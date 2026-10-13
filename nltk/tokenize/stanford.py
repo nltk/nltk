@@ -12,6 +12,7 @@ import tempfile
 import warnings
 from subprocess import PIPE
 
+from nltk import pathsec
 from nltk.data import staging_tempdir
 from nltk.internals import find_jar, java
 from nltk.parse.corenlp import CoreNLPParser
@@ -117,7 +118,7 @@ class StanfordTokenizer(TokenizerI):
         finally:
             if input_file_name:
                 try:
-                    os.unlink(input_file_name)
+                    pathsec.unlink(input_file_name, context="StanfordTokenizer")
                 except FileNotFoundError:
                     pass
                 except OSError:

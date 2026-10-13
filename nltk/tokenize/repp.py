@@ -9,12 +9,11 @@
 
 import os
 import re
-import shutil
 import subprocess
 import sys
 import tempfile
 
-from nltk import redos
+from nltk import pathsec, redos
 from nltk.data import ZipFilePathPointer, make_staging_dir
 from nltk.internals import _tool_location, absolute_tool_dir, find_dir
 from nltk.pathsec import TrustError, has_line_unsafe_char, spawn_trusted
@@ -108,7 +107,9 @@ class ReppTokenizer(TokenizerI):
                 # Decode the stdout and strips the ending newline.
                 repp_output = self._execute(cmd).decode(self.encoding).strip()
         finally:
-            shutil.rmtree(staging_dir, ignore_errors=True)
+            pathsec.remove_tree(
+                staging_dir, context="ReppTokenizer.tokenize_sents", ignore_errors=True
+            )
         for tokenized_sent in self.parse_repp_outputs(repp_output):
             if not keep_token_positions:
                 # Removes token position information.
