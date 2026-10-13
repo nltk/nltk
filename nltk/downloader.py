@@ -765,6 +765,23 @@ def _shared_install(download_dir):
     return not (target == home or target.startswith(home + os.sep))
 
 
+def _canonical_dir(path):
+    """*path* with its existing prefix resolved (symlinks and, on Windows, 8.3
+    aliases such as RUNNER~1) and any missing tail kept as written. The names
+    the downloader derives under it (the install lock, the .tmp file) are
+    removed through pathsec, whose syntax guard refuses an 8.3 alias, so they
+    are derived from the canonical form; only the existing prefix is resolved
+    because realpath of a missing path is unstable on Windows."""
+    head = os.path.abspath(path)
+    tail = []
+    while not os.path.lexists(head):
+        parent, name = os.path.split(head)
+        if parent == head:
+            break
+        head, tail = parent, [name] + tail
+    return os.path.join(os.path.realpath(head), *tail)
+
+
 def _make_install_dirs(download_dir, subdir):
     """Create *download_dir* and *subdir* under it, each missing level without
     a group or world write bit whatever the umask, and return the first of
@@ -1098,6 +1115,7 @@ class Downloader:
             progress += 100 * delta
 
     def _download_package(self, info, download_dir, force, extract=None):
+        download_dir = _canonical_dir(download_dir)
         if extract is None:
             extract = _shared_install(download_dir)
         yield StartPackageMessage(info)

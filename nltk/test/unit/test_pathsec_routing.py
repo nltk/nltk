@@ -356,22 +356,95 @@ def test_tool_wrappers_remove_scratch_through_pathsec(module, function):
 # =========================================================================== #
 
 
-def test_helpers_accept_every_name_pathsec_open_accepts(pathsec_sandbox):
-    """A name NLTK derived itself can carry a leading dash or a tilde, and on
-    a Windows runner an 8.3 component (RUNNER~1); the tool-path syntax guard
-    refuses those, pathsec.open does not, and the contained operations must
-    side with open, or the downloader could create a lock it cannot remove."""
+def test_helpers_refuse_what_the_tool_path_guard_refuses(pathsec_sandbox):
+    """The contained operations apply the same syntax guard as the tool-path
+    checks: a name ending in a dot (which Windows silently strips, so it is
+    checked as one name and opened as another) is refused by every one of
+    them on every platform, so the guard is not relaxed for NLTK's own
+    operations."""
     root, outside = pathsec_sandbox
-    odd = root / "x~1" / "-dash"
-    odd.mkdir(parents=True)
-    target = odd / "~tilde.txt"
-    with pathsec.open(str(target), "w", context="test") as handle:
-        handle.write("x")
-    pathsec.ensure_private_dir(str(odd), context="test")
-    pathsec.replace(str(target), str(odd / "-moved.txt"), context="test")
-    pathsec.unlink(str(odd / "-moved.txt"), context="test")
-    pathsec.remove_tree(str(root / "x~1"), context="test")
-    assert not (root / "x~1").exists()
+    inside = root / "dir"
+    inside.mkdir()
+    (inside / "f.txt").write_text("x")
+    stripped = str(root / "name.")
+    for call in (
+        lambda: pathsec.unlink(stripped, context="test"),
+        lambda: pathsec.remove_tree(stripped, context="test"),
+        lambda: pathsec.ensure_private_dir(stripped, context="test"),
+        lambda: pathsec.validate_private_dir(stripped, context="test"),
+        lambda: pathsec.replace(str(inside / "f.txt"), stripped, context="test"),
+        lambda: pathsec.replace(stripped, str(inside / "g.txt"), context="test"),
+    ):
+        with pytest.raises(PermissionError, match="ends with a dot or space"):
+            call()
+    assert (inside / "f.txt").read_text() == "x" and not os.path.lexists(stripped)
+
+
+def test_downloader_derives_its_names_from_the_canonical_download_dir(tmp_path):
+    """The install lock and .tmp names are derived from the resolved download
+    dir (a symlink here, an 8.3 alias such as RUNNER~1 on a Windows runner),
+    so the syntax guard in pathsec.unlink accepts what the downloader made."""
+    import hashlib
+    import unittest.mock
+
+    from nltk.downloader import Downloader, _canonical_dir
+
+    real = tmp_path / "real"
+    real.mkdir()
+    alias = tmp_path / "alias"
+    os.symlink(str(real), str(alias))
+    assert _canonical_dir(str(alias)) == os.path.realpath(str(real))
+    missing = str(alias / "not" / "yet")
+    assert _canonical_dir(missing) == os.path.join(
+        os.path.realpath(str(real)), "not", "yet"
+    )
+
+    class DummyInfo:
+        id = "dummy"
+        url = "https://example.com/dummy.txt"
+        size = 1
+        filename = os.path.join("corpora", "dummy.txt")
+        subdir = "corpora"
+        unzip = False
+        sha256_checksum = hashlib.sha256(b"x").hexdigest()
+        checksum = hashlib.md5(b"x").hexdigest()
+
+    canonical = os.path.realpath(str(real))
+    with unittest.mock.patch(
+        "nltk.downloader.urlopen"
+    ) as urlopen_mock, unittest.mock.patch(
+        "nltk.downloader.pathsec_open"
+    ) as pathsec_open_mock, unittest.mock.patch(
+        "nltk.downloader.sha256_hexdigest", return_value=DummyInfo.sha256_checksum
+    ), unittest.mock.patch(
+        "nltk.downloader.md5_hexdigest", return_value=DummyInfo.checksum
+    ), unittest.mock.patch(
+        "nltk.downloader.os.path.getsize", return_value=1
+    ), unittest.mock.patch(
+        "nltk.downloader.pathsec.replace"
+    ) as replace_mock, unittest.mock.patch.object(
+        Downloader, "status", return_value=Downloader.NOT_INSTALLED
+    ):
+        infile = unittest.mock.Mock()
+        infile.read.side_effect = [b"x", b""]
+        urlopen_mock.return_value = infile
+        outfile = unittest.mock.Mock()
+        pathsec_open_mock.return_value.__enter__.return_value = outfile
+        pathsec_open_mock.return_value.__exit__.return_value = False
+        list(
+            Downloader(download_dir=str(alias))._download_package(
+                DummyInfo(), str(alias), force=True
+            )
+        )
+    tmp_file = os.path.join(canonical, "corpora", "dummy.txt.tmp")
+    final_file = os.path.join(canonical, "corpora", "dummy.txt")
+    pathsec_open_mock.assert_called_once_with(
+        tmp_file, "wb", context="Downloader._download_package", required_root=canonical
+    )
+    replace_mock.assert_called_once_with(
+        tmp_file, final_file, context="Downloader._download_package"
+    )
+    assert not os.path.lexists(os.path.join(canonical, "corpora", "dummy.txt.lock"))
 
 
 def test_downloader_reports_a_stale_lock_it_cannot_remove(tmp_path, monkeypatch):

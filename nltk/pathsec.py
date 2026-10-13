@@ -2572,13 +2572,11 @@ def _checked_path_text(value, context):
     two-faced path object (``.path`` naming one file, ``__fspath__`` another)
     is refused as :func:`validate_path` refuses it, and a non-path or bytes
     value is handled as :func:`_as_path_text` handles it. ``__fspath__`` is
-    read exactly once.
-
-    The helpers then refuse exactly what :func:`open` refuses (containment
-    by :func:`validate_path`, links and special files by inode), and no more:
-    the tool-path syntax guard is not applied, since a name NLTK derived
-    itself (a lock or scratch file under a Windows temp dir, whose path
-    carries an 8.3 component) must stay removable by the code that made it.
+    read exactly once. The helpers then apply the tool-path syntax guard and
+    :func:`validate_path`, so a caller must hand them a canonical name: one
+    NLTK derived under a Windows temp dir can carry an 8.3 alias (RUNNER~1),
+    which the guard refuses, so the deriving code resolves its directory
+    first (see ``nltk.downloader._canonical_dir``).
     """
     if not isinstance(value, (str, bytes)) and hasattr(value, "__fspath__"):
         return _as_path_text(
@@ -2620,6 +2618,7 @@ def validate_private_dir(directory, context="pathsec.validate_private_dir"):
     (CWE-367). POSIX only; the per-user profile stands in on Windows.
     """
     text = _checked_path_text(directory, context)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
     validate_path(text, context=context)
     if os.name != "posix":
         return os.path.realpath(text)
@@ -2673,6 +2672,7 @@ def unlink(path, context="pathsec.unlink"):
     """Remove the name *path* inside an allowed root without following it: a
     link is removed as a link, a directory is refused, a missing name is fine."""
     text = _checked_path_text(path, context)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
     validate_path(os.path.dirname(os.path.abspath(text)) or os.curdir, context=context)
     try:
         st = os.lstat(text)
@@ -2693,7 +2693,9 @@ def replace(src, dst, context="pathsec.replace"):
     must be a single-linked regular file, and *dst* is checked by inode after.
     """
     s_text = _checked_path_text(src, context)
+    _reject_bad_name_syntax(s_text, context, error=PermissionError)
     d_text = _checked_path_text(dst, context)
+    _reject_bad_name_syntax(d_text, context, error=PermissionError)
     validate_path(s_text, context=context)
     validate_path(
         os.path.dirname(os.path.abspath(d_text)) or os.curdir, context=context
@@ -2728,6 +2730,7 @@ def remove_tree(path, context="pathsec.remove_tree", ignore_errors=False):
     swallowed, the security refusals above never are.
     """
     text = _checked_path_text(path, context)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
     validate_path(text, context=context)
     st = os.lstat(text)
     if stat.S_ISLNK(st.st_mode) or not stat.S_ISDIR(st.st_mode):
@@ -2762,6 +2765,7 @@ def ensure_private_dir(path, mode=0o700, context="pathsec.ensure_private_dir"):
     output a caller names, where :func:`make_private_dir` (an unpredictable
     name) does not apply. Returns the resolved path."""
     text = _checked_path_text(path, context)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
     validate_path(text, context=context)
     if not os.path.isdir(text):
         try:
