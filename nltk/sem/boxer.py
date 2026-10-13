@@ -30,13 +30,12 @@ For example::
 
 import operator
 import os
-import shutil
 import subprocess
 import tempfile
 from functools import reduce
 from optparse import OptionParser
 
-from nltk import redos
+from nltk import pathsec, redos
 from nltk.internals import find_binary_absolute
 from nltk.pathsec import TrustError, has_line_unsafe_char, spawn_trusted
 from nltk.sem.drt import (
@@ -272,7 +271,9 @@ class Boxer:
             temp_filename,
         ]
         stdout = self._call(None, self._boxer_bin, args, verbose)
-        shutil.rmtree(staging_dir, ignore_errors=True)
+        pathsec.remove_tree(
+            staging_dir, context="Boxer._call_boxer", ignore_errors=True
+        )
         return stdout
 
     def _find_binary(self, name, bin_dir, verbose=False):
