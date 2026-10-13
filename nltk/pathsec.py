@@ -16,6 +16,7 @@ import ipaddress
 import os
 import re
 import socket
+import shutil
 import stat
 import subprocess
 import sys
@@ -2566,6 +2567,19 @@ class ZipFile(zipfile.ZipFile):
 # ---------------------------------------------------------------------------
 
 
+def _checked_path_text(value, context):
+    """The one str the contained-operation helpers act on for *value*: a
+    two-faced path object (``.path`` naming one file, ``__fspath__`` another)
+    is refused as :func:`validate_path` refuses it, and a non-path or bytes
+    value is handled as :func:`_as_path_text` handles it. ``__fspath__`` is
+    read exactly once."""
+    if not isinstance(value, (str, bytes)) and hasattr(value, "__fspath__"):
+        return _as_path_text(
+            _exact_path_text(value, context), context, error=PermissionError
+        )
+    return _as_path_text(value, context, error=PermissionError)
+
+
 def _shared_ancestor_problem(directory):
     """Why *directory* or an ancestor would let another account swap a name:
     the directory itself must be private; an ancestor may also be a sticky
@@ -2598,7 +2612,7 @@ def validate_private_dir(directory, context="pathsec.validate_private_dir"):
     another local account swap the name between the check and the open
     (CWE-367). POSIX only; the per-user profile stands in on Windows.
     """
-    text = _as_path_text(directory, context, error=PermissionError)
+    text = _checked_path_text(directory, context)
     _reject_bad_name_syntax(text, context, error=PermissionError)
     validate_path(text, context=context)
     if os.name != "posix":
@@ -2652,7 +2666,7 @@ def make_private_dir(parent, prefix="nltk_", context="pathsec.make_private_dir")
 def unlink(path, context="pathsec.unlink"):
     """Remove the name *path* inside an allowed root without following it: a
     link is removed as a link, a directory is refused, a missing name is fine."""
-    text = _as_path_text(path, context, error=PermissionError)
+    text = _checked_path_text(path, context)
     _reject_bad_name_syntax(text, context, error=PermissionError)
     validate_path(os.path.dirname(os.path.abspath(text)) or os.curdir, context=context)
     try:
@@ -2673,8 +2687,8 @@ def replace(src, dst, context="pathsec.replace"):
     planted there is overwritten rather than written through (CWE-59). *src*
     must be a single-linked regular file, and *dst* is checked by inode after.
     """
-    s_text = _as_path_text(src, context, error=PermissionError)
-    d_text = _as_path_text(dst, context, error=PermissionError)
+    s_text = _checked_path_text(src, context)
+    d_text = _checked_path_text(dst, context)
     _reject_bad_name_syntax(s_text, context, error=PermissionError)
     _reject_bad_name_syntax(d_text, context, error=PermissionError)
     validate_path(s_text, context=context)
@@ -2698,11 +2712,19 @@ def replace(src, dst, context="pathsec.replace"):
         )
 
 
-def remove_tree(path, context="pathsec.remove_tree"):
+def remove_tree(path, context="pathsec.remove_tree", ignore_errors=False):
     """Remove the directory *path* and its contents, inside an allowed root,
     without following any link: a link planted inside is removed as a link, so
-    a deletion can never be redirected outside the tree (CWE-59)."""
-    text = _as_path_text(path, context, error=PermissionError)
+    a deletion can never be redirected outside the tree (CWE-59).
+
+    Where :func:`shutil.rmtree` is descriptor based (``avoids_symlink_attacks``)
+    it does the removal, so a subdirectory swapped for a link between the
+    listing and the descent is not followed either; elsewhere the tree is
+    walked bottom-up by name without following links. *ignore_errors* keeps a
+    cleanup from masking the error it runs after: removal failures are
+    swallowed, the security refusals above never are.
+    """
+    text = _checked_path_text(path, context)
     _reject_bad_name_syntax(text, context, error=PermissionError)
     validate_path(text, context=context)
     st = os.lstat(text)
@@ -2710,16 +2732,45 @@ def remove_tree(path, context="pathsec.remove_tree"):
         raise PermissionError(
             f"Security Violation [{context}]: {text!r} is not a directory to remove"
         )
+    if shutil.rmtree.avoids_symlink_attacks:
+        shutil.rmtree(text, ignore_errors=ignore_errors)
+        return
+
+    def _remove(op, target):
+        try:
+            op(target)
+        except OSError:
+            if not ignore_errors:
+                raise
+
     for root, dirs, files in os.walk(text, topdown=False, followlinks=False):
         for name in files:
-            os.unlink(os.path.join(root, name))
+            _remove(os.unlink, os.path.join(root, name))
         for name in dirs:
             entry = os.path.join(root, name)
-            if os.path.islink(entry):
-                os.unlink(entry)
-            else:
-                os.rmdir(entry)
-    os.rmdir(text)
+            _remove(os.unlink if os.path.islink(entry) else os.rmdir, entry)
+    _remove(os.rmdir, text)
+
+
+def ensure_private_dir(path, mode=0o700, context="pathsec.ensure_private_dir"):
+    """Create the caller-named directory *path* inside an allowed root if it
+    is missing (with *mode*, whatever the umask) and refuse it unless it is
+    private: owned by this account or root, no group or world write bit, and
+    every ancestor private or sticky (:func:`validate_private_dir`). For
+    output a caller names, where :func:`make_private_dir` (an unpredictable
+    name) does not apply. Returns the resolved path."""
+    text = _checked_path_text(path, context)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
+    validate_path(text, context=context)
+    if not os.path.isdir(text):
+        try:
+            os.mkdir(text, mode)
+        except FileExistsError:
+            # something else stands at the name: a file is reported as the
+            # name clash it is, a directory raced in is judged below
+            if not os.path.isdir(text):
+                raise
+    return validate_private_dir(text, context=context)
 
 
 def pin_files(names, context="pathsec.pin_files"):
@@ -2796,7 +2847,7 @@ def connect_sqlite_read_only(
     """
     import sqlite3
 
-    text = _as_path_text(path, context, error=PermissionError)
+    text = _checked_path_text(path, context)
     validate_path(text, context=context)
     names = [text] if names is None else list(names)
     pins = pin_files(names, context=context)
@@ -2840,6 +2891,7 @@ __all__ = [
     "validate_private_dir",
     "validate_name_fragment",
     "make_private_dir",
+    "ensure_private_dir",
     "unlink",
     "replace",
     "remove_tree",
