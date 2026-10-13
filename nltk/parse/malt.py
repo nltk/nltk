@@ -12,6 +12,7 @@ import os
 import sys
 import tempfile
 
+from nltk import pathsec
 from nltk.data import ZipFilePathPointer, make_staging_dir
 from nltk.internals import (
     find_dir,
@@ -273,7 +274,9 @@ class MaltParser(ParserI):
             for filename in (input_file_name, output_file_name):
                 if filename:
                     try:
-                        os.remove(filename)
+                        pathsec.unlink(
+                            filename, context="MaltParser.parse_tagged_sents"
+                        )
                     except OSError:
                         pass
 
@@ -386,7 +389,7 @@ class MaltParser(ParserI):
         # Trains the model with the malt_train.conll
         self.train_from_file(input_file.name, verbose=verbose)
         # Removes the malt_train.conll once training finishes.
-        os.remove(input_file.name)
+        pathsec.unlink(input_file.name, context="MaltParser.train")
 
     def train_from_file(self, conll_file, verbose=False):
         """

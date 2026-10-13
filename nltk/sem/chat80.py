@@ -125,12 +125,15 @@ current directory.
 
 import dbm
 import io
+import itertools
+import os
 import re
 import shelve
+import stat
 import sys
 
 import nltk.data
-from nltk import redos
+from nltk import pathsec, redos
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 from nltk.picklesec import RestrictedUnpickler
@@ -139,10 +142,17 @@ from nltk.termsec import safe_print, sanitize_terminal
 # shelve picks a dbm backend at runtime (gnu/ndbm/dumb/sqlite3) and sqlite writes
 # rollback/WAL sidecars, so a store path spawns several derived backing files;
 # every candidate name is checked, not just the base the caller passed.
+
+#: The entry val_dump writes naming every key it stored. val_load reads each
+#: key by lookup and never trusts iteration, which some dbm builds cut short
+#: (a measured ndbm build drops a key once one value reaches 4096 bytes).
+_STORE_MANIFEST_KEY = "__nltk_keys__"
+
 _STORE_SIDECAR_SUFFIXES = (
     "",
     ".db",
     ".dir",
+    ".pag",
     ".dat",
     ".bak",
     "-journal",
@@ -151,24 +161,35 @@ _STORE_SIDECAR_SUFFIXES = (
 )
 
 
-def _refuse_symlinked_store(base, context):
-    """Refuse a symlink or hardlink planted at any backing name of a store.
+def _store_names(base):
+    """Every backing name a store at *base* may have across the dbm and sqlite
+    backends; the checks cover all of them whichever backend is in use."""
+    return [base + suffix for suffix in _STORE_SIDECAR_SUFFIXES]
 
-    ``validate_path`` checks where the store PATH resolves, but shelve/dbm and
-    sqlite reopen derived sidecar names by path, so a symlink pre-planted at one
-    of those redirects the real open outside the sandbox (CWE-59, GHSA-7j4p).
-    Each name that already exists is opened through :func:`nltk.pathsec.open`,
-    which adds ``O_NOFOLLOW`` (refusing a symlink at the final component) and
-    rejects a multiply-linked file, then closed; a name that does not yet exist
-    is left for shelve/sqlite to create. Nothing is created here, so the dbm
-    backend that ``shelve`` selects on reload is never confused by a stray file.
+
+def _check_store_dir(base, context):
+    """Refuse a store whose directory another account could write or rename.
+
+    Every backend reopens a store's backing names by path after the checks
+    here, so the directory must be private and each ancestor private or sticky
+    (CWE-367); :func:`nltk.pathsec.validate_private_dir` is the judge.
     """
-    for suffix in _STORE_SIDECAR_SUFFIXES:
-        try:
-            handle = pathsec_open(base + suffix, "rb", context=context)
-        except FileNotFoundError:
-            continue
-        handle.close()
+    pathsec.validate_private_dir(
+        os.path.dirname(os.path.abspath(base)) or os.curdir, context=context
+    )
+
+
+def _pin_store_files(base, context):
+    """Hold every existing backing name of a store open (``O_NOFOLLOW``, no
+    hardlink) across the backend's own open by name, through
+    :func:`nltk.pathsec.pin_files`. Nothing is created."""
+    return pathsec.pin_files(_store_names(base), context=context)
+
+
+def _verify_store_files(pins, base, context):
+    """After the backend opened the store by name, prove it saw the pinned
+    inodes (:func:`nltk.pathsec.verify_pinned`); the pins are released."""
+    pathsec.verify_pinned(pins, _store_names(base), context=context)
 
 
 def _restricted_shelve_open(db, flag="r"):
@@ -185,8 +206,17 @@ def _restricted_shelve_open(db, flag="r"):
     """
     # Reject a symlink/hardlink at any derived backing name before shelve reopens
     # it by path, so O_NOFOLLOW guards the open validate_path alone cannot.
-    _refuse_symlinked_store(db, context="chat80._restricted_shelve_open")
-    inner = shelve.open(db, flag)
+    pins = _pin_store_files(db, context="chat80._restricted_shelve_open")
+    try:
+        inner = shelve.open(db, flag)
+    except BaseException:
+        pathsec.release(pins)
+        raise
+    try:
+        _verify_store_files(pins, db, context="chat80._restricted_shelve_open")
+    except BaseException:
+        inner.close()
+        raise
 
     class _RestrictedShelf:
         """Delegates to a real shelf but reads values with RestrictedUnpickler.
@@ -521,9 +551,19 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
     validate_path(dbname, context="chat80.cities2table")
     # Reject a symlink/hardlink at the db or its journal/WAL sidecars before
     # sqlite reopens them by path (O_NOFOLLOW, GHSA-7j4p).
-    _refuse_symlinked_store(dbname, context="chat80.cities2table")
+    _check_store_dir(dbname, context="chat80.cities2table")
     records = _str2records(filename, rel_name)
-    connection = sqlite3.connect(dbname)
+    pins = _pin_store_files(dbname, context="chat80.cities2table")
+    try:
+        connection = sqlite3.connect(dbname)
+    except BaseException:
+        pathsec.release(pins)
+        raise
+    try:
+        _verify_store_files(pins, dbname, context="chat80.cities2table")
+    except BaseException:
+        connection.close()
+        raise
     cur = connection.cursor()
     if setup:
         cur.execute(
@@ -592,8 +632,10 @@ def sql_query(dbname, query):
         # sit in a data root, and neither the store nor a sqlite sidecar may be
         # a link or special file that the by-path open would follow (GHSA-xv54).
         validate_path(db_path, context="chat80.sql_query")
-        _refuse_symlinked_store(db_path, context="chat80.sql_query")
-        connection = sqlite3.connect(db_path)
+        _check_store_dir(db_path, context="chat80.sql_query")
+        connection = pathsec.connect_sqlite_read_only(
+            db_path, names=_store_names(db_path), context="chat80.sql_query"
+        )
         connection.set_authorizer(_sql_query_authorizer)
         cur = connection.cursor()
         return cur.execute(query)
@@ -761,14 +803,66 @@ def val_dump(rels, db):
     validate_path(db, context="chat80.val_dump")
     # Reject a symlink/hardlink at any derived backing name before shelve creates
     # the store by path (O_NOFOLLOW, GHSA-7j4p).
-    _refuse_symlinked_store(db, context="chat80.val_dump")
+    _check_store_dir(db, context="chat80.val_dump")
+    # a link planted at any backing name is refused up front (the install
+    # below never follows one either)
+    pathsec.release(_pin_store_files(db, context="chat80.val_dump"))
     concepts = process_bundle(rels).values()
     valuation = make_valuation(concepts, read=True)
-    db_out = shelve.open(db, "n")
+    # the backend writes only inside a fresh private directory beside the
+    # store, then each file is renamed into place, so no name at the
+    # destination is ever opened
+    parent, stem = os.path.split(os.path.abspath(db))
+    staging = nltk.data.make_staging_dir(prefix=".nltk_chat80_", dir=parent)
+    try:
+        db_out = shelve.open(os.path.join(staging, stem), "n")
+        try:
+            db_out.update(valuation)
+            db_out[_STORE_MANIFEST_KEY] = sorted(valuation)
+        finally:
+            db_out.close()
+        _install_store(staging, stem, db, context="chat80.val_dump")
+    finally:
+        try:
+            pathsec.remove_tree(staging, context="chat80.val_dump")
+        except OSError:
+            pass
 
-    db_out.update(valuation)
 
-    db_out.close()
+def _install_store(staging, stem, db, context):
+    """Move the store files written under *staging* to the backing names of *db*.
+
+    The old backing names are checked as every open checks them, then removed
+    with :func:`nltk.pathsec.unlink` (a name is never followed), and each new
+    file is renamed onto its name with :func:`nltk.pathsec.replace`, which
+    replaces whatever is there without following it either and checks the
+    inode after. So a name planted at the destination at any point is never
+    written through (CWE-59, CWE-367); one found at the check is refused, and
+    the whole set is checked again once every rename is done.
+    """
+    built = {}
+    for entry in sorted(os.listdir(staging)):
+        suffix = entry[len(stem) :]
+        if not entry.startswith(stem) or suffix not in _STORE_SIDECAR_SUFFIXES:
+            raise OSError(
+                "chat80 store backend wrote %r, which is not a backing name the "
+                "store checks know" % sanitize_terminal(entry)
+            )
+        st = os.lstat(os.path.join(staging, entry))
+        built[db + suffix] = (os.path.join(staging, entry), (st.st_dev, st.st_ino))
+    old = _pin_store_files(db, context)
+    pathsec.release(old)
+    for name in old:
+        pathsec.unlink(name, context=context)
+    for name, (path, _identity) in built.items():
+        pathsec.replace(path, name, context=context)
+    for name, (_path, identity) in built.items():
+        st = os.lstat(name)
+        if not stat.S_ISREG(st.st_mode) or (st.st_dev, st.st_ino) != identity:
+            raise PermissionError(
+                f"Security Violation [{context}]: store file "
+                f"{sanitize_terminal(name)!r} was swapped while the store was installed."
+            )
 
 
 def val_load(db):
@@ -783,21 +877,90 @@ def val_load(db):
     # backing files. Validate before touching the filesystem so an
     # out-of-sandbox target is refused up front (GHSA-8mgp-746c-j5xp).
     validate_path(db, context="chat80.val_load")
+    _check_store_dir(db, context="chat80.val_load")
     # No os.access() gate: it follows a symlink at the derived .db name and its
     # suffix assumes one dbm backend. _restricted_shelve_open opens each backing
     # name with O_NOFOLLOW (GHSA-7j4p); a store it cannot open is reported the
     # way the gate used to, with the caller's name neutralised for the terminal.
     try:
         db_in = _restricted_shelve_open(db)
+    except PermissionError:
+        # a security refusal stays loud and distinct from an unreadable store
+        raise
     except (OSError, *dbm.error) as e:
         # the whole line is neutralised: the backend's message can quote the
         # caller's name too, and both reach the terminal
         sys.exit(sanitize_terminal("Cannot read file: {} ({})".format(db + ".db", e)))
     from nltk.sem import Valuation
 
-    val = Valuation(db_in.items())
-    #        val.read(db_in.items())
+    try:
+        stored = _stored_items(db_in, db)
+    finally:
+        db_in.close()
+    # val_dump stores make_valuation's Valuation, whose relations are the sorted
+    # Concept.extension lists; the Valuation constructor checks every other value
+    # and refuses lists, so the relations are added the way make_valuation does.
+    val = Valuation(item for item in stored if not _is_extension_list(item[1]))
+    val.update(item for item in stored if _is_extension_list(item[1]))
     return val
+
+
+def _stored_items(db_in, db):
+    """The (key, value) pairs of a store, read by the manifest val_dump wrote.
+
+    Each manifest key is looked up directly; a manifest that is not a sorted
+    list of distinct names, or that disagrees with the store, is refused. A
+    store without a manifest is refused on every backend: its keys could only
+    come from iteration, which is never trusted.
+    """
+    if _STORE_MANIFEST_KEY in db_in:
+        keys = db_in[_STORE_MANIFEST_KEY]
+        if (
+            not isinstance(keys, list)
+            or not all(type(key) is str for key in keys)
+            or keys != sorted(set(keys))
+            or _STORE_MANIFEST_KEY in keys
+        ):
+            raise ValueError(
+                "chat80 store %s: its key manifest is not the sorted list of "
+                "names val_dump writes" % sanitize_terminal(db)
+            )
+        missing = [key for key in keys if key not in db_in]
+        if missing:
+            raise ValueError(
+                "chat80 store %s: manifest names %d key(s) the store lacks"
+                % (sanitize_terminal(db), len(missing))
+            )
+        if len(db_in) > len(keys) + 1:
+            raise ValueError(
+                "chat80 store %s: holds keys its manifest does not name"
+                % sanitize_terminal(db)
+            )
+        return [(key, db_in[key]) for key in keys]
+    raise ValueError(
+        "chat80 store %s has no key manifest, so its keys could only be read by "
+        "iteration, which some dbm builds cut short; re-create it with val_dump"
+        % sanitize_terminal(db)
+    )
+
+
+def _is_extension_list(value):
+    """Whether ``value`` is a list ``val_dump`` writes: a ``Concept.extension``,
+    the sorted distinct strings of a unary relation or string pairs of a binary one.
+    """
+    if type(value) is not list:
+        return False
+    if not (
+        all(type(item) is str for item in value)
+        or all(
+            type(item) is tuple
+            and len(item) == 2
+            and all(type(part) is str for part in item)
+            for item in value
+        )
+    ):
+        return False
+    return all(a < b for a, b in itertools.pairwise(value))
 
 
 # def alpha(str):
