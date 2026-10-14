@@ -36,6 +36,7 @@ import atexit
 import codecs
 import errno
 import functools
+import locale
 import os
 import pickle
 import re
@@ -2098,6 +2099,31 @@ class OpenOnDemandZipFile(ZipFile):
 ######################################################################
 
 
+def text_encoding(encoding):
+    """Return ``encoding``, or the encoding ``open()`` decodes with when it is
+    None, once it is known to name a text encoding.
+
+    A codec from bytes to bytes (``zlib_codec``, ``bz2_codec``, ``base64_codec``)
+    or from str to str (``rot_13``) is no text encoding. ``open()`` and
+    ``str.encode()`` refuse one; ``codecs.getdecoder`` and the incremental
+    coders do not, so a reader built on them would decode a file with it,
+    expanding or rewriting its bytes before a line is split (81 bytes of
+    ``bz2_codec`` input decode to 50 MB). Every :class:`PathPointer` decodes
+    through :class:`SeekableUnicodeStreamReader`, which applies this test
+    first, by the rule ``open()`` applies.
+
+    :raises LookupError: if ``encoding`` names no codec, or no text encoding
+    """
+    if encoding is None:
+        return locale.getpreferredencoding(False)
+    if not codecs.lookup(encoding)._is_text_encoding:
+        raise LookupError(
+            f"{encoding!r} is not a text encoding; NLTK reads and writes text "
+            "with text encodings only"
+        )
+    return encoding
+
+
 class SeekableUnicodeStreamReader:
     """
     A stream reader that automatically encodes the source byte stream
@@ -2124,7 +2150,7 @@ class SeekableUnicodeStreamReader:
         self.stream = stream
         """The underlying stream."""
 
-        self.encoding = encoding
+        self.encoding = text_encoding(encoding)
         """The name of the encoding that should be used to encode the
            underlying stream."""
 
@@ -2133,7 +2159,7 @@ class SeekableUnicodeStreamReader:
            the underlying stream.  Can be 'strict', 'ignore', or
            'replace'."""
 
-        self.decode = codecs.getdecoder(encoding)
+        self.decode = codecs.getdecoder(self.encoding)
         """The function that is used to decode byte strings into
            unicode strings."""
 
@@ -2168,6 +2194,11 @@ class SeekableUnicodeStreamReader:
         self._bom = self._check_bom()
         """The length of the byte order marker at the beginning of
            the stream (or None for no byte order marker)."""
+        if self._bom:
+            # The BOM is skipped on every read, so the decoder has to carry the
+            # byte order it named: ``utf-16`` without its BOM is decoded in the
+            # native order, which turns a big endian file into other characters.
+            self.decode = codecs.getdecoder(self.encoding)
 
     # /////////////////////////////////////////////////////////////////
     # Read methods
@@ -2448,6 +2479,10 @@ class SeekableUnicodeStreamReader:
         )
 
         self.stream.seek(self._rewind_checkpoint)
+        if self._bom and self._rewind_checkpoint == 0:
+            # The decoder carries the byte order the BOM named and would read
+            # the BOM itself as U+FEFF, one character the line buffer never saw.
+            self.stream.read(self._bom)
         self._char_seek_forward(self._rewind_numchars, est_bytes)
         filepos = self.stream.tell()
 
@@ -2539,10 +2574,16 @@ class SeekableUnicodeStreamReader:
 
     _BOM_TABLE = {
         "utf8": [(codecs.BOM_UTF8, None)],
-        "utf16": [(codecs.BOM_UTF16_LE, "utf16-le"), (codecs.BOM_UTF16_BE, "utf16-be")],
+        "utf16": [
+            (codecs.BOM_UTF16_LE, "utf-16-le"),
+            (codecs.BOM_UTF16_BE, "utf-16-be"),
+        ],
         "utf16le": [(codecs.BOM_UTF16_LE, None)],
         "utf16be": [(codecs.BOM_UTF16_BE, None)],
-        "utf32": [(codecs.BOM_UTF32_LE, "utf32-le"), (codecs.BOM_UTF32_BE, "utf32-be")],
+        "utf32": [
+            (codecs.BOM_UTF32_LE, "utf-32-le"),
+            (codecs.BOM_UTF32_BE, "utf-32-be"),
+        ],
         "utf32le": [(codecs.BOM_UTF32_LE, None)],
         "utf32be": [(codecs.BOM_UTF32_BE, None)],
     }
@@ -2587,4 +2628,5 @@ __all__ = [
     "OpenOnDemandZipFile",
     "GzipFileSystemPathPointer",
     "SeekableUnicodeStreamReader",
+    "text_encoding",
 ]
