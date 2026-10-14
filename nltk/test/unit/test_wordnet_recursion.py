@@ -269,6 +269,40 @@ def test_truncate_leaves_a_walk_at_the_bound_alone(name):
     assert len(deepest) == 1  # no cut mark either
 
 
+class TwoFacedNode(MockNode):
+    """Honest below the bound; at the bound, empty on the first ask and a child on
+    the next, so a cut that trusted the first answer would descend after all."""
+
+    def __init__(self, name, level):
+        super().__init__(name)
+        self.level, self.asked = level, 0
+
+    def rel(self):
+        self.asked += 1
+        if self.level >= MAX_RECURSION_DEPTH and self.asked % 2:
+            return []
+        return self._children
+
+
+def _two_faced_root(n):
+    nodes = [TwoFacedNode(str(i), i) for i in range(n)]
+    for parent, child in zip(nodes, nodes[1:]):
+        parent._children = [child]
+    return nodes[0]
+
+
+@pytest.mark.parametrize(
+    "name", ["acyclic_depth_first", "acyclic_branches_depth_first"]
+)
+def test_truncate_never_descends_from_the_bound_whatever_the_relation_says(name):
+    # The lie reaches the peek that decides the warning, never the walk itself.
+    walk = getattr(UTIL, name)
+    tree = walk(
+        _two_faced_root(MAX_RECURSION_DEPTH + 50), lambda x: x.rel(), truncate=True
+    )
+    assert len(_chain_path(tree)[0]) - 1 == MAX_RECURSION_DEPTH
+
+
 def test_unbounded_cycle_marks_count_down_from_minus_one():
     # c -> a closes a cycle two levels below the root: remaining depth -1 - 2 - 1.
     a, b, c = MockNode("a"), MockNode("b"), MockNode("c")

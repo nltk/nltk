@@ -51,28 +51,23 @@ def _refuse_deep_walk(level):
         )
 
 
-def _cut_deep_walk(level, truncate, node, children):
-    """Decide what a depth-first walk does with ``node`` at ``level``.
-
-    With ``truncate`` set, a node at the bound that has children is kept and
-    not descended into, the tree comes back cut there, and a RuntimeWarning
-    says so: returns True. Otherwise a level past the bound is refused.
-    """
-    if truncate and level >= MAX_RECURSION_DEPTH:
-        try:
-            next(iter(children(node)))
-        except (TypeError, StopIteration):
-            return False  # nothing below the bound, nothing to cut
-        warnings.warn(
-            "Relation walk truncated at MAX_RECURSION_DEPTH "
-            f"({MAX_RECURSION_DEPTH}) levels; pass truncate=False to refuse such a "
-            "walk, or raise MAX_RECURSION_DEPTH in sys.modules['nltk.util'].",
-            RuntimeWarning,
-            stacklevel=3,
-        )  # unsafe-print ok: fixed text and the int bound, no node text
-        return True
-    _refuse_deep_walk(level)
-    return False
+def _warn_truncated(node, children):
+    """At the bound of a truncating walk: True, with a RuntimeWarning, when
+    ``node`` has children the walk will not visit; False when nothing lies
+    below it. Only the warning and the cut mark depend on this answer, the
+    walk never descends from the bound whatever the relation says."""
+    try:
+        next(iter(children(node)))
+    except (TypeError, StopIteration):
+        return False
+    warnings.warn(
+        "Relation walk truncated at MAX_RECURSION_DEPTH "
+        f"({MAX_RECURSION_DEPTH}) levels; pass truncate=False to refuse such a "
+        "walk, or raise MAX_RECURSION_DEPTH in sys.modules['nltk.util'].",
+        RuntimeWarning,
+        stacklevel=3,
+    )  # unsafe-print ok: fixed text and the int bound, no node text
+    return True
 
 
 ######################################################################
@@ -568,16 +563,17 @@ def acyclic_depth_first(
                  [Synset('entity.n.01')]]]]]]]]]]]]],
      [Synset('domestic_animal.n.01'), "Cycle(Synset('animal.n.01'),...,...)"]]
     """
-    # Refuse a walk deeper than the bound, or cut it there when asked
-    # (GHSA-8846-p9w9-5frf); the walk itself never goes past the bound.
+    # Refuse a walk deeper than the bound, or with truncate keep the node at
+    # the bound and never descend from it (GHSA-8846-p9w9-5frf).
     if _level == 0 and depth < -1:
         raise ValueError("depth must be >= -1 (use -1 for unbounded)")
-    cut = _cut_deep_walk(_level, truncate and depth != 0, tree, children)
+    _refuse_deep_walk(_level)
+    at_bound = truncate and depth != 0 and _level >= MAX_RECURSION_DEPTH
     if traversed is None:
         traversed = {tree}
     out_tree = [tree]
-    if cut:
-        if cut_mark:
+    if at_bound:
+        if _warn_truncated(tree, children) and cut_mark:
             out_tree += [cut_mark]
     elif depth != 0:
         try:
@@ -667,16 +663,17 @@ def acyclic_branches_depth_first(
       [Synset('official.a.01'), "Cycle(Synset('authorized.a.01'),1,...)"]],
      [Synset('documented.a.01')]]
     """
-    # Refuse a walk deeper than the bound, or cut it there when asked
-    # (GHSA-8846-p9w9-5frf); the walk itself never goes past the bound.
+    # Refuse a walk deeper than the bound, or with truncate keep the node at
+    # the bound and never descend from it (GHSA-8846-p9w9-5frf).
     if _level == 0 and depth < -1:
         raise ValueError("depth must be >= -1 (use -1 for unbounded)")
-    cut = _cut_deep_walk(_level, truncate and depth != 0, tree, children)
+    _refuse_deep_walk(_level)
+    at_bound = truncate and depth != 0 and _level >= MAX_RECURSION_DEPTH
     if traversed is None:
         traversed = {tree}
     out_tree = [tree]
-    if cut:
-        if cut_mark:
+    if at_bound:
+        if _warn_truncated(tree, children) and cut_mark:
             out_tree += [cut_mark]
     elif depth != 0:
         try:
@@ -727,16 +724,17 @@ def acyclic_dic2tree(
     are lists of children, to output tree suitable for pprint(), starting at
     root 'node', with subtrees as nested lists. Discards eventual cycles.
     """
-    # Refuse a walk deeper than the bound, or cut it there when asked
-    # (GHSA-8846-p9w9-5frf); the walk itself never goes past the bound.
+    # Refuse a walk deeper than the bound, or with truncate keep the node at
+    # the bound and never descend from it (GHSA-8846-p9w9-5frf).
     if _level == 0 and depth < -1:
         raise ValueError("depth must be >= -1 (use -1 for unbounded)")
-    cut = _cut_deep_walk(_level, truncate and depth != 0, node, dic.__getitem__)
+    _refuse_deep_walk(_level)
+    at_bound = truncate and depth != 0 and _level >= MAX_RECURSION_DEPTH
     if traversed is None:
         traversed = {node}
     out_tree = [node]
-    if cut:
-        pass  # the node at the bound is kept, nothing below it
+    if at_bound:
+        _warn_truncated(node, dic.__getitem__)
     elif depth != 0:
         try:
             for child in dic[node]:
