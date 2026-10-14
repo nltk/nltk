@@ -51,6 +51,30 @@ def _refuse_deep_walk(level):
         )
 
 
+def _cut_deep_walk(level, truncate, node, children):
+    """Decide what a depth-first walk does with ``node`` at ``level``.
+
+    With ``truncate`` set, a node at the bound that has children is kept and
+    not descended into, the tree comes back cut there, and a RuntimeWarning
+    says so: returns True. Otherwise a level past the bound is refused.
+    """
+    if truncate and level >= MAX_RECURSION_DEPTH:
+        try:
+            next(iter(children(node)))
+        except (TypeError, StopIteration):
+            return False  # nothing below the bound, nothing to cut
+        warnings.warn(
+            "Relation walk truncated at MAX_RECURSION_DEPTH "
+            f"({MAX_RECURSION_DEPTH}) levels; pass truncate=False to refuse such a "
+            "walk, or raise MAX_RECURSION_DEPTH in sys.modules['nltk.util'].",
+            RuntimeWarning,
+            stacklevel=3,
+        )  # unsafe-print ok: fixed text and the int bound, no node text
+        return True
+    _refuse_deep_walk(level)
+    return False
+
+
 ######################################################################
 # Short usage message
 ######################################################################
@@ -502,6 +526,7 @@ def acyclic_depth_first(
     cut_mark=None,
     traversed=None,
     verbose=False,
+    truncate=False,
     _level=0,
 ):
     """
@@ -509,6 +534,8 @@ def acyclic_depth_first(
     :param children: a function taking as argument a tree node
     :param depth: the maximum depth of the search; -1 (default) for unbounded.
         A walk that would go deeper than MAX_RECURSION_DEPTH raises ValueError.
+    :param truncate: cut the walk at MAX_RECURSION_DEPTH instead of refusing
+        it, with a RuntimeWarning (and cut_mark, where the walk takes one)
     :param cut_mark: the mark to add when cycles are truncated
     :param traversed: the set of traversed nodes
     :param verbose: to print warnings when cycles are discarded
@@ -541,14 +568,18 @@ def acyclic_depth_first(
                  [Synset('entity.n.01')]]]]]]]]]]]]],
      [Synset('domestic_animal.n.01'), "Cycle(Synset('animal.n.01'),...,...)"]]
     """
-    # Refuse a walk deeper than the bound, never truncate it (GHSA-8846-p9w9-5frf).
+    # Refuse a walk deeper than the bound, or cut it there when asked
+    # (GHSA-8846-p9w9-5frf); the walk itself never goes past the bound.
     if _level == 0 and depth < -1:
         raise ValueError("depth must be >= -1 (use -1 for unbounded)")
-    _refuse_deep_walk(_level)
+    cut = _cut_deep_walk(_level, truncate and depth != 0, tree, children)
     if traversed is None:
         traversed = {tree}
     out_tree = [tree]
-    if depth != 0:
+    if cut:
+        if cut_mark:
+            out_tree += [cut_mark]
+    elif depth != 0:
         try:
             for child in children(tree):
                 if child not in traversed:
@@ -560,6 +591,7 @@ def acyclic_depth_first(
                             depth - 1,
                             cut_mark,
                             traversed,
+                            truncate=truncate,
                             _level=_level + 1,
                         )
                     ]
@@ -587,6 +619,7 @@ def acyclic_branches_depth_first(
     cut_mark=None,
     traversed=None,
     verbose=False,
+    truncate=False,
     _level=0,
 ):
     """
@@ -594,6 +627,8 @@ def acyclic_branches_depth_first(
     :param children: a function taking as argument a tree node
     :param depth: the maximum depth of the search; -1 (default) for unbounded.
         A walk that would go deeper than MAX_RECURSION_DEPTH raises ValueError.
+    :param truncate: cut the walk at MAX_RECURSION_DEPTH instead of refusing
+        it, with a RuntimeWarning (and cut_mark, where the walk takes one)
     :param cut_mark: the mark to add when cycles are truncated
     :param traversed: the set of traversed nodes
     :param verbose: to print warnings when cycles are discarded
@@ -632,14 +667,18 @@ def acyclic_branches_depth_first(
       [Synset('official.a.01'), "Cycle(Synset('authorized.a.01'),1,...)"]],
      [Synset('documented.a.01')]]
     """
-    # Refuse a walk deeper than the bound, never truncate it (GHSA-8846-p9w9-5frf).
+    # Refuse a walk deeper than the bound, or cut it there when asked
+    # (GHSA-8846-p9w9-5frf); the walk itself never goes past the bound.
     if _level == 0 and depth < -1:
         raise ValueError("depth must be >= -1 (use -1 for unbounded)")
-    _refuse_deep_walk(_level)
+    cut = _cut_deep_walk(_level, truncate and depth != 0, tree, children)
     if traversed is None:
         traversed = {tree}
     out_tree = [tree]
-    if depth != 0:
+    if cut:
+        if cut_mark:
+            out_tree += [cut_mark]
+    elif depth != 0:
         try:
             for child in children(tree):
                 if child not in traversed:
@@ -650,6 +689,7 @@ def acyclic_branches_depth_first(
                             depth - 1,
                             cut_mark,
                             traversed.union({child}),
+                            truncate=truncate,
                             _level=_level + 1,
                         )
                     ]
@@ -670,12 +710,16 @@ def acyclic_branches_depth_first(
     return out_tree
 
 
-def acyclic_dic2tree(node, dic, depth=-1, traversed=None, verbose=False, _level=0):
+def acyclic_dic2tree(
+    node, dic, depth=-1, traversed=None, verbose=False, truncate=False, _level=0
+):
     """
     :param node: the root node
     :param dic: the dictionary of children
     :param depth: the maximum depth of the search; -1 (default) for unbounded.
         A walk that would go deeper than MAX_RECURSION_DEPTH raises ValueError.
+    :param truncate: cut the walk at MAX_RECURSION_DEPTH instead of refusing
+        it, with a RuntimeWarning (and cut_mark, where the walk takes one)
     :param traversed: the set of traversed nodes
     :param verbose: to print warnings when cycles are discarded
     :return: the tree in depth-first order
@@ -683,14 +727,17 @@ def acyclic_dic2tree(node, dic, depth=-1, traversed=None, verbose=False, _level=
     are lists of children, to output tree suitable for pprint(), starting at
     root 'node', with subtrees as nested lists. Discards eventual cycles.
     """
-    # Refuse a walk deeper than the bound, never truncate it (GHSA-8846-p9w9-5frf).
+    # Refuse a walk deeper than the bound, or cut it there when asked
+    # (GHSA-8846-p9w9-5frf); the walk itself never goes past the bound.
     if _level == 0 and depth < -1:
         raise ValueError("depth must be >= -1 (use -1 for unbounded)")
-    _refuse_deep_walk(_level)
+    cut = _cut_deep_walk(_level, truncate and depth != 0, node, dic.__getitem__)
     if traversed is None:
         traversed = {node}
     out_tree = [node]
-    if depth != 0:
+    if cut:
+        pass  # the node at the bound is kept, nothing below it
+    elif depth != 0:
         try:
             for child in dic[node]:
                 if child not in traversed:
@@ -701,6 +748,7 @@ def acyclic_dic2tree(node, dic, depth=-1, traversed=None, verbose=False, _level=
                             depth - 1,
                             traversed.union({child}),
                             verbose,
+                            truncate=truncate,
                             _level=_level + 1,
                         )
                     ]
@@ -765,10 +813,11 @@ def unweighted_minimum_spanning_dict(tree, children=iter):
     return mstdic
 
 
-def unweighted_minimum_spanning_tree(tree, children=iter):
+def unweighted_minimum_spanning_tree(tree, children=iter, truncate=False):
     """
     :param tree: the tree root
     :param children: a function taking as argument a tree node
+    :param truncate: cut the tree at MAX_RECURSION_DEPTH instead of refusing it
 
        Output a Minimum Spanning Tree (MST) of an unweighted graph,
     by traversing the nodes of a tree in breadth-first order,
@@ -789,7 +838,9 @@ def unweighted_minimum_spanning_tree(tree, children=iter):
       [Synset('dependent.a.01')],
       [Synset('restricted.a.01'), [Synset('classified.a.02')]]]]
     """
-    return acyclic_dic2tree(tree, unweighted_minimum_spanning_dict(tree, children))
+    return acyclic_dic2tree(
+        tree, unweighted_minimum_spanning_dict(tree, children), truncate=truncate
+    )
 
 
 ##########################################################################

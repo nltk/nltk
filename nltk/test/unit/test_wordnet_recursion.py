@@ -1,4 +1,5 @@
 import sys
+import warnings
 
 import pytest
 
@@ -216,6 +217,58 @@ def test_teeth_the_deep_walk_overflows_without_the_bound(name, monkeypatch):
         WALKS[name](DEEP, -1)
 
 
+# truncate=True: the walk is cut at the bound instead of refused, says so with a
+# RuntimeWarning, and marks the cut where the walk takes a cut_mark. Kept to
+# chains one node past the bound: the refusal tests above carry the deep ones.
+
+TRUNCATED = {
+    "acyclic_depth_first": lambda n, depth: acyclic_depth_first(
+        _chain_root(n), lambda x: x.rel(), depth, cut_mark="...", truncate=True
+    ),
+    "acyclic_branches_depth_first": lambda n, depth: acyclic_branches_depth_first(
+        _chain_root(n), lambda x: x.rel(), depth, cut_mark="...", truncate=True
+    ),
+    "acyclic_dic2tree": lambda n, depth: acyclic_dic2tree(
+        "0", _chain_dict(n), depth, truncate=True
+    ),
+}
+
+
+def _chain_path(tree):
+    """The nodes down the first branch of ``tree`` and the innermost list."""
+    nodes = []
+    while True:
+        nodes.append(getattr(tree[0], "name", tree[0]))
+        below = next((x for x in tree[1:] if isinstance(x, list)), None)
+        if below is None:
+            return nodes, tree
+        tree = below
+
+
+@pytest.mark.parametrize("name", sorted(TRUNCATED))
+@pytest.mark.parametrize("depth", [-1, 2000])
+def test_truncate_cuts_the_walk_at_the_bound_and_warns(name, depth):
+    with pytest.warns(
+        RuntimeWarning, match=r"truncated at MAX_RECURSION_DEPTH \(500\)"
+    ):
+        tree = TRUNCATED[name](MAX_RECURSION_DEPTH + 2, depth)
+    nodes, deepest = _chain_path(tree)
+    assert len(nodes) - 1 == MAX_RECURSION_DEPTH  # the node at the bound is kept
+    assert nodes[-1] == str(MAX_RECURSION_DEPTH)
+    if name != "acyclic_dic2tree":
+        assert deepest[1:] == ["..."]  # and the cut is marked
+
+
+@pytest.mark.parametrize("name", sorted(TRUNCATED))
+def test_truncate_leaves_a_walk_at_the_bound_alone(name):
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
+        tree = TRUNCATED[name](MAX_RECURSION_DEPTH + 1, -1)
+    nodes, deepest = _chain_path(tree)
+    assert len(nodes) - 1 == MAX_RECURSION_DEPTH
+    assert len(deepest) == 1  # no cut mark either
+
+
 def test_unbounded_cycle_marks_count_down_from_minus_one():
     # c -> a closes a cycle two levels below the root: remaining depth -1 - 2 - 1.
     a, b, c = MockNode("a"), MockNode("b"), MockNode("c")
@@ -273,3 +326,14 @@ def test_real_wordnet_deep_custom_relation_is_refused_through_synset_methods():
         MAX_RECURSION_DEPTH
     )
     assert traversal_depth(dog.tree(rel_to(DEEP), depth=10)) == 10
+
+
+def test_real_wordnet_truncate_cuts_the_deep_relation_through_synset_methods():
+    wn = _wordnet()
+    dog = wn.synset("dog.n.01")
+    rel = lambda x: [x + 1] if isinstance(x, int) else [0]
+    rel_to = lambda n: lambda x: [] if x == n else rel(x)
+    for method in (dog.tree, dog.acyclic_tree, dog.mst):
+        with pytest.warns(RuntimeWarning, match="truncated at MAX_RECURSION_DEPTH"):
+            tree = method(rel_to(MAX_RECURSION_DEPTH + 5), truncate=True)
+        assert len(_chain_path(tree)[0]) - 1 == MAX_RECURSION_DEPTH
