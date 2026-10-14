@@ -11,14 +11,15 @@ Toolbox databases and settings files.
 """
 
 import codecs
-import locale
 from io import StringIO
 from xml.etree.ElementTree import Element, ElementTree, SubElement, TreeBuilder
 
 from nltk import redos
 from nltk.data import PathPointer, _refuse_file_not_ours, find
+from nltk.data import text_encoding as _text_encoding
 from nltk.pathsec import open as pathsec_open
 from nltk.termsec import safe_print
+from nltk.xmlsec import safe_element_name
 
 #: Maximum depth the recursive Toolbox settings helpers will descend to.
 #: Beyond this they raise ValueError instead of letting Python raise an
@@ -29,30 +30,6 @@ MAX_TOOLBOX_DEPTH = 500
 #: rules rescan the rest of a record for every match, so a wider record is
 #: refused before matching (the widest shipped record has 423). Configurable.
 MAX_CHUNK_RECORD_FIELDS = 10_000
-
-
-def _text_encoding(encoding):
-    """Return ``encoding``, or the default ``open()`` decodes with when it is
-    None, once it is known to name a text encoding.
-
-    A codec from bytes to bytes (``zlib_codec``, ``bz2_codec``, ``base64_codec``)
-    or from str to str (``rot_13``) is no text encoding: a PathPointer's reader
-    would decode the file with it, expanding or rewriting its bytes before a
-    line is split (a planted bz2 file of 722 bytes decodes to a gigabyte).
-    ``open()`` and ``str.encode()`` refuse one; ``PathPointer.open()`` and the
-    incremental encoder of the writer do not, so it is refused here, by the
-    test ``open()`` applies, before any file is opened.
-
-    :raises LookupError: if ``encoding`` names no codec, or no text encoding
-    """
-    if encoding is None:
-        return locale.getpreferredencoding(False)
-    if not codecs.lookup(encoding)._is_text_encoding:
-        raise LookupError(
-            f"{encoding!r} is not a text encoding; Toolbox files are read and "
-            "written with text encodings only"
-        )
-    return encoding
 
 
 class StandardFormat:
@@ -78,9 +55,12 @@ class StandardFormat:
         """
         encoding = _text_encoding(self._encoding)
         if isinstance(sfm_file, PathPointer):
-            # Under its underscore name the codec handles a BOM itself, as open()
-            # does: the reader's BOM table would drop it first and then decode a
-            # big endian UTF-16 or UTF-32 file in the native byte order.
+            # The reader every PathPointer gives drops a leading BOM for utf-8
+            # and the byte-order-specific codecs too, where open() keeps it as
+            # U+FEFF. Under its underscore spelling the codec is not in the
+            # reader's BOM table and applies its own BOM rule, as open() does,
+            # so a file reads alike on both routes. The reader still refuses a
+            # codec that is no text encoding, whatever the spelling.
             self._file = sfm_file.open(encoding.replace("-", "_").replace(" ", "_"))
         else:
             # pathsec containment with O_NOFOLLOW and hardlink guards (CWE-59,
@@ -214,45 +194,10 @@ class StandardFormat:
             pass
 
 
-#: Code points beyond ASCII allowed in an XML 1.0 (Fifth Edition) name.
-_XML_NAME_RANGES = (
-    (0xB7, 0xB7),
-    (0xC0, 0xD6),
-    (0xD8, 0xF6),
-    (0xF8, 0x37D),
-    (0x37F, 0x1FFF),
-    (0x203F, 0x2040),
-    (0x2070, 0x218F),
-    (0x2C00, 0x2FEF),
-    (0x3001, 0xD7FF),
-    (0xF900, 0xFDCF),
-    (0xFDF0, 0xFFFD),
-    (0x10000, 0xEFFFF),
-)
-#: A character a marker loses: one that is neither a word character nor a
-#: hyphen or dot, a word character that is no XML name character (MICRO SIGN,
-#: circled letters), or one that renders as nothing (joiners, selectors).
-_not_marker_char = redos.compile(
-    "[^\\w\\-.]|[^-.0-9A-Z_a-z%s]|\\p{Default_Ignorable_Code_Point}"
-    % "".join("\\U%08X-\\U%08X" % pair for pair in _XML_NAME_RANGES)
-)
-#: A name character an XML name cannot start with.
-_not_name_start = redos.compile(r"^[\d\-.\u0300-\u036F\u203F\u2040]")
-
-
 def _sanitize_marker(mkr):
-    if not mkr:
-        return "empty"
-    # Replace non-word characters with underscores, preserving letters, numbers, hyphens, and dots,
-    # and the word characters that are not XML name characters or are invisible
-    safe = redos.sub(_not_marker_char, "_", mkr)
-    # XML element names cannot start with a digit, hyphen, dot or combining mark
-    if redos.match(_not_name_start, safe):
-        safe = "_" + safe
-    # Mitigate HTML element injection for web viewers / XSS
-    if safe.lower() in {"script", "style", "iframe", "object", "embed", "link", "meta"}:
-        safe = "tb_" + safe
-    return safe
+    """A marker as the XML element name it is written as: see
+    :func:`nltk.xmlsec.safe_element_name`."""
+    return safe_element_name(mkr, prefix="tb_")
 
 
 class ToolboxData(StandardFormat):

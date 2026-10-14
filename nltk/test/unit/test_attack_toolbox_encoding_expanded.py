@@ -121,9 +121,20 @@ def develop_open(self, sfm_file):
 
 
 def develop_reading(monkeypatch):
-    """Put back develop's open and its line iteration (the stream's own)."""
+    """Put back develop's open and its line iteration (the stream's own), and
+    develop's reader, which noted the byte order a BOM named but kept decoding
+    with the generic codec."""
     monkeypatch.setattr(tb.StandardFormat, "open", develop_open)
     monkeypatch.setattr(tb.StandardFormat, "_lines", lambda self: iter(self._file))
+    real_check_bom = SeekableUnicodeStreamReader._check_bom
+
+    def develop_check_bom(self):
+        encoding = self.encoding
+        length = real_check_bom(self)
+        self.encoding = encoding
+        return length
+
+    monkeypatch.setattr(SeekableUnicodeStreamReader, "_check_bom", develop_check_bom)
 
 
 # 1. Codecs that are no text encoding, and odd names.
@@ -181,12 +192,14 @@ def test_a_codec_that_is_no_text_encoding_is_refused_before_any_open(
 @pytest.mark.parametrize("codec", ["zlib_codec", "bz2_codec"])
 def test_no_text_encoding_teeth(pathsec_sandbox, monkeypatch, codec):
     """Unchecked, the PathPointer route expands a planted bomb: the reader
-    decodes with any codec, unlike open()."""
+    decodes with any codec, unlike open(). The check is applied twice, by
+    Toolbox before the open and by the reader itself, so both are lifted."""
     raw = b"\\lx a\n" + b"a" * 1_000_000
     data = (zlib if codec == "zlib_codec" else bz2).compress(raw, 9)
     assert len(data) * 500 < len(raw)
     path = plant(pathsec_sandbox.root, "bomb.db", data)
     monkeypatch.setattr(tb, "_text_encoding", lambda encoding: encoding)
+    monkeypatch.setattr(nltk.data, "text_encoding", lambda encoding: encoding)
     sf = tb.StandardFormat(FileSystemPathPointer(path), codec)
     assert sf._file.read() == raw
     with pytest.raises((LookupError, OSError)) as caught:
@@ -195,6 +208,22 @@ def test_no_text_encoding_teeth(pathsec_sandbox, monkeypatch, codec):
     # LookupError may arrive as the context of an OSError.
     refusal = [caught.value, caught.value.__context__]
     assert any(isinstance(e, LookupError) for e in refusal), refusal
+
+
+@pytest.mark.parametrize("codec", ["zlib_codec", "bz2_codec"])
+def test_the_reader_refuses_a_bomb_codec_on_its_own(
+    pathsec_sandbox, monkeypatch, codec
+):
+    """With only Toolbox's check lifted, SeekableUnicodeStreamReader refuses the
+    codec itself, so every PathPointer route is covered, not just this one."""
+    raw = b"\\lx a\n" + b"a" * 1_000_000
+    data = (zlib if codec == "zlib_codec" else bz2).compress(raw, 9)
+    path = plant(pathsec_sandbox.root, "bomb.db", data)
+    monkeypatch.setattr(tb, "_text_encoding", lambda encoding: encoding)
+    with pytest.raises(LookupError, match="not a text encoding"):
+        tb.StandardFormat(FileSystemPathPointer(path), codec)
+    with pytest.raises(LookupError, match="not a text encoding"):
+        FileSystemPathPointer(path).open(codec)
 
 
 @pytest.mark.parametrize(
