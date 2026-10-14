@@ -153,3 +153,66 @@ def test_utf16_prolog_is_screened(parser):
     """A non-ASCII encoding must not smuggle a declaration past the fallback."""
     with pytest.raises((ValueError, ParseError)):
         parser.parse(io.BytesIO(_bomb().encode("utf-16")))
+
+
+# safe_element_name: text from a document as an element name that serialises
+# as one element and renders as itself (moved here from nltk.toolbox, which
+# writes every Toolbox marker through it).
+
+from nltk.xmlsec import XML_NAME_RANGES, safe_element_name  # noqa: E402
+
+
+@pytest.mark.parametrize(
+    "name, expected",
+    [
+        ("lx", "lx"),
+        ("ps-1.2", "ps-1.2"),
+        ("naïve", "naïve"),  # Latin-1 letters are name characters
+        ("日本", "日本"),  # CJK too
+        ("a<b", "a_b"),
+        ("a b", "a_b"),
+        ("a/b", "a_b"),
+        ("aµ", "a_"),  # MICRO SIGN is a word character but no name character
+        ("aⒶ", "a_"),  # a circled letter likewise
+        ("a​b", "a_b"),  # ZERO WIDTH SPACE renders as nothing
+        ("a️b", "a_b"),  # a variation selector likewise
+        ("1a", "_1a"),
+        ("-a", "_-a"),
+        (".a", "_.a"),
+        ("́a", "_́a"),  # a combining mark cannot start a name
+        ("", "empty"),
+        (None, "empty"),
+    ],
+)
+def test_safe_element_name_keeps_names_and_replaces_the_rest(name, expected):
+    assert safe_element_name(name) == expected
+
+
+@pytest.mark.parametrize(
+    "name", ["script", "SCRIPT", "Style", "iframe", "object", "embed", "link", "meta"]
+)
+def test_safe_element_name_prefixes_what_a_browser_acts_on(name):
+    assert safe_element_name(name) == "x_" + name
+    assert safe_element_name(name, prefix="tb_") == "tb_" + name
+
+
+@pytest.mark.parametrize("name", ["svg", "img", "math", "noscript", "div"])
+def test_safe_element_name_leaves_other_html_names_alone(name):
+    assert safe_element_name(name) == name
+
+
+def test_safe_element_name_serialises_as_one_element():
+    from xml.etree.ElementTree import Element, tostring
+
+    for raw in ["a><b", "a/>", "x\n<y", "</a><script>", "‮a"]:
+        tag = safe_element_name(raw)
+        xml = tostring(Element(tag)).decode()
+        assert xml == f"<{tag} />", xml
+        assert "<" not in tag and ">" not in tag and "/" not in tag
+
+
+def test_xml_name_ranges_are_ordered_and_disjoint():
+    last = -1
+    for lo, hi in XML_NAME_RANGES:
+        assert lo <= hi and lo > last
+        last = hi
