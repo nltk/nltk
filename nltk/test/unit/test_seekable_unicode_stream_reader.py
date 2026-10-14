@@ -161,7 +161,7 @@ def test_teeth_without_the_repick_a_big_endian_file_reads_as_other_characters(
     data = codecs.BOM_UTF16_BE + "abc\n".encode("utf-16-be")
     try:
         got = SeekableUnicodeStreamReader(BytesIO(data), "utf-16").read()
-    except UnicodeDecodeError:  # the generic decoder never sees the BOM
+    except UnicodeError:  # the generic decoder never sees the BOM (3.11: UnicodeError)
         got = None
     assert got != "abc\n"
 
