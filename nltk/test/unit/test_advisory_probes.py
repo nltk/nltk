@@ -21,6 +21,7 @@ import pytest
 
 from nltk.test.unit import security_probes as probes
 from nltk.test.unit import test_advisory_coverage_ci as covci
+from nltk.test.unit.conftest import make_home_dir
 from nltk.test.unit.security_probes import _base
 
 
@@ -271,9 +272,7 @@ def test_perceptron_load_does_not_widen_the_sandbox():
     from nltk.tag.perceptron import PerceptronTagger
 
     before = list(nltk.data.path)
-    outside = pathlib.Path(
-        tempfile.mkdtemp(prefix=".nltk_widen_", dir=str(pathlib.Path.home()))
-    )
+    outside = pathlib.Path(make_home_dir(".nltk_widen_"))
     try:
         (outside / "averaged_perceptron_tagger_xx.weights.json").write_text("{}")
         try:

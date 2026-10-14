@@ -11,12 +11,15 @@ tree must be on a private chain like the binary, hold no symlink, junction,
 special file or hardlink, and be private throughout; the checked string is
 what the command carries.
 
-Every fixture is staged under a private data root (``make_staging_dir``),
-never the shared temp dir, which the trust chain refuses on its own; a
-refusal in these tests is therefore due to the planted weakness alone.
+Every fixture is staged through ``make_staging_dir`` inside the enforced
+sandbox root, which the conftest places under ``$HOME``: a private directory
+chain on every CI runner, where a temp root would sit under world-writable
+``/tmp`` on Linux and be refused by the trust chain on its own. A refusal in
+these tests is therefore due to the planted weakness alone.
 """
 
 import os
+import pathlib
 import stat
 from platform import architecture, system
 
@@ -170,7 +173,7 @@ def test_senna_symlinked_data_dir_is_resolved_like_the_binary(staged, senna_spaw
     with pytest.raises(_Spawned):
         _senna(link).tag_sents([["the"]])
     ((_, argv),) = senna_spawn
-    assert argv[argv.index("-path") + 1] == os.path.realpath(real)
+    assert argv[argv.index("-path") + 1] == os.path.realpath(real) + os.sep
     if NOT_ROOT:
         del senna_spawn[:]
         shared = os.path.join(outside, "shared")
@@ -199,7 +202,9 @@ def test_senna_clean_data_dir_reaches_the_spawn_as_the_checked_string(
     ((_, argv),) = senna_spawn
     handed = argv[argv.index("-path") + 1]
     assert os.path.realpath(handed) == os.path.realpath(tool)
-    assert handed == pathsec.validate_tool_data_dir(tool, context="test")
+    # senna appends "hash/words.lst" to the value verbatim: the separator the
+    # checked string drops is put back, or the real binary cannot find its data
+    assert handed == pathsec.validate_tool_data_dir(tool, context="test") + os.sep
 
 
 @pytest.mark.skipif(not POSIX, reason="symlinks")
@@ -421,3 +426,301 @@ def test_guard_returns_the_resolved_string_for_a_clean_tree(staged):
         tool
     )
     assert type(checked) is str
+
+
+# =========================================================================== #
+# every tool, every further weakness another account could leave in the tree  #
+# =========================================================================== #
+
+
+def _run_senna(tool, monkeypatch):
+    _senna(tool).tag_sents([["the"]])
+
+
+def _run_repp(tool, monkeypatch):
+    return _repp(tool).generate_repp_command(
+        os.path.join(os.path.dirname(tool), "in.txt")
+    )
+
+
+def _run_candc(tool, monkeypatch):
+    _boxer(tool, monkeypatch)._call_candc([["the dog barks ."]], ["1"], question=False)
+
+
+# (tool, install it under a base, the directory inside the install the tool
+# reads, the call that hands that directory over)
+_SINKS = [
+    ("senna", _senna_install, "", _run_senna),
+    ("repp", _repp_install, "erg", _run_repp),
+    ("candc", _candc_install, os.path.join("models", "boxer"), _run_candc),
+]
+_SINK_IDS = [name for name, *_ in _SINKS]
+
+
+def _member(inside, name):
+    return os.path.join(inside, name) if inside else name
+
+
+def _plant_more(kind, tree, member, outside):
+    """Further weaknesses at *member* inside *tree*: a symlink to a directory
+    outside, a dangling one, one to a sibling inside the tree, a relative one,
+    a FIFO, a group-writable member, a writable subdirectory, and the original
+    weaknesses two levels down."""
+    target = os.path.join(tree, member)
+    if kind == "dir-symlink":
+        os.symlink(outside, target)
+    elif kind == "dangling-symlink":
+        os.symlink(os.path.join(outside, "gone"), target)
+    elif kind == "inside-symlink":
+        sibling = os.path.join(os.path.dirname(target), "sibling.dat")
+        with open(sibling, "w") as handle:
+            handle.write("inside")
+        os.symlink("sibling.dat", target)
+    elif kind == "relative-symlink":
+        victim = os.path.join(outside, "victim.dat")
+        with open(victim, "w") as handle:
+            handle.write("outside")
+        os.symlink(os.path.relpath(victim, os.path.dirname(target)), target)
+    elif kind == "fifo":
+        os.mkfifo(target)
+    elif kind == "group-writable":
+        with open(target, "w") as handle:
+            handle.write("x")
+        os.chmod(target, 0o664)
+    elif kind == "world-writable-subdir":
+        os.mkdir(target)
+        os.chmod(target, 0o777)
+    elif kind == "group-writable-subdir":
+        os.mkdir(target)
+        os.chmod(target, 0o775)
+    elif kind == "nested-symlink":
+        deep = os.path.join(os.path.dirname(target), "deep", "deeper")
+        os.makedirs(deep)
+        _plant("symlink", deep, "planted", outside)
+    elif kind == "nested-world-writable":
+        deep = os.path.join(os.path.dirname(target), "deep", "deeper")
+        os.makedirs(deep)
+        _plant("world-writable", deep, "planted", outside)
+    else:  # pragma: no cover
+        raise ValueError(kind)
+
+
+_MORE_KINDS = [
+    "dir-symlink",
+    "dangling-symlink",
+    "inside-symlink",
+    "relative-symlink",
+    "fifo",
+    "nested-symlink",
+] + (
+    [
+        "group-writable",
+        "world-writable-subdir",
+        "group-writable-subdir",
+        "nested-world-writable",
+    ]
+    if NOT_ROOT
+    else []
+)
+
+
+@pytest.mark.skipif(not POSIX, reason="symlinks, FIFOs and modes")
+@pytest.mark.parametrize("kind", _MORE_KINDS)
+@pytest.mark.parametrize("sink", _SINKS, ids=_SINK_IDS)
+def test_every_further_planted_weakness_is_refused_before_the_tool(
+    staged, senna_spawn, boxer_call, monkeypatch, sink, kind
+):
+    base, outside = staged
+    name, install, inside, run = sink
+    tool = install(base)
+    _plant_more(kind, tool, _member(inside, "planted"), outside)
+    with pytest.raises(REFUSED, match="Security Violation"):
+        run(tool, monkeypatch)
+    assert senna_spawn == [] and boxer_call == []
+
+
+@pytest.mark.skipif(not NOT_ROOT, reason="root owns every mode")
+@pytest.mark.parametrize(
+    "mode",
+    [0o1777, 0o777, 0o775],
+    ids=["sticky-world-writable", "world-writable", "group-writable"],
+)
+@pytest.mark.parametrize("sink", _SINKS, ids=_SINK_IDS)
+def test_a_weak_directory_anywhere_above_the_tree_is_refused(
+    staged, senna_spawn, boxer_call, monkeypatch, sink, mode
+):
+    """The chain is judged from the filesystem root down, as the binary's is:
+    a /tmp-like sticky directory, a world-writable or a group-writable one
+    anywhere above the install lets another account swap the whole tree."""
+    base, outside = staged
+    name, install, inside, run = sink
+    shared = os.path.join(base, "shared")
+    os.mkdir(shared)
+    tool = install(shared)
+    os.chmod(shared, mode)
+    try:
+        # senna judges its binary first, so its refusal is the LookupError the
+        # spawn's trust check has always raised; the others refuse the tree
+        with pytest.raises((REFUSED, LookupError), match="not on a trusted path"):
+            run(tool, monkeypatch)
+    finally:
+        os.chmod(shared, 0o700)
+    assert senna_spawn == [] and boxer_call == []
+
+
+@pytest.mark.skipif(not NOT_ROOT, reason="root owns every mode")
+def test_removing_the_guard_lets_a_tree_behind_a_sticky_directory_build(
+    staged, monkeypatch
+):
+    base, outside = staged
+    shared = os.path.join(base, "shared")
+    os.mkdir(shared)
+    tool = _repp_install(shared)
+    os.chmod(shared, 0o1777)
+    monkeypatch.setattr(repp_mod, "validate_tool_data_dir", lambda p, context: p)
+    try:
+        cmd = _repp(tool).generate_repp_command(os.path.join(base, "in.txt"))
+    finally:
+        os.chmod(shared, 0o700)
+    assert cmd[0] == tool + "/src/repp"
+
+
+@pytest.mark.skipif(not POSIX, reason="symlinks")
+@pytest.mark.parametrize("sink", _SINKS, ids=_SINK_IDS)
+def test_a_private_link_above_the_tree_is_followed_and_the_resolved_tree_handed_over(
+    staged, senna_spawn, boxer_call, monkeypatch, sink
+):
+    """A symlink higher up the chain (an ``installs`` link to a private
+    place) is followed like the binary's own, and what the tool gets is the
+    resolved tree, never the spelling through the link."""
+    base, outside = staged
+    name, install, inside, run = sink
+    real_parent = os.path.join(outside, "installs")
+    os.mkdir(real_parent)
+    real_tool = install(real_parent)
+    link = os.path.join(base, "installs")
+    os.symlink(real_parent, link)
+    via_link = os.path.join(link, os.path.basename(real_tool))
+    if name == "repp":
+        cmd = run(via_link, monkeypatch)
+        got = cmd[cmd.index("-c") + 1]
+        want = os.path.realpath(real_tool) + "/erg/repp.set"
+    else:
+        with pytest.raises(_Spawned):
+            run(via_link, monkeypatch)
+        if name == "senna":
+            ((_, argv),) = senna_spawn
+            got = argv[argv.index("-path") + 1]
+            want = os.path.realpath(real_tool) + os.sep
+        else:
+            ((_, args),) = boxer_call
+            got = args[args.index("--models") + 1]
+            want = os.path.realpath(os.path.join(real_tool, "models", "boxer"))
+    assert got == want
+    assert not got.startswith(link + os.sep)
+
+
+def _enrich(kind, tree, inside):
+    """Ordinary contents an install may well have; none of them is a
+    weakness and every one must still be accepted."""
+    where = os.path.join(tree, inside) if inside else tree
+    if kind == "dotfile":
+        with open(os.path.join(where, ".hidden"), "w") as handle:
+            handle.write("x")
+    elif kind == "empty-subdir":
+        os.mkdir(os.path.join(where, "empty"))
+    elif kind == "read-only-member":
+        path = os.path.join(where, "readonly.dat")
+        with open(path, "w") as handle:
+            handle.write("x")
+        os.chmod(path, 0o444)
+    elif kind == "executable-member":
+        _executable(os.path.join(where, "helper"))
+    elif kind == "nested-clean-subtree":
+        deep = os.path.join(where, "a", "b", "c")
+        os.makedirs(deep)
+        for name in ("one", "two"):
+            with open(os.path.join(deep, name), "w") as handle:
+                handle.write(name)
+    elif kind == "many-members":
+        crowd = os.path.join(where, "crowd")
+        os.mkdir(crowd)
+        for i in range(200):
+            with open(os.path.join(crowd, f"f{i}"), "w") as handle:
+                handle.write("x")
+    else:  # pragma: no cover
+        raise ValueError(kind)
+
+
+_BENIGN = [
+    "dotfile",
+    "empty-subdir",
+    "read-only-member",
+    "executable-member",
+    "nested-clean-subtree",
+    "many-members",
+]
+
+
+@pytest.mark.parametrize("kind", _BENIGN)
+@pytest.mark.parametrize("sink", _SINKS, ids=_SINK_IDS)
+def test_an_ordinary_install_is_still_accepted(
+    staged, senna_spawn, boxer_call, monkeypatch, sink, kind
+):
+    base, outside = staged
+    name, install, inside, run = sink
+    tool = install(base)
+    _enrich(kind, tool, inside)
+    if name == "repp":
+        cmd = run(tool, monkeypatch)
+        # repp spells its config path with "/" on every platform
+        assert cmd[cmd.index("-c") + 1].endswith("/erg/repp.set")
+    else:
+        with pytest.raises(_Spawned):
+            run(tool, monkeypatch)
+        assert len(senna_spawn) + len(boxer_call) == 1
+
+
+def test_the_guard_accepts_the_usual_spellings_of_the_same_directory(staged):
+    base, outside = staged
+    tool = _repp_install(base)
+    checked = pathsec.validate_tool_data_dir(tool, context="test")
+    assert pathsec.validate_tool_data_dir(tool + os.sep, context="test") == checked
+    assert pathsec.validate_tool_data_dir(pathlib.Path(tool), context="test") == checked
+
+
+@pytest.mark.parametrize(
+    "spelling", ["dotdot", "nul", "trailing-dot", "trailing-space", "relative"]
+)
+def test_the_guard_refuses_unsafe_spellings_before_touching_the_disk(
+    staged, spelling, monkeypatch
+):
+    base, outside = staged
+    tool = _repp_install(base)
+    if spelling == "relative":
+        # the install's own name, relative to the working directory beside it
+        # (a Windows runner's cwd and home sit on different drives, so no
+        # relpath across them)
+        monkeypatch.chdir(base)
+        bad = os.path.basename(tool)
+    else:
+        bad = {
+            "dotdot": os.path.join(tool, "..", "repp"),
+            "nul": tool + "\0",
+            "trailing-dot": tool + ".",
+            "trailing-space": tool + " ",
+        }[spelling]
+    with pytest.raises(REFUSED, match="Security Violation"):
+        pathsec.validate_tool_data_dir(bad, context="test")
+
+
+def test_the_guard_refuses_a_tree_over_the_entry_bound(staged):
+    base, outside = staged
+    tool = _repp_install(base)
+    crowd = os.path.join(tool, "erg", "crowd")
+    os.mkdir(crowd)
+    for i in range(pathsec.MAX_TOOL_DIR_ENTRIES):
+        with open(os.path.join(crowd, f"f{i}"), "w"):
+            pass
+    with pytest.raises(REFUSED, match="too many"):
+        pathsec.validate_tool_data_dir(tool, context="test")
