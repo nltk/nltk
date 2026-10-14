@@ -55,12 +55,9 @@ class StandardFormat:
         """
         encoding = _text_encoding(self._encoding)
         if isinstance(sfm_file, PathPointer):
-            # The reader every PathPointer gives drops a leading BOM for utf-8
-            # and the byte-order-specific codecs too, where open() keeps it as
-            # U+FEFF. Under its underscore spelling the codec is not in the
-            # reader's BOM table and applies its own BOM rule, as open() does,
-            # so a file reads alike on both routes. The reader still refuses a
-            # codec that is no text encoding, whatever the spelling.
+            # Spelled with underscores the codec misses the reader's BOM table
+            # and applies its own BOM rule, as open() does on the other route
+            # (the table drops a utf-8 or utf-16-le BOM that open() keeps).
             self._file = sfm_file.open(encoding.replace("-", "_").replace(" ", "_"))
         else:
             # pathsec containment with O_NOFOLLOW and hardlink guards (CWE-59,
@@ -90,9 +87,10 @@ class StandardFormat:
     def _lines(self):
         """The lines of the open file or string, without their line breaks.
 
-        The text is decoded in one read, so no BOM or shift state is lost
-        where a read would end, and split here rather than by the stream:
-        U+2028, U+2029, NEL, VT, FF, FS, GS and RS end no line on any route.
+        The text is split here rather than by the stream: a Standard Format
+        line ends at LF, CRLF or CR, as open() reads it, so U+2028, U+2029,
+        NEL, VT, FF, FS, GS and RS end no line on any route, where the
+        stream's own readline would end one at each.
         """
         text = self._file.read()
         if self._cr_ends_line:

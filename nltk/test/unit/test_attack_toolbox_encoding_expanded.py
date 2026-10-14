@@ -136,6 +136,43 @@ def develop_reading(monkeypatch):
 
     monkeypatch.setattr(SeekableUnicodeStreamReader, "_check_bom", develop_check_bom)
 
+    def develop_incr_decode(self, data):
+        # develop's stateless decode of one block, truncation retried
+        while True:
+            try:
+                return self.decode(data, "strict")
+            except UnicodeDecodeError as exc:
+                if exc.end == len(data):
+                    return self.decode(data[: exc.start], self.errors)
+                elif self.errors == "strict":
+                    raise
+                else:
+                    return self.decode(data, self.errors)
+
+    def develop_read(self, size=None):
+        # develop decoded each block on its own, with the stateless decoder
+        if size == 0:
+            return ""
+        if self._bom and self.stream.tell() == 0:
+            self.stream.read(self._bom)
+        new_bytes = self.stream.read() if size is None else self.stream.read(size)
+        data = self.bytebuffer + new_bytes
+        chars, consumed = develop_incr_decode(self, data)
+        if size is not None and not chars and new_bytes:
+            while not chars:
+                new_bytes = self.stream.read(1)
+                if not new_bytes:
+                    break
+                data += new_bytes
+                chars, consumed = develop_incr_decode(self, data)
+        self.bytebuffer = data[consumed:]
+        return chars
+
+    monkeypatch.setattr(
+        SeekableUnicodeStreamReader, "_incr_decode", develop_incr_decode
+    )
+    monkeypatch.setattr(SeekableUnicodeStreamReader, "_read", develop_read)
+
 
 # 1. Codecs that are no text encoding, and odd names.
 

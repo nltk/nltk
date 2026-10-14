@@ -2163,6 +2163,12 @@ class SeekableUnicodeStreamReader:
         """The function that is used to decode byte strings into
            unicode strings."""
 
+        self._decoder = self._new_decoder()
+        """The incremental decoder the sequential reads go through. It
+           carries the shift state of a stateful codec (``iso2022_jp``,
+           ``utf-7``) and the byte order a ``utf-16`` BOM named from one
+           block to the next, which a stateless decode of each block lost."""
+
         self.bytebuffer = b""
         """A buffer to use bytes that have been read but have not yet
            been decoded.  This is only used when the final bytes from
@@ -2191,6 +2197,22 @@ class SeekableUnicodeStreamReader:
            together with ``_rewind_checkpoint``, to backtrack to the
            beginning of ``linebuffer`` (which is required by ``tell()``)."""
 
+        self._rewind_state = None
+        """The decoder state at ``_rewind_checkpoint`` (None for the
+           initial state), so that backtracking from the checkpoint
+           decodes a stateful codec as the sequential read did."""
+
+        self._buffer_state = None
+        """The decoder state at the first byte of ``bytebuffer`` (None for
+           the initial state): the state at every position this reader
+           hands out, which a decoder started there must be in."""
+
+        self._seek_states = {}
+        """The decoder state at each position ``tell()`` handed out that
+           a decoder started there would not be in by itself: a position
+           inside a shifted run of a stateful codec. ``seek()`` looks the
+           position up. A stateless codec never adds an entry."""
+
         self._bom = self._check_bom()
         """The length of the byte order marker at the beginning of
            the stream (or None for no byte order marker)."""
@@ -2199,6 +2221,14 @@ class SeekableUnicodeStreamReader:
             # byte order it named: ``utf-16`` without its BOM is decoded in the
             # native order, which turns a big endian file into other characters.
             self.decode = codecs.getdecoder(self.encoding)
+            self._decoder = self._new_decoder()
+
+        self._initial_state = self._new_decoder().getstate()
+        self._base_state = self._state_after_own_bom()
+        """The decoder state after a BOM the codec reads for itself (None
+           when there is none): what the byte order it learned, or the BOM
+           it has already seen, must be at every position past it, since
+           a seek there starts a decoder that never saw the BOM."""
 
     # /////////////////////////////////////////////////////////////////
     # Read methods
@@ -2230,6 +2260,12 @@ class SeekableUnicodeStreamReader:
             self._rewind_numchars += len(line)
         else:
             self.stream.readline()
+            # a raw skip: nothing read so far carries over to the new position
+            self.bytebuffer = b""
+            self._buffer_state = self._state_at(self.stream.tell())
+            self._decoder.reset()
+            if self._buffer_state is not None:
+                self._decoder.setstate(self._buffer_state)
 
     def readline(self, size=None):
         """
@@ -2264,6 +2300,7 @@ class SeekableUnicodeStreamReader:
 
         while True:
             startpos = self.stream.tell() - len(self.bytebuffer)
+            startstate = self._state_at_checkpoint()
             new_chars = self._read(readsize)
 
             # If we're at a '\r', then read one extra character, since
@@ -2287,6 +2324,7 @@ class SeekableUnicodeStreamReader:
                     self.linebuffer = lines[1:]
                     self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
                     self._rewind_checkpoint = startpos
+                    self._rewind_state = startstate
                     break
                 elif len(lines) == 1:
                     line0withend = lines[0]
@@ -2396,8 +2434,13 @@ class SeekableUnicodeStreamReader:
         self.stream.seek(offset, whence)
         self.linebuffer = None
         self.bytebuffer = b""
+        self._decoder.reset()
         self._rewind_numchars = None
         self._rewind_checkpoint = self.stream.tell()
+        self._rewind_state = self._state_at(self._rewind_checkpoint)
+        self._buffer_state = self._rewind_state
+        if self._rewind_state is not None:
+            self._decoder.setstate(self._rewind_state)
 
     def char_seek_forward(self, offset):
         """
@@ -2407,17 +2450,19 @@ class SeekableUnicodeStreamReader:
             raise ValueError("Negative offsets are not supported")
         # Clear all buffers.
         self.seek(self.tell())
-        # Perform the seek operation.
-        self._char_seek_forward(offset)
+        # Perform the seek operation; reading goes on in the state reached.
+        self._decoder.setstate(self._char_seek_forward(offset))
 
-    def _char_seek_forward(self, offset, est_bytes=None):
+    def _char_seek_forward(self, offset, est_bytes=None, state=None):
         """
         Move the file position forward by ``offset`` characters,
-        ignoring all buffers.
+        ignoring all buffers, and return the decoder state reached.
 
         :param est_bytes: A hint, giving an estimate of the number of
             bytes that will be needed to move forward by ``offset`` chars.
             Defaults to ``offset``.
+        :param state: The decoder state at the current position (None
+            for the state a seek there would start in).
         """
         if offset < 0:
             # the backtracking loop below never reaches a negative count and
@@ -2425,6 +2470,12 @@ class SeekableUnicodeStreamReader:
             raise ValueError("Negative offsets are not supported")
         if est_bytes is None:
             est_bytes = offset
+        if self._bom and self.stream.tell() == 0:
+            # The decoder carries the byte order the BOM named and would read
+            # the BOM itself as U+FEFF, one character no caller counted.
+            self.stream.read(self._bom)
+        if state is None:
+            state = self._state_at(self.stream.tell())
         bytes = b""
 
         while True:
@@ -2433,13 +2484,7 @@ class SeekableUnicodeStreamReader:
             bytes += newbytes
 
             # Decode the bytes to characters.
-            chars, bytes_decoded = self._incr_decode(bytes)
-
-            # If we got the right number of characters, then seek
-            # backwards over any truncated characters, and return.
-            if len(chars) == offset:
-                self.stream.seek(-len(bytes) + bytes_decoded, 1)
-                return
+            chars, bytes_decoded, reached = self._decode_from(state, bytes)
 
             # If we went too far, then we can back-up until we get it
             # right, using the bytes we've already read.
@@ -2447,9 +2492,23 @@ class SeekableUnicodeStreamReader:
                 while len(chars) > offset:
                     # Assume at least one byte/char.
                     est_bytes += offset - len(chars)
-                    chars, bytes_decoded = self._incr_decode(bytes[:est_bytes])
+                    chars, bytes_decoded, reached = self._decode_from(
+                        state, bytes[:est_bytes]
+                    )
+
+            # Right number of characters: stop before any trailing bytes that
+            # produced none (an escape sequence of a stateful codec) and
+            # before any truncated character, then return the state there.
+            if len(chars) == offset:
+                while bytes_decoded > 0:
+                    fewer, consumed, before = self._decode_from(
+                        state, bytes[: bytes_decoded - 1]
+                    )
+                    if len(fewer) != offset:
+                        break
+                    bytes_decoded, reached = consumed, before
                 self.stream.seek(-len(bytes) + bytes_decoded, 1)
-                return
+                return reached
 
             # Otherwise, we haven't read enough bytes yet; loop again.
             est_bytes += offset - len(chars)
@@ -2463,7 +2522,9 @@ class SeekableUnicodeStreamReader:
         """
         # If nothing's buffered, then just return our current filepos:
         if self.linebuffer is None:
-            return self.stream.tell() - len(self.bytebuffer)
+            position = self.stream.tell() - len(self.bytebuffer)
+            self._remember_state(position, self._buffer_state)
+            return position
 
         # Otherwise, we'll need to backtrack the filepos until we
         # reach the beginning of the buffer.
@@ -2479,17 +2540,16 @@ class SeekableUnicodeStreamReader:
         )
 
         self.stream.seek(self._rewind_checkpoint)
-        if self._bom and self._rewind_checkpoint == 0:
-            # The decoder carries the byte order the BOM named and would read
-            # the BOM itself as U+FEFF, one character the line buffer never saw.
-            self.stream.read(self._bom)
-        self._char_seek_forward(self._rewind_numchars, est_bytes)
+        reached = self._char_seek_forward(
+            self._rewind_numchars, est_bytes, self._rewind_state
+        )
         filepos = self.stream.tell()
+        self._remember_state(filepos, reached)
 
         # Sanity check
         if self.DEBUG:
             self.stream.seek(filepos)
-            check1 = self._incr_decode(self.stream.read(50))[0]
+            check1 = self._decode_from(reached, self.stream.read(50))[0]
             check2 = "".join(self.linebuffer)
             assert check1.startswith(check2) or check2.startswith(check1)
 
@@ -2518,29 +2578,116 @@ class SeekableUnicodeStreamReader:
             self.stream.read(self._bom)
 
         # Read the requested number of bytes.
+        start_state, buffered = self._buffer_state, self.bytebuffer
         if size is None:
             new_bytes = self.stream.read()
         else:
             new_bytes = self.stream.read(size)
-        bytes = self.bytebuffer + new_bytes
 
-        # Decode the bytes into unicode characters
-        chars, bytes_decoded = self._incr_decode(bytes)
+        # Decode the bytes into unicode characters; the decoder keeps an
+        # incomplete character and the shift state for the next block. At
+        # the end of the stream a character cut short is an error, as in open().
+        final = size is None or not new_bytes
+        chars = self._decoder.decode(new_bytes, final)
 
         # If we got bytes but couldn't decode any, then read further.
         if (size is not None) and (not chars) and (len(new_bytes) > 0):
             while not chars:
-                new_bytes = self.stream.read(1)
-                if not new_bytes:
-                    break  # end of file.
-                bytes += new_bytes
-                chars, bytes_decoded = self._incr_decode(bytes)
+                more = self.stream.read(1)
+                if not more:
+                    chars = self._decoder.decode(b"", True)  # end of file.
+                    break
+                new_bytes += more
+                chars = self._decoder.decode(more)
 
-        # Record any bytes we didn't consume.
-        self.bytebuffer = bytes[bytes_decoded:]
+        # Record any bytes we didn't consume: an incomplete character, and
+        # trailing bytes that produced none (an escape sequence) when the
+        # state here is not one a decoder started here would be in.
+        pending, shift = self._decoder.getstate()
+        self.bytebuffer, self._buffer_state = pending, (b"", shift)
+        position = self.stream.tell() - len(pending)
+        if self._buffer_state != (self._state_at(position) or self._initial_state):
+            block = buffered + new_bytes
+            consumed, state = len(block) - len(pending), self._buffer_state
+            while consumed > 0:
+                fewer, shorter, before = self._decode_from(
+                    start_state, block[: consumed - 1]
+                )
+                if len(fewer) != len(chars):
+                    break
+                consumed, state = shorter, before
+            self.bytebuffer, self._buffer_state = block[consumed:], state
 
         # Return the result
         return chars
+
+    def _new_decoder(self):
+        return codecs.getincrementaldecoder(self.encoding)(self.errors)
+
+    def _state_at_checkpoint(self):
+        """The decoder state at the first byte not yet decoded (the start
+        of ``bytebuffer``), which a read from there starts in."""
+        return self._buffer_state
+
+    def _state_at(self, position):
+        """The state a decoder starting at ``position`` must be in: the
+        state ``tell()`` remembered there, else the initial state at the
+        start of the stream, else past the codec's own BOM the state that
+        BOM left (None when there is no such BOM)."""
+        if position in self._seek_states:
+            return self._seek_states[position]
+        return self._base_state if position > 0 else None
+
+    def _remember_state(self, position, state):
+        """Keep ``state`` for ``position`` when a decoder started there
+        would not be in it by itself."""
+        if state is not None and state != (
+            self._state_at(position) or self._initial_state
+        ):
+            self._seek_states[position] = state
+
+    def _state_after_own_bom(self):
+        """The state a fresh decoder is in after the BOM it reads for
+        itself at the start of the stream, or None when it reads none or
+        the BOM leaves it as it started."""
+        if self._bom:
+            return None  # the reader skips this BOM; the codec never sees it
+        head = self.stream.read(4)
+        self.stream.seek(0)
+        initial = self._initial_state
+        for bom in self._OWN_BOMS:
+            if head.startswith(bom):
+                decoder = self._new_decoder()
+                try:
+                    consumed = decoder.decode(bom)
+                except UnicodeDecodeError:
+                    return None
+                state = decoder.getstate()
+                if consumed == "" and state[0] == b"" and state != initial:
+                    return state
+                return None
+        return None
+
+    #: BOMs a codec may read for itself, longest first.
+    _OWN_BOMS = (
+        codecs.BOM_UTF32_LE,
+        codecs.BOM_UTF32_BE,
+        codecs.BOM_UTF16_LE,
+        codecs.BOM_UTF16_BE,
+        codecs.BOM_UTF8,
+    )
+
+    def _decode_from(self, state, bytes):
+        """Decode ``bytes`` from ``state`` (None for the initial state) with
+        a decoder of its own. Return ``(chars, num_consumed, state)``: the
+        characters, the bytes they took (an incomplete character at the end
+        is not consumed) and the state reached, with nothing pending."""
+        decoder = self._new_decoder()
+        if state is not None:
+            decoder.setstate(state)
+        chars = decoder.decode(bytes)
+        pending, shift = decoder.getstate()
+        return chars, len(bytes) - len(pending), (b"", shift)
 
     def _incr_decode(self, bytes):
         """
@@ -2554,23 +2701,8 @@ class SeekableUnicodeStreamReader:
         the decoded unicode string, and ``num_consumed`` is the
         number of bytes that were consumed.
         """
-        while True:
-            try:
-                return self.decode(bytes, "strict")
-            except UnicodeDecodeError as exc:
-                # If the exception occurs at the end of the string,
-                # then assume that it's a truncation error.
-                if exc.end == len(bytes):
-                    return self.decode(bytes[: exc.start], self.errors)
-
-                # Otherwise, if we're being strict, then raise it.
-                elif self.errors == "strict":
-                    raise
-
-                # If we're not strict, then re-process it with our
-                # errors setting.  This *may* raise an exception.
-                else:
-                    return self.decode(bytes, self.errors)
+        chars, num_consumed, _ = self._decode_from(None, bytes)
+        return chars, num_consumed
 
     _BOM_TABLE = {
         "utf8": [(codecs.BOM_UTF8, None)],
