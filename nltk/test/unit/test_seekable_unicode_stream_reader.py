@@ -136,7 +136,7 @@ def test_teeth_the_reader_expands_a_bomb_without_the_check(monkeypatch, codec):
     ],
 )
 def test_a_bom_names_the_byte_order_the_reader_decodes_with(encoding, bom, order):
-    text = "abc\ndéf\n" * 3
+    text = "abc\nd\u00e9f\n" * 3
     data = bom + text.encode(order)
     reader = SeekableUnicodeStreamReader(BytesIO(data), encoding)
     assert reader.encoding == order
@@ -191,7 +191,7 @@ def test_a_path_pointer_refuses_a_bomb_codec_and_reads_big_endian(pathsec_sandbo
 # The sequential reads carry the decoder's state from block to block, and
 # every position tell() hands out can be decoded from after a seek.
 
-STATEFUL_TEXT = "日本語の行 %d\n"
+STATEFUL_TEXT = "\u65e5\u672c\u8a9e\u306e\u884c %d\n"
 
 
 def _every_shape(encoding, data, text):
@@ -279,9 +279,9 @@ def test_teeth_a_stateless_decode_per_block_loses_the_shift_state(monkeypatch):
 
 
 def test_a_character_cut_short_at_the_end_is_an_error_as_in_open():
-    data = "abcé".encode("utf-8")[:-1]
+    data = "abc\u00e9".encode()[:-1]
     reader = SeekableUnicodeStreamReader(BytesIO(data), "utf-8")
     with pytest.raises(UnicodeDecodeError):
         reader.read()
     reader = SeekableUnicodeStreamReader(BytesIO(data), "utf-8", errors="replace")
-    assert reader.read() == "abc�"
+    assert reader.read() == "abc\ufffd"

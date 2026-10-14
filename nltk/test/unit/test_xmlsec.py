@@ -167,19 +167,19 @@ from nltk.xmlsec import XML_NAME_RANGES, safe_element_name  # noqa: E402
     [
         ("lx", "lx"),
         ("ps-1.2", "ps-1.2"),
-        ("naïve", "naïve"),  # Latin-1 letters are name characters
-        ("日本", "日本"),  # CJK too
+        ("na\u00efve", "na\u00efve"),  # Latin-1 letters are name characters
+        ("\u65e5\u672c", "\u65e5\u672c"),  # CJK too
         ("a<b", "a_b"),
         ("a b", "a_b"),
         ("a/b", "a_b"),
-        ("aµ", "a_"),  # MICRO SIGN is a word character but no name character
-        ("aⒶ", "a_"),  # a circled letter likewise
-        ("a​b", "a_b"),  # ZERO WIDTH SPACE renders as nothing
-        ("a️b", "a_b"),  # a variation selector likewise
+        ("a\u00b5", "a_"),  # MICRO SIGN is a word character but no name character
+        ("a\u24b6", "a_"),  # a circled letter likewise
+        ("a\u200bb", "a_b"),  # ZERO WIDTH SPACE renders as nothing
+        ("a\ufe0fb", "a_b"),  # a variation selector likewise
         ("1a", "_1a"),
         ("-a", "_-a"),
         (".a", "_.a"),
-        ("́a", "_́a"),  # a combining mark cannot start a name
+        ("\u0301a", "_\u0301a"),  # a combining mark cannot start a name
         ("", "empty"),
         (None, "empty"),
     ],
@@ -204,7 +204,7 @@ def test_safe_element_name_leaves_other_html_names_alone(name):
 def test_safe_element_name_serialises_as_one_element():
     from xml.etree.ElementTree import Element, tostring
 
-    for raw in ["a><b", "a/>", "x\n<y", "</a><script>", "‮a"]:
+    for raw in ["a><b", "a/>", "x\n<y", "</a><script>", "\u202ea"]:
         tag = safe_element_name(raw)
         xml = tostring(Element(tag)).decode()
         assert xml == f"<{tag} />", xml
