@@ -15,7 +15,6 @@ platform NLTK's tools run on, in any letter case, is in it."""
 import os
 import pathlib
 import shutil
-import tempfile
 import unittest.mock
 
 import pytest
@@ -23,6 +22,7 @@ import pytest
 import nltk.data
 from nltk import internals, pathsec
 from nltk.test.unit import timing
+from nltk.test.unit.conftest import make_home_dir
 
 NUL = chr(0)
 
@@ -263,9 +263,7 @@ def jvm_source_root(monkeypatch):
         internals.config_java()
     except LookupError:
         pytest.skip("no Java binary found on this machine")
-    root = os.path.realpath(
-        tempfile.mkdtemp(prefix=".nltk_jvm_env_", dir=pathlib.Path.home())
-    )
+    root = os.path.realpath(make_home_dir(".nltk_jvm_env_"))
     src = os.path.join(root, "PrintEnv.java")
     with open(src, "w", encoding="utf-8") as fh:
         fh.write(_PRINT_ENV_JAVA)
