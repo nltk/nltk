@@ -44,6 +44,7 @@ import pytest
 import nltk.data
 import nltk.pathsec as pathsec
 from nltk.test.unit import timing
+from nltk.test.unit.conftest import make_home_dir
 
 # The pathsec sandbox fixtures (sandbox / restricted_sandbox / enforce_off)
 # are provided by nltk/test/unit/conftest.py.
@@ -525,7 +526,7 @@ def _hunpos_stub_bin():
         import shutil
         import tempfile
 
-        base = tempfile.mkdtemp(prefix=".nltk_hunpos_drv_", dir=os.path.expanduser("~"))
+        base = make_home_dir(".nltk_hunpos_drv_")
         atexit.register(shutil.rmtree, base, ignore_errors=True)
         binpath = os.path.join(base, "hunpos-tag")
         with open(binpath, "w") as handle:
@@ -1170,9 +1171,7 @@ def test_validate_tool_path_rejects_in_root_hardlink(restricted_sandbox):
 
 
 def _outside_dir():
-    return Path(
-        tempfile.mkdtemp(prefix=".nltk_tagsweep_outside_", dir=str(Path.home()))
-    )
+    return Path(make_home_dir(".nltk_tagsweep_outside_"))
 
 
 def test_validate_path_no_longer_waves_through_a_blank_path(restricted_sandbox):

@@ -29,6 +29,7 @@ import pytest
 import nltk.data
 from nltk import pathsec
 from nltk.sem.boxer import Boxer
+from nltk.test.unit.conftest import make_home_dir
 
 _BIN_NAMES = ("candc", "boxer")
 
@@ -155,8 +156,7 @@ def test_boxer_scratch_file_staged_in_data_root(monkeypatch):
     """
     # Stage the data root under $HOME so it is inside the pathsec sandbox on
     # every OS; the system temp dir is deliberately not an allowed data root.
-    home = os.path.expanduser("~")
-    root = tempfile.mkdtemp(prefix="nltk_boxer_test_", dir=home)
+    root = make_home_dir("nltk_boxer_test_")
     monkeypatch.setattr(nltk.data, "path", [root, *nltk.data.path])
 
     boxer = Boxer.__new__(Boxer)

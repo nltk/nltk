@@ -44,7 +44,6 @@ fixtures.
 import gzip
 import os
 import stat
-import tempfile
 import zipfile
 
 import pytest
@@ -59,6 +58,7 @@ from nltk.pathsec import (
     validate_tool_dir,
     validate_tool_path,
 )
+from nltk.test.unit.conftest import make_home_dir
 
 REFUSALS = (PermissionError, ValueError)
 
@@ -198,7 +198,7 @@ def test_no_lookalike_payload_reads_a_sentinel_outside_the_root():
     """End-to-end no-leak property for the lookalike shapes: plant a secret above
     an isolated data root and confirm no ``....//`` / unicode-dot spelling reads
     it, whether it is refused, collapsed, or kept as an in-root literal."""
-    base = tempfile.mkdtemp(prefix=".nltk_look_", dir=os.path.expanduser("~"))
+    base = make_home_dir(".nltk_look_")
     try:
         dataroot = os.path.join(base, "nltk_data")
         os.makedirs(dataroot)

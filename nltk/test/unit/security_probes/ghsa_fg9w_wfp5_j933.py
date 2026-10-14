@@ -109,6 +109,133 @@ def _repp_config_dir_with_a_planted_link():
         shutil.rmtree(base, ignore_errors=True)
 
 
+def _senna_data_dir_with_a_planted_link():
+    """Third-pass sibling sink: SENNA's ``-path`` data directory, read natively
+    by the binary. A symlink planted inside it must be refused before the
+    spawn; the spawn is intercepted so no binary is needed, only a file with
+    the binary's name so the wrapper constructs."""
+    import shutil
+    from platform import architecture, system
+
+    from nltk.classify import senna as senna_mod
+
+    if not hasattr(os, "symlink"):
+        return STATIC, "no symlinks on this platform"
+    base = tempfile.mkdtemp(prefix=".nltk_fg9w_senna_", dir=os.path.expanduser("~"))
+    saved_spawn = senna_mod.spawn_trusted
+    seen = []
+
+    def fake_spawn(executable, args, **kwargs):
+        seen.append(list(args))
+        raise RuntimeError("probe: spawn intercepted")
+
+    try:
+        tool = os.path.join(base, "senna")
+        os.mkdir(tool)
+        os_name = system()
+        if os_name == "Linux":
+            name = "senna-linux64" if architecture()[0] == "64bit" else "senna-linux32"
+        elif os_name == "Windows":
+            name = "senna-win32.exe"
+        elif os_name == "Darwin":
+            name = "senna-osx"
+        else:
+            name = "senna"
+        binary = os.path.join(tool, name)
+        with open(binary, "wb"):  # sandboxed-open ok: probe fixture under ~
+            pass
+        os.chmod(binary, 0o755)
+        victim = os.path.join(base, "victim.dat")
+        with open(victim, "w") as handle:  # sandboxed-open ok: probe fixture under ~
+            handle.write("outside")
+        try:
+            os.symlink(victim, os.path.join(tool, "planted.dat"))
+        except OSError as exc:
+            return STATIC, f"cannot plant a symlink here: {exc}"
+        senna_mod.spawn_trusted = fake_spawn
+        try:
+            senna_mod.Senna(tool, ["pos"]).tag_sents([["the"]])
+        except Exception as exc:
+            if is_security_rejection(exc):
+                if seen:
+                    return VULNERABLE, "refused but the spawn got the data dir"
+                return FIXED, "data dir with a planted symlink refused before the spawn"
+            if seen:
+                return VULNERABLE, f"spawned with the tampered data dir {seen[0]!r}"
+            return STATIC, f"non-security failure {type(exc).__name__}: {exc}"
+        if seen:
+            return VULNERABLE, f"spawned with the tampered data dir {seen[0]!r}"
+        return FIXED, "no tampered data dir reached the spawn"
+    finally:
+        senna_mod.spawn_trusted = saved_spawn
+        shutil.rmtree(base, ignore_errors=True)
+
+
+def _candc_models_with_a_planted_link():
+    """Third-pass sibling sink: the C&C ``--models`` tree Boxer hands the
+    parser, read natively. A symlink planted inside it must be refused before
+    the call; the call is intercepted so no binary is needed."""
+    import shutil
+
+    from nltk.sem import boxer as boxer_mod
+
+    if not hasattr(os, "symlink"):
+        return STATIC, "no symlinks on this platform"
+    base = tempfile.mkdtemp(prefix=".nltk_fg9w_candc_", dir=os.path.expanduser("~"))
+    saved_call = boxer_mod.Boxer._call
+    saved_env = os.environ.pop("CANDC", None)
+    seen = []
+
+    def fake_call(self, input_str, binary, args, verbose=False):
+        seen.append(list(args))
+        raise RuntimeError("probe: call intercepted")
+
+    try:
+        tool = os.path.join(base, "candc")
+        os.makedirs(os.path.join(tool, "bin"))
+        os.makedirs(os.path.join(tool, "models", "boxer"))
+        for name in ("candc", "boxer"):
+            binary = os.path.join(tool, "bin", name)
+            with open(binary, "wb"):  # sandboxed-open ok: probe fixture under ~
+                pass
+            os.chmod(binary, 0o755)
+        with open(
+            os.path.join(tool, "models", "boxer", "super"), "w"
+        ):  # sandboxed-open ok: probe fixture under ~
+            pass
+        victim = os.path.join(base, "victim.dat")
+        with open(victim, "w") as handle:  # sandboxed-open ok: probe fixture under ~
+            handle.write("outside")
+        try:
+            os.symlink(victim, os.path.join(tool, "models", "boxer", "planted"))
+        except OSError as exc:
+            return STATIC, f"cannot plant a symlink here: {exc}"
+        boxer_mod.Boxer._call = fake_call
+        try:
+            boxer_mod.Boxer(bin_dir=os.path.join(tool, "bin"))._call_candc(
+                [["the dog barks ."]], ["1"], question=False
+            )
+        except Exception as exc:
+            if is_security_rejection(exc):
+                if seen:
+                    return VULNERABLE, "refused but the call got the models tree"
+                return (
+                    FIXED,
+                    "models tree with a planted symlink refused before the call",
+                )
+            if seen:
+                return VULNERABLE, f"called with the tampered models tree {seen[0]!r}"
+            return STATIC, f"non-security failure {type(exc).__name__}: {exc}"
+        if seen:
+            return VULNERABLE, f"called with the tampered models tree {seen[0]!r}"
+        return FIXED, "no tampered models tree reached the call"
+    finally:
+        boxer_mod.Boxer._call = saved_call
+        if saved_env is not None:
+            os.environ["CANDC"] = saved_env
+        shutil.rmtree(base, ignore_errors=True)
+
+
 @probe("GHSA-fg9w-wfp5-j933")
 def _bllip_model_paths():
     """``BllipParser(parser_model=<outside-root>)`` must be refused before the
@@ -185,7 +312,9 @@ def _bllip_model_paths():
 
     malt_result = _malt_learn_mode_model()
     repp_result = _repp_config_dir_with_a_planted_link()
-    results = [bllip_result, malt_result, repp_result]
+    senna_result = _senna_data_dir_with_a_planted_link()
+    candc_result = _candc_models_with_a_planted_link()
+    results = [bllip_result, malt_result, repp_result, senna_result, candc_result]
     for status, detail in results:
         if status == VULNERABLE:
             return VULNERABLE, detail

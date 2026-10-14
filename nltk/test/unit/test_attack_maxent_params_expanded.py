@@ -27,7 +27,6 @@ import pathlib
 import pickle
 import random
 import shutil
-import tempfile
 import zipfile
 
 import pytest
@@ -47,6 +46,7 @@ from nltk.classify.maxent import (
 from nltk.data import FileSystemPathPointer, ZipFilePathPointer
 from nltk.tabdata import MaxentDecoder
 from nltk.test.unit import timing
+from nltk.test.unit.conftest import make_home_dir
 
 POSIX = pytest.mark.skipif(
     os.name != "posix", reason="POSIX inode semantics (symlink, hardlink, FIFO, sh)"
@@ -889,7 +889,7 @@ class TestPickledModels:
 def _private_home_dir(prefix):
     """A fresh private directory under $HOME, a trusted chain on every runner
     (a shared temp dir is not), so spawn_trusted accepts a stub placed in it."""
-    return pathlib.Path(tempfile.mkdtemp(prefix=prefix, dir=str(pathlib.Path.home())))
+    return pathlib.Path(make_home_dir(prefix))
 
 
 def _record_file(path):
