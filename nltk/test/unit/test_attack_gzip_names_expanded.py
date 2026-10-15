@@ -379,7 +379,43 @@ def test_panlex_reader_reads_a_database_under_its_root(restricted_sandbox):
     assert meaning.expressions() == {"eng-000": ["dog"], "fra-000": ["chien"]}
 
 
-@pytest.mark.parametrize("name", ["db.sqlite", "db.sqlite-journal", "db.sqlite-wal"])
+def test_panlex_reader_is_a_corpus_reader_with_the_sandboxed_root(restricted_sandbox):
+    root = os.path.join(restricted_sandbox, "panlex_lite")
+    os.mkdir(root)
+    _panlex_db(os.path.join(root, "db.sqlite"))
+    reader = PanLexLiteCorpusReader(root)
+    assert reader.fileids() == ["db.sqlite"]
+    assert os.path.samefile(str(reader.root), root)
+
+
+def test_panlex_root_outside_the_sandbox_is_refused_by_the_corpus_reader(
+    pathsec_sandbox,
+):
+    root, outside = pathsec_sandbox
+    corpus = os.path.join(str(outside), "panlex_lite")
+    os.mkdir(corpus)
+    _panlex_db(os.path.join(corpus, "db.sqlite"))
+    with pytest.raises(REFUSED, match=r"Security Violation \[CorpusReader.__init__\]"):
+        PanLexLiteCorpusReader(corpus)
+
+
+def test_sqlite_sidecar_names_come_from_pathsec():
+    from nltk import pathsec
+    from nltk.sem import chat80
+
+    assert pathsec.sqlite_names("/x/db") == [
+        "/x/db",
+        "/x/db-journal",
+        "/x/db-wal",
+        "/x/db-shm",
+    ]
+    assert set(pathsec.SQLITE_SIDECARS) < set(chat80._STORE_SIDECAR_SUFFIXES)
+    assert set(pathsec.sqlite_names("/x/db")) < set(chat80._store_names("/x/db"))
+
+
+@pytest.mark.parametrize(
+    "name", ["db.sqlite", "db.sqlite-journal", "db.sqlite-wal", "db.sqlite-shm"]
+)
 def test_panlex_hardlinked_database_or_sidecar_is_refused(pathsec_sandbox, name):
     root, outside = pathsec_sandbox
     corpus = os.path.join(str(root), "panlex_lite")
@@ -480,7 +516,7 @@ def test_spy_teeth_it_sees_a_library_name_handed_to_sqlite(
     monkeypatch.setattr(
         pathsec,
         "connect_sqlite_read_only",
-        lambda path, names=None, context=None: sqlite3.connect(path),
+        lambda path, names=None, context=None, **kw: sqlite3.connect(path),
     )
     PanLexLiteCorpusReader(root)
     assert ("sqlite3.connect", "panlex_lite.py") in {
