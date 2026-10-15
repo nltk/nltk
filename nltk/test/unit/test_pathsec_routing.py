@@ -276,18 +276,21 @@ def test_panlex_reader_binds_sqlite_to_the_checked_inode(pathsec_sandbox, monkey
     seen = {}
     real = pathsec.connect_sqlite_read_only
 
-    def spy(path, names=None, context=None):
-        seen["path"], seen["names"], seen["context"] = path, names, context
-        return real(path, names=names, context=context)
+    def spy(path, names=None, context=None, *, required_root=None):
+        seen.update(path=path, names=names, context=context, root=required_root)
+        return real(path, names=names, context=context, required_root=required_root)
 
     monkeypatch.setattr(pathsec, "connect_sqlite_read_only", spy)
     reader = panlex_lite.PanLexLiteCorpusReader(str(corpus))
     assert reader._uid_lv == {"eng-000": 187}
     assert os.path.samefile(seen["path"], corpus / "db.sqlite")
-    assert seen["names"] == [
+    # the sidecar names are pathsec's own now, pinned by default
+    assert seen["names"] is None
+    assert pathsec.sqlite_names(seen["path"]) == [
         seen["path"] + suffix for suffix in ("", "-journal", "-wal", "-shm")
     ]
     assert seen["context"] == "PanLexLiteCorpusReader"
+    assert os.path.samefile(seen["root"], corpus)
 
 
 def test_panlex_reader_connection_is_read_only(pathsec_sandbox):
