@@ -370,9 +370,20 @@ def test_query_parameters_are_bound_not_spliced(restricted_sandbox, text):
     assert reader.translations("eng-000", "dog", "fra-000") == [("chien", 9)]
 
 
+@pytest.mark.parametrize("route", ["descriptor", "by-name"])
 def test_a_hot_journal_beside_the_database_is_neither_replayed_nor_touched(
-    restricted_sandbox,
+    restricted_sandbox, monkeypatch, route
 ):
+    """Both routes open the file immutable: the descriptor route (POSIX) and
+    the by-name route (Windows, forced here by hiding /dev/fd), which without
+    immutable=1 tried to roll the planted journal back and failed read-only."""
+    if route == "by-name":
+        real_isdir = os.path.isdir
+        monkeypatch.setattr(
+            pathsec.os.path,
+            "isdir",
+            lambda p: False if p == "/dev/fd" else real_isdir(p),
+        )
     corpus = _panlex_root(restricted_sandbox)
     journal = os.path.join(corpus, "db.sqlite-journal")
     payload = b"\xd9\xd5\x05\xf9\x20\xa1\x63\xd7" + b"\0" * 504
