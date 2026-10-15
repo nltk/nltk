@@ -15,20 +15,31 @@ from io import StringIO
 from xml.etree.ElementTree import Element, ElementTree, SubElement, TreeBuilder
 
 from nltk import redos
-from nltk.data import PathPointer, find
+from nltk.data import PathPointer, _refuse_file_not_ours, find
+from nltk.data import text_encoding as _text_encoding
 from nltk.pathsec import open as pathsec_open
 from nltk.termsec import safe_print
+from nltk.xmlsec import safe_element_name
 
 #: Maximum depth the recursive Toolbox settings helpers will descend to.
 #: Beyond this they raise ValueError instead of letting Python raise an
 #: uncaught RecursionError (CWE-674).  Configurable.
 MAX_TOOLBOX_DEPTH = 500
 
+#: Most fields ``ToolboxData.parse(grammar=...)`` chunks in one record: the chunk
+#: rules rescan the rest of a record for every match, so a wider record is
+#: refused before matching (the widest shipped record has 423). Configurable.
+MAX_CHUNK_RECORD_FIELDS = 10_000
+
 
 class StandardFormat:
     """
     Class for reading and processing standard format marker files and strings.
     """
+
+    #: A file's lines end at LF, CRLF or CR, as open() reads them; a string's
+    #: at LF only, as StringIO always split them (``toolbox.doctest``).
+    _cr_ends_line = True
 
     def __init__(self, filename=None, encoding=None):
         self._encoding = encoding
@@ -42,16 +53,26 @@ class StandardFormat:
         :param sfm_file: name of the standard format marker input file
         :type sfm_file: str
         """
+        encoding = _text_encoding(self._encoding)
         if isinstance(sfm_file, PathPointer):
-            self._file = sfm_file.open(self._encoding)
+            # Spelled with underscores the codec misses the reader's BOM table
+            # and applies its own BOM rule, as open() does on the other route
+            # (the table drops a utf-8 or utf-16-le BOM that open() keeps).
+            self._file = sfm_file.open(encoding.replace("-", "_").replace(" ", "_"))
         else:
-            # A bare string filename bypasses the PathPointer containment above;
-            # open through pathsec (containment + O_NOFOLLOW / hardlink guards) so
-            # a symlink/hardlink cannot resolve outside the data roots (CWE-59,
-            # GHSA-cr8c).
-            self._file = pathsec_open(
-                sfm_file, "r", context="toolbox.StandardFormat", encoding=self._encoding
+            # pathsec containment with O_NOFOLLOW and hardlink guards (CWE-59,
+            # GHSA-cr8c), and the refusal a PathPointer open gives a file another
+            # account owns or can write.
+            self._file = _refuse_file_not_ours(
+                pathsec_open(
+                    sfm_file,
+                    "r",
+                    context="toolbox.StandardFormat",
+                    encoding=self._encoding,
+                ),
+                sfm_file,
             )
+        self._cr_ends_line = True
 
     def open_string(self, s):
         """
@@ -61,6 +82,26 @@ class StandardFormat:
         :type s: str
         """
         self._file = StringIO(s)
+        self._cr_ends_line = False
+
+    def _lines(self):
+        """The lines of the open file or string, without their line breaks.
+
+        The text is split here rather than by the stream: a Standard Format
+        line ends at LF, CRLF or CR, as open() reads it, so U+2028, U+2029,
+        NEL, VT, FF, FS, GS and RS end no line on any route, where the
+        stream's own readline would end one at each.
+        """
+        text = self._file.read()
+        if self._cr_ends_line:
+            text = text.replace("\r\n", "\n").replace("\r", "\n")
+        start, end = 0, len(text)
+        while start < end:
+            stop = text.find("\n", start)
+            if stop < 0:
+                stop = end
+            yield text[start:stop]
+            start = stop + 1
 
     def raw_fields(self):
         """
@@ -72,12 +113,12 @@ class StandardFormat:
         """
         join_string = "\n"
         line_regexp = r"^%s(?:\\(\S+)\s*)?(.*)$"
-        # discard a BOM in the first line
-        first_line_pat = redos.compile(line_regexp % "(?:\xef\xbb\xbf)?")
+        # discard a BOM in the first line: UTF-8 bytes read as Latin-1, or U+FEFF
+        first_line_pat = redos.compile(line_regexp % "(?:\xef\xbb\xbf|\ufeff)?")
         line_pat = redos.compile(line_regexp % "")
         # need to get first line outside the loop for correct handling
         # of the first marker if it spans multiple lines
-        file_iter = iter(self._file)
+        file_iter = self._lines()
         # PEP 479, prevent RuntimeError when StopIteration is raised inside generator
         try:
             line = next(file_iter)
@@ -152,17 +193,9 @@ class StandardFormat:
 
 
 def _sanitize_marker(mkr):
-    if not mkr:
-        return "empty"
-    # Replace non-word characters with underscores, preserving letters, numbers, hyphens, and dots
-    safe = redos.sub(r"[^\w\-.]", "_", mkr)
-    # XML element names cannot start with a digit, hyphen, or dot
-    if redos.match(r"^[\d\-.]", safe):
-        safe = "_" + safe
-    # Mitigate HTML element injection for web viewers / XSS
-    if safe.lower() in {"script", "style", "iframe", "object", "embed", "link", "meta"}:
-        safe = "tb_" + safe
-    return safe
+    """A marker as the XML element name it is written as: see
+    :func:`nltk.xmlsec.safe_element_name`."""
+    return safe_element_name(mkr, prefix="tb_")
 
 
 class ToolboxData(StandardFormat):
@@ -285,22 +318,116 @@ class ToolboxData(StandardFormat):
         :type kwargs: dict
         :param kwargs: Keyword arguments passed to ``toolbox.StandardFormat.fields()``
         :rtype: ElementTree._ElementInterface
+        :raises ValueError: if a record has more than ``MAX_CHUNK_RECORD_FIELDS``
+            fields
         """
         from nltk import chunk
         from nltk.tree import Tree
 
         cp = chunk.RegexpParser(grammar, root_label=root_label, trace=trace)
         db = self.parse(**kwargs)
+        records = db.findall("record")
+        widest = max((len(record) for record in records), default=0)
+        if widest > MAX_CHUNK_RECORD_FIELDS:
+            raise ValueError(
+                f"Toolbox record has {widest} fields, more than "
+                f"MAX_CHUNK_RECORD_FIELDS ({MAX_CHUNK_RECORD_FIELDS}); chunking is "
+                "quadratic in a record's width. Raise "
+                "nltk.toolbox.MAX_CHUNK_RECORD_FIELDS to allow it."
+            )
         tb_etree = Element("toolbox_data")
         header = db.find("header")
         tb_etree.append(header)
-        for record in db.findall("record"):
+        for record in records:
             parsed = cp.parse([(elem.text, elem.tag) for elem in record])
             tb_etree.append(self._tree2etree(parsed))
         return tb_etree
 
 
 _is_value = redos.compile(r"\S")
+#: What the reader takes for one marker: a run of non white space.
+_one_marker = redos.compile(r"\S+")
+#: A value line the reader would take for a new field: a backslash and a
+#: non white space character just after a line break.
+_marker_line = redos.compile(r"[\r\n]\\\S")
+
+
+def _reads_as_one_marker(mkr):
+    # Every white space character but U+0020 is unprintable, so a printable
+    # marker without a space has none; anything else goes to the regex.
+    if mkr.isprintable():
+        return bool(mkr) and " " not in mkr
+    return redos.fullmatch(_one_marker, mkr) is not None
+
+
+def _check_writable(mkr, value, blocks=False):
+    """Refuse a field that would not read back as itself.
+
+    Standard Format has no escape, so a marker that is empty or holds white
+    space, in a settings file a marker starting with ``+`` or ``-``, and a
+    value with a line that starts with a marker all read back as other fields.
+
+    :raises ValueError: if the field cannot be written faithfully
+    """
+    if (
+        not isinstance(mkr, str)
+        or not _reads_as_one_marker(mkr)
+        or (blocks and mkr[0] in "+-")
+    ):
+        raise ValueError(f"cannot write marker {mkr!r}: it would not read back as one")
+    if "\\" in value and redos.search(_marker_line, value):
+        raise ValueError(
+            f"cannot write the value of marker {mkr!r}: a line in it starts with "
+            "a marker, so it would read back as a separate field"
+        )
+
+
+def _sfm_line(mkr, value):
+    if redos.search(_is_value, value):
+        return f"\\{mkr} {value}\n"
+    return f"\\{mkr}{value}\n"
+
+
+def _encode_sfm(lines, encoding, errors, unicode_fields):
+    """Encode the ``(marker, line)`` pairs ``to_sfm_string`` writes, ``None``
+    marking a record break, and refuse output the reader would read as other
+    fields.
+
+    One incremental encoder writes a BOM once and keeps a shift state across
+    fields. An error handler (``ignore``, ``backslashreplace``, the byte a
+    ``surrogateescape`` gives) or a ``unicode_fields`` field can change what is
+    written, so the bytes are decoded as the reader decodes a file, in one
+    call, and when that is not the text written they are read back.
+
+    :raises ValueError: if the output would not read back with the markers
+        written
+    """
+    encoder = codecs.getincrementalencoder(_text_encoding(encoding))(errors)
+    chunks = []
+    for mkr, line in lines:
+        if mkr is not None and unicode_fields is not None and mkr in unicode_fields:
+            chunks.append(line.encode("utf8", errors))
+        else:
+            chunks.append(encoder.encode(line))
+    chunks.append(encoder.encode("", final=True))
+    data = b"".join(chunks)
+    seen = codecs.decode(data, encoding, "replace")
+    if seen != "".join(line for _, line in lines):
+        reader = StandardFormat()
+        reader._file = StringIO(seen)
+        read = [mkr for mkr, _ in reader.raw_fields()]
+        written = [mkr for mkr, _ in lines if mkr is not None]
+        if read != written:
+            at = next(
+                (i for i, (got, want) in enumerate(zip(read, written)) if got != want),
+                min(len(read), len(written)),
+            )
+            raise ValueError(
+                f"cannot write marker {written[at] if at < len(written) else None!r}"
+                f" with encoding {encoding!r} and errors {errors!r}: the output "
+                f"reads back as marker {read[at] if at < len(read) else None!r}"
+            )
+    return data
 
 
 def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
@@ -317,7 +444,8 @@ def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
     :type errors: str
     :param unicode_fields:
     :type unicode_fields: dict(str) or set(str)
-    :rtype: str
+    :rtype: str, or bytes when ``encoding`` is given
+    :raises ValueError: if a field would read back as other fields
     """
     if tree.tag == "record":
         root = Element("toolbox_data")
@@ -330,34 +458,27 @@ def to_sfm_string(tree, encoding=None, errors="strict", unicode_fields=None):
         raise ValueError(
             "if encoding is not specified then neither should unicode_fields"
         )
-    l = []
+    lines = []
     for rec in tree:
-        l.append("\n")
+        # A blank line between records, none before the first field written.
+        if lines:
+            lines.append((None, "\n"))
         for field in rec:
             mkr = field.tag
-            value = field.text
-            if encoding is not None:
-                if unicode_fields is not None and mkr in unicode_fields:
-                    cur_encoding = "utf8"
-                else:
-                    cur_encoding = encoding
-                if redos.search(_is_value, value):
-                    l.append((f"\\{mkr} {value}\n").encode(cur_encoding, errors))
-                else:
-                    l.append((f"\\{mkr}{value}\n").encode(cur_encoding, errors))
-            else:
-                if redos.search(_is_value, value):
-                    l.append(f"\\{mkr} {value}\n")
-                else:
-                    l.append(f"\\{mkr}{value}\n")
-    return "".join(l[1:])
+            value = field.text or ""
+            _check_writable(mkr, value)
+            lines.append((mkr, _sfm_line(mkr, value)))
+    if encoding is None:
+        return "".join(line for _, line in lines)
+    return _encode_sfm(lines, encoding, errors, unicode_fields)
 
 
 class ToolboxSettings(StandardFormat):
     """This class is the base class for settings files."""
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self, filename=None, encoding=None):
+        """Open ``filename``, if given, decoding it with ``encoding``."""
+        super().__init__(filename, encoding)
 
     def parse(self, encoding=None, errors="strict", **kwargs):
         """
@@ -428,6 +549,7 @@ def _to_settings_string(node, l, _depth=0, max_depth=None, **kwargs):
         )
     tag = node.tag
     text = node.text
+    _check_writable(tag, text or "", blocks=True)
     if len(node) == 0:
         if text:
             l.append(f"\\{tag} {text}\n")
@@ -535,6 +657,17 @@ def _sort_fields(elem, orders_dicts, _depth=0, max_depth=None):
             _sort_fields(child, orders_dicts, _depth + 1, max_depth)
 
 
+def _last_descendant(elem):
+    """The last element of ``elem``'s subtree in document order.
+
+    Follows last children, so the cost is the length of that path; listing
+    the subtree instead made add_blank_lines quadratic in depth and width.
+    """
+    while len(elem):
+        elem = elem[-1]
+    return elem
+
+
 def add_blank_lines(tree, blanks_before, blanks_between, _depth=0, max_depth=None):
     """
     Add blank lines before all elements and subelements specified in blank_before.
@@ -568,11 +701,11 @@ def add_blank_lines(tree, blanks_before, blanks_between, _depth=0, max_depth=Non
             tag = elem.tag
             if last_elem is not None and last_elem.tag != tag:
                 if tag in before and last_elem is not None:
-                    e = list(last_elem.iter())[-1]
+                    e = _last_descendant(last_elem)
                     e.text = (e.text or "") + "\n"
             else:
                 if tag in between and last_elem is not None:
-                    e = list(last_elem.iter())[-1]
+                    e = _last_descendant(last_elem)
                     e.text = (e.text or "") + "\n"
             if len(elem):
                 add_blank_lines(
@@ -600,11 +733,10 @@ def demo():
     for field in islice(lexicon.findall("record/lx"), 10):
         safe_print(field.text)
 
-    settings = ToolboxSettings()
     file_path = find("corpora/toolbox/MDF/MDF_AltH.typ")
-    settings.open(file_path)
+    settings = ToolboxSettings(file_path, encoding="cp1252")
     #    settings.open(ZipFilePathPointer(zip_path, entry='toolbox/MDF/MDF_AltH.typ'))
-    tree = settings.parse(unwrap=False, encoding="cp1252")
+    tree = settings.parse(unwrap=False)
     safe_print(tree.find("expset/expMDF/rtfPageSetup/paperSize").text)
     settings_tree = ElementTree(tree)
     safe_print(to_settings_string(settings_tree).encode("utf8"))
