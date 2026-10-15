@@ -10,7 +10,10 @@ table), or make a tiny file loop or amplify. Every read-only connection from
 ``pathsec.connect_sqlite_read_only`` screens the schema, runs no SQL from the
 file (``trusted_schema`` off) and interrupts a statement past
 ``MAX_SQLITE_STEPS``. Both readers on it, PanLex Lite and chat80, inherit
-that; their honest stores and the real packages still load.
+that; their honest stores and the real packages still load. The writer,
+``chat80.cities2table``, opens a store that may already exist and gets the
+same arming from ``pathsec.connect_sqlite_writable``: a trigger planted in
+that store ran on its INSERT (one hung it, one wrote 3 GB in 15 s).
 
 Found by planting these files as ``corpora/panlex_lite/db.sqlite``: a view
 with an endless recursive CTE hung ``__init__`` (1.2 GB in 15 s), a view of
@@ -23,6 +26,7 @@ import sqlite3
 
 import pytest
 
+import nltk.data
 from nltk import pathsec
 from nltk.corpus.reader.panlex_lite import PanLexLiteCorpusReader
 from nltk.sem import chat80
@@ -395,3 +399,150 @@ def test_a_hot_journal_beside_the_database_is_neither_replayed_nor_touched(
     assert sorted(os.listdir(corpus)) == before
     with open(journal, "rb") as handle:
         assert handle.read() == payload
+
+
+# =========================================================================
+# The write sink: cities2table on a store that already exists
+# =========================================================================
+CITY_TABLE = "CREATE TABLE city_table (City text, Country text, Population int);"
+ENDLESS_COUNT = "(" + RECURSIVE + " SELECT count(*) FROM n)"
+
+# (name, script of the planted store, what the schema screen must name)
+HOSTILE_STORE = [
+    (
+        "trigger_endless_cte_on_insert",
+        CITY_TABLE + "CREATE TRIGGER t AFTER INSERT ON city_table BEGIN"
+        " SELECT RAISE(ABORT, 'x') WHERE " + ENDLESS_COUNT + " < 0; END;",
+        "trigger (t)",
+    ),
+    (
+        "trigger_blob_bomb_on_insert",
+        CITY_TABLE + "CREATE TABLE bomb (b BLOB);"
+        "CREATE TRIGGER t AFTER INSERT ON city_table BEGIN INSERT INTO bomb"
+        " SELECT zeroblob(200000000) FROM (" + RECURSIVE + " SELECT x FROM n"
+        " LIMIT 20); END;",
+        "trigger (t)",
+    ),
+    (
+        "view_in_place_of_the_table_with_instead_of_trigger",
+        "CREATE TABLE real_rows (City, Country, Population);"
+        "CREATE VIEW city_table AS SELECT * FROM real_rows;"
+        "CREATE TRIGGER t INSTEAD OF INSERT ON city_table BEGIN"
+        " SELECT RAISE(ABORT, 'x') WHERE " + ENDLESS_COUNT + " < 0; END;",
+        "view (city_table)",
+    ),
+    (
+        "virtual_table_fts5_as_the_table",
+        "CREATE VIRTUAL TABLE city_table USING fts5(City, Country, Population);",
+        "virtual table (city_table)",
+    ),
+]
+
+
+@pytest.fixture
+def city_corpus(restricted_sandbox):
+    """The sandbox root with a three-city ``city`` relation under
+    ``corpora/chat80``; the data cache is dropped both ways so the tiny corpus
+    and a real one never mix."""
+    corpus = os.path.join(restricted_sandbox, "corpora", "chat80")
+    os.makedirs(corpus)
+    with open(os.path.join(corpus, "atk.pl"), "w", encoding="utf8") as handle:
+        handle.write(
+            "city(athens,greece,1368).\ncity(bangkok,thailand,1178).\n"
+            "city(shanghai,china,5407).\n"
+        )
+    nltk.data.clear_cache()
+    yield restricted_sandbox
+    nltk.data.clear_cache()
+
+
+def _store_bytes(path):
+    with open(path, "rb") as handle:
+        return handle.read()
+
+
+def _rows(path):
+    connection = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
+    try:
+        return connection.execute("SELECT City FROM city_table").fetchall()
+    finally:
+        connection.close()
+
+
+@pytest.mark.parametrize(
+    "name, script, named", HOSTILE_STORE, ids=[h[0] for h in HOSTILE_STORE]
+)
+@pytest.mark.parametrize("setup", [False, True])
+def test_cities2table_refuses_a_planted_store_whose_schema_is_not_plain(
+    city_corpus, name, script, named, setup
+):
+    """A store that already exists at the caller's path is attacker data: a
+    trigger in it runs on cities2table's own INSERT (the endless one hung the
+    writer, the blob one wrote 3 GB in 15 s), and so does an INSTEAD OF
+    trigger on a view standing in for the table. Refused before any write,
+    whichever way the caller opens it."""
+    db = _db(os.path.join(city_corpus, "city.db"), script)
+    before = _store_bytes(db)
+    with pytest.raises(REFUSED, match="Security Violation") as info:
+        chat80.cities2table("atk.pl", "city", db, setup=setup)
+    assert "schema holds a " + named in str(info.value)
+    assert _store_bytes(db) == before
+    assert sorted(os.listdir(city_corpus)) == ["city.db", "corpora"]
+
+
+def test_cities2table_appends_to_an_honest_existing_store(city_corpus):
+    db = _db(os.path.join(city_corpus, "city.db"), CITY_TABLE)
+    chat80.cities2table("atk.pl", "city", db, setup=False)
+    chat80.cities2table("atk.pl", "city", db, setup=False)
+    assert _rows(db) == [("athens",), ("bangkok",), ("shanghai",)] * 2
+
+
+def test_cities2table_builds_a_fresh_store_on_the_armed_connection(city_corpus):
+    db = os.path.join(city_corpus, "city.db")
+    chat80.cities2table("atk.pl", "city", db, setup=True)
+    assert _rows(db) == [("athens",), ("bangkok",), ("shanghai",)]
+    with pytest.raises(sqlite3.OperationalError, match="already exists"):
+        chat80.cities2table("atk.pl", "city", db, setup=True)
+
+
+def test_cities2table_write_is_budgeted_past_the_screen(city_corpus, monkeypatch):
+    """Teeth for the second layer on the writer: with the schema screen
+    disarmed, the planted trigger does run on the INSERT, and the step budget
+    ends it with the security message instead of a hang; nothing is
+    committed."""
+    monkeypatch.setattr(pathsec, "_plain_schema_object", lambda kind, root: None)
+    db = _db(os.path.join(city_corpus, "city.db"), HOSTILE_STORE[0][1])
+    with pytest.raises(PermissionError, match="MAX_SQLITE_STEPS") as info:
+        chat80.cities2table("atk.pl", "city", db, setup=False)
+    assert "Security Violation [chat80.cities2table]" in str(info.value)
+    assert _rows(db) == []
+
+
+def test_connect_sqlite_writable_creates_and_arms_the_store(restricted_sandbox):
+    db = os.path.join(restricted_sandbox, "fresh.db")
+    connection = pathsec.connect_sqlite_writable(db, context="t")
+    try:
+        assert os.path.isfile(db)
+        assert connection.execute("PRAGMA trusted_schema").fetchall() == [(0,)]
+        assert connection.execute("PRAGMA cell_size_check").fetchall() == [(1,)]
+        with pytest.raises(sqlite3.DatabaseError, match="not authorized"):
+            connection.execute("ATTACH DATABASE ':memory:' AS other")
+        connection.execute("CREATE TABLE t (x)")
+        connection.execute("INSERT INTO t VALUES (1)")
+        connection.commit()
+        assert connection.execute("SELECT x FROM t").fetchall() == [(1,)]
+        with pytest.raises(PermissionError, match="MAX_SQLITE_STEPS"):
+            connection.execute(RECURSIVE + " SELECT count(*) FROM n").fetchall()
+    finally:
+        connection.close()
+
+
+@pytest.mark.parametrize("suffix", ["", "-journal", "-wal", "-shm"])
+def test_connect_sqlite_writable_refuses_a_link_at_any_name(restricted_sandbox, suffix):
+    target = _db(os.path.join(restricted_sandbox, "elsewhere.db"), CITY_TABLE)
+    db = os.path.join(restricted_sandbox, "store.db")
+    os.symlink(target, db + suffix)
+    before = _store_bytes(target)
+    with pytest.raises(REFUSED, match="Security Violation"):
+        pathsec.connect_sqlite_writable(db, context="t")
+    assert _store_bytes(target) == before
