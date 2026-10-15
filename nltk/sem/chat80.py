@@ -536,27 +536,18 @@ def cities2table(filename, rel_name, dbname, verbose=False, setup=False):
     :param dbname: filename of persistent store
     :type schema: str
     """
-    import sqlite3
-
-    # dbname is a caller-supplied path handed straight to sqlite3.connect(),
-    # which creates/opens it. Validate it before any file is created so an
-    # out-of-sandbox target is refused up front (GHSA-8mgp-746c-j5xp).
+    # dbname is a caller-supplied path that sqlite creates or opens by name.
+    # Validate it before any file is created so an out-of-sandbox target is
+    # refused up front (GHSA-8mgp-746c-j5xp), and judge its directory.
     validate_path(dbname, context="chat80.cities2table")
-    # Reject a symlink/hardlink at the db or its journal/WAL sidecars before
-    # sqlite reopens them by path (O_NOFOLLOW, GHSA-7j4p).
     _check_store_dir(dbname, context="chat80.cities2table")
     records = _str2records(filename, rel_name)
-    pins = _pin_store_files(dbname, context="chat80.cities2table")
-    try:
-        connection = sqlite3.connect(dbname)
-    except BaseException:
-        pathsec.release(pins)
-        raise
-    try:
-        _verify_store_files(pins, dbname, context="chat80.cities2table")
-    except BaseException:
-        connection.close()
-        raise
+    # The connector pins the store and its sidecars across sqlite's own open
+    # (no link, GHSA-7j4p) and arms the connection: an existing file at dbname
+    # is data, so a trigger or view in it is refused and every statement bounded.
+    connection = pathsec.connect_sqlite_writable(
+        dbname, names=_store_names(dbname), context="chat80.cities2table"
+    )
     cur = connection.cursor()
     if setup:
         cur.execute(

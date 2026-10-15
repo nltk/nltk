@@ -2892,7 +2892,7 @@ def sqlite_names(path):
 
 
 #: Ceiling on the virtual-machine steps one statement may run on a connection
-#: from :func:`connect_sqlite_read_only`, so a planted database cannot hang or
+#: from the sqlite connectors below, so a planted database cannot hang or
 #: amplify (CWE-400); the heaviest real PanLex Lite query runs about 200k.
 MAX_SQLITE_STEPS = 20_000_000
 _SQLITE_STEP_GRAIN = 1000
@@ -2990,9 +2990,11 @@ def _plain_schema_object(kind, rootpage):
 
 
 def _arm_sqlite(connection, context):
-    """Bound and screen a fresh read-only connection: the step budget, no
-    ATTACH, no code from the file's schema (trusted_schema off), cell sizes
-    checked, and only plain tables and indexes in the schema (CWE-1286)."""
+    """Bound and screen a fresh connection: the step budget, no ATTACH, no
+    code from the file's schema (trusted_schema off), cell sizes checked, and
+    only plain tables and indexes in the schema (CWE-1286). A writer needs
+    this as much as a reader: a trigger in a planted store runs on its
+    INSERT, a view with an INSTEAD OF trigger in place of its table too."""
     connection._context = context
     connection.set_progress_handler(connection._tick, _SQLITE_STEP_GRAIN)
     connection.set_authorizer(_deny_attach)
@@ -3083,6 +3085,49 @@ def connect_sqlite_read_only(
     return _arm_sqlite(connection, context)
 
 
+def connect_sqlite_writable(
+    path,
+    names=None,
+    context="pathsec.connect_sqlite_writable",
+    *,
+    required_root=None,
+):
+    """A read-write sqlite connection to the store at *path*, created when
+    absent, armed like :func:`connect_sqlite_read_only`.
+
+    *path* is validated first, inside *required_root* when one is given; the
+    caller has already judged the directory (``validate_private_dir``), as
+    sqlite reopens the store and its sidecars by name. *names* lists the
+    database and every sidecar name sqlite may create or reopen beside it
+    (:func:`sqlite_names` when omitted). The names that exist are pinned, the
+    store is opened by name, and the pins are verified afterwards: each name
+    is still the pinned inode or a fresh regular file sqlite created (CWE-367).
+    The connection then refuses ATTACH and DETACH, runs no SQL from the file's
+    own schema, refuses a schema holding anything but plain tables and
+    indexes, and interrupts a statement past :data:`MAX_SQLITE_STEPS` with a
+    ``PermissionError``; a trigger or view planted in a store cannot run on
+    the caller's writes. The pins are released on return.
+    """
+    import sqlite3
+
+    text = _checked_path_text(path, context)
+    validate_path(text, context=context, required_root=required_root)
+    names = sqlite_names(text) if names is None else list(names)
+    pins = pin_files(names, context=context)
+    factory = _sqlite_budget_classes()[0]
+    try:
+        connection = sqlite3.connect(text, factory=factory)
+    except BaseException:
+        release(pins)
+        raise
+    try:
+        verify_pinned(pins, names, context=context)
+    except BaseException:
+        connection.close()
+        raise
+    return _arm_sqlite(connection, context)
+
+
 __all__ = [
     "validate_path",
     "validate_model_resource",
@@ -3107,6 +3152,7 @@ __all__ = [
     "release",
     "verify_pinned",
     "connect_sqlite_read_only",
+    "connect_sqlite_writable",
     "sqlite_names",
     "MAX_SQLITE_STEPS",
     "SQLITE_SIDECARS",
