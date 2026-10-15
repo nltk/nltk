@@ -644,10 +644,12 @@ class Synset(_WordNetObject):
     # Also add this shortcut?
     #    from nltk.util import unweighted_minimum_spanning_digraph as umsd
 
-    def tree(self, rel, depth=-1, cut_mark=None):
+    def tree(self, rel, depth=-1, cut_mark=None, truncate=False):
         """
         Return the full relation tree, including self,
-        discarding cycles:
+        discarding cycles. A tree deeper than ``nltk.util.MAX_RECURSION_DEPTH``
+        is refused with ValueError, or cut there with a RuntimeWarning when
+        ``truncate`` is set:
 
         >>> from nltk.corpus import wordnet as wn
         >>> from pprint import pprint
@@ -689,7 +691,9 @@ class Synset(_WordNetObject):
 
         from nltk.util import acyclic_branches_depth_first
 
-        return acyclic_branches_depth_first(self, rel, depth, cut_mark)
+        return acyclic_branches_depth_first(
+            self, rel, depth, cut_mark, truncate=truncate
+        )
 
     def hypernym_paths(self, _visited=None):
         """

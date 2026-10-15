@@ -93,6 +93,7 @@ import io
 from xml.etree import ElementTree
 from xml.parsers import expat
 
+from nltk import redos
 from nltk.pathsec import open as pathsec_open
 from nltk.pathsec import validate_path
 
@@ -107,6 +108,8 @@ __all__ = [
     "MAX_EXPANSION",
     "fromstring",
     "parse",
+    "XML_NAME_RANGES",
+    "safe_element_name",
 ]
 
 try:
@@ -366,3 +369,55 @@ def parse(source):
         tree = ElementTree.parse(buffer)
     _check_tree(tree.getroot())
     return tree
+
+
+#: Code points beyond ASCII allowed in an XML 1.0 (Fifth Edition) name.
+XML_NAME_RANGES = (
+    (0xB7, 0xB7),
+    (0xC0, 0xD6),
+    (0xD8, 0xF6),
+    (0xF8, 0x37D),
+    (0x37F, 0x1FFF),
+    (0x203F, 0x2040),
+    (0x2070, 0x218F),
+    (0x2C00, 0x2FEF),
+    (0x3001, 0xD7FF),
+    (0xF900, 0xFDCF),
+    (0xFDF0, 0xFFFD),
+    (0x10000, 0xEFFFF),
+)
+#: A character an element name loses: one that is neither a word character nor
+#: a hyphen or dot, a word character that is no XML name character (MICRO SIGN,
+#: circled letters), or one that renders as nothing (joiners, selectors).
+_not_name_char = redos.compile(
+    "[^\\w\\-.]|[^-.0-9A-Z_a-z%s]|\\p{Default_Ignorable_Code_Point}"
+    % "".join("\\U%08X-\\U%08X" % pair for pair in XML_NAME_RANGES)
+)
+#: A name character an XML name cannot start with.
+_not_name_start = redos.compile(r"^[\d\-.\u0300-\u036F\u203F\u2040]")
+#: Element names a browser acts on when it renders the document as HTML.
+_HTML_ACTIVE_NAMES = frozenset(
+    {"script", "style", "iframe", "object", "embed", "link", "meta"}
+)
+
+
+def safe_element_name(name, *, empty="empty", prefix="x_"):
+    """Turn ``name``, text from a document, into an XML element name that
+    serialises as one element and renders as itself.
+
+    Every character that is no XML name character, no word character, or
+    invisible becomes an underscore, so the name cannot close the tag or hide
+    one character behind another; a name no element may start with is
+    prefixed with an underscore; an empty name becomes ``empty``; and a name
+    a browser would act on when the document is viewed as HTML (``script``,
+    ``style``, ``iframe``, ``object``, ``embed``, ``link``, ``meta``, in any
+    case) is prefixed with ``prefix`` (CWE-79).
+    """
+    if not name:
+        return empty
+    safe = redos.sub(_not_name_char, "_", name)
+    if redos.match(_not_name_start, safe):
+        safe = "_" + safe
+    if safe.lower() in _HTML_ACTIVE_NAMES:
+        safe = prefix + safe
+    return safe

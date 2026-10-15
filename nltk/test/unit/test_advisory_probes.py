@@ -851,6 +851,115 @@ def test_r53h_front_mutation_probe_has_teeth():
     assert probe()[0] == probes.FIXED
 
 
+def test_f2h2_toolbox_probe_has_teeth(monkeypatch):
+    """Lift MAX_TOOLBOX_DEPTH: the deep settings file parses and every helper
+    walk overflows, and the probe must name each one."""
+    import nltk.toolbox
+
+    probe = probes.PROBES["GHSA-f2h2-f4fc-p978"]
+    assert probe()[0] == probes.FIXED
+
+    monkeypatch.setattr(nltk.toolbox, "MAX_TOOLBOX_DEPTH", 10**6)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "parse() accepted" in evidence
+    assert evidence.count("RecursionError escaped") == 6, evidence
+
+
+def _f2h2_regressed_to_settings_string(node, l, _depth=0, max_depth=None, **kwargs):
+    """_to_settings_string as the first GHSA-f2h2 fix (0b6975377) left it: the
+    child loop and the closing line dedented out of the non-leaf branch."""
+    import nltk.toolbox
+
+    if max_depth is None:
+        max_depth = nltk.toolbox.MAX_TOOLBOX_DEPTH
+    if _depth > max_depth:
+        raise ValueError("Toolbox nesting depth exceeds MAX_TOOLBOX_DEPTH")
+    tag = node.tag
+    text = node.text
+    if len(node) == 0:
+        if text:
+            l.append(f"\\{tag} {text}\n")
+        else:
+            l.append("\\%s\n" % tag)
+    else:
+        if text:
+            l.append(f"\\+{tag} {text}\n")
+        else:
+            l.append("\\+%s\n" % tag)
+    for n in node:
+        _f2h2_regressed_to_settings_string(n, l, _depth + 1, max_depth, **kwargs)
+    l.append("\\-%s\n" % tag)
+
+
+def _f2h2_regressed_add_blank_lines(
+    tree, blanks_before, blanks_between, _depth=0, max_depth=None
+):
+    """add_blank_lines as 0b6975377 left it: the try/except else moved under
+    ``if len(elem)`` inside the handler (getiterator as it was then)."""
+    import nltk.toolbox
+
+    if max_depth is None:
+        max_depth = nltk.toolbox.MAX_TOOLBOX_DEPTH
+    if _depth > max_depth:
+        raise ValueError("Toolbox nesting depth exceeds MAX_TOOLBOX_DEPTH")
+    try:
+        before = blanks_before[tree.tag]
+        between = blanks_between[tree.tag]
+    except KeyError:
+        for elem in tree:
+            if len(elem):
+                _f2h2_regressed_add_blank_lines(
+                    elem, blanks_before, blanks_between, _depth + 1, max_depth
+                )
+            else:
+                last_elem = None
+                for elem in tree:
+                    tag = elem.tag
+                    if last_elem is not None and last_elem.tag != tag:
+                        if tag in before and last_elem is not None:
+                            e = last_elem.getiterator()[-1]
+                            e.text = (e.text or "") + "\n"
+                    else:
+                        if tag in between:
+                            e = last_elem.getiterator()[-1]
+                            e.text = (e.text or "") + "\n"
+                    if len(elem):
+                        _f2h2_regressed_add_blank_lines(
+                            elem, blanks_before, blanks_between, _depth + 1, max_depth
+                        )
+                    last_elem = elem
+
+
+@pytest.mark.parametrize(
+    "name, regressed, expected",
+    [
+        (
+            "_to_settings_string",
+            _f2h2_regressed_to_settings_string,
+            "to_settings_string output does not read back",
+        ),
+        (
+            "add_blank_lines",
+            _f2h2_regressed_add_blank_lines,
+            "add_blank_lines fails on an ordinary tree",
+        ),
+    ],
+)
+def test_f2h2_toolbox_probe_catches_the_first_fix_regression(
+    monkeypatch, name, regressed, expected
+):
+    """Put back each helper as the first fix left it: the bound still holds,
+    so only the probe's ordinary tree leg can see it, and it must."""
+    import nltk.toolbox
+
+    probe = probes.PROBES["GHSA-f2h2-f4fc-p978"]
+    monkeypatch.setattr(nltk.toolbox, name, regressed)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert expected in evidence, evidence
+
+
 def test_32p6_group_bomb_probe_has_teeth(monkeypatch):
     """Lift the capturing-group bound; the bomb must reach the engine and compile."""
     from nltk import redos
