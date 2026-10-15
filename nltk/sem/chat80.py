@@ -185,6 +185,86 @@ def _verify_store_files(pins, base, context):
     pathsec.verify_pinned(pins, _store_names(base), context=context)
 
 
+#: The header dbm's detection reads to pick its sqlite backend (Python 3.13+).
+_SQLITE_HEADER = b"SQLite format 3\0"
+#: The sibling names that detection consults before the file itself.
+_DBM_SIBLING_SUFFIXES = (".pag", ".dir", ".db", ".dat")
+
+
+class _SqliteStore:
+    """A store in the ``dbm.sqlite3`` layout, one table ``Dict`` of key and
+    value BLOBs, read on an armed connection instead of the backend's own.
+
+    ``dbm`` picks that backend by file header and runs whatever schema the
+    file holds on the first lookup, so a view, trigger or virtual table named
+    ``Dict`` in a planted store was executed (an endless view hung
+    ``val_load``). :func:`nltk.pathsec.connect_sqlite_read_only` binds the
+    connection to the file, refuses such a schema and budgets every
+    statement; the queries are the backend's own. The mapping is what
+    :class:`shelve.Shelf` wraps: bytes keys, raw pickled values.
+    """
+
+    def __init__(self, connection):
+        self._cx = connection
+
+    def __getitem__(self, key):
+        row = self._cx.execute(
+            "SELECT value FROM Dict WHERE key = CAST(? AS BLOB)", (key,)
+        ).fetchone()
+        if row is None:
+            raise KeyError(key)
+        return row[0]
+
+    def __contains__(self, key):
+        row = self._cx.execute(
+            "SELECT 1 FROM Dict WHERE key = CAST(? AS BLOB)", (key,)
+        ).fetchone()
+        return row is not None
+
+    def __len__(self):
+        return self._cx.execute("SELECT COUNT(key) FROM Dict").fetchone()[0]
+
+    def keys(self):
+        return [row[0] for row in self._cx.execute("SELECT key FROM Dict")]
+
+    def close(self):
+        self._cx.close()
+
+
+def _is_sqlite_store(db, pins):
+    """Whether the PINNED file at *db* is a sqlite database that ``dbm``
+    would hand to its sqlite backend: the header matches and no sibling name
+    detection prefers exists. Decided on the pinned handle, never by name."""
+    handle = pins.get(db)
+    if handle is None or any(db + suffix in pins for suffix in _DBM_SIBLING_SUFFIXES):
+        return False
+    handle.seek(0)
+    header = handle.read(len(_SQLITE_HEADER))
+    handle.seek(0)
+    return header == _SQLITE_HEADER
+
+
+def _open_sqlite_store(db, pins, context):
+    """A :class:`shelve.Shelf` over :class:`_SqliteStore` for the store at
+    *db*: the armed connector pins and opens the file itself, the caller's
+    pins are verified against the names after, and a file without the
+    backend's ``Dict`` table is reported like any unreadable store."""
+    connection = pathsec.connect_sqlite_read_only(
+        db, names=_store_names(db), context=context
+    )
+    try:
+        _verify_store_files(pins, db, context=context)
+        row = connection.execute(
+            "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'Dict'"
+        ).fetchone()
+        if row is None:
+            raise OSError("sqlite store without the Dict table of dbm.sqlite3")
+    except BaseException:
+        connection.close()
+        raise
+    return shelve.Shelf(_SqliteStore(connection))
+
+
 def _restricted_shelve_open(db, flag="r"):
     """Open a shelf whose values are read with a RESTRICTED unpickler.
 
@@ -196,19 +276,28 @@ def _restricted_shelve_open(db, flag="r"):
     globals, so :class:`nltk.picklesec.RestrictedUnpickler` (which blocks every
     global while allowing plain containers) loads legitimate data and refuses
     the gadget.
+
+    A store that is a sqlite database (what ``dbm`` writes on Python 3.13+)
+    is read through :class:`_SqliteStore` on the armed pathsec connection
+    rather than the backend's own open, so the file's schema is screened and
+    its statements budgeted; every other backend opens as before.
     """
     # Reject a symlink/hardlink at any derived backing name before shelve reopens
     # it by path, so O_NOFOLLOW guards the open validate_path alone cannot.
-    pins = _pin_store_files(db, context="chat80._restricted_shelve_open")
+    context = "chat80._restricted_shelve_open"
+    pins = _pin_store_files(db, context=context)
     try:
-        inner = shelve.open(db, flag)
+        if flag == "r" and _is_sqlite_store(db, pins):
+            inner = _open_sqlite_store(db, pins, context=context)
+        else:
+            inner = shelve.open(db, flag)
+            try:
+                _verify_store_files(pins, db, context=context)
+            except BaseException:
+                inner.close()
+                raise
     except BaseException:
         pathsec.release(pins)
-        raise
-    try:
-        _verify_store_files(pins, db, context="chat80._restricted_shelve_open")
-    except BaseException:
-        inner.close()
         raise
 
     class _RestrictedShelf:
