@@ -2891,6 +2891,16 @@ def sqlite_names(path):
     return [path + suffix for suffix in ("",) + SQLITE_SIDECARS]
 
 
+def _deny_attach(action, *_args):
+    """The authorizer every read-only connection starts with: no ATTACH or
+    DETACH, so no statement run on it can open another file by name."""
+    import sqlite3
+
+    if action in (sqlite3.SQLITE_ATTACH, sqlite3.SQLITE_DETACH):
+        return sqlite3.SQLITE_DENY
+    return sqlite3.SQLITE_OK
+
+
 def connect_sqlite_read_only(
     path,
     names=None,
@@ -2901,6 +2911,8 @@ def connect_sqlite_read_only(
     """A read-only sqlite connection bound to the inode of *path*.
 
     *path* is validated first, inside *required_root* when one is given.
+    The connection refuses ATTACH and DETACH; a caller with stricter rules
+    replaces that authorizer with its own, which must deny them too.
     *names* lists the database and every sidecar name sqlite may reopen by
     path (:func:`sqlite_names` when omitted). They are pinned first; where the
     platform exposes descriptors as names the database is opened on the pinned
@@ -2926,6 +2938,7 @@ def connect_sqlite_read_only(
             connection = None
         if connection is not None:
             release(pins)
+            connection.set_authorizer(_deny_attach)
             return connection
     # by name, still read only: a file URI with mode=ro (the path is
     # percent-encoded by as_uri, so a '?' or '#' in it cannot add a parameter)
@@ -2940,6 +2953,7 @@ def connect_sqlite_read_only(
     except BaseException:
         connection.close()
         raise
+    connection.set_authorizer(_deny_attach)
     return connection
 
 

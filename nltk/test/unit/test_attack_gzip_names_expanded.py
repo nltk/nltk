@@ -399,6 +399,22 @@ def test_panlex_root_outside_the_sandbox_is_refused_by_the_corpus_reader(
         PanLexLiteCorpusReader(corpus)
 
 
+def test_panlex_connection_refuses_attach_through_the_shared_connector(
+    restricted_sandbox,
+):
+    import sqlite3
+
+    root = os.path.join(restricted_sandbox, "panlex_lite")
+    os.mkdir(root)
+    _panlex_db(os.path.join(root, "db.sqlite"))
+    reader = PanLexLiteCorpusReader(root)
+    with pytest.raises(sqlite3.DatabaseError, match="not authorized"):
+        reader._c.execute("ATTACH DATABASE ':memory:' AS probe")
+    with pytest.raises(sqlite3.OperationalError):
+        reader._c.execute("INSERT INTO lv VALUES (9, 'x', 'x', 'x')")
+    assert reader.language_varieties("fra") == [("fra-000", "fran\u00e7ais")]
+
+
 def test_sqlite_sidecar_names_come_from_pathsec():
     from nltk import pathsec
     from nltk.sem import chat80
