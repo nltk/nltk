@@ -2881,13 +2881,28 @@ def verify_pinned(pins, names, context="pathsec.verify_pinned"):
         release(pins)
 
 
+#: The sidecar names sqlite may create or reopen beside a database.
+SQLITE_SIDECARS = ("-journal", "-wal", "-shm")
+
+
+def sqlite_names(path):
+    """The database at *path* and every sidecar name sqlite may reopen beside
+    it, the names a check of the database has to cover."""
+    return [path + suffix for suffix in ("",) + SQLITE_SIDECARS]
+
+
 def connect_sqlite_read_only(
-    path, names=None, context="pathsec.connect_sqlite_read_only"
+    path,
+    names=None,
+    context="pathsec.connect_sqlite_read_only",
+    *,
+    required_root=None,
 ):
     """A read-only sqlite connection bound to the inode of *path*.
 
+    *path* is validated first, inside *required_root* when one is given.
     *names* lists the database and every sidecar name sqlite may reopen by
-    path (the database alone when omitted). They are pinned first; where the
+    path (:func:`sqlite_names` when omitted). They are pinned first; where the
     platform exposes descriptors as names the database is opened on the pinned
     descriptor itself (``/dev/fd/N``, immutable, read only) so a later change
     to the NAME cannot redirect it (CWE-367); elsewhere it is opened by name
@@ -2897,8 +2912,8 @@ def connect_sqlite_read_only(
     import sqlite3
 
     text = _checked_path_text(path, context)
-    validate_path(text, context=context)
-    names = [text] if names is None else list(names)
+    validate_path(text, context=context, required_root=required_root)
+    names = sqlite_names(text) if names is None else list(names)
     pins = pin_files(names, context=context)
     handle = pins.get(text)
     if handle is not None and os.name == "posix" and os.path.isdir("/dev/fd"):
@@ -2952,4 +2967,6 @@ __all__ = [
     "release",
     "verify_pinned",
     "connect_sqlite_read_only",
+    "sqlite_names",
+    "SQLITE_SIDECARS",
 ]

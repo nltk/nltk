@@ -148,16 +148,9 @@ from nltk.termsec import safe_print, sanitize_terminal
 #: (a measured ndbm build drops a key once one value reaches 4096 bytes).
 _STORE_MANIFEST_KEY = "__nltk_keys__"
 
-_STORE_SIDECAR_SUFFIXES = (
-    "",
-    ".db",
-    ".dir",
-    ".pag",
-    ".dat",
-    ".bak",
-    "-journal",
-    "-wal",
-    "-shm",
+#: The dbm backends' sidecars, then sqlite's from pathsec.
+_STORE_SIDECAR_SUFFIXES = ("", ".db", ".dir", ".pag", ".dat", ".bak") + (
+    pathsec.SQLITE_SIDECARS
 )
 
 
