@@ -79,8 +79,11 @@ def _attempt(outcome, folder, swap):
 
 def _swap_before(monkeypatch, target, swap):
     """Attempt *swap* right before the backend opens *target* by name; returns
-    the outcome record :func:`_attempt` fills."""
+    the outcome record :func:`_attempt` fills. A sqlite store is opened by
+    ``pathsec.connect_sqlite_read_only`` instead of ``shelve.open``, so both
+    opens are hooked and the swap lands in whichever gap the store takes."""
     real = shelve.open
+    real_connect = pathsec.connect_sqlite_read_only
     outcome = {}
 
     def opening(name, *args, **kwargs):
@@ -88,7 +91,13 @@ def _swap_before(monkeypatch, target, swap):
             _attempt(outcome, os.path.dirname(target), swap)
         return real(name, *args, **kwargs)
 
+    def connecting(path, *args, **kwargs):
+        if path == target:
+            _attempt(outcome, os.path.dirname(target), swap)
+        return real_connect(path, *args, **kwargs)
+
     monkeypatch.setattr(shelve, "open", opening)
+    monkeypatch.setattr(pathsec, "connect_sqlite_read_only", connecting)
     return outcome
 
 

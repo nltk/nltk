@@ -22,6 +22,7 @@ hung ``translations()``, fts4/fts5/rtree tables were read as ``lv``.
 """
 
 import os
+import shelve
 import sqlite3
 
 import pytest
@@ -546,3 +547,199 @@ def test_connect_sqlite_writable_refuses_a_link_at_any_name(restricted_sandbox, 
     with pytest.raises(REFUSED, match="Security Violation"):
         pathsec.connect_sqlite_writable(db, context="t")
     assert _store_bytes(target) == before
+
+
+# =========================================================================
+# The valuation store: val_load on a sqlite file at the store name
+# =========================================================================
+DICT = "CREATE TABLE Dict (key BLOB UNIQUE NOT NULL, value BLOB NOT NULL);"
+
+# (name, script of the planted store, what the schema screen must name)
+HOSTILE_VALUATION = [
+    (
+        "view_endless_recursion",
+        "CREATE VIEW Dict AS " + RECURSIVE + " SELECT CAST(x AS BLOB) AS key,"
+        " X'80' AS value FROM n;",
+        "view (Dict)",
+    ),
+    (
+        "view_blob_bomb",
+        "CREATE VIEW Dict AS " + RECURSIVE + " SELECT zeroblob(900000000) AS key,"
+        " X'80' AS value FROM n LIMIT 64;",
+        "view (Dict)",
+    ),
+    (
+        "virtual_table_fts5",
+        "CREATE VIRTUAL TABLE Dict USING fts5(key, value);",
+        "virtual table (Dict)",
+    ),
+    (
+        "trigger",
+        DICT + "CREATE TRIGGER t AFTER INSERT ON Dict BEGIN"
+        " SELECT RAISE(ABORT, 'x'); END;",
+        "trigger (t)",
+    ),
+]
+
+
+def _sqlite_valuation(path, raw_items):
+    """A store in the dbm.sqlite3 layout holding ``raw_items`` (bytes key,
+    pickled value), built by hand so the route is driven on every Python,
+    not only where dbm itself writes sqlite."""
+    _db(path, DICT)
+    connection = sqlite3.connect(path)
+    with connection:
+        connection.executemany(
+            "INSERT INTO Dict VALUES (CAST(? AS BLOB), CAST(? AS BLOB))", raw_items
+        )
+    connection.close()
+    return path
+
+
+def _real_store(root):
+    """val_dump's own store for a three-city corpus under the sandbox, the
+    Valuation it loads to, and its raw (key, value) pairs."""
+    corpus = os.path.join(root, "corpora", "chat80")
+    os.makedirs(corpus)
+    with open(os.path.join(corpus, "cities.pl"), "w", encoding="utf8") as handle:
+        handle.write(
+            "city(athens,greece,1368).\ncity(bangkok,thailand,1178).\n"
+            "city(shanghai,china,5407).\n"
+        )
+    nltk.data.clear_cache()
+    base = os.path.join(root, "dumped")
+    chat80.val_dump([chat80.city], base)
+    loaded = chat80.val_load(base)
+    with shelve.open(base, "r") as shelf:
+        raw = [(key.encode("utf-8"), shelf.dict[key.encode("utf-8")]) for key in shelf]
+    nltk.data.clear_cache()
+    return loaded, raw
+
+
+@pytest.mark.parametrize(
+    "name, script, named", HOSTILE_VALUATION, ids=[h[0] for h in HOSTILE_VALUATION]
+)
+def test_val_load_refuses_a_sqlite_store_whose_schema_is_not_plain(
+    restricted_sandbox, name, script, named
+):
+    """dbm picks its sqlite backend (Python 3.13+) by file header and ran the
+    planted schema on val_load's first lookup: the endless view hung it, the
+    blob view took 1.9 GB, the fts5 table was accepted as the store. The
+    store now opens on the armed connector, which refuses them by name."""
+    store = _db(os.path.join(restricted_sandbox, "store"), script)
+    before = _store_bytes(store)
+    with pytest.raises(PermissionError, match="Security Violation") as info:
+        chat80.val_load(store)
+    assert "schema holds a " + named in str(info.value)
+    assert _store_bytes(store) == before
+    assert sorted(os.listdir(restricted_sandbox)) == ["store"]
+
+
+def test_val_load_reads_a_sqlite_store_on_the_armed_connection(
+    restricted_sandbox, monkeypatch
+):
+    """The real pairs val_dump wrote, copied into a hand-built sqlite store,
+    load to the same Valuation through the connector on every Python."""
+    loaded, raw = _real_store(restricted_sandbox)
+    assert loaded["city"] == ["athens", "bangkok", "shanghai"]
+    assert b"__nltk_keys__" in dict(raw) and len(raw) > 2
+    contexts = []
+    real_connect = pathsec.connect_sqlite_read_only
+
+    def spy(path, names=None, context="", **kwargs):
+        contexts.append(context)
+        return real_connect(path, names=names, context=context, **kwargs)
+
+    monkeypatch.setattr(pathsec, "connect_sqlite_read_only", spy)
+    copy = _sqlite_valuation(os.path.join(restricted_sandbox, "copy"), raw)
+    assert chat80.val_load(copy) == loaded
+    assert contexts == ["chat80._restricted_shelve_open"]
+
+
+def test_val_load_never_queries_a_view_named_dict_even_without_the_screen(
+    restricted_sandbox, monkeypatch
+):
+    """Second line behind the screen: the store must hold the backend's own
+    ``Dict`` TABLE, so with the screen disarmed the endless view is still
+    never queried; the file is reported unreadable like any other."""
+    monkeypatch.setattr(pathsec, "_plain_schema_object", lambda kind, root: None)
+    store = _db(os.path.join(restricted_sandbox, "store"), HOSTILE_VALUATION[0][1])
+    with pytest.raises(SystemExit, match="Cannot read file"):
+        chat80.val_load(store)
+
+
+def test_val_load_statements_are_budgeted(restricted_sandbox, monkeypatch):
+    """The budget reaches the store's own lookups: a plain ``Dict`` without
+    the backend's unique index is scanned per lookup, and with the budget
+    set below one scan the first lookup is refused with the security
+    message, before the manifest check that would refuse the padding."""
+    _loaded, raw = _real_store(restricted_sandbox)
+    store = _sqlite_valuation(os.path.join(restricted_sandbox, "copy"), raw)
+    connection = sqlite3.connect(store)
+    with connection:
+        connection.executescript(
+            "CREATE TABLE wide (key BLOB, value BLOB);"
+            "INSERT INTO wide SELECT key, value FROM Dict;"
+            "INSERT INTO wide "
+            + _count_to(20000).replace(
+                "SELECT count(*) FROM n", "SELECT 'k' || x, X'80' FROM n"
+            )
+            + ";"
+            "DROP TABLE Dict; ALTER TABLE wide RENAME TO Dict;"
+        )
+    connection.close()
+    # the padding keys are refused by the manifest check, after the lookups
+    with pytest.raises(ValueError, match="manifest does not name"):
+        chat80.val_load(store)
+    monkeypatch.setattr(pathsec, "MAX_SQLITE_STEPS", 1000)
+    with pytest.raises(PermissionError, match="MAX_SQLITE_STEPS") as info:
+        chat80.val_load(store)
+    assert "Security Violation [chat80._restricted_shelve_open]" in str(info.value)
+
+
+def test_val_load_ignores_a_hot_journal_beside_a_sqlite_store(restricted_sandbox):
+    loaded, raw = _real_store(restricted_sandbox)
+    copy = _sqlite_valuation(os.path.join(restricted_sandbox, "copy"), raw)
+    payload = b"\xd9\xd5\x05\xf9\x20\xa1\x63\xd7" + b"\0" * 504
+    with open(copy + "-journal", "wb") as handle:
+        handle.write(payload)
+    before = sorted(os.listdir(restricted_sandbox))
+    assert chat80.val_load(copy) == loaded
+    assert sorted(os.listdir(restricted_sandbox)) == before
+    assert _store_bytes(copy + "-journal") == payload
+
+
+@pytest.mark.parametrize(
+    "script", ["CREATE TABLE other (x);", DICT.replace("Dict", "dict")]
+)
+def test_val_load_reports_a_sqlite_file_without_the_backend_table_as_unreadable(
+    restricted_sandbox, script
+):
+    store = _db(os.path.join(restricted_sandbox, "store"), script)
+    with pytest.raises(SystemExit, match="Cannot read file"):
+        chat80.val_load(store)
+
+
+def test_val_load_sqlite_store_without_manifest_is_still_refused(restricted_sandbox):
+    store = _db(os.path.join(restricted_sandbox, "store"), DICT)
+    with pytest.raises(ValueError, match="no key manifest"):
+        chat80.val_load(store)
+
+
+def test_is_sqlite_store_decides_on_the_pinned_handle_and_dbm_precedence(
+    restricted_sandbox,
+):
+    store = _db(os.path.join(restricted_sandbox, "store"), DICT)
+    with open(store, "rb") as handle:
+        assert chat80._is_sqlite_store(store, {store: handle})
+        assert handle.tell() == 0
+        with open(store, "rb") as sibling:
+            assert not chat80._is_sqlite_store(
+                store, {store: handle, store + ".dir": sibling}
+            )
+    assert not chat80._is_sqlite_store(store, {})
+    other = os.path.join(restricted_sandbox, "plain")
+    with open(other, "wb") as handle:
+        handle.write(b"not a database at all, just bytes")
+    with open(other, "rb") as handle:
+        assert not chat80._is_sqlite_store(other, {other: handle})
