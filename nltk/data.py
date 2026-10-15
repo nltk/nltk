@@ -2099,6 +2099,26 @@ class OpenOnDemandZipFile(ZipFile):
 ######################################################################
 
 
+#: Byte order marks and the encoding each one announces, longest first.
+BOMS = (
+    (codecs.BOM_UTF32_LE, "utf-32-le"),
+    (codecs.BOM_UTF32_BE, "utf-32-be"),
+    (codecs.BOM_UTF16_LE, "utf-16-le"),
+    (codecs.BOM_UTF16_BE, "utf-16-be"),
+    (codecs.BOM_UTF8, "utf-8"),
+)
+
+
+def encoding_from_bom(head):
+    """The encoding the byte order mark at the start of ``head`` announces,
+    or None when it starts with none. UTF-32 is tried before UTF-16, whose
+    little endian mark is a prefix of the UTF-32 one."""
+    for bom, encoding in BOMS:
+        if head.startswith(bom):
+            return encoding
+    return None
+
+
 def text_encoding(encoding):
     """Return ``encoding``, or the encoding ``open()`` decodes with when it is
     None, once it is known to name a text encoding.
@@ -2655,7 +2675,7 @@ class SeekableUnicodeStreamReader:
         head = self.stream.read(4)
         self.stream.seek(0)
         initial = self._initial_state
-        for bom in self._OWN_BOMS:
+        for bom, _ in BOMS:
             if head.startswith(bom):
                 decoder = self._new_decoder()
                 try:
@@ -2667,15 +2687,6 @@ class SeekableUnicodeStreamReader:
                     return state
                 return None
         return None
-
-    #: BOMs a codec may read for itself, longest first.
-    _OWN_BOMS = (
-        codecs.BOM_UTF32_LE,
-        codecs.BOM_UTF32_BE,
-        codecs.BOM_UTF16_LE,
-        codecs.BOM_UTF16_BE,
-        codecs.BOM_UTF8,
-    )
 
     def _decode_from(self, state, bytes):
         """Decode ``bytes`` from ``state`` (None for the initial state) with
@@ -2761,4 +2772,6 @@ __all__ = [
     "GzipFileSystemPathPointer",
     "SeekableUnicodeStreamReader",
     "text_encoding",
+    "BOMS",
+    "encoding_from_bom",
 ]

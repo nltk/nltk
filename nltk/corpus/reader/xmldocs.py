@@ -11,12 +11,11 @@ Corpus reader for corpora whose documents are xml files.
 (note -- not named 'xml' to avoid conflicting w/ standard xml package)
 """
 
-import codecs
 
 from nltk import redos
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import *
-from nltk.data import SeekableUnicodeStreamReader
+from nltk.data import SeekableUnicodeStreamReader, encoding_from_bom, text_encoding
 from nltk.internals import ElementWrapper
 from nltk.pathsec import open as pathsec_open
 from nltk.termsec import safe_print
@@ -207,22 +206,16 @@ class XMLCorpusView(StreamBackedCorpusView):
                 required_root=getattr(self, "_root", None),
             ) as infile:
                 s = infile.readline()
-        if s.startswith(codecs.BOM_UTF16_BE):
-            return "utf-16-be"
-        if s.startswith(codecs.BOM_UTF16_LE):
-            return "utf-16-le"
-        if s.startswith(codecs.BOM_UTF32_BE):
-            return "utf-32-be"
-        if s.startswith(codecs.BOM_UTF32_LE):
-            return "utf-32-le"
-        if s.startswith(codecs.BOM_UTF8):
-            return "utf-8"
+        encoding = encoding_from_bom(s)
+        if encoding is not None:
+            return encoding
         m = redos.match(rb'\s*<\?xml\b.*\bencoding="([^"]+)"', s)
+        if m is None:
+            m = redos.match(rb"\s*<\?xml\b.*\bencoding='([^']+)'", s)
         if m:
-            return m.group(1).decode()
-        m = redos.match(rb"\s*<\?xml\b.*\bencoding='([^']+)'", s)
-        if m:
-            return m.group(1).decode()
+            # The declaration is the document's own text: only a text encoding
+            # may decode it (a bytes-to-bytes codec would inflate the file).
+            return text_encoding(m.group(1).decode())
         # No encoding found -- what should the default be?
         return "utf-8"
 
