@@ -113,3 +113,47 @@ def test_lite_reader_connection_is_read_only_on_the_shipped_database():
         reader._c.execute("CREATE TABLE probe (x INTEGER)")
     with pytest.raises(sqlite3.DatabaseError, match="not authorized"):
         reader._c.execute("ATTACH DATABASE ':memory:' AS probe")
+
+
+def test_lite_reader_binds_hostile_parameters_on_the_shipped_database():
+    reader = _lite()
+    for text in ["dog\0' OR 1=1 --", "d" * 10_000_000, b"dog", None]:
+        assert reader.translations("eng-000", text, "fra-000") == []
+        assert reader.meanings("eng-000", text) == []
+        if text is not None:  # None is the documented "every variety"
+            assert reader.language_varieties(text) == []
+    # "%" is itself an English expression in PanLex; bound as text it finds
+    # that one entry, where a spliced wildcard would match every expression
+    for text in ["%", "_og", "%og%"]:
+        assert len(reader.meanings("eng-000", text)) < 100
+        assert len(reader.translations("eng-000", text, "fra-000")) < 100
+        assert reader.language_varieties(text) == []
+    injected = "dog' UNION SELECT name, 1 FROM sqlite_master --"
+    assert reader.translations("eng-000", injected, "fra-000") == []
+    with pytest.raises(KeyError):
+        reader.meanings("xxx-999", "dog")
+
+
+def test_lite_reader_connection_is_screened_and_budgeted_on_the_shipped_database():
+    from nltk import pathsec
+
+    reader = _lite()
+    connection = reader._c.connection
+    rows = connection.execute("SELECT type, rootpage FROM sqlite_master").fetchall()
+    assert rows and all(pathsec._plain_schema_object(k, p) is None for k, p in rows)
+    assert connection.execute("PRAGMA trusted_schema").fetchall() == [(0,)]
+    # the most connected English expressions in the 20240301 data (found
+    # offline: each has over 4000 denotations) stay far inside the budget
+    for text in ["break", "cut", "light", "cover", "tree"]:
+        if not reader.meanings("eng-000", text):
+            continue
+        used = connection._steps * pathsec._SQLITE_STEP_GRAIN
+        assert 0 < used * 10 < pathsec.MAX_SQLITE_STEPS
+        assert reader.translations("eng-000", text, "fra-000")
+        used = connection._steps * pathsec._SQLITE_STEP_GRAIN
+        assert 0 < used * 10 < pathsec.MAX_SQLITE_STEPS
+    with pytest.raises(PermissionError, match="exceeded MAX_SQLITE_STEPS"):
+        connection.execute(
+            "WITH RECURSIVE n(x) AS (SELECT 1 UNION ALL SELECT x+1 FROM n)"
+            " SELECT count(*) FROM n"
+        ).fetchone()
