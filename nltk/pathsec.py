@@ -3043,8 +3043,9 @@ def connect_sqlite_read_only(
     platform exposes descriptors as names the database is opened on the pinned
     descriptor itself (``/dev/fd/N``, immutable, read only) so a later change
     to the NAME cannot redirect it (CWE-367); elsewhere it is opened by name
-    as a read-only file URI and the names are verified afterwards. The pins
-    are released on return.
+    as a read-only, immutable file URI and the names are verified afterwards.
+    Immutable on both routes: a ``-journal`` or ``-wal`` planted beside the
+    file is never replayed into the view. The pins are released on return.
     """
     import sqlite3
 
@@ -3065,9 +3066,10 @@ def connect_sqlite_read_only(
         if connection is not None:
             release(pins)
             return _arm_sqlite(connection, context)
-    # by name, still read only: a file URI with mode=ro (the path is
-    # percent-encoded by as_uri, so a '?' or '#' in it cannot add a parameter)
-    uri = Path(os.path.abspath(text)).as_uri() + "?mode=ro"
+    # by name, still read only and immutable (no journal or WAL beside the
+    # file is ever replayed, as on the descriptor route); as_uri percent-encodes
+    # the path, so a '?' or '#' in it cannot add a parameter
+    uri = Path(os.path.abspath(text)).as_uri() + "?immutable=1&mode=ro"
     try:
         connection = sqlite3.connect(uri, uri=True, factory=factory)
     except BaseException:
