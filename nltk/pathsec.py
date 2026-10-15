@@ -2891,6 +2891,128 @@ def sqlite_names(path):
     return [path + suffix for suffix in ("",) + SQLITE_SIDECARS]
 
 
+#: Ceiling on the virtual-machine steps one statement may run on a connection
+#: from :func:`connect_sqlite_read_only`, so a planted database cannot hang or
+#: amplify (CWE-400); the heaviest real PanLex Lite query runs about 200k.
+MAX_SQLITE_STEPS = 20_000_000
+_SQLITE_STEP_GRAIN = 1000
+
+
+def _sqlite_budget_classes():
+    """The connection and cursor classes that count the steps of every
+    statement and interrupt one past :data:`MAX_SQLITE_STEPS`, built once."""
+    import sqlite3
+
+    cached = getattr(_sqlite_budget_classes, "classes", None)
+    if cached is not None:
+        return cached
+
+    class BudgetCursor(sqlite3.Cursor):
+        def _run(self, method, *args):
+            try:
+                return method(self, *args)
+            except sqlite3.OperationalError:
+                if self.connection._exceeded:
+                    raise PermissionError(
+                        f"Security Violation [{self.connection._context}]: "
+                        f"statement exceeded MAX_SQLITE_STEPS ({MAX_SQLITE_STEPS}) "
+                        "virtual-machine steps; the database is refused as a "
+                        "resource bomb"
+                    ) from None
+                raise
+
+        def execute(self, *args):
+            self.connection._steps = 0
+            self.connection._exceeded = False
+            return self._run(sqlite3.Cursor.execute, *args)
+
+        def executemany(self, *args):
+            self.connection._steps = 0
+            self.connection._exceeded = False
+            return self._run(sqlite3.Cursor.executemany, *args)
+
+        def executescript(self, *args):
+            self.connection._steps = 0
+            self.connection._exceeded = False
+            return self._run(sqlite3.Cursor.executescript, *args)
+
+        def fetchone(self):
+            return self._run(sqlite3.Cursor.fetchone)
+
+        def fetchmany(self, *args):
+            return self._run(sqlite3.Cursor.fetchmany, *args)
+
+        def fetchall(self):
+            return self._run(sqlite3.Cursor.fetchall)
+
+        def __next__(self):
+            return self._run(sqlite3.Cursor.__next__)
+
+    class BudgetConnection(sqlite3.Connection):
+        _steps = 0
+        _exceeded = False
+        _context = "pathsec.connect_sqlite_read_only"
+
+        def cursor(self, factory=None):
+            return sqlite3.Connection.cursor(self, factory or BudgetCursor)
+
+        # Python 3.11+ runs Connection.execute* on a plain cursor; route them
+        # through the counting cursor so every statement is budgeted.
+        def execute(self, *args):
+            return self.cursor().execute(*args)
+
+        def executemany(self, *args):
+            return self.cursor().executemany(*args)
+
+        def executescript(self, *args):
+            return self.cursor().executescript(*args)
+
+        def _tick(self):
+            self._steps += 1
+            if self._steps * _SQLITE_STEP_GRAIN > MAX_SQLITE_STEPS:
+                self._exceeded = True
+                return 1
+            return 0
+
+    _sqlite_budget_classes.classes = (BudgetConnection, BudgetCursor)
+    return _sqlite_budget_classes.classes
+
+
+def _plain_schema_object(kind, rootpage):
+    """Why a schema row is not a plain table or index, or None. sqlite gives a
+    view, a trigger and a virtual table no root page; a stored table or index
+    always has one, so no parsing of the file's SQL text is involved."""
+    if kind == "table" and not rootpage:
+        return "virtual table"
+    if kind not in ("table", "index") or not rootpage:
+        return str(kind)
+    return None
+
+
+def _arm_sqlite(connection, context):
+    """Bound and screen a fresh read-only connection: the step budget, no
+    ATTACH, no code from the file's schema (trusted_schema off), cell sizes
+    checked, and only plain tables and indexes in the schema (CWE-1286)."""
+    connection._context = context
+    connection.set_progress_handler(connection._tick, _SQLITE_STEP_GRAIN)
+    connection.set_authorizer(_deny_attach)
+    connection.execute("PRAGMA trusted_schema=OFF")
+    connection.execute("PRAGMA cell_size_check=ON")
+    rows = connection.execute(
+        "SELECT type, name, rootpage FROM sqlite_master"
+    ).fetchall()
+    for kind, name, rootpage in rows:
+        reason = _plain_schema_object(kind, rootpage)
+        if reason is not None:
+            connection.close()
+            raise PermissionError(
+                f"Security Violation [{context}]: the database schema holds a "
+                f"{reason} ({sanitize_terminal(str(name))}); only plain tables "
+                "and indexes are read"
+            )
+    return connection
+
+
 def _deny_attach(action, *_args):
     """The authorizer every read-only connection starts with: no ATTACH or
     DETACH, so no statement run on it can open another file by name."""
@@ -2911,8 +3033,11 @@ def connect_sqlite_read_only(
     """A read-only sqlite connection bound to the inode of *path*.
 
     *path* is validated first, inside *required_root* when one is given.
-    The connection refuses ATTACH and DETACH; a caller with stricter rules
-    replaces that authorizer with its own, which must deny them too.
+    The connection refuses ATTACH and DETACH (a caller with stricter rules
+    replaces that authorizer with its own, which must deny them too), runs no
+    SQL from the file's own schema and refuses a schema holding anything but
+    plain tables and indexes, and interrupts a statement past
+    :data:`MAX_SQLITE_STEPS` virtual-machine steps with a ``PermissionError``.
     *names* lists the database and every sidecar name sqlite may reopen by
     path (:func:`sqlite_names` when omitted). They are pinned first; where the
     platform exposes descriptors as names the database is opened on the pinned
@@ -2927,24 +3052,24 @@ def connect_sqlite_read_only(
     validate_path(text, context=context, required_root=required_root)
     names = sqlite_names(text) if names is None else list(names)
     pins = pin_files(names, context=context)
+    factory = _sqlite_budget_classes()[0]
     handle = pins.get(text)
     if handle is not None and os.name == "posix" and os.path.isdir("/dev/fd"):
         uri = "file:/dev/fd/%d?immutable=1&mode=ro" % handle.fileno()
         try:
-            connection = sqlite3.connect(uri, uri=True)
+            connection = sqlite3.connect(uri, uri=True, factory=factory)
             # force the open while the descriptor is still held
             connection.execute("PRAGMA schema_version").fetchall()
         except sqlite3.Error:
             connection = None
         if connection is not None:
             release(pins)
-            connection.set_authorizer(_deny_attach)
-            return connection
+            return _arm_sqlite(connection, context)
     # by name, still read only: a file URI with mode=ro (the path is
     # percent-encoded by as_uri, so a '?' or '#' in it cannot add a parameter)
     uri = Path(os.path.abspath(text)).as_uri() + "?mode=ro"
     try:
-        connection = sqlite3.connect(uri, uri=True)
+        connection = sqlite3.connect(uri, uri=True, factory=factory)
     except BaseException:
         release(pins)
         raise
@@ -2953,8 +3078,7 @@ def connect_sqlite_read_only(
     except BaseException:
         connection.close()
         raise
-    connection.set_authorizer(_deny_attach)
-    return connection
+    return _arm_sqlite(connection, context)
 
 
 __all__ = [
@@ -2982,5 +3106,6 @@ __all__ = [
     "verify_pinned",
     "connect_sqlite_read_only",
     "sqlite_names",
+    "MAX_SQLITE_STEPS",
     "SQLITE_SIDECARS",
 ]
