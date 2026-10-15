@@ -188,6 +188,7 @@ from nltk.pathsec import urlopen, validate_path
 from nltk.termsec import safe_print, sanitize_terminal
 from nltk.util import acyclic_breadth_first
 from nltk.xmlsec import parse as safe_parse
+from nltk.xmlsec import screen
 
 # Ceilings on what the data server may hand us (CWE-400): the declared package
 # size comes from the same server, so it is capped too (the largest real package
@@ -275,67 +276,21 @@ def _bounded_body(stream, limit, what, deadline=None):
     return io.BytesIO(b"".join(chunks))
 
 
-class _StopScan(Exception):
-    """Ends the structure scan early; the real parse then decides."""
-
-
 def _check_index_structure(data):
     """Refuse an index whose parsed tree would dwarf its size (CWE-400).
 
-    Streams *data* through expat without building a tree and counts elements
-    and attributes, DTD defaults included, so no element count, attribute
-    count or single token beyond the ceilings above is ever materialised. An
-    entity declaration stops the scan: the real parser refuses it on its own.
+    :func:`nltk.xmlsec.screen` streams *data* through expat without building a
+    tree and counts elements and attributes, DTD defaults included, under the
+    index's own ceilings, lower than the module's, so no element count,
+    attribute count or single token beyond them is ever materialised. An
+    entity declaration is refused there as well.
     """
-    from xml.parsers import expat
-
-    parser = expat.ParserCreate()
-    seen = {"elements": 0, "attributes": 0, "mark": 0}
-
-    def _too_many(what, limit):
-        raise ValueError(
-            f"The data index declares more than {limit} {what}; refusing to "
-            "build it (CWE-400)"
-        )
-
-    def _start(name, attrs):
-        seen["elements"] += 1
-        seen["attributes"] += len(attrs)
-        if seen["elements"] > MAX_INDEX_ELEMENTS:
-            _too_many("elements", MAX_INDEX_ELEMENTS)
-        if seen["attributes"] > MAX_INDEX_ATTRIBUTES:
-            _too_many("attributes", MAX_INDEX_ATTRIBUTES)
-        seen["mark"] = parser.CurrentByteIndex
-
-    def _progress(*_args):
-        seen["mark"] = parser.CurrentByteIndex
-
-    def _stop(*_args):
-        raise _StopScan
-
-    parser.StartElementHandler = _start
-    parser.EndElementHandler = _progress
-    parser.CharacterDataHandler = _progress
-    parser.CommentHandler = _progress
-    parser.ProcessingInstructionHandler = _progress
-    parser.EntityDeclHandler = _stop
-    parser.ExternalEntityRefHandler = _stop
-    step = 64 * 1024
-    try:
-        for offset in range(0, len(data), step):
-            parser.Parse(bytes(data[offset : offset + step]), False)
-            fed = min(offset + step, len(data))
-            if fed - seen["mark"] > MAX_INDEX_TOKEN_BYTES:
-                raise ValueError(
-                    f"The data index holds a token longer than "
-                    f"{MAX_INDEX_TOKEN_BYTES} bytes; refusing to build it "
-                    "(CWE-400)"
-                )
-        parser.Parse(b"", True)
-    except (_StopScan, expat.ExpatError):
-        # Entities are refused, and malformed input reported, by the parse
-        # that follows; neither builds more than this scan already counted.
-        pass
+    screen(
+        data,
+        max_elements=MAX_INDEX_ELEMENTS,
+        max_attributes=MAX_INDEX_ATTRIBUTES,
+        max_token_bytes=MAX_INDEX_TOKEN_BYTES,
+    )
 
 
 def _refuse_unprintable(value, what):

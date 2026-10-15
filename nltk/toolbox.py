@@ -289,7 +289,8 @@ class ToolboxData(StandardFormat):
     def _tree2etree(self, parent):
         from nltk.tree import Tree
 
-        root = Element(parent.label())
+        # a chunk label is written as an element name like a marker is
+        root = Element(safe_element_name(parent.label(), prefix="tb_"))
         for child in parent:
             if isinstance(child, Tree):
                 root.append(self._tree2etree(child))

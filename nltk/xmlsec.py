@@ -108,6 +108,7 @@ __all__ = [
     "MAX_EXPANSION",
     "fromstring",
     "parse",
+    "screen",
     "XML_NAME_RANGES",
     "safe_element_name",
 ]
@@ -180,8 +181,12 @@ def _refuse(what, limit):
     )
 
 
-def _screen(data):
+def _screen(data, *, max_elements=None, max_attributes=None, max_token_bytes=None):
     """Refuse (raise) if ``data`` declares an entity or would exceed a ceiling.
+
+    The ceilings default to ``MAX_ELEMENTS``, ``MAX_ATTRIBUTES`` and
+    ``MAX_TOKEN_BYTES``; a caller with a smaller document class (the data
+    index) passes its own, lower ones. The public name is :func:`screen`.
 
     Runs a standalone streaming expat parse that builds no tree.  Its entity
     handlers raise on the first declaration or external reference.  The chunk
@@ -196,6 +201,9 @@ def _screen(data):
     report so the error matches a direct parse, and it is not exploitable
     because nothing past the error is ever built.
     """
+    max_elements = MAX_ELEMENTS if max_elements is None else max_elements
+    max_attributes = MAX_ATTRIBUTES if max_attributes is None else max_attributes
+    max_token_bytes = MAX_TOKEN_BYTES if max_token_bytes is None else max_token_bytes
     parser = expat.ParserCreate(None, "}")
     parser.ordered_attributes = True
     elements = attributes = cost = fed = 0
@@ -217,16 +225,16 @@ def _screen(data):
                     cost += len(aname)
                 cost += _ATTRIBUTE_COST + len(attrs[i + 1])
         if (
-            elements > MAX_ELEMENTS
-            or attributes > MAX_ATTRIBUTES
+            elements > max_elements
+            or attributes > max_attributes
             or cost > MAX_EXPANSION * fed
         ):
-            if elements > MAX_ELEMENTS:
-                _refuse("its element count", f"{MAX_ELEMENTS} elements")
-            if attributes > MAX_ATTRIBUTES:
+            if elements > max_elements:
+                _refuse("its element count", f"{max_elements} elements")
+            if attributes > max_attributes:
                 _refuse(
                     "its attribute count, DTD defaults included",
-                    f"{MAX_ATTRIBUTES} attributes",
+                    f"{max_attributes} attributes",
                 )
             _refuse(
                 "the attributes and expanded names its tree would hold",
@@ -263,7 +271,7 @@ def _screen(data):
     text = isinstance(data, str)
     # An explicit element or attribute costs at least four input bytes, so a
     # smaller input cannot reach either count ceiling without defaults.
-    if len(data) > 4 * min(MAX_ELEMENTS, MAX_ATTRIBUTES):
+    if len(data) > 4 * min(max_elements, max_attributes):
         _arm()
     mark = 0
     offset, end = 0, len(data)
@@ -273,7 +281,7 @@ def _screen(data):
             # holds would pass the ceiling, so the check below fires exactly
             # there: an expat without reparse deferral (before 2.6) otherwise
             # completes a slightly longer token inside the next chunk unseen.
-            room = MAX_TOKEN_BYTES + 1 - (fed - mark)
+            room = max_token_bytes + 1 - (fed - mark)
             chunk = data[offset : offset + max(1, min(_STEP, room))]
             offset += len(chunk)
             if text:
@@ -300,13 +308,18 @@ def _screen(data):
             consumed = parser.CurrentByteIndex
             if consumed >= 0:
                 mark = consumed
-            if fed - mark > MAX_TOKEN_BYTES:
-                _refuse("a single markup token", f"{MAX_TOKEN_BYTES} bytes")
+            if fed - mark > max_token_bytes:
+                _refuse("a single markup token", f"{max_token_bytes} bytes")
         parser.Parse("" if text else b"", True)
     except expat.ExpatError:
         # Not well-formed: defer to the real parse, which raises its own
         # ParseError on the same input and builds nothing past that point.
         pass
+
+
+#: Screen a document without building its tree: entities refused, the element,
+#: attribute and token ceilings enforced, lower ones accepted from the caller.
+screen = _screen
 
 
 def _check_tree(root):
