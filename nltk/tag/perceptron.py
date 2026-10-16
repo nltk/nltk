@@ -540,27 +540,31 @@ class PerceptronTagger(TaggerI):
         trained.
         """
 
-        def add(name, *args):
-            features[" ".join((name,) + tuple(args))] += 1
-
         i += len(self.START)
-        features = defaultdict(int)
+        w = context[i]
+        w1, w2 = context[i - 1], context[i + 1]
+        # The 14 feature names are distinct, so each key is built directly
+        # (the same "name arg ..." strings as before) with a count of 1.
         # It's useful to have a constant feature, which acts sort of like a prior
-        add("bias")
-        add("i suffix", word[-3:])
-        add("i pref1", word[0] if word else "")
-        add("i-1 tag", prev)
-        add("i-2 tag", prev2)
-        add("i tag+i-2 tag", prev, prev2)
-        add("i word", context[i])
-        add("i-1 tag+i word", prev, context[i])
-        add("i-1 word", context[i - 1])
-        add("i-1 suffix", context[i - 1][-3:])
-        add("i-2 word", context[i - 2])
-        add("i+1 word", context[i + 1])
-        add("i+1 suffix", context[i + 1][-3:])
-        add("i+2 word", context[i + 2])
-        return features
+        return defaultdict(
+            int,
+            {
+                "bias": 1,
+                "i suffix " + word[-3:]: 1,
+                "i pref1 " + (word[0] if word else ""): 1,
+                "i-1 tag " + prev: 1,
+                "i-2 tag " + prev2: 1,
+                "i tag+i-2 tag " + prev + " " + prev2: 1,
+                "i word " + w: 1,
+                "i-1 tag+i word " + prev + " " + w: 1,
+                "i-1 word " + w1: 1,
+                "i-1 suffix " + w1[-3:]: 1,
+                "i-2 word " + context[i - 2]: 1,
+                "i+1 word " + w2: 1,
+                "i+1 suffix " + w2[-3:]: 1,
+                "i+2 word " + context[i + 2]: 1,
+            },
+        )
 
     def _make_tagdict(self, sentences):
         """
