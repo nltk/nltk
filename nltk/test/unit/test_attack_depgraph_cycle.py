@@ -169,8 +169,9 @@ def test_every_real_treebank_graph_is_acyclic_and_every_head_edge_is_walked(
     treebank_graphs,
 ):
     """All 3914 Penn dependency_treebank graphs: contains_cycle() is False, the
-    independent Kahn oracle on the head fields agrees, and the edges the walk
-    reads from deps are exactly the head edges (the guard sees real edges)."""
+    topological-sort reference check on the head fields agrees, and the edges
+    the walk reads from deps are exactly the head edges (the guard sees real
+    edges)."""
     assert len(treebank_graphs) > 3000
     for graph in treebank_graphs:
         head_edges = _head_edges(graph)
@@ -215,7 +216,8 @@ def test_cycle_planted_in_real_sentences_is_found_with_a_real_cycle_path(
 def test_random_graphs_agree_with_an_independent_cycle_oracle():
     """1000 seeded random CoNLL graphs (1 to 12 words, heads drawn freely, so
     self-loops, several cycles and rootless graphs occur): contains_cycle()
-    truthiness equals Kahn's verdict and every reported path is a real cycle."""
+    truthiness equals the topological-sort verdict and every reported path is
+    a real cycle."""
     rng = random.Random(1016)
     cyclic = 0
     for _ in range(1000):
