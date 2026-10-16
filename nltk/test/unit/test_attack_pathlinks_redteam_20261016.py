@@ -186,19 +186,30 @@ def test_device_via_symlink_refused_without_hanging(sandbox, dev):
 
 @pytest.mark.parametrize("fileid", ["/etc/passwd", "../../../etc/passwd", "..\\..\\x"])
 def test_reader_open_rejects_abs_and_dotdot(sandbox, fileid):
-    """reader.open refuses absolute and parent-traversal fileids lexically."""
+    """reader.open refuses absolute and parent-traversal fileids lexically; a
+    drive-less rooted name is not absolute to ntpath (Python 3.13+), so on
+    Windows the root-boundary check of PathPointer.join refuses it instead."""
     root, outside, corp, secret = sandbox
-    with pytest.raises(ValueError, match="must be relative"):
+    lexical = os.path.isabs(fileid) or ".." in fileid
+    expected = "must be relative" if lexical else "Escape outside root blocked"
+    with pytest.raises(ValueError, match=expected):
         _reader(corp).open(fileid)
 
 
 def test_casefold_symlink_refused(sandbox):
-    """On case-insensitive APFS a symlink named UP.txt -> outside, requested as
-    'up.txt', is still refused: resolution reaches the out-of-root target."""
+    """A symlink named UP.txt -> outside, requested as 'up.txt': on a
+    case-insensitive filesystem (APFS, NTFS) resolution reaches the out-of-root
+    target and is refused as an escape; on a case-sensitive one the name does
+    not exist and the pointer refuses it before any open. Neither reads it."""
     root, outside, corp, secret = sandbox
     os.symlink(secret, os.path.join(corp, "UP.txt"))
-    with pytest.raises(ValueError, match="escapes root"):
-        _reader(corp).raw("up.txt")
+    case_insensitive = os.path.exists(os.path.join(corp, "A.TXT"))
+    if case_insensitive:
+        with pytest.raises(ValueError, match="escapes root"):
+            _reader(corp).raw("up.txt")
+    else:
+        with pytest.raises(OSError, match="No such file"):
+            _reader(corp).raw("up.txt")
 
 
 # ==========================================================================
@@ -278,11 +289,27 @@ _FIND_TRAVERSALS = [
 ]
 
 
+# On Windows a backslash is a separator and a drive-less leading slash is
+# stripped, so normalize_resource_name folds these two into the in-root names
+# "x" and "etc/passwd" before the unsafe-path screen; find() then searches the
+# data roots only and reports a missing resource, never an outside path.
+_FIND_FOLDED_ON_WINDOWS = {"corpora\\..\\x": "x", "/etc/passwd": "etc/passwd"}
+
+
 @pytest.mark.parametrize("name", _FIND_TRAVERSALS)
 def test_find_rejects_traversal_spellings(sandbox, name):
     """Every traversal / absolute / drive / UNC / file-url spelling of a
-    resource name is refused by find() with a ValueError."""
+    resource name is refused by find() with a ValueError, except the two that
+    Windows path rules fold into in-root names: those end in a LookupError
+    that names the folded resource and searched only the sandbox root."""
     root, outside, corp, secret = sandbox
+    if os.name == "nt" and name in _FIND_FOLDED_ON_WINDOWS:
+        with pytest.raises(LookupError) as info:
+            nltk.data.find(name)
+        message = str(info.value)
+        assert f"Attempted to load {_FIND_FOLDED_ON_WINDOWS[name]!r}" in message
+        assert repr(root) in message and repr(outside) not in message
+        return
     with pytest.raises(ValueError, match="Unsafe resource path"):
         nltk.data.find(name)
 
