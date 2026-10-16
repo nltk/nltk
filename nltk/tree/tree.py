@@ -850,27 +850,36 @@ class Tree(list):
         CPython 3.12 and earlier ``repr()`` raised an uncaught RecursionError
         at a depth around 200, below the ``MAX_TREE_DEPTH`` bound that
         ``fromstring`` enforces and the module relies on (CWE-674). This
-        version walks an explicit post-order stack instead.
+        version walks an explicit post-order stack instead. A subclass that
+        decorates the repr overrides ``_repr_node`` (see ``ProbabilisticTree``)
+        so the walk still reaches every level; a subclass that overrides
+        ``__repr__`` itself is rendered by that method when it is a child,
+        exactly as the recursive form did.
         """
         rendered = {}
         stack = [(self, False)]
         while stack:
             node, children_done = stack.pop()
-            if not isinstance(node, Tree):
+            if not isinstance(node, Tree) or (
+                node is not self and type(node).__repr__ is not Tree.__repr__
+            ):
                 rendered[id(node)] = repr(node)
-                continue
-            if children_done:
+            elif children_done:
                 childstr = ", ".join(rendered[id(child)] for child in node)
-                rendered[id(node)] = "{}({}, [{}])".format(
-                    type(node).__name__,
-                    repr(node._label),
-                    childstr,
-                )
+                rendered[id(node)] = node._repr_node(childstr)
             else:
                 stack.append((node, True))
-                for child in reversed(node):
-                    stack.append((child, False))
+                stack.extend((child, False) for child in reversed(node))
         return rendered[id(self)]
+
+    def _repr_node(self, childstr):
+        """Render this node around its already rendered children.
+
+        Subclasses that add to the repr (``ProbabilisticTree`` appends
+        ``(p=...)``) override this rather than ``__repr__`` so that
+        ``Tree.__repr__`` renders every level without recursion.
+        """
+        return f"{type(self).__name__}({self._label!r}, [{childstr}])"
 
     def _repr_svg_(self):
         from svgling import draw_tree
