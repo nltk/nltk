@@ -572,13 +572,9 @@ class DependencyGraph:
         # and quintic on a list-``deps`` graph -- versus O(V + E) here, which
         # let a single oversized graph exhaust CPU (CWE-407).
         #
-        # Edges come from ``_dep_addresses``: a parsed node's ``deps`` is a
-        # relation->addresses mapping whose bare iteration yields relation-label
-        # keys, not addresses, so walking it directly saw no edges and this
-        # guard was dead on every graph ``_parse``/``add_arc`` builds. The
-        # helper flattens that mapping (and accepts the legacy list form). The
-        # membership guard skips targets that are not nodes and avoids
-        # materialising spurious ``defaultdict`` entries in ``self.nodes``.
+        # Edges come from ``_dep_addresses``: a parsed node's ``deps`` maps
+        # relation->addresses, so iterating it bare yielded labels, not addresses,
+        # and this guard was dead on every parsed graph. Non-node targets skipped.
         WHITE, GRAY, BLACK = 0, 1, 2
         color = defaultdict(int)  # int() == WHITE
 
