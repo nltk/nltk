@@ -221,3 +221,46 @@ def test_deep_probabilistic_tree_repr_does_not_overflow_the_stack():
     assert repr(tree).count(" (p=0.5)") == depth
     assert repr(tree.freeze()).count("]) [0.5]") == depth
     assert str(tree).count("(x") == depth
+
+
+def _all_tree_subclasses():
+    import nltk.parse
+    import nltk.tree
+
+    found = set()
+    stack = [Tree]
+    while stack:
+        for sub in stack.pop().__subclasses__():
+            if sub not in found and sub.__module__.startswith("nltk."):
+                found.add(sub)
+                stack.append(sub)
+    return sorted(found, key=lambda c: (c.__module__, c.__name__))
+
+
+def test_every_tree_subclass_renders_a_child_as_it_renders_a_root():
+    """Every Tree subclass in nltk (found by walking ``__subclasses__`` after
+    importing the tree and parse packages) renders identically as a root and
+    as a child, of itself and of a plain Tree. This is the invariant the
+    base-format walk broke for the probabilistic classes; it holds for any
+    subclass, whether it decorates via ``_repr_node`` or defines ``__repr__``,
+    and does not depend on the hook existing.
+    """
+    subclasses = _all_tree_subclasses()
+    names = {cls.__name__ for cls in subclasses}
+    assert {
+        "ImmutableTree",
+        "ImmutableProbabilisticTree",
+        "ImmutableParentedTree",
+        "ImmutableMultiParentedTree",
+        "ParentedTree",
+        "MultiParentedTree",
+        "ProbabilisticTree",
+    } <= names
+    for cls in subclasses:
+        kwargs = {"prob": 0.5} if "Probabilistic" in cls.__name__ else {}
+        inner = cls("N", ["y"], **kwargs)
+        outer = cls("N", [inner], **kwargs)
+        plain = Tree("S", [cls("N", ["z"], **kwargs)])
+        assert repr(outer).startswith(f"{cls.__name__}('N', [{inner!r}])"), cls
+        assert repr(plain) == f"Tree('S', [{plain[0]!r}])", cls
+        assert str(outer).startswith("(N (N y))"), cls
