@@ -31,6 +31,22 @@ from nltk.pathsec import spawn_trusted
 from nltk.termsec import safe_print
 from nltk.tree import Tree
 
+
+def _dep_addresses(deps):
+    """Return a node's dependent addresses as a list, tolerating both deps shapes.
+
+    ``_parse`` and ``add_arc`` store a node's ``deps`` as a relation->[addresses]
+    mapping, while the legacy hand-built form (and this module's doctests) uses a
+    flat list of addresses. Iterating the mapping directly yields relation-label
+    keys, not addresses, so a traversal that did so silently saw no edges on a
+    parsed graph. ``_tree`` and ``triples`` already flatten ``deps.values()``;
+    this does the same and also accepts the list form.
+    """
+    if isinstance(deps, dict):
+        return list(chain.from_iterable(deps.values()))
+    return list(deps)
+
+
 #################################################################
 # DependencyGraph Class
 #################################################################
@@ -555,11 +571,9 @@ class DependencyGraph:
         # and quintic on a list-``deps`` graph -- versus O(V + E) here, which
         # let a single oversized graph exhaust CPU (CWE-407).
         #
-        # ``deps`` may be a list of addresses or a relation->addresses
-        # mapping; iterating it yields the same edge targets the old code
-        # used.  The membership guard skips targets that are not nodes and
-        # avoids materialising spurious ``defaultdict`` entries in
-        # ``self.nodes``.
+        # Edges come from ``_dep_addresses``: a parsed node's ``deps`` maps
+        # relation->addresses, so iterating it bare yielded labels, not addresses,
+        # and this guard was dead on every parsed graph. Non-node targets skipped.
         WHITE, GRAY, BLACK = 0, 1, 2
         color = defaultdict(int)  # int() == WHITE
 
@@ -568,7 +582,7 @@ class DependencyGraph:
                 continue
             color[start] = GRAY
             path = [start]
-            stack = [iter(self.nodes[start]["deps"])]
+            stack = [iter(_dep_addresses(self.nodes[start]["deps"]))]
             while stack:
                 for dep in stack[-1]:
                     if dep not in self.nodes:
@@ -580,7 +594,7 @@ class DependencyGraph:
                     if color[dep] == WHITE:
                         color[dep] = GRAY
                         path.append(dep)
-                        stack.append(iter(self.nodes[dep]["deps"]))
+                        stack.append(iter(_dep_addresses(self.nodes[dep]["deps"])))
                         break
                 else:
                     color[path.pop()] = BLACK
@@ -595,10 +609,10 @@ class DependencyGraph:
             raise ValueError(
                 f"DependencyGraph.get_cycle_path() exceeded MAX_DEPTH={max_depth}."
             )
-        for dep in curr_node["deps"]:
+        for dep in _dep_addresses(curr_node["deps"]):
             if dep == goal_node_index:
                 return [curr_node["address"]]
-        for dep in curr_node["deps"]:
+        for dep in _dep_addresses(curr_node["deps"]):
             path = self.get_cycle_path(
                 self.get_by_address(dep), goal_node_index, _depth + 1, max_depth
             )
