@@ -120,6 +120,21 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     len2 = len(s2)
     lev = _edit_dist_init(len1 + 1, len2 + 1)
 
+    if not transpositions:
+        # Plain Levenshtein: the per-cell step is inlined here (no function
+        # call per cell) and the transposition bookkeeping is skipped.
+        for i in range(1, len1 + 1):
+            c1 = s1[i - 1]
+            prev_row = lev[i - 1]
+            row = lev[i]
+            for j in range(1, len2 + 1):
+                # skipping a character in s1 / in s2 / substitution
+                a = prev_row[j] + 1
+                b = row[j - 1] + 1
+                c = prev_row[j - 1] + (substitution_cost if c1 != s2[j - 1] else 0)
+                row[j] = min(a, b, c)
+        return lev[len1][len2]
+
     # retrieve alphabet
     sigma = set()
     sigma.update(s1)
