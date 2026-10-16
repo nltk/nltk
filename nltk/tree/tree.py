@@ -835,12 +835,32 @@ class Tree(list):
         )
 
     def __repr__(self):
-        childstr = ", ".join(repr(c) for c in self)
-        return "{}({}, [{}])".format(
-            type(self).__name__,
-            repr(self._label),
-            childstr,
-        )
+        # Build the repr with an explicit post-order stack rather than
+        # recursing once per level. Recursive repr (``repr(c) for c in self``,
+        # one frame per level plus the generator) raised an uncaught
+        # RecursionError on CPython <= 3.12 at a depth the parser accepts, well
+        # under MAX_TREE_DEPTH, so repr(), %r, logging and a tree in an
+        # exception message crashed on an otherwise valid tree (CWE-674). The
+        # output is identical to the recursive form.
+        rendered = {}
+        stack = [(self, False)]
+        while stack:
+            node, children_done = stack.pop()
+            if not isinstance(node, Tree):
+                rendered[id(node)] = repr(node)
+                continue
+            if children_done:
+                childstr = ", ".join(rendered[id(child)] for child in node)
+                rendered[id(node)] = "{}({}, [{}])".format(
+                    type(node).__name__,
+                    repr(node._label),
+                    childstr,
+                )
+            else:
+                stack.append((node, True))
+                for child in reversed(node):
+                    stack.append((child, False))
+        return rendered[id(self)]
 
     def _repr_svg_(self):
         from svgling import draw_tree
