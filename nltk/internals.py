@@ -523,14 +523,9 @@ def java(
                 f"cmd may not contain an @argfile token: {tok!r}; the Java "
                 "launcher would expand it, injecting arguments (CWE-88)"
             )
-    # Source-file mode (JEP 330): the launcher COMPILES AND RUNS the first token
-    # when it names a .java source file, so a caller-influenced cmd[0] of
-    # "/path/Evil.java" (or a relative "Evil.java" resolved against the CWD)
-    # executes arbitrary code with no -jar / @argfile token for the checks above
-    # to catch, and _verify_jar_sandbox never sees it (it screens classpath=
-    # only). A real Java main class is a dotted run of Java identifiers, never a
-    # filesystem path or a compilable/runnable artifact, so require that shape
-    # (CWE-94); it refuses .java/.jar/.jmod/.class and any path separator.
+    # JEP 330 source-file mode: the launcher compiles and runs a cmd[0] naming a
+    # .java file; no -jar/@argfile check above catches it and the classpath
+    # screen never sees it, so require a dotted main-class shape (CWE-94).
     _reject_non_main_class(first)
 
     # Resolve the JVM absolute-only before spawning: a bare "java" handed to
