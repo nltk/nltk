@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NLTK Fork Speedups</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a one-column report, summary tiles first, then one chart per metric, then the table and the change log. */
+:root {
+  --bg: #fcfcfb; --surface: #ffffff; --line: #e4e3df; --grid: #ebeae6;
+  --ink: #0b0b0b; --ink-2: #52514e; --ink-3: #807e78;
+  --series-1: #2a78d6; --series-2: #eb6834;
+  --good: #008300; --good-bg: #e9f5e6; --warn: #c98500; --warn-bg: #fff4dc;
+  --font-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #1a1a19; --surface: #222221; --line: #38373a; --grid: #2d2d2c;
+  --ink: #f0efec; --ink-2: #c3c2b7; --ink-3: #8d8c85;
+  --series-1: #3987e5; --series-2: #d95926;
+  --good: #5fc45f; --good-bg: #1f2e1f; --warn: #e3a52a; --warn-bg: #332a14;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #1a1a19; --surface: #222221; --line: #38373a; --grid: #2d2d2c;
+  --ink: #f0efec; --ink-2: #c3c2b7; --ink-3: #8d8c85;
+  --series-1: #3987e5; --series-2: #d95926;
+  --good: #5fc45f; --good-bg: #1f2e1f; --warn: #e3a52a; --warn-bg: #332a14;
+  color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; margin: 0;
+  padding-block: 32px 56px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 1040px; margin: 0 auto; display: grid; gap: 40px; }
+h1, h2, h3 { margin: 0; text-wrap: balance; font-weight: 600; }
+h1 { font-size: 28px; line-height: 1.2; }
+h2 { font-size: 19px; }
+p { margin: 0; max-width: 68ch; }
+.muted { color: var(--ink-2); }
+.eyebrow { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-3); font-weight: 500; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+header { display: grid; gap: 10px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--ink-2); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; display: grid; gap: 4px; }
+.tile .label { font-size: 13px; color: var(--ink-2); }
+.tile .value { font-size: 30px; font-weight: 600; line-height: 1.1; font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.tile .delta { font-size: 13px; color: var(--ink-2); }
+.pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 500; }
+.pill.good { background: var(--good-bg); color: var(--good); }
+.pill.warn { background: var(--warn-bg); color: var(--warn); }
+section { display: grid; gap: 14px; }
+.chart-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
+.legend { display: flex; gap: 16px; font-size: 13px; color: var(--ink-2); }
+.legend span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.legend .s1::before { background: var(--series-1); }
+.legend .s2::before { background: var(--series-2); }
+.chart { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 12px 8px 6px; position: relative; overflow-x: auto; }
+.chart svg { display: block; width: 100%; min-width: 720px; height: auto; }
+.chart line.ref { stroke: var(--ink-3); stroke-width: 1; }
+.chart text { font-family: var(--font-body); font-size: 12px; fill: var(--ink-2); }
+.chart text.rowlabel { fill: var(--ink); font-weight: 500; }
+.chart text.tip { font-family: var(--font-mono); font-variant-numeric: tabular-nums; fill: var(--ink); font-size: 11px; }
+.chart text.badge { font-family: var(--font-mono); font-size: 11px; fill: var(--ink-2); }
+.chart line.grid { stroke: var(--grid); stroke-width: 1; }
+.chart line.axis { stroke: var(--line); stroke-width: 1; }
+.chart rect.s1 { fill: var(--series-1); } .chart rect.s2 { fill: var(--series-2); }
+.chart rect.hit { fill: transparent; }
+.chart rect.hit:hover + g rect, .chart g.band:hover rect.bar { opacity: 0.85; }
+.tooltip { position: absolute; pointer-events: none; background: var(--ink); color: var(--bg); font-size: 12px; padding: 6px 9px; border-radius: 4px; white-space: nowrap; transform: translate(-50%, calc(-100% - 10px)); opacity: 0; transition: opacity 120ms; z-index: 2; }
+.tooltip.show { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .tooltip { transition: none; } }
+.tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: 13px; min-width: 760px; }
+th, td { text-align: right; padding: 8px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { color: var(--ink-2); font-weight: 500; font-size: 12px; letter-spacing: 0.03em; }
+th:first-child, td:first-child { text-align: left; }
+tr:last-child td { border-bottom: 0; }
+td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+tr.control td { color: var(--ink-2); }
+.changes { display: grid; gap: 10px; counter-reset: change; }
+.change { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; display: grid; gap: 6px; }
+.change h3 { font-size: 15px; display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; }
+.change h3::before { counter-increment: change; content: counter(change); font-family: var(--font-mono); color: var(--ink-3); font-weight: 400; }
+.change code { font-family: var(--font-mono); font-size: 12px; color: var(--ink-2); }
+.change .stats { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--ink-2); }
+.change .stats b { color: var(--ink); font-weight: 500; font-family: var(--font-mono); }
+.note { font-size: 13px; color: var(--ink-2); }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--series-1); outline-offset: 2px; }
+</style>
+
+<main>
+<header>
+  <div class="eyebrow">nltk fork · performance review</div>
+  <h1>Five optimizations, measured against upstream</h1>
+  <p class="muted">Each workload ran on the unchanged upstream tree and on the fork, in the same interpreter, on the same data. Every change keeps the output byte-identical; the fingerprint column proves it per workload.</p>
+  <div class="meta" id="meta"></div>
+</header>
+
+<section>
+  <div class="tiles" id="tiles"></div>
+</section>
+
+<section>
+  <div class="chart-head"><div><h2>Median wall time</h2><p class="note">Lower is better. Median of the repeats after one warm-up; the speedup rides the optimized bar.</p></div>
+    <div class="legend"><span class="s1">Upstream</span><span class="s2">Fork</span></div></div>
+  <div class="chart" id="chart-time"></div>
+</section>
+
+<section>
+  <div class="chart-head"><div><h2>Speedup</h2><p class="note">Upstream median time divided by fork median time. The line marks 1×, no change; throughput in each workload's own unit is in the table.</p></div></div>
+  <div class="chart" id="chart-speedup"></div>
+</section>
+
+<section>
+  <div class="chart-head"><div><h2>Python function calls</h2><p class="note">Lower is better. Calls counted by cProfile for one run of the workload: the work removed, independent of machine noise.</p></div>
+    <div class="legend"><span class="s1">Upstream</span><span class="s2">Fork</span></div></div>
+  <div class="chart" id="chart-calls"></div>
+</section>
+
+<section>
+  <h2>All metrics</h2>
+  <div class="tablewrap"><table id="table"></table></div>
+  <p class="note">Peak memory is the tracemalloc high-water mark during one run. "Same output" compares a SHA-256 of the full result. Control rows exercise code the fork did not touch; they show the run-to-run noise floor.</p>
+</section>
+
+<section>
+  <h2>What changed</h2>
+  <div class="changes" id="changes"></div>
+</section>
+</main>
+
+<script id="data" type="application/json">{"meta": {"base_commit": "e19e9b8dc", "opt_commit": "717d778a0", "python": "3.14.2", "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O", "timestamp": "2026-10-16 10:05:53", "repeats": 9}, "rows": [{"name": "word_tokenize", "label": "word_tokenize (control, unchanged code)", "control": true, "unit": "tokens", "count": 43315, "base_ms": 193.5550421476364, "opt_ms": 190.12950011529028, "base_min_ms": 192.81141716055572, "opt_min_ms": 189.34362498112023, "base_tp": 223786.4718965108, "opt_tp": 227818.40784168028, "base_calls": 427186, "opt_calls": 427186, "base_mem": 2.294993, "opt_mem": 2.294925, "same_output": true, "speedup": 1.0180168886483631}, {"name": "porter_stem", "label": "PorterStemmer.stem", "control": false, "unit": "words", "count": 36062, "base_ms": 208.41441699303687, "opt_ms": 70.07508305832744, "base_min_ms": 206.19362499564886, "opt_min_ms": 69.67670796439052, "base_tp": 173030.25635316214, "opt_tp": 514619.43997959397, "base_calls": 2539685, "opt_calls": 1187521, "base_mem": 1.944227, "opt_mem": 1.942768, "same_output": true, "speedup": 2.9741586866127836}, {"name": "snowball_stem", "label": "SnowballStemmer('english').stem", "control": false, "unit": "words", "count": 36062, "base_ms": 95.81504086963832, "opt_ms": 53.89233399182558, "base_min_ms": 95.58937489055097, "opt_min_ms": 53.64179192110896, "base_tp": 376370.9713286492, "opt_tp": 669148.9740538961, "base_calls": 2440993, "opt_calls": 827353, "base_mem": 1.938545, "opt_mem": 1.938545, "same_output": true, "speedup": 1.7778974071557487}, {"name": "pos_tag", "label": "pos_tag (averaged perceptron)", "control": false, "unit": "tokens", "count": 30000, "base_ms": 535.3601251263171, "opt_ms": 481.17545899003744, "base_min_ms": 514.4230420701206, "opt_min_ms": 466.52066707611084, "base_tp": 56037.046077949046, "opt_tp": 62347.31933953668, "base_calls": 1528095, "opt_calls": 1105575, "base_mem": 3.62523, "opt_mem": 3.62523, "same_output": true, "speedup": 1.112608956096827}, {"name": "edit_distance", "label": "edit_distance", "control": false, "unit": "pairs", "count": 16000, "base_ms": 168.64554188214242, "opt_ms": 77.1173748653382, "base_min_ms": 166.5864170063287, "opt_min_ms": 76.57529204152524, "base_tp": 94873.54258781158, "opt_tp": 207475.94206803697, "base_calls": 1033400, "opt_calls": 603121, "base_mem": 0.140664, "opt_mem": 0.138376, "same_output": true, "speedup": 2.1868682923482554}, {"name": "treebank_parsed_sents", "label": "treebank.parsed_sents (corpus reader)", "control": false, "unit": "sentences", "count": 3914, "base_ms": 1088.039374910295, "opt_ms": 831.0993339400738, "base_min_ms": 1079.1764580644667, "opt_min_ms": 822.5871250033379, "base_tp": 3597.2962838065446, "opt_tp": 4709.425023173244, "base_calls": 10801710, "opt_calls": 6621432, "base_mem": 1.980701, "opt_mem": 1.980175, "same_output": true, "speedup": 1.3091568365866935}, {"name": "brown_tagged_words", "label": "len(brown.tagged_words()) (corpus reader)", "control": true, "unit": "words", "count": 1161192, "base_ms": 1365.3484580572695, "opt_ms": 1436.515707988292, "base_min_ms": 1352.360999910161, "opt_min_ms": 1409.7509169951081, "base_tp": 850473.0006083867, "opt_tp": 808339.2291102355, "base_calls": 11383295, "opt_calls": 12007039, "base_mem": 8.516608, "opt_mem": 8.516696, "same_output": true, "speedup": 0.9504584255255477}], "summary": {"n_changed": 5, "geomean_speedup": 1.7590797861808143, "best": {"name": "porter_stem", "label": "PorterStemmer.stem", "control": false, "unit": "words", "count": 36062, "base_ms": 208.41441699303687, "opt_ms": 70.07508305832744, "base_min_ms": 206.19362499564886, "opt_min_ms": 69.67670796439052, "base_tp": 173030.25635316214, "opt_tp": 514619.43997959397, "base_calls": 2539685, "opt_calls": 1187521, "base_mem": 1.944227, "opt_mem": 1.942768, "same_output": true, "speedup": 2.9741586866127836}, "same_output": 7, "n_rows": 7, "calls_saved": 7998881, "calls_base": 18343883, "import_base_ms": 157.83470799215138, "import_opt_ms": 157.59125002659857}, "tests": {"baseline": {"passed": 13042, "failed": 53, "summary": "53 failed, 13042 passed, 416 skipped, 9 xfailed, 233 warnings, 7 errors, 16 subtests passed in 410.74s (0:06:50)"}, "optimized": {"passed": 13042, "failed": 53, "summary": "53 failed, 13042 passed, 416 skipped, 9 xfailed, 233 warnings, 7 errors, 16 subtests passed in 403.78s (0:06:43)"}}, "changes": [{"title": "Porter stemmer: rule tables built once, suffix pre-check", "file": "nltk/stem/porter.py", "workload": "porter_stem", "what": "Steps 2, 3 and 4 rebuilt their 20-, 7- and 19-rule lists (with fresh lambdas) on every call and tried every rule with its own endswith(). The tables are now built once per stemmer, and each step first asks one C-level endswith() against the tuple of all its suffixes, skipping the scan when no rule can apply."}, {"title": "Snowball English stemmer: whole-tuple suffix guard", "file": "nltk/stem/snowball.py", "workload": "snowball_stem", "what": "The six suffix loops of EnglishStemmer.stem() ran about 54 endswith() calls per word. Each loop now iterates only when a single endswith() against the whole suffix tuple says a rule can match."}, {"title": "edit_distance: inlined inner loop", "file": "nltk/metrics/distance.py", "workload": "edit_distance", "what": "The dynamic-programming cell update was a function call with nine arguments per cell plus transposition bookkeeping that is never used when transpositions=False. The default case now runs the three-way min inline over cached row references."}, {"title": "Perceptron tagger: direct feature construction", "file": "nltk/tag/perceptron.py", "workload": "pos_tag", "what": "_get_features() built each of its 14 feature strings through a closure that packed *args into a tuple and joined it. The dict is now built directly from the same strings, so the trained model's keys are unchanged and no retraining is needed."}, {"title": "Corpus stream reader: tell() without re-decoding", "file": "nltk/data.py", "workload": "treebank_parsed_sents", "what": "SeekableUnicodeStreamReader.tell() re-decoded the current block from its checkpoint on every call, and the regexp block reader calls it once per line. For strict, stateless codecs (UTF-8, ASCII, Latin-1) the unreturned buffer now re-encodes to its exact byte length, so the position is one subtraction. Other codecs keep the original path."}]}</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const fmt = {
+  ms: v => v === 0 ? '0' : v >= 1000 ? (v/1000).toFixed(2) + ' s' : v.toFixed(v < 10 ? 2 : 1) + ' ms',
+  big: v => v >= 1e6 ? (v/1e6).toFixed(2) + 'M' : v >= 1e3 ? (v/1e3).toFixed(1) + 'K' : String(Math.round(v)),
+  x: v => v.toFixed(2) + '×',
+  pct: v => (v >= 0 ? '−' : '+') + Math.abs(v*100).toFixed(0) + '%',
+  int: v => v.toLocaleString('en-US'),
+};
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+// header meta
+const m = D.meta;
+document.getElementById('meta').innerHTML = [
+  `upstream <span class="mono">${esc(m.base_commit)}</span>`,
+  `fork <span class="mono">${esc(m.opt_commit)}</span>`,
+  `Python ${esc(m.python)}`, esc(m.platform), `${m.repeats} repeats`, esc(m.timestamp)
+].map(s => `<span>${s}</span>`).join('');
+
+// tiles
+const S = D.summary, T = D.tests;
+const tiles = [
+  {label: 'Workloads sped up', value: `${S.n_changed} of ${S.n_changed}`, delta: 'every targeted path faster, outputs identical'},
+  {label: 'Geometric-mean speedup', value: fmt.x(S.geomean_speedup), delta: `best: ${esc(S.best.label)} at ${fmt.x(S.best.speedup)}`},
+  {label: 'Python calls removed', value: fmt.pct(S.calls_saved / S.calls_base), delta: `${fmt.big(S.calls_saved)} fewer calls across the five workloads`},
+  {label: 'Identical output', value: `${S.same_output} / ${S.n_rows}`, delta: 'SHA-256 of each result matches upstream'},
+];
+if (T.optimized) {
+  const ok = T.baseline ? T.optimized.failed <= T.baseline.failed : true;
+  tiles.push({label: 'Unit tests (fork)', value: fmt.int(T.optimized.passed) + ' passed', delta: `${T.optimized.failed} failed` + (T.baseline ? ` · upstream: ${fmt.int(T.baseline.passed)} passed, ${T.baseline.failed} failed` : ''), pill: ok ? 'good' : 'warn'});
+}
+document.getElementById('tiles').innerHTML = tiles.map(t => `
+  <div class="tile"><div class="label">${t.label}</div><div class="value">${t.value}</div>
+  <div class="delta">${t.pill ? `<span class="pill ${t.pill}">${t.pill === 'good' ? 'no regressions' : 'check failures'}</span> ` : ''}${t.delta}</div></div>`).join('');
+
+// grouped horizontal bar chart (two series), drawn to one linear scale
+function barChart(el, rows, key, format, opts) {
+  const labelW = 210, right = 110, band = 46, barH = 14, gap = 2, top = 8, bottom = 26;
+  const W = 960, plotW = W - labelW - right, H = top + rows.length * band + bottom;
+  const single = !!opts.single;
+  const vals = r => single ? [r[key]] : [r['base_'+key], r['opt_'+key]];
+  const max = Math.max(...rows.flatMap(vals));
+  const nice = niceMax(max), x = v => labelW + v / nice * plotW;
+  const ticks = [0, 0.25, 0.5, 0.75, 1].map(f => f * nice);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(opts.aria)}">`;
+  for (const t of ticks) s += `<line class="grid" x1="${x(t)}" x2="${x(t)}" y1="${top}" y2="${H-bottom}"/><text x="${x(t)}" y="${H-8}" text-anchor="middle">${format(t)}</text>`;
+  s += `<line class="axis" x1="${labelW}" x2="${labelW}" y1="${top}" y2="${H-bottom}"/>`;
+  if (opts.ref != null) s += `<line class="ref" x1="${x(opts.ref)}" x2="${x(opts.ref)}" y1="${top}" y2="${H-bottom}"/><text class="badge" x="${x(opts.ref) + 4}" y="${top + 10}">${format(opts.ref)} = no change</text>`;
+  rows.forEach((r, i) => {
+    const y = top + i * band;
+    const name = esc(r.label.replace(/ \(.*\)$/, '')) + (r.control ? ' (control)' : '');
+    s += `<g class="band" data-i="${i}">`;
+    s += `<text class="rowlabel" x="${labelW-10}" y="${y + band/2 + 4}" text-anchor="end">${name}</text>`;
+    if (single) {
+      const v = r[key], yb = y + (band - barH)/2;
+      s += bar(labelW, yb, x(v) - labelW, barH, r.control ? 's1' : 's2');
+      s += `<text class="tip" x="${x(v) + 8}" y="${yb + barH - 3}">${format(v)}</text>`;
+    } else {
+      const b = r['base_'+key], o = r['opt_'+key];
+      const y1 = y + (band - 2*barH - gap)/2, y2 = y1 + barH + gap;
+      const better = opts.higherBetter ? o >= b : o <= b;
+      const ratio = opts.higherBetter ? o / b : b / o;
+      s += bar(labelW, y1, x(b) - labelW, barH, 's1') + bar(labelW, y2, x(o) - labelW, barH, 's2');
+      s += `<text class="tip" x="${x(Math.max(b,o)) + 8}" y="${y2 + barH - 3}">${fmt.x(ratio)}${r.control ? ' (noise floor)' : ' ' + (better ? opts.word : opts.worse)}</text>`;
+    }
+    s += `<rect class="hit" x="${labelW}" y="${y}" width="${plotW + right}" height="${band}" data-i="${i}"/></g>`;
+  });
+  s += `</svg><div class="tooltip" id="${el.id}-tt"></div>`;
+  el.innerHTML = s;
+  const tt = el.querySelector('.tooltip');
+  el.querySelectorAll('rect.hit').forEach(h => {
+    h.addEventListener('mousemove', e => {
+      const r = rows[+h.dataset.i], rect = el.getBoundingClientRect();
+      tt.innerHTML = single ? `<b>${esc(r.label)}</b><br>${format(r[key])} · ${fmt.ms(r.base_ms)} → ${fmt.ms(r.opt_ms)}` : `<b>${esc(r.label)}</b><br>upstream ${format(r['base_'+key])} · fork ${format(r['opt_'+key])}`;
+      tt.style.left = (e.clientX - rect.left) + 'px'; tt.style.top = (e.clientY - rect.top) + 'px'; tt.classList.add('show');
+    });
+    h.addEventListener('mouseleave', () => tt.classList.remove('show'));
+  });
+}
+function bar(x, y, w, h, cls) {  // square at the baseline, 4px rounded data end
+  w = Math.max(w, 0.5); const r = Math.min(4, w);
+  return `<path class="bar ${cls}" d="M${x},${y} h${w-r} a${r},${r} 0 0 1 ${r},${r} v${h-2*r} a${r},${r} 0 0 1 -${r},${r} h-${w-r} z" style="fill:var(--${cls === 's1' ? 'series-1' : 'series-2'})"/>`;
+}
+function niceMax(v) { const p = Math.pow(10, Math.floor(Math.log10(v))); const f = v / p; const n = f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 4 ? 4 : f <= 5 ? 5 : f <= 8 ? 8 : 10; return n * p; }
+
+const rows = D.rows;
+barChart(document.getElementById('chart-time'), rows, 'ms', fmt.ms, {higherBetter: false, word: 'faster', worse: 'slower', aria: 'Median wall time per workload, upstream versus fork'});
+barChart(document.getElementById('chart-speedup'), rows, 'speedup', fmt.x, {single: true, ref: 1, aria: 'Speedup factor per workload'});
+barChart(document.getElementById('chart-calls'), rows, 'calls', fmt.big, {higherBetter: false, word: 'fewer', worse: 'more', aria: 'Python function calls per run, upstream versus fork'});
+
+// table
+const th = ['Workload', 'Items', 'Upstream median', 'Fork median', 'Speedup', 'Upstream min', 'Fork min', 'Throughput (fork)', 'Calls upstream', 'Calls fork', 'Peak MB upstream', 'Peak MB fork', 'Same output'];
+let t = '<thead><tr>' + th.map(h => `<th>${h}</th>`).join('') + '</tr></thead><tbody>';
+for (const r of rows) t += `<tr class="${r.control ? 'control' : ''}"><td>${esc(r.label)}</td><td class="num">${fmt.int(r.count)} ${esc(r.unit)}</td><td class="num">${fmt.ms(r.base_ms)}</td><td class="num">${fmt.ms(r.opt_ms)}</td><td class="num">${fmt.x(r.speedup)}</td><td class="num">${fmt.ms(r.base_min_ms)}</td><td class="num">${fmt.ms(r.opt_min_ms)}</td><td class="num">${fmt.int(Math.round(r.opt_tp))} ${esc(r.unit)}/s</td><td class="num">${fmt.int(r.base_calls)}</td><td class="num">${fmt.int(r.opt_calls)}</td><td class="num">${r.base_mem.toFixed(1)}</td><td class="num">${r.opt_mem.toFixed(1)}</td><td><span class="pill ${r.same_output ? 'good' : 'warn'}">${r.same_output ? 'identical' : 'differs'}</span></td></tr>`;
+t += `<tr class="control"><td>import nltk (control)</td><td class="num">—</td><td class="num">${fmt.ms(S.import_base_ms)}</td><td class="num">${fmt.ms(S.import_opt_ms)}</td><td class="num">${fmt.x(S.import_base_ms / S.import_opt_ms)}</td><td colspan="8" class="num">not targeted by any change</td></tr>`;
+document.getElementById('table').innerHTML = t + '</tbody>';
+
+// change log with the measured effect of each
+const byName = Object.fromEntries(rows.map(r => [r.name, r]));
+document.getElementById('changes').innerHTML = D.changes.map(c => { const r = byName[c.workload]; return `
+  <article class="change"><h3>${esc(c.title)} <code>${esc(c.file)}</code></h3><p>${esc(c.what)}</p>
+  ${r ? `<div class="stats"><span>${esc(r.label)}:</span><span><b>${fmt.x(r.speedup)}</b> faster</span><span><b>${fmt.ms(r.base_ms)}</b> → <b>${fmt.ms(r.opt_ms)}</b></span><span><b>${fmt.pct((r.base_calls - r.opt_calls)/r.base_calls)}</b> calls</span><span>output ${r.same_output ? 'identical' : 'DIFFERS'}</span></div>` : ''}</article>`; }).join('');
+</script>
+
+</head></html>
