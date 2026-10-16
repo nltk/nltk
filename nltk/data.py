@@ -2264,6 +2264,13 @@ class SeekableUnicodeStreamReader:
            the initial state): the state at every position this reader
            hands out, which a decoder started there must be in."""
 
+        self._raw_skipped = False
+        """Whether ``discard_line()`` skipped raw bytes behind a line still
+           held in ``linebuffer``, so that buffer no longer sits right
+           before the stream position (cleared when a read refills it)."""
+        self._reencodable_cache = None
+        """``(encoding, bool)``: whether that encoding lets ``tell()`` locate
+           the line buffer by re-encoding it (see ``_reencodable``)."""
         self._seek_states = {}
         """The decoder state at each position ``tell()`` handed out that
            a decoder started there would not be in by itself: a position
@@ -2319,6 +2326,7 @@ class SeekableUnicodeStreamReader:
             self.stream.readline()
             # a raw skip: nothing read so far carries over to the new position
             self.bytebuffer = b""
+            self._raw_skipped = True
             self._buffer_state = self._state_at(self.stream.tell())
             self._decoder.reset()
             if self._buffer_state is not None:
@@ -2379,6 +2387,7 @@ class SeekableUnicodeStreamReader:
                 if len(lines) > 1:
                     line = lines[0]
                     self.linebuffer = lines[1:]
+                    self._raw_skipped = False
                     self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
                     self._rewind_checkpoint = startpos
                     self._rewind_state = startstate
@@ -2589,6 +2598,20 @@ class SeekableUnicodeStreamReader:
         # Store our original file position, so we can return here.
         orig_filepos = self.stream.tell()
 
+        # For a stateless codec whose strictly decoded text re-encodes to
+        # the very bytes it came from, the buffer starts exactly
+        # len(encode(buffer)) bytes before the first undecoded byte, so no
+        # re-decoding from the checkpoint is needed. Re-decoding on every
+        # call made a per-line tell(), as the regexp block reader does, the
+        # dominant cost of reading a corpus.
+        if (
+            not self._raw_skipped
+            and self._rewind_numchars >= 0  # a corrupt count still raises below
+            and self._reencodable()
+        ):
+            buffered = len("".join(self.linebuffer).encode(self.encoding))
+            return orig_filepos - len(self.bytebuffer) - buffered
+
         # Calculate an estimate of where we think the newline is.
         bytes_read = (orig_filepos - len(self.bytebuffer)) - self._rewind_checkpoint
         buf_size = sum(len(line) for line in self.linebuffer)
@@ -2680,6 +2703,24 @@ class SeekableUnicodeStreamReader:
 
     def _new_decoder(self):
         return codecs.getincrementaldecoder(self.encoding)(self.errors)
+
+    #: Canonical names of the codecs that are stateless and for which a
+    #: strictly decoded text re-encodes to exactly the bytes it was decoded
+    #: from, so ``tell()`` can locate its line buffer by re-encoding it.
+    _REENCODABLE = frozenset({"utf-8", "ascii", "iso8859-1"})
+
+    def _reencodable(self):
+        """Whether ``tell()`` may locate the line buffer by re-encoding it."""
+        if self.errors != "strict":
+            return False
+        cache = self._reencodable_cache
+        if cache is None or cache[0] != self.encoding:
+            try:
+                ok = codecs.lookup(self.encoding).name in self._REENCODABLE
+            except LookupError:
+                ok = False
+            cache = self._reencodable_cache = (self.encoding, ok)
+        return cache[1]
 
     def _state_at_checkpoint(self):
         """The decoder state at the first byte not yet decoded (the start
