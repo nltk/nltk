@@ -98,6 +98,90 @@ class PorterStemmer(StemmerI):
 
         self.mode = mode
 
+        # The suffix rules of steps 2-4 are constant for a given mode, so build
+        # them once. Each step first checks the word against the tuple of its
+        # suffixes (one C-level ``endswith``) and skips the rule-by-rule scan
+        # in the common case where no rule can apply.
+        has_positive_measure = self._has_positive_measure
+        self._step2_rules = [
+            ("ational", "ate", has_positive_measure),
+            ("tional", "tion", has_positive_measure),
+            ("enci", "ence", has_positive_measure),
+            ("anci", "ance", has_positive_measure),
+            ("izer", "ize", has_positive_measure),
+            (
+                ("abli", "able", has_positive_measure)
+                if self.mode == self.ORIGINAL_ALGORITHM
+                else ("bli", "ble", has_positive_measure)
+            ),
+            ("alli", "al", has_positive_measure),
+            ("entli", "ent", has_positive_measure),
+            ("eli", "e", has_positive_measure),
+            ("ousli", "ous", has_positive_measure),
+            ("ization", "ize", has_positive_measure),
+            ("ation", "ate", has_positive_measure),
+            ("ator", "ate", has_positive_measure),
+            ("alism", "al", has_positive_measure),
+            ("iveness", "ive", has_positive_measure),
+            ("fulness", "ful", has_positive_measure),
+            ("ousness", "ous", has_positive_measure),
+            ("aliti", "al", has_positive_measure),
+            ("iviti", "ive", has_positive_measure),
+            ("biliti", "ble", has_positive_measure),
+        ]
+        if self.mode == self.NLTK_EXTENSIONS:
+            self._step2_rules.append(("fulli", "ful", has_positive_measure))
+            # The 'l' of the 'logi' -> 'log' rule is put with the stem,
+            # so that short stems like 'geo' 'theo' etc work like
+            # 'archaeo' 'philo' etc. (The condition receives the word
+            # minus "logi", so the word minus "ogi" is ``stem + "l"``.)
+            self._step2_rules.append(
+                ("logi", "log", lambda stem: has_positive_measure(stem + "l"))
+            )
+        if self.mode == self.MARTIN_EXTENSIONS:
+            self._step2_rules.append(("logi", "log", has_positive_measure))
+        self._step2_suffixes = tuple(suffix for suffix, _, _ in self._step2_rules)
+
+        self._step3_rules = [
+            ("icate", "ic", has_positive_measure),
+            ("ative", "", has_positive_measure),
+            ("alize", "al", has_positive_measure),
+            ("iciti", "ic", has_positive_measure),
+            ("ical", "ic", has_positive_measure),
+            ("ful", "", has_positive_measure),
+            ("ness", "", has_positive_measure),
+        ]
+        self._step3_suffixes = tuple(suffix for suffix, _, _ in self._step3_rules)
+
+        measure_gt_1 = lambda stem: self._measure(stem) > 1
+        self._step4_rules = [
+            ("al", "", measure_gt_1),
+            ("ance", "", measure_gt_1),
+            ("ence", "", measure_gt_1),
+            ("er", "", measure_gt_1),
+            ("ic", "", measure_gt_1),
+            ("able", "", measure_gt_1),
+            ("ible", "", measure_gt_1),
+            ("ant", "", measure_gt_1),
+            ("ement", "", measure_gt_1),
+            ("ment", "", measure_gt_1),
+            ("ent", "", measure_gt_1),
+            # (m>1 and (*S or *T)) ION ->
+            (
+                "ion",
+                "",
+                lambda stem: self._measure(stem) > 1 and stem[-1] in ("s", "t"),
+            ),
+            ("ou", "", measure_gt_1),
+            ("ism", "", measure_gt_1),
+            ("ate", "", measure_gt_1),
+            ("iti", "", measure_gt_1),
+            ("ous", "", measure_gt_1),
+            ("ive", "", measure_gt_1),
+            ("ize", "", measure_gt_1),
+        ]
+        self._step4_suffixes = tuple(suffix for suffix, _, _ in self._step4_rules)
+
         if self.mode == self.NLTK_EXTENSIONS:
             # This is a table of irregular forms. It is quite short,
             # but still reflects the errors actually drawn to Martin
@@ -498,46 +582,9 @@ class PorterStemmer(StemmerI):
             ):
                 return self._step2(self._replace_suffix(word, "alli", "al"))
 
-        bli_rule = ("bli", "ble", self._has_positive_measure)
-        abli_rule = ("abli", "able", self._has_positive_measure)
-
-        rules = [
-            ("ational", "ate", self._has_positive_measure),
-            ("tional", "tion", self._has_positive_measure),
-            ("enci", "ence", self._has_positive_measure),
-            ("anci", "ance", self._has_positive_measure),
-            ("izer", "ize", self._has_positive_measure),
-            abli_rule if self.mode == self.ORIGINAL_ALGORITHM else bli_rule,
-            ("alli", "al", self._has_positive_measure),
-            ("entli", "ent", self._has_positive_measure),
-            ("eli", "e", self._has_positive_measure),
-            ("ousli", "ous", self._has_positive_measure),
-            ("ization", "ize", self._has_positive_measure),
-            ("ation", "ate", self._has_positive_measure),
-            ("ator", "ate", self._has_positive_measure),
-            ("alism", "al", self._has_positive_measure),
-            ("iveness", "ive", self._has_positive_measure),
-            ("fulness", "ful", self._has_positive_measure),
-            ("ousness", "ous", self._has_positive_measure),
-            ("aliti", "al", self._has_positive_measure),
-            ("iviti", "ive", self._has_positive_measure),
-            ("biliti", "ble", self._has_positive_measure),
-        ]
-
-        if self.mode == self.NLTK_EXTENSIONS:
-            rules.append(("fulli", "ful", self._has_positive_measure))
-
-            # The 'l' of the 'logi' -> 'log' rule is put with the stem,
-            # so that short stems like 'geo' 'theo' etc work like
-            # 'archaeo' 'philo' etc.
-            rules.append(
-                ("logi", "log", lambda stem: self._has_positive_measure(word[:-3]))
-            )
-
-        if self.mode == self.MARTIN_EXTENSIONS:
-            rules.append(("logi", "log", self._has_positive_measure))
-
-        return self._apply_rule_list(word, rules)
+        if not word.endswith(self._step2_suffixes):
+            return word
+        return self._apply_rule_list(word, self._step2_rules)
 
     def _step3(self, word):
         """Implements Step 3 from "An algorithm for suffix stripping"
@@ -554,18 +601,9 @@ class PorterStemmer(StemmerI):
             (m>0) FUL   ->                  hopeful        ->  hope
             (m>0) NESS  ->                  goodness       ->  good
         """
-        return self._apply_rule_list(
-            word,
-            [
-                ("icate", "ic", self._has_positive_measure),
-                ("ative", "", self._has_positive_measure),
-                ("alize", "al", self._has_positive_measure),
-                ("iciti", "ic", self._has_positive_measure),
-                ("ical", "ic", self._has_positive_measure),
-                ("ful", "", self._has_positive_measure),
-                ("ness", "", self._has_positive_measure),
-            ],
-        )
+        if not word.endswith(self._step3_suffixes):
+            return word
+        return self._apply_rule_list(word, self._step3_rules)
 
     def _step4(self, word):
         """Implements Step 4 from "An algorithm for suffix stripping"
@@ -595,37 +633,9 @@ class PorterStemmer(StemmerI):
         The suffixes are now removed. All that remains is a little
         tidying up.
         """
-        measure_gt_1 = lambda stem: self._measure(stem) > 1
-
-        return self._apply_rule_list(
-            word,
-            [
-                ("al", "", measure_gt_1),
-                ("ance", "", measure_gt_1),
-                ("ence", "", measure_gt_1),
-                ("er", "", measure_gt_1),
-                ("ic", "", measure_gt_1),
-                ("able", "", measure_gt_1),
-                ("ible", "", measure_gt_1),
-                ("ant", "", measure_gt_1),
-                ("ement", "", measure_gt_1),
-                ("ment", "", measure_gt_1),
-                ("ent", "", measure_gt_1),
-                # (m>1 and (*S or *T)) ION ->
-                (
-                    "ion",
-                    "",
-                    lambda stem: self._measure(stem) > 1 and stem[-1] in ("s", "t"),
-                ),
-                ("ou", "", measure_gt_1),
-                ("ism", "", measure_gt_1),
-                ("ate", "", measure_gt_1),
-                ("iti", "", measure_gt_1),
-                ("ous", "", measure_gt_1),
-                ("ive", "", measure_gt_1),
-                ("ize", "", measure_gt_1),
-            ],
-        )
+        if not word.endswith(self._step4_suffixes):
+            return word
+        return self._apply_rule_list(word, self._step4_rules)
 
     def _step5a(self, word):
         """Implements Step 5a from "An algorithm for suffix stripping"
