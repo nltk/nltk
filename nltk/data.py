@@ -1918,9 +1918,8 @@ def load(
     elif format == "yaml":
         from nltk.jsontags import safe_yaml_load
 
-        # Bound size, nesting depth and node count before PyYAML's recursive
-        # safe loader: a data-root resource is only as trusted as its contents,
-        # and a deep or large YAML document otherwise raises an uncaught
+        # Bound size, depth and node count before PyYAML's recursive safe
+        # loader: a deep or large YAML resource otherwise raises an uncaught
         # RecursionError or runs for minutes (safe_yaml_load refuses it).
         resource_val = safe_yaml_load(
             opened_resource, context=f"nltk.data.load({resource_url})"
