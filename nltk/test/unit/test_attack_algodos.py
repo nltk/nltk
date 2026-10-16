@@ -9,7 +9,7 @@ scaling rows judge cost by CPU-time ratio over a 4x input (never absolute wall
 clock), using nltk.test.unit.timing.
 
 Runs on python3.13 AND python3.10:
-    python3.13 -m pytest nltk/test/unit/test_attack_algodos_redteam_20261016.py
+    python3.13 -m pytest nltk/test/unit/test_attack_algodos.py
   -p no:cacheprovider \
 
 No network, no filesystem, no tkinter, no pytest-timeout dependency. The attacks

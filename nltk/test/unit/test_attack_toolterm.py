@@ -7,7 +7,7 @@ mode, lives in LEAK_java_cmd.py, not here). Runs on python3.13 and python3.10;
 no pytest-timeout, no tkinter, no public network. The one network test starts a
 loopback server and asserts the SSRF guard refuses it BEFORE any connection.
 
-Run with: python3.13 -m pytest -q nltk/test/unit/test_attack_toolterm_redteam_20261016.py
+Run with: python3.13 -m pytest -q nltk/test/unit/test_attack_toolterm.py
 """
 
 import io

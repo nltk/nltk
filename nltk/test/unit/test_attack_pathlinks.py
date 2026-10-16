@@ -13,7 +13,7 @@ python3.10 (no tkinter, no pytest-timeout, no network). Anything that could hang
 timeout is a thread-free guard that does not need pytest-timeout.
 
 Run:
-    python3.13 -m pytest nltk/test/unit/test_attack_pathlinks_redteam_20261016.py
+    python3.13 -m pytest nltk/test/unit/test_attack_pathlinks.py
   -p no:cacheprovider \
 """
 
