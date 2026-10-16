@@ -16,7 +16,8 @@ same bug sat in `get_cycle_path`. Both now flatten the mapping through
 `_dep_addresses`, which also accepts the legacy list-of-addresses form.
 
 The real-data half checks every Penn dependency_treebank graph against an
-independent Kahn oracle, plants cycles in real sentences, fuzzes random CoNLL
+independent reference check (Kahn 1962, cited at ``_kahn_has_cycle``), plants
+cycles in real sentences, fuzzes random CoNLL
 graphs, and runs the ProbabilisticNonprojectiveParser, whose MST step is the
 in-tree consumer of `contains_cycle`: with the dead guard its own demo parse was
 a cyclic, rootless graph, which its doctest never looked at.
@@ -108,7 +109,18 @@ def _head_edges(graph):
 
 
 def _kahn_has_cycle(graph, edges):
-    """Independent oracle: Kahn's sort leaves nodes unvisited iff a cycle exists."""
+    """Reference cycle check: Kahn's topological sort leaves a node unvisited
+    iff the graph has a directed cycle.
+
+    A. B. Kahn. 1962. Topological sorting of large networks. Communications of
+    the ACM 5(11):558-562. https://doi.org/10.1145/368996.369025
+
+    "Oracle" in this file means a trusted reference answer for a test (the
+    software-testing sense), not the parsing oracle that tells a transition
+    parser its next action (Nivre, Kuhlmann and Hall 2009, IWPT, W09-3811).
+    It reads edges from each node's own head field, never from ``deps``, so a
+    bug in the walk under test cannot hide a bug here.
+    """
     nodes = [a for a in graph.nodes if a is not None]
     indegree = dict.fromkeys(nodes, 0)
     out = defaultdict(list)
@@ -223,9 +235,17 @@ def test_random_graphs_agree_with_an_independent_cycle_oracle():
 
 def test_probabilistic_nonprojective_parser_collapses_the_cycle_in_its_demo():
     """The parser's demo scorer makes 2->1 and 1->2 the best incoming arcs, a
-    cycle the MST step must collapse (Chu-Liu-Edmonds). With the dead guard the
+    cycle the maximum-spanning-tree step must collapse. With the dead guard the
     parse was the cyclic, rootless graph {1->2, 2->1, 2->3}; it is the rooted
-    spanning tree 0->1->2->3. The module doctest only checks len(parses)."""
+    spanning tree 0->1->2->3. The module doctest only checks len(parses).
+
+    The parser follows McDonald, Pereira, Ribarov and Hajic. 2005. Non-projective
+    dependency parsing using spanning tree algorithms. HLT/EMNLP, pages 523-530,
+    H05-1066, whose cycle contraction is the Chu-Liu/Edmonds algorithm:
+    Y. J. Chu and T. H. Liu. 1965. On the shortest arborescence of a directed
+    graph. Scientia Sinica 14:1396-1400; J. Edmonds. 1967. Optimum branchings.
+    Journal of Research of the National Bureau of Standards 71B(4):233-240.
+    """
     from nltk.parse.nonprojectivedependencyparser import (
         DemoScorer,
         ProbabilisticNonprojectiveParser,
