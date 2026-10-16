@@ -1458,12 +1458,14 @@ class TestTrustedJavaStubFixture:
         self, trusted_java_stub, monkeypatch
     ):
         # executed for real: what the stub sees is what a JVM would see
+        # argv is "Main <report>": cmd[0] must be a main-class token, so the
+        # report path travels as the program argument the stub reads from $2
         report = Path(trusted_java_stub).parent / "env.txt"
         Path(trusted_java_stub).write_text(
             "#!/bin/sh\n"
             '{ echo "LD_PRELOAD=[$LD_PRELOAD]"; echo "DYLD=[$DYLD_INSERT_LIBRARIES]"; '
             'echo "JTO=[$JAVA_TOOL_OPTIONS]"; echo "CLASSPATH=[$CLASSPATH]"; '
-            'echo "LANG=[$LANG]"; echo "KEEP=[$NLTK_KEEP]"; } > "$1"\n',
+            'echo "LANG=[$LANG]"; echo "KEEP=[$NLTK_KEEP]"; } > "$2"\n',
             encoding="utf-8",
         )
         planted = {
@@ -1478,7 +1480,7 @@ class TestTrustedJavaStubFixture:
             monkeypatch.setenv(var, value)
         monkeypatch.setattr(internals, "_java_bin", trusted_java_stub)
         monkeypatch.setattr(internals, "_java_options", [])
-        internals.java([str(report)])
+        internals.java(["Main", str(report)])
         reported = report.read_text(encoding="utf-8")
         for line in ("LD_PRELOAD=[]", "DYLD=[]", "JTO=[]", "CLASSPATH=[]"):
             assert line in reported, reported
