@@ -13,6 +13,7 @@ import json
 import logging
 import os
 import random
+import stat
 from collections import defaultdict
 from os.path import join as path_join
 from pathlib import Path
@@ -114,6 +115,49 @@ def _open_private_model_dir(loc):
         os.close(fd)
         raise
     return fd
+
+
+def _create_model_file(name, dir_fd):
+    """Create the model file *name* under the pinned directory descriptor
+    *dir_fd* and return a write descriptor for it (mode 0600).
+
+    The same contained leaf write as ``pathsec.ZipFile._write_leaf``: the name
+    is created with ``O_EXCL | O_NOFOLLOW``, so an inode already standing at it
+    is never opened. Opening an existing name with ``O_TRUNC`` truncates
+    whatever inode the name reaches, and a hardlink planted at it reaches one
+    outside the sandbox (CWE-59); opening a planted FIFO blocks until a peer
+    appears (CWE-400). An existing entry is judged with ``lstat`` instead: a
+    regular, single-linked file (the previous save) is unlinked and created
+    afresh, anything else is refused.
+    """
+    flags = (
+        os.O_WRONLY
+        | os.O_CREAT
+        | os.O_EXCL
+        | getattr(os, "O_NOFOLLOW", 0)
+        | getattr(os, "O_CLOEXEC", 0)
+    )
+    try:
+        return os.open(name, flags, 0o600, dir_fd=dir_fd)
+    except FileExistsError:
+        pass
+    info = os.lstat(name, dir_fd=dir_fd)
+    if not stat.S_ISREG(info.st_mode):
+        raise PermissionError(
+            f"Security Violation [PerceptronTagger.save_to_json]: refusing to "
+            f"write model file {name!r} onto a symlink, FIFO, socket, device or "
+            "directory planted at that name (CWE-59)"
+        )
+    if info.st_nlink > 1:
+        raise PermissionError(
+            f"Security Violation [PerceptronTagger.save_to_json]: refusing "
+            f"multiply-linked model file {name!r} (st_nlink={info.st_nlink}); a "
+            "hardlink can point at an outside-root inode (CWE-59)"
+        )
+    # Confirmed regular and single-linked: replace the entry rather than
+    # truncating through a name that could be swapped before the open.
+    os.unlink(name, dir_fd=dir_fd)
+    return os.open(name, flags, 0o600, dir_fd=dir_fd)
 
 
 try:
@@ -430,28 +474,27 @@ class PerceptronTagger(TaggerI):
 
         dir_fd = _open_private_model_dir(loc)
         try:
-
-            # Write each model file relative to the pinned directory fd (where
-            # supported) with O_NOFOLLOW (0600), so neither the dir nor the file
-            # can be redirected outside the verified directory after the check.
-            # Not pathsec.open: a dir-fd-relative name has no absolute path to
-            # validate, and the pinned fd is strictly stronger than a path check.
-            use_dir_fd = os.open in os.supports_dir_fd
-
-            def _no_follow_opener(path, flags):
-                extra = {"dir_fd": dir_fd} if use_dir_fd else {}
-                return os.open(
-                    path, flags | getattr(os, "O_NOFOLLOW", 0), 0o600, **extra
-                )
+            # Each model file is created relative to the pinned directory fd
+            # (where supported) by _create_model_file, which never opens an inode
+            # already standing at the name (planted hardlink, symlink or FIFO).
+            use_dir_fd = {os.open, os.lstat, os.unlink} <= os.supports_dir_fd
 
             for param, json_file in zip(self.encode_json_obj(), self.param_files(lang)):
-                target = json_file if use_dir_fd else path_join(loc, json_file)
-                # No builtin open(): take the hardened descriptor straight from
-                # the opener and wrap it, so the write still goes through the
-                # pinned dir_fd with O_NOFOLLOW and nothing re-resolves the name.
-                fd = _no_follow_opener(target, os.O_WRONLY | os.O_CREAT | os.O_TRUNC)
-                with os.fdopen(fd, "w") as fout:
-                    json.dump(param, fout)
+                if use_dir_fd:
+                    # No builtin open(): wrap the descriptor the contained create
+                    # returned, so nothing re-resolves the name after the check.
+                    fd = _create_model_file(json_file, dir_fd)
+                    with os.fdopen(fd, "w") as fout:
+                        json.dump(param, fout)
+                else:
+                    # Without dir_fd the sandboxed open applies the same inode
+                    # policy by name: O_NOFOLLOW, single link, regular file only.
+                    with pathsec_open(
+                        path_join(loc, json_file),
+                        "w",
+                        context="PerceptronTagger.save_to_json",
+                    ) as fout:
+                        json.dump(param, fout)
         finally:
             os.close(dir_fd)
 
