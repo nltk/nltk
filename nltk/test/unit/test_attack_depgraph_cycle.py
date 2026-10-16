@@ -25,6 +25,7 @@ a cyclic, rootless graph, which its doctest never looked at.
 import random
 import warnings
 from collections import defaultdict, deque
+from itertools import pairwise
 
 import pytest
 
@@ -130,7 +131,7 @@ def _kahn_has_cycle(graph, edges):
 def _is_cycle(graph, path):
     ring = list(path) + [path[0]]
     edges = _edges(graph)
-    return all((a, b) in edges for a, b in zip(ring, ring[1:]))
+    return all(edge in edges for edge in pairwise(ring))
 
 
 def _rewired_conll(graph, new_heads):

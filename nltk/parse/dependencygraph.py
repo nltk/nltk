@@ -25,8 +25,6 @@ from pprint import pformat
 
 from nltk.data import make_staging_dir
 from nltk.internals import find_binary_absolute
-
-
 from nltk.pathsec import TrustError, has_line_unsafe_char
 from nltk.pathsec import open as _secure_open
 from nltk.pathsec import spawn_trusted
