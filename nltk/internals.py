@@ -155,8 +155,8 @@ def _java_child_env(environ=None):
     return env
 
 
-# The launcher reads the first token as a source file to compile and run when
-# it ends in any of these, so none is ever a legitimate NLTK main-class token.
+# A first token ending in .java is compiled and run by the JDK 11+ launcher
+# (JEP 330); the archive and class suffixes are never a main-class name either.
 _JAVA_SOURCE_ARTIFACT_SUFFIXES = (".java", ".jar", ".jmod", ".class")
 
 
@@ -184,11 +184,16 @@ def _is_java_main_class(token):
 def _reject_non_main_class(first):
     """Raise ValueError unless *first* is a plain Java main-class name.
 
-    Closes the source-file-mode execution channel (JEP 330): a cmd[0] ending in
-    .java (or a path to any runnable artifact) is compiled and run by the
-    launcher, so only a dotted-identifier main-class name is accepted (CWE-94).
-    The suffix check runs first so ``com.example.Main.java`` (identifier-shaped
-    but a source file to the launcher) is still refused.
+    Closes the source-file-mode execution channel (JEP 330): on JDK 11 and later
+    the launcher compiles and runs a first token ending in ``.java``, matched
+    without regard to case, whether absolute, relative to the working directory
+    or dotted like ``com.example.Main.java`` (verified on Temurin 11, 17, 21, 25
+    and OpenJDK 26; JDK 8 has no such mode). The suffix check therefore runs
+    first and case-folded, so the dotted form is refused before the shape check
+    could accept it. A ``.jar``, ``.jmod`` or ``.class`` token is not run by the
+    launcher without ``-jar`` (which the options allowlist refuses), but is never
+    a main-class name, so it is refused with the same message rather than being
+    looked up as a class. Only a dotted run of Java identifiers passes (CWE-94).
     """
     stripped = first.strip() if isinstance(first, str) else first
     if isinstance(stripped, str) and stripped.lower().endswith(
