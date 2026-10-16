@@ -22,9 +22,12 @@ JVM is needed to run them) and still accepts every real NLTK main-class name.
 """
 
 import os
+import re
+import subprocess
 
 import pytest
 
+from nltk import internals
 from nltk.internals import _is_java_main_class, _reject_non_main_class, java
 
 # Tokens the Java launcher would compile or run, or that are filesystem paths.
@@ -113,3 +116,51 @@ def test_java_still_rejects_launcher_switches():
         java(["-jar", "/tmp/x.jar"], stdout="pipe", stderr="pipe")
     with pytest.raises(ValueError, match="@argfile|launcher switch|main class"):
         java(["@/tmp/argfile"], stdout="pipe", stderr="pipe")
+
+
+def _jdk_major(java_bin):
+    """Major version of the launcher at *java_bin* (8 for the 1.8 line)."""
+    banner = subprocess.run(
+        [java_bin, "-version"], capture_output=True, text=True, timeout=60, check=False
+    ).stderr
+    match = re.search(r'version "(\d+)(?:\.(\d+))?', banner)
+    assert match, banner
+    major = int(match.group(1))
+    return int(match.group(2)) if major == 1 else major
+
+
+@pytest.mark.parametrize(
+    "filename", ["Evil.java", "EVIL2.JAVA", "com.example.Evil.java"]
+)
+def test_source_file_mode_is_real_on_this_jdk(tmp_path, monkeypatch, filename):
+    """With the guard bypassed, the real launcher on this machine runs a planted
+    source file passed as cmd[0] on JDK 11 and later, in every spelling the
+    guard refuses (plain, upper-case suffix, dotted), and cannot on JDK 8. This
+    pins the guard to the launcher's actual behaviour rather than to a belief
+    about it: the suffix match must be case-insensitive because the launcher's
+    is, and the dotted form must be caught by the suffix check first.
+    """
+    monkeypatch.setattr(internals, "_java_bin", None)
+    monkeypatch.setattr(internals, "_java_options", [])
+    try:
+        internals.config_java()
+    except LookupError:
+        pytest.skip("no Java binary found on this machine")
+    major = _jdk_major(internals._java_bin)
+    src = tmp_path / filename
+    marker = tmp_path / "pwned.txt"
+    src.write_text(
+        "public class Evil {\n"
+        "  public static void main(String[] a) throws Exception {\n"
+        '    try (java.io.FileWriter w = new java.io.FileWriter(a[0])) { w.write("x"); }\n'
+        "  }\n}\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(internals, "_reject_non_main_class", lambda first: None)
+    if major >= 11:
+        java([os.fspath(src), os.fspath(marker)], stdout="pipe", stderr="pipe")
+        assert marker.exists(), "JEP 330 did not run the planted source"
+    else:
+        with pytest.raises(OSError):
+            java([os.fspath(src), os.fspath(marker)], stdout="pipe", stderr="pipe")
+        assert not marker.exists()
