@@ -231,16 +231,21 @@ def _all_tree_subclasses():
     stack = [Tree]
     while stack:
         for sub in stack.pop().__subclasses__():
-            if sub not in found and sub.__module__.startswith("nltk."):
+            in_library = sub.__module__.startswith("nltk.") and not (
+                sub.__module__.startswith("nltk.test")
+            )
+            if sub not in found and in_library:
                 found.add(sub)
                 stack.append(sub)
     return sorted(found, key=lambda c: (c.__module__, c.__name__))
 
 
 def test_every_tree_subclass_renders_a_child_as_it_renders_a_root():
-    """Every Tree subclass in nltk (found by walking ``__subclasses__`` after
-    importing the tree and parse packages) renders identically as a root and
-    as a child, of itself and of a plain Tree. This is the invariant the
+    """Every Tree subclass in the nltk library (found by walking
+    ``__subclasses__`` after importing the tree and parse packages; classes a
+    test defines locally are skipped, since ``__subclasses__`` holds them until
+    garbage collection, which the free-threaded build defers) renders
+    identically as a root and as a child, of itself and of a plain Tree. This is the invariant the
     base-format walk broke for the probabilistic classes; it holds for any
     subclass, whether it decorates via ``_repr_node`` or defines ``__repr__``,
     and does not depend on the hook existing.
