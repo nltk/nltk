@@ -155,6 +155,56 @@ def _java_child_env(environ=None):
     return env
 
 
+# The launcher reads the first token as a source file to compile and run when
+# it ends in any of these, so none is ever a legitimate NLTK main-class token.
+_JAVA_SOURCE_ARTIFACT_SUFFIXES = (".java", ".jar", ".jmod", ".class")
+
+
+def _is_java_main_class(token):
+    """True if *token* has the shape of a Java main class: dotted identifiers.
+
+    A main class is a run of Java identifiers joined by dots (dollar signs mark
+    inner classes); it never contains a path separator or a file extension. The
+    check is a linear scan of each dot-separated part, so no regular expression
+    (and no ReDoS surface) is introduced.
+    """
+    token = token.strip()
+    if not token:
+        return False
+    for part in token.split("."):
+        if not part:
+            return False
+        if not (part[0].isalpha() or part[0] in "_$"):
+            return False
+        if not all(ch.isalnum() or ch in "_$" for ch in part):
+            return False
+    return True
+
+
+def _reject_non_main_class(first):
+    """Raise ValueError unless *first* is a plain Java main-class name.
+
+    Closes the source-file-mode execution channel (JEP 330): a cmd[0] ending in
+    .java (or a path to any runnable artifact) is compiled and run by the
+    launcher, so only a dotted-identifier main-class name is accepted (CWE-94).
+    The suffix check runs first so ``com.example.Main.java`` (identifier-shaped
+    but a source file to the launcher) is still refused.
+    """
+    stripped = first.strip() if isinstance(first, str) else first
+    if isinstance(stripped, str) and stripped.lower().endswith(
+        _JAVA_SOURCE_ARTIFACT_SUFFIXES
+    ):
+        raise ValueError(
+            f"cmd must begin with a Java main class name, not a source or "
+            f"archive file the launcher would compile or run: {first!r} (CWE-94)"
+        )
+    if not _is_java_main_class(first):
+        raise ValueError(
+            f"cmd must begin with a Java main class name (a dotted run of Java "
+            f"identifiers), not a path or file: {first!r} (CWE-94)"
+        )
+
+
 def _validate_java_options(options):
     """
     Raise ValueError if *options* contains JVM flags that can change the
@@ -473,6 +523,15 @@ def java(
                 f"cmd may not contain an @argfile token: {tok!r}; the Java "
                 "launcher would expand it, injecting arguments (CWE-88)"
             )
+    # Source-file mode (JEP 330): the launcher COMPILES AND RUNS the first token
+    # when it names a .java source file, so a caller-influenced cmd[0] of
+    # "/path/Evil.java" (or a relative "Evil.java" resolved against the CWD)
+    # executes arbitrary code with no -jar / @argfile token for the checks above
+    # to catch, and _verify_jar_sandbox never sees it (it screens classpath=
+    # only). A real Java main class is a dotted run of Java identifiers, never a
+    # filesystem path or a compilable/runnable artifact, so require that shape
+    # (CWE-94); it refuses .java/.jar/.jmod/.class and any path separator.
+    _reject_non_main_class(first)
 
     # Resolve the JVM absolute-only before spawning: a bare "java" handed to
     # Popen is found by the OS search, which on Windows begins in the CWD
