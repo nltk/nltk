@@ -23,11 +23,9 @@ import pytest
 
 from nltk.test.unit.timing import assert_subquadratic
 
-# --------------------------------------------------------------------------
-# REFUSED: uncontrolled-recursion entry points that are depth-capped on develop.
-# Each builds a far-past-cap input and asserts the bounded ValueError/parser
-# refusal (CWE-674), proving no RecursionError/crash escapes.
-# --------------------------------------------------------------------------
+# REFUSED: depth-capped recursion entry points. Each builds a far-past-cap
+# input and asserts the bounded ValueError or parser refusal (CWE-674), so no
+# RecursionError or crash escapes.
 
 
 def test_tree_fromstring_deep_refused():
@@ -119,11 +117,9 @@ def test_everygrams_default_unbounded_refused():
         list(everygrams(seq))
 
 
-# --------------------------------------------------------------------------
-# REFUSED: caller-supplied-pattern regex sinks are routed through nltk.redos,
-# whose wall-clock timeout (regex engine) bounds a hostile match. We assert the
-# TimedPattern timeout is actually wired up on a user tokenizer pattern.
-# --------------------------------------------------------------------------
+# REFUSED: caller-supplied regex patterns go through nltk.redos, whose
+# wall-clock timeout bounds a hostile match; assert the TimedPattern is wired
+# up on a user tokenizer pattern.
 
 
 def test_regexp_tokenizer_pattern_is_timeout_guarded():
@@ -138,10 +134,8 @@ def test_regexp_tokenizer_pattern_is_timeout_guarded():
     assert tok.tokenize("hello world foo") == ["hello", "world", "foo"]
 
 
-# --------------------------------------------------------------------------
-# BENIGN-OK: legitimate inputs are accepted and correct, and legal-but-large
-# inputs scale linearly. These prove the guards above do not over-block.
-# --------------------------------------------------------------------------
+# BENIGN-OK: legitimate inputs are accepted and correct, legal-but-large
+# inputs scale linearly, so the guards above do not over-block.
 
 
 def test_word_tokenize_correctness_benign():

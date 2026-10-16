@@ -289,10 +289,9 @@ _FIND_TRAVERSALS = [
 ]
 
 
-# On Windows a backslash is a separator and a drive-less leading slash is
-# stripped, so normalize_resource_name folds these two into the in-root names
-# "x" and "etc/passwd" before the unsafe-path screen; find() then searches the
-# data roots only and reports a missing resource, never an outside path.
+# Windows treats a backslash as a separator and strips a drive-less leading
+# slash, so normalize_resource_name folds these two into in-root names before
+# the unsafe-path screen; find() then searches only the data roots.
 _FIND_FOLDED_ON_WINDOWS = {"corpora\\..\\x": "x", "/etc/passwd": "etc/passwd"}
 
 

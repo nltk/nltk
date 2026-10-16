@@ -28,11 +28,8 @@ PDF = chr(0x202C)
 ZWSP = chr(0x200B)
 
 
-# ----------------------------------------------------------------------------
-# nltk.internals.java() cmd[0] launcher-token guard (CVE-2026-12841 / GHSA-x8q7)
-# These refusals fire at the cmd[0] guard, BEFORE any JVM is resolved, so they
-# need no Java install.
-# ----------------------------------------------------------------------------
+# nltk.internals.java() cmd[0] launcher-token guard (CVE-2026-12841 / GHSA-x8q7):
+# these refusals fire before any JVM is resolved, so they need no Java install.
 from nltk.internals import java  # noqa: E402
 
 

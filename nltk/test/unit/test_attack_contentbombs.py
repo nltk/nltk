@@ -1,14 +1,18 @@
-# Natural Language Toolkit: contentbombs red-team suite (2026-10-16)
+# Natural Language Toolkit: contentbombs attack suite
 #
-# Hostile FILE CONTENT (not paths) reaching a parser or decompressor through a
-# real nltk entry point: archive / compression bombs, deserialization gadgets,
-# and encoding tricks. Every REFUSED row asserts the SPECIFIC refusal; every
-# BENIGN-OK row proves a legitimate look-alike still loads. No LEAK row was
-# found, so none is encoded here.
-#
-# Runs on python3.13 and python3.10. No network. No absolute wall-clock asserts:
-# the one case that could hang (a decompression bomb) is driven in a child
-# process with a subprocess timeout and asserted on its refusal, not its clock.
+# Copyright (C) 2001-2026 NLTK Project
+# URL: <https://www.nltk.org/>
+# For license information, see LICENSE.TXT
+"""Hostile FILE CONTENT (not paths) reaching a parser or decompressor through a
+real nltk entry point: archive / compression bombs, deserialization gadgets and
+encoding tricks. Every REFUSED row asserts the SPECIFIC refusal; every
+BENIGN-OK row proves a legitimate look-alike still loads. No LEAK row was
+found, so none is encoded here.
+
+Runs on python3.13 and python3.10. No network. No absolute wall-clock asserts:
+the one case that could hang (a decompression bomb) is driven in a child
+process with a subprocess timeout and asserted on its refusal, not its clock.
+"""
 
 import io
 import os
@@ -30,10 +34,8 @@ from nltk.jsontags import (
 from nltk.picklesec import AllowlistUnpickler, RestrictedUnpickler
 
 
-# ---------------------------------------------------------------------------
-# inline sandbox: one enforced pathsec data root under $HOME (mirrors conftest's
-# _enforce_single_root so the file does not depend on the rootdir conftest).
-# ---------------------------------------------------------------------------
+# Inline sandbox: one enforced pathsec data root under $HOME, mirroring
+# conftest's _enforce_single_root so the file does not depend on it.
 @pytest.fixture
 def data_root(monkeypatch):
     """Enforce pathsec against one throwaway data root under $HOME and yield it.
@@ -66,11 +68,9 @@ def _stack_global(mod, name):
     return b"\x80\x04" + _su(mod) + _su(name) + b"\x93."
 
 
-# ---------------------------------------------------------------------------
-# Decompression bombs, driven in a CHILD process (the only cases that could hang
-# if a guard regressed) with a subprocess timeout. The child builds each payload
-# under its own enforced root and reports the exception class per case.
-# ---------------------------------------------------------------------------
+# Decompression bombs run in a CHILD process with a subprocess timeout (the
+# only cases that could hang if a guard regressed); the child builds each
+# payload under its own enforced root and reports the exception class.
 _BOMB_CHILD = r"""
 import io, os, gzip, zipfile, tempfile, shutil
 import nltk.data as D, nltk.pathsec as P
