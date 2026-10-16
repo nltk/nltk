@@ -27,6 +27,13 @@ from nltk.data import make_staging_dir
 from nltk.internals import find_binary_absolute
 
 
+from nltk.pathsec import TrustError, has_line_unsafe_char
+from nltk.pathsec import open as _secure_open
+from nltk.pathsec import spawn_trusted
+from nltk.termsec import safe_print
+from nltk.tree import Tree
+
+
 def _dep_addresses(deps):
     """Return a node's dependent addresses as a list, tolerating both deps shapes.
 
@@ -41,12 +48,6 @@ def _dep_addresses(deps):
         return list(chain.from_iterable(deps.values()))
     return list(deps)
 
-
-from nltk.pathsec import TrustError, has_line_unsafe_char
-from nltk.pathsec import open as _secure_open
-from nltk.pathsec import spawn_trusted
-from nltk.termsec import safe_print
-from nltk.tree import Tree
 
 #################################################################
 # DependencyGraph Class
