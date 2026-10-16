@@ -16,11 +16,11 @@ same bug sat in `get_cycle_path`. Both now flatten the mapping through
 `_dep_addresses`, which also accepts the legacy list-of-addresses form.
 
 The real-data half checks every Penn dependency_treebank graph against an
-independent reference check (Kahn 1962, cited at ``_kahn_has_cycle``), plants
-cycles in real sentences, fuzzes random CoNLL
-graphs, and runs the ProbabilisticNonprojectiveParser, whose MST step is the
-in-tree consumer of `contains_cycle`: with the dead guard its own demo parse was
-a cyclic, rootless graph, which its doctest never looked at.
+independent reference check (Kahn 1962, cited at
+``_topological_sort_finds_cycle``), plants cycles in real sentences, fuzzes
+random CoNLL graphs, and runs the ProbabilisticNonprojectiveParser, whose MST
+step is the in-tree consumer of `contains_cycle`: with the dead guard its own
+demo parse was a cyclic, rootless graph, which its doctest never looked at.
 """
 
 import random
@@ -108,7 +108,7 @@ def _head_edges(graph):
     }
 
 
-def _kahn_has_cycle(graph, edges):
+def _topological_sort_finds_cycle(graph, edges):
     """Reference cycle check: Kahn's topological sort leaves a node unvisited
     iff the graph has a directed cycle.
 
@@ -175,7 +175,7 @@ def test_every_real_treebank_graph_is_acyclic_and_every_head_edge_is_walked(
     for graph in treebank_graphs:
         head_edges = _head_edges(graph)
         assert _edges(graph) == head_edges
-        assert not _kahn_has_cycle(graph, head_edges)
+        assert not _topological_sort_finds_cycle(graph, head_edges)
         assert graph.contains_cycle() is False
 
 
@@ -203,7 +203,7 @@ def test_cycle_planted_in_real_sentences_is_found_with_a_real_cycle_path(
             rewired = DependencyGraph(
                 _rewired_conll(graph, {node: leaf}), top_relation_label="ROOT"
             )
-        assert _kahn_has_cycle(rewired, _head_edges(rewired))
+        assert _topological_sort_finds_cycle(rewired, _head_edges(rewired))
         path = rewired.contains_cycle()
         assert path and _is_cycle(rewired, path), (node, leaf, path)
         planted += 1
@@ -224,7 +224,7 @@ def test_random_graphs_agree_with_an_independent_cycle_oracle():
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             graph = DependencyGraph("\n".join(rows) + "\n", top_relation_label="ROOT")
-        expected = _kahn_has_cycle(graph, _head_edges(graph))
+        expected = _topological_sort_finds_cycle(graph, _head_edges(graph))
         path = graph.contains_cycle()
         assert bool(path) == expected
         if path:
