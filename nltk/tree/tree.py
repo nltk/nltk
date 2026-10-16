@@ -835,13 +835,9 @@ class Tree(list):
         )
 
     def __repr__(self):
-        # Build the repr with an explicit post-order stack rather than
-        # recursing once per level. Recursive repr (``repr(c) for c in self``,
-        # one frame per level plus the generator) raised an uncaught
+        # Explicit post-order stack: recursive repr raised an uncaught
         # RecursionError on CPython <= 3.12 at a depth the parser accepts, well
-        # under MAX_TREE_DEPTH, so repr(), %r, logging and a tree in an
-        # exception message crashed on an otherwise valid tree (CWE-674). The
-        # output is identical to the recursive form.
+        # under MAX_TREE_DEPTH (CWE-674). The output is byte-identical.
         rendered = {}
         stack = [(self, False)]
         while stack:
