@@ -204,10 +204,16 @@ class CategorizedMarkdownCorpusReader(CategorizedCorpusReader, MarkdownCorpusRea
         )
 
     def metadata_reader(self, stream):
-        from yaml import safe_load
+        from nltk.jsontags import safe_yaml_loads
 
+        # Front matter is corpus content (a planted or downloaded markdown file
+        # is attacker data). PyYAML's bare safe_load has no depth, node or size
+        # bound, so a hostile block raises an uncaught RecursionError or runs
+        # for minutes; safe_yaml_loads refuses it with a bounded ValueError.
         return [
-            safe_load(t.content)
+            safe_yaml_loads(
+                t.content, context="CategorizedMarkdownCorpusReader.metadata"
+            )
             for t in self.parser.parse(stream.read())
             if t.type == "front_matter"
         ]
