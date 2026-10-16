@@ -835,9 +835,23 @@ class Tree(list):
         )
 
     def __repr__(self):
-        # Explicit post-order stack: recursive repr raised an uncaught
-        # RecursionError on CPython <= 3.12 at a depth the parser accepts, well
-        # under MAX_TREE_DEPTH (CWE-674). The output is byte-identical.
+        """Return the constructor form of the tree, e.g.
+        ``Tree('S', [Tree('NP', ['I']), Tree('VP', ['saw'])])``.
+
+        The output is identical to the recursive form this replaced::
+
+            def __repr__(self):
+                childstr = ", ".join(repr(c) for c in self)
+                return "{}({}, [{}])".format(
+                    type(self).__name__, repr(self._label), childstr
+                )
+
+        That form used a frame per level plus a generator frame, so on
+        CPython 3.12 and earlier ``repr()`` raised an uncaught RecursionError
+        at a depth around 200, below the ``MAX_TREE_DEPTH`` bound that
+        ``fromstring`` enforces and the module relies on (CWE-674). This
+        version walks an explicit post-order stack instead.
+        """
         rendered = {}
         stack = [(self, False)]
         while stack:
