@@ -233,7 +233,10 @@ def test_absolute_path_still_reaches_the_spawn_after_revalidation(
         for k in child_env
     )
     # The -path argument (senna's data dir) is the absolute install directory.
-    assert argv[argv.index("-path") + 1] == senna._path
+    # the resolved, validated directory (senna._path keeps its trailing sep)
+    assert os.path.realpath(argv[argv.index("-path") + 1]) == os.path.realpath(
+        senna._path
+    )
     assert os.path.isabs(argv[argv.index("-path") + 1])
 
 

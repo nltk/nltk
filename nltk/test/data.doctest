@@ -349,19 +349,23 @@ This is mainly intended for internal use. The test simply tests that reading
 and writing work as intended and does not test how much improvement buffering
 provides.
 
-    >>> from io import StringIO
-    >>> test = nltk.data.BufferedGzipFile('testbuf.gz', 'wb', size=2**10)
+A file name is opened through ``nltk.pathsec``, so it must lie inside a data
+root; a staging directory is one:
+
+    >>> import os
+    >>> from nltk.data import make_staging_dir
+    >>> testbuf = os.path.join(make_staging_dir(prefix='data_howto_', cleanup=True), 'testbuf.gz')
+    >>> test = nltk.data.BufferedGzipFile(testbuf, 'wb', size=2**10)
     >>> ans = []
     >>> for i in range(10000):
     ...     ans.append(str(i).encode('ascii'))
     ...     test.write(str(i).encode('ascii'))
     >>> test.close()
-    >>> test = nltk.data.BufferedGzipFile('testbuf.gz', 'rb')
+    >>> test = nltk.data.BufferedGzipFile(testbuf, 'rb')
     >>> test.read() == b''.join(ans)
     True
     >>> test.close()
-    >>> import os
-    >>> os.unlink('testbuf.gz')
+    >>> os.unlink(testbuf)
 
 JSON Encoding and Decoding
 --------------------------

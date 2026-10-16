@@ -8,7 +8,7 @@
 import functools
 import os
 
-from nltk import redos
+from nltk import pathsec, redos
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView
 
@@ -338,13 +338,11 @@ class XML_Tool:
         if not self._owns_scratch:
             return
         try:
-            os.remove(self.write_file)
-        except FileNotFoundError:
-            self._owns_scratch = False
+            # by name, never through a link; a missing name is fine
+            pathsec.unlink(self.write_file, context="NKJPCorpusReader")
         except OSError:
-            pass
-        else:
-            self._owns_scratch = False
+            return
+        self._owns_scratch = False
 
 
 class NKJPCorpus_Segmentation_View(XMLCorpusView):

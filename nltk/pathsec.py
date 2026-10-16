@@ -15,6 +15,7 @@ import io
 import ipaddress
 import os
 import re
+import shutil
 import socket
 import stat
 import subprocess
@@ -1396,6 +1397,40 @@ def validate_tool_dir(path_input, context="NLTK tool", *, require_private=False)
     return text
 
 
+def validate_tool_data_dir(path_input, context="NLTK tool data"):
+    """Validate a directory an external tool READS natively that lives beside
+    its binary rather than in a data root: SENNA's ``-path`` data dir, REPP's
+    config tree, the C&C ``models`` tree. It gets the trust the binary gets
+    from :func:`resolve_trusted_executable` (absolute, every directory from
+    the root down private, every symlink on the way ours) and the member
+    checks of :func:`validate_tool_dir` (a real directory, no symlink,
+    junction, special file or hardlink inside, everything private, bounded).
+    Returns the resolved ``str`` the caller must hand the tool, never the
+    value it was given (GHSA-fg9w-wfp5-j933). Containment in a data root is
+    not asked for: the install is where the operator put it, as for the
+    binary; off POSIX the path is resolved and the member walk still runs.
+    """
+    text = _as_path_text(path_input, context, error=PermissionError)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
+    if not os.path.isabs(text):
+        raise PermissionError(
+            f"Security Violation [{context}]: {text!r} is not absolute; a tool "
+            "data directory would resolve against the working directory"
+        )
+    if os.name == "posix":
+        why = _Why()
+        real = _resolve_private(text, why=why)
+        if real is None:
+            raise PermissionError(
+                f"Security Violation [{context}]: {text!r} is not on a trusted "
+                f"path: {'; '.join(why) or 'a directory on the way is not private'}"
+            )
+    else:
+        real = os.path.realpath(text)
+    _reject_tamperable_dir(real, context)
+    return real
+
+
 def _reject_tamperable_dir(raw, context):
     """Refuse a directory a tool reads model data from unless it is a real,
     private directory tree (see :func:`validate_tool_dir`). ``raw`` has already
@@ -1444,6 +1479,15 @@ def _reject_tamperable_dir(raw, context):
                 _refuse(entry, "is a junction inside the tool directory")
             if not (stat.S_ISREG(st.st_mode) or stat.S_ISDIR(st.st_mode)):
                 _refuse(entry, "is not a regular file or directory")
+            # A hardlinked member aliases an inode that may live outside the roots
+            # and realpath cannot see it, only st_nlink can; model directories hold
+            # single-linked files, so refuse it as validate_tool_path does (CWE-59).
+            if stat.S_ISREG(st.st_mode) and st.st_nlink > 1:
+                _refuse(
+                    entry,
+                    f"is a hardlink (st_nlink={st.st_nlink}) that may alias an "
+                    "inode outside the data roots",
+                )
             if check_owner and not _private_stat(st):
                 _refuse(entry, "is group/world-writable or not owned by you or root")
 
@@ -2560,11 +2604,536 @@ class ZipFile(zipfile.ZipFile):
             raise
 
 
+# ---------------------------------------------------------------------------
+# Contained file operations: directories NLTK writes into, names it removes or
+# renames, descriptors it pins across a library's own open-by-name.
+# ---------------------------------------------------------------------------
+
+
+def _checked_path_text(value, context):
+    """The one str the contained-operation helpers act on for *value*: a
+    two-faced path object (``.path`` naming one file, ``__fspath__`` another)
+    is refused as :func:`validate_path` refuses it, and a non-path or bytes
+    value is handled as :func:`_as_path_text` handles it. ``__fspath__`` is
+    read exactly once. The helpers then apply the tool-path syntax guard and
+    :func:`validate_path`, so a caller must hand them a canonical name: one
+    NLTK derived under a Windows temp dir can carry an 8.3 alias (RUNNER~1),
+    which the guard refuses, so the deriving code resolves its directory
+    first (see ``nltk.downloader._canonical_dir``).
+    """
+    if not isinstance(value, (str, bytes)) and hasattr(value, "__fspath__"):
+        return _as_path_text(
+            _exact_path_text(value, context), context, error=PermissionError
+        )
+    return _as_path_text(value, context, error=PermissionError)
+
+
+def _shared_ancestor_problem(directory):
+    """Why *directory* or an ancestor would let another account swap a name:
+    the directory itself must be private; an ancestor may also be a sticky
+    shared directory (its entries can only be renamed by their owners)."""
+    problem = _private_dir_problem(directory)
+    if problem is not None:
+        return (
+            f"{problem}; a directory writable by another account lets a name in "
+            "it be swapped between the check and the open"
+        )
+    current = directory
+    while True:
+        above = os.path.dirname(current)
+        if above == current:
+            return None
+        if _private_dir_problem(above) is not None:
+            if not os.lstat(above).st_mode & stat.S_ISVTX:
+                return (
+                    f"ancestor {above!r} is writable by another account and not "
+                    "sticky, so the directory could be renamed away"
+                )
+        current = above
+
+
+def validate_private_dir(directory, context="pathsec.validate_private_dir"):
+    """Refuse a directory that another account could write into or rename.
+
+    Anything NLTK opens by name after a check (a dbm store, a sqlite database
+    and their sidecars) is only as safe as its directory: a writable one lets
+    another local account swap the name between the check and the open
+    (CWE-367). POSIX only; the per-user profile stands in on Windows.
+    """
+    text = _checked_path_text(directory, context)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
+    validate_path(text, context=context)
+    if os.name != "posix":
+        return os.path.realpath(text)
+    real = os.path.realpath(text)
+    problem = _shared_ancestor_problem(real)
+    if problem is not None:
+        raise PermissionError(f"Security Violation [{context}]: {problem}")
+    return real
+
+
+def validate_name_fragment(fragment, what="name fragment"):
+    """Refuse *fragment* unless it is a plain piece of a filename: a prefix or
+    suffix is concatenated onto a directory, so a separator, NUL or ``..`` in it
+    would place the result outside that directory (CWE-22)."""
+    if (
+        not isinstance(fragment, str)
+        or not fragment
+        or "\x00" in fragment
+        or "/" in fragment
+        or "\\" in fragment
+        or os.sep in fragment
+        or (os.altsep and os.altsep in fragment)
+        or fragment in (".", "..")
+    ):
+        raise ValueError(
+            f"Invalid {what} {fragment!r}: a filename fragment, not a path "
+            "(no separators, NUL or '..')"
+        )
+    return fragment
+
+
+def make_private_dir(parent, prefix="nltk_", context="pathsec.make_private_dir"):
+    """Create a fresh mode 0700 directory with an unpredictable name under
+    *parent*, which must be a private directory inside an allowed root.
+
+    This is where NLTK writes a file set before renaming it into place, so no
+    other account may be able to plant a name in it.
+    """
+    validate_name_fragment(prefix, what="directory prefix")
+    real = validate_private_dir(parent, context=context)
+    made = tempfile.mkdtemp(prefix=prefix, dir=real)
+    try:
+        validate_path(made, context=context)
+    except BaseException:
+        os.rmdir(made)
+        raise
+    return made
+
+
+def unlink(path, context="pathsec.unlink"):
+    """Remove the name *path* inside an allowed root without following it: a
+    link is removed as a link, a directory is refused, a missing name is fine."""
+    text = _checked_path_text(path, context)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
+    validate_path(os.path.dirname(os.path.abspath(text)) or os.curdir, context=context)
+    try:
+        st = os.lstat(text)
+    except FileNotFoundError:
+        return
+    if stat.S_ISDIR(st.st_mode):
+        raise PermissionError(
+            f"Security Violation [{context}]: {text!r} is a directory, not a name to unlink"
+        )
+    os.unlink(text)
+
+
+def replace(src, dst, context="pathsec.replace"):
+    """Rename the plain file *src* onto *dst*, both inside allowed roots.
+
+    A rename replaces whatever is at *dst* and never follows it, so a link
+    planted there is overwritten rather than written through (CWE-59). *src*
+    must be a single-linked regular file, and *dst* is checked by inode after.
+    """
+    s_text = _checked_path_text(src, context)
+    _reject_bad_name_syntax(s_text, context, error=PermissionError)
+    d_text = _checked_path_text(dst, context)
+    _reject_bad_name_syntax(d_text, context, error=PermissionError)
+    validate_path(s_text, context=context)
+    validate_path(
+        os.path.dirname(os.path.abspath(d_text)) or os.curdir, context=context
+    )
+    st = os.lstat(s_text)
+    if not stat.S_ISREG(st.st_mode) or st.st_nlink != 1:
+        raise PermissionError(
+            f"Security Violation [{context}]: {s_text!r} is not a single-linked "
+            "regular file"
+        )
+    os.replace(s_text, d_text)
+    after = os.lstat(d_text)
+    if not stat.S_ISREG(after.st_mode) or (after.st_dev, after.st_ino) != (
+        st.st_dev,
+        st.st_ino,
+    ):
+        raise PermissionError(
+            f"Security Violation [{context}]: {d_text!r} was swapped while it was installed"
+        )
+
+
+def remove_tree(path, context="pathsec.remove_tree", ignore_errors=False):
+    """Remove the directory *path* and its contents, inside an allowed root,
+    without following any link: a link planted inside is removed as a link, so
+    a deletion can never be redirected outside the tree (CWE-59).
+
+    Where :func:`shutil.rmtree` is descriptor based (``avoids_symlink_attacks``)
+    it does the removal, so a subdirectory swapped for a link between the
+    listing and the descent is not followed either; elsewhere the tree is
+    walked bottom-up by name without following links. *ignore_errors* keeps a
+    cleanup from masking the error it runs after: removal failures are
+    swallowed, the security refusals above never are.
+    """
+    text = _checked_path_text(path, context)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
+    validate_path(text, context=context)
+    st = os.lstat(text)
+    if stat.S_ISLNK(st.st_mode) or not stat.S_ISDIR(st.st_mode):
+        raise PermissionError(
+            f"Security Violation [{context}]: {text!r} is not a directory to remove"
+        )
+    if shutil.rmtree.avoids_symlink_attacks:
+        shutil.rmtree(text, ignore_errors=ignore_errors)
+        return
+
+    def _remove(op, target):
+        try:
+            op(target)
+        except OSError:
+            if not ignore_errors:
+                raise
+
+    for root, dirs, files in os.walk(text, topdown=False, followlinks=False):
+        for name in files:
+            _remove(os.unlink, os.path.join(root, name))
+        for name in dirs:
+            entry = os.path.join(root, name)
+            _remove(os.unlink if os.path.islink(entry) else os.rmdir, entry)
+    _remove(os.rmdir, text)
+
+
+def ensure_private_dir(path, mode=0o700, context="pathsec.ensure_private_dir"):
+    """Create the caller-named directory *path* inside an allowed root if it
+    is missing (with *mode*, whatever the umask) and refuse it unless it is
+    private: owned by this account or root, no group or world write bit, and
+    every ancestor private or sticky (:func:`validate_private_dir`). For
+    output a caller names, where :func:`make_private_dir` (an unpredictable
+    name) does not apply. Returns the resolved path."""
+    text = _checked_path_text(path, context)
+    _reject_bad_name_syntax(text, context, error=PermissionError)
+    validate_path(text, context=context)
+    if not os.path.isdir(text):
+        try:
+            os.mkdir(text, mode)
+        except FileExistsError:
+            # something else stands at the name: a file is reported as the
+            # name clash it is, a directory raced in is judged below
+            if not os.path.isdir(text):
+                raise
+    return validate_private_dir(text, context=context)
+
+
+def pin_files(names, context="pathsec.pin_files"):
+    """Open every existing name in *names* through :func:`open` and keep the
+    handles, so that after a library has reopened the names itself,
+    :func:`verify_pinned` can prove it saw the same inodes.
+
+    Each open uses ``O_NOFOLLOW`` and refuses a multiply-linked file (CWE-59).
+    Nothing is created. Returns ``{name: handle}`` for the names that exist;
+    close them with :func:`release`.
+    """
+    pins = {}
+    for name in names:
+        try:
+            # the module's own hardened open, defined above, not the builtin
+            pins[name] = open(
+                name, "rb", context=context
+            )  # sandboxed-open ok: pathsec.open
+        except FileNotFoundError:
+            continue
+        except BaseException:
+            release(pins)
+            raise
+    return pins
+
+
+def release(pins):
+    """Close the handles :func:`pin_files` returned."""
+    for handle in pins.values():
+        handle.close()
+
+
+def verify_pinned(pins, names, context="pathsec.verify_pinned"):
+    """After a library opened *names* by path, every name that exists must be
+    the regular file pinned before, or a fresh single-linked regular file the
+    library created; anything else was swapped in between (CWE-367). Closes
+    the pins."""
+    try:
+        for name in names:
+            try:
+                st = os.lstat(name)
+            except FileNotFoundError:
+                continue
+            if not stat.S_ISREG(st.st_mode):
+                raise PermissionError(
+                    f"Security Violation [{context}]: {name!r} is no longer a regular file"
+                )
+            if name in pins:
+                pinned = os.fstat(pins[name].fileno())
+                if (st.st_dev, st.st_ino) != (pinned.st_dev, pinned.st_ino):
+                    raise PermissionError(
+                        f"Security Violation [{context}]: {name!r} was swapped "
+                        "between the check and the open"
+                    )
+            elif st.st_nlink > 1:
+                raise PermissionError(
+                    f"Security Violation [{context}]: {name!r} is a hardlink"
+                )
+    finally:
+        release(pins)
+
+
+#: The sidecar names sqlite may create or reopen beside a database.
+SQLITE_SIDECARS = ("-journal", "-wal", "-shm")
+
+
+def sqlite_names(path):
+    """The database at *path* and every sidecar name sqlite may reopen beside
+    it, the names a check of the database has to cover."""
+    return [path + suffix for suffix in ("",) + SQLITE_SIDECARS]
+
+
+#: Ceiling on the virtual-machine steps one statement may run on a connection
+#: from the sqlite connectors below, so a planted database cannot hang or
+#: amplify (CWE-400); the heaviest real PanLex Lite query runs about 200k.
+MAX_SQLITE_STEPS = 20_000_000
+_SQLITE_STEP_GRAIN = 1000
+
+
+def _sqlite_budget_classes():
+    """The connection and cursor classes that count the steps of every
+    statement and interrupt one past :data:`MAX_SQLITE_STEPS`, built once."""
+    import sqlite3
+
+    cached = getattr(_sqlite_budget_classes, "classes", None)
+    if cached is not None:
+        return cached
+
+    class BudgetCursor(sqlite3.Cursor):
+        def _run(self, method, *args):
+            try:
+                return method(self, *args)
+            except sqlite3.OperationalError:
+                if self.connection._exceeded:
+                    raise PermissionError(
+                        f"Security Violation [{self.connection._context}]: "
+                        f"statement exceeded MAX_SQLITE_STEPS ({MAX_SQLITE_STEPS}) "
+                        "virtual-machine steps; the database is refused as a "
+                        "resource bomb"
+                    ) from None
+                raise
+
+        def execute(self, *args):
+            self.connection._steps = 0
+            self.connection._exceeded = False
+            return self._run(sqlite3.Cursor.execute, *args)
+
+        def executemany(self, *args):
+            self.connection._steps = 0
+            self.connection._exceeded = False
+            return self._run(sqlite3.Cursor.executemany, *args)
+
+        def executescript(self, *args):
+            self.connection._steps = 0
+            self.connection._exceeded = False
+            return self._run(sqlite3.Cursor.executescript, *args)
+
+        def fetchone(self):
+            return self._run(sqlite3.Cursor.fetchone)
+
+        def fetchmany(self, *args):
+            return self._run(sqlite3.Cursor.fetchmany, *args)
+
+        def fetchall(self):
+            return self._run(sqlite3.Cursor.fetchall)
+
+        def __next__(self):
+            return self._run(sqlite3.Cursor.__next__)
+
+    class BudgetConnection(sqlite3.Connection):
+        _steps = 0
+        _exceeded = False
+        _context = "pathsec.connect_sqlite_read_only"
+
+        def cursor(self, factory=None):
+            return sqlite3.Connection.cursor(self, factory or BudgetCursor)
+
+        # Python 3.11+ runs Connection.execute* on a plain cursor; route them
+        # through the counting cursor so every statement is budgeted.
+        def execute(self, *args):
+            return self.cursor().execute(*args)
+
+        def executemany(self, *args):
+            return self.cursor().executemany(*args)
+
+        def executescript(self, *args):
+            return self.cursor().executescript(*args)
+
+        def _tick(self):
+            self._steps += 1
+            if self._steps * _SQLITE_STEP_GRAIN > MAX_SQLITE_STEPS:
+                self._exceeded = True
+                return 1
+            return 0
+
+    _sqlite_budget_classes.classes = (BudgetConnection, BudgetCursor)
+    return _sqlite_budget_classes.classes
+
+
+def _plain_schema_object(kind, rootpage):
+    """Why a schema row is not a plain table or index, or None. sqlite gives a
+    view, a trigger and a virtual table no root page; a stored table or index
+    always has one, so no parsing of the file's SQL text is involved."""
+    if kind == "table" and not rootpage:
+        return "virtual table"
+    if kind not in ("table", "index") or not rootpage:
+        return str(kind)
+    return None
+
+
+def _arm_sqlite(connection, context):
+    """Bound and screen a fresh connection: the step budget, no ATTACH, no
+    code from the file's schema (trusted_schema off), cell sizes checked, and
+    only plain tables and indexes in the schema (CWE-1286). A writer needs
+    this as much as a reader: a trigger in a planted store runs on its
+    INSERT, a view with an INSTEAD OF trigger in place of its table too."""
+    connection._context = context
+    connection.set_progress_handler(connection._tick, _SQLITE_STEP_GRAIN)
+    connection.set_authorizer(_deny_attach)
+    connection.execute("PRAGMA trusted_schema=OFF")
+    connection.execute("PRAGMA cell_size_check=ON")
+    rows = connection.execute(
+        "SELECT type, name, rootpage FROM sqlite_master"
+    ).fetchall()
+    for kind, name, rootpage in rows:
+        reason = _plain_schema_object(kind, rootpage)
+        if reason is not None:
+            connection.close()
+            raise PermissionError(
+                f"Security Violation [{context}]: the database schema holds a "
+                f"{reason} ({sanitize_terminal(str(name))}); only plain tables "
+                "and indexes are read"
+            )
+    return connection
+
+
+def _deny_attach(action, *_args):
+    """The authorizer every read-only connection starts with: no ATTACH or
+    DETACH, so no statement run on it can open another file by name."""
+    import sqlite3
+
+    if action in (sqlite3.SQLITE_ATTACH, sqlite3.SQLITE_DETACH):
+        return sqlite3.SQLITE_DENY
+    return sqlite3.SQLITE_OK
+
+
+def connect_sqlite_read_only(
+    path,
+    names=None,
+    context="pathsec.connect_sqlite_read_only",
+    *,
+    required_root=None,
+):
+    """A read-only sqlite connection bound to the inode of *path*.
+
+    *path* is validated first, inside *required_root* when one is given.
+    The connection refuses ATTACH and DETACH (a caller with stricter rules
+    replaces that authorizer with its own, which must deny them too), runs no
+    SQL from the file's own schema and refuses a schema holding anything but
+    plain tables and indexes, and interrupts a statement past
+    :data:`MAX_SQLITE_STEPS` virtual-machine steps with a ``PermissionError``.
+    *names* lists the database and every sidecar name sqlite may reopen by
+    path (:func:`sqlite_names` when omitted). They are pinned first; where the
+    platform exposes descriptors as names the database is opened on the pinned
+    descriptor itself (``/dev/fd/N``, immutable, read only) so a later change
+    to the NAME cannot redirect it (CWE-367); elsewhere it is opened by name
+    as a read-only, immutable file URI and the names are verified afterwards.
+    Immutable on both routes: a ``-journal`` or ``-wal`` planted beside the
+    file is never replayed into the view. The pins are released on return.
+    """
+    import sqlite3
+
+    text = _checked_path_text(path, context)
+    validate_path(text, context=context, required_root=required_root)
+    names = sqlite_names(text) if names is None else list(names)
+    pins = pin_files(names, context=context)
+    factory = _sqlite_budget_classes()[0]
+    handle = pins.get(text)
+    if handle is not None and os.name == "posix" and os.path.isdir("/dev/fd"):
+        uri = "file:/dev/fd/%d?immutable=1&mode=ro" % handle.fileno()
+        try:
+            connection = sqlite3.connect(uri, uri=True, factory=factory)
+            # force the open while the descriptor is still held
+            connection.execute("PRAGMA schema_version").fetchall()
+        except sqlite3.Error:
+            connection = None
+        if connection is not None:
+            release(pins)
+            return _arm_sqlite(connection, context)
+    # by name, still read only and immutable (no journal or WAL beside the
+    # file is ever replayed, as on the descriptor route); as_uri percent-encodes
+    # the path, so a '?' or '#' in it cannot add a parameter
+    uri = Path(os.path.abspath(text)).as_uri() + "?immutable=1&mode=ro"
+    try:
+        connection = sqlite3.connect(uri, uri=True, factory=factory)
+    except BaseException:
+        release(pins)
+        raise
+    try:
+        verify_pinned(pins, names, context=context)
+    except BaseException:
+        connection.close()
+        raise
+    return _arm_sqlite(connection, context)
+
+
+def connect_sqlite_writable(
+    path,
+    names=None,
+    context="pathsec.connect_sqlite_writable",
+    *,
+    required_root=None,
+):
+    """A read-write sqlite connection to the store at *path*, created when
+    absent, armed like :func:`connect_sqlite_read_only`.
+
+    *path* is validated first, inside *required_root* when one is given; the
+    caller has already judged the directory (``validate_private_dir``), as
+    sqlite reopens the store and its sidecars by name. *names* lists the
+    database and every sidecar name sqlite may create or reopen beside it
+    (:func:`sqlite_names` when omitted). The names that exist are pinned, the
+    store is opened by name, and the pins are verified afterwards: each name
+    is still the pinned inode or a fresh regular file sqlite created (CWE-367).
+    The connection then refuses ATTACH and DETACH, runs no SQL from the file's
+    own schema, refuses a schema holding anything but plain tables and
+    indexes, and interrupts a statement past :data:`MAX_SQLITE_STEPS` with a
+    ``PermissionError``; a trigger or view planted in a store cannot run on
+    the caller's writes. The pins are released on return.
+    """
+    import sqlite3
+
+    text = _checked_path_text(path, context)
+    validate_path(text, context=context, required_root=required_root)
+    names = sqlite_names(text) if names is None else list(names)
+    pins = pin_files(names, context=context)
+    factory = _sqlite_budget_classes()[0]
+    try:
+        connection = sqlite3.connect(text, factory=factory)
+    except BaseException:
+        release(pins)
+        raise
+    try:
+        verify_pinned(pins, names, context=context)
+    except BaseException:
+        connection.close()
+        raise
+    return _arm_sqlite(connection, context)
+
+
 __all__ = [
     "validate_path",
     "validate_model_resource",
     "validate_tool_path",
     "validate_tool_dir",
+    "validate_tool_data_dir",
     "open_package_resource",
     "validate_network_url",
     "validate_zip_archive",
@@ -2572,4 +3141,19 @@ __all__ = [
     "urlopen",
     "ZipFile",
     "ENFORCE",
+    "validate_private_dir",
+    "validate_name_fragment",
+    "make_private_dir",
+    "ensure_private_dir",
+    "unlink",
+    "replace",
+    "remove_tree",
+    "pin_files",
+    "release",
+    "verify_pinned",
+    "connect_sqlite_read_only",
+    "connect_sqlite_writable",
+    "sqlite_names",
+    "MAX_SQLITE_STEPS",
+    "SQLITE_SIDECARS",
 ]

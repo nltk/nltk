@@ -20,16 +20,16 @@ searchpath hit (which are absolute) all survive.
 
 import os
 import shutil
-import tempfile
 
 import pytest
 
 from nltk.internals import find_dir, find_file
+from nltk.test.unit.conftest import make_home_dir
 
 
 @pytest.fixture
 def hostile_cwd():
-    base = tempfile.mkdtemp(prefix=".nltk_cwd_", dir=os.path.expanduser("~"))
+    base = make_home_dir(".nltk_cwd_")
     for name in ("maltparser", "evil.mco"):
         with open(os.path.join(base, name), "w") as handle:
             handle.write("x")

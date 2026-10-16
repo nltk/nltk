@@ -9,7 +9,6 @@
 
 import ast
 import fnmatch
-import locale
 import operator
 import os
 import re
@@ -1456,9 +1455,10 @@ def _decode_stdoutdata(stdoutdata):
     if not isinstance(stdoutdata, bytes):
         return stdoutdata
 
-    encoding = getattr(sys.__stdout__, "encoding", locale.getpreferredencoding())
-    if encoding is None:
-        return stdoutdata.decode()
+    from nltk.data import text_encoding
+
+    # stdout's encoding, else the platform default, as open() would pick it
+    encoding = text_encoding(getattr(sys.__stdout__, "encoding", None))
     return stdoutdata.decode(encoding)
 
 

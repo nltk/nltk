@@ -45,6 +45,7 @@ import nltk.pathsec as pathsec
 import nltk.tag.perceptron as perceptron
 from nltk.tag.perceptron import AveragedPerceptron, PerceptronTagger
 from nltk.test.unit import timing
+from nltk.test.unit.conftest import make_home_dir
 
 CANARY = "MODEL-ARTIFACT-CANARY"
 LANG = "probeartifact"
@@ -63,9 +64,7 @@ def outside_only(monkeypatch):
     that is asserted rather than assumed.
     """
     monkeypatch.setattr(pathsec, "ENFORCE", True)
-    path = pathlib.Path(
-        tempfile.mkdtemp(prefix=".nltk_artifact_outside_", dir=str(pathlib.Path.home()))
-    )
+    path = pathlib.Path(make_home_dir(".nltk_artifact_outside_"))
     resolved = path.resolve()
     inside = any(
         resolved == root or resolved.is_relative_to(root)
