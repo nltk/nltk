@@ -14,9 +14,19 @@ graph parsed from CoNLL / Malt-TAB data, silently disabling the guard and the
 cycle-collapse branch of NonprojectiveDependencyParser that depends on it. The
 same bug sat in `get_cycle_path`. Both now flatten the mapping through
 `_dep_addresses`, which also accepts the legacy list-of-addresses form.
+
+The real-data half checks every Penn dependency_treebank graph against an
+independent Kahn oracle, plants cycles in real sentences, fuzzes random CoNLL
+graphs, and runs the ProbabilisticNonprojectiveParser, whose MST step is the
+in-tree consumer of `contains_cycle`: with the dead guard its own demo parse was
+a cyclic, rootless graph, which its doctest never looked at.
 """
 
+import random
 import warnings
+from collections import defaultdict, deque
+
+import pytest
 
 from nltk.parse.dependencygraph import DependencyGraph
 
@@ -71,3 +81,158 @@ def test_get_cycle_path_follows_parsed_dict_deps():
         graph = DependencyGraph("w1\tX\t1\tdep\n")
     path = graph.get_cycle_path(graph.get_by_address(1), 1)
     assert path == [1]
+
+
+def _edges(graph):
+    """Edges head->dependent as the walk reads them from each node's deps."""
+    edges = set()
+    for address, node in graph.nodes.items():
+        deps = node["deps"]
+        targets = (
+            [t for group in deps.values() for t in group]
+            if isinstance(deps, dict)
+            else list(deps)
+        )
+        edges.update((address, target) for target in targets)
+    return edges
+
+
+def _head_edges(graph):
+    """Edges from each node's own head field, independent of deps."""
+    return {
+        (node["head"], address)
+        for address, node in graph.nodes.items()
+        if address is not None and node.get("head") is not None
+    }
+
+
+def _kahn_has_cycle(graph, edges):
+    """Independent oracle: Kahn's sort leaves nodes unvisited iff a cycle exists."""
+    nodes = [a for a in graph.nodes if a is not None]
+    indegree = dict.fromkeys(nodes, 0)
+    out = defaultdict(list)
+    for head, dep in edges:
+        if head in indegree and dep in indegree:
+            out[head].append(dep)
+            indegree[dep] += 1
+    queue = deque(n for n in nodes if indegree[n] == 0)
+    seen = 0
+    while queue:
+        node = queue.popleft()
+        seen += 1
+        for dep in out[node]:
+            indegree[dep] -= 1
+            if indegree[dep] == 0:
+                queue.append(dep)
+    return seen != len(nodes)
+
+
+def _is_cycle(graph, path):
+    ring = list(path) + [path[0]]
+    edges = _edges(graph)
+    return all((a, b) in edges for a, b in zip(ring, ring[1:]))
+
+
+def _rewired_conll(graph, new_heads):
+    rows = []
+    for address in sorted(a for a in graph.nodes if a):
+        node = graph.nodes[address]
+        head = new_heads.get(address, node["head"])
+        rows.append(f"{node['word']}\t{node['tag']}\t{head}\t{node['rel']}")
+    return "\n".join(rows) + "\n"
+
+
+@pytest.fixture(scope="module")
+def treebank_graphs():
+    from nltk.corpus import dependency_treebank
+
+    try:
+        return dependency_treebank.parsed_sents()
+    except LookupError:
+        pytest.skip("dependency_treebank is not installed")
+
+
+def test_every_real_treebank_graph_is_acyclic_and_every_head_edge_is_walked(
+    treebank_graphs,
+):
+    """All 3914 Penn dependency_treebank graphs: contains_cycle() is False, the
+    independent Kahn oracle on the head fields agrees, and the edges the walk
+    reads from deps are exactly the head edges (the guard sees real edges)."""
+    assert len(treebank_graphs) > 3000
+    for graph in treebank_graphs:
+        head_edges = _head_edges(graph)
+        assert _edges(graph) == head_edges
+        assert not _kahn_has_cycle(graph, head_edges)
+        assert graph.contains_cycle() is False
+
+
+def test_cycle_planted_in_real_sentences_is_found_with_a_real_cycle_path(
+    treebank_graphs,
+):
+    """Rewire one head in each of 200 real sentences to a descendant of that
+    node, reparse the CoNLL text and require a reported path made of real
+    edges. Teeth: develop returned False on every one of these."""
+    rng = random.Random(20261016)
+    planted = 0
+    for graph in treebank_graphs[:400]:
+        children = defaultdict(list)
+        for address in (a for a in graph.nodes if a):
+            children[graph.nodes[address]["head"]].append(address)
+        parents = [a for a in graph.nodes if a and children[a]]
+        if not parents:
+            continue
+        node = rng.choice(parents)
+        leaf = node
+        while children[leaf]:
+            leaf = rng.choice(children[leaf])
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            rewired = DependencyGraph(
+                _rewired_conll(graph, {node: leaf}), top_relation_label="ROOT"
+            )
+        assert _kahn_has_cycle(rewired, _head_edges(rewired))
+        path = rewired.contains_cycle()
+        assert path and _is_cycle(rewired, path), (node, leaf, path)
+        planted += 1
+        if planted == 200:
+            break
+    assert planted == 200
+
+
+def test_random_graphs_agree_with_an_independent_cycle_oracle():
+    """1000 seeded random CoNLL graphs (1 to 12 words, heads drawn freely, so
+    self-loops, several cycles and rootless graphs occur): contains_cycle()
+    truthiness equals Kahn's verdict and every reported path is a real cycle."""
+    rng = random.Random(1016)
+    cyclic = 0
+    for _ in range(1000):
+        size = rng.randint(1, 12)
+        rows = [f"w{a}\tNN\t{rng.randint(0, size)}\tdep" for a in range(1, size + 1)]
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            graph = DependencyGraph("\n".join(rows) + "\n", top_relation_label="ROOT")
+        expected = _kahn_has_cycle(graph, _head_edges(graph))
+        path = graph.contains_cycle()
+        assert bool(path) == expected
+        if path:
+            cyclic += 1
+            assert _is_cycle(graph, path)
+    assert cyclic > 500
+
+
+def test_probabilistic_nonprojective_parser_collapses_the_cycle_in_its_demo():
+    """The parser's demo scorer makes 2->1 and 1->2 the best incoming arcs, a
+    cycle the MST step must collapse (Chu-Liu-Edmonds). With the dead guard the
+    parse was the cyclic, rootless graph {1->2, 2->1, 2->3}; it is the rooted
+    spanning tree 0->1->2->3. The module doctest only checks len(parses)."""
+    from nltk.parse.nonprojectivedependencyparser import (
+        DemoScorer,
+        ProbabilisticNonprojectiveParser,
+    )
+
+    parser = ProbabilisticNonprojectiveParser()
+    parser.train([], DemoScorer())
+    parses = list(parser.parse(["v1", "v2", "v3"], [None, None, None]))
+    assert len(parses) == 1
+    assert _edges(parses[0]) == {(0, 1), (1, 2), (2, 3)}
+    assert parses[0].contains_cycle() is False
