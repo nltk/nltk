@@ -1,12 +1,16 @@
 import hashlib
+import io
 import os
 import shutil
 import unittest
 import unittest.mock
 import xml.etree.ElementTree as ET
+from urllib.error import URLError
+
+import pytest
 
 from nltk import download
-from nltk.downloader import Downloader, Package, build_index
+from nltk.downloader import Downloader, ErrorMessage, Package, build_index
 
 
 class TestPackageFromXmlInjection(unittest.TestCase):
@@ -73,6 +77,108 @@ def test_downloader_redownload(tmp_path):
                     "[nltk_data]   Package stopwords is already up-to-date!"
                 )
                 assert print_mock.call_args_list[1].args == expected_second_call.args
+
+
+@pytest.mark.parametrize(
+    "package, error",
+    [
+        # #3167: a Docker build could not reach the data server
+        ("punkt", OSError(99, "Cannot assign requested address")),
+        # #3144: a Heroku build (nltk.txt) had its connection reset
+        ("stopwords", ConnectionResetError(104, "Connection reset by peer")),
+    ],
+)
+def test_retry_prompt_at_eof_answers_no(tmp_path, monkeypatch, package, error):
+    """When nobody can answer the "Retry? [n/y/e]" prompt because stdin is at
+    EOF, as in the Docker and Heroku builds of #3167 and #3144, the downloader
+    takes the answer an empty line gives ("n": do not retry) instead of
+    crashing with EOFError."""
+    monkeypatch.setattr("sys.stdin", io.StringIO(""))
+    download_dir = str(tmp_path)
+    downloader = Downloader(download_dir=download_dir)
+    output = io.StringIO()
+    with unittest.mock.patch("nltk.downloader.urlopen", side_effect=URLError(error)):
+        # halt_on_error=False is what ``python -m nltk.downloader <package>``
+        # passes, and what makes the downloader ask whether to retry.
+        status = downloader.download(
+            package, download_dir, halt_on_error=False, print_error_to=output
+        )
+
+    assert f"Error loading {package}:" in output.getvalue()
+    assert "Error installing package. Retry? [n/y/e]" in output.getvalue()
+    assert status is True and downloader._errors is True
+
+
+@pytest.mark.parametrize(
+    "answers, status, attempts",
+    [
+        ("n\n", True, 1),  # do not retry, go on
+        ("\n", True, 1),  # an empty line means "n"
+        ("e\n", False, 1),  # stop
+        ("y\nn\n", True, 2),  # retry once, then go on
+    ],
+)
+def test_retry_prompt_typed_answers_are_unchanged(
+    tmp_path, monkeypatch, answers, status, attempts
+):
+    """Answers typed or piped in at the "Retry? [n/y/e]" prompt still work."""
+    monkeypatch.setattr("sys.stdin", io.StringIO(answers))
+    package = Package(
+        "test_pkg", "https://example.invalid/test_pkg.zip", size=0, unzipped_size=0
+    )
+    downloader = Downloader(download_dir=str(tmp_path))
+    # The package itself fails (not the index), so "y" has a package to retry.
+    with unittest.mock.patch.object(
+        Downloader,
+        "incr_download",
+        side_effect=lambda *args, **kwargs: iter([ErrorMessage(package, "failed")]),
+    ) as incr_download:
+        result = downloader.download(
+            "test_pkg", str(tmp_path), halt_on_error=False, print_error_to=io.StringIO()
+        )
+
+    assert result is status
+    assert incr_download.call_count == attempts
+
+
+def test_retry_prompt_without_stdin_answers_no(tmp_path, monkeypatch):
+    """A process started with no stdin at all (fd 0 closed, a service without
+    a console) has ``sys.stdin`` None and input() raises RuntimeError, not
+    EOFError: the prompt takes "n" then too."""
+    monkeypatch.setattr("sys.stdin", None)
+    downloader = Downloader(download_dir=str(tmp_path))
+    output = io.StringIO()
+    with unittest.mock.patch(
+        "nltk.downloader.urlopen", side_effect=URLError(OSError(99, "x"))
+    ):
+        status = downloader.download(
+            "punkt", str(tmp_path), halt_on_error=False, print_error_to=output
+        )
+
+    assert "Error installing package. Retry? [n/y/e]" in output.getvalue()
+    assert status is True and downloader._errors is True
+
+
+@pytest.mark.parametrize("request_", ["punkt", ["punkt", "stopwords"]])
+def test_retry_prompt_y_after_an_index_failure_retries_the_request(
+    tmp_path, monkeypatch, request_
+):
+    """When the index itself cannot be loaded, as in #3167 and #3144, the
+    error carries an id or nothing, not a Package. "y" retries what was asked
+    for instead of crashing on ``msg.package.id``."""
+    monkeypatch.setattr("sys.stdin", io.StringIO("y\nn\n"))
+    downloader = Downloader(download_dir=str(tmp_path))
+    output = io.StringIO()
+    with unittest.mock.patch(
+        "nltk.downloader.urlopen", side_effect=URLError(OSError(99, "x"))
+    ) as urlopen:
+        status = downloader.download(
+            request_, str(tmp_path), halt_on_error=False, print_error_to=output
+        )
+
+    assert output.getvalue().count("Error installing package. Retry? [n/y/e]") == 2
+    assert urlopen.call_count == 2
+    assert status is True and downloader._errors is True
 
 
 def test_build_index(tmp_path):

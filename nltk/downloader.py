@@ -1564,16 +1564,26 @@ class Downloader:
                     self._errors = True
                     if not quiet:
                         print_to("Error installing package. Retry? [n/y/e]")
-                        choice = input().strip()
+                        try:
+                            choice = input().strip()
+                        except (EOFError, RuntimeError):
+                            # Nobody can answer: stdin is at EOF or missing, as
+                            # in a Docker or CI build (#3167). Take the answer
+                            # an empty line gives, "n": do not retry.
+                            choice = "n"
                         if choice in ["y", "Y"]:
+                            # A failed index lookup carries an id or nothing,
+                            # not a Package: retry what was asked for.
+                            retry = getattr(msg.package, "id", msg.package)
                             if not self.download(
-                                msg.package.id,
+                                retry or info_or_id,
                                 download_dir,
                                 quiet,
                                 force,
                                 prefix,
                                 halt_on_error,
                                 raise_on_error,
+                                print_error_to=print_error_to,
                                 extract=extract,
                             ):
                                 return False
@@ -1824,20 +1834,27 @@ class Downloader:
             ) from None
         with body.getbuffer() as view:
             _check_index_structure(view)
-        self._index = nltk.internals.ElementWrapper(safe_parse(body).getroot())
+
+        # An index that is not well-formed XML, or whose entries lack what a
+        # package needs, is a failed download reported like a refused URL,
+        # not a traceback; and it is not kept, so the next request refetches.
+        try:
+            index = nltk.internals.ElementWrapper(safe_parse(body).getroot())
+            packages = [Package.fromxml(p) for p in index.findall("packages/package")]
+            packages = {p.id: p for p in packages}
+            _refuse_install_aliases(packages.values())
+            collections = [
+                Collection.fromxml(c) for c in index.findall("collections/collection")
+            ]
+        except (ElementTree.ParseError, TypeError) as e:
+            raise ValueError(
+                "The data server sent an index NLTK cannot use: "
+                + sanitize_terminal(str(e))
+            ) from None
+        self._index = index
         self._index_timestamp = time.time()
         self._index_url = self._url
-
-        # Build a dictionary of packages.
-        packages = [Package.fromxml(p) for p in self._index.findall("packages/package")]
-        packages = {p.id: p for p in packages}
-        _refuse_install_aliases(packages.values())
         self._packages = packages
-
-        # Build a dictionary of collections.
-        collections = [
-            Collection.fromxml(c) for c in self._index.findall("collections/collection")
-        ]
         self._collections = {c.id: c for c in collections}
 
         # Replace identifiers with actual children in collection.children.
