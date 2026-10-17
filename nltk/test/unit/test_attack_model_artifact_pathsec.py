@@ -61,6 +61,10 @@ from nltk.tag import perceptron
 from nltk.tag.perceptron import AveragedPerceptron, PerceptronTagger
 
 POSIX_ONLY = pytest.mark.skipif(os.name != "posix", reason="POSIX-only path form")
+DIR_FD_ROUTE_ONLY = pytest.mark.skipif(
+    os.name != "posix" or not perceptron._dir_fd_write_supported(),
+    reason="save_to_json writes by name through pathsec.open here, not via dir_fd",
+)
 CONTEXT = "PerceptronTagger.save_to_json"
 LANG = "xxx"
 SECRET = b"OUTSIDE-SECRET-MUST-SURVIVE\n"
@@ -358,22 +362,43 @@ class TestSaveToJsonPlantedParamFile:
     def test_planted_directory_at_the_name_is_refused(
         self, pathsec_sandbox, trained_tagger
     ):
+        """Through the pinned descriptor this is the guard refusal; on the
+        by-name route ``pathsec.open`` lets the kernel refuse it (EISDIR).
+        Either way nothing is written and the directory is left alone."""
         loc = pathsec_sandbox.root / "tagger"
         loc.mkdir(mode=0o700)
         os.mkdir(_param_file(loc))
-        _refused(trained_tagger.save_to_json, LANG, str(loc))
+        with pytest.raises((PermissionError, IsADirectoryError)) as excinfo:
+            trained_tagger.save_to_json(LANG, str(loc))
+        if perceptron._dir_fd_write_supported():
+            assert _is_guard_refusal(excinfo.value), excinfo.value
+        assert os.path.isdir(_param_file(loc)) and not os.listdir(_param_file(loc))
 
     def test_a_previous_save_is_replaced_and_round_trips(
         self, pathsec_sandbox, trained_tagger
     ):
         loc = pathsec_sandbox.root / "tagger"
         trained_tagger.save_to_json(LANG, str(loc))
-        first = os.stat(_param_file(loc))
-        trained_tagger.save_to_json(LANG, str(loc))
+        # Hold the first inode open: a filesystem may hand the same inode
+        # number straight back after unlink + create, so the old inode itself
+        # is the witness. Through the pinned descriptor the entry is replaced
+        # (the held inode is unlinked, its bytes untouched); by name, pathsec
+        # .open truncates in place only after verifying a single-linked
+        # regular file, so the held inode then carries the new bytes.
+        with open(_param_file(loc), "rb") as held:
+            first_bytes = held.read()
+            trained_tagger.save_to_json(LANG, str(loc))
+            old = os.fstat(held.fileno())
+            held.seek(0)
+            if perceptron._dir_fd_write_supported():
+                assert old.st_nlink == 0, "the old entry was truncated in place"
+                assert held.read() == first_bytes
+            else:
+                assert old.st_nlink == 1
+                assert held.read() == pathlib.Path(_param_file(loc)).read_bytes()
         second = os.stat(_param_file(loc))
         assert stat.S_ISREG(second.st_mode) and second.st_nlink == 1
         assert stat.S_IMODE(second.st_mode) == 0o600
-        assert second.st_ino != first.st_ino, "the entry was truncated in place"
         reloaded = PerceptronTagger(load=False)
         reloaded.load_from_json(LANG, str(loc))
         assert reloaded.model.weights == trained_tagger.model.weights
@@ -422,16 +447,18 @@ class TestSaveToJsonPlantedParamFile:
         assert reloaded.model.weights == trained_tagger.model.weights
 
 
-@POSIX_ONLY
 class TestSaveToJsonTeeth:
     """Put the pre-fix opener back; the escape and the hang must return, so
-    the tests above are known to reach the sink."""
+    the tests above are known to reach the sink. Only where the pinned
+    descriptor route is in use: elsewhere the by-name route is pathsec.open,
+    whose own teeth live in test_model_artifact_pathsec.py."""
 
     @staticmethod
     def _truncating_create(name, dir_fd):
         flags = os.O_WRONLY | os.O_CREAT | os.O_TRUNC | getattr(os, "O_NOFOLLOW", 0)
         return os.open(name, flags, 0o600, dir_fd=dir_fd)
 
+    @DIR_FD_ROUTE_ONLY
     def test_old_opener_overwrites_the_hardlinked_outside_inode(
         self, pathsec_sandbox, trained_tagger, monkeypatch
     ):
@@ -444,6 +471,7 @@ class TestSaveToJsonTeeth:
         assert secret.read_bytes() != SECRET, "the old opener no longer escapes"
         assert b"bias" in secret.read_bytes()
 
+    @DIR_FD_ROUTE_ONLY
     def test_old_opener_blocks_on_the_fifo(
         self, pathsec_sandbox, trained_tagger, monkeypatch
     ):
@@ -671,7 +699,11 @@ class TestReadSinksRefuseInRootSpecialFiles:
         loc.mkdir()
         os.chmod(str(loc), mode)
         assert stat.S_IMODE(os.stat(str(loc)).st_mode) == mode
-        with pytest.raises(PermissionError, match="non-private"):
+        # the pinned-descriptor route and pathsec.ensure_private_dir word the
+        # same refusal differently
+        with pytest.raises(
+            PermissionError, match="non-private|writable by another account"
+        ):
             trained_tagger.save_to_json(LANG, str(loc))
         assert os.listdir(loc) == []
 
@@ -704,7 +736,8 @@ class TestParserScratchFilesStayInside:
 
         out = save_maxent_params(*maxent_params)
         assert _inside(out, pathsec_sandbox.root)
-        assert stat.S_IMODE(os.stat(out).st_mode) == 0o700
+        if os.name == "posix":
+            assert stat.S_IMODE(os.stat(out).st_mode) == 0o700
 
 
 class TestSiblingModelArtifactApis:
