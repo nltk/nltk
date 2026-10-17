@@ -525,7 +525,19 @@ class TestPerceptronTaggerDirectoryOpen:
         # check and the open would leave it). validate_path is left LIVE and only
         # counted: the descriptor re-check inside _open_private_model_dir is the
         # thing under test, so skipping a call to it would disable it.
-        monkeypatch.setattr(perceptron, "validate_path", count_the_recheck)
+        if perceptron._dir_fd_write_supported():
+            monkeypatch.setattr(perceptron, "validate_path", count_the_recheck)
+        else:
+            # Without the *at calls no descriptor pins where the files land, so
+            # the sandbox's own validate_tool_dir re-check (pathsec's, not the
+            # neutered module name) must be the layer that refuses instead.
+            real_tool_dir = pathsec.validate_tool_dir
+
+            def count_the_recheck(*args, **kwargs):
+                calls.append(args)
+                return real_tool_dir(*args, **kwargs)
+
+            monkeypatch.setattr(pathsec, "validate_tool_dir", count_the_recheck)
         monkeypatch.setattr(
             perceptron, "validate_tool_dir", lambda value, *a, **k: os.fspath(value)
         )
