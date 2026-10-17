@@ -328,6 +328,24 @@ def test_urlopen_honors_set_proxy_and_redirect_validation():
         urllib.request.install_opener(original_opener)
 
 
+def test_redirect_does_not_carry_proxy_credentials():
+    """ProxyHandler adds the credentials in a proxy URL to each request it
+    routes through that proxy, as an ordinary header that urllib copies onto a
+    redirect. The redirected request must not keep them: if it bypasses the
+    proxy (NO_PROXY), they would reach the target host. ProxyHandler adds them
+    again when it is proxied (#3109)."""
+    req = urllib.request.Request("http://93.184.216.34/index.xml")
+    req.add_header("Proxy-Authorization", "Basic YWxpY2U6c2VjcmV0")
+    req.add_header("User-Agent", "nltk-test")
+
+    new = pathsec._ValidatingRedirectHandler().redirect_request(
+        req, None, 302, "Found", {}, "http://93.184.216.34/moved.xml"
+    )
+
+    assert new.get_header("Proxy-authorization") is None
+    assert new.get_header("User-agent") == "nltk-test"
+
+
 def test_ssrf_dns_rebinding_blocked_at_connect(monkeypatch):
     """A hostname that resolves to a public IP at validation time but to a
     loopback IP at connect time (DNS rebinding) must still be blocked: the
