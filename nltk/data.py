@@ -1916,9 +1916,14 @@ def load(
         if tag not in json_tags:
             raise ValueError("Unknown json tag.")
     elif format == "yaml":
-        import yaml
+        from nltk.jsontags import safe_yaml_load
 
-        resource_val = yaml.safe_load(opened_resource)
+        # Bound size, depth and node count before PyYAML's recursive safe
+        # loader: a deep or large YAML resource otherwise raises an uncaught
+        # RecursionError or runs for minutes (safe_yaml_load refuses it).
+        resource_val = safe_yaml_load(
+            opened_resource, context=f"nltk.data.load({resource_url})"
+        )
     else:
         # The resource is a text format.
         binary_data = opened_resource.read()
