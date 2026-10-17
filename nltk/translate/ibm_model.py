@@ -41,6 +41,7 @@ from bisect import insort_left
 from collections import defaultdict
 from copy import deepcopy
 from math import ceil
+from numbers import Real
 
 
 def longest_target_sentence_length(sentence_aligned_corpus):
@@ -60,6 +61,25 @@ def longest_target_sentence_length(sentence_aligned_corpus):
 class IBMModel:
     """
     Abstract base class for all IBM models
+
+    ``lexical_floor`` controls the minimum lexical probability used by
+    the M-step and the default for missing translation-table entries.
+    ``None`` selects ``MIN_PROB``. A value of ``0.0`` gives the unsmoothed
+    lexical maximum-likelihood update for positive source totals, up to
+    floating-point rounding. It can produce zero probabilities: training
+    raises ``ZeroDivisionError`` if an E-step normalization total is zero.
+    Other probability tables and alignment-score guards still use
+    ``MIN_PROB``; this option does not select a different IBM model.
+
+    Positive floors do not reserve probability mass or renormalize the
+    estimates, so sums can exceed one. ``1e-7`` selects the GIZA++ lexical
+    floor, not full equivalence with GIZA++ or statistical smoothing.
+
+    Uniform lexical initialization is unchanged. Custom probability tables
+    keep their supplied values. When ``lexical_floor`` is explicitly set,
+    their lexical entries are copied with missing-entry defaults set to
+    that floor; with ``None``, their original lookup behavior is retained
+    until rows are updated by training.
     """
 
     # Avoid division by zero and precision errors by imposing a minimum
@@ -69,13 +89,26 @@ class IBMModel:
     # is tiny enough that the value of MIN_PROB can be treated as zero.
     MIN_PROB = 1.0e-12  # GIZA++ is more liberal and uses 1.0e-7
 
-    def __init__(self, sentence_aligned_corpus):
+    def __init__(self, sentence_aligned_corpus, lexical_floor=None):
+        """
+        :param sentence_aligned_corpus: Sentence-aligned parallel corpus
+        :type sentence_aligned_corpus: list(AlignedSent)
+        :param lexical_floor: Minimum lexical probability, a finite real
+            number in [0, 1], or ``None`` to use ``MIN_PROB``.
+        :type lexical_floor: float or None
+        """
+        floor = self.MIN_PROB if lexical_floor is None else lexical_floor
+        if isinstance(floor, bool) or not isinstance(floor, Real):
+            raise TypeError("lexical_floor must be a real number or None")
+        if not 0.0 <= floor <= 1.0:
+            raise ValueError("lexical_floor must be finite and between 0 and 1")
+        self.lexical_floor = float(floor)
         self.init_vocab(sentence_aligned_corpus)
         self.reset_probabilities()
 
     def reset_probabilities(self):
         self.translation_table = defaultdict(
-            lambda: defaultdict(lambda: IBMModel.MIN_PROB)
+            lambda: defaultdict(lambda: self.lexical_floor)
         )
         """
         dict[str][str]: float. Probability(target word | source word).
@@ -106,6 +139,17 @@ class IBMModel:
         that is aligned to NULL.
         Used in model 3 and higher.
         """
+
+    def _set_translation_table(self, table, lexical_floor):
+        # Preserve custom initialization unless the caller overrides its
+        # missing-entry defaults. Copy rows to avoid changing the input table.
+        if lexical_floor is None:
+            self.translation_table = table
+        else:
+            self.translation_table.update(
+                (t, defaultdict(lambda: self.lexical_floor, row))
+                for t, row in table.items()
+            )
 
     def set_uniform_probabilities(self, sentence_aligned_corpus):
         """
@@ -343,10 +387,24 @@ class IBMModel:
         return neighbors
 
     def maximize_lexical_translation_probabilities(self, counts):
+        """
+        Normalize lexical counts and apply ``lexical_floor``.
+
+        A zero-total source has no defined maximum-likelihood estimate;
+        its entries in updated rows are left at the floor, without a
+        uniform fallback. Targets absent from counts are left unchanged
+        by this method. Training normally reuses the same corpus; models
+        3--5 additionally reset their tables before this step.
+        """
         for t, src_words in counts.t_given_s.items():
+            # Unobserved pairs must not retain the previous uniform prior or
+            # explicit values. Keep the row sparse, with the selected floor.
+            self.translation_table[t] = defaultdict(lambda: self.lexical_floor)
             for s in src_words:
+                if counts.any_t_given_s[s] == 0:
+                    continue
                 estimate = counts.t_given_s[t][s] / counts.any_t_given_s[s]
-                self.translation_table[t][s] = max(estimate, IBMModel.MIN_PROB)
+                self.translation_table[t][s] = max(estimate, self.lexical_floor)
 
     def maximize_fertility_probabilities(self, counts):
         for phi, src_words in counts.fertility.items():

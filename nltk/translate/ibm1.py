@@ -105,7 +105,13 @@ class IBMModel1(IBMModel):
 
     """
 
-    def __init__(self, sentence_aligned_corpus, iterations, probability_tables=None):
+    def __init__(
+        self,
+        sentence_aligned_corpus,
+        iterations,
+        probability_tables=None,
+        lexical_floor=None,
+    ):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
         translation model.
@@ -126,14 +132,21 @@ class IBMModel1(IBMModel):
             ``translation_table``.
             See ``IBMModel`` for the type and purpose of this table.
         :type probability_tables: dict[str]: object
+
+        :param lexical_floor: Minimum lexical probability in [0, 1], or
+            ``None`` for ``MIN_PROB``. See ``IBMModel`` for initialization,
+            zero-probability, and normalization policies.
+        :type lexical_floor: float or None
         """
-        super().__init__(sentence_aligned_corpus)
+        super().__init__(sentence_aligned_corpus, lexical_floor=lexical_floor)
 
         if probability_tables is None:
             self.set_uniform_probabilities(sentence_aligned_corpus)
         else:
             # Set user-defined probabilities
-            self.translation_table = probability_tables["translation_table"]
+            self._set_translation_table(
+                probability_tables["translation_table"], lexical_floor
+            )
 
         for n in range(0, iterations):
             self.train(sentence_aligned_corpus)
