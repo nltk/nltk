@@ -18,11 +18,13 @@ from collections import defaultdict, deque
 from itertools import chain, combinations, islice, tee
 from pathlib import Path
 from pprint import pprint
+from urllib.parse import quote as _quote
 from urllib.request import (
     HTTPPasswordMgrWithDefaultRealm,
     ProxyBasicAuthHandler,
     ProxyDigestAuthHandler,
     ProxyHandler,
+    _parse_proxy,
     build_opener,
     getproxies,
     install_opener,
@@ -31,6 +33,7 @@ from urllib.request import (
 from nltk import redos
 from nltk.collections import *
 from nltk.internals import deprecated, raise_unorderable_types, slice_bounds
+from nltk.pathsec import _ProxyCredentialsRedirectHandler
 from nltk.pathsec import open as _secure_open
 from nltk.termsec import safe_print, sanitize_terminal
 
@@ -1415,11 +1418,20 @@ def set_proxy(proxy, user=None, password=""):
     If ``proxy`` is None then tries to set proxy from environment or system
     settings.
 
+    With a ``user``, the credentials are sent to the proxy preemptively, as
+    Basic authentication, with every request routed through it, including the
+    CONNECT that opens an HTTPS tunnel. urllib sends them only when both the
+    user name and the password are non-empty, so a proxy that requires
+    authentication for HTTPS (CONNECT) needs a non-empty password. Over plain
+    HTTP, a challenge from the proxy is still answered with an empty password.
+
     :param proxy: The HTTP proxy server to use. For example:
         'http://proxy.example.com:3128/'
     :param user: The username to authenticate with. Use None to disable
-        authentication.
-    :param password: The password to authenticate with.
+        authentication. A ``(user, password)`` tuple is also accepted.
+    :param password: The password to authenticate with. None means "".
+    :raises TypeError: if ``user`` or ``password`` is not a ``str`` (a ``str``
+        subclass is refused too). The installed opener is then left as it was.
     """
     if proxy is None:
         # Try and find the system proxy settings
@@ -1428,9 +1440,34 @@ def set_proxy(proxy, user=None, password=""):
         except KeyError as e:
             raise ValueError("Could not detect default proxy settings") from e
 
-    # Set up the proxy handler
-    proxy_handler = ProxyHandler({"https": proxy, "http": proxy})
-    opener = build_opener(proxy_handler)
+    if password is None:
+        password = ""
+    # Older documentation passed the credentials as one (user, password) tuple.
+    if isinstance(user, tuple) and len(user) == 2 and password == "":
+        user, password = user
+    # Only an exact str: a subclass can override the methods that quoting calls.
+    if user is not None and (type(user) is not str or type(password) is not str):
+        raise TypeError("set_proxy: user and password must be strings")
+
+    proxy_url = proxy
+    if user is not None:
+        # Put the credentials in the proxy URL (http://user:password@host:port).
+        # urllib sends those to the proxy with every request it routes there,
+        # including the CONNECT that opens an HTTPS tunnel, whereas
+        # ProxyBasicAuthHandler below only answers a 407 to a plain HTTP
+        # request (#3109). The host is taken with the parser ProxyHandler uses,
+        # so the credentials go to the host the requests go to; any credentials
+        # already in the URL are replaced. Quoting keeps an "@", ":" or "/" in
+        # the credentials from being read as part of the URL.
+        scheme, _user, _password, hostport = _parse_proxy(proxy)
+        credentials = _quote(user, safe="") + ":" + _quote(password, safe="")
+        proxy_url = f"{credentials}@{hostport}"
+        if scheme:
+            proxy_url = f"{scheme}://{proxy_url}"
+
+    # Set up the proxy handler, and keep its credentials off redirects.
+    proxy_handler = ProxyHandler({"https": proxy_url, "http": proxy_url})
+    opener = build_opener(proxy_handler, _ProxyCredentialsRedirectHandler())
 
     if user is not None:
         # Set up basic proxy authentication if provided
