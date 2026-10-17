@@ -17,18 +17,18 @@ pre-planted) is refused rather than followed.
 
 import os
 import shutil
-import tempfile
 import zipfile
 
 import pytest
 
 import nltk.data
 from nltk import pathsec
+from nltk.test.unit.conftest import make_home_dir
 
 
 @pytest.fixture
 def sandbox(monkeypatch):
-    base = tempfile.mkdtemp(prefix=".nltk_toctou_", dir=os.path.expanduser("~"))
+    base = make_home_dir(".nltk_toctou_")
     root = os.path.join(base, "root")
     outside = os.path.join(base, "outside")
     os.makedirs(root)

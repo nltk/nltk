@@ -1923,8 +1923,8 @@ def dtd_default_index(defaults=200, elements=2000):
 
 
 def namespace_index(uri_len=20000, names=5000):
-    # 5,001 elements, no attributes and a 20 KB token pass the index's own
-    # structure scan; only the xmlsec chokepoint stands before 200 MB of tags
+    # 5,001 elements, no attributes and a 20 KB token are under the index's
+    # ceilings; the expansion rule of xmlsec.screen stands before 200 MB of tags
     return (
         f'<nltk_data xmlns="{"u" * uri_len}"><packages>'
         + "".join(f"<p{i}/>" for i in range(names))
@@ -1941,7 +1941,10 @@ class TestIndexThroughXmlsec:
     def test_a_namespace_expanded_index_is_refused_small(self, box):
         root, outside, dl, server = box
         body = namespace_index()
-        downloader._check_index_structure(body)  # the first layer lets it by
+        # the index scan is xmlsec.screen under the index ceilings: it refuses
+        # the expansion itself now, where the old expat scan was blind to it
+        with pytest.raises(ValueError, match="expanded names"):
+            downloader._check_index_structure(body)
         server.body("/index.xml", body)
         outcome, peak = traced_peak(lambda: self._load(server.url("/index.xml"), dl))
         assert isinstance(outcome, ValueError), outcome

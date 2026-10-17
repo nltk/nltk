@@ -11,6 +11,7 @@ import tempfile
 import warnings
 from subprocess import PIPE
 
+from nltk import pathsec
 from nltk.data import staging_tempdir
 from nltk.internals import find_jar_iter, find_jars_within_path, java
 from nltk.parse.api import ParserI
@@ -353,7 +354,7 @@ class GenericStanfordParser(ParserI):
         finally:
             if input_file_name:
                 try:
-                    os.unlink(input_file_name)
+                    pathsec.unlink(input_file_name, context="StanfordParser")
                 except FileNotFoundError:
                     pass
                 except OSError:

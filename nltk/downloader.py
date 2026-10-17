@@ -180,6 +180,7 @@ from urllib.error import HTTPError, URLError
 from xml.etree import ElementTree
 
 import nltk
+from nltk import pathsec
 from nltk.data import _check_decompression_bomb
 from nltk.pathsec import ZipFile, _reject_colliding_members
 from nltk.pathsec import open as pathsec_open
@@ -187,6 +188,7 @@ from nltk.pathsec import urlopen, validate_path
 from nltk.termsec import safe_print, sanitize_terminal
 from nltk.util import acyclic_breadth_first
 from nltk.xmlsec import parse as safe_parse
+from nltk.xmlsec import screen
 
 # Ceilings on what the data server may hand us (CWE-400): the declared package
 # size comes from the same server, so it is capped too (the largest real package
@@ -274,67 +276,21 @@ def _bounded_body(stream, limit, what, deadline=None):
     return io.BytesIO(b"".join(chunks))
 
 
-class _StopScan(Exception):
-    """Ends the structure scan early; the real parse then decides."""
-
-
 def _check_index_structure(data):
     """Refuse an index whose parsed tree would dwarf its size (CWE-400).
 
-    Streams *data* through expat without building a tree and counts elements
-    and attributes, DTD defaults included, so no element count, attribute
-    count or single token beyond the ceilings above is ever materialised. An
-    entity declaration stops the scan: the real parser refuses it on its own.
+    :func:`nltk.xmlsec.screen` streams *data* through expat without building a
+    tree and counts elements and attributes, DTD defaults included, under the
+    index's own ceilings, lower than the module's, so no element count,
+    attribute count or single token beyond them is ever materialised. An
+    entity declaration is refused there as well.
     """
-    from xml.parsers import expat
-
-    parser = expat.ParserCreate()
-    seen = {"elements": 0, "attributes": 0, "mark": 0}
-
-    def _too_many(what, limit):
-        raise ValueError(
-            f"The data index declares more than {limit} {what}; refusing to "
-            "build it (CWE-400)"
-        )
-
-    def _start(name, attrs):
-        seen["elements"] += 1
-        seen["attributes"] += len(attrs)
-        if seen["elements"] > MAX_INDEX_ELEMENTS:
-            _too_many("elements", MAX_INDEX_ELEMENTS)
-        if seen["attributes"] > MAX_INDEX_ATTRIBUTES:
-            _too_many("attributes", MAX_INDEX_ATTRIBUTES)
-        seen["mark"] = parser.CurrentByteIndex
-
-    def _progress(*_args):
-        seen["mark"] = parser.CurrentByteIndex
-
-    def _stop(*_args):
-        raise _StopScan
-
-    parser.StartElementHandler = _start
-    parser.EndElementHandler = _progress
-    parser.CharacterDataHandler = _progress
-    parser.CommentHandler = _progress
-    parser.ProcessingInstructionHandler = _progress
-    parser.EntityDeclHandler = _stop
-    parser.ExternalEntityRefHandler = _stop
-    step = 64 * 1024
-    try:
-        for offset in range(0, len(data), step):
-            parser.Parse(bytes(data[offset : offset + step]), False)
-            fed = min(offset + step, len(data))
-            if fed - seen["mark"] > MAX_INDEX_TOKEN_BYTES:
-                raise ValueError(
-                    f"The data index holds a token longer than "
-                    f"{MAX_INDEX_TOKEN_BYTES} bytes; refusing to build it "
-                    "(CWE-400)"
-                )
-        parser.Parse(b"", True)
-    except (_StopScan, expat.ExpatError):
-        # Entities are refused, and malformed input reported, by the parse
-        # that follows; neither builds more than this scan already counted.
-        pass
+    screen(
+        data,
+        max_elements=MAX_INDEX_ELEMENTS,
+        max_attributes=MAX_INDEX_ATTRIBUTES,
+        max_token_bytes=MAX_INDEX_TOKEN_BYTES,
+    )
 
 
 def _refuse_unprintable(value, what):
@@ -743,12 +699,9 @@ class SelectDownloadDirMessage(DownloaderMessage):
 def _not_ours(st):
     """True when an installed entry, by its stat, is owned by neither this
     account nor root, or carries a group or world write bit: another account
-    could have rewritten it in place, same name and same size. POSIX only."""
-    if os.name != "posix":
-        return False
-    if st.st_uid not in (os.geteuid(), 0):
-        return True
-    return bool(st.st_mode & (stat.S_IWGRP | stat.S_IWOTH))
+    could have rewritten it in place, same name and same size. POSIX only;
+    the predicate is pathsec's own."""
+    return os.name == "posix" and not pathsec._private_stat(st)
 
 
 def _shared_install(download_dir):
@@ -765,6 +718,23 @@ def _shared_install(download_dir):
     home = os.path.realpath(os.path.expanduser("~"))
     target = os.path.realpath(download_dir)
     return not (target == home or target.startswith(home + os.sep))
+
+
+def _canonical_dir(path):
+    """*path* with its existing prefix resolved (symlinks and, on Windows, 8.3
+    aliases such as RUNNER~1) and any missing tail kept as written. The names
+    the downloader derives under it (the install lock, the .tmp file) are
+    removed through pathsec, whose syntax guard refuses an 8.3 alias, so they
+    are derived from the canonical form; only the existing prefix is resolved
+    because realpath of a missing path is unstable on Windows."""
+    head = os.path.abspath(path)
+    tail = []
+    while not os.path.lexists(head):
+        parent, name = os.path.split(head)
+        if parent == head:
+            break
+        head, tail = parent, [name] + tail
+    return os.path.join(os.path.realpath(head), *tail)
 
 
 def _make_install_dirs(download_dir, subdir):
@@ -1100,6 +1070,7 @@ class Downloader:
             progress += 100 * delta
 
     def _download_package(self, info, download_dir, force, extract=None):
+        download_dir = _canonical_dir(download_dir)
         if extract is None:
             extract = _shared_install(download_dir)
         yield StartPackageMessage(info)
@@ -1196,54 +1167,26 @@ class Downloader:
         POLL_INTERVAL = 1
 
         def _safe_remove(path):
+            # by name, never through a link; a missing name is fine
             try:
-                os.remove(path)
-            except FileNotFoundError:
-                pass
+                pathsec.unlink(path, context="Downloader._download_package")
             except OSError:
                 pass
 
         def _safe_rmtree(path):
-            # Never follow a symlinked directory while cleaning up: os.walk
-            # descends into a symlinked top regardless of ``followlinks``, so a
-            # pre-existing symlink at ``path`` (e.g. a planted unzip dir) would
-            # cause recursive deletion of the link's target *outside* the
-            # download directory (CWE-59 / CWE-22). Remove the link itself.
-            if os.path.islink(path):
-                _safe_remove(path)
-                return
-            if not os.path.isdir(path):
-                # A file or special entry standing where the package directory
-                # belongs is stale state like a link: removed, so the extraction
-                # that follows has its directory instead of failing on ENOTDIR.
+            # A link, file or special entry standing where the package
+            # directory belongs is stale state: removed by name, never followed
+            # (CWE-59 / CWE-22), so the extraction that follows has its
+            # directory instead of failing on ENOTDIR. A directory goes through
+            # pathsec.remove_tree, which never follows a link inside it either.
+            if os.path.islink(path) or not os.path.isdir(path):
                 if os.path.lexists(path):
                     _safe_remove(path)
                 return
-            # os.walk lists a directory and descends into it later by path, so
-            # a subdirectory swapped for a symlink in between is followed and
-            # its target emptied; the fd-based rmtree pins each directory.
-            if shutil.rmtree.avoids_symlink_attacks:
-                shutil.rmtree(path, ignore_errors=True)
-                return
-            for root, dirs, files in os.walk(path, topdown=False):
-                for name in files:
-                    try:
-                        os.remove(os.path.join(root, name))
-                    except OSError:
-                        pass
-                for name in dirs:
-                    full = os.path.join(root, name)
-                    # os.walk (followlinks=False) lists but does not descend
-                    # symlinked subdirs; remove the link, never its target.
-                    if os.path.islink(full):
-                        _safe_remove(full)
-                        continue
-                    try:
-                        os.rmdir(full)
-                    except OSError:
-                        pass
             try:
-                os.rmdir(path)
+                pathsec.remove_tree(
+                    path, context="Downloader._download_package", ignore_errors=True
+                )
             except OSError:
                 pass
 
@@ -1315,6 +1258,14 @@ class Downloader:
                     age = time.time() - os.stat(lock_filepath).st_mtime
                     if age >= MAX_ZOMBIE_TIME:
                         _safe_remove(lock_filepath)
+                        if _lock_exists():
+                            # a stale lock this account cannot remove would
+                            # otherwise be retried forever: report it instead
+                            yield ErrorMessage(
+                                info,
+                                f"Cannot remove the stale install lock {lock_filepath!r}",
+                            )
+                            return
                         continue
                 except FileNotFoundError:
                     continue
@@ -1482,7 +1433,9 @@ class Downloader:
                         context="Downloader._download_package",
                         required_root=download_dir,
                     )
-                    os.replace(tmp_filepath, filepath)
+                    pathsec.replace(
+                        tmp_filepath, filepath, context="Downloader._download_package"
+                    )
                     self._status_cache.pop(info.id, None)
                 except (OSError, ValueError, http.client.HTTPException) as e:
                     # A malformed status line, a truncated body or a refused URL
@@ -3563,7 +3516,7 @@ def _unzip_iter(
                     extracted += placed.st_size
                 if extracted > expected_size + UNZIPPED_SIZE_SLACK:
                     if placed is not None and stat.S_ISREG(placed.st_mode):
-                        os.remove(written)
+                        pathsec.unlink(written, context="Downloader._unzip_iter")
                     yield ErrorMessage(
                         filename,
                         f"Unzipped size blocked: extraction passed the "

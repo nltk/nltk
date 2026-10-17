@@ -249,7 +249,7 @@ def test_download_package_uses_scoped_pathsec_open(tmp_path):
     ) as pathsec_open_mock, unittest.mock.patch(
         "nltk.downloader.validate_path"
     ) as validate_path_mock, unittest.mock.patch(
-        "nltk.downloader.os.replace"
+        "nltk.downloader.pathsec.replace"
     ) as replace_mock, unittest.mock.patch(
         "nltk.downloader.os.makedirs"
     ), unittest.mock.patch(
@@ -298,7 +298,9 @@ def test_download_package_uses_scoped_pathsec_open(tmp_path):
             required_root=download_dir,
         )
 
-        replace_mock.assert_called_once_with(tmp_file, final_file)
+        replace_mock.assert_called_once_with(
+            tmp_file, final_file, context="Downloader._download_package"
+        )
 
         # Sanity check: the PR-specific path scoping does not change builtins.open.
         assert open is __builtins__["open"]

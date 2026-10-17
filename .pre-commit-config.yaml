@@ -136,3 +136,15 @@ repos:
       language: system
       pass_filenames: false
       always_run: true
+    - id: all-yaml-through-jsontags
+      name: every YAML deserialization routes through nltk.jsontags
+      description: >-
+        yaml.safe_load builds an unbounded object graph, so a deeply nested or
+        oversized document is a DoS (uncontrolled recursion CWE-674 / resource
+        exhaustion CWE-400). Fails on any yaml.load/safe_load/full_load call
+        outside nltk.jsontags itself; read through jsontags.safe_yaml_load /
+        safe_yaml_loads, which bound nesting depth, node count and size.
+      entry: python tools/check_all_yaml_through_jsontags.py
+      language: system
+      pass_filenames: false
+      always_run: true

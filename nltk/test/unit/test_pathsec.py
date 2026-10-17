@@ -18,6 +18,7 @@ import nltk.downloader  # We will inspect this module directly
 from nltk import pathsec
 from nltk.downloader import Downloader
 from nltk.sem.util import read_sents
+from nltk.test.unit.conftest import make_home_dir
 
 
 @pytest.fixture(autouse=True)
@@ -1320,7 +1321,7 @@ class TestInPlaceDataPathRestoreRevokesTrust:
         from pathlib import Path
 
         # $HOME, never a temp dir: the private per-user temp root is trusted
-        d = Path(tempfile.mkdtemp(prefix=".nltk_restore_probe_", dir=Path.home()))
+        d = Path(make_home_dir(".nltk_restore_probe_"))
         (d / "f.txt").write_text("x", encoding="utf-8")
         try:
             yield d, str(d / "f.txt")
@@ -1366,7 +1367,7 @@ def test_symlink_with_relative_parent():
     # A symlink whose target uses '..' must resolve, as long as every
     # directory on the way is private. Stage under $HOME, not /tmp:
     # is_private_dir deliberately rejects world-writable sticky dirs.
-    base = tempfile.mkdtemp(prefix="nltk-pathsec-", dir=os.path.expanduser("~"))
+    base = make_home_dir("nltk-pathsec-")
     try:
         os.chmod(base, 0o700)
         real_dir = os.path.join(base, "real")
@@ -1391,7 +1392,7 @@ def test_argv0_is_caller_supplied_name():
     import subprocess
     import sys
 
-    base = tempfile.mkdtemp(prefix="nltk-pathsec-", dir=os.path.expanduser("~"))
+    base = make_home_dir("nltk-pathsec-")
     try:
         os.chmod(base, 0o700)
         bin_dir = os.path.join(base, "bin")

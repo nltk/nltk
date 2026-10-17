@@ -9,7 +9,10 @@ a waiting block is charged its wall time, so a hang that sleeps or blocks is
 still seen. Real sleeps and real spinning; only the runner regimes at the
 end replay on a fake clock, through the real measurement."""
 
+import gc
+import sysconfig
 import time
+import weakref
 
 import pytest
 
@@ -123,6 +126,108 @@ def test_scaling_samples_pair_each_big_run_with_the_small_block_beside_it():
         assert 0.4 <= s.big_cpu <= 1.6 and s.big_wall >= s.big_cpu * 0.9, s
         assert 0 < s.small_rate < 0.1 and 0 < s.big_rate < 0.1, s
         assert "ScalingSample(" in repr(s)
+
+
+def test_scaling_samples_freeze_the_heap_held_before_them():
+    # the collections run between the blocks must not walk what earlier tests
+    # left alive: a pytest worker's full collection cost up to 0.75 s
+    held = [[] for _ in range(20_000)]
+    seen = []
+
+    def op(n):
+        seen.append(gc.get_freeze_count())
+        spin(n / 1_000_000)
+
+    timing.scaling_samples(op, 20_000, 80_000, reps=2)
+    assert len(seen) == 2 * (timing.SMALL_BLOCK + 1), seen
+    assert min(seen) >= len(held), seen
+    # thawed after; CPython 3.12 parks a few hundred immortal objects there
+    assert gc.get_freeze_count() < len(held)
+
+
+def test_scaling_samples_run_only_young_collections_inside_a_timed_block():
+    # a full collection's cost follows the heap, so none runs in a block; the
+    # young ones run and reclaim short-lived cycles as they come, so memory
+    # stays bounded (pausing the collector let one block keep 2 GB of cycles)
+    class Node:
+        pass
+
+    seen, reclaimed, inside = [], [], [False]
+
+    def watch(phase, info):
+        if phase == "start" and inside[0]:
+            seen.append(info["generation"])
+
+    def op(n):
+        inside[0] = True
+        try:
+            # a large live structure, as a big parse holds, would set off a
+            # full collection; short-lived cycles beside it
+            live = [[] for _ in range(n * 100_000)]
+            refs = []
+            for _ in range(n * 5_000):
+                node = Node()
+                node.self = node
+                refs.append(weakref.ref(node))
+            reclaimed.append(sum(ref() is None for ref in refs))
+            del live
+        finally:
+            inside[0] = False
+
+    gc.callbacks.append(watch)
+    try:
+        timing.scaling_samples(op, 1, 4, reps=1)
+    finally:
+        gc.callbacks.remove(watch)
+    assert 2 not in seen and len(reclaimed) == timing.SMALL_BLOCK + 1, seen
+    # the free-threaded collector has one generation, paced by the live heap,
+    # and never reads the third threshold: there the freeze alone applies
+    if not sysconfig.get_config_var("Py_GIL_DISABLED"):
+        assert seen and min(reclaimed) > 0, (seen, reclaimed)
+
+
+def test_scaling_samples_restore_the_callers_collector_thresholds():
+    thresholds = gc.get_threshold()
+    gc.set_threshold(1_000, 5, 7)
+    try:
+        callers = gc.get_threshold()  # the free-threaded build reports no third
+        timing.scaling_samples(lambda n: None, 1, 4, reps=1)
+        assert gc.get_threshold() == callers
+    finally:
+        gc.set_threshold(*thresholds)
+
+
+def test_scaling_samples_collect_a_blocks_cycles_before_the_next_block():
+    # the full collection runs as each block ends, so cyclic garbage the
+    # young collections promoted never piles up across the blocks
+    class Node:
+        pass
+
+    refs, alive_at_big = [], []
+
+    def op(n):
+        if n == 4:
+            alive_at_big.append(sum(ref() is not None for ref in refs))
+        node = Node()
+        node.self = node
+        refs.append(weakref.ref(node))
+
+    timing.scaling_samples(op, 1, 4, reps=2)
+    assert alive_at_big == [0, 0], alive_at_big
+    assert all(ref() is None for ref in refs)
+
+
+def test_scaling_samples_thaw_the_heap_when_the_op_raises():
+    held = [[] for _ in range(20_000)]
+    thresholds = gc.get_threshold()
+
+    def op(n):
+        raise RuntimeError("the op failed")
+
+    with pytest.raises(RuntimeError, match="the op failed"):
+        timing.scaling_samples(op, 1, 4)
+    assert gc.get_freeze_count() < len(held)
+    assert gc.get_threshold() == thresholds
 
 
 def test_calibration_rate_reads_the_chunk_cost_after_a_resolvable_run():
@@ -943,6 +1048,22 @@ def test_paired_ratio_reads_two_slowed_big_runs_of_three_as_the_macos_cell_did()
     assert min(readings) < timing.QUADRATIC_RATIO <= max(readings)
     five = red + [red[1], red[1]]
     assert timing.paired_ratio(five, cpu_bound=True) == pytest.approx(4.03, abs=0.01)
+
+
+def test_paired_ratio_reads_three_big_runs_carrying_full_collections_as_red():
+    # Python 3.11 on macOS, job 114648352448: three of five big runs carried the
+    # worker's full collections, which no unit sees; none runs in a block now
+    red = [
+        _sample(0.117, 0.975, 0.00179, 0.00160, small_wall=0.172, big_wall=1.670),
+        _sample(0.123, 1.066, 0.00159, 0.00161, small_wall=0.201, big_wall=1.920),
+        _sample(0.149, 0.490, 0.00175, 0.00180, small_wall=0.499, big_wall=1.012),
+        _sample(0.125, 1.041, 0.00173, 0.00178, small_wall=0.196, big_wall=1.914),
+        _sample(0.120, 0.415, 0.00171, 0.00175, small_wall=0.178, big_wall=0.515),
+    ]
+    assert timing.paired_ratio(red, cpu_bound=True) == pytest.approx(8.11, abs=0.05)
+    assert _min_of_each_side(red) == pytest.approx(3.55, abs=0.01)
+    readings = timing._per_rep_ratios(red, 0.1)[0]
+    assert sum(r >= timing.QUADRATIC_RATIO for r in readings) == 3, readings
 
 
 @pytest.mark.parametrize(
