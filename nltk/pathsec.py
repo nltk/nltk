@@ -1963,19 +1963,61 @@ class _SafeHTTPSConnection(http.client.HTTPSConnection):
         self.sock = self._context.wrap_socket(sock, server_hostname=self.host)
 
 
+def _routed_to(req, proxy_hosts):
+    """True when ProxyHandler routed *req* to one of *proxy_hosts* (host:port
+    as it sets them): a plain HTTP request sent to the proxy, or the CONNECT
+    of an HTTPS tunnel through it."""
+    return req.host in proxy_hosts and (req.has_proxy() or bool(req._tunnel_host))
+
+
 class _SafeHTTPHandler(urllib.request.HTTPHandler):
+    """Pins every connection to its validated address, except one to a proxy
+    in *proxy_hosts*, which the operator trusts by opting in to proxied
+    fetches."""
+
+    def __init__(self, proxy_hosts=()):
+        super().__init__()
+        self._proxy_hosts = frozenset(proxy_hosts)
+
     def http_open(self, req):
+        if _routed_to(req, self._proxy_hosts):
+            return self.do_open(http.client.HTTPConnection, req)
         return self.do_open(_SafeHTTPConnection, req)
 
 
 class _SafeHTTPSHandler(urllib.request.HTTPSHandler):
+    """The HTTPS form of :class:`_SafeHTTPHandler`: a tunnel through a trusted
+    proxy is opened as urllib opens it, every other connection is pinned."""
+
+    def __init__(self, proxy_hosts=()):
+        super().__init__()
+        self._proxy_hosts = frozenset(proxy_hosts)
+
     def https_open(self, req):
         kwargs = {}
         if getattr(self, "_context", None) is not None:
             kwargs["context"] = self._context
         if getattr(self, "_check_hostname", None) is not None:
             kwargs["check_hostname"] = self._check_hostname
-        return self.do_open(_SafeHTTPSConnection, req, **kwargs)
+        connection = _SafeHTTPSConnection
+        if _routed_to(req, self._proxy_hosts):
+            connection = http.client.HTTPSConnection
+        return self.do_open(connection, req, **kwargs)
+
+
+def _proxy_hosts(proxies):
+    """The host:port of each http and https proxy in *proxies*, unquoted as
+    ProxyHandler sets it on a request it routes there. A URL that does not
+    parse is left out; ProxyHandler raises its own error for it."""
+    hosts = set()
+    for scheme, proxy in proxies.items():
+        if scheme not in ("http", "https"):
+            continue
+        try:
+            hosts.add(unquote(urllib.request._parse_proxy(proxy)[3]))
+        except ValueError:
+            continue
+    return hosts
 
 
 def _proxied_fetch_allowed():
@@ -2047,6 +2089,7 @@ def urlopen(url, *args, **kwargs):
     # (Reusing instances overwrites their .parent, breaking the global opener)
     proxied = False
     has_proxy_handler = False
+    proxy_hosts = set()
     if urllib.request._opener is not None:
         for handler in urllib.request._opener.handlers:
             if isinstance(handler, urllib.request.ProxyHandler):
@@ -2055,6 +2098,7 @@ def urlopen(url, *args, **kwargs):
                 isolated_proxies = dict(handler.proxies) if handler.proxies else {}
                 if isolated_proxies:
                     proxied = True
+                proxy_hosts |= _proxy_hosts(isolated_proxies)
                 handlers.append(urllib.request.ProxyHandler(isolated_proxies))
             elif isinstance(handler, urllib.request.ProxyBasicAuthHandler):
                 handlers.append(urllib.request.ProxyBasicAuthHandler(handler.passwd))
@@ -2066,21 +2110,22 @@ def urlopen(url, *args, **kwargs):
     # getproxies(). Treat that as proxied too -- but only when a proxy would
     # actually carry *this* URL, so NO_PROXY alone does not falsely block every
     # fetch (issue #3748). When it is genuinely proxied, the proxy is the egress
-    # that resolves names and performs the CONNECT tunnel; the connect-time
-    # pinning handlers cannot tunnel and would break proxied HTTPS.
+    # that resolves names and performs the CONNECT tunnel, which the pinning
+    # handlers leave to urllib for a configured proxy only.
     if not proxied and not has_proxy_handler and _env_proxy_carries(url_str):
         proxied = True
+        env_proxies = urllib.request.getproxies()
+        proxy_hosts |= _proxy_hosts(env_proxies)
+        handlers.append(urllib.request.ProxyHandler(env_proxies))
 
     if not proxied:
         # No proxy in effect: NLTK makes the connection itself, so pin the
         # validated IP (a rebinding hostname cannot be re-resolved to an internal
         # address at connect time). Add an explicit empty ProxyHandler so
         # build_opener() does not silently re-enable environment proxies, which
-        # the pinning handlers cannot tunnel through.
+        # the pinning handlers would not trust.
         if not has_proxy_handler:
             handlers.append(urllib.request.ProxyHandler({}))
-        handlers.append(_SafeHTTPHandler())
-        handlers.append(_SafeHTTPSHandler())
     else:
         # Proxied: the proxy resolves the name and performs the egress, so the
         # earlier validate_network_url() only reflects NLTK's *local* view of the
@@ -2090,6 +2135,10 @@ def urlopen(url, *args, **kwargs):
         # asserted the proxy is trusted.
         _reject_unpinnable_proxied_fetch(url_str)
 
+    # Even under a trusted proxy, a request urllib does not route to it (NO_PROXY,
+    # a redirect that leaves the proxy) is NLTK's own connection: pin it too.
+    handlers.append(_SafeHTTPHandler(proxy_hosts))
+    handlers.append(_SafeHTTPSHandler(proxy_hosts))
     opener = urllib.request.build_opener(*handlers)
     return opener.open(url, *args, **kwargs)
 

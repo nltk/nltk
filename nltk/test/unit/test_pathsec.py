@@ -661,21 +661,40 @@ def test_proxy_with_unbypassed_target_still_fails_closed(monkeypatch):
         pathsec.urlopen("http://raw.githubusercontent.com/x")
 
 
-def test_env_proxy_opt_in_skips_pinning_handlers(monkeypatch):
+def test_env_proxy_opt_in_pins_all_but_the_env_proxy(monkeypatch):
     """When the operator opts into trusting the proxy, the proxy is the egress:
-    the pinning handlers must NOT be installed (they cannot do the CONNECT
-    tunnel) and we must not force an empty ProxyHandler that disables the env
-    proxy. Gated behind the explicit opt-in that fail-closed now requires."""
-    monkeypatch.setattr(
-        urllib.request, "getproxies", lambda: {"http": "http://proxy.local:3128"}
-    )
+    the env proxy is applied (never an empty ProxyHandler that disables it), and
+    the pinning handlers leave only a connection to that proxy, the CONNECT
+    tunnel included, to urllib. Any other connection is still pinned. Gated
+    behind the explicit opt-in that fail-closed now requires."""
+    proxies = {"http": "http://proxy.local:3128"}
+    monkeypatch.setattr(urllib.request, "getproxies", lambda: dict(proxies))
     monkeypatch.setattr(pathsec, "ALLOW_PROXIED_FETCH", True)
     handlers = _capture_urlopen_handlers(monkeypatch)
 
-    assert not any(isinstance(h, pathsec._SafeHTTPHandler) for h in handlers)
-    assert not any(isinstance(h, pathsec._SafeHTTPSHandler) for h in handlers)
-    # We did not append our own ProxyHandler({}); build_opener adds the env one.
-    assert not any(isinstance(h, urllib.request.ProxyHandler) for h in handlers)
+    proxy_handlers = [h for h in handlers if isinstance(h, urllib.request.ProxyHandler)]
+    assert len(proxy_handlers) == 1 and proxy_handlers[0].proxies == proxies
+    pinning = [
+        h
+        for h in handlers
+        if isinstance(h, (pathsec._SafeHTTPHandler, pathsec._SafeHTTPSHandler))
+    ]
+    assert len(pinning) == 2
+    assert all(h._proxy_hosts == {"proxy.local:3128"} for h in pinning)
+
+
+def test_proxy_hosts_are_the_hosts_proxyhandler_routes_to():
+    """The trusted proxy hosts are taken with ProxyHandler's own parser, so they
+    match the host it sets on a request: credentials, a missing scheme and an
+    IPv6 literal are handled, and only the http and https proxies count."""
+    proxies = {
+        "http": "http://alice:p%40ss@proxy.local:3128/?next=http://decoy:9",
+        "https": "[::1]:3129",
+        "ftp": "http://ftp-proxy.local:21",
+        "no": "127.0.0.1,localhost",
+    }
+    assert pathsec._proxy_hosts(proxies) == {"proxy.local:3128", "[::1]:3129"}
+    assert pathsec._proxy_hosts({"http": "http:/no-authority"}) == set()
 
 
 def test_proxied_fetch_does_not_reach_internal_target(monkeypatch):
