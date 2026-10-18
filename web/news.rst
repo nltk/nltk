@@ -4,38 +4,50 @@ Release Notes
 2026
 ----
 
-NLTK 3.10.4 release: September 2026
+NLTK 3.10.4 release: October 2026
 
-- Fix develop CI: register data roots for benign save/IO tests broken by pathsec hardening
-- Add tests covering already-merged pathsec/security guards
-- Harden nltk.tbl.demo model load/save through picklesec and pathsec
-- Harden malt and stanford parser wrappers: validate binary/model/IO paths and argv
-- Route corpus-reader scratch tempfiles through a data root and label framenet path refusals
-- Stage weka scratch files in a data root and validate the WEKAHOME jar path
-- Harden tagger model loads and tool paths (perceptron/crf/hunpos/stanford)
-- Harden stanford tokenizer/segmenter wrappers: validate jar/model paths and argv
-- Harden the VERSION read in nltk package init with pathsec.open_package_resource
-- Canonicalize obfuscated numeric IPv4 in the SSRF guard (CWE-918)
-- Stage boxer scratch input inside an nltk.data root
-- Add staging_tempdir and tighten data.py zip/staging guards
-- Pin maxent scratch files to a data root and validate scratch IO
-- Validate the NE chunker save_params destination through the tool-directory guard
-- Harden nltk.xmlsec.parse: read filename sources through pathsec.open
-- Harden downloader Package attributes and extraction against traversal/Zip-Slip
-- Harden path/resource/tool validation in nltk.pathsec
-- Deserialize chat80 shelve values through the restricted unpickler (RCE fix)
-- Bound RegexpStemmer's caller-supplied pattern against ReDoS
-- Refuse CWD-relative matches for bare names in find_file/find_dir (CWE-427)
-- Bound re_show's caller-supplied regex against ReDoS (CWE-1333)
-- Fix internals.doctest to match the hardened _validate_java_options allowlist
-- Harden pickle deserialization (picklesec) against arbitrary-code-execution gadgets
-- Bound decompression entry points in nltk (zip/gzip layers + pathsec.ZipFile + weka), CWE-409
-- Harden internals.java() (CWE-88): options, classpath, env, discovery; route MaltParser through it
+This release routes every file path, archive, download, URL fetch and external program through one sandbox that keeps reads and writes inside the trusted data directories, refuses path traversal, symlink escapes and decompression bombs, blocks requests to internal network addresses, and runs Java and other third-party tools only from trusted absolute locations with validated options and input. Pickled models now load through a restricted unpickler, XML and JSON parsing are hardened, and regular expressions, recursion and slow algorithms in the tokenizers, parsers, stemmers and corpus readers are bounded against denial-of-service input. Text that NLTK writes to the terminal, to CSV files, to the WordNet browser and to third-party tool input is sanitized against injection.
+
+Security changes you may notice
+
+Every refusal below raises with a message that starts with "Security Violation" and names the check, so a failure is easy to search for (PR #3877).
+
+- Data directories (nltk.pathsec, nltk.data): corpora, models and every other resource are read and written only inside the directories listed in nltk.data.path. A path that leaves a data root, a symlink that points out of one, and a NUL byte or encoded traversal in a resource name are refused. A data root, or a directory on the way to a resource, that another account can write to is skipped with a warning naming the directory and the remedy. Keep private data in a private directory and add it to nltk.data.path; /tmp is not a data root. Model save and load methods (perceptron, maxent, named-entity chunker, Weka, crf, hunpos, Stanford) accept destinations inside a data root only
+- Downloader: downloaded package archives stay private to the installing account (0600). An install another account must read is extracted: a download made as root or outside the installing account's home extracts on its own, and nltk.download(..., extract=True) / python -m nltk.downloader --extract (or --no-extract) decide explicitly. This also unpacks the packages the index leaves zipped (wordnet, omw-1.4 ...); the extracted files are readable by every account and are found before the archive. find() names an archive it cannot read and says how to extract it instead of reporting it "not found". The downloader installs only into directories no other account can write to, treats an archive another account owns or can write to as stale and downloads it afresh, extracts only from an archive no other account could have changed since its checksum was verified, bounds the size of what it fetches, and refuses index entries and archive members that would write outside the package directory
+- Pickles: nltk.data.load(..., format="pickle") reconstructs plain data only; a pickle that names any class or function is refused. Model loaders that need classes use an explicit allowlist of audited globals, so a gadget such as os.system can never be reconstructed from a model file. chat80 shelve values load the same way
+- XML, JSON and YAML: nltk.xmlsec refuses any document that declares an entity or references an external one (billion-laughs, external-entity and DTD attacks) and bounds the tree depth, and every corpus XML view, the downloader index, Toolbox and internals parse through it. JSON resources load with a depth and size bound; YAML (the markdown corpus front matter and nltk.data.load(..., format="yaml")) loads through a bounded safe loader. Oversized or too deeply nested input raises ValueError naming the limit
+- Regular expressions (nltk.redos): every regular expression NLTK compiles, including one you pass to RegexpTokenizer, RegexpStemmer, RegexpParser, re_show, TokenSearcher.findall, tgrep, nltk.help tag-set lookups and the concordance and nemo GUIs, now goes through nltk.redos on the regex engine. A pattern longer than 100,000 characters, nested more than 100 deep, with more than 1,000 capturing groups or an excessive repetition product is refused with nltk.redos.error, a subclass of re.error; a match that runs longer than nltk.redos.DEFAULT_TIMEOUT (5 seconds) raises TimeoutError instead of hanging. Patterns keep re syntax; match objects are the regex engine's
+- Regular expressions made linear: the leading-run and re-anchoring patterns that a timeout cannot catch were rewritten or bounded in the word, Treebank, blankline, TextTiling, toktok and syllable tokenizers, the readline of corpus streams, the CoNLL SRL, TIMIT, senseval, pl196x, NKJP, Alpino, YCOE, IEER, ACE, VerbNet, reviews and Lin readers, relextract, the valuation parser, the CCG lexicon parser, dependency grammars and chomsky_normal_form, each verified on the real corpus
+- Size, depth and time bounds: trees deeper than nltk.tree.MAX_TREE_DEPTH (500), WordNet and other relation walks deeper than nltk.util.MAX_RECURSION_DEPTH (500), tgrep deeper than 50, Toolbox deeper than 500, dependency graphs deeper than 200, are refused with ValueError naming the limit rather than exhausting the stack, and the stemmers, distance metrics, skipgrams, parsers and grammar transforms run in linear or bounded time with identical output for legitimate input. chart_parse stops after nltk.parse.chart.DEFAULT_MAX_TIME (5 seconds of wall-clock, needed only for feature grammars; max_time=None disables it). Tree.__repr__ no longer recurses, so a deep accepted tree prints
+- External tools and Java: a tool binary is resolved from an absolute path or a trusted search path only, never from the current directory; the binary, its directory and the model and data files handed to it must not be writable by another account (symlinked and multi-call executables such as a packaged Graphviz dot are supported). java() accepts a main class as the first argument only (no -jar, @argfile or .java source file), validates its options against an allowlist, and loads jars only from a data root unless NLTK_ALLOW_UNSAFE_JARS=1 opts out with a warning. CoreNLP server options are allowlisted. Stanford, Malt, Senna, hunpos, Prover9, megam, TADM, Weka and crf wrappers validate their paths and the text they pipe to the tool against line and argument injection
+- Network: the downloader, nltk.data.load of a URL and the CHILDES reader fetch through pathsec.urlopen, which refuses addresses that are not globally routable (loopback, private, link-local and multicast, including tunnelled and obfuscated forms), pins the validated address for the connection, allows file:// with a local authority only, and refuses a proxied fetch unless NLTK_ALLOW_PROXIED_URLOPEN=1 (or nltk.pathsec.ALLOW_PROXIED_FETCH = True) asserts the proxy is trusted. The CoreNLP client talks to its local server with requests and is not affected
+- Terminal, CSV, DOT and HTML output: every print in the library goes through nltk.termsec.safe_print, which renders control characters, escape sequences and unbalanced bidi overrides from corpus text as visible \xNN escapes instead of letting them reach the terminal. The CSV files the twitter and sentiment helpers write neutralise formula-leading and control-sequence cells, AlignedSent DOT labels are escaped, the WordNet browser escapes corpus text, and nltk.data.load's verbose output no longer prints the full resource URL
+- Corpus stores and encodings: the PanLex Lite and chat80 sqlite stores open read-only on a pinned descriptor with their schema screened and a statement step budget, chat80 shelves are read by a key manifest, Toolbox SFM markers are sanitised, and a resource encoding that is not a text codec (bz2_codec and friends) is refused
+- Package contents: the wheel no longer ships nltk.test.unit (the attack harnesses, advisory probes and their fixtures), so pip install nltk is about half the size and import nltk.test.unit works from a source checkout or the sdist only. The doctests under nltk.test still ship
+
+Security test and CI infrastructure
+
+- Attack and regression harnesses, advisory probes, the sandbox conftest fixtures, the pre-commit guards (no unsandboxed open, every regex through redos, every pickle through picklesec, every print through safe_print), load-invariant CPU-time timing rules, CI matrix and runner fixes, pinned third-party downloads, and the AUTHORS update
+
+Other changes
+
+- Added RTL language syntactic tree visualization support
+- Fix #3394: Ensure punkt_tab is downloaded when punkt is requested
+- Show README.md as the PyPI long description
+- Add stopwords.words("english-extended")
+- Krippendorff's alpha: treat placeholder labels as missing data (#2865, #2732)
 - Fix shared defaults in chat80 Concept
 - Fix Java wrappers decoding str output from java() (universal_newlines)
-- Stabilize multiprocessing test timeouts and context handling
-- Fix ARFF label injection in Weka classifier
-- Prevent infinite loop from cyclic collection indices
+- Prevent IndexError in Hungarian stemmer on empty string
+- Isolate MTE tag filters per view
+- Fix newline in ellipsis tokens in TweetTokenizer
+- Isolate default WordNet reference relations
+- Fix resolution paths that cancel distinct literals
+- Fix UTF-8 text preprocessing in NKJP corpus reader
+- Remove shadowed FeatStruct._walk stub and preserve its docstring
+- Count all increasing pairs in RIBES kendall_tau
+- Surface the CoreNLP server's reason for a non-2xx answer
+- Fix DependencyGraph cycle detection, which returned False on every parsed graph
 
 NLTK 3.10.3 release: August 2026
 
