@@ -1411,12 +1411,6 @@ def binary_search_file(file, key, cache=None, cacheDepth=-1):
 ######################################################################
 
 
-def _has_control(text):
-    """True if *text* holds a character RFC 7617 bars from Basic credentials:
-    a C0 control character or DEL."""
-    return any(ord(char) < 0x20 or ord(char) == 0x7F for char in text)
-
-
 def set_proxy(proxy, user=None, password=""):
     """
     Set the HTTP proxy for Python to download through.
@@ -1438,10 +1432,6 @@ def set_proxy(proxy, user=None, password=""):
     :param password: The password to authenticate with. None means "".
     :raises TypeError: if ``user`` or ``password`` is not a ``str`` (a ``str``
         subclass is refused too). The installed opener is then left as it was.
-    :raises ValueError: if Basic authentication cannot carry the credentials
-        (RFC 7617): a ``:`` in the user name, which the proxy would read as the
-        start of the password, or a control character in either. The installed
-        opener is then left as it was.
     """
     if proxy is None:
         # Try and find the system proxy settings
@@ -1458,13 +1448,6 @@ def set_proxy(proxy, user=None, password=""):
     # Only an exact str: a subclass can override the methods that quoting calls.
     if user is not None and (type(user) is not str or type(password) is not str):
         raise TypeError("set_proxy: user and password must be strings")
-    # Basic joins them with ":", so a ":" in the user name would make the proxy
-    # read other credentials; the message never echoes them.
-    if user is not None and (":" in user or _has_control(user + password)):
-        raise ValueError(
-            "set_proxy: Basic authentication cannot carry a user name with ':' "
-            "or a control character in the credentials (RFC 7617)"
-        )
 
     proxy_url = proxy
     if user is not None:
