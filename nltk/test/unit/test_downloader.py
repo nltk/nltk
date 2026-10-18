@@ -2,6 +2,8 @@ import hashlib
 import io
 import os
 import shutil
+import subprocess
+import sys
 import unittest
 import unittest.mock
 import xml.etree.ElementTree as ET
@@ -9,6 +11,7 @@ from urllib.error import URLError
 
 import pytest
 
+import nltk
 from nltk import download
 from nltk.downloader import Downloader, ErrorMessage, Package, build_index
 
@@ -179,6 +182,34 @@ def test_retry_prompt_y_after_an_index_failure_retries_the_request(
     assert output.getvalue().count("Error installing package. Retry? [n/y/e]") == 2
     assert urlopen.call_count == 2
     assert status is True and downloader._errors is True
+
+
+def run_python(cwd, *args):
+    """Run this checkout's nltk in a child Python, with stdin at EOF and the
+    text shell forced, as in a Docker or CI build without a display."""
+    root = os.path.dirname(os.path.dirname(os.path.abspath(nltk.__file__)))
+    env = dict(os.environ, PYTHONPATH=root, PYTHONSAFEPATH="1")
+    env["NLTK_DOWNLOADER_FORCE_INTERACTIVE_SHELL"] = "true"
+    return subprocess.run(
+        [sys.executable, *args],
+        cwd=cwd,
+        env=env,
+        stdin=subprocess.DEVNULL,
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+
+
+def test_the_command_line_shell_quits_at_eof(tmp_path):
+    """``python -m nltk.downloader`` with no package opens the shell. With
+    stdin at EOF its prompt quits instead of ending in an EOFError traceback,
+    and nothing is fetched or written."""
+    proc = run_python(tmp_path, "-m", "nltk.downloader", "-d", str(tmp_path))
+    assert proc.returncode == 0, proc.stderr
+    assert "Traceback" not in proc.stderr, proc.stderr
+    assert proc.stdout.count("Downloader> ") == 1
+    assert os.listdir(tmp_path) == []
 
 
 def test_build_index(tmp_path):

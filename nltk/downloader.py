@@ -305,6 +305,18 @@ def _refuse_unprintable(value, what):
         )
 
 
+def _answer(prompt="", at_eof=""):
+    """``input(prompt)``, or *at_eof* when nobody can answer: stdin is at EOF
+    or missing, as in a Docker or CI build (#3167), and input() raises
+    EOFError, or RuntimeError for a lost sys.stdin. By default that is the
+    answer an empty line gives; a menu that asks again on an empty line passes
+    the answer that leaves it, so it cannot ask forever."""
+    try:
+        return input(sanitize_terminal(prompt))
+    except (EOFError, RuntimeError):
+        return at_eof
+
+
 def _one_line_each(text):
     """Sanitise every line of *text* on its own, so no line break survives
     inside one and bidi nesting is balanced per displayed line (CWE-150)."""
@@ -907,7 +919,7 @@ class Downloader:
                 safe_print("  [{}] {} {}".format(prefix, info.id.ljust(20, "."), name))
                 lines += len(name.split("\n"))  # for more_prompt
                 if more_prompt and lines > 20:
-                    user_input = input("Hit Enter to continue: ")
+                    user_input = _answer("Hit Enter to continue: ")
                     if user_input.lower() in ("x", "q"):
                         return
                     lines = 0
@@ -1564,13 +1576,8 @@ class Downloader:
                     self._errors = True
                     if not quiet:
                         print_to("Error installing package. Retry? [n/y/e]")
-                        try:
-                            choice = input().strip()
-                        except (EOFError, RuntimeError):
-                            # Nobody can answer: stdin is at EOF or missing, as
-                            # in a Docker or CI build (#3167). Take the answer
-                            # an empty line gives, "n": do not retry.
-                            choice = "n"
+                        # Nobody to answer (#3167): an empty line, "n", go on.
+                        choice = _answer().strip()
                         if choice in ["y", "Y"]:
                             # A failed index lookup carries an id or nothing,
                             # not a Package: retry what was asked for.
@@ -2052,7 +2059,7 @@ class DownloaderShell:
                 "h) Help",
                 "q) Quit",
             )
-            user_input = input("Downloader> ").strip()
+            user_input = _answer("Downloader> ", at_eof="q").strip()
             if not user_input:
                 safe_print()
                 continue
@@ -2093,7 +2100,7 @@ class DownloaderShell:
             while True:
                 safe_print()
                 safe_print("Download which package (l=list; x=cancel)?")
-                user_input = input("  Identifier> ")
+                user_input = _answer("  Identifier> ")
                 if user_input.lower() == "l":
                     self._ds.list(
                         self._ds.download_dir,
@@ -2133,7 +2140,7 @@ class DownloaderShell:
                     safe_print("  [ ] {} {}".format(pid.ljust(20, "."), name))
                 safe_print()
 
-                user_input = input("  Identifier> ")
+                user_input = _answer("  Identifier> ")
                 if user_input.lower() == "o":
                     for pid, pname in stale_packages:
                         try:
@@ -2173,11 +2180,11 @@ class DownloaderShell:
             self._simple_interactive_menu(
                 "s) Show Config", "u) Set Server URL", "d) Set Data Dir", "m) Main Menu"
             )
-            user_input = input("Config> ").strip().lower()
+            user_input = _answer("Config> ", at_eof="m").strip().lower()
             if user_input == "s":
                 self._show_config()
             elif user_input == "d":
-                new_dl_dir = input("  New Directory> ").strip()
+                new_dl_dir = _answer("  New Directory> ").strip()
                 if new_dl_dir in ("", "x", "q", "X", "Q"):
                     safe_print("  Cancelled!")
                 elif os.path.isdir(new_dl_dir):
@@ -2185,7 +2192,7 @@ class DownloaderShell:
                 else:
                     safe_print("Directory %r not found!  Create it first." % new_dl_dir)
             elif user_input == "u":
-                new_url = input("  New URL> ").strip()
+                new_url = _answer("  New URL> ").strip()
                 if new_url in ("", "x", "q", "X", "Q"):
                     safe_print("  Cancelled!")
                 else:

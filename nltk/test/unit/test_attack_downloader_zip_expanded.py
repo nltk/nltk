@@ -2577,3 +2577,97 @@ class TestRetryPrompt:
         assert server.hits.count("/index.xml") == 2
         assert_lines_clean(text)
         assert tree(str(dl)) == {}
+
+
+# ===========================================================================
+# 15. The interactive shell in a run nobody can answer (#3167, #3144)
+# ===========================================================================
+class _Stdin(io.StringIO):
+    """stdin that holds *typed* and then ends. Reads past the end are counted,
+    and a prompt that keeps asking after the end is stopped with a failure
+    instead of spinning forever."""
+
+    def __init__(self, typed):
+        super().__init__(typed)
+        self.reads_at_eof = 0
+
+    def readline(self, *args):
+        line = super().readline(*args)
+        if not line:
+            self.reads_at_eof += 1
+            if self.reads_at_eof > 5:
+                raise AssertionError("a prompt kept asking after the end of stdin")
+        return line
+
+
+class TestShellPrompts:
+    """``python -m nltk.downloader`` with no package, and nltk.download() with
+    no argument, open the interactive shell when there is no display. With
+    stdin at EOF or missing, each prompt takes the answer an empty line gives,
+    except the two menus, where an empty line asks again: there the main menu
+    quits and the config menu goes back to it. No prompt raises, none loops."""
+
+    PACKAGES = [f"p{n:02d}" for n in range(25)]  # enough to page the listing
+
+    def _shell(self, server, dl, content=b"x"):
+        packages = [
+            (pid, make_zip([(f"{pid}/a", content)]), {}) for pid in self.PACKAGES
+        ]
+        index_url = serve_packages(server, packages)
+        d = downloader.Downloader(server_index_url=index_url, download_dir=str(dl))
+        out = io.StringIO()
+        with contextlib.redirect_stdout(out):
+            downloader.DownloaderShell(d).run()
+        return out.getvalue()
+
+    @pytest.mark.parametrize("stdin", ["eof", "none"])
+    def test_the_main_menu_quits(self, box, monkeypatch, stdin):
+        root, outside, dl, server = box
+        monkeypatch.setattr("sys.stdin", _Stdin("") if stdin == "eof" else None)
+        text = self._shell(server, dl)
+        assert "NLTK Downloader" in text
+        # input() writes its prompt only when there is a stdin to read from
+        assert text.count("Downloader> ") == (1 if stdin == "eof" else 0)
+        assert server.hits == []  # nothing asked for, nothing fetched
+
+    @pytest.mark.parametrize(
+        "typed, shown",
+        [
+            ("d\n", "Download which package (l=list; x=cancel)?"),
+            ("c\n", "Data Server:"),
+            ("c\nd\n", "Cancelled!"),
+            ("c\nu\n", "Cancelled!"),
+        ],
+        ids=["download-identifier", "config-menu", "config-directory", "config-url"],
+    )
+    def test_each_prompt_is_left_at_eof(self, box, monkeypatch, typed, shown):
+        root, outside, dl, server = box
+        monkeypatch.setattr("sys.stdin", _Stdin(typed))
+        text = self._shell(server, dl)
+        assert shown in text
+        assert text.count("Downloader> ") == 2  # back at the main menu, then quit
+        assert not any(hit.startswith("/pkgs/") for hit in server.hits)
+        assert os.listdir(dl) == []
+        assert_lines_clean(text)
+
+    def test_the_listing_goes_on_to_the_end(self, box, monkeypatch):
+        """At "Hit Enter to continue" the end of stdin is an empty line: the
+        listing goes on, so a piped "l" lists every package."""
+        root, outside, dl, server = box
+        monkeypatch.setattr("sys.stdin", _Stdin("l\n"))
+        text = self._shell(server, dl)
+        assert "Hit Enter to continue: " in text
+        assert all(f"[ ] {pid}" in text for pid in self.PACKAGES)
+
+    def test_the_update_prompt_cancels(self, box, monkeypatch):
+        """With an out-of-date package, "u" asks before updating; the end of
+        stdin cancels, so nothing is downloaded again."""
+        root, outside, dl, server = box
+        installed = serve_packages(server, [("p00", make_zip([("p00/a", b"x")]), {})])
+        assert run_download(installed, dl, "p00")[0] is True
+        hits = server.hits.count("/pkgs/p00.zip")
+        monkeypatch.setattr("sys.stdin", _Stdin("u\n"))
+        text = self._shell(server, dl, content=b"newer")  # p00 is now out of date
+        assert "Will update following packages (o=ok; x=cancel)" in text
+        assert text.count("Downloader> ") == 2
+        assert server.hits.count("/pkgs/p00.zip") == hits
