@@ -1850,25 +1850,7 @@ def validate_network_url(url_input, context="NetworkIO"):
             raise
 
 
-class _ProxyCredentialsRedirectHandler(urllib.request.HTTPRedirectHandler):
-    """Keeps proxy credentials off a redirected request.
-
-    ProxyHandler sends the credentials in a proxy URL (such as
-    ``HTTPS_PROXY=http://user:password@proxy:3128``) as an ordinary
-    Proxy-Authorization header, which a redirect copies onto the new request.
-    Drop it there, so a redirect to a host that bypasses the proxy (NO_PROXY)
-    does not receive the credentials. ProxyHandler adds them again when the
-    new request goes through the proxy.
-    """
-
-    def redirect_request(self, req, fp, code, msg, headers, newurl):
-        new_req = super().redirect_request(req, fp, code, msg, headers, newurl)
-        if new_req is not None:
-            new_req.remove_header("Proxy-authorization")
-        return new_req
-
-
-class _ValidatingRedirectHandler(_ProxyCredentialsRedirectHandler):
+class _ValidatingRedirectHandler(urllib.request.HTTPRedirectHandler):
     """Ensures that every step of a redirect chain is re-validated against SSRF."""
 
     def redirect_request(self, req, fp, code, msg, headers, newurl):
