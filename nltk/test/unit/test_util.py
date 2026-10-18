@@ -337,3 +337,33 @@ def test_set_proxy_rejects_credentials_that_are_not_strings(
     with pytest.raises(TypeError, match="user and password must be strings"):
         set_proxy("http://127.0.0.1:3128", user=user, password=password)
     assert urllib.request._opener is restore_opener
+
+
+@pytest.mark.parametrize(
+    "user, password",
+    [
+        ("alice:admin", "s3cret"),
+        ("alice", "s3cret\r\nX-Injected: 1"),
+        ("alice", "s3cret\x00"),
+        ("alice\t", "s3cret"),
+        ("alice", "s3cret\x7f"),
+    ],
+    ids=["colon-in-user", "crlf-in-password", "nul", "tab-in-user", "del"],
+)
+def test_set_proxy_refuses_credentials_basic_cannot_carry(
+    restore_opener, user, password
+):
+    """Basic authentication joins the user name and the password with ":", so
+    a ":" in the user name makes the proxy read another user name, and RFC 7617
+    allows no control character in either part. set_proxy refuses them, says
+    so without echoing them, and leaves the installed opener as it was."""
+    with pytest.raises(ValueError, match="RFC 7617") as refused:
+        set_proxy("http://127.0.0.1:3128", user=user, password=password)
+    assert "alice" not in str(refused.value) and "s3cret" not in str(refused.value)
+    assert urllib.request._opener is restore_opener
+
+
+def test_set_proxy_keeps_a_colon_in_the_password(restore_opener):
+    """A ":" in the password is fine: Basic splits at the first ":" only."""
+    set_proxy("http://127.0.0.1:3128", user="alice", password="pa:ss")
+    assert installed_proxies()["https"] == "http://alice:pa%3Ass@127.0.0.1:3128"

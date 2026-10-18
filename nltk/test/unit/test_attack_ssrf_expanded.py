@@ -1090,8 +1090,8 @@ def test_proxy_credentials_authenticate_the_https_tunnel(
 # proxy as data, decoded back exactly.
 _HOSTILE_CREDENTIALS = [
     ("CORP\\alice", "p@ss:w/rd %"),  # a domain user; URL delimiters in the password
-    ("evil@10.0.0.1:8080/", "s3cret"),  # a user name that reads as another proxy
-    ("alice", "x\r\nX-Injected: 1"),  # a header injection attempt
+    ("evil@10.0.0.1/", "s3cret"),  # a user name that reads as another host
+    ("alice", "@10.0.0.1:8080/"),  # a password that reads as another proxy
     ("alice", "s3cret?#[::1]"),  # query, fragment and IPv6-literal delimiters
     ("alice", "%40%3A%2F"),  # text that is already percent-encoded stays literal
     ("jürgen", "pässwörd"),  # non-ASCII, sent as UTF-8
@@ -1104,7 +1104,7 @@ _HOSTILE_CREDENTIALS = [
     ids=[
         "url-delimiters",
         "authority-in-user",
-        "crlf-in-password",
+        "authority-in-password",
         "query-fragment-brackets",
         "percent-encoded-text",
         "non-ascii",
@@ -1140,6 +1140,36 @@ def test_set_proxy_hostile_credentials_reach_the_proxy_as_data(
         request = ("GET", "http://93.184.216.34/index.xml")
     assert received == [(*request, _basic_credentials(user, password))]
     assert "x-injected" not in header_names
+    assert no_real_egress == []
+
+
+# Credentials that Basic authentication cannot carry. A ":" in the user name
+# moves the split, so the proxy would read another user name and password, and
+# RFC 7617 allows no control character. set_proxy refuses them before any use.
+_UNSENDABLE_CREDENTIALS = [
+    ("evil@10.0.0.1:8080/", "s3cret"),  # read as user "evil@10.0.0.1"
+    ("alice", "x\r\nX-Injected: 1"),  # a header injection attempt
+    ("alice\x00", "s3cret"),  # NUL
+]
+
+
+@pytest.mark.parametrize(
+    "user,password",
+    _UNSENDABLE_CREDENTIALS,
+    ids=["colon-in-user", "crlf-in-password", "nul-in-user"],
+)
+def test_set_proxy_refuses_credentials_basic_cannot_carry(
+    user, password, stub_server, monkeypatch, no_real_egress
+):
+    """set_proxy raises ValueError for them and installs nothing, so no request
+    can carry them and the proxy receives nothing."""
+    received = []
+    proxy = stub_server(_proxy_handler(received))
+    _use_only_these_proxy_settings(monkeypatch)
+    with pytest.raises(ValueError, match="RFC 7617"):
+        set_proxy(f"http://127.0.0.1:{proxy.server_port}", user=user, password=password)
+    assert urllib.request._opener is None
+    assert received == []
     assert no_real_egress == []
 
 
