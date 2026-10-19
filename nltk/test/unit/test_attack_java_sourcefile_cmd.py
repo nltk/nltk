@@ -119,12 +119,15 @@ def test_java_still_rejects_launcher_switches():
 
 
 def _jdk_major(java_bin):
-    """Major version of the launcher at *java_bin* (8 for the 1.8 line)."""
+    """Major version of the launcher at *java_bin* (8 for the 1.8 line), or
+    None when the binary prints no version banner: macOS ships a
+    ``/usr/bin/java`` stub that exists but has no runtime behind it."""
     banner = subprocess.run(
         [java_bin, "-version"], capture_output=True, text=True, timeout=60, check=False
     ).stderr
     match = re.search(r'version "(\d+)(?:\.(\d+))?', banner)
-    assert match, banner
+    if match is None:
+        return None
     major = int(match.group(1))
     return int(match.group(2)) if major == 1 else major
 
@@ -147,6 +150,8 @@ def test_source_file_mode_is_real_on_this_jdk(tmp_path, monkeypatch, filename):
     except LookupError:
         pytest.skip("no Java binary found on this machine")
     major = _jdk_major(internals._java_bin)
+    if major is None:
+        pytest.skip(f"{internals._java_bin} is a launcher stub with no runtime")
     src = tmp_path / filename
     marker = tmp_path / "pwned.txt"
     src.write_text(
