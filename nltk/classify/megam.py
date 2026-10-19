@@ -20,6 +20,9 @@ for details.
 
     nltk.classify.MaxentClassifier.train(corpus, 'megam')
 
+The megam page is served from its author's University of Maryland site; the
+address it was long known by, http://hal3.name/megam/, redirects there.
+
 .. _megam: https://users.umiacs.umd.edu/~hal3/megam/
 """
 import math
