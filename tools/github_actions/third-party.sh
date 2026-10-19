@@ -83,16 +83,16 @@ else
     echo "Skipping PROVER9 download on $(uname -s)"
 fi
 
-# Download MEGAM to $THIRD_PARTY_DIR/megam. The 2007 binary comes from its
-# author's site over https and is checked against its sha256, so a timed-out
-# or substituted download fails here instead of running later (CWE-494).
+# Download MEGAM to $THIRD_PARTY_DIR/megam. hal3.name only redirects to the
+# author's University of Maryland host, which some runners cannot reach via
+# the redirector, so fetch there directly and check the sha256 (CWE-494).
 if [[ "$(uname -s)" == "Linux" ]]; then
     megam_file_name="megam_i686.opt.gz"
     megam_sha256="ed2b00f425afb649b796beb25a016311b9a6586d176bcb4de31cb6468bf3a31d"
     [[ ${megam_file_name} =~ (.+)\.gz ]]
     megam_folder_name=${BASH_REMATCH[1]}
     if [[ ! -d "${megam_folder_name}" ]]; then
-        curl -fL --retry 5 --retry-all-errors "https://hal3.name/megam/$megam_file_name" -o "${megam_file_name}"
+        curl -fL --retry 5 --retry-all-errors "https://users.umiacs.umd.edu/~hal3/megam/$megam_file_name" -o "${megam_file_name}"
         echo "${megam_sha256}  ${megam_file_name}" | sha256sum -c
         gunzip -vf "${megam_file_name}"
         mkdir -p "megam"
