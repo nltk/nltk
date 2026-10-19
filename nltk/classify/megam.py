@@ -20,7 +20,10 @@ for details.
 
     nltk.classify.MaxentClassifier.train(corpus, 'megam')
 
-.. _megam: http://hal3.name/megam/
+The megam page is served from its author's University of Maryland site; the
+address it was long known by, http://hal3.name/megam/, redirects there.
+
+.. _megam: https://users.umiacs.umd.edu/~hal3/megam/
 """
 import math
 import numbers
@@ -60,7 +63,7 @@ def config_megam(bin=None):
         bin,
         env_vars=["MEGAM"],
         binary_names=["megam.opt", "megam", "megam_686", "megam_i686.opt"],
-        url="http://hal3.name/megam/",
+        url="https://users.umiacs.umd.edu/~hal3/megam/",
     )
 
 

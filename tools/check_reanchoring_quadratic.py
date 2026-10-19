@@ -47,6 +47,9 @@ _WIDE_RUN = re.compile(
       \[\^[^\]]*\][*+]        # [^...]* or [^...]+   (negated class)
     | (?<!\\)\.[*+]           # .*  .+   (unescaped dot)
     | \\[SDWsdw][*+]          # \S* \D+ \W* \s* \d+ \w* (category escapes)
+    | \[\\[sS]\\[sS]\][*+]   # [\s\S]* and [\S\s]+: "any character", like .*
+    | \[\\[dD]\\[dD]\][*+]   # [\d\D]*
+    | \[\\[wW]\\[wW]\][*+]   # [\w\W]*
     """,
     re.VERBOSE,
 )
@@ -55,6 +58,13 @@ _WIDE_RUN = re.compile(
 # the anchor cannot repeat O(n) times, the run cannot re-scan, or the input is
 # never attacker length. Fixed sites carry a ``{0,N}`` bound and are not listed.
 _REVIEWED: dict[tuple[str, str], str] = {
+    ("nltk/chunk/named_entity.py", "\\A[\\s\\S]*<TEXT>"): (
+        "pinned at \\A: one attempt, the run cannot re-anchor"
+    ),
+    ("nltk/chunk/named_entity.py", "</TEXT>[\\s\\S]*"): (
+        "greedy to the end of the input, so the first anchor's match swallows "
+        "every later anchor: one scan, linear"
+    ),
     ("nltk/app/chunkparser_app.py", "((\\\\.|[^#])*)(#.*)?"): (
         "GUI grammar input; the .* is an optional trailing group with no repeating "
         "anchor, engine-linear"

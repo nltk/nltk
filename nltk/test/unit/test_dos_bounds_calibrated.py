@@ -961,3 +961,12 @@ class TestRedosGroupCountCalibrated:
             redos.compile("()" * (redos.MAX_GROUP_COUNT + 1))
         with pytest.raises(ValueError):
             redos.compile("()" * 50_000)
+
+    def test_an_apostrophe_named_group_is_counted_and_refused_by_the_engine(self):
+        # (?'name'...) is a capture in engines that accept it; the counter
+        # counts it, and the regex engine NLTK uses refuses the syntax outright
+        with pytest.raises(ValueError, match="capturing groups"):
+            redos.check_pattern("(?'g'x)" * (redos.MAX_GROUP_COUNT + 1))
+        redos.check_pattern("(?'g'x)" * redos.MAX_GROUP_COUNT)
+        with pytest.raises(Exception, match="unknown extension|error"):
+            redos.compile("(?'g'x)")

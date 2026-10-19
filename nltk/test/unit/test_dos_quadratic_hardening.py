@@ -932,6 +932,27 @@ class TestReanchoringGuard:
         assert g.check_file(str(bad), "nltk/bad.py")
         assert not g.check_file(str(good), "nltk/good.py")
 
+    @pytest.mark.parametrize(
+        "pattern, flagged",
+        [
+            (r"[\s\S]*<TEXT>", True),
+            (r"[\S\s]+x", True),
+            (r"[\d\D]*", True),
+            (r"[\w\W]+", True),
+            (r"[a-z]+", False),
+            (r"[\s\S]{0,10}", False),
+        ],
+    )
+    def test_guard_sees_the_two_class_any_character_run(
+        self, tmp_path, pattern, flagged
+    ):
+        # [\s\S]* is .* spelled as a class: the same leading-run shape the
+        # guard flags for .* and [^x]*, reported on #3895 as missing
+        g = self._guard()
+        f = tmp_path / "e.py"
+        f.write_text("import redos\nredos.sub(r'%s', '', t)\n" % pattern)
+        assert bool(g.check_file(str(f), "nltk/e.py")) is flagged
+
     def test_guard_catches_compiled_pattern_use(self, tmp_path):
         # The AST blind spot: PAT = redos.compile(...); PAT.findall(...) - the
         # re-anchoring op is a method on the compiled object, not redos.<op>.
