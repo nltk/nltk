@@ -14,6 +14,7 @@
 #   megam     Linux: shipped megam_i686 | macOS: build from OCaml source (best effort)
 #   boxer/candc          build the C&C tools from source, all OSes (best effort)
 #   repp      build the REPP tokenizer from source (best effort)
+#   weka      weka.jar from the 3.8.6 release zip, all OSes (WEKAHOME, WEKA_JAR)
 #   dot       graphviz, installed by the workflow's package step (translate.api)
 #   tadm      intentionally skipped (needs PETSc; see third-party.sh)
 #
@@ -99,6 +100,11 @@ setup_segmenter() {
             || { echo "  segmenter fetch failed; skipping."; return 0; }
     fi
     if [[ -f "${dir}/stanford-segmenter-4.2.0.jar" ]]; then
+        # The wrapper looks for the unversioned name; the zip ships only the
+        # versioned jar, so give it a copy (a copy, not a link: the trusted-exec
+        # chokepoint does not follow links out of the tree).
+        [[ -f "${dir}/stanford-segmenter.jar" ]] \
+            || cp "${dir}/stanford-segmenter-4.2.0.jar" "${dir}/stanford-segmenter.jar"
         # Do NOT set STANFORD_MODELS here: the POS tagger uses it for its own
         # models. The segmenter takes its model paths from default_config('zh').
         emit STANFORD_SEGMENTER "${dir}"
@@ -175,6 +181,26 @@ setup_repp() {
 }
 
 # =========================================================================== #
+setup_weka() {
+    echo "== weka =="
+    local dir="${THIRD_PARTY_DIR}/weka"
+    if [[ ! -f "${dir}/weka.jar" ]]; then
+        ( cd "${THIRD_PARTY_DIR}" \
+            && curl -fL "https://sourceforge.net/projects/weka/files/weka-3-8/3.8.6/weka-3-8-6.zip/download" \
+                 -o weka.zip \
+            && unzip -q weka.zip && rm -f weka.zip \
+            && mv weka-3-8-6 weka ) \
+            || { echo "  weka fetch failed; skipping."; return 0; }
+    fi
+    if [[ -f "${dir}/weka.jar" ]]; then
+        # The wrapper reads WEKAHOME (bounded to a data root); the integration
+        # test reads WEKA_JAR.
+        emit WEKAHOME "${dir}"
+        emit WEKA_JAR "${dir}/weka.jar"
+    fi
+}
+
+# =========================================================================== #
 # tadm: needs libtaopetsc.so from PETSc (see third-party.sh); intentionally not
 # built here. Its tests skip when TADM is unset.
 
@@ -185,5 +211,6 @@ setup_prover9_mace4
 setup_megam
 setup_boxer_candc
 setup_repp
+setup_weka
 echo "== tool acquisition finished (best effort) =="
 exit 0
