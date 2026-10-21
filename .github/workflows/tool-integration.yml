@@ -224,13 +224,13 @@ jobs:
           chmod +x tools/github_actions/tool_integration_setup.sh
           tools/github_actions/tool_integration_setup.sh
 
-      - name: Trust the third-party tools tree (Linux)
-        if: runner.os == 'Linux'
+      - name: Trust the third-party tools tree (Linux and macOS)
+        if: runner.os != 'Windows'
         shell: bash
         run: |
-          # The trusted-exec chokepoint refuses tools on paths others can write; a
-          # tree unzipped on a cache miss keeps the archive's group-write bits (a
-          # cache restore does not), so normalise it rather than weaken the guard.
+          # The trusted-exec chokepoint refuses tools on paths others can write and
+          # the wrappers refuse group-writable model files; a tree unzipped on a
+          # cache miss keeps the archive's group-write bits, so normalise it.
           chmod -R go-w "$THIRD_PARTY_DIR"
 
       - name: Show acquired tools
@@ -347,6 +347,9 @@ jobs:
         env:
           PYTHONSAFEPATH: "1"
         run: |
+          # check_binary('mace4') in the doctests searches PATH, not PROVER9, so
+          # the acquired prover9/mace4 binaries go on PATH for this step.
+          if [ -n "${PROVER9:-}" ]; then export PATH="$PROVER9:$PATH"; fi
           python -m pytest -rs nltk/test/unit/test_senna.py
           python -m pytest -rs --doctest-glob='*.doctest' \
             nltk/test/inference.doctest \
