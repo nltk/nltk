@@ -323,3 +323,167 @@ class TestFunctional:
             "x",
             "y",
         ] and sent.invert().alignment == Alignment([(0, 1), (1, 0)])
+
+
+def _null_corpus():
+    """Three pairs on which every IBM model leaves ``the`` unaligned (#3967)."""
+    return [
+        AlignedSent(["the", "cat"], ["katze"]),
+        AlignedSent(["the", "dog"], ["hund"]),
+        AlignedSent(["the", "book"], ["buch"]),
+    ]
+
+
+def _aligned(pairs):
+    """The ``(i, j)`` pairs of ``pairs`` with a target, sorted."""
+    return sorted((p[0], p[1]) for p in pairs if p[1] is not None)
+
+
+def _every_surface(alignment, words, mots):
+    """Drive every surface of an alignment and the sentence carrying it; the
+    values each one must show for the pairs that have a target."""
+    pairs = list(alignment)
+    aligned = _aligned(pairs)
+    assert str(alignment) == " ".join(f"{i}-{j}" for i, j in aligned)
+    assert eval(repr(alignment), {"Alignment": Alignment}) == alignment
+    assert alignment.range() == sorted({j for _, j in aligned})
+    for i in {p[0] for p in pairs}:
+        assert alignment.range([i]) == sorted({j for ii, j in aligned if ii == i})
+        assert {p[:2] for p in alignment[i]} == {p[:2] for p in pairs if p[0] == i}
+    inverted = alignment.invert()
+    assert inverted == Alignment(
+        [(p[1], p[0]) + tuple(p[2:]) for p in pairs if p[1] is not None]
+    )
+    assert all(p[1] is not None for p in inverted)
+    sent = AlignedSent(words, mots, alignment)
+    _check_dot(sent._to_dot(), words, mots, edges=len(aligned))
+    assert "None" not in sent._to_dot()
+    assert repr(sent) == f"AlignedSent({words!r}, {mots!r}, {alignment!r})"
+    assert str(sent).startswith("<AlignedSent: '")
+    return sent
+
+
+NULL_SHAPES = [
+    [(0, None), (1, 0)],
+    [(0, None), (0, 1)],
+    [(2, None), (0, 1), (1, 0)],
+    [(0, None), (1, None)],
+    [(0, None, "S"), (0, 1, "P")],
+    [(0, 0, True), (1, 1, "P")],
+    [(1, None, "S", 0.5), (0, 0)],
+    [],
+]
+
+
+class TestNullTargetSurface:
+    """An unaligned pair ``(i, None)``, the shape every IBM model emits for a
+    word it leaves unaligned (#1885, #3967), on every surface of an alignment:
+    shown, listed, ranged, indexed, inverted and drawn, never a TypeError."""
+
+    @pytest.mark.parametrize("pairs", NULL_SHAPES)
+    def test_every_surface_survives_an_unaligned_or_extended_pair(self, pairs):
+        words = [f"w{i}" for i in range(max([p[0] for p in pairs] + [0]) + 1)]
+        mots = [
+            f"m{j}"
+            for j in range(max([p[1] for p in pairs if p[1] is not None] + [0]) + 1)
+        ]
+        _every_surface(Alignment(pairs), words, mots)
+
+    @pytest.mark.parametrize("model", [1, 2, 3, 4, 5])
+    def test_what_every_ibm_model_emits_is_shown_on_every_surface(self, model):
+        from nltk import translate
+
+        corpus = _null_corpus()
+        kwargs = {}
+        if model >= 4:
+            kwargs = {
+                "source_word_classes": {w: 0 for s in corpus for w in s.mots},
+                "target_word_classes": {w: 0 for s in corpus for w in s.words},
+            }
+        getattr(translate, f"IBMModel{model}")(corpus, 2, **kwargs)
+        for sent in corpus:
+            assert sent.alignment == Alignment([(0, None), (1, 0)])
+            assert str(sent.alignment) == "1-0"
+            assert repr(sent.alignment) == "Alignment([(0, None), (1, 0)])"
+            assert sent.alignment.range() == [0] and sent.alignment.range([0]) == []
+            _every_surface(sent.alignment, sent.words, sent.mots)
+
+    def test_an_unaligned_pair_sorts_before_the_aligned_pairs_of_its_word(self):
+        a = Alignment([(0, 2), (0, None), (0, 1), (1, 0)])
+        assert repr(a) == "Alignment([(0, None), (0, 1), (0, 2), (1, 0)])"
+        assert str(a) == "0-1 0-2 1-0"
+        # integer-only alignments keep the documented tuple order
+        b = Alignment.fromstring("0-0 2-1 9-2 21-3 10-4 7-5")
+        assert (
+            repr(b) == "Alignment([(0, 0), (2, 1), (7, 5), (9, 2), (10, 4), (21, 3)])"
+        )
+
+    def test_a_none_source_index_is_refused_at_the_sentence(self):
+        # None is only ever a target: a pair with no source word is not a
+        # position in the sentence, and the sentence refuses it (TypeError).
+        with pytest.raises(TypeError):
+            AlignedSent(["a"], ["b"], Alignment([(None, 0)]))
+        with pytest.raises(TypeError):
+            Alignment([(0, 0), (None, 1)])
+
+    @pytest.mark.parametrize("pairs", [[(0,)], [("0", "0")], [(True, 0)], [(-1, 0)]])
+    def test_a_pair_that_is_not_two_positions_is_refused_at_the_sentence(self, pairs):
+        with pytest.raises((TypeError, IndexError)):
+            AlignedSent(["a"], ["b"], Alignment(pairs))
+
+
+_HUGE_INDEX = "9" * 4300
+
+
+def _huge_surfaces(text):
+    a = Alignment.fromstring(text)
+    big = int(_HUGE_INDEX)
+    assert a[0] == [(0, 0)] and a[big] == [(big, big)] and a[1] == []
+    assert a.range() == [0, big] and a.range([big]) == [big]
+    assert str(a) == f"0-0 {_HUGE_INDEX}-{_HUGE_INDEX}"
+    assert eval(repr(a), {"Alignment": Alignment}) == a
+    assert a.invert() == a
+
+
+class TestGizaInput:
+    """GIZA text is the attacker's channel into an alignment (a corpus file):
+    every surface stays sparse on a huge index (CWE-770; CVE-2026-12837) and
+    the malformed forms are refused."""
+
+    def test_every_surface_stays_sparse_on_a_huge_index(self):
+        from nltk.test.unit import timing
+
+        text = f"0-0 {_HUGE_INDEX}-{_HUGE_INDEX}"
+        run = timing.run_in_process(_huge_surfaces, (text,), budget=2.0, cpu_bound=True)
+        assert run.finished and run.exitcode == 0 and run.within_budget, run
+
+    def test_the_surfaces_scale_linearly_in_the_pair_count(self):
+        from nltk.test.unit import timing
+
+        def op(n):
+            a = Alignment.fromstring(" ".join(f"{i}-{i}" for i in range(n)))
+            str(a), repr(a), a.range(), a.invert(), a[0]
+
+        timing.assert_subquadratic(op, 10000, 40000, reps=2, cpu_bound=True)
+
+    @pytest.mark.parametrize(
+        "text",
+        [
+            "0-0" + NUL + "1-1",
+            "1-2-3",
+            "0-0 1",
+            "0-0 -",
+            "0- 0",
+            "a-b",
+            "0-0 " + "9" * 5000 + "-1",
+            "1.0-2",
+            "0x1-0",
+        ],
+    )
+    def test_a_malformed_pair_is_refused(self, text):
+        with pytest.raises(ValueError):
+            Alignment.fromstring(text)
+
+    def test_bytes_are_refused(self):
+        with pytest.raises(TypeError):
+            Alignment.fromstring(b"0-0")
