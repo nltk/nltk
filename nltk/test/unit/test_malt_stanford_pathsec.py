@@ -602,6 +602,7 @@ def test_real_malt_train_writes_model_inside_sandbox(tmp_path):
     staging dir, and must NOT pollute the current working directory as it did when
     ``-w`` defaulted to ``os.getcwd()``."""
     import nltk.data
+    import nltk.pathsec
     from nltk.parse.dependencygraph import DependencyGraph
     from nltk.parse.malt import MaltParser
 
@@ -610,7 +611,11 @@ def test_real_malt_train_writes_model_inside_sandbox(tmp_path):
         pytest.skip("maltparser is not installed under nltk.data.path")
 
     parser = MaltParser(parser_dirname=malt_dir)
-    assert os.stat(parser.working_dir).st_mode & 0o077 == 0
+    # Private by the chokepoint's own contract on every OS; the mode bits are
+    # meaningful on POSIX only (NTFS reports 0o777 for any directory).
+    assert nltk.pathsec.is_private_dir(parser.working_dir)
+    if os.name == "posix":
+        assert os.stat(parser.working_dir).st_mode & 0o077 == 0
     assert any(
         os.path.realpath(parser.working_dir).startswith(os.path.realpath(root))
         for root in nltk.data.path
