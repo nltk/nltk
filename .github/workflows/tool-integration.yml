@@ -1,15 +1,18 @@
 name: tool-integration-ci
 
-# Real external-tool integration checks. The main ci.yml fetches the compiled
-# tools (SENNA/PROVER9+MACE4/MEGAM) only on Linux, so the tool wrappers are
-# largely exercised on real I/O only there. This workflow acquires EVERY external
-# tool NLTK wraps on macOS and Windows too and runs the wrapper tests against the
-# real binaries/jars, so a change to a wrapper (or to the shared pathsec
-# chokepoint) is validated on every OS. It is path-filtered, so it runs only when
-# a tool wrapper, its tests, the acquisition scripts, or this workflow changes.
+# Real external-tool integration checks. ci.yml fetches the JVM tools on every
+# OS and the compiled tools (SENNA, PROVER9+MACE4, MEGAM) on Linux only, and its
+# matrix never puts those tools inside an NLTK data root, so the wrapper
+# harnesses that demand the real tool skip there. This workflow acquires every
+# external tool NLTK wraps on every OS, registers the third-party tree as a data
+# root, and runs the wrapper and attack harnesses against the real binaries and
+# jars. It is path-filtered: it runs when a tool wrapper, its tests, the
+# acquisition scripts or this workflow changes, and on demand.
 on:
   pull_request:
     paths:
+      - "nltk/internals.py"
+      - "nltk/pathsec.py"
       - "nltk/tag/senna.py"
       - "nltk/tag/hunpos.py"
       - "nltk/tag/stanford.py"
@@ -17,37 +20,58 @@ on:
       - "nltk/classify/senna.py"
       - "nltk/classify/megam.py"
       - "nltk/classify/tadm.py"
+      - "nltk/classify/weka.py"
+      - "nltk/tokenize/stanford.py"
       - "nltk/tokenize/stanford_segmenter.py"
       - "nltk/tokenize/repp.py"
       - "nltk/parse/corenlp.py"
       - "nltk/parse/malt.py"
+      - "nltk/parse/stanford.py"
+      - "nltk/parse/bllip.py"
       - "nltk/parse/transitionparser.py"
       - "nltk/sem/boxer.py"
       - "nltk/inference/mace.py"
       - "nltk/inference/prover9.py"
       - "nltk/translate/api.py"
-      - "nltk/pathsec.py"
-      - "tools/github_actions/third-party.sh"
-      - "tools/github_actions/tool_integration_*.sh"
+      - "tools/github_actions/**"
       - ".github/workflows/tool-integration.yml"
-      - "nltk/test/unit/test_senna*.py"
-      - "nltk/test/unit/test_crf.py"
-      - "nltk/test/unit/test_corenlp.py"
-      - "nltk/test/unit/test_malt*.py"
-      - "nltk/test/unit/test_stanford*.py"
-      - "nltk/test/unit/test_repp_security.py"
+      - "nltk/test/unit/test_attack_java*.py"
+      - "nltk/test/unit/test_attack_stanford*.py"
+      - "nltk/test/unit/test_attack_tool_*.py"
+      - "nltk/test/unit/test_attack_weka*.py"
+      - "nltk/test/unit/test_attack_bllip*.py"
       - "nltk/test/unit/test_boxer_security.py"
-      - "nltk/test/unit/test_inference_security.py"
+      - "nltk/test/unit/test_corenlp*.py"
+      - "nltk/test/unit/test_crf.py"
       - "nltk/test/unit/test_hunpos_security.py"
-      - "nltk/test/unit/test_prover9_security.py"
-      - "nltk/test/unit/test_tadm_security.py"
+      - "nltk/test/unit/test_inference_security.py"
+      - "nltk/test/unit/test_internals.py"
+      - "nltk/test/unit/test_jar_sandbox_containment.py"
+      - "nltk/test/unit/test_java_*.py"
+      - "nltk/test/unit/test_malt*.py"
       - "nltk/test/unit/test_megam_tadm_injection_security.py"
+      - "nltk/test/unit/test_pathsec_tool_resources.py"
+      - "nltk/test/unit/test_pathsec_trusted_exec.py"
+      - "nltk/test/unit/test_pathsec_sweep_wrappers.py"
+      - "nltk/test/unit/test_prover9_security.py"
+      - "nltk/test/unit/test_repp_security.py"
+      - "nltk/test/unit/test_senna*.py"
+      - "nltk/test/unit/test_stanford*.py"
+      - "nltk/test/unit/test_tadm_security.py"
+      - "nltk/test/unit/test_tokenize.py"
       - "nltk/test/unit/test_tokenize_stanford_pathsec.py"
+      - "nltk/test/unit/test_tool_search_path_security.py"
+      - "nltk/test/unit/test_weka*.py"
       - "nltk/test/*.doctest"
   workflow_dispatch:
 
 permissions:
   contents: read
+
+# A newer push to the same PR supersedes the older run, as in ci.yml.
+concurrency:
+  group: tool-integration-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 env:
   THIRD_PARTY_DIR: ${{ github.workspace }}/third
@@ -58,16 +82,15 @@ env:
   STANFORD_POSTAGGER: ${{ github.workspace }}/third/stanford-postagger
   MALT_PARSER: ${{ github.workspace }}/third/maltparser
   # SENNA, HUNPOS_TAGGER, PROVER9, MEGAM, CANDC, REPP_TOKENIZER and
-  # STANFORD_SEGMENTER are exported per platform by tool_integration_setup.sh, and
-  # only when a usable binary/jar for that platform exists, so each tool's tests
-  # skip cleanly rather than erroring when the tool is absent or unbuildable.
+  # STANFORD_SEGMENTER are exported per platform by tool_integration_setup.sh,
+  # only when a usable binary or jar exists, so an absent tool skips cleanly.
 
 jobs:
   tool-integration:
     name: Tools py${{ matrix.python-version }} on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
-      # Never cancel the other OS/Python legs when one tool fails to build.
+      # Never cancel the other OS or Python legs when one tool fails to build.
       fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
@@ -81,40 +104,64 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Set up Java (Stanford / CoreNLP / MaltParser are JVM tools)
+      - name: Set up Java (Stanford, CoreNLP and MaltParser are JVM tools)
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
 
-      - name: Set NLTK_DATA environment variable
+      - name: Give the JDKs back their private write bits (Linux)
+        # The hosted toolcache and /usr/lib/jvm are world-writable on the Ubuntu
+        # image, so nltk refuses to launch any JVM there (CWE-427); restore the
+        # root-only write bits so the real-JVM tests run against a trusted JDK.
+        if: runner.os == 'Linux'
         shell: bash
-        run: echo "NLTK_DATA=${{ github.workspace }}/nltk_data" >> "$GITHUB_ENV"
+        run: sudo chmod -R go-w "$JAVA_HOME" /usr/lib/jvm
+
+      - name: Register the NLTK data directory and the third-party tree as data roots
+        # The wrappers bound every model and jar to a data root, so the real-tool
+        # harnesses look for the Stanford tools there; the third-party tree is the
+        # second root, after the download directory.
+        shell: bash
+        run: |
+          if [ "$RUNNER_OS" = "Windows" ]; then sep=';'; else sep=':'; fi
+          echo "NLTK_DATA=${GITHUB_WORKSPACE}/nltk_data${sep}${THIRD_PARTY_DIR}" >> "$GITHUB_ENV"
 
       - name: Install NLTK, CI deps and python-crfsuite
         shell: bash
         run: |
           python -m pip install --upgrade pip
           pip install --upgrade --requirement requirements-ci.txt
-          # crfsuite is a compiled wheel; if it is unavailable for this Python
-          # (e.g. no wheel yet on a brand-new release), test_crf.py importorskips.
-          pip install python-crfsuite || echo "python-crfsuite unavailable; test_crf.py will skip"
+          # crfsuite is a compiled wheel; without one for this Python the crf
+          # tests importorskip, and the gate below reports the absence.
+          pip install python-crfsuite || echo "python-crfsuite unavailable for this Python"
 
-      - name: Install graphviz (dot, used by nltk.translate.api)
+      - name: Install Graphviz (the real dot for the trusted-spawn tests)
+        # Windows takes it from the third-party tools cache below instead
+        if: runner.os != 'Windows'
         shell: bash
         run: |
-          case "${RUNNER_OS}" in
-            Linux)   sudo apt-get update -qq && sudo apt-get install -y -qq graphviz || true ;;
-            macOS)   brew install graphviz || true ;;
-            Windows) choco install graphviz --no-progress -y || true ;;
-          esac
+          # the real dot, never a stub: apt and brew install it as a link whose text
+          # climbs with '..', which the tests assert renders by that name; brew's prefix
+          # is g+w for admin, so its chain is made private as an operator would, link kept
+          if [ "${{ runner.os }}" = "Linux" ]; then
+            sudo apt-get update -qq && sudo apt-get install -y -qq graphviz
+            ls -la "$(command -v dot)"
+            dot -V
+          elif [ "${{ runner.os }}" = "macOS" ]; then
+            brew install graphviz
+            prefix="$(brew --prefix)"
+            chmod g-w,o-w "$prefix" "$prefix/bin" "$prefix/Cellar" "$prefix/Cellar/graphviz" "$prefix"/Cellar/graphviz/* "$prefix"/Cellar/graphviz/*/bin
+            ls -la "$prefix/bin/dot" "$prefix"/Cellar/graphviz/*/bin/dot
+            dot -V
+          fi
 
       - name: Cache NLTK data
         uses: actions/cache@v6
         id: nltk-data-cache
         with:
           path: ${{ github.workspace }}/nltk_data
-          key: tool_nltk_data_${{ runner.os }}_v1
+          key: tool_nltk_data_${{ runner.os }}_v2
 
       - name: Download the NLTK data the tool tests need (cache miss)
         if: steps.nltk-data-cache.outputs.cache-hit != 'true'
@@ -124,15 +171,13 @@ jobs:
           import os
           from pathlib import Path
           import nltk
-          p = Path(os.environ["NLTK_DATA"]); p.mkdir(parents=True, exist_ok=True)
-          for pkg in ["punkt", "punkt_tab", "wordnet", "omw-1.4", "words",
-                      "treebank", "dependency_treebank", "conll2000",
-                      "averaged_perceptron_tagger", "averaged_perceptron_tagger_eng",
-                      "book_grammars", "sample_grammars"]:
-              try:
-                  nltk.download(pkg, download_dir=str(p))
-              except Exception as exc:  # a missing optional corpus must not fail CI
-                  print(f"skip {pkg}: {exc}")
+          p = Path(os.environ["NLTK_DATA"].split(os.pathsep)[0])
+          p.mkdir(parents=True, exist_ok=True)
+          for pkg in ["punkt_tab", "wordnet", "omw-1.4", "words", "treebank",
+                      "dependency_treebank", "conll2000",
+                      "averaged_perceptron_tagger_eng", "book_grammars",
+                      "sample_grammars", "stopwords"]:
+              assert nltk.download(pkg, download_dir=str(p)), pkg
           PY
 
       - name: Ensure third-party directory exists
@@ -144,23 +189,25 @@ jobs:
         id: third-party-cache
         with:
           path: ${{ env.THIRD_PARTY_DIR }}
-          key: tool_third_${{ runner.os }}_${{ hashFiles('tools/github_actions/third-party.sh', 'tools/github_actions/tool_integration_setup.sh') }}_v2
+          key: tool_third_${{ runner.os }}_${{ hashFiles('tools/github_actions/third-party.sh', 'tools/github_actions/tool_integration_setup.sh') }}_v3
 
-      - name: Download the JVM tools + Linux compiled tools (third-party.sh)
+      - name: Download the JVM tools and the Linux compiled tools (third-party.sh)
+        # The required tier depends on these, so a failed download fails the job
+        # here, with the download's own error, instead of as a silent skip later.
         if: steps.third-party-cache.outputs.cache-hit != 'true'
-        # A single flaky download must not red the whole job: retry a few times
-        # (the script is idempotent, it only fetches what is missing) and, if the
-        # upstream host is down for good, continue anyway. The tools that failed to
-        # download are simply absent and their tests skip.
-        continue-on-error: true
         shell: bash
         run: |
           chmod +x tools/github_actions/third-party.sh
-          for attempt in 1 2 3; do
-            if tools/github_actions/third-party.sh; then break; fi
-            echo "third-party.sh attempt ${attempt} failed; retrying..."
-            sleep 15
-          done
+          tools/github_actions/third-party.sh
+
+      - name: Put the third-party Graphviz on PATH (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          bin="$(cygpath -u "$THIRD_PARTY_DIR")/graphviz/bin"
+          "$bin/dot.exe" -c
+          "$bin/dot.exe" -V
+          cygpath -w "$bin" >> "$GITHUB_PATH"
 
       - name: Acquire every remaining external tool per platform (best effort)
         continue-on-error: true
@@ -169,56 +216,130 @@ jobs:
           chmod +x tools/github_actions/tool_integration_setup.sh
           tools/github_actions/tool_integration_setup.sh
 
+      - name: Trust the third-party tools tree (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          # The trusted-exec chokepoint refuses tools on paths others can write; a
+          # tree unzipped on a cache miss keeps the archive's group-write bits (a
+          # cache restore does not), so normalise it rather than weaken the guard.
+          chmod -R go-w "$THIRD_PARTY_DIR"
+
       - name: Show acquired tools
         shell: bash
         run: |
           for v in SENNA HUNPOS_TAGGER PROVER9 MEGAM CANDC REPP_TOKENIZER \
                    STANFORD_SEGMENTER STANFORD_POSTAGGER STANFORD_PARSER \
-                   CORENLP MALT_PARSER; do
+                   CORENLP MALT_PARSER NLTK_DATA JAVA_HOME; do
             eval "val=\${$v:-<unset>}"; echo "$v=$val"
           done
+          java -version
           ls -l "$THIRD_PARTY_DIR" || echo "no third-party dir"
 
-      - name: Run reliable wrapper tests (guards always + JVM/crf real tools)
+      - name: Require the JVM tools inside a data root
+        # The real-tool harnesses skip, never fail, when a tool is absent, so the
+        # presence of every required tool is asserted here, where the absence
+        # names the tool, before any test runs.
         shell: bash
         run: |
-          # Serial on purpose: the real tools are not all parallel-safe (CoreNLP
-          # binds a fixed port), so no xdist. These are the REQUIRED signal: the
-          # tool-independent guard/security tests always run, and the JVM tools +
-          # crfsuite either run (when acquired, which is reliable on every OS) or
-          # skip cleanly (importorskip / no-jar / no-server). -rs shows skip reasons.
+          python - <<'PY'
+          import glob, os, sys
+          import nltk
+          print("data roots:", nltk.data.path)
+          required = {
+              "stanford-corenlp": ("stanford-corenlp*", "stanford-corenlp-*.jar"),
+              "stanford-parser": ("stanford-parser*", "stanford-parser*.jar"),
+              "stanford-postagger": ("stanford-postagger*", "models/english-left3words-distsim.tagger"),
+              "stanford-segmenter": ("stanford-segmenter*", "data/pku.gz"),
+              "maltparser": ("maltparser*", "maltparser-*.jar"),
+          }
+          missing = []
+          for tool, (home, inside) in required.items():
+              hits = [
+                  h for root in nltk.data.path if isinstance(root, str)
+                  for h in glob.glob(os.path.join(root, home))
+                  if glob.glob(os.path.join(h, inside))
+              ]
+              print(f"{tool}: {hits or 'MISSING'}")
+              if not hits:
+                  missing.append(tool)
+          if missing:
+              sys.exit(f"required tools not found inside a data root: {missing}")
+          PY
+
+      - name: Run the required wrapper and attack harnesses on the real tools
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+          # dot must be installed: the real Graphviz tests fail, never skip
+          NLTK_CI_REQUIRE_GRAPHVIZ: "1"
+        run: |
+          # Serial on purpose: the real tools are not all parallel-safe, so no
+          # xdist. -rs prints every skip reason; the check after the run turns a
+          # skip caused by a missing required tool into a failure.
           python -m pytest -rs \
-            nltk/test/unit/test_senna_security.py \
-            nltk/test/unit/test_crf.py \
+            nltk/test/unit/test_attack_java_sourcefile_cmd.py \
+            nltk/test/unit/test_attack_java_tool_expanded.py \
+            nltk/test/unit/test_attack_stanford_input_expanded.py \
+            nltk/test/unit/test_attack_tool_model_files_expanded.py \
+            nltk/test/unit/test_attack_weka_model_path_expanded.py \
+            nltk/test/unit/test_attack_bllip_model_paths_expanded.py \
+            nltk/test/unit/test_boxer_security.py \
             nltk/test/unit/test_corenlp.py \
+            nltk/test/unit/test_corenlp_options_security.py \
+            nltk/test/unit/test_crf.py \
+            nltk/test/unit/test_hunpos_security.py \
+            nltk/test/unit/test_inference_security.py \
+            nltk/test/unit/test_internals.py \
+            nltk/test/unit/test_jar_sandbox_containment.py \
+            nltk/test/unit/test_java_injection_exploit.py \
+            nltk/test/unit/test_java_per_call_options_security.py \
+            nltk/test/unit/test_java_wrapper_text_output.py \
             nltk/test/unit/test_malt.py \
             nltk/test/unit/test_malt_security.py \
             nltk/test/unit/test_malt_stanford_pathsec.py \
-            nltk/test/unit/test_stanford_parser.py \
+            nltk/test/unit/test_megam_tadm_injection_security.py \
+            nltk/test/unit/test_pathsec_tool_resources.py \
+            nltk/test/unit/test_pathsec_trusted_exec.py \
+            nltk/test/unit/test_pathsec_sweep_wrappers.py \
+            nltk/test/unit/test_prover9_security.py \
+            nltk/test/unit/test_repp_security.py \
+            nltk/test/unit/test_senna_security.py \
             nltk/test/unit/test_stanford_arg_injection.py \
             nltk/test/unit/test_stanford_classpath.py \
             nltk/test/unit/test_stanford_java_wrappers.py \
-            nltk/test/unit/test_tokenize_stanford_pathsec.py \
-            nltk/test/unit/test_boxer_security.py \
-            nltk/test/unit/test_repp_security.py \
-            nltk/test/unit/test_inference_security.py \
-            nltk/test/unit/test_hunpos_security.py \
-            nltk/test/unit/test_prover9_security.py \
+            nltk/test/unit/test_stanford_parser.py \
             nltk/test/unit/test_tadm_security.py \
-            nltk/test/unit/test_megam_tadm_injection_security.py
+            nltk/test/unit/test_tokenize.py \
+            nltk/test/unit/test_tokenize_stanford_pathsec.py \
+            nltk/test/unit/test_tool_search_path_security.py \
+            nltk/test/unit/test_weka_jvm_arff_hardening.py \
+            nltk/test/unit/test_weka_integration.py \
+            | tee required-tier.log
+          test "${PIPESTATUS[0]}" -eq 0
 
-      - name: Run best-effort real-tool tests (SENNA, prover9/mace4 doctests)
-        # These exercise the tools built best-effort per platform. When such a
-        # build is broken (e.g. an unrunnable shipped binary) the test may error
-        # rather than skip, which is real signal we want to SEE without redding the
-        # required check above, so this step is continue-on-error. When the tool is
-        # absent the tests skip cleanly (test_senna: skipUnless; the doctests:
-        # check_binary -> pytest.skip).
-        continue-on-error: true
+      - name: Fail if a required tool was skipped rather than exercised
         shell: bash
         run: |
-          python -m pytest -rs \
-            nltk/test/unit/test_senna.py
+          # Every reason a harness gives when a Stanford, CoreNLP, MaltParser or
+          # JVM dependency is absent. One of these on a runner that acquired the
+          # tool means the tool was not seen, which is the signal this job exists for.
+          if grep -E "SKIPPED .*(no Stanford|not usable here|no usable JVM|unable to find stanford|stanford-parser is not installed|maltparser is not installed|No module named 'pycrfsuite')" required-tier.log; then
+            echo "a required tool was skipped instead of exercised"
+            exit 1
+          fi
+          echo "no required tool was skipped"
+
+      - name: Run the best-effort real-tool tests (SENNA, prover9 and mace4 doctests)
+        # These exercise the tools built best effort per platform. A broken build
+        # may error rather than skip, which is signal to see without redding the
+        # required tier above, so this step is continue-on-error.
+        continue-on-error: true
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          python -m pytest -rs nltk/test/unit/test_senna.py
           python -m pytest -rs --doctest-glob='*.doctest' \
             nltk/test/inference.doctest \
             nltk/test/nonmonotonic.doctest
