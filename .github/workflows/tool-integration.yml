@@ -105,18 +105,26 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Set up Java (Stanford, CoreNLP and MaltParser are JVM tools)
+        # Not on Linux: setup-java installs under /opt/hostedtoolcache and /opt
+        # itself is world-writable on the Ubuntu image, so nltk refuses every JVM
+        # there (CWE-427). Linux uses the image's own JDK below, as ci.yml does.
+        if: runner.os != 'Linux'
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
 
-      - name: Give the JDKs back their private write bits (Linux)
-        # The hosted toolcache and /usr/lib/jvm are world-writable on the Ubuntu
-        # image, so nltk refuses to launch any JVM there (CWE-427); restore the
+      - name: Use the runner's JDK and give it back its private write bits (Linux)
+        # The Ubuntu image runs `chmod -R 777 /usr/lib/jvm`, so every JVM there
+        # is world-writable and nltk refuses to launch it (CWE-427); restore the
         # root-only write bits so the real-JVM tests run against a trusted JDK.
         if: runner.os == 'Linux'
         shell: bash
-        run: sudo chmod -R go-w "$JAVA_HOME" /usr/lib/jvm
+        run: |
+          sudo chmod -R go-w /usr/lib/jvm
+          echo "JAVA_HOME=$JAVA_HOME_17_X64" >> "$GITHUB_ENV"
+          echo "$JAVA_HOME_17_X64/bin" >> "$GITHUB_PATH"
+          "$JAVA_HOME_17_X64/bin/java" -version
 
       - name: Register the NLTK data directory and the third-party tree as data roots
         # The wrappers bound every model and jar to a data root, so the real-tool
@@ -230,7 +238,7 @@ jobs:
         run: |
           for v in SENNA HUNPOS_TAGGER PROVER9 MEGAM CANDC REPP_TOKENIZER \
                    STANFORD_SEGMENTER STANFORD_POSTAGGER STANFORD_PARSER \
-                   CORENLP MALT_PARSER NLTK_DATA JAVA_HOME; do
+                   CORENLP MALT_PARSER WEKAHOME WEKA_JAR NLTK_DATA JAVA_HOME; do
             eval "val=\${$v:-<unset>}"; echo "$v=$val"
           done
           java -version
@@ -324,7 +332,7 @@ jobs:
           # Every reason a harness gives when a Stanford, CoreNLP, MaltParser or
           # JVM dependency is absent. One of these on a runner that acquired the
           # tool means the tool was not seen, which is the signal this job exists for.
-          if grep -E "SKIPPED .*(no Stanford|not usable here|no usable JVM|unable to find stanford|stanford-parser is not installed|maltparser is not installed|No module named 'pycrfsuite')" required-tier.log; then
+          if grep -E "SKIPPED .*(no Stanford|not usable here|no usable JVM|unable to find stanford|stanford-parser is not installed|maltparser is not installed|weka.jar not available|No module named 'pycrfsuite')" required-tier.log; then
             echo "a required tool was skipped instead of exercised"
             exit 1
           fi
