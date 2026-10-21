@@ -552,6 +552,9 @@ def java(
     from nltk.pathsec import TrustError, spawn_trusted
 
     try:
+        # Text mode decodes with the locale unless told otherwise: on Windows
+        # that is the console code page, which turns the tools' UTF-8 output into
+        # mojibake or kills the reader thread (stdout None) on an undefined byte.
         p = spawn_trusted(
             final_cmd[0],
             final_cmd[1:],
@@ -559,6 +562,8 @@ def java(
             stdout=stdout,
             stderr=stderr,
             universal_newlines=True,
+            encoding="utf-8",
+            errors="replace",
             env=child_env,
         )
     except TrustError as e:
