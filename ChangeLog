@@ -44,13 +44,15 @@ Other changes
 * Surface the CoreNLP server's reason for a non-2xx answer (PR #3942)
 * Omit unaligned (NULL target) pairs from Alignment strings, so IBM model output prints (PR #3967)
 * Fix DependencyGraph cycle detection, which returned False on every parsed graph (PR #3978)
+* Show, range and draw an alignment with an unaligned pair on every surface (PR #3987)
 
 Thanks to the following contributors to 3.10.4: Zhewen Tan, Yanhaoxi, Yazan Balawneh (Cystack.ps),
 Abdulmoyn Sommakieh, Golitsin Vyacheslav, Mingzhe Yu, 宁岑, Tai An, 区梓灏, Tom Aarsen, Raffi Enficiaud,
 JJ, Artemiy, Cherno.x, 0xEaS, sarvesh patil, Isaac David, Arthur Gervais, leduckhuong, Ibrahim zain,
 Athul Jayaram, Chiencp, Ziyu Lin, Michael Lip, GOLDBERG8, Litesh Ghute, Kartik G, Thai Son Dinh,
-infy, 0xRenSec, Joshgun Abdullayev, Arpit Jain, Mohammad Favas S, Jace, nguyencanhthuong, kokomaru167,
-jankesec, Daniel Coles, Fodhil Benhiba, Liling Tan, Huanyi Xie, ahcrm-core, Eric Kafe, Steven Bird.
+infy, 0xRenSec, Joshgun Abdullayev, Arpit Jain, Mohammad Favas S, Jace, nguyencanhthuong,
+kokomaru167, jankesec, Daniel Coles, Fodhil Benhiba, Ubaid Ur Rehman, Maciej Zmitrukiewicz,
+Gecko Security, Bugbunny, Liling Tan, Huanyi Xie, ahcrm-core, Eric Kafe, Steven Bird.
 
 Version 3.10.3 2026-08-12
 

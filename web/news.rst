@@ -50,6 +50,7 @@ Other changes
 - Surface the CoreNLP server's reason for a non-2xx answer
 - Omit unaligned (NULL target) pairs from Alignment strings, so IBM model output prints
 - Fix DependencyGraph cycle detection, which returned False on every parsed graph
+- Show, range and draw an alignment with an unaligned pair on every surface
 
 NLTK 3.10.3 release: August 2026
 
