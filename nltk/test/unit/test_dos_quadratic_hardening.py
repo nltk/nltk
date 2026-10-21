@@ -526,8 +526,9 @@ class TestSpanTokenizeLinear:
         return (NLTKWordTokenizer(), TreebankWordTokenizer())
 
     def test_linear_restore_has_teeth(self, monkeypatch):
-        # Reintroduce the O(n) front removal (two whole-list copies per pop so the
-        # cost is visible at test sizes): the restore must go quadratic.
+        # Reintroduce an O(n) front removal: each pop walks the remaining quotes
+        # in Python, so the control computes like the calibration unit beside
+        # it instead of moving memory, and it dominates the linear regex work.
         import nltk.tokenize.destructive as destructive
         import nltk.tokenize.treebank as treebank
 
@@ -542,6 +543,8 @@ class TestSpanTokenizeLinear:
             def __next__(self):
                 if not self.items:
                     raise StopIteration
+                for _ in self.items:
+                    pass
                 head = self.items[0]
                 self.items[:] = self.items[1:]
                 return head
@@ -549,11 +552,11 @@ class TestSpanTokenizeLinear:
         monkeypatch.setattr(destructive, "iter", _FrontPopIterator, raising=False)
         monkeypatch.setattr(treebank, "iter", _FrontPopIterator, raising=False)
         for tk in self._tokenizers():
-            # 10k/40k: at 4k the neutered small side sat under the 20 ms floor on a
-            # Windows runner (its 16k side was 0.156 s), so the ratio was floor-bound
-            # and read 7.8x; at 10k both sides resolve on the 15.6 ms CPU clock.
+            # 3k/12k: the small side is ~150 ms, ten ticks of the 15.6 ms Windows
+            # clock. The memmove-only control at 10k/40k read 7.5x on Windows 3.11
+            # (run 39568645843): memory-bound, it did not follow the compute unit.
             _assert_quadratic(
-                lambda n, tk=tk: list(tk.span_tokenize('"' * n)), 10_000, 40_000, reps=2
+                lambda n, tk=tk: list(tk.span_tokenize('"' * n)), 3_000, 12_000, reps=2
             )
 
 
