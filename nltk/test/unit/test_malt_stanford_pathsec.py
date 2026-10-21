@@ -605,7 +605,7 @@ def test_real_malt_train_writes_model_inside_sandbox(tmp_path):
     from nltk.parse.dependencygraph import DependencyGraph
     from nltk.parse.malt import MaltParser
 
-    malt_dir = _find_tool_dir("maltparser-1.9.2", "maltparser-1.9.1")
+    malt_dir = _find_tool_dir("maltparser-1.9.2", "maltparser-1.9.1", "maltparser")
     if malt_dir is None:
         pytest.skip("maltparser is not installed under nltk.data.path")
 
@@ -630,7 +630,7 @@ def test_real_stanford_parser_default_resource_parses(monkeypatch):
     guard treated it as a filesystem path this raises instead."""
     from nltk.parse.stanford import StanfordParser
 
-    parser_dir = _find_tool_dir("stanford-parser-full-2020-11-17")
+    parser_dir = _find_tool_dir("stanford-parser-full-2020-11-17", "stanford-parser")
     if parser_dir is None:
         pytest.skip("stanford-parser is not installed under nltk.data.path")
     monkeypatch.setenv("STANFORD_PARSER", parser_dir)
@@ -654,7 +654,7 @@ def test_real_stanford_parser_refuses_escape_with_jvm_present(monkeypatch, model
     refused before launch, so the block is the guard and not a missing JVM."""
     from nltk.parse.stanford import StanfordParser
 
-    parser_dir = _find_tool_dir("stanford-parser-full-2020-11-17")
+    parser_dir = _find_tool_dir("stanford-parser-full-2020-11-17", "stanford-parser")
     if parser_dir is None:
         pytest.skip("stanford-parser is not installed under nltk.data.path")
     monkeypatch.setenv("STANFORD_PARSER", parser_dir)
