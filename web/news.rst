@@ -46,8 +46,11 @@ Other changes
 - Fix UTF-8 text preprocessing in NKJP corpus reader
 - Remove shadowed FeatStruct._walk stub and preserve its docstring
 - Count all increasing pairs in RIBES kendall_tau
+- Fix the TweetTokenizer ZWJ emoji pattern capturing adjacent whitespace
 - Surface the CoreNLP server's reason for a non-2xx answer
+- Omit unaligned (NULL target) pairs from Alignment strings, so IBM model output prints
 - Fix DependencyGraph cycle detection, which returned False on every parsed graph
+- Show, range and draw an alignment with an unaligned pair on every surface
 
 NLTK 3.10.3 release: August 2026
 
