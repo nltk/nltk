@@ -428,6 +428,8 @@ class TweetViewer(TweetHandlerI):
         :rtype: bool
         :param data: Tweet object returned by Twitter API
         """
+        # Tweet text is untrusted network data; neutralise any terminal control
+        # sequences before writing it to the terminal (CWE-150).
         text = data["text"]
         safe_print(text)
 

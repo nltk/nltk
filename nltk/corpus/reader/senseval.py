@@ -23,13 +23,12 @@ is tagged with a sense identifier, and supplied with context.
 """
 
 
-from defusedxml.ElementTree import fromstring as safe_fromstring
-
 from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
 from nltk.termsec import safe_print
 from nltk.tokenize import *
+from nltk.xmlsec import fromstring as safe_fromstring
 
 # ``(\s+)&(\s+)`` retried by sub over a whitespace run is O(n**2) on a crafted
 # instance block: a run of N spaces followed by ``&`` (with no trailing space)
@@ -179,21 +178,24 @@ def _fixXML(text):
     # fix """
     text = redos.sub(r'"""', "'\"'", text)
     # fix <s snum=dd> => <s snum="dd"/>
-    text = redos.sub(r'(<[^<]*snum=)([^">]+)>', r'\1"\2"/>', text)
+    # Bound the tag bodies below and keep `<` out of every run: a repeated `<...`
+    # anchor whose run has no terminator then stops at the next anchor, so a
+    # crafted block is O(n) rather than O(n*bound) or O(n**2) (CWE-407).
+    text = redos.sub(r'(<[^<]{0,256}snum=)([^"<>]{1,256})>', r'\1"\2"/>', text)
     # fix foreign word tag
     text = redos.sub(r"<\&frasl>\s*<p[^>]*>", "FRASL", text)
     # remove <&I .>
-    text = redos.sub(r"<\&I[^>]*>", "", text)
+    text = redos.sub(r"<\&I[^<>]{0,256}>", "", text)
     # fix <{word}>
-    text = redos.sub(r"<{([^}]+)}>", r"\1", text)
+    text = redos.sub(r"<{([^<}]{1,256})}>", r"\1", text)
     # remove <@>, <p>, </p>
     text = redos.sub(r"<(@|/?p)>", r"", text)
     # remove <&M .> and <&T .> and <&Ms .>
     text = redos.sub(r"<&\w+ \.>", r"", text)
     # remove <!DOCTYPE... > lines
-    text = redos.sub(r"<!DOCTYPE[^>]*>", r"", text)
+    text = redos.sub(r"<!DOCTYPE[^<>]{0,1024}>", r"", text)
     # remove <[hi]> and <[/p]> etc
-    text = redos.sub(r"<\[\/?[^>]+\]*>", r"", text)
+    text = redos.sub(r"<\[\/?[^<>]{1,256}\]*>", r"", text)
     # take the thing out of the brackets: <&hellip;>
     text = redos.sub(r"<(\&\w+;)>", r"\1", text)
     # and remove the & for those patterns that aren't regular XML

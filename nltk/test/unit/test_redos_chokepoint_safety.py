@@ -33,15 +33,20 @@ import time
 import pytest
 
 from nltk import redos
+from nltk.test.unit import timing
 
 
 def _elapsed(fn):
-    start = time.perf_counter()
-    try:
-        fn()
-    except Exception:
-        pass
-    return time.perf_counter() - start
+    """Seconds charged to ``fn`` by the suite's timing rule; an exception
+    from ``fn`` ends the measurement instead of the test."""
+
+    def swallow():
+        try:
+            fn()
+        except Exception:
+            pass
+
+    return timing.charged(swallow)
 
 
 # ==========================================================================
@@ -279,7 +284,13 @@ class TestTimeoutIsTheGuarantee:
         ):
             with pytest.raises(TimeoutError):
                 call()
-        assert tp.match(self.BAIT, timeout=0.3) is None
+        # the anchored match fails fast in about 150 ms of work; against a
+        # 0.3 s cap that is a wall-clock race a loaded Windows runner lost
+        # once in 60 runs, so measure the work the way the suite does
+        with timing.budget(2.0, cpu_bound=True):
+            # the suite's hard deadline as the cap: a lost fast failure is a
+            # TimeoutError after 60 s, not a job that runs to its limit
+            assert tp.match(self.BAIT, timeout=timing.hard_deadline_for(2.0)) is None
 
     def test_backtracking_methods_fire_the_timeout(self):
         # The methods that scan the whole input (all but anchored ``match``,

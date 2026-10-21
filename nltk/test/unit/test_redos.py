@@ -25,11 +25,10 @@ The timeout is monkeypatched short so the suite stays fast; payloads are long
 enough that 2**N backtracking cannot finish inside any small window.
 """
 
-import time
-
 import pytest
 
 from nltk import redos
+from nltk.test.unit import timing
 
 FAST_TIMEOUT = 0.5
 EVIL = "a" * 64 + "!"  # long enough that no small window lets 2**N finish
@@ -109,9 +108,8 @@ class TestRedosModule:
         # (short) timeout -- i.e. NOT raise (the exact match content is
         # irrelevant; some, e.g. ``(a*)*$``, legitimately match the empty
         # string at end-of-input).
-        start = time.perf_counter()
-        redos.compile(pattern).findall(EVIL)
-        assert time.perf_counter() - start < FAST_TIMEOUT
+        with timing.budget(FAST_TIMEOUT):
+            redos.compile(pattern).findall(EVIL)
 
     @pytest.mark.parametrize("pattern", BACKSTOP_FAMILY)
     @pytest.mark.parametrize("op", ["findall", "search", "split", "finditer", "sub"])
@@ -162,9 +160,8 @@ class TestExpandedBackstopFamily:
 
     @pytest.mark.parametrize("pattern", EXTRA_DEFUSED)
     def test_extra_defused_patterns_finish_fast(self, pattern):
-        start = time.perf_counter()
-        redos.compile(pattern).search("a" * 80 + "!", timeout=0.4)
-        assert time.perf_counter() - start < 2.0
+        with timing.budget(2.0):
+            redos.compile(pattern).search("a" * 80 + "!", timeout=0.4)
 
     def test_innocent_pattern_bounded_only_on_hostile_input(self):
         # The SAME anchored pattern returns instantly on a valid all-``a`` string
@@ -185,9 +182,8 @@ class TestExpandedBackstopFamily:
                 redos.compile(bomb)
 
     def test_benign_large_input_still_processes_fast(self):
-        start = time.perf_counter()
-        assert len(redos.compile(r"\w+").findall("word " * 100000)) == 100000
-        assert time.perf_counter() - start < 3.0
+        with timing.budget(3.0):
+            assert len(redos.compile(r"\w+").findall("word " * 100000)) == 100000
 
 
 # --------------------------------------------------------------------------
@@ -433,12 +429,11 @@ class TestChatReDoS:
         from nltk.chat.util import Chat, reflections
 
         bot = Chat([(r"(a|a)*z", ["x"])], reflections)
-        start = time.perf_counter()
-        try:
-            bot.respond("a" * 64)
-        except TimeoutError:
-            pass
-        assert time.perf_counter() - start < 2.0
+        with timing.budget(2.0):
+            try:
+                bot.respond("a" * 64)
+            except TimeoutError:
+                pass
 
 
 # --------------------------------------------------------------------------

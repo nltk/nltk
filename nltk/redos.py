@@ -65,6 +65,7 @@ __all__ = [
     "DEFAULT_TIMEOUT",
     "MAX_PATTERN_LENGTH",
     "MAX_NESTING_DEPTH",
+    "MAX_GROUP_COUNT",
     "MAX_REPEAT_PRODUCT",
     "TimedPattern",
     "error",
@@ -118,6 +119,11 @@ MAX_PATTERN_LENGTH = 100_000
 #: nested character-class set), so a deeply nested source raises RecursionError (a
 #: crash, a native stack overflow on some builds); a legitimate pattern is shallow.
 MAX_NESTING_DEPTH = 100
+
+#: Max number of capturing groups: compile cost is roughly quadratic in them, so
+#: ``"()" * 25000`` burns tens of seconds before the match-time timeout can fire.
+#: Non-capturing ``(?:...)`` groups are not counted.
+MAX_GROUP_COUNT = 1000
 
 #: Max expansion of a counted repetition. The engine expands ``(group){n}`` into
 #: n copies at compile time and nested counts multiply, so an unbounded product
@@ -449,7 +455,12 @@ def check_pattern(src):
         f"regex counted repetition expands beyond {MAX_REPEAT_PRODUCT} copies; "
         "refusing to compile (CWE-1333 compile-time blow-up)"
     )
+    group_msg = (
+        f"regex opens more than {MAX_GROUP_COUNT} capturing groups; refusing to "
+        "compile (CWE-1333 compile-time DoS quadratic in the capturing-group count)"
+    )
     depth = 0  # combined group ``(`` + character-class ``[`` nesting
+    group_count = 0  # capturing groups opened; the engine's compile is ~O(count**2)
     class_depth = 0  # > 0 while inside a character class
     cost = [0]  # per-group accumulated expansion; cost[-1] is the current group
     last = 0  # expansion of the most recent atom / group, for a trailing ``{m,n}``
@@ -486,6 +497,18 @@ def check_pattern(src):
             depth += 1
             if depth > MAX_NESTING_DEPTH:
                 raise ValueError(depth_msg)
+            # Count only capturing groups (the compile cost is quadratic in those):
+            # a plain "(" and the named forms "(?P<n>", "(?<n>" and "(?'n'" capture;
+            # every other "(?..." (non-capture, lookaround, flags, comment) does not.
+            if (
+                scan[i + 1 : i + 2] != "?"
+                or scan[i + 1 : i + 4] == "?P<"
+                or scan[i + 1 : i + 3] == "?'"
+                or (scan[i + 1 : i + 3] == "?<" and scan[i + 3 : i + 4].isalnum())
+            ):
+                group_count += 1
+                if group_count > MAX_GROUP_COUNT:
+                    raise ValueError(group_msg)
             cost.append(0)
             if i + 1 < n and scan[i + 1] == "?":
                 # Skip a group introducer ((?:, (?P<name>, (?=, (?<!, (?#..., ...)
@@ -555,8 +578,15 @@ def source_of(pattern):
     )
 
 
-def reharden(pattern, flags=0):
+def reharden(pattern, flags=None):
     """Re-derive a fresh, wall-clock-capped :class:`TimedPattern` from ``pattern``'s
     SOURCE, discarding any existing wrapper. Unlike :func:`compile`, an incoming
-    ``TimedPattern`` is never returned as-is, so a disabled cap cannot survive."""
+    ``TimedPattern`` is never returned as-is, so a disabled cap cannot survive.
+
+    A compiled pattern's own flags travel with its source unless ``flags`` says
+    otherwise: rebuilt without them, a ``re.VERBOSE`` or ``re.IGNORECASE``
+    pattern silently matched nothing (extract_rels lost every relation the
+    documented ROLES pattern finds)."""
+    if flags is None:
+        flags = getattr(pattern, "flags", 0)
     return compile(source_of(pattern), flags)

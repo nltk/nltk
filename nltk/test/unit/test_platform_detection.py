@@ -18,7 +18,7 @@ def test_normalize_resource_name_treats_nt_as_windows(monkeypatch):
 
 def test_default_download_dir_uses_os_name_for_windows(monkeypatch):
     windows_os = SimpleNamespace(
-        environ={"APPDATA": r"C:\Users\Codex\AppData\Roaming"},
+        environ={"APPDATA": r"C:\Users\user\AppData\Roaming"},
         name="nt",
         path=ntpath,
     )
@@ -28,12 +28,12 @@ def test_default_download_dir_uses_os_name_for_windows(monkeypatch):
     downloader = nltk.downloader.Downloader(download_dir="stub")
 
     assert (
-        downloader.default_download_dir() == r"C:\Users\Codex\AppData\Roaming\nltk_data"
+        downloader.default_download_dir() == r"C:\Users\user\AppData\Roaming\nltk_data"
     )
 
 
 def test_windows_data_paths_include_appdata(monkeypatch):
-    appdata = r"C:\Users\Codex\AppData\Roaming"
+    appdata = r"C:\Users\user\AppData\Roaming"
     expected = ntpath.join(appdata, "nltk_data")
     monkeypatch.setattr(nltk.data.os, "path", ntpath)
     monkeypatch.setitem(nltk.data.os.environ, "APPDATA", appdata)

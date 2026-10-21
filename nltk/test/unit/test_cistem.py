@@ -17,6 +17,7 @@ the suite.
 import os
 
 from nltk.stem.cistem import Cistem
+from nltk.test.unit import timing
 
 from . import _mp_ctx
 
@@ -72,13 +73,11 @@ def _stem_worker():
 def test_long_word_stems_in_linear_time():
     """A long word must stem quickly, not run the old O(n**2) loop."""
     ctx = _mp_ctx()
-    proc = ctx.Process(target=_stem_worker)
-    proc.start()
-    proc.join(_TIMEOUT)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(
+        _stem_worker, (), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         raise AssertionError(
             "Cistem.stem did not finish in time -> quadratic-time DoS (CWE-770)"
         )
-    assert proc.exitcode == 0, f"worker failed (exit code {proc.exitcode})"
+    assert run.exitcode == 0, f"worker failed (exit code {run.exitcode})"

@@ -21,6 +21,7 @@ from nltk import CFG
 from nltk.parse import BottomUpChartParser, ChartParser
 from nltk.parse import chart as chart_mod
 from nltk.parse.chart import MAX_PARSE_TREES
+from nltk.test.unit import timing
 
 from . import _mp_ctx
 
@@ -85,16 +86,14 @@ def _parse_worker():
 def test_exponential_grammar_is_refused_not_run():
     """The default cap must refuse an exponential parse forest, not build it."""
     ctx = _mp_ctx()
-    proc = ctx.Process(target=_parse_worker)
-    proc.start()
-    proc.join(_TIMEOUT)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(
+        _parse_worker, (), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         raise AssertionError(
             "chart tree extraction did not finish -> unbounded exponential DoS"
         )
-    assert proc.exitcode == _EXIT_REFUSED, (
+    assert run.exitcode == _EXIT_REFUSED, (
         "an exponential parse forest was not refused "
-        f"(worker exit code {proc.exitcode})"
+        f"(worker exit code {run.exitcode})"
     )

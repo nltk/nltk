@@ -29,6 +29,7 @@ import pytest
 import nltk.data
 from nltk import pathsec
 from nltk.sem.boxer import Boxer
+from nltk.test.unit.conftest import make_home_dir
 
 _BIN_NAMES = ("candc", "boxer")
 
@@ -127,6 +128,7 @@ def test_boxer_call_uses_argv_list_never_shell(monkeypatch):
     def _fake_popen(cmd, *a, **k):
         captured["argv"] = list(cmd)
         captured["shell"] = k.get("shell", False)
+        captured["executable"] = k.get("executable")
         return _FakeProc()
 
     monkeypatch.setattr(ps.subprocess, "Popen", _fake_popen)
@@ -135,7 +137,10 @@ def test_boxer_call_uses_argv_list_never_shell(monkeypatch):
     boxer._call("some stdin input", binary, args=hostile_args)
 
     assert captured["shell"] is False
-    assert captured["argv"][0] == os.path.realpath(binary)  # resolved trusted path
+    # the verified resolved file runs (executable=); argv[0] is the path as called
+    run = captured["executable"]
+    assert run == os.path.realpath(binary) and not os.path.islink(run)
+    assert captured["argv"][0] == binary
     for tok in hostile_args:
         assert tok in captured["argv"]  # literal, not shell-interpreted
 
@@ -151,8 +156,7 @@ def test_boxer_scratch_file_staged_in_data_root(monkeypatch):
     """
     # Stage the data root under $HOME so it is inside the pathsec sandbox on
     # every OS; the system temp dir is deliberately not an allowed data root.
-    home = os.path.expanduser("~")
-    root = tempfile.mkdtemp(prefix="nltk_boxer_test_", dir=home)
+    root = make_home_dir("nltk_boxer_test_")
     monkeypatch.setattr(nltk.data, "path", [root, *nltk.data.path])
 
     boxer = Boxer.__new__(Boxer)
@@ -190,9 +194,23 @@ def test_boxer_scratch_file_staged_in_data_root(monkeypatch):
 # input line would inject or misroute those boundaries (the guard runs pre-spawn).
 
 
+def _staged_models():
+    """A real, private ``models/boxer`` tree: ``_call_candc`` validates the
+    tree it hands candc (GHSA-fg9w-wfp5-j933), so a fake name is refused."""
+    try:
+        base = nltk.data.make_staging_dir(prefix="candc_models_", cleanup=True)
+    except PermissionError as exc:  # pragma: no cover - env-dependent
+        pytest.skip(f"no writable in-sandbox NLTK data root: {exc}")
+    models = os.path.join(base, "models")
+    os.makedirs(os.path.join(models, "boxer"))
+    with open(os.path.join(models, "boxer", "super"), "w") as handle:
+        handle.write("")
+    return models
+
+
 def _candc_boxer(spy):
     boxer = Boxer.__new__(Boxer)
-    boxer._candc_models_path = "/models"
+    boxer._candc_models_path = _staged_models()
     boxer._candc_bin = "/nonexistent/candc"  # never reached for a refused input
     boxer._call = spy
     return boxer

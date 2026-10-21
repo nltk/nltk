@@ -65,6 +65,7 @@ from nltk.grammar import CFG, FeatureGrammar
 from nltk.parse.chart import ChartParser
 from nltk.parse.featurechart import FeatureChartParser
 from nltk.picklesec import WarningUnpickler
+from nltk.test.unit import timing
 from nltk.tree import Tree
 
 POSIX_ONLY = pytest.mark.skipif(os.name != "posix", reason="POSIX-only global")
@@ -429,17 +430,18 @@ def _run_child_bounded(pickle_path, wall_timeout):
         print("LOADED", top_len, depth)
         """
     )
-    try:
-        proc = subprocess.run(
-            [sys.executable, "-c", child, str(pickle_path)],
-            capture_output=True,
-            text=True,
-            timeout=wall_timeout,
-            env=env,
-        )
-        return False, proc.stdout.strip()
-    except subprocess.TimeoutExpired:
+    # the guarded child is charged its CPU time (see nltk.test.unit.timing)
+    proc, run = timing.run_subprocess(
+        [sys.executable, "-c", child, str(pickle_path)],
+        wall_timeout,
+        cpu_bound=True,
+        capture_output=True,
+        text=True,
+        env=env,
+    )
+    if proc is None or not run.within_budget:
         return True, ""
+    return False, proc.stdout.strip()
 
 
 def test_deeply_nested_graph_is_bounded(pathsec_sandbox):
@@ -673,15 +675,24 @@ def test_no_marshal_load_or_unsafe_yaml_or_numpy_load_in_library():
 
 
 def test_data_yaml_path_uses_safe_load():
-    """``nltk.data`` reads YAML resources with ``yaml.safe_load`` (no tag /
-    object construction). Verify the source and that safe_load refuses a
-    ``!!python/object`` tag (so a malicious .yaml resource cannot build objects)."""
+    """``nltk.data`` reads YAML resources through ``jsontags.safe_yaml_load``,
+    the bounded wrapper over ``yaml.safe_load`` (no tag / object construction,
+    plus byte, depth and node caps). Verify the source names the wrapper and no
+    raw PyYAML loader, and that both the wrapper and ``yaml.safe_load`` refuse
+    a ``!!python/object`` tag (so a malicious .yaml resource cannot build
+    objects)."""
     yaml = pytest.importorskip("yaml")
+    from nltk.jsontags import safe_yaml_loads
+
     data_src = (_NLTK_DIR / "data.py").read_text(encoding="utf-8")
-    assert "yaml.safe_load" in data_src
+    assert "safe_yaml_load(" in data_src
     assert "yaml.load(" not in data_src and "unsafe_load" not in data_src
+    assert "yaml.safe_load" not in data_src, "data.py bypasses the bounded loader"
+    payload = "!!python/object/apply:os.system ['echo hi']"
     with pytest.raises(yaml.YAMLError):
-        yaml.safe_load("!!python/object/apply:os.system ['echo hi']")
+        yaml.safe_load(payload)
+    with pytest.raises(yaml.YAMLError):
+        safe_yaml_loads(payload)
 
 
 def test_read_str_eval_is_bounded_to_a_string_literal():

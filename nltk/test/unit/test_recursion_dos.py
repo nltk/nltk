@@ -19,6 +19,7 @@ from nltk.grammar import FeatureGrammar
 from nltk.inference import ResolutionProver
 from nltk.sem import Expression
 from nltk.sem.logic import LogicalExpressionException
+from nltk.test.unit import timing
 from nltk.tree import Tree
 
 
@@ -104,10 +105,8 @@ class TestFeatStructReaderRecursion:
             node["f"] = child
             node = child
 
-        start = time.perf_counter()
-        with pytest.raises(RecursionError):
+        with timing.budget(2.0), pytest.raises(RecursionError):
             unify(a, b)
-        assert time.perf_counter() - start < 2.0
 
 
 class TestLogicParserOperatorChain:

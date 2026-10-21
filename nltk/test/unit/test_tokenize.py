@@ -9,6 +9,7 @@ from typing import List, Tuple
 
 import pytest
 
+from nltk.test.unit import timing
 from nltk.tokenize import (
     LegalitySyllableTokenizer,
     StanfordSegmenter,
@@ -387,16 +388,14 @@ class TestTokenize:
         timeout so a regression fails fast instead of hanging the suite.
         """
         ctx = _mp_ctx()
-        proc = ctx.Process(target=_tweet_tokenizer_redos_worker)
-        proc.start()
-        proc.join(60)
-        if proc.is_alive():
-            proc.terminate()
-            proc.join()
+        run = timing.run_in_process(
+            _tweet_tokenizer_redos_worker, (), budget=60, context=ctx, cpu_bound=True
+        )
+        if not run.within_budget:
             raise AssertionError(
                 "TweetTokenizer did not finish in time, possible ReDoS"
             )
-        assert proc.exitcode == 0, f"worker failed (exit code {proc.exitcode})"
+        assert run.exitcode == 0, f"worker failed (exit code {run.exitcode})"
 
     def test_tweet_tokenizer_reduce_len_preserves_non_latin(self):
         """
@@ -484,6 +483,12 @@ class TestTokenize:
         expected = ["<3", "🇨🇦", "🤝", "🇵🇱", "<3"]
         result = tokenizer.tokenize(test6)
         assert result == expected
+
+    def test_tweet_tokenizer_zwj_does_not_capture_whitespace(self):
+        """Whitespace next to a ZWJ remains a token boundary."""
+        tokenizer = TweetTokenizer()
+        assert tokenizer.tokenize("a\t\u200db") == ["a", "\u200db"]
+        assert tokenizer.tokenize("a\u200d\tb") == ["a\u200d", "b"]
 
     def test_pad_asterisk(self):
         """

@@ -19,6 +19,7 @@ import os
 
 from nltk.featstruct import FeatStruct, _rename_variable
 from nltk.sem.logic import Variable
+from nltk.test.unit import timing
 
 from . import _mp_ctx
 
@@ -69,16 +70,14 @@ def _rename_worker():
 def test_long_digit_run_renames_in_linear_time():
     """A long digit-run variable name must rename in linear time (not ReDoS)."""
     ctx = _mp_ctx()
-    proc = ctx.Process(target=_rename_worker)
-    proc.start()
-    proc.join(_TIMEOUT)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(
+        _rename_worker, (), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         raise AssertionError(
             "feature-structure renaming did not finish in time -> quadratic ReDoS"
         )
-    assert proc.exitcode == 0, f"worker failed (exit code {proc.exitcode})"
+    assert run.exitcode == 0, f"worker failed (exit code {run.exitcode})"
 
 
 # A TRAILING digit run: this one IS stripped, so it exercises the substitution's
@@ -100,16 +99,14 @@ def _rename_trailing_worker():
 def test_long_trailing_digit_run_renames_in_linear_time():
     """A long TRAILING digit run must also strip in linear time (and correctly)."""
     ctx = _mp_ctx()
-    proc = ctx.Process(target=_rename_trailing_worker)
-    proc.start()
-    proc.join(_TIMEOUT)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(
+        _rename_trailing_worker, (), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         raise AssertionError(
             "trailing-digit renaming did not finish in time -> quadratic ReDoS"
         )
-    assert proc.exitcode == 0, f"worker failed (exit code {proc.exitcode})"
+    assert run.exitcode == 0, f"worker failed (exit code {run.exitcode})"
 
 
 def test_rename_routes_through_redos():

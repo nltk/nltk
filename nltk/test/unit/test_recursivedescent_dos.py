@@ -13,13 +13,12 @@ entry, raising ``TimeoutError`` when exceeded; ``max_time=None`` disables it.
 problem), so the exploits raise in-process and the tests need no subprocess.
 """
 
-import time
-
 import pytest
 
 from nltk import CFG
 from nltk.parse import RecursiveDescentParser
 from nltk.parse.recursivedescent import DEFAULT_MAX_TIME
+from nltk.test.unit import timing
 
 BENIGN = CFG.fromstring(
     """
@@ -55,10 +54,9 @@ class TestRecursiveDescentDoS:
 
     def test_ambiguous_grammar_times_out(self):
         parser = RecursiveDescentParser(AMBIGUOUS, max_time=0.5)
-        start = time.perf_counter()
-        with pytest.raises(TimeoutError):
+        # bounded near max_time, not a hang
+        with timing.budget(4), pytest.raises(TimeoutError):
             list(parser.parse(["a"] * 24))
-        assert time.perf_counter() - start < 4  # bounded near max_time, not a hang
 
     def test_left_recursive_grammar_is_bounded(self):
         # Left recursion is unbounded work; it must not hang -- either the

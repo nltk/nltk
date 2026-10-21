@@ -30,15 +30,19 @@ For example::
 
 import operator
 import os
-import shutil
 import subprocess
 import tempfile
 from functools import reduce
 from optparse import OptionParser
 
-from nltk import redos
+from nltk import pathsec, redos
 from nltk.internals import find_binary_absolute
-from nltk.pathsec import TrustError, has_line_unsafe_char, spawn_trusted
+from nltk.pathsec import (
+    TrustError,
+    has_line_unsafe_char,
+    spawn_trusted,
+    validate_tool_data_dir,
+)
 from nltk.sem.drt import (
     DRS,
     DrtApplicationExpression,
@@ -207,9 +211,16 @@ class Boxer:
                         "A candc input line cannot start with the <META> discourse "
                         f"marker: {line!r}"
                     )
+        # candc reads the model files under --models natively: the tree gets
+        # the trust the binary gets and the checked string is what the command
+        # carries (GHSA-fg9w-wfp5-j933).
+        models = validate_tool_data_dir(
+            os.path.join(self._candc_models_path, ["boxer", "questions"][question]),
+            context="C&C models directory",
+        )
         args = [
             "--models",
-            os.path.join(self._candc_models_path, ["boxer", "questions"][question]),
+            models,
             "--candc-printer",
             "boxer",
         ]
@@ -272,7 +283,9 @@ class Boxer:
             temp_filename,
         ]
         stdout = self._call(None, self._boxer_bin, args, verbose)
-        shutil.rmtree(staging_dir, ignore_errors=True)
+        pathsec.remove_tree(
+            staging_dir, context="Boxer._call_boxer", ignore_errors=True
+        )
         return stdout
 
     def _find_binary(self, name, bin_dir, verbose=False):

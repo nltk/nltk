@@ -134,12 +134,11 @@ class ToktokTokenizer(TokenizerI):
     URL_FOE_3 = redos.compile(r"(:\/\/)[\S+\.\S+\/\S+][\/]"), " / "
     URL_FOE_4 = redos.compile(r" /"), r" / "  # s{ /}{ / }g;
 
-    # Left/Right strip, i.e. remove heading/trailing spaces.
-    # These strip regexes should NOT be used,
-    # instead use str.lstrip(), str.rstrip() or str.strip()
-    # (They are kept for reference purposes to the original toktok.pl code)
+    # Left/Right strip, kept for reference to the original toktok.pl code and not
+    # applied by ``tokenize`` (use str.strip()). RSTRIP's lookbehind pins the run
+    # to its start: bare ``\s+$`` re-scanned a space run per position, O(n**2).
     LSTRIP = redos.compile(r"^ +"), ""
-    RSTRIP = redos.compile(r"\s+$"), "\n"
+    RSTRIP = redos.compile(r"(?<!\s)\s+$"), "\n"
     # Merge multiple spaces.
     ONE_SPACE = redos.compile(r" {2,}"), " "
 

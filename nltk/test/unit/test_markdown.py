@@ -19,6 +19,7 @@ import traceback
 import pytest
 
 from nltk.corpus.reader.markdown import CategorizedMarkdownCorpusReader, List
+from nltk.test.unit import timing
 
 from . import _mp_ctx
 
@@ -111,13 +112,11 @@ def test_blockquotes_is_linear_not_quadratic(tmp_path):
         "\n\n".join("> a" for _ in range(50_000)) + "\n", encoding="utf-8"
     )
     ctx = _mp_ctx()
-    proc = ctx.Process(target=_blockquotes_worker, args=(str(tmp_path),))
-    proc.start()
-    proc.join(30)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(
+        _blockquotes_worker, (str(tmp_path),), budget=30, context=ctx
+    )
+    if not run.within_budget:
         raise AssertionError(
             "blockquotes() did not finish in time: quadratic scan regressed"
         )
-    assert proc.exitcode == 0, f"worker failed (exit {proc.exitcode})"
+    assert run.exitcode == 0, f"worker failed (exit {run.exitcode})"

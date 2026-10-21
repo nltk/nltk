@@ -177,18 +177,18 @@ def semi_rel2reldict(pairs, window=5, trace=False):
     :rtype: list(defaultdict)
     """
     result = []
-    while len(pairs) > 2:
+    for k in range(len(pairs) - 2):
         reldict = defaultdict(str)
-        reldict["lcon"] = _join(pairs[0][0][-window:])
-        reldict["subjclass"] = pairs[0][1].label()
-        reldict["subjtext"] = _join(pairs[0][1].leaves())
-        reldict["subjsym"] = list2sym(pairs[0][1].leaves())
-        reldict["filler"] = _join(pairs[1][0])
-        reldict["untagged_filler"] = _join(pairs[1][0], untag=True)
-        reldict["objclass"] = pairs[1][1].label()
-        reldict["objtext"] = _join(pairs[1][1].leaves())
-        reldict["objsym"] = list2sym(pairs[1][1].leaves())
-        reldict["rcon"] = _join(pairs[2][0][:window])
+        reldict["lcon"] = _join(pairs[k][0][-window:])
+        reldict["subjclass"] = pairs[k][1].label()
+        reldict["subjtext"] = _join(pairs[k][1].leaves())
+        reldict["subjsym"] = list2sym(pairs[k][1].leaves())
+        reldict["filler"] = _join(pairs[k + 1][0])
+        reldict["untagged_filler"] = _join(pairs[k + 1][0], untag=True)
+        reldict["objclass"] = pairs[k + 1][1].label()
+        reldict["objtext"] = _join(pairs[k + 1][1].leaves())
+        reldict["objsym"] = list2sym(pairs[k + 1][1].leaves())
+        reldict["rcon"] = _join(pairs[k + 2][0][:window])
         if trace:
             safe_print(
                 "(%s(%s, %s)"
@@ -199,7 +199,6 @@ def semi_rel2reldict(pairs, window=5, trace=False):
                 )
             )
         result.append(reldict)
-        pairs = pairs[1:]
     return result
 
 
@@ -313,6 +312,12 @@ def clause(reldict, relsym):
 ############################################
 # Example of in(ORG, LOC)
 ############################################
+# The ``in`` relation filter of ``in_demo``: the atomic group commits to the
+# last ``in`` (the greedy ``.*`` finds it first), so the ``ing`` lookahead runs
+# once; retried per earlier ``in`` it was O(n**2) on corpus text (CWE-407).
+_IN_RE = redos.compile(r"(?>.*\bin\b)(?!\b.+ing)")
+
+
 def in_demo(trace=0, sql=True):
     """
     Select pairs of organizations and locations whose mentions occur with an
@@ -339,7 +344,7 @@ def in_demo(trace=0, sql=True):
 
             warnings.warn("Cannot import sqlite; sql flag will be ignored.")
 
-    IN = redos.compile(r".*\bin\b(?!\b.+ing)")
+    IN = _IN_RE
 
     safe_print()
     safe_print("IEER: in(ORG, LOC) -- just the clauses:")

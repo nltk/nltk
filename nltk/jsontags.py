@@ -241,6 +241,159 @@ def safe_json_load(
     )
 
 
+YAML_MAX_DEPTH = 100
+"""Hard cap on YAML structural nesting depth.
+
+PyYAML's safe loader composes the node graph with ordinary Python recursion
+(``Composer.compose_node`` calls itself once per nested collection), so a
+document a few hundred levels deep overflows the default recursion limit and
+raises an uncaught ``RecursionError`` mid-load (CWE-674). Over-deep input is
+rejected during composition before that happens. 100 sits far above any real
+NLTK YAML (markdown front matter nests 1 to 3, a config a handful) and well
+below the recursion limit at which PyYAML crashes.
+"""
+
+YAML_MAX_NODES = 10000
+"""Hard cap on the number of nodes PyYAML's safe loader may compose.
+
+The pure-Python loader runs the implicit-type resolver on every node, which is
+expensive: composing ten thousand nodes already costs a few CPU seconds, and a
+flat document of a few hundred thousand nodes runs for minutes (CWE-400). The
+count is checked as each node is composed, so a hostile document is refused
+after a bounded amount of work rather than running unbounded. 10000 clears any
+real NLTK YAML (front matter and configs hold tens of nodes) with wide headroom.
+"""
+
+YAML_MAX_BYTES = 1 * 1024 * 1024
+"""Upper bound (in bytes) on a YAML document loaded from an NLTK resource.
+
+Refused before any parsing, so an oversized file is rejected instantly instead
+of being read into memory. 1 MiB is generous for NLTK YAML (no shipped resource
+is YAML; markdown front matter is a few KB at most) while bounding memory; the
+depth and node caps, not this one, bound the parser's CPU cost.
+"""
+
+_BOUNDED_YAML_LOADER = None
+
+
+def _bounded_yaml_loader():
+    """Build (once) a PyYAML ``SafeLoader`` subclass that enforces the caps.
+
+    Defined lazily because PyYAML is an optional dependency: importing yaml at
+    module load time would make every NLTK import fail where it is absent. The
+    subclass counts composition depth and total node count inside the single
+    recursive chokepoint (``compose_node``) and raises a bounded ``ValueError``
+    the moment either cap is crossed, so the crash and the runaway parse are
+    both stopped before they happen.
+    """
+    global _BOUNDED_YAML_LOADER
+    if _BOUNDED_YAML_LOADER is not None:
+        return _BOUNDED_YAML_LOADER
+    import yaml
+
+    class _BoundedSafeLoader(yaml.SafeLoader):
+        def __init__(
+            self,
+            stream,
+            *,
+            context="NLTK YAML",
+            max_depth=YAML_MAX_DEPTH,
+            max_nodes=YAML_MAX_NODES,
+        ):
+            super().__init__(stream)
+            self._ctx = context
+            self._max_depth = max_depth
+            self._max_nodes = max_nodes
+            self._depth = 0
+            self._nodes = 0
+
+        def compose_node(self, parent, index):
+            self._nodes += 1
+            if self._nodes > self._max_nodes:
+                raise ValueError(
+                    f"{self._ctx}: YAML document composes more than "
+                    f"{self._max_nodes} nodes"
+                )
+            self._depth += 1
+            if self._depth > self._max_depth:
+                raise ValueError(
+                    f"{self._ctx}: YAML nesting depth exceeds the maximum "
+                    f"allowed ({self._max_depth})"
+                )
+            try:
+                return super().compose_node(parent, index)
+            finally:
+                self._depth -= 1
+
+    _BOUNDED_YAML_LOADER = _BoundedSafeLoader
+    return _BOUNDED_YAML_LOADER
+
+
+def safe_yaml_loads(
+    data,
+    *,
+    max_depth=YAML_MAX_DEPTH,
+    max_nodes=YAML_MAX_NODES,
+    max_bytes=YAML_MAX_BYTES,
+    context="NLTK YAML",
+):
+    """Parse ``data`` (``str`` or ``bytes``) as YAML under size, depth and node bounds.
+
+    Drop-in replacement for ``yaml.safe_load`` for untrusted or only-partly
+    trusted resources (markdown front matter, YAML-format data resources). The
+    stdlib behaviour is a denial of service: PyYAML's safe loader has no bound
+    on nesting depth (a deep document raises an uncaught ``RecursionError``,
+    CWE-674) or on node count (a large document runs for minutes, CWE-400). This
+    refuses an over-large document before parsing and an over-deep or over-wide
+    one during composition, always with a bounded ``ValueError``.
+    """
+    if not isinstance(data, (str, bytes, bytearray)):
+        raise TypeError(f"{context}: expected str or bytes, got {type(data).__name__}")
+    raw = data.encode("utf-8", "surrogatepass") if isinstance(data, str) else data
+    size = len(raw)
+    if size > max_bytes:
+        raise ValueError(
+            f"{context}: YAML document is {size} bytes, over the "
+            f"{max_bytes}-byte limit"
+        )
+    loader_cls = _bounded_yaml_loader()
+    loader = loader_cls(data, context=context, max_depth=max_depth, max_nodes=max_nodes)
+    try:
+        return loader.get_single_data()
+    except RecursionError:
+        raise ValueError(f"{context}: YAML nesting too deep to parse safely") from None
+    finally:
+        loader.dispose()
+
+
+def safe_yaml_load(
+    fp,
+    *,
+    max_depth=YAML_MAX_DEPTH,
+    max_nodes=YAML_MAX_NODES,
+    max_bytes=YAML_MAX_BYTES,
+    context="NLTK YAML",
+):
+    """Read a YAML document from a file-like object under the same bounds.
+
+    Reads at most ``max_bytes`` (plus one probe byte) so a gigantic file cannot
+    be slurped into memory before it is rejected, then defers to
+    :func:`safe_yaml_loads`. Prefers the stream's binary ``buffer`` so the cap
+    bounds bytes rather than characters; works with text and binary streams.
+    """
+    reader = getattr(fp, "buffer", fp)
+    data = reader.read(max_bytes + 1)
+    if len(data) > max_bytes:
+        raise ValueError(f"{context}: YAML resource exceeds the {max_bytes}-byte limit")
+    return safe_yaml_loads(
+        data,
+        max_depth=max_depth,
+        max_nodes=max_nodes,
+        max_bytes=max_bytes,
+        context=context,
+    )
+
+
 def register_tag(cls):
     """
     Decorates a class to register it's json tag.
@@ -327,6 +480,11 @@ __all__ = [
     "JSONTaggedDecoder",
     "safe_json_load",
     "safe_json_loads",
+    "safe_yaml_load",
+    "safe_yaml_loads",
     "JSON_MAX_DEPTH",
     "JSON_MAX_BYTES",
+    "YAML_MAX_DEPTH",
+    "YAML_MAX_NODES",
+    "YAML_MAX_BYTES",
 ]

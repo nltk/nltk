@@ -14,7 +14,9 @@ The input is assumed to be in Malt-TAB format
 (https://stp.lingfil.uu.se/~nivre/research/MaltXML.html).
 """
 
+import operator
 import os
+import string
 import subprocess
 import warnings
 from collections import defaultdict
@@ -23,10 +25,27 @@ from pprint import pformat
 
 from nltk.data import make_staging_dir
 from nltk.internals import find_binary_absolute
+from nltk.pathsec import TrustError, has_line_unsafe_char
 from nltk.pathsec import open as _secure_open
 from nltk.pathsec import spawn_trusted
 from nltk.termsec import safe_print
 from nltk.tree import Tree
+
+
+def _dep_addresses(deps):
+    """Return a node's dependent addresses as a list, tolerating both deps shapes.
+
+    ``_parse`` and ``add_arc`` store a node's ``deps`` as a relation->[addresses]
+    mapping, while the legacy hand-built form (and this module's doctests) uses a
+    flat list of addresses. Iterating the mapping directly yields relation-label
+    keys, not addresses, so a traversal that did so silently saw no edges on a
+    parsed graph. ``_tree`` and ``triples`` already flatten ``deps.values()``;
+    this does the same and also accepts the list form.
+    """
+    if isinstance(deps, dict):
+        return list(chain.from_iterable(deps.values()))
+    return list(deps)
+
 
 #################################################################
 # DependencyGraph Class
@@ -172,24 +191,68 @@ class DependencyGraph:
         }
 
         """
+
+        # Neutralise values interpolated into a Graphviz double-quoted string so
+        # a word/relation carrying a quote or newline cannot break out of a label
+        # and corrupt the graph (CWE-116; graphviz has no code execution).
+        def _dot_escape(text):
+            # str.__str__ copies the real characters out of a str subclass whose
+            # __contains__ / replace / __format__ could lie (str() of any other
+            # object may hand back such a subclass too).
+            text = str.__str__(text if isinstance(text, str) else str(text))
+            if "\x00" in text:
+                # a C string ends at NUL: Graphviz would drop the rest of the label
+                raise ValueError("DependencyGraph labels cannot contain NUL: %r" % text)
+            return (
+                text.replace("\\", "\\\\")
+                .replace('"', '\\"')
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+            )
+
         # Start the digraph specification
         s = "digraph G{\n"
         s += "edge [dir=forward]\n"
         s += "node [shape=plaintext]\n"
 
-        # Draw the remaining nodes
-        for node in sorted(self.nodes.values(), key=lambda v: v["address"]):
+        # An address or dependency index is interpolated bare (a DOT node id),
+        # so only an integer may stand there: a string would be a different
+        # node id, or DOT syntax of its own (CWE-116). operator.index admits
+        # every integer type (numpy included) and refuses bool and everything else.
+        def _dot_address(value):
+            if isinstance(value, bool):
+                raise ValueError(
+                    "DependencyGraph addresses must be integers to render as "
+                    "DOT node ids, not %r" % (value,)
+                )
+            try:
+                return operator.index(value)
+            except TypeError:
+                raise ValueError(
+                    "DependencyGraph addresses must be integers to render as "
+                    "DOT node ids, not %r" % (value,)
+                ) from None
+
+        # Draw the remaining nodes (addresses are judged before they are sorted,
+        # so a non-integer one is refused here and never reaches the sort)
+        for node in sorted(
+            self.nodes.values(), key=lambda v: _dot_address(v["address"])
+        ):
+            address = _dot_address(node["address"])
             s += '\n{} [label="{} ({})"]'.format(
-                node["address"],
-                node["address"],
-                node["word"],
+                address,
+                address,
+                _dot_escape(node["word"]),
             )
             for rel, deps in node["deps"].items():
                 for dep in deps:
+                    dep = _dot_address(dep)
                     if rel is not None:
-                        s += '\n{} -> {} [label="{}"]'.format(node["address"], dep, rel)
+                        s += '\n{} -> {} [label="{}"]'.format(
+                            address, dep, _dot_escape(rel)
+                        )
                     else:
-                        s += "\n{} -> {} ".format(node["address"], dep)
+                        s += f"\n{address} -> {dep} "
         s += "\n}"
 
         return s
@@ -508,11 +571,9 @@ class DependencyGraph:
         # and quintic on a list-``deps`` graph -- versus O(V + E) here, which
         # let a single oversized graph exhaust CPU (CWE-407).
         #
-        # ``deps`` may be a list of addresses or a relation->addresses
-        # mapping; iterating it yields the same edge targets the old code
-        # used.  The membership guard skips targets that are not nodes and
-        # avoids materialising spurious ``defaultdict`` entries in
-        # ``self.nodes``.
+        # Edges come from ``_dep_addresses``: a parsed node's ``deps`` maps
+        # relation->addresses, so iterating it bare yielded labels, not addresses,
+        # and this guard was dead on every parsed graph. Non-node targets skipped.
         WHITE, GRAY, BLACK = 0, 1, 2
         color = defaultdict(int)  # int() == WHITE
 
@@ -521,7 +582,7 @@ class DependencyGraph:
                 continue
             color[start] = GRAY
             path = [start]
-            stack = [iter(self.nodes[start]["deps"])]
+            stack = [iter(_dep_addresses(self.nodes[start]["deps"]))]
             while stack:
                 for dep in stack[-1]:
                     if dep not in self.nodes:
@@ -533,7 +594,7 @@ class DependencyGraph:
                     if color[dep] == WHITE:
                         color[dep] = GRAY
                         path.append(dep)
-                        stack.append(iter(self.nodes[dep]["deps"]))
+                        stack.append(iter(_dep_addresses(self.nodes[dep]["deps"])))
                         break
                 else:
                     color[path.pop()] = BLACK
@@ -548,10 +609,10 @@ class DependencyGraph:
             raise ValueError(
                 f"DependencyGraph.get_cycle_path() exceeded MAX_DEPTH={max_depth}."
             )
-        for dep in curr_node["deps"]:
+        for dep in _dep_addresses(curr_node["deps"]):
             if dep == goal_node_index:
                 return [curr_node["address"]]
-        for dep in curr_node["deps"]:
+        for dep in _dep_addresses(curr_node["deps"]):
             path = self.get_cycle_path(
                 self.get_by_address(dep), goal_node_index, _depth + 1, max_depth
             )
@@ -583,11 +644,27 @@ class DependencyGraph:
                 "CoNLL(10) or Malt-Tab(4) format".format(style)
             )
 
-        return "".join(
-            template.format(i=i, **node)
-            for i, node in sorted(self.nodes.items())
-            if node["tag"] != "TOP"
-        )
+        # Every value the template interpolates is rendered to a plain str and
+        # judged first: a tab, line break, NUL or other control character would
+        # add a column or a row to the CoNLL file MaltParser trains on (CWE-93).
+        fields = [name for _, name, _, _ in string.Formatter().parse(template) if name]
+        rows = []
+        for i, node in sorted(self.nodes.items()):
+            if node["tag"] == "TOP":
+                continue
+            texts = {}
+            for name in fields:
+                value = i if name == "i" else node[name]
+                texts[name] = str.__str__(
+                    value if isinstance(value, str) else str(value)
+                )
+            # A printable row holds none of the refused characters; only a row
+            # that is not printable pays for the per-field judgement.
+            if not "".join(texts.values()).isprintable():
+                for name in fields:
+                    _conll_field(i, name, texts[name])
+            rows.append(template.format(**texts))
+        return "".join(rows)
 
     def nx_graph(self):
         """Convert the data in a ``nodelist`` into a networkx labeled directed graph."""
@@ -606,6 +683,23 @@ class DependencyGraph:
         g.add_edges_from(nx_edgelist)
 
         return g
+
+
+def _conll_field(address, name, value):
+    """Render one ``to_conll`` field to a plain str, refusing line-unsafe text.
+
+    The copy through ``str.__str__`` means a str subclass (or the str another
+    object renders to) cannot lie through ``__iter__``, ``__contains__`` or
+    ``__format__``: the characters judged are the characters written.
+    """
+    text = str.__str__(value if isinstance(value, str) else str(value))
+    if has_line_unsafe_char(text):
+        raise ValueError(
+            "DependencyGraph.to_conll: node %r field %r contains a tab, line "
+            "break, NUL or other control character, which would add a column "
+            "or a row to the CoNLL output: %r" % (address, name, text)
+        )
+    return text
 
 
 def dot2img(dot_string, t="svg"):
@@ -627,6 +721,7 @@ def dot2img(dot_string, t="svg"):
         dot_binary = find_binary_absolute("dot")
     except LookupError as e:
         raise Exception("Cannot find the dot binary from Graphviz package") from e
+
     try:
         # Route through the trusted-exec chokepoint like translate.api: verify
         # the dot binary is on a path no other local user can swap, refuse a
@@ -644,11 +739,18 @@ def dot2img(dot_string, t="svg"):
             dot_string if text else bytes(dot_string, encoding="utf8")
         )
         return stdout
-    except Exception:
+    except TrustError as e:
+        # the reason (which directory or link failed which check) is what the
+        # operator needs to see; it used to be hidden behind the generic message
+        raise Exception(
+            "Cannot create image representation by running dot from string: "
+            f"{dot_string}: {e}"
+        ) from e
+    except Exception as e:
         raise Exception(
             "Cannot create image representation by running dot from string: {}"
             "".format(dot_string)
-        )
+        ) from e
 
 
 class DependencyGraphError(Exception):

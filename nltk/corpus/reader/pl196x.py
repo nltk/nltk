@@ -17,11 +17,20 @@ from nltk.pathsec import open as pathsec_open
 # stdlib nor the ``regex`` optimiser linearises findall's multi-start scan, so
 # compile them through ``redos`` for a wall-clock backstop that bounds the CPU a
 # crafted block can burn instead of letting it grow without limit.
-PARA = redos.compile(r"<p(?: [^>]*){0,1}>(.*?)</p>")
-SENT = redos.compile(r"<s(?: [^>]*){0,1}>(.*?)</s>")
+# Each body is an unrolled run of possessive tag-free pieces that stops at the
+# next tag of its own kind, and `<` is kept out of the attribute run, so a crafted
+# block is O(n), not O(n*bound) (CWE-407); the bounds are calibrated on the corpus.
+PARA = redos.compile(
+    r"<p(?: [^<>]{0,1024}){0,1}>"
+    r"((?:[^<]{1,4096}+(?![^<])|<(?!p[ >])){0,16384}?)</p>"
+)
+SENT = redos.compile(
+    r"<s(?: [^<>]{0,1024}){0,1}>"
+    r"((?:[^<]{1,4096}+(?![^<])|<(?!s[ >])){0,16384}?)</s>"
+)
 
-TAGGEDWORD = redos.compile(r"<([wc](?: [^>]*){0,1}>)(.*?)</[wc]>")
-WORD = redos.compile(r"<[wc](?: [^>]*){0,1}>(.*?)</[wc]>")
+TAGGEDWORD = redos.compile(r"<([wc](?: [^<>]{0,1024}){0,1}>)([^<]{0,1024})</[wc]>")
+WORD = redos.compile(r"<[wc](?: [^<>]{0,1024}){0,1}>([^<]{0,1024})</[wc]>")
 
 TYPE = redos.compile(r'type="(.*?)"')
 ANA = redos.compile(r'ana="(.*?)"')

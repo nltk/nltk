@@ -1115,7 +1115,7 @@ class DependencyGrammar:
             try:
                 productions += _read_dependency_production(line)
             except ValueError as e:
-                raise ValueError(f"Unable to parse line {linenum}: {line}") from e
+                raise ValueError(f"Unable to parse line {linenum}: {line}\n{e}") from e
         if len(productions) == 0:
             raise ValueError("No productions found!")
         return cls(productions)
@@ -1507,26 +1507,43 @@ def standard_nonterm_parser(string, pos):
 # Reading Dependency Grammars
 #################################################################
 
+# A quoted token is at most 512 chars and an arrow at most 8: the validator and
+# the splitter carry the same bounds, so an oversized token is refused up front
+# rather than silently dropped. The longest shipped terminal is 9 chars.
 _READ_DG_RE = redos.compile(
     r"""^\s*                # leading whitespace
-                              ('[^']+')\s*        # single-quoted lhs
-                              (?:[-=]+>)\s*        # arrow
+                              ('[^']{1,512}')\s*  # single-quoted lhs
+                              (?:[-=]{1,8}>)\s*   # arrow
                               (?:(                 # rhs:
-                                   "[^"]+"         # doubled-quoted terminal
-                                 | '[^']+'         # single-quoted terminal
+                                   "[^"]{1,512}"   # doubled-quoted terminal
+                                 | '[^']{1,512}'   # single-quoted terminal
                                  | \|              # disjunction
                                  )
                                  \s*)              # trailing space
                                  *$""",  # zero or more copies
     re.VERBOSE,
 )
-_SPLIT_DG_RE = redos.compile(r"""('[^']'|[-=]+>|"[^"]+"|'[^']+'|\|)""")
+# Bound each alternation run: an alternation defeats the regex terminator prefilter,
+# so an unbounded run under .split is O(n**2) on a crafted grammar line (CWE-407);
+# arrows are ->/-->/==> and quoted tokens are short.
+_SPLIT_DG_RE = redos.compile(r"""('[^']'|[-=]{1,8}>|"[^"]{1,512}"|'[^']{1,512}'|\|)""")
 
 
 def _read_dependency_production(s):
     if not _READ_DG_RE.match(s):
-        raise ValueError("Bad production string")
+        raise ValueError(
+            "Bad production string (a quoted token is limited to 512 chars and "
+            f"an arrow to 8): {s[:40]!r}..."
+        )
     pieces = _SPLIT_DG_RE.split(s)
+    # Between two captured tokens only whitespace may remain: anything else is
+    # a token the splitter could not capture, so refuse rather than build a
+    # production with the token missing.
+    if any(p.strip() for p in pieces[::2]):
+        raise ValueError(
+            "Bad production string: a token the splitter cannot capture (over "
+            f"512 chars, or an arrow over 8): {s[:40]!r}..."
+        )
     pieces = [p for i, p in enumerate(pieces) if i % 2 == 1]
     lhside = pieces[0].strip("'\"")
     rhsides = [[]]

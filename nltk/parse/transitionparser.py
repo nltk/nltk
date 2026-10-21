@@ -8,9 +8,9 @@
 
 import pickle
 import tempfile
+from collections import deque
 from copy import deepcopy
 from operator import itemgetter
-from os import remove
 
 try:
     from numpy import array
@@ -20,6 +20,8 @@ try:
 except ImportError:
     pass
 
+from nltk import pathsec
+from nltk.data import make_staging_dir
 from nltk.parse import DependencyEvaluator, DependencyGraph, ParserI
 from nltk.pathsec import open as pathsec_open
 from nltk.picklesec import allowlisted_pickle_load, pickle_dump
@@ -113,7 +115,9 @@ class Configuration:
         """
         # dep_graph.nodes contain list of token for a sentence
         self.stack = [0]  # The root element
-        self.buffer = list(range(1, len(dep_graph.nodes)))  # The rest is in the buffer
+        # A deque lets shift/right-arc consume the front in O(1) (CWE-407);
+        # index/len/setitem semantics used elsewhere are unchanged.
+        self.buffer = deque(range(1, len(dep_graph.nodes)))  # The rest is in the buffer
         self.arcs = []  # empty set of arc
         self._tokens = dep_graph.nodes
         self._max_address = len(self.buffer)
@@ -123,7 +127,7 @@ class Configuration:
             "Stack : "
             + str(self.stack)
             + "  Buffer : "
-            + str(self.buffer)
+            + str(list(self.buffer))
             + "   Arcs : "
             + str(self.arcs)
         )
@@ -316,7 +320,7 @@ class Transition:
             conf.arcs.append((idx_wi, relation, idx_wj))
         else:  # arc-eager
             idx_wi = conf.stack[len(conf.stack) - 1]
-            idx_wj = conf.buffer.pop(0)
+            idx_wj = conf.buffer.popleft()
             conf.stack.append(idx_wj)
             conf.arcs.append((idx_wi, relation, idx_wj))
 
@@ -352,7 +356,7 @@ class Transition:
         """
         if len(conf.buffer) <= 0:
             return -1
-        idx_wi = conf.buffer.pop(0)
+        idx_wi = conf.buffer.popleft()
         conf.stack.append(idx_wi)
 
 
@@ -582,11 +586,13 @@ class TransitionParser(ParserI):
         :type modelfile : str
         """
 
+        # The scratch file lands in a private staging dir inside a data root,
+        # never the shared system temp dir (CWE-377), and is removed after.
+        staging_dir = make_staging_dir(prefix="nltk_tp_train_", cleanup=True)
+        input_file = tempfile.NamedTemporaryFile(
+            prefix="transition_parse.train", dir=staging_dir, delete=False
+        )
         try:
-            input_file = tempfile.NamedTemporaryFile(
-                prefix="transition_parse.train", dir=tempfile.gettempdir(), delete=False
-            )
-
             if self._algorithm == self.ARC_STANDARD:
                 self._create_training_examples_arc_std(depgraphs, input_file)
             else:
@@ -619,7 +625,11 @@ class TransitionParser(ParserI):
             with pathsec_open(modelfile, "wb", context="TransitionParser.train") as f:
                 pickle_dump(model, f)
         finally:
-            remove(input_file.name)
+            input_file.close()
+            pathsec.unlink(input_file.name, context="TransitionParser.train")
+            pathsec.remove_tree(
+                staging_dir, context="TransitionParser.train", ignore_errors=True
+            )
 
     def parse(self, depgraphs, modelFile):
         """
@@ -697,19 +707,15 @@ class TransitionParser(ParserI):
 
                     if y_pred in self._match_transition:
                         strTransition = self._match_transition[y_pred]
-                        baseTransition = strTransition.split(":")[0]
+                        # Split on the first colon only: a relation label may
+                        # itself carry one (Universal Dependencies "nmod:poss").
+                        baseTransition, _, relation = strTransition.partition(":")
 
                         if baseTransition == Transition.LEFT_ARC:
-                            if (
-                                operation.left_arc(conf, strTransition.split(":")[1])
-                                != -1
-                            ):
+                            if operation.left_arc(conf, relation) != -1:
                                 break
                         elif baseTransition == Transition.RIGHT_ARC:
-                            if (
-                                operation.right_arc(conf, strTransition.split(":")[1])
-                                != -1
-                            ):
+                            if operation.right_arc(conf, relation) != -1:
                                 break
                         elif baseTransition == Transition.REDUCE:
                             if operation.reduce(conf) != -1:
@@ -830,11 +836,12 @@ def demo():
     A. Check the ARC-STANDARD training
     >>> import tempfile
     >>> import os
+    >>> from nltk import pathsec
     >>> from nltk.data import make_staging_dir
     >>> _model_dir = make_staging_dir(prefix='nltk_tp_demo_')
     >>> std_model = os.path.join(_model_dir, 'temp.arcstd.model')
     >>> eager_model = os.path.join(_model_dir, 'temp.arceager.model')
-    >>> input_file = tempfile.NamedTemporaryFile(prefix='transition_parse.train', dir=tempfile.gettempdir(), delete=False)
+    >>> input_file = tempfile.NamedTemporaryFile(prefix='transition_parse.train', dir=_model_dir, delete=False)
 
     >>> parser_std = TransitionParser('arc-standard')
     >>> print(', '.join(parser_std._create_training_examples_arc_std([gold_sent], input_file)))
@@ -846,11 +853,11 @@ def demo():
      Number of training examples : 1
      Number of valid (projective) examples : 1
     >>> input_file.close()
-    >>> remove(input_file.name)
+    >>> pathsec.unlink(input_file.name)
 
     B. Check the ARC-EAGER training
 
-    >>> input_file = tempfile.NamedTemporaryFile(prefix='transition_parse.train', dir=tempfile.gettempdir(),delete=False)
+    >>> input_file = tempfile.NamedTemporaryFile(prefix='transition_parse.train', dir=_model_dir, delete=False)
     >>> parser_eager = TransitionParser('arc-eager')
     >>> print(', '.join(parser_eager._create_training_examples_arc_eager([gold_sent], input_file)))
      Number of training examples : 1
@@ -862,7 +869,7 @@ def demo():
      Number of valid (projective) examples : 1
 
     >>> input_file.close()
-    >>> remove(input_file.name)
+    >>> pathsec.unlink(input_file.name)
 
     ###################### Check The Parsing Function ########################
 
@@ -880,8 +887,8 @@ def demo():
     True
 
     Remove test temporary files
-    >>> remove(eager_model)
-    >>> remove(std_model)
+    >>> pathsec.unlink(eager_model)
+    >>> pathsec.unlink(std_model)
 
     Note that result is very poor because of only one training example.
     """

@@ -105,6 +105,28 @@ def _get_punkt_tokenizer(language="english"):
     return PunktTokenizer(language)
 
 
+def punkt_model_available(language="english"):
+    """
+    Return whether the Punkt model that :func:`sent_tokenize` uses for
+    *language* is installed.
+
+    The model is loaded exactly as :func:`sent_tokenize` loads it, and kept
+    for it, so the answer is the tokenizer's own: True when it can split
+    sentences, False when the model or one of its files is not installed
+    (fixed by ``nltk.download('punkt_tab')``). A name that is not one model
+    name, or a model file refused for safety, raises as :func:`sent_tokenize`
+    does.
+
+    :param language: the model name in the Punkt corpus, such as ``english``
+    :rtype: bool
+    """
+    try:
+        _get_punkt_tokenizer(language)
+    except LookupError:
+        return False
+    return True
+
+
 # Standard sentence tokenizer.
 def sent_tokenize(text, language="english"):
     """
@@ -114,7 +136,9 @@ def sent_tokenize(text, language="english"):
     for the specified language).
 
     :param text: text to split into sentences
-    :param language: the model name in the Punkt corpus
+    :param language: the model name in the Punkt corpus.
+        :func:`punkt_model_available` reports whether that model is
+        installed.
     """
     tokenizer = _get_punkt_tokenizer(language)
     return tokenizer.tokenize(text)

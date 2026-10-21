@@ -48,6 +48,7 @@ import pytest
 
 from nltk import redos
 from nltk.redos import MAX_NESTING_DEPTH, MAX_PATTERN_LENGTH, MAX_REPEAT_PRODUCT
+from nltk.test.unit import timing
 
 # ==========================================================================
 # Subprocess plumbing (a genuine hang -> TimeoutExpired -> test failure)
@@ -82,23 +83,24 @@ def _run_child(code, budget):
     """
     env = dict(os.environ)
     env["PYTHONPATH"] = os.pathsep.join(sys.path)
-    try:
-        proc = subprocess.run(
-            [sys.executable, "-c", code],
-            capture_output=True,
-            text=True,
-            timeout=budget,
-            env=env,
-        )
-    except subprocess.TimeoutExpired as exc:
-        out, err = exc.stdout or "", exc.stderr or ""
-        if isinstance(out, bytes):
-            out = out.decode("utf-8", "replace")
-        if isinstance(err, bytes):
-            err = err.decode("utf-8", "replace")
-        return _ChildResult(True, None, _parse_cases(out), out, err)
+    # the guarded child is charged its CPU time (see nltk.test.unit.timing);
+    # one still running at the hard deadline is a hang, killed, no output kept
+    proc, run = timing.run_subprocess(
+        [sys.executable, "-c", code],
+        budget,
+        cpu_bound=True,
+        capture_output=True,
+        text=True,
+        env=env,
+    )
+    if proc is None:
+        return _ChildResult(True, None, {}, "", "")
     return _ChildResult(
-        False, proc.returncode, _parse_cases(proc.stdout), proc.stdout, proc.stderr
+        not run.within_budget,
+        proc.returncode,
+        _parse_cases(proc.stdout),
+        proc.stdout,
+        proc.stderr,
     )
 
 
@@ -438,23 +440,20 @@ class TestBenignStillWorks:
         # A tight wall-clock bound: an ordinary pattern must resolve well inside a
         # second, so a regression that made it backtrack would fail here rather
         # than merely slow the suite.
-        start = time.perf_counter()
-        for _ in range(200):
-            redos.compile(r"^-?[0-9]+(\.[0-9]+)?$").search("-3.14159")
-        assert time.perf_counter() - start < 2.0
+        with timing.budget(2.0):
+            for _ in range(200):
+                redos.compile(r"^-?[0-9]+(\.[0-9]+)?$").search("-3.14159")
 
     def test_legitimate_large_but_safe_input_processes(self):
         # A large, benign corpus-sized input must still process linearly and fast.
-        start = time.perf_counter()
-        hits = redos.compile(r"\w+").findall("word " * 200000)
+        with timing.budget(3.0):
+            hits = redos.compile(r"\w+").findall("word " * 200000)
         assert len(hits) == 200000
-        assert time.perf_counter() - start < 3.0
 
     def test_large_safe_split_is_linear(self):
-        start = time.perf_counter()
-        parts = redos.compile(r"\s+").split("a " * 100000)
+        with timing.budget(3.0):
+            parts = redos.compile(r"\s+").split("a " * 100000)
         assert len(parts) == 100001
-        assert time.perf_counter() - start < 3.0
 
     def test_benign_caller_sinks_still_correct(self):
         from nltk.stem import RegexpStemmer

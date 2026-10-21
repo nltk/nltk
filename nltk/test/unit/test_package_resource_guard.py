@@ -20,21 +20,19 @@ therefore itself bounded to the installed package.
 
 import os
 import pathlib
-import tempfile
 
 import pytest
 
 import nltk
 from nltk.pathsec import open_package_resource
+from nltk.test.unit.conftest import make_home_dir
 
 _PACKAGE = pathlib.Path(nltk.__file__).resolve().parent
 
 
 @pytest.fixture
 def outside_secret():
-    base = pathlib.Path(
-        tempfile.mkdtemp(prefix=".nltk_pkgres_", dir=str(pathlib.Path.home()))
-    )
+    base = pathlib.Path(make_home_dir(".nltk_pkgres_"))
     secret = base / "SECRET"
     secret.write_text("TOP-SECRET")
     try:

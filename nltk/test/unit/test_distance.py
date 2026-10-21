@@ -12,6 +12,7 @@ from nltk.metrics.distance import (
     jaro_similarity,
     jaro_winkler_similarity,
 )
+from nltk.test.unit import timing
 
 from . import _mp_ctx
 
@@ -457,12 +458,10 @@ def test_jaro_similarity_not_cubic_on_near_matches():
     """
     ctx = _mp_ctx()
     result_q = ctx.Queue()
-    proc = ctx.Process(target=_jaro_worker, args=(result_q,))
-    proc.start()
-    proc.join(_JARO_TIMEOUT)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(
+        _jaro_worker, (result_q,), budget=_JARO_TIMEOUT, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         raise AssertionError(
             "jaro_similarity did not finish in time -> cubic-time DoS (CWE-770)"
         )

@@ -16,19 +16,19 @@ symlink planted inside the corpus that points out of it.
 
 import os
 import shutil
-import tempfile
 
 import pytest
 
 import nltk.data
 from nltk import pathsec
+from nltk.test.unit.conftest import make_home_dir
 
 _SECRET = "root:x:0:0:SECRET"
 
 
 @pytest.fixture
 def corpus_and_outside(monkeypatch):
-    base = tempfile.mkdtemp(prefix=".nltk_corpus_", dir=os.path.expanduser("~"))
+    base = make_home_dir(".nltk_corpus_")
     corpus = os.path.join(base, "corpus")
     outside = os.path.join(base, "outside")
     os.makedirs(corpus)

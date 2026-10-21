@@ -11,11 +11,10 @@ Corpus reader for the SemCor Corpus.
 
 __docformat__ = "epytext en"
 
-from defusedxml.ElementTree import parse as safe_parse
-
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView
 from nltk.tree import Tree
+from nltk.xmlsec import parse as safe_parse
 
 
 class SemcorCorpusReader(XMLCorpusReader):

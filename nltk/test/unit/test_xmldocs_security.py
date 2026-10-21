@@ -20,6 +20,7 @@ import time
 
 from nltk.corpus.reader.xmldocs import XMLCorpusView
 from nltk.data import FileSystemPathPointer
+from nltk.test.unit import timing
 
 from . import _mp_ctx
 
@@ -44,9 +45,9 @@ _MATCH_CEILING = 2.0
 
 def _regex_worker(result_q, payload):
     try:
-        start = time.perf_counter()
+        start = time.process_time()
         matched = XMLCorpusView._VALID_XML_RE.match(payload) is not None
-        result_q.put(("ok", matched, time.perf_counter() - start))
+        result_q.put(("ok", matched, time.process_time() - start))
     except BaseException as exc:
         # A redos TimeoutError (regression) lands here too; op_elapsed is None (not
         # measured), never 0.0, so it cannot be misread as an instant match.
@@ -58,13 +59,13 @@ def _view_worker(result_q, path):
         view = XMLCorpusView(FileSystemPathPointer(path), ".*")
         # Reading drives _read_xml_fragment / _VALID_XML_RE. A malformed file may
         # raise ValueError; the point is that it must *terminate*, not hang.
-        start = time.perf_counter()
+        start = time.process_time()
         try:
             list(view)
             outcome = "read"
         except ValueError:
             outcome = "raised"
-        result_q.put(("ok", outcome, time.perf_counter() - start))
+        result_q.put(("ok", outcome, time.process_time() - start))
     except BaseException as exc:
         result_q.put(("error", repr(exc), None))
 
@@ -80,12 +81,10 @@ def _run_in_process(target, args=()):
     """
     ctx = _mp_ctx()
     result_q = ctx.Queue()
-    proc = ctx.Process(target=target, args=(result_q, *args))
-    proc.start()
-    proc.join(_TIMEOUT)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(
+        target, (result_q, *args), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         return False, None, None, None
     try:
         status, payload, op_elapsed = result_q.get_nowait()
@@ -153,9 +152,9 @@ def _pre_fix_worker(result_q):
             flags=re.DOTALL | re.VERBOSE,
             timeout=_TEETH_TIMEOUT,
         )
-        start = time.perf_counter()
+        start = time.process_time()
         old.match(_PAYLOADS["comment"])
-        result_q.put(("ok", None, time.perf_counter() - start))
+        result_q.put(("ok", None, time.process_time() - start))
     except BaseException as exc:
         result_q.put(("error", repr(exc), None))
 
@@ -234,9 +233,9 @@ def _pre_fix_full_worker(result_q, name):
         old = redos.compile(
             _PRE_FIX_VALID_XML_RE, flags=re.DOTALL | re.VERBOSE, timeout=_TEETH_TIMEOUT
         )
-        start = time.perf_counter()
+        start = time.process_time()
         old.match(_PAYLOADS[name])
-        result_q.put(("ok", None, time.perf_counter() - start))
+        result_q.put(("ok", None, time.process_time() - start))
     except BaseException as exc:
         result_q.put(("error", repr(exc), None))
 

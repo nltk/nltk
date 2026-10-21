@@ -219,10 +219,12 @@ def test_absolute_path_still_reaches_the_spawn_after_revalidation(
     assert len(_senna_popen_spy) == 1
     argv = _senna_popen_spy[0].argv
     assert os.path.isabs(argv[0])
-    # spawn_trusted executes the fully RESOLVED path (symlinks collapsed).
-    assert argv[0] == os.path.realpath(
-        os.path.join(senna._path.rstrip(os.sep), _this_platforms_binary())
-    )
+    # spawn_trusted executes the fully RESOLVED path (executable=, symlinks
+    # collapsed); argv[0] is the path senna called, as the kernel passes it.
+    called = os.path.join(senna._path, _this_platforms_binary())
+    run = _senna_popen_spy[0].executable
+    assert run == os.path.realpath(called) and not os.path.islink(run)
+    assert argv[0] == called
     assert _senna_popen_spy[0].shell is False
     # The child env is scrubbed of loader/interpreter variables (no LD_*/DYLD_*).
     child_env = _senna_popen_spy[0].env or {}
@@ -231,7 +233,10 @@ def test_absolute_path_still_reaches_the_spawn_after_revalidation(
         for k in child_env
     )
     # The -path argument (senna's data dir) is the absolute install directory.
-    assert argv[argv.index("-path") + 1] == senna._path
+    # the resolved, validated directory (senna._path keeps its trailing sep)
+    assert os.path.realpath(argv[argv.index("-path") + 1]) == os.path.realpath(
+        senna._path
+    )
     assert os.path.isabs(argv[argv.index("-path") + 1])
 
 

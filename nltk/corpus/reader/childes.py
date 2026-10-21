@@ -14,13 +14,12 @@ __docformat__ = "epytext en"
 
 from collections import defaultdict
 
-from defusedxml.ElementTree import parse as safe_parse
-
 from nltk import redos
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader
 from nltk.termsec import safe_print
 from nltk.util import LazyConcatenation, LazyMap, flatten
+from nltk.xmlsec import parse as safe_parse
 
 # to resolve the namespace issue
 NS = "http://www.talkbank.org/ns/talkbank"

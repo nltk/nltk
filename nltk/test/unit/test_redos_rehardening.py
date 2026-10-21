@@ -117,3 +117,20 @@ def test_reharden_result_is_actually_capped_at_match_time():
     fresh = redos.reharden(hostile)
     with pytest.raises(TimeoutError):
         fresh.search("a" * 80 + "!", timeout=0.4)
+
+
+def test_reharden_keeps_a_compiled_patterns_flags():
+    """A VERBOSE or IGNORECASE pattern rebuilt from its source must still match
+    what it matched: dropping the flags made it match nothing."""
+    verbose = re.compile(
+        r"""
+        (a|b)   # a comment
+        \s+c
+        """,
+        re.VERBOSE,
+    )
+    assert redos.reharden(verbose).match("a c")
+    assert redos.reharden(re.compile("x", re.IGNORECASE)).match("X")
+    assert redos.reharden(verbose, 0).match("a c") is None  # explicit flags win
+    timed = redos.compile("y", re.IGNORECASE)
+    assert redos.reharden(timed).match("Y")

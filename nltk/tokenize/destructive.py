@@ -83,13 +83,11 @@ class NLTKWordTokenizer(TokenizerI):
 
     # Punctuation.
     PUNCTUATION = [
-        # The class ends with a space directly before ``\s*$``, so ``[..space..]*``
-        # and ``\s*`` both match a trailing space run and backtrack O(n**2) when
-        # the text ends in a non-space, non-class char (~32 KB pins a core). The
-        # ``regex`` engine does not collapse this, so redos.compile's wall-clock
-        # bound is required; behaviour is otherwise identical (CWE-1333).
+        # Possessive: the class holds a space right before ``\s*$``, and re-splitting
+        # a trailing space run between the two was O(n**2) (CWE-407); the maximal
+        # run is the only split that ever matched, so the spans are unchanged.
         (
-            redos.compile(r'([^\.])(\.)([\]\)}>"\'' "»”’ " r"]*)\s*$", re.U),
+            redos.compile(r'([^\.])(\.)([\]\)}>"\'' "»”’ " r"]*+)\s*$", re.U),
             r"\1 \2 \3 ",
         ),
         (redos.compile(r"([:,])([^\d])"), r" \1 \2"),
@@ -240,10 +238,12 @@ class NLTKWordTokenizer(TokenizerI):
             # Find double quotes and converted quotes
             matched = [m.group() for m in redos.finditer(r"``|'{2}|\"", text)]
 
-            # Replace converted quotes back to double quotes
+            # Replace converted quotes back to double quotes. Draw matches from a
+            # forward iterator so the comprehension stays linear (CWE-407); popping
+            # index 0 off a list per token was quadratic.
+            mit = iter(matched)
             tokens = [
-                matched.pop(0) if tok in ['"', "``", "''"] else tok
-                for tok in raw_tokens
+                next(mit) if tok in ['"', "``", "''"] else tok for tok in raw_tokens
             ]
         else:
             tokens = raw_tokens

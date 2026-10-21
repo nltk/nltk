@@ -43,6 +43,8 @@ import pytest
 
 import nltk.data
 import nltk.pathsec as pathsec
+from nltk.test.unit import timing
+from nltk.test.unit.conftest import make_home_dir
 
 # The pathsec sandbox fixtures (sandbox / restricted_sandbox / enforce_off)
 # are provided by nltk/test/unit/conftest.py.
@@ -524,7 +526,7 @@ def _hunpos_stub_bin():
         import shutil
         import tempfile
 
-        base = tempfile.mkdtemp(prefix=".nltk_hunpos_drv_", dir=os.path.expanduser("~"))
+        base = make_home_dir(".nltk_hunpos_drv_")
         atexit.register(shutil.rmtree, base, ignore_errors=True)
         binpath = os.path.join(base, "hunpos-tag")
         with open(binpath, "w") as handle:
@@ -947,22 +949,34 @@ def _disarm_perceptron_write(monkeypatch, module):
     monkeypatch.setattr(module, "validate_path", lambda *a, **k: None)
 
 
+def _pinned_dir_fd_route():
+    """True where ``save_to_json`` writes through its pinned directory
+    descriptor; False on Windows and on a POSIX build whose ``os`` lacks the
+    ``*at`` calls (the python.org macOS builds before 3.13), where it writes
+    by name through ``pathsec.open``. Read from the module so the tests and
+    the code cannot drift apart."""
+    from nltk.tag import perceptron
+
+    return _POSIX and perceptron._dir_fd_write_supported()
+
+
 def _assert_teeth(action, evidence, *, what):
     """Run *action* with a guard already neutered and report what happened.
 
-    On POSIX ``save_to_json`` writes through a pinned directory descriptor, so
+    Where ``save_to_json`` writes through a pinned directory descriptor,
     removing the containment guard really lets the write land and *evidence*
-    must show it. On Windows there is no directory descriptor: that branch
-    writes through ``pathsec.open``, which independently refuses an outside
-    path, so the correct assertion there is that the write is STILL blocked.
-    Either way the probe is not inert; it just proves a different thing.
+    must show it. Without that descriptor (Windows, or a POSIX build without
+    dir_fd support) the branch writes through ``pathsec.open``, which
+    independently refuses an outside path, so the correct assertion there is
+    that the write is STILL blocked. Either way the probe is not inert; it
+    just proves a different thing.
     """
     try:
         action()
         landed = True
     except (PermissionError, ValueError, OSError):
         landed = False
-    if _POSIX:
+    if _pinned_dir_fd_route():
         assert (
             landed and evidence()
         ), f"{what}: guard removed but nothing escaped; the probe is inert"
@@ -1018,9 +1032,9 @@ def test_each_guard_is_load_bearing(
     else:
         monkeypatch.setattr(module, attr, lambda *a, **k: None)
     outcome = _refusal_for(driver, target)
-    if not _POSIX and attr == "validate_tool_dir":
-        # The Windows save branch writes through pathsec.open, which refuses an
-        # outside path on its own, so the write stays blocked there.
+    if attr == "validate_tool_dir" and not _pinned_dir_fd_route():
+        # Without a pinned dir_fd the save branch writes through pathsec.open,
+        # which refuses an outside path on its own, so the write stays blocked.
         assert outcome == "refused"
         return
     assert (
@@ -1169,9 +1183,7 @@ def test_validate_tool_path_rejects_in_root_hardlink(restricted_sandbox):
 
 
 def _outside_dir():
-    return Path(
-        tempfile.mkdtemp(prefix=".nltk_tagsweep_outside_", dir=str(Path.home()))
-    )
+    return Path(make_home_dir(".nltk_tagsweep_outside_"))
 
 
 def test_validate_path_no_longer_waves_through_a_blank_path(restricted_sandbox):
@@ -1280,21 +1292,18 @@ def test_find_terminates_on_a_newline_resource_name(restricted_sandbox, resource
     caller-supplied ``PerceptronTagger(loc=...)`` of one newline burned 76s and
     2.7 GB before raising (CWE-407). Guarded by absolute time, not a ratio.
     """
-    started = time.monotonic()
-    with pytest.raises((LookupError, ValueError)):
+    with timing.budget(5.0, f"find({resource_name!r})"), pytest.raises(
+        (LookupError, ValueError)
+    ):
         nltk.data.find(resource_name, paths=[restricted_sandbox])
-    elapsed = time.monotonic() - started
-    assert elapsed < 5.0, f"find({resource_name!r}) took {elapsed:.1f}s (DoS)"
 
 
 def test_perceptron_loc_with_newline_terminates(pathsec_sandbox):
     """The same DoS through the tagger entry point that surfaced it."""
     from nltk.tag.perceptron import PerceptronTagger
 
-    started = time.monotonic()
-    with pytest.raises((LookupError, PermissionError, ValueError)):
+    with timing.budget(5.0), pytest.raises((LookupError, PermissionError, ValueError)):
         PerceptronTagger(load=True, lang="eng", loc="\n")
-    assert time.monotonic() - started < 5.0
 
 
 def test_find_still_resolves_ordinary_zip_style_names(restricted_sandbox):
@@ -1717,10 +1726,8 @@ def test_find_scales_linearly_in_the_number_of_path_pieces(restricted_sandbox, p
     immediately because the retried name now contains ".zip". Before the DOTALL
     fix a newline made that condition unreachable and the retries compounded."""
     name = "/".join(f"p{i}\n" for i in range(pieces))
-    started = time.monotonic()
-    with pytest.raises((LookupError, ValueError)):
+    with timing.budget(5.0), pytest.raises((LookupError, ValueError)):
         nltk.data.find(name, paths=[restricted_sandbox])
-    assert time.monotonic() - started < 5.0
 
 
 # --- platform-shaped vectors --------------------------------------------------
@@ -1838,10 +1845,8 @@ def test_deeply_nested_model_json_raises_rather_than_crashing(restricted_sandbox
     deep = os.path.join(restricted_sandbox, "deep.json")
     with pathsec.open(deep, "w", context="probe") as handle:
         handle.write("[" * 200000 + "]" * 200000)
-    started = time.monotonic()
-    with pytest.raises((RecursionError, ValueError)):
+    with timing.budget(10.0), pytest.raises((RecursionError, ValueError)):
         AveragedPerceptron().load(deep)
-    assert time.monotonic() - started < 10.0
 
 
 def test_large_flat_model_is_not_size_capped(restricted_sandbox):
@@ -2506,8 +2511,8 @@ def _unicode_vectors(root, outside):
     return {
         "fullwidth-slash": "..／..／etc/passwd",
         "fullwidth-dot": "．．/etc/passwd",
-        "rtl-override": "‮" + secret,
-        "zero-width": secret[:5] + "​" + secret[5:],
+        "rtl-override": "\u202e" + secret,
+        "zero-width": secret[:5] + "\u200b" + secret[5:],
         "nfd-outside": unicodedata.normalize("NFD", secret),
         "nfc-outside": unicodedata.normalize("NFC", secret),
         "surrogate": secret + "\udcff",
@@ -2553,7 +2558,7 @@ def test_unicode_names_inside_the_root_still_work(pathsec_sandbox):
     from nltk.tag.perceptron import PerceptronTagger
 
     root, outside = pathsec_sandbox
-    for name in ("modél.json", "‮model.json", "模型.json"):
+    for name in ("modél.json", "\u202emodel.json", "模型.json"):
         target = root / name
         with pathsec.open(str(target), "w", context="probe") as handle:
             handle.write("{}")

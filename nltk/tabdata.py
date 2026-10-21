@@ -65,10 +65,22 @@ class TabDecoder:
 class MaxentEncoder(TabEncoder):
 
     def tupdict2tab(self, d):
+        """Encode a ``(fname, fval, label) -> fid`` mapping as tab rows.
+
+        A str value is written as is. ``None``, a bool and an int are written
+        as ``repr-None``, ``repr-True``/``repr-False`` and ``repr-<int>`` so
+        the decoder gives them back as the same type; the bool test comes
+        first because ``True == 1`` and ``False == 0`` would otherwise alias
+        an int 1 or 0 to a bool. A ``wordlen`` value is a bare int, as in the
+        shipped tagger and chunker files, which the decoder restores by name.
+        """
+
         def rep(a, b):
             if a == "wordlen":
                 return repr(b)
-            if b in [True, False, None]:
+            if b is None or isinstance(b, bool):
+                return f"repr-{b}"
+            if isinstance(b, int):
                 return f"repr-{b}"
             return b
 
@@ -80,6 +92,13 @@ class MaxentEncoder(TabEncoder):
 class MaxentDecoder(TabDecoder):
 
     def tupkey2dict(self, f):
+        """Decode the rows :meth:`MaxentEncoder.tupdict2tab` writes.
+
+        ``repr-<int>`` is restored as an int: the encoder used to write an int
+        0 or 1 that way by accident (it aliased them to bools) while this side
+        handed the token back as the string ``"repr-1"``, so every int-valued
+        feature of a saved model was silently dropped on reload.
+        """
 
         def rep(a, b):
             if a == "wordlen":
@@ -90,6 +109,11 @@ class MaxentDecoder(TabDecoder):
                 return True
             if b == "repr-False":
                 return False
+            if b.startswith("repr-"):
+                tail = b[5:]
+                digits = tail[1:] if tail.startswith("-") else tail
+                if digits.isascii() and digits.isdigit():
+                    return int(tail)
             return b
 
         return {(a, rep(a, b), c): int(d) for (a, b, c, d) in self.tab2tups(f)}

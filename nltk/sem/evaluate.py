@@ -186,15 +186,23 @@ class Valuation(dict):
 # in the run length and lets a single valuation string pin a CPU core
 # (CWE-1333; CVE-2026-12890). The lookbehind only lets ``=+`` start at the
 # beginning of a run, so interior positions fail in O(1); the split result is
-# unchanged. The CVE fix closed the ``=``-run direction, but the leading ``\s*``
-# of each pattern is still retried by split/findall over an internal whitespace
-# run (``line.strip()`` only trims the ends), so route all three through
-# redos.compile for a wall-clock bound on that residual (CWE-1333).
-_VAL_SPLIT_RE = redos.compile(r"\s*(?<!=)=+>\s*")
-_ELEMENT_SPLIT_RE = redos.compile(r"\s*,\s*")
+# unchanged. The leading ``\s*`` of each pattern was likewise retried by
+# split/findall from every position of an internal whitespace run (``strip``
+# only trims the ends), O(n**2) (CWE-407): it is now an optional run taken only
+# when no whitespace precedes it, which no split or tuple ever started inside.
+#: Max length in characters of one parenthesised tuple expression in a
+#: valuation set; mirrors the {1,1024} run in _TUPLES_RE below. The longest
+#: shipped tuple (valuation1.val, the doctests and the demos) is 8 chars.
+MAX_TUPLE_LENGTH = 1024
+
+_VAL_SPLIT_RE = redos.compile(r"(?:(?<!\s)\s*)?(?<!=)=+>\s*")
+_ELEMENT_SPLIT_RE = redos.compile(r"(?:(?<!\s)\s*)?,\s*")
 _TUPLES_RE = redos.compile(
-    r"""\s*
-                                (\([^)]+\))  # tuple-expression
+    r"""(?:(?<!\s)\s*)?
+                                (\([^()]{1,1024}\))  # tuple-expression; bounded run
+                                                     # that excludes its `(` anchor:
+                                                     # unclosed parens were quadratic
+                                                     # with `[^)]` (CWE-407)
                                 \s*""",
     re.VERBOSE,
 )
@@ -222,6 +230,14 @@ def _read_valuation_line(s):
     if value.startswith("{"):
         value = value[1:-1]
         tuple_strings = _TUPLES_RE.findall(value)
+        # Every "(" must open a matched tuple: an oversized or unclosed one finds
+        # no match above, and reading the set as scalars would silently
+        # reinterpret the relation, so refuse it. str.count is one O(n) pass.
+        if value.count("(") != len(tuple_strings):
+            raise ValueError(
+                f"tuple expression is unclosed or longer than MAX_TUPLE_LENGTH "
+                f"({MAX_TUPLE_LENGTH} chars): {value[:40]!r}..."
+            )
         # are the set elements tuples?
         if tuple_strings:
             set_elements = []
@@ -256,7 +272,7 @@ def read_valuation(s, encoding=None):
         try:
             statements.append(_read_valuation_line(line))
         except ValueError as e:
-            raise ValueError(f"Unable to parse line {linenum}: {line}") from e
+            raise ValueError(f"Unable to parse line {linenum}: {line}\n{e}") from e
     return Valuation(statements)
 
 

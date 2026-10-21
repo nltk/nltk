@@ -18,6 +18,7 @@ import os
 
 import pytest
 
+from nltk.test.unit import timing
 from nltk.translate.phrase_based import (
     MAX_PHRASE_EXTRACTION_DEFAULT_LEN,
     phrase_extraction,
@@ -112,17 +113,15 @@ def _phrase_worker():
 def test_oversized_default_is_refused_not_run():
     """phrase_extraction(long_pair) with the default must be refused, not run."""
     ctx = _mp_ctx()
-    proc = ctx.Process(target=_phrase_worker)
-    proc.start()
-    proc.join(_TIMEOUT)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(
+        _phrase_worker, (), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         raise AssertionError(
             "phrase_extraction() did not return quickly -> ran the cubic path (DoS)"
         )
-    assert proc.exitcode == _EXIT_REFUSED, (
+    assert run.exitcode == _EXIT_REFUSED, (
         "phrase_extraction() with the default max_phrase_length over a long "
-        f"sentence pair was not refused (worker exit code {proc.exitcode}); "
+        f"sentence pair was not refused (worker exit code {run.exitcode}); "
         "expected a fast ValueError"
     )

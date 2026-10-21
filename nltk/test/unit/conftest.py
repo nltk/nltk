@@ -27,31 +27,51 @@ import nltk.data
 from nltk import pathsec
 
 
+def make_home_dir(prefix):
+    """A fresh directory under the real ``$HOME``, the one directory chain that
+    is private on every CI runner, for a fixture the trust chain must be able
+    to accept. The caller removes it.
+
+    Deliberately NOT a temp dir, in both directions: on Linux the shared
+    ``/tmp`` is world-writable, so nothing staged under it can ever clear the
+    private-chain rule (a "clean" install there is refused before the planted
+    weakness is even looked at); on macOS the per-user temp dir is private and
+    is itself an allowed root (``/var/folders/...`` is mode 0700), so an attack
+    target staged there would be (correctly) permitted and the test would not
+    exercise the guard. ``$HOME`` behaves the same on both.
+    """
+    return tempfile.mkdtemp(prefix=prefix, dir=os.path.expanduser("~"))
+
+
 def _make_outside_dir():
     """A fresh directory under the real ``$HOME`` that is guaranteed OUTSIDE
-    every allowed pathsec root.
-
-    Deliberately NOT a temp dir: a *private* per-user system temp dir is itself
-    an allowed root on macOS (``/var/folders/...`` is mode 0700), so an attack
-    target staged there would be (correctly) permitted and the test would not
-    exercise the guard.
-    """
-    return pathlib.Path(
-        tempfile.mkdtemp(prefix=".nltk_sandbox_outside_", dir=str(pathlib.Path.home()))
-    )
+    every allowed pathsec root (see :func:`make_home_dir` for why not a temp
+    dir)."""
+    return pathlib.Path(make_home_dir(".nltk_sandbox_outside_"))
 
 
 def _enforce_single_root(monkeypatch):
     """Turn ENFORCE on, restrict the allowed roots to one fresh data root, and
     invalidate the cached roots. Returns the data-root path. monkeypatch restores
     every mutated global at teardown."""
-    # realpath folds an 8.3 short component (a Windows runner's temp under
-    # RUNNER~1) to long form, so an in-root path clears the short-name guard.
-    data_root = os.path.realpath(tempfile.mkdtemp(prefix="nltk_sandbox_root_"))
+    # The root lives under $HOME, not the system temp dir: on a Linux runner
+    # the temp dir is world-writable /tmp, so a tool install or model tree
+    # staged inside a temp root could never pass the private-chain checks
+    # (validate_tool_data_dir, resolve_trusted_executable) and every such
+    # fixture had to escape to $HOME by hand. Under $HOME the root is a
+    # private chain on every runner, and make_staging_dir() allocates the
+    # fixtures inside it through pathsec. realpath folds an 8.3 short
+    # component (a Windows runner's profile under RUNNER~1) to long form, so
+    # an in-root path clears the short-name guard.
+    data_root = os.path.realpath(make_home_dir(".nltk_sandbox_root_"))
     monkeypatch.setattr(pathsec, "ENFORCE", True)
     monkeypatch.setattr(nltk.data, "path", [data_root])
     monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
     monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None, raising=False)
+    # staging_tempdir() memoises a process-global scratch dir; clear it so a dir
+    # an earlier test allocated under the ambient root (still "valid" there) does
+    # not leak in, and it is re-allocated under this enforced single root.
+    monkeypatch.setattr(nltk.data, "_STAGING_TEMPDIR", None, raising=False)
     return data_root
 
 
@@ -129,9 +149,7 @@ def trusted_java_stub():
     """A stub 'java' under $HOME, a private directory chain on every CI runner
     (a shared temp dir is not), so the trusted spawn accepts it as the JVM and a
     Popen spy can see what java() would have launched."""
-    root = pathlib.Path(
-        tempfile.mkdtemp(prefix=".nltk_java_stub_", dir=pathlib.Path.home())
-    )
+    root = pathlib.Path(make_home_dir(".nltk_java_stub_"))
     stub = root / ("java.exe" if os.name == "nt" else "java")
     stub.write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
     stub.chmod(0o755)

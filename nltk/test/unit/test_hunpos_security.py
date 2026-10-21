@@ -58,8 +58,8 @@ def test_hunpos_refuses_untrusted_binary(tmp_path, monkeypatch):
 
 def test_hunpos_trusted_binary_reaches_spawn_with_scrubbed_env(monkeypatch):
     """Benign control: a hunpos-tag binary staged under a private data root reaches
-    the (trapped) spawn with an absolute resolved argv, no shell, and an
-    environment scrubbed of loader variables."""
+    the (trapped) spawn running the resolved binary under the path it was called
+    by, no shell, and an environment scrubbed of loader variables."""
     base = _staging()
     model = _model_in_root(base)
     binp = os.path.join(base, "hunpos-tag")
@@ -82,7 +82,10 @@ def test_hunpos_trusted_binary_reaches_spawn_with_scrubbed_env(monkeypatch):
     def _fake_popen(cmd, *a, **k):
         calls.append(
             SimpleNamespace(
-                argv=list(cmd), shell=k.get("shell", False), env=k.get("env")
+                argv=list(cmd),
+                shell=k.get("shell", False),
+                env=k.get("env"),
+                executable=k.get("executable"),
             )
         )
         return _FakeProc()
@@ -92,7 +95,10 @@ def test_hunpos_trusted_binary_reaches_spawn_with_scrubbed_env(monkeypatch):
 
     assert len(calls) == 1
     assert calls[0].shell is False
-    assert calls[0].argv == [os.path.realpath(binp), model]
+    # the verified resolved file runs (executable=); argv[0] is the path as called
+    run = calls[0].executable
+    assert run == os.path.realpath(binp) and not os.path.islink(run)
+    assert calls[0].argv == [binp, model]
     assert "LD_PRELOAD" not in (calls[0].env or {})
 
 

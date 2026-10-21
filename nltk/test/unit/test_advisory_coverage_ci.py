@@ -54,6 +54,10 @@ _HEADERS = {
 # NB: Canonical GHSA IDs use hyphens, while probe filenames use underscores because
 # Python module names cannot contain hyphens; do not copy filenames here.
 _CLOSED_WITH_PROBE = {
+    # Draft advisories carrying a regression probe ahead of publication; the
+    # unauthenticated API does not list a draft, so each is named here until then.
+    "GHSA-j8g8-j4j7-8j54",
+    "GHSA-v8f3-6phw-6mh9",
     "GHSA-4489-j4f3-2g8q",
     "GHSA-9ffx-rrgx-mhgx",
     "GHSA-pcm8-fqjx-rvx8",
@@ -63,9 +67,11 @@ _CLOSED_WITH_PROBE = {
     "GHSA-f2h2-f4fc-p978",
     "GHSA-w3pv-xfw4-ghr7",
     "GHSA-xfcv-m889-fmqg",
-    "GHSA-j456-xh4h-cpf2",
     # Draft advisory carrying a regression probe ahead of publication.
     "GHSA-r53h-rw34-8h97",
+    # Triage: the GitHub transfer of Huntr CVE-2026-15367 (maxent tab_dir);
+    # already fixed on develop, probe added so the coverage is provable.
+    "GHSA-59f9-gqg8-mqpj",
 }
 
 #: Draft advisories we have already fixed and probe ahead of publication. The
@@ -78,6 +84,18 @@ _DRAFT_WITH_PROBE = {
     "GHSA-7j4p-88wx-5jrc",
     "GHSA-j456-xh4h-cpf2",
     "GHSA-cc5r-64rf-75hg",
+    "GHSA-7mxv-7h3q-9324",
+    "GHSA-wr3g-j6qj-xpgh",
+    "GHSA-89p3-fcch-88ph",
+    "GHSA-fg9w-wfp5-j933",
+    # Draft algorithmic-DoS advisories fixed and probed in #3895.
+    "GHSA-32p6-cwhc-8r78",
+    "GHSA-q4c8-9gwf-255x",
+    "GHSA-cj8f-5fp3-6m88",
+    "GHSA-53pg-5qp8-mhvr",
+    "GHSA-ffr9-mgrr-wcvr",
+    "GHSA-gpwc-27cw-rh9r",
+    "GHSA-8fx7-8jr8-84rv",
 }
 
 

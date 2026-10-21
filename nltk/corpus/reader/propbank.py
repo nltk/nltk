@@ -7,13 +7,12 @@
 
 from functools import total_ordering
 
-from defusedxml.ElementTree import parse as safe_parse
-
 from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
 from nltk.internals import raise_unorderable_types
 from nltk.tree import Tree
+from nltk.xmlsec import parse as safe_parse
 
 
 class PropbankCorpusReader(CorpusReader):

@@ -80,7 +80,8 @@ def test_scratch_input_is_staged_in_a_data_root_and_cleaned_up(monkeypatch):
     assert not hasattr(ReppTokenizer, "working_dir")  # shared-temp attr is gone
 
     tok = object.__new__(ReppTokenizer)
-    tok.repp_dir = "/x"
+    # a real, private config tree: the command builder now validates it
+    tok.repp_dir = str(_make_repp_dir(pathlib.Path(_staging()) / "repp"))
     tok.encoding = "utf8"
 
     captured = {}
@@ -147,7 +148,8 @@ def test_execute_refuses_untrusted_repp_binary(tmp_path):
 
 def test_execute_reaches_spawn_for_a_trusted_binary(monkeypatch):
     """Benign control: a REPP binary under a private staged root reaches the
-    (trapped) spawn with an absolute, fully-resolved argv[0] and no shell."""
+    (trapped) spawn running the fully-resolved binary under an absolute argv[0],
+    the path it was called by, and no shell."""
     from types import SimpleNamespace
 
     import nltk.pathsec as ps
@@ -178,7 +180,11 @@ def test_execute_reaches_spawn_for_a_trusted_binary(monkeypatch):
     assert len(calls) == 1
     assert calls[0].shell is False
     assert os.path.isabs(calls[0].argv[0])
-    assert calls[0].argv[0] == os.path.realpath(str(reppdir / "src" / "repp"))
+    # the verified resolved file runs (executable=); argv[0] is the path as called
+    called = str(reppdir / "src" / "repp")
+    run = calls[0].executable
+    assert run == os.path.realpath(called) and not os.path.islink(run)
+    assert calls[0].argv[0] == called
 
 
 # --- Layer-6 input guard: REPP reads one sentence per line (CWE-93) ------------
@@ -186,7 +192,8 @@ def test_execute_reaches_spawn_for_a_trusted_binary(monkeypatch):
 
 def _detached_tokenizer():
     tok = object.__new__(ReppTokenizer)
-    tok.repp_dir = "/x"
+    # a real, private config tree: the command builder now validates it
+    tok.repp_dir = str(_make_repp_dir(pathlib.Path(_staging()) / "repp"))
     tok.encoding = "utf8"
     return tok
 

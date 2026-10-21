@@ -48,6 +48,7 @@ import textwrap
 import pytest
 
 import nltk
+from nltk.test.unit import timing
 
 POSIX_ONLY = pytest.mark.skipif(os.name != "posix", reason="POSIX-only fatal signal")
 
@@ -132,14 +133,20 @@ def run_child(body, *, timeout=60, reclimit=None, memcap_bytes=None):
     src = PREAMBLE + "\n" + prologue + textwrap.dedent(body)
     env = dict(os.environ)
     env["PYTHONPATH"] = REPO_ROOT + os.pathsep + env.get("PYTHONPATH", "")
-    return subprocess.run(
+    # the guarded child is charged its CPU time (see nltk.test.unit.timing);
+    # a run over budget or still running at the hard deadline raises as before
+    proc, run = timing.run_subprocess(
         [sys.executable, "-c", src],
+        timeout,
+        cpu_bound=True,
         capture_output=True,
         text=True,
-        timeout=timeout,
         cwd=REPO_ROOT,
         env=env,
     )
+    if proc is None or not run.within_budget:
+        raise subprocess.TimeoutExpired([sys.executable, "-c", src], timeout)
+    return proc
 
 
 def assert_no_crash_and_rejected(proc):
@@ -910,8 +917,8 @@ def test_unicode_forms_parse_or_reject_but_never_crash():
     assert isinstance(safe_json_loads(r'"\ud800"'), str)  # lone high surrogate
     assert isinstance(safe_json_loads(r'"\udc00"'), str)  # lone low surrogate
     assert safe_json_loads('"a\\u0000b"') == "a\x00b"
-    assert safe_json_loads('"x\\u202ey"') == "x‮y"  # RTL override
-    for bad in (r'"\x41"', r'"\U0001F600"', '﻿{"a":1}'):
+    assert safe_json_loads('"x\\u202ey"') == "x\u202ey"  # RTL override
+    for bad in (r'"\x41"', r'"\U0001F600"', '\ufeff{"a":1}'):
         with pytest.raises(ValueError):
             safe_json_loads(bad)
 

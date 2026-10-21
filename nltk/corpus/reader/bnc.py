@@ -7,10 +7,9 @@
 
 """Corpus reader for the XML version of the British National Corpus."""
 
-from defusedxml.ElementTree import parse as safe_parse
-
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView
+from nltk.xmlsec import parse as safe_parse
 
 
 class BNCCorpusReader(XMLCorpusReader):

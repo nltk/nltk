@@ -21,6 +21,7 @@ the worker is propagated back to the assertions instead of being swallowed.
 import queue
 
 from nltk.chunk.regexp import CHUNK_TAG_PATTERN, tag_pattern2re_pattern
+from nltk.test.unit import timing
 
 from . import _mp_ctx
 
@@ -63,12 +64,10 @@ def _run_in_process(target):
     """
     ctx = _mp_ctx()
     result_q = ctx.Queue()
-    proc = ctx.Process(target=target, args=(result_q,))
-    proc.start()
-    proc.join(_TIMEOUT)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(
+        target, (result_q,), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         return False, None, None
     try:
         status, payload = result_q.get_nowait()

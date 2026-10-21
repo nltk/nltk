@@ -12,6 +12,7 @@ import os
 import sys
 import tempfile
 
+from nltk import pathsec
 from nltk.data import ZipFilePathPointer, make_staging_dir
 from nltk.internals import (
     find_dir,
@@ -273,7 +274,9 @@ class MaltParser(ParserI):
             for filename in (input_file_name, output_file_name):
                 if filename:
                     try:
-                        os.remove(filename)
+                        pathsec.unlink(
+                            filename, context="MaltParser.parse_tagged_sents"
+                        )
                     except OSError:
                         pass
 
@@ -326,9 +329,15 @@ class MaltParser(ParserI):
         model = validate_model_resource(self.model, context="MaltParser model")
         model_dir, model_name = os.path.split(model)
         if model_dir:
-            # A model carrying a directory is a real path: bound the directory too,
-            # since in learn mode MaltParser WRITES the .mco into it.
-            validate_path(model, context="MaltParser model")
+            # A model carrying a directory is a real path the JVM opens itself. In
+            # learn mode it WRITES the .mco, so refuse a hardlink/symlink that would
+            # redirect the write outside the roots (GHSA-fg9w-wfp5-j933).
+            validate_tool_path(
+                model,
+                context="MaltParser model",
+                for_write=(mode == "learn"),
+                must_exist=(mode != "learn"),
+            )
             workingdir = os.path.abspath(model_dir)
         else:
             # A bare model name lives in the private dir that train() wrote it to.
@@ -375,16 +384,18 @@ class MaltParser(ParserI):
         :type depgraphs: DependencyGraph
         """
 
-        # Write the conll_str to malt_train.conll file in /tmp/
+        # Render every graph first: to_conll refuses a field that would inject
+        # a row or column, and a refused graph must leave no file behind.
+        input_str = "\n".join(dg.to_conll(10) for dg in depgraphs)
+        # Write the conll_str to a malt_train.conll file in the working dir
         with tempfile.NamedTemporaryFile(
             prefix="malt_train.conll.", dir=self.working_dir, mode="w", delete=False
         ) as input_file:
-            input_str = "\n".join(dg.to_conll(10) for dg in depgraphs)
             input_file.write(str(input_str))
         # Trains the model with the malt_train.conll
         self.train_from_file(input_file.name, verbose=verbose)
         # Removes the malt_train.conll once training finishes.
-        os.remove(input_file.name)
+        pathsec.unlink(input_file.name, context="MaltParser.train")
 
     def train_from_file(self, conll_file, verbose=False):
         """
