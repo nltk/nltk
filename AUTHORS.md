@@ -185,6 +185,7 @@
 - Zhe Wang
 - Charlotte Wilson
 - Chuck Wooters
+- Huanyi Xie
 - Steven Xu
 - Beracah Yankama
 - Lei Ye (叶磊)

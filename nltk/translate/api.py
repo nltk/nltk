@@ -300,8 +300,13 @@ class Alignment(frozenset):
     def __str__(self):
         """
         Produce a Giza-formatted string representing the alignment.
+
+        NULL-target pairs are omitted because non-mappings are implicit.
         """
-        return " ".join("%d-%d" % p[:2] for p in sorted(self))
+        return " ".join(
+            "%d-%d" % pair[:2]
+            for pair in sorted(pair for pair in self if pair[1] is not None)
+        )
 
     def _build_index(self):
         """
