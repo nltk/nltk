@@ -209,7 +209,7 @@ _REVIEWED: dict[tuple[str, str], str] = {
     ("nltk/featstruct.py", "(?<!\\d)\\d+$"): (
         "the (?<!\\d) lookbehind pins the run to the head of a digit run"
     ),
-    ("nltk/grammar.py", "( [\\w/][\\w/^<>-]* ) \\s*"): (
+    ("nltk/grammar.py", "( [\\w/][\\w/^<>@$-]* ) \\s*"): (
         "each match consumes a maximal token run and advances past it"
     ),
     ("nltk/internals.py", "\\A\\s*@deprecated:"): "\\A-pinned, one attempt",
