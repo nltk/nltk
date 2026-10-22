@@ -90,124 +90,87 @@ Grammars with mixed rules can be converted into Chomsky Normal Form:
 Probabilistic Chomsky normal form
 --------------------------------
 
-``PCFG.chomsky_normal_form()`` returns a PCFG. It preserves the probability
-of each finite token sequence, summed over all its parses. It leaves the input
-unchanged and removes rules that are unreachable from the start symbol.
-For example, nonlexical unary rules are eliminated without losing their weights:
+``PCFG.chomsky_normal_form()`` preserves each finite string's probability,
+summed over all parses, without modifying the input. Already-CNF grammars are
+returned unchanged. Otherwise, unreachable and zero-probability rules are removed.
+
+The construction retains the four steps from `Ruoxi Ning's original explanation
+<https://github.com/nltk/nltk/pull/3382#issuecomment-2742800451>`_:
+
+* START: if the start symbol occurs on a RHS, add a fresh ``S0 -> S [1.0]``.
+* TERM: replace a terminal in a longer rule with a fresh lexical auxiliary,
+  e.g. ``S -> 'a' B [p]`` becomes ``S -> T B [p]``, ``T -> 'a' [1.0]``.
+* MUL (BIN): ``S -> A B C [p]`` becomes ``S -> A X [p]``, ``X -> B C [1.0]``.
+  Use fresh auxiliaries for each alternative, even when prefixes are shared.
+* UNIT: multiply weights along unary paths, add paths to the same ordered RHS,
+  then remove unreachable rules.
+
+Here is the original UNIT example:
 
     >>> grammar = PCFG.fromstring("""
-    ... S -> VP [1.0]
-    ... VP -> V [1.0]
-    ... V -> 'v' [0.3] | 'a' [0.7]
-    ... """)
-    >>> cnf = grammar.chomsky_normal_form()
-    >>> cnf.productions()
-    [S -> 'v' [0.3], S -> 'a' [0.7]]
-    >>> cnf.start()
-    S
-    >>> len(grammar.productions())
-    4
-
-For a longer rule, only the first binary rule carries the original probability.
-Each auxiliary rule has probability one. Auxiliaries are fresh for each rule,
-including when alternatives share a prefix; terminals in longer rules receive
-separate lexical auxiliaries. Thus neither shared prefixes nor terminal spelling
-can accidentally combine alternatives:
-
-    >>> grammar = PCFG.fromstring("""
-    ... S -> A B C [0.4] | A B D [0.6]
-    ... A -> 'a' [1.0]
-    ... B -> 'b' [1.0]
-    ... C -> 'c' [1.0]
+    ... A -> B [0.3] | B C [0.7]
+    ... B -> C [0.8] | B C [0.2]
+    ... C -> 'c' [0.5] | D [0.5]
     ... D -> 'd' [1.0]
     ... """)
     >>> cnf = grammar.chomsky_normal_form()
-    >>> cnf.is_chomsky_normal_form()
-    True
-    >>> from nltk.parse import InsideChartParser
-    >>> parser = InsideChartParser(cnf)
-    >>> sum(tree.prob() for tree in parser.parse(['a', 'b', 'c']))
-    0.4
-    >>> sum(tree.prob() for tree in parser.parse(['a', 'b', 'd']))
-    0.6
+    >>> for rule in sorted(cnf.productions(), key=str):
+    ...     print(rule)
+    A -> 'c' [0.12]
+    A -> 'd' [0.12]
+    A -> B C [0.76]
+    B -> 'c' [0.4]
+    B -> 'd' [0.4]
+    B -> B C [0.2]
+    C -> 'c' [0.5]
+    C -> 'd' [0.5]
 
-The default ``@$@`` padding is accepted by the grammar reader. Include an
-explicit start directive when serializing productions, since their order need
-not identify the start symbol:
+Each lexical exit from ``A`` has weight ``0.3 * 0.8 * 0.5 = 0.12``;
+``A -> B C`` has weight ``0.7 + 0.3 * 0.2 = 0.76``. ``D`` becomes unreachable.
+The unary paths are acyclic, although the binary rule ``B -> B C`` is recursive.
+
+Unary cycles use the hitting-probability construction in Appendix B, Lemma B.13
+of Etessami, Stewart and Yannakakis, `Polynomial Time Algorithms for Multi-Type
+Branching Processes and Stochastic Context-Free Grammars
+<https://arxiv.org/abs/1201.2374v2>`_. Let ``U[A,B]`` sum the probabilities of
+``A -> B``, and ``B[A,gamma]`` sum direct probabilities of each non-unary RHS.
+Summing all unary paths gives ``X = B + U B + U**2 B + ...``, or ``X = U X + B``.
+For one RHS, this is the prototype's linear system ``(I - U) x_gamma = b_gamma``.
+
+The implementation uses state elimination: sum self-loops geometrically, then
+substitute their remaining transitions into other equations. A global inverse
+can be singular with closed unary classes; the paper solves on states that can
+reach the chosen exit. Missing exit mass is retained through a fresh dead symbol
+``D -> D D [1.0]``, as in the lemma. For ``S -> A [0.5] | 'x' [0.5]; A -> A [1]``,
+the probability of ``'x'`` stays 0.5. Conditioning on termination would change it.
+
+Structural steps multiply weights by ones; UNIT sums paths to the same ordered
+RHS. Thus they preserve finite-string probabilities in exact arithmetic, but
+can change tree structure and Viterbi scores. No NumPy dependency is required.
+``flexible=True`` keeps unary rules. Empty productions remain unsupported;
+the paper's epsilon elimination and Newton-method approximation are not included.
+
+Conversion of non-CNF inputs requires finite, nonnegative weights summing to one
+per LHS within ``1e-12``, stricter than the constructor's tolerance. Self-loop
+elimination sums the remaining mass to avoid cancellation in ``1 - loop``.
+Exit totals are checked with the same tolerance; roundoff just above one is
+clipped. Positive rules have no cutoff, but floating-point underflow and rounding
+still limit accuracy.
+
+The grammar reader accepts the default ``@$@`` padding. Include the start symbol
+when serializing, since production order need not identify it:
 
     >>> text = '% start ' + str(cnf.start()) + '\n'
     >>> text += '\n'.join(map(str, cnf.productions()))
     >>> restored = PCFG.fromstring(text)
-    >>> restored.productions() == cnf.productions()
-    True
-    >>> restored.start() == cnf.start()
+    >>> restored.start() == cnf.start() and restored.productions() == cnf.productions()
     True
 
-Unary cycles and nontermination
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Unary elimination follows the hitting-probability construction in Appendix B,
-Lemma B.13 of Etessami, Stewart and Yannakakis, `Polynomial Time Algorithms for
-Multi-Type Branching Processes and Stochastic Context-Free Grammars
-<https://arxiv.org/abs/1201.2374>`_. Let ``U[A,B]`` sum the probabilities of
-``A -> B``, and ``B[A,gamma]`` sum the direct probabilities of each distinct
-non-unary RHS ``gamma``. The desired exit weights satisfy ``X = U X + B``.
-
-The implementation solves these equations by state elimination: sum a state's
-self-loop geometrically, then substitute its remaining transitions into the
-other equations. Ordered RHS tuples keep ``A B`` distinct from ``B A``.
-No NumPy dependency is needed. For example:
-
-    >>> grammar = PCFG.fromstring("""
-    ... S -> A [1.0]
-    ... A -> B [0.5] | 'a' [0.5]
-    ... B -> A [0.25] | 'b' [0.75]
-    ... """)
-    >>> cnf = grammar.chomsky_normal_form()
-    >>> probabilities = {p.rhs(): p.prob() for p in cnf.productions()}
-    >>> round(probabilities[('a',)], 12) == round(4 / 7, 12)
-    True
-    >>> round(probabilities[('b',)], 12) == round(3 / 7, 12)
-    True
-
-A closed unary cycle has no finite derivations. Its incoming mass is retained
-through a fresh binary nonterminal ``D -> D D [1.0]``, as in the same lemma.
-For ``S -> 'x' [0.5] | A [0.5]; A -> A [1.0]``, the result still assigns
-probability 0.5 to ``'x'``. Renormalizing the terminating alternative to one would
-change the grammar's meaning. Binary nontermination is also allowed; local
-probability sums of one do not imply termination with probability one.
-
-Numerical behavior and scope
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-The conversion uses floating-point arithmetic. Input rule probabilities must
-be finite and nonnegative, with each LHS total within ``1e-12`` of one. This
-is stricter than the PCFG constructor's tolerance. Materially unnormalized
-inputs are rejected instead of silently changing their probabilities. When
-eliminating a self-loop, its exit probability is calculated by summing the
-remaining mass, which avoids cancellation in ``1 - loop_probability`` near
-one. Exit totals outside the same tolerance raise an error; an individual
-exit just above one due to roundoff is clipped to one. Small positive rules
-are retained; there is no probability cutoff.
-Floating-point underflow and accumulated rounding still limit accuracy for
-extreme inputs; this is not an arbitrary-precision implementation.
-
-Terminal isolation and binarization preserve each rule's weight by multiplying
-it by ones. Summing unary paths combines all ways to reach the same ordered
-RHS. Removing unreachable rules cannot change a start-symbol derivation.
-Together these operations preserve finite-string probabilities in exact
-arithmetic. They change tree structure and can combine distinct parses, so
-original tree probabilities and Viterbi scores are not preserved.
-
-``flexible=True`` retains nonlexical unary rules after terminal isolation and
-binarization. Empty productions remain unsupported; eliminating them would
-require an additional treatment of empty-string probability. The ordinary
-CFG conversion retains its existing behavior apart from accepting ``@`` and
-``$`` in generated nonterminal names.
-
-``nltk/test/unit/test_pcfg_cnf.py`` checks complete distributions of small acyclic
-grammars against independent leftmost derivation enumeration and a CKY inside
-sum. Cyclic fixtures use hand-derived probabilities and bounded Markov walks
-whose remaining mass is at most ``2**-80``. The suite also covers shared prefixes,
-symbol collisions, duplicate and reordered RHSs, nontermination, small positive
-probabilities, parser compatibility, and serialization for both CFG and PCFG.
+``nltk/test/unit/test_pcfg_cnf.py`` checks full acyclic distributions by derivation
+enumeration, geometric unary cycles, closed classes and Catalan parse counts.
+An independent Markov walk checks 81 two-state and 12 four-state matrices with
+lexical and ordered binary exits. Unary mass per row is at most one half, so
+the omitted mass after 80 steps is at most ``2**-80`` in exact arithmetic;
+floating-point tolerances are separate. These tests are motivated by Lemma B.13,
+not supplied by the paper. Other regressions cover small probabilities, roundoff,
+symbol collisions, parser compatibility and serialization.

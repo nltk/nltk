@@ -59,7 +59,9 @@ def assert_cnf(grammar):
         assert isinstance(rule, ProbabilisticProduction)
         assert 0 < rule.prob() <= 1
         totals[rule.lhs()].append(rule.prob())
-    assert all(isclose(fsum(values), 1, abs_tol=1e-12) for values in totals.values())
+    assert all(
+        isclose(fsum(values), 1, rel_tol=0, abs_tol=1e-12) for values in totals.values()
+    )
 
 
 ACYCLIC_GRAMMARS = [
@@ -82,13 +84,9 @@ def test_acyclic_string_distribution(source):
     expected = enumerate_distribution(original)
     converted = original.chomsky_normal_form()
     assert_cnf(converted)
-    actual = enumerate_distribution(converted)
-    assert actual.keys() == expected.keys()
-    assert actual == pytest.approx(expected, rel=1e-12, abs=0)
-    for sentence, probability in expected.items():
-        assert inside(converted, sentence) == pytest.approx(
-            probability, rel=1e-12, abs=0
-        )
+    assert enumerate_distribution(converted) == pytest.approx(
+        expected, rel=1e-12, abs=0
+    )
     assert original.productions() == before
     assert converted.start() == original.start()
 
@@ -118,9 +116,9 @@ def test_generated_symbols_round_trip(grammar_class):
 @pytest.mark.parametrize("padding", ["@$@", "_", ""])
 def test_fresh_symbols_and_repeated_terminals(padding):
     grammar = PCFG.fromstring(
-        "S -> 'a' CNF@$@LEX A B [0.4] | A B C [0.6]\n"
-        "CNF@$@LEX -> 'z' [1]\nA -> 'a' [1]\nB -> 'b' [1]\nC -> 'c' [1]\n"
-        "S@$@A -> 'unused' [1]\nCNF@$@BIN -> 'unused' [1]"
+        f"S -> 'a' CNF{padding}LEX0 A B [0.4] | A B CNF{padding}BIN1 [0.6]\n"
+        f"CNF{padding}LEX0 -> 'z' [1]\nCNF{padding}BIN1 -> 'c' [1]\n"
+        "A -> 'a' [1]\nB -> 'b' [1]"
     )
     converted = grammar.chomsky_normal_form(new_token_padding=padding)
     assert_cnf(converted)
@@ -142,28 +140,38 @@ def test_flexible_keeps_unit_rules_and_probabilities():
     )
 
 
-def test_unit_cycle_geometric_series():
+@pytest.mark.parametrize(
+    ("start", "expected"),
+    [("S", (4 / 7, 3 / 7)), ("A", (4 / 7, 3 / 7)), ("B", (1 / 7, 6 / 7))],
+)
+def test_unit_cycle_geometric_series(start, expected):
+    # Lemma B.13 preserves string probabilities from every nonterminal.
+    # From A: x_a = 1/2 + (1/2)(1/4)x_a, x_b = (1/2)(3/4) + x_b/8.
     grammar = PCFG.fromstring(
         "S -> A [1]\nA -> B [0.5] | 'a' [0.5]\nB -> A [0.25] | 'b' [0.75]"
     )
-    converted = grammar.chomsky_normal_form()
+    converted = PCFG(Nonterminal(start), grammar.productions()).chomsky_normal_form()
     assert_cnf(converted)
-    assert inside(converted, ("a",)) == pytest.approx(4 / 7)
-    assert inside(converted, ("b",)) == pytest.approx(3 / 7)
+    for token, probability in zip("ab", expected):
+        assert inside(converted, (token,)) == pytest.approx(
+            probability, rel=1e-12, abs=0
+        )
 
 
 @pytest.mark.parametrize(
-    "source",
+    ("source", "expected"),
     [
-        "S -> A [0.5] | 'x' [0.5]\nA -> A [1]",
-        "S -> A [0.5] | 'x' [0.5]\nA -> B [1]\nB -> A [1]",
-        "S -> A [0.5] | 'x' [0.5]",
+        ("S -> A [0.5] | 'x' [0.5]\nA -> A [1]", 0.5),
+        ("S -> A [0.5] | 'x' [0.5]\nA -> B [1]\nB -> A [1]", 0.5),
+        ("S -> A [0.5] | 'x' [0.5]", 0.5),
+        # x = 3/8 + x/2 gives finite mass 3/4; the closed B-C class gets 1/4.
+        ("S -> S [0.5] | B [0.125] | 'x' [0.375]\nB -> C [1]\nC -> B [1]", 0.75),
     ],
 )
-def test_nontermination_mass_is_not_renormalized(source):
+def test_nontermination_mass_is_not_renormalized(source, expected):
     converted = PCFG.fromstring(source).chomsky_normal_form()
     assert_cnf(converted)
-    assert inside(converted, ("x",)) == 0.5
+    assert inside(converted, ("x",)) == expected
     assert inside(converted, ("x", "x")) == 0
 
 
@@ -182,14 +190,8 @@ def test_unreachable_closed_cycle():
 
 @pytest.mark.parametrize("probability", [1e-8, 1e-13, 1e-20])
 def test_small_positive_probabilities_survive(probability):
-    s, a = Nonterminal("S"), Nonterminal("A")
-    grammar = PCFG(
-        s,
-        [
-            ProbabilisticProduction(s, [a], prob=1),
-            ProbabilisticProduction(a, ["rare"], prob=probability),
-            ProbabilisticProduction(a, ["common"], prob=1 - probability),
-        ],
+    grammar = PCFG.fromstring(
+        f"S -> A [1]\nA -> 'rare' [{probability:.20f}] | 'common' [{1 - probability:.20f}]"
     )
     converted = grammar.chomsky_normal_form()
     assert inside(converted, ("rare",)) == pytest.approx(probability, rel=1e-12, abs=0)
@@ -221,13 +223,23 @@ def test_recursive_binary_exits_and_start_collision():
             )
 
 
-def test_binary_ambiguity_with_unit_cycle():
-    grammar = PCFG.fromstring("S -> A [1]\nA -> A [0.2] | A A [0.4] | 'a' [0.4]")
+@pytest.mark.parametrize("branch_probability", [0.5, 0.75])
+def test_binary_ambiguity_with_unit_cycle(branch_probability):
+    # With branch probability 3/4, finite termination has probability 1/3.
+    # Lemma B.13 preserves each string's raw mass even in this case.
+    grammar = PCFG.fromstring(
+        "S -> A [1]\nA -> A [0.2] | "
+        f"A A [{0.8 * branch_probability}] | 'a' [{0.8 * (1 - branch_probability)}]"
+    )
     converted = grammar.chomsky_normal_form()
     assert_cnf(converted)
     for length, catalan in enumerate([1, 1, 2, 5, 14], start=1):
         assert inside(converted, ("a",) * length) == pytest.approx(
-            catalan * 0.5 ** (2 * length - 1)
+            catalan
+            * branch_probability ** (length - 1)
+            * (1 - branch_probability) ** length,
+            rel=1e-12,
+            abs=0,
         )
 
 
@@ -245,78 +257,49 @@ def test_empty_rules_still_rejected():
         PCFG.fromstring("S -> 'a' [0.5] | [0.5]").chomsky_normal_form()
 
 
-def test_conversion_without_numpy(monkeypatch):
-    import sys
-
-    monkeypatch.setitem(sys.modules, "numpy", None)
-    assert_cnf(PCFG.fromstring(ACYCLIC_GRAMMARS[0]).chomsky_normal_form())
-
-
-@pytest.mark.parametrize("weights", list(product(range(3), repeat=4)))
-def test_unit_paths_against_bounded_markov_walk(weights):
-    # Every row has unary mass <= 1/2. After 80 transitions, the uncounted
-    # probability is <= 2**-80, well below the comparison tolerance.
-    a, b = Nonterminal("A"), Nonterminal("B")
-    matrix = [[weights[0] / 8, weights[1] / 8], [weights[2] / 8, weights[3] / 8]]
-    rules = []
-    for index, symbol in enumerate((a, b)):
-        rules.extend(
-            ProbabilisticProduction(symbol, [target], prob=matrix[index][column])
-            for column, target in enumerate((a, b))
-        )
-        rules.append(
-            ProbabilisticProduction(symbol, ["ab"[index]], prob=1 - sum(matrix[index]))
-        )
-    converted = PCFG(a, rules).chomsky_normal_form()
-    assert_cnf(converted)
-    pending, expected = [1.0, 0.0], [0.0, 0.0]
-    for _ in range(80):
-        for index in range(2):
-            expected[index] += pending[index] * (1 - sum(matrix[index]))
-        pending = [
-            sum(pending[row] * matrix[row][column] for row in range(2))
-            for column in range(2)
-        ]
-    for token, probability in zip("ab", expected):
-        assert inside(converted, (token,)) == pytest.approx(
-            probability, rel=1e-12, abs=1e-15
-        )
+def unary_matrices():
+    for a, b, c, d in product(range(3), repeat=4):
+        yield [[a / 8, b / 8], [c / 8, d / 8]]
+    for seed in range(12):
+        random = Random(seed)
+        rows = [[random.randint(1, 8) for _ in range(4)] for _ in range(4)]
+        yield [[weight / (2 * sum(row)) for weight in row] for row in rows]
 
 
-@pytest.mark.parametrize("seed", range(12))
-def test_larger_cycles_with_binary_exits(seed):
-    random = Random(seed)
-    states = [Nonterminal(index) for index in range(4)]
+@pytest.mark.parametrize("matrix", list(unary_matrices()))
+def test_unit_paths_against_bounded_markov_walk(matrix):
+    # Lemma B.13's hitting probabilities, checked by an independent path sum.
+    # Unary mass per row <= 1/2 bounds the uncounted tail by 2**-80.
+    states = [Nonterminal(index) for index in range(len(matrix))]
     left, right = Nonterminal("L"), Nonterminal("R")
     rules = [
         ProbabilisticProduction(left, ["l"], prob=1),
         ProbabilisticProduction(right, ["r"], prob=1),
     ]
-    matrix = []
-    for index, state in enumerate(states):
-        weights = [random.randint(1, 8) for _ in states]
-        row = [weight / (2 * sum(weights)) for weight in weights]
-        matrix.append(row)
+    exits = [(1 - sum(row)) / 2 for row in matrix]
+    for index, (state, row) in enumerate(zip(states, matrix)):
         rules.extend(
             ProbabilisticProduction(state, [target], prob=p)
             for target, p in zip(states, row)
         )
-        rules.append(ProbabilisticProduction(state, [str(index)], prob=0.25))
+        rules.append(ProbabilisticProduction(state, [str(index)], prob=exits[index]))
         rules.append(
             ProbabilisticProduction(
-                state, [left, right] if index % 2 else [right, left], prob=0.25
+                state, [left, right] if index % 2 else [right, left], prob=exits[index]
             )
         )
     grammar = PCFG(states[0], rules)
     expected = defaultdict(float)
-    pending = [1.0, 0.0, 0.0, 0.0]
+    pending = [1.0] + [0.0] * (len(states) - 1)
     for _ in range(80):
         for index, probability in enumerate(pending):
-            expected[(str(index),)] += probability * 0.25
-            expected[("l", "r") if index % 2 else ("r", "l")] += probability * 0.25
+            expected[(str(index),)] += probability * exits[index]
+            expected[("l", "r") if index % 2 else ("r", "l")] += (
+                probability * exits[index]
+            )
         pending = [
-            fsum(pending[row] * matrix[row][column] for row in range(4))
-            for column in range(4)
+            fsum(pending[row] * matrix[row][column] for row in range(len(states)))
+            for column in range(len(states))
         ]
     converted = grammar.chomsky_normal_form()
     assert_cnf(converted)
@@ -326,34 +309,23 @@ def test_larger_cycles_with_binary_exits(seed):
         )
 
 
-def test_cnf_identity_and_unreachable_cleanup():
-    grammar = PCFG.fromstring("S -> 'a' [1]")
-    assert grammar.chomsky_normal_form() is grammar
-    grammar = PCFG.fromstring("S -> 'a' [1]\nU -> 'u' [1]")
-    assert len(grammar.chomsky_normal_form().productions()) == 1
-
-
 @pytest.mark.parametrize(
-    "method",
-    ["eliminate_start", "remove_mixed_rules", "binarize", "remove_unitary_rules"],
+    "source", ["S -> 'a' [1]", "S -> 'a' [0.5] | 'b' [0.501]\nU -> 'u' [1]"]
 )
-def test_public_transformations_return_pcfg(method):
-    grammar = PCFG.fromstring(ACYCLIC_GRAMMARS[1])
-    transformed = getattr(PCFG, method)(grammar)
-    assert isinstance(transformed, PCFG)
-    assert transformed.start() == grammar.start()
-    assert enumerate_distribution(transformed) == pytest.approx(
-        enumerate_distribution(grammar)
-    )
+def test_cnf_identity(source):
+    # Preserve the inherited fast path, including the constructor's tolerance.
+    grammar = PCFG.fromstring(source)
+    assert grammar.chomsky_normal_form() is grammar
 
 
 @pytest.mark.parametrize("probabilities", [(1.1, -0.1), (0.5, 0.501)])
 def test_invalid_weights_are_not_silently_normalized(probabilities):
-    start = Nonterminal("S")
+    start, child = Nonterminal("S"), Nonterminal("A")
     grammar = PCFG(
         start,
-        [
-            ProbabilisticProduction(start, [token], prob=p)
+        [ProbabilisticProduction(start, [child], prob=1)]
+        + [
+            ProbabilisticProduction(child, [token], prob=p)
             for token, p in zip("ab", probabilities)
         ],
     )

@@ -1305,15 +1305,13 @@ class PCFG(CFG):
         """
         Return a PCFG in Chomsky normal form, preserving string probabilities.
 
-        Terminals in longer rules are isolated, long rules are binarized,
-        and nonlexical unary rules are eliminated by summing the probabilities
-        of all unary paths, including cycles. Unreachable and zero-probability
-        rules are removed. The input grammar is not modified.
+        Already-CNF inputs are returned unchanged. Otherwise, remove unreachable
+        and zero-probability rules, isolate terminals, binarize, and sum unary
+        paths (including cycles). The input grammar is not modified.
 
-        Empty productions are not supported. Rule probabilities must be finite,
-        nonnegative, and sum to one for each left-hand side within ``1e-12``.
-        This is stricter than the constructor's tolerance: renormalizing an
-        approximately normalized grammar could change its string probabilities.
+        Conversion requires finite, nonnegative probabilities summing to one per
+        LHS within ``1e-12``, stricter than the constructor's tolerance. Empty
+        productions are unsupported. Tree structure and Viterbi scores may change.
 
         :param new_token_padding: Separator in generated nonterminal names.
             Use characters accepted by ``standard_nonterm_parser`` if the
@@ -1323,24 +1321,20 @@ class PCFG(CFG):
         :rtype: PCFG
         :raises ValueError: If there are empty rules or invalid probabilities.
 
-        The unary transformation follows Etessami, Stewart and Yannakakis,
-        "Polynomial Time Algorithms for Multi-Type Branching Processes and
-        Stochastic Context-Free Grammars", Appendix B, Lemma B.13:
-        https://arxiv.org/abs/1201.2374 . It preserves the sum over parses of
-        each finite string, not individual parse trees or Viterbi scores.
+        See ``remove_unitary_rules`` for the unary construction's reference.
         """
+        if self.is_chomsky_normal_form():
+            return self
         if self.productions(empty=True):
             raise ValueError(
                 "Grammar has Empty rules. Cannot deal with them at the moment"
             )
         self._validate_cnf_probabilities()
         grammar = self._remove_unreachable(self)
-        if grammar.is_chomsky_normal_form():
-            return grammar
         grammar = self.eliminate_start(grammar)
         grammar = self.remove_mixed_rules(grammar, new_token_padding)
         grammar = self.binarize(grammar, new_token_padding)
-        if flexible:
+        if flexible or grammar.is_chomsky_normal_form():
             return grammar
         return self.remove_unitary_rules(grammar)
 
@@ -1361,16 +1355,11 @@ class PCFG(CFG):
     @staticmethod
     def _cnf_nonterminals(grammar):
         # Include symbols that occur only on a right-hand side, too.
-        return set(
-            [grammar.start()]
-            + [rule.lhs() for rule in grammar.productions()]
-            + [
-                symbol
-                for rule in grammar.productions()
-                for symbol in rule.rhs()
-                if is_nonterminal(symbol)
-            ]
-        )
+        used = {grammar.start()}
+        for rule in grammar.productions():
+            used.add(rule.lhs())
+            used.update(symbol for symbol in rule.rhs() if is_nonterminal(symbol))
+        return used
 
     @staticmethod
     def _fresh_nonterminal(used, name):
@@ -1432,7 +1421,9 @@ class PCFG(CFG):
                     rhs.append(symbol)
                     continue
                 if symbol not in terminals:
-                    fresh = cls._fresh_nonterminal(used, f"CNF{padding}LEX")
+                    fresh = cls._fresh_nonterminal(
+                        used, f"CNF{padding}LEX{len(terminals)}"
+                    )
                     terminals[symbol] = fresh
                     result.append(ProbabilisticProduction(fresh, [symbol], prob=1.0))
                 rhs.append(terminals[symbol])
@@ -1451,7 +1442,8 @@ class PCFG(CFG):
             lhs = rule.lhs()
             probability = rule.prob()
             for symbol in rule.rhs()[:-2]:
-                fresh = cls._fresh_nonterminal(used, f"CNF{padding}BIN")
+                # Distinct bases avoid rescanning all earlier auxiliaries.
+                fresh = cls._fresh_nonterminal(used, f"CNF{padding}BIN{len(result)}")
                 result.append(
                     ProbabilisticProduction(lhs, [symbol, fresh], prob=probability)
                 )
