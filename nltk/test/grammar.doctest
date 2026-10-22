@@ -94,18 +94,7 @@ Probabilistic Chomsky normal form
 summed over all parses, without modifying the input. Already-CNF grammars are
 returned unchanged. Otherwise, unreachable and zero-probability rules are removed.
 
-The construction retains the four steps from `Ruoxi Ning's original explanation
-<https://github.com/nltk/nltk/pull/3382#issuecomment-2742800451>`_:
-
-* START: if the start symbol occurs on a RHS, add a fresh ``S0 -> S [1.0]``.
-* TERM: replace a terminal in a longer rule with a fresh lexical auxiliary,
-  e.g. ``S -> 'a' B [p]`` becomes ``S -> T B [p]``, ``T -> 'a' [1.0]``.
-* MUL (BIN): ``S -> A B C [p]`` becomes ``S -> A X [p]``, ``X -> B C [1.0]``.
-  Use fresh auxiliaries for each alternative, even when prefixes are shared.
-* UNIT: multiply weights along unary paths, add paths to the same ordered RHS,
-  then remove unreachable rules.
-
-Here is the original UNIT example:
+For example, unary paths are combined without losing their weights:
 
     >>> grammar = PCFG.fromstring("""
     ... A -> B [0.3] | B C [0.7]
@@ -129,33 +118,11 @@ Each lexical exit from ``A`` has weight ``0.3 * 0.8 * 0.5 = 0.12``;
 ``A -> B C`` has weight ``0.7 + 0.3 * 0.2 = 0.76``. ``D`` becomes unreachable.
 The unary paths are acyclic, although the binary rule ``B -> B C`` is recursive.
 
-Unary cycles use the hitting-probability construction in Appendix B, Lemma B.13
-of Etessami, Stewart and Yannakakis, `Polynomial Time Algorithms for Multi-Type
-Branching Processes and Stochastic Context-Free Grammars
-<https://arxiv.org/abs/1201.2374v2>`_. Let ``U[A,B]`` sum the probabilities of
-``A -> B``, and ``B[A,gamma]`` sum direct probabilities of each non-unary RHS.
-Summing all unary paths gives ``X = B + U B + U**2 B + ...``, or ``X = U X + B``.
-For one RHS, this is the prototype's linear system ``(I - U) x_gamma = b_gamma``.
-
-The implementation uses state elimination: sum self-loops geometrically, then
-substitute their remaining transitions into other equations. A global inverse
-can be singular with closed unary classes; the paper solves on states that can
-reach the chosen exit. Missing exit mass is retained through a fresh dead symbol
-``D -> D D [1.0]``, as in the lemma. For ``S -> A [0.5] | 'x' [0.5]; A -> A [1]``,
-the probability of ``'x'`` stays 0.5. Conditioning on termination would change it.
-
-Structural steps multiply weights by ones; UNIT sums paths to the same ordered
-RHS. Thus they preserve finite-string probabilities in exact arithmetic, but
-can change tree structure and Viterbi scores. No NumPy dependency is required.
-``flexible=True`` keeps unary rules. Empty productions remain unsupported;
-the paper's epsilon elimination and Newton-method approximation are not included.
-
-Conversion of non-CNF inputs requires finite, nonnegative weights summing to one
-per LHS within ``1e-12``, stricter than the constructor's tolerance. Self-loop
-elimination sums the remaining mass to avoid cancellation in ``1 - loop``.
-Exit totals are checked with the same tolerance; roundoff just above one is
-clipped. Positive rules have no cutoff, but floating-point underflow and rounding
-still limit accuracy.
+If conversion is needed, probabilities must be finite and nonnegative, with
+each LHS total within ``1e-12`` of one. Floating-point rounding and underflow
+still limit accuracy. ``flexible=True`` retains unary rules; empty productions
+are unsupported. Tree structure and Viterbi scores can change. See
+``PCFG.remove_unitary_rules`` for the algorithm reference.
 
 The grammar reader accepts the default ``@$@`` padding. Include the start symbol
 when serializing, since production order need not identify it:
@@ -165,12 +132,3 @@ when serializing, since production order need not identify it:
     >>> restored = PCFG.fromstring(text)
     >>> restored.start() == cnf.start() and restored.productions() == cnf.productions()
     True
-
-``nltk/test/unit/test_pcfg_cnf.py`` checks full acyclic distributions by derivation
-enumeration, geometric unary cycles, closed classes and Catalan parse counts.
-An independent Markov walk checks 81 two-state and 12 four-state matrices with
-lexical and ordered binary exits. Unary mass per row is at most one half, so
-the omitted mass after 80 steps is at most ``2**-80`` in exact arithmetic;
-floating-point tolerances are separate. These tests are motivated by Lemma B.13,
-not supplied by the paper. Other regressions cover small probabilities, roundoff,
-symbol collisions, parser compatibility and serialization.
