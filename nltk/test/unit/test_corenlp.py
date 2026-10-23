@@ -9,7 +9,10 @@ from itertools import chain
 from unittest import TestCase, SkipTest
 
 try:
-    from unittest.mock import MagicMock
+    try:
+        from unittest.mock import MagicMock
+    except ImportError:  # Python 2.7
+        from mock import MagicMock
 except ImportError:
     raise SkipTest('unittest.mock no supported in Python2')
 from nltk.tree import Tree
