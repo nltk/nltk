@@ -75,6 +75,14 @@ RECENCY_WINDOW_DAYS = 119
 # the ledger provably reaches the newest id (raw pages under CACHE/full).
 STREAM_CLASS = "stream-all"
 STREAM_PAGE = 2000
+# The NVD data feeds: one gzip per id year since 2002 plus the recent and the
+# modified feed; the complete catalog with NVD's CWE and CPE enrichment, so the
+# ledger's completeness no longer rests on the paged API stream.
+NVD_FEED_URL = "https://nvd.nist.gov/feeds/json/cve/2.0/nvdcve-2.0-{}.json.gz"
+NVD_FEED_META_URL = "https://nvd.nist.gov/feeds/json/cve/2.0/nvdcve-2.0-{}.meta"
+NVD_FEED_FIRST_YEAR = 2002
+NVD_FEED_EXTRA = ("recent", "modified")
+FEED_CLASS = "nvd-feeds"
 # Names that make a record OURS to triage by hand when no operation keyword
 # matches: the library, its dependencies, its tools, the interpreter itself.
 OWN_NAMES = (
@@ -533,6 +541,11 @@ ECOSYSTEM_CLASS_GUARD = {
     CVELIST_CLASS: (
         None,
         "REVIEW: surfaced by the complete CVE List only; no operation keyword "
+        "matched, triaged by hand in the manual-triage section",
+    ),
+    FEED_CLASS: (
+        None,
+        "REVIEW: surfaced by the complete NVD data feeds only; no operation keyword "
         "matched, triaged by hand in the manual-triage section",
     ),
     GHSA_CLASS: (
@@ -1605,9 +1618,7 @@ def fetch_cve_record(cid, offline=False):
             if _cache_has(name):
                 raw = _cache_read(name)
             else:
-                CATALOG_NOTES.append(
-                    "cve.org record {}: fetch failed ({})".format(cid, e)
-                )
+                CATALOG_NOTES.append(f"cve.org record {cid}: fetch failed ({e})")
                 return None
         else:
             _cache_write(name, raw)
@@ -1809,9 +1820,212 @@ def fetch_cve_list_v5(offline=False):
             dpath = _download(url, os.path.join(STREAM_CACHE, name))
             _walk_cvelist_zip(dpath, visit)
         except Exception as e:
-            CATALOG_NOTES.append("CVE List V5 delta {}: {}".format(tag, e))
+            CATALOG_NOTES.append(f"CVE List V5 delta {tag}: {e}")
     stats["in_scope"] = len(agg)
     rows = sorted(agg.values())
+    _cache_write(extract, json.dumps({"rows": rows, "stats": stats}).encode("utf-8"))
+    return rows, stats
+
+
+def _feed_meta(text):
+    """{key: value} of an NVD feed ``.meta`` file (lastModifiedDate, size,
+    zipSize, gzSize, sha256)."""
+    out = {}
+    for line in text.splitlines():
+        if ":" in line:
+            key, value = line.split(":", 1)
+            out[key.strip()] = value.strip()
+    return out
+
+
+def _download_resumable(url, path, want_size, attempts=20):
+    """Fetch ``url`` to ``path`` with HTTP ranges until the file holds exactly
+    ``want_size`` bytes: a slow mirror closes early, every attempt resumes."""
+    last = None
+    for _ in range(attempts):
+        have = os.path.getsize(path) if os.path.exists(path) else 0
+        if have == want_size:
+            return path
+        if have > want_size:
+            os.remove(path)
+            have = 0
+        req = urllib.request.Request(url)
+        if have:
+            req.add_header("Range", "bytes=%d-" % have)
+        try:
+            with urllib.request.urlopen(req, timeout=300) as r:
+                mode = "r+b" if have else "wb"
+                with open(path, mode) as fh:
+                    if have and r.status == 206:
+                        fh.seek(have)
+                    else:
+                        fh.seek(0)
+                        fh.truncate()
+                    while True:
+                        chunk = r.read(1 << 20)
+                        if not chunk:
+                            break
+                        fh.write(chunk)
+        except (OSError, http.client.HTTPException) as e:
+            last = e
+            continue
+    have = os.path.getsize(path) if os.path.exists(path) else 0
+    if have == want_size:
+        return path
+    raise OSError(
+        "incomplete after %d attempts: %d of %d bytes (%s)"
+        % (attempts, have, want_size, last)
+    )
+
+
+def _iter_feed_records(path, digest=None):
+    """Yield each ``cve`` object of an NVD 2.0 feed without loading the whole
+    file: the vulnerabilities array is decoded one element at a time, and the
+    decompressed bytes feed ``digest`` for the .meta sha256 check."""
+    import codecs
+
+    decoder = json.JSONDecoder()
+    utf8 = codecs.getincrementaldecoder("utf-8")()
+    with gzip.open(path, "rb") as fh:
+
+        def more():
+            chunk = fh.read(1 << 20)
+            if chunk and digest is not None:
+                digest.update(chunk)
+            return utf8.decode(chunk, final=not chunk)
+
+        buf = ""
+        while '"vulnerabilities"' not in buf:
+            chunk = more()
+            if not chunk:
+                return
+            buf += chunk
+        pos = buf.index('"vulnerabilities"')
+        while "[" not in buf[pos:]:
+            chunk = more()
+            if not chunk:
+                return
+            buf += chunk
+        pos = buf.index("[", pos) + 1
+        while True:
+            while pos < len(buf) and buf[pos] in " \r\n\t,":
+                pos += 1
+            if pos >= len(buf):
+                chunk = more()
+                if not chunk:
+                    return
+                buf, pos = buf[pos:] + chunk, 0
+                continue
+            if buf[pos] == "]":
+                while more():
+                    pass
+                return
+            try:
+                obj, end = decoder.raw_decode(buf, pos)
+            except ValueError:
+                chunk = more()
+                if not chunk:
+                    return
+                buf, pos = buf[pos:] + chunk, 0
+                continue
+            pos = end
+            yield obj.get("cve", obj)
+
+
+def fetch_nvd_feeds(offline=False, first_year=NVD_FEED_FIRST_YEAR):
+    """Read every NVD JSON 2.0 data feed: one per id year from ``first_year``
+    to this year, plus ``recent`` and ``modified``. Returns (rows, stats): rows
+    are the in-scope records as (cve_id, cwe, desc, [FEED_CLASS], published);
+    stats holds each feed's lastModifiedDate and record count, the distinct
+    record total, the count by id year, the highest id, the in-scope count and
+    the feeds that could not be read. Offline, the committed extract is replayed."""
+    import datetime
+    import hashlib
+
+    extract = "nvd_feeds_scope.json"
+    if offline and _cache_has(extract):
+        saved = json.loads(_cache_read(extract))
+        return [tuple(r) for r in saved["rows"]], saved["stats"]
+    os.makedirs(STREAM_CACHE, exist_ok=True)
+    names = [str(y) for y in range(first_year, datetime.date.today().year + 1)]
+    names += list(NVD_FEED_EXTRA)
+    stats = {
+        "feeds": [],
+        "read": 0,
+        "records": 0,
+        "by_year": {},
+        "highest": "",
+        "in_scope": 0,
+        "missing": [],
+    }
+    seen = set()
+    agg = {}
+    for name in names:
+        gz = os.path.join(STREAM_CACHE, "nvdcve-2.0-%s.json.gz" % name)
+        meta_path = os.path.join(STREAM_CACHE, "nvdcve-2.0-%s.meta" % name)
+        try:
+            if not (offline and os.path.exists(meta_path)):
+                raw = _get_with_retries(
+                    urllib.request.Request(NVD_FEED_META_URL.format(name)),
+                    timeout=60,
+                    attempts=3,
+                )
+                with open(meta_path, "wb") as fh:
+                    fh.write(raw)
+            with open(meta_path, encoding="utf-8") as fh:
+                meta = _feed_meta(fh.read())
+            want = int(meta["gzSize"])
+            _download_resumable(NVD_FEED_URL.format(name), gz, want)
+        except Exception as e:
+            CATALOG_NOTES.append(f"NVD feed {name}: fetch failed ({e})")
+            stats["missing"].append(name)
+            continue
+        count = 0
+        for attempt in (1, 2):
+            digest = hashlib.sha256()
+            count = 0
+            for c in _iter_feed_records(gz, digest):
+                count += 1
+                cid = c.get("id", "")
+                if not cid:
+                    continue
+                stats["read"] += 1
+                if cid not in seen:
+                    seen.add(cid)
+                    stats["records"] += 1
+                    year = cid.split("-")[1]
+                    stats["by_year"][year] = stats["by_year"].get(year, 0) + 1
+                if _cve_number(cid) > _cve_number(stats["highest"]):
+                    stats["highest"] = cid
+                if _in_stream_scope(c):
+                    cwe, desc, published = _cve_fields(c)
+                    e = agg.setdefault(
+                        cid,
+                        {"cwe": cwe, "desc": desc, "published": published},
+                    )
+                    if cwe and not e["cwe"]:
+                        e["cwe"] = cwe
+                    if published and not e["published"]:
+                        e["published"] = published
+            if digest.hexdigest().lower() == meta.get("sha256", "").lower():
+                break
+            if attempt == 1:
+                os.remove(gz)
+                try:
+                    _download_resumable(NVD_FEED_URL.format(name), gz, want)
+                except Exception as e:
+                    CATALOG_NOTES.append(f"NVD feed {name}: re-fetch failed ({e})")
+                    break
+            else:
+                CATALOG_NOTES.append(
+                    "NVD feed %s: sha256 differs from its .meta after a re-fetch" % name
+                )
+        stats["feeds"].append((name, meta.get("lastModifiedDate", ""), count))
+    stats["in_scope"] = len(agg)
+    rows = sorted(
+        (cid, e["cwe"], e["desc"], [FEED_CLASS], e["published"])
+        for cid, e in agg.items()
+    )
     _cache_write(extract, json.dumps({"rows": rows, "stats": stats}).encode("utf-8"))
     return rows, stats
 
@@ -1984,7 +2198,7 @@ def fetch_ecosystem_cves(
                 pulled += len(got)
                 pages += 1
             if pulled < total:
-                capped.append(("{} {}".format(RECENCY_CLASS, window_start), total))
+                capped.append((f"{RECENCY_CLASS} {window_start}", total))
         class_counts[RECENCY_CLASS] = recent_total
     rows = sorted(
         (cid, e["cwe"], e["desc"], e["classes"], e["published"])
@@ -2009,7 +2223,7 @@ def classify_ecosystem_cve(cwe, desc, classes, surfaces):
     hit = _classify_text(desc, surfaces)
     if hit:
         return hit
-    if primary in (RECENCY_CLASS, STREAM_CLASS, CVELIST_CLASS, GHSA_CLASS):
+    if primary in (RECENCY_CLASS, STREAM_CLASS, CVELIST_CLASS, FEED_CLASS, GHSA_CLASS):
         low = desc.lower()
         if any(n in low for n in OWN_NAMES):
             return "REVIEW (recent, unmatched)", ECOSYSTEM_CLASS_GUARD[primary][1]
@@ -2137,6 +2351,7 @@ def generate(
     ghsa_first_year=GHSA_FIRST_YEAR,
     cvelist=True,
     kev=True,
+    feeds=True,
 ):
     if out_path is None:
         out_path = DEFAULT_LEDGER
@@ -2152,6 +2367,11 @@ def generate(
         stream_rows, stream_stats = fetch_full_stream(full_since, offline)
         eco_rows = _merge_rows(eco_rows, stream_rows)
         eco_counts[STREAM_CLASS] = stream_stats.get("read", 0)
+    feed_stats = {}
+    if feeds:
+        feed_rows, feed_stats = fetch_nvd_feeds(offline)
+        eco_rows = _merge_rows(eco_rows, feed_rows)
+        eco_counts[FEED_CLASS] = feed_stats.get("records", 0)
     cvelist_stats = {}
     if cvelist:
         cvelist_rows, cvelist_stats = fetch_cve_list_v5(offline)
@@ -2235,11 +2455,12 @@ def generate(
     )
     lines.append(
         "**Totals:** %d CWEs classified (%s); %d NVD CVEs on the product; highest CVE "
-        "id reached: NVD stream %s, CVE List %s.\n"
+        "id reached: NVD feeds %s, NVD stream %s, CVE List %s.\n"
         % (
             len(cwe_rows),
             ", ".join("%d %s" % (v, k) for k, v in sorted(stats.items())),
             len(cves),
+            feed_stats.get("highest") or "n/a",
             stream_stats.get("highest") or "n/a",
             cvelist_stats.get("highest") or "n/a",
         )
@@ -2281,6 +2502,36 @@ def generate(
                 stream_stats["read"],
                 stream_stats["in_scope"],
                 stream_stats["highest"] or "none",
+            )
+        )
+    if feed_stats:
+        feed_years = sorted(feed_stats.get("by_year", {}).items())
+        lines.append(
+            "| NIST NVD, complete data feeds | `nvdcve-2.0-<year>.json.gz` for every id year %s plus `recent` and `modified` (%d feeds, sha256 checked against each `.meta`); every record | %d records read, %d distinct (%s), %d in scope, highest id **%s**%s |"
+            % (
+                ", ".join(n for n, _, _ in feed_stats.get("feeds", []) if n.isdigit())
+                or "none",
+                len(feed_stats.get("feeds", [])),
+                feed_stats.get("read", 0),
+                feed_stats.get("records", 0),
+                ", ".join("%s: %d" % (k, v) for k, v in feed_years) or "none",
+                feed_stats.get("in_scope", 0),
+                feed_stats.get("highest", "") or "none",
+                (
+                    ("; missing feeds: " + ", ".join(feed_stats["missing"]))
+                    if feed_stats.get("missing")
+                    else ""
+                ),
+            )
+        )
+        lines.append(
+            "| NIST NVD data feeds, last modified | per feed | %s |"
+            % (
+                ", ".join(
+                    "%s %s (%d)" % (n, m[:10], c)
+                    for n, m, c in feed_stats.get("feeds", [])
+                )
+                or "none"
             )
         )
     if cvelist_stats:
@@ -2785,7 +3036,10 @@ def generate(
         len(new_cves),
         len(ghsa_render),
         len(kev_hits),
-        stream_stats.get("highest") or cvelist_stats.get("highest") or "",
+        feed_stats.get("highest")
+        or stream_stats.get("highest")
+        or cvelist_stats.get("highest")
+        or "",
     )
 
 
@@ -2818,6 +3072,9 @@ def main(argv=None):
         "--no-cvelist", action="store_true", help="skip the CVE List V5 bulk read"
     )
     ap.add_argument("--no-kev", action="store_true", help="skip the CISA KEV catalog")
+    ap.add_argument(
+        "--no-nvd-feeds", action="store_true", help="skip the complete NVD data feeds"
+    )
     args = ap.parse_args(argv)
     (
         stats,
@@ -2841,6 +3098,7 @@ def main(argv=None):
         args.ghsa_first_year,
         not args.no_cvelist,
         not args.no_kev,
+        not args.no_nvd_feeds,
     )
     print(
         "wrote %s: %d CWEs (%s), %d nltk-product CVEs, %d ecosystem CVEs (%s); "
