@@ -18,6 +18,7 @@
 - Paul Bedaride
 - Steven Bethard
 - Robert Berwick
+- Andrew Bird
 - Dan Blanchard
 - Nathan Bodenstab
 - Alexander Böhm
