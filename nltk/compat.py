@@ -13,6 +13,7 @@ from functools import update_wrapper, wraps
 import fractions
 import unicodedata
 
+import six
 from six import string_types, text_type
 
 # Python 2/3 compatibility layer. Based on six.
@@ -206,6 +207,193 @@ DATA_UPDATES = [
 ]
 
 _PY3_DATA_UPDATES = [os.path.join(*path_list) for path_list in DATA_UPDATES]
+
+
+# Python 3's OSError subclasses, for 2.7: our own code raises these; a
+# stdlib error on 2.7 is a plain EnvironmentError, so catch sites that must
+# recognise one from the stdlib test ``is_errno`` instead of the class.
+import errno as _errno
+
+if six.PY3:
+    from builtins import (  # noqa: F401
+        FileNotFoundError,
+        PermissionError,
+        IsADirectoryError,
+        NotADirectoryError,
+        FileExistsError,
+        TimeoutError,
+        ChildProcessError,
+        ProcessLookupError,
+        BrokenPipeError,
+        ConnectionError,
+        InterruptedError,
+    )
+    from types import SimpleNamespace  # noqa: F401
+else:
+
+    class _CompatOSError(EnvironmentError):
+        _errno = None
+
+        def __init__(self, *args):
+            EnvironmentError.__init__(self, *args)
+            if self.errno is None and self._errno is not None and len(args) < 2:
+                self.errno = self._errno
+                if len(args) == 1:
+                    self.strerror = args[0]
+
+    class FileNotFoundError(_CompatOSError):
+        _errno = _errno.ENOENT
+
+    class PermissionError(_CompatOSError):
+        _errno = _errno.EACCES
+
+    class IsADirectoryError(_CompatOSError):
+        _errno = _errno.EISDIR
+
+    class NotADirectoryError(_CompatOSError):
+        _errno = _errno.ENOTDIR
+
+    class FileExistsError(_CompatOSError):
+        _errno = _errno.EEXIST
+
+    class TimeoutError(_CompatOSError):
+        _errno = _errno.ETIMEDOUT
+
+    class ChildProcessError(_CompatOSError):
+        _errno = _errno.ECHILD
+
+    class ProcessLookupError(_CompatOSError):
+        _errno = _errno.ESRCH
+
+    class BrokenPipeError(_CompatOSError):
+        _errno = _errno.EPIPE
+
+    class ConnectionError(_CompatOSError):
+        pass
+
+    class InterruptedError(_CompatOSError):
+        _errno = _errno.EINTR
+
+    class SimpleNamespace(object):
+        def __init__(self, **kwargs):
+            self.__dict__.update(kwargs)
+
+        def __repr__(self):
+            items = ", ".join("%s=%r" % kv for kv in sorted(self.__dict__.items()))
+            return "namespace(%s)" % items
+
+        def __eq__(self, other):
+            return isinstance(other, SimpleNamespace) and self.__dict__ == other.__dict__
+
+        def __ne__(self, other):
+            return not self == other
+
+
+if six.PY3:
+    from os import PathLike, fspath  # noqa: F401
+else:
+
+    class PathLike(object):
+        """``os.PathLike`` for 2.7: an object naming a path through ``__fspath__``."""
+
+        def __fspath__(self):
+            raise NotImplementedError
+
+        @classmethod
+        def __subclasshook__(cls, subclass):
+            if cls is PathLike:
+                return hasattr(subclass, "__fspath__")
+            return NotImplemented
+
+    def fspath(path):
+        """``os.fspath`` for 2.7: text or bytes pass through, a ``__fspath__``
+        object is asked, anything else is refused (never coerced with str)."""
+        if isinstance(path, (six.text_type, bytes)):
+            return path
+        fs = getattr(type(path), "__fspath__", None)
+        if fs is None:
+            raise TypeError(
+                "expected str, bytes or os.PathLike object, not %s" % type(path).__name__
+            )
+        result = fs(path)
+        if isinstance(result, (six.text_type, bytes)):
+            return result
+        raise TypeError(
+            "expected %s.__fspath__() to return str or bytes, not %s"
+            % (type(path).__name__, type(result).__name__)
+        )
+
+
+def load_module_from_file(name, path):
+    """Import the source file at *path* as module *name* on 2.7 and 3."""
+    if six.PY3:
+        import importlib.util
+
+        spec = importlib.util.spec_from_file_location(name, path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod
+    import imp
+
+    return imp.load_source(name, path)
+
+
+import time as _time
+
+#: CPU time of the process: ``time.process_time`` (3.3+), ``time.clock`` on 2.7.
+process_time = getattr(_time, "process_time", None) or _time.clock
+#: Wall clock for intervals: ``time.perf_counter`` (3.3+), ``time.time`` on 2.7.
+perf_counter = getattr(_time, "perf_counter", None) or _time.time
+
+
+if six.PY3:
+    from os import fsdecode, fsencode  # noqa: F401
+else:
+    import sys as _sys
+
+    def fsdecode(value):
+        """``os.fsdecode`` for 2.7: bytes to text with the filesystem encoding."""
+        if isinstance(value, six.text_type):
+            return value
+        return value.decode(_sys.getfilesystemencoding() or "utf-8", "strict")
+
+    def fsencode(value):
+        """``os.fsencode`` for 2.7: text to bytes with the filesystem encoding."""
+        if isinstance(value, bytes):
+            return value
+        return value.encode(_sys.getfilesystemencoding() or "utf-8", "strict")
+
+
+try:
+    from subprocess import TimeoutExpired  # noqa: F401
+except ImportError:  # Python 2.7: the subprocess32 backport carries it
+    try:
+        from subprocess32 import TimeoutExpired  # noqa: F401
+    except ImportError:
+
+        class TimeoutExpired(Exception):
+            """``subprocess.TimeoutExpired`` stand-in without the backport."""
+
+
+_ERRNO_CLASSES = {
+    _errno.ENOENT: FileNotFoundError,
+    _errno.EACCES: PermissionError,
+    _errno.EPERM: PermissionError,
+    _errno.EISDIR: IsADirectoryError,
+    _errno.ENOTDIR: NotADirectoryError,
+    _errno.EEXIST: FileExistsError,
+    _errno.EINTR: InterruptedError,
+}
+
+
+def is_errno(exc, *codes):
+    """True when *exc* is an environment error carrying one of *codes*, or an
+    instance of the Python 3 class that code maps to (both interpreters)."""
+    if not isinstance(exc, EnvironmentError):
+        return False
+    if getattr(exc, "errno", None) in codes:
+        return True
+    return any(isinstance(exc, _ERRNO_CLASSES[c]) for c in codes if c in _ERRNO_CLASSES)
 
 
 def keyword_only(positional):

@@ -34,9 +34,10 @@ re-exported from :mod:`nltk.termsec` for backward compatibility.
 from __future__ import absolute_import, division, print_function, unicode_literals
 from __future__ import absolute_import, division, print_function, unicode_literals
 import six
-from nltk.compat import keyword_only
+from nltk.compat import SimpleNamespace, keyword_only
 
 import csv as _csv
+import io
 
 from nltk.termsec import _refuse_int_bomb, sanitize_terminal
 
@@ -197,7 +198,101 @@ def _refuse_unsafe_dialect(dialect, single_line):
         )
 
 
-class SafeCsvWriter:
+class _TextStreamAdapter(object):
+    """Python 2.7 only: its ``csv`` module writes byte strings, so a text
+    stream (``io.StringIO``, a ``codecs`` writer) gets the UTF-8 bytes the
+    module emits decoded back to text before they reach it."""
+
+    def __init__(self, stream):
+        self._stream = stream
+
+    def write(self, data):
+        if isinstance(data, bytes):
+            data = data.decode("utf-8")
+        return self._stream.write(data)
+
+    def __getattr__(self, name):
+        return getattr(self._stream, name)
+
+
+def _adapt_stream(fileobj):
+    if six.PY2 and isinstance(fileobj, io.TextIOBase):
+        return _TextStreamAdapter(fileobj)
+    return fileobj
+
+
+def _native(value):
+    """The 2.7 ``csv`` module wants dialect parameters as native ``str``."""
+    if six.PY2 and isinstance(value, six.text_type):
+        return value.encode("utf-8")
+    return value
+
+
+_DIALECT_ATTRS = (
+    "delimiter", "quotechar", "escapechar", "doublequote",
+    "skipinitialspace", "lineterminator", "quoting", "strict",
+)
+
+
+def _native_dialect(dialect):
+    """On 2.7 a registered name or a Dialect class whose parameters are
+    unicode is rebuilt with native ``str`` parameters (same values)."""
+    if dialect is None:
+        dialect = "excel"  # the csv module's own default
+    if isinstance(dialect, six.string_types):
+        dialect = _csv.get_dialect(_native(dialect))
+    class _NativeDialect(_csv.Dialect):  # a classic class on 2.7: no type()
+        pass
+
+    for name in _DIALECT_ATTRS:
+        value = getattr(dialect, name, None)
+        if value is not None:
+            setattr(_NativeDialect, name, _native(value))
+    return _NativeDialect
+
+
+if six.PY2 and "unix" not in _csv.list_dialects():
+
+    class _UnixDialect(_csv.Dialect):
+        """The ``unix`` dialect Python 3 registers (2.7 has only the excel pair)."""
+
+        delimiter = str(",")
+        quotechar = str('"')
+        doublequote = True
+        skipinitialspace = False
+        lineterminator = str("\n")
+        quoting = _csv.QUOTE_ALL
+
+    _csv.register_dialect(str("unix"), _UnixDialect)
+
+
+def _merged_dialect(dialect, fmtparams):
+    """The effective parameters as an object the guard can read, before the
+    2.7 ``csv`` module gets to reject a non-ASCII lead character itself."""
+    if dialect is None:
+        dialect = "excel"  # the csv module's own default
+    if isinstance(dialect, six.string_types):
+        dialect = _csv.get_dialect(_native(dialect))
+    merged = SimpleNamespace()
+    for name in _DIALECT_ATTRS:
+        setattr(merged, name, fmtparams.get(name, getattr(dialect, name, None)))
+    return merged
+
+
+def _native_params(dialect, fmtparams):
+    if not six.PY2:
+        return dialect, fmtparams
+    return _native_dialect(dialect), {k: _native(v) for k, v in fmtparams.items()}
+
+
+def _cell(value):
+    """A sanitised cell as the ``csv`` module of this interpreter takes it."""
+    if six.PY2 and isinstance(value, six.text_type):
+        return value.encode("utf-8")
+    return value
+
+
+class SafeCsvWriter(object):
     """Drop-in ``csv.writer`` whose every cell runs the sanitising pipeline.
 
     Construction mirrors ``csv.writer(fileobj, dialect, **fmtparams)``; the
@@ -217,13 +312,16 @@ class SafeCsvWriter:
 
     @keyword_only(3)
     def __init__(self, fileobj, dialect="excel", single_line=False, **fmtparams):
-        self._writer = _csv.writer(fileobj, dialect, **fmtparams)
+        if six.PY2:
+            _refuse_unsafe_dialect(_merged_dialect(dialect, fmtparams), single_line)
+        dialect, fmtparams = _native_params(dialect, fmtparams)
+        self._writer = _csv.writer(_adapt_stream(fileobj), dialect, **fmtparams)
         self._single_line = single_line
         _refuse_unsafe_dialect(self._writer.dialect, single_line)
 
     def writerow(self, row):
         return self._writer.writerow(
-            [sanitize_csv_field(v, single_line=self._single_line) for v in row]
+            [_cell(sanitize_csv_field(v, single_line=self._single_line)) for v in row]
         )
 
     def writerows(self, rows):
@@ -241,7 +339,7 @@ def safe_csv_writer(fileobj, dialect="excel", single_line=False, **fmtparams):
     return SafeCsvWriter(fileobj, dialect, single_line=single_line, **fmtparams)
 
 
-class SafeCsvDictWriter:
+class SafeCsvDictWriter(object):
     """Drop-in ``csv.DictWriter`` running every cell through the pipeline.
 
     Header cells are untrusted values too (a crafted fieldname is a crafted
@@ -266,10 +364,13 @@ class SafeCsvDictWriter:
     ):
         self._single_line = single_line
         self._fieldnames = list(fieldnames)
+        if six.PY2:
+            _refuse_unsafe_dialect(_merged_dialect(dialect, fmtparams), single_line)
+        dialect, fmtparams = _native_params(dialect, fmtparams)
         self._writer = _csv.DictWriter(
-            fileobj,
+            _adapt_stream(fileobj),
             self._fieldnames,
-            restval=sanitize_csv_field(restval, single_line=single_line),
+            restval=_cell(sanitize_csv_field(restval, single_line=single_line)),
             extrasaction=extrasaction,
             dialect=dialect,
             **fmtparams
@@ -279,7 +380,7 @@ class SafeCsvDictWriter:
     def writeheader(self):
         return self._writer.writer.writerow(
             [
-                sanitize_csv_field(f, single_line=self._single_line)
+                _cell(sanitize_csv_field(f, single_line=self._single_line))
                 for f in self._fieldnames
             ]
         )
@@ -287,7 +388,7 @@ class SafeCsvDictWriter:
     def writerow(self, rowdict):
         return self._writer.writerow(
             {
-                k: sanitize_csv_field(v, single_line=self._single_line)
+                k: _cell(sanitize_csv_field(v, single_line=self._single_line))
                 for k, v in rowdict.items()
             }
         )

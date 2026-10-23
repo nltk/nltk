@@ -275,8 +275,9 @@ def _refuse_int_bomb(value):
     as any other object argument, and the sanitiser's own work stays linear
     in whatever text that produces.
     """
-    if isinstance(value, int):
-        bits = int.bit_length(value)
+    if isinstance(value, six.integer_types):
+        # the unbound slot, so a subclass cannot lie; a 2.7 long has its own
+        bits = type(value).__mro__[-2].bit_length(value) if six.PY2 else int.bit_length(value)
         if bits > _INT_RENDER_BIT_LIMIT:
             raise ValueError(
                 "integer of {0} bits refused: too large to render as terminal or CSV output".format(bits)

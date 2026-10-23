@@ -10,6 +10,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 from __future__ import absolute_import, division, print_function, unicode_literals
 import six
+from nltk.compat import FileNotFoundError, PermissionError, FileExistsError, is_errno, PathLike, fspath, fsdecode, fsencode
 from nltk.compat import keyword_only
 
 """Centralized I/O security sentinel for NLTK."""
@@ -181,9 +182,27 @@ def _note(why, reason):
         why.append(reason)
 
 
+
+
+def _exact_text(value):
+    """An exact text copy of *value* through the unbound C slot, so a str
+    subclass cannot lie: ``str.__str__`` on 3, the unicode slice on 2.7."""
+    if six.PY2 and isinstance(value, six.text_type):
+        return six.text_type.__getitem__(value, slice(0, None))
+    return str.__str__(value)
+
+def _is_relative_to(path, root):
+    """``PurePath.is_relative_to`` (3.9+) for every interpreter here."""
+    try:
+        path.relative_to(root)
+    except ValueError:
+        return False
+    return True
+
 def _private_dir_problem(path):
     """Why *path* is not a private directory (the :func:`is_private_dir`
     contract), or None when it is."""
+    path = fspath(path)
     try:
         st = os.stat(path)
     except (OSError, ValueError) as exc:
@@ -475,13 +494,13 @@ def _plain_path_text(value):
     a ``__str__`` override) makes every check run on the real value, exactly as
     :func:`_as_path_text` does for the data-path guards."""
     try:
-        text = os.fspath(value)
+        text = fspath(value)
     except TypeError:
         return None
     if not isinstance(text, six.string_types):
         return None
     if type(text) is not str:
-        text = str.__str__(text)
+        text = _exact_text(text)
     return text
 
 
@@ -557,7 +576,7 @@ def has_line_unsafe_char(token, allow_tab=False):
     # Judge the real characters: a str subclass can lie in __iter__ and
     # __contains__ (and str() of another object may hand back such a subclass),
     # and str.__str__ copies the text out without consulting it.
-    text = str.__str__(token if isinstance(token, six.string_types) else str(token))
+    text = _exact_text(token if isinstance(token, six.string_types) else str(token))
     # str.isprintable is false for every Cc / Cs / Zl / Zp character (and for
     # some safe ones, which fall through to the category rule), so a printable
     # token is safe by the same rule at a fraction of the per-character cost.
@@ -713,19 +732,19 @@ def _exact_path_text(value, context="NLTK"):
     pointer) is taken from that attribute, as :func:`open` does.
     """
     if isinstance(value, six.string_types):
-        return str.__str__(value)
+        return _exact_text(value)
     shown = getattr(value, "path", None)
-    shown = str.__str__(shown) if isinstance(shown, six.string_types) else None
+    shown = _exact_text(shown) if isinstance(shown, six.string_types) else None
     if hasattr(value, "__fspath__"):
         try:
-            real = os.fspath(value)
+            real = fspath(value)
         except TypeError as exc:
             six.raise_from(PermissionError(
                 "Security Violation [{0}]: {1!r} is not a filesystem path".format(context, value)
             ), exc)
         if isinstance(real, bytes):
-            real = os.fsdecode(real)
-        real = str.__str__(real)
+            real = fsdecode(real)
+        real = _exact_text(real)
         if shown is not None and shown != real:
             raise PermissionError(
                 "Security Violation [{0}]: path object names two different files ({1!r} via .path, {2!r} via __fspath__); refusing it".format(context, shown, real)
@@ -828,7 +847,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
         if required_root:
             root_raw = _exact_path_text(required_root, context)
             scoped_root = Path(root_raw).resolve()
-            if not (target == scoped_root or target.is_relative_to(scoped_root)):
+            if not (target == scoped_root or _is_relative_to(target, scoped_root)):
                 # Raise ValueError to match NLTK's historical CorpusReader error type
                 raise ValueError(
                     "Security Violation [{0}]: Path {1} escapes root {2}".format(context, target, scoped_root)
@@ -836,13 +855,13 @@ def validate_path(path_input, context="NLTK", required_root=None):
 
         # LAYER 2: Global NLTK_DATA Sandbox
         allowed_roots = _get_allowed_roots()
-        if any(target == root or target.is_relative_to(root) for root in allowed_roots):
+        if any(target == root or _is_relative_to(target, root) for root in allowed_roots):
             return
 
         # CWD Fallback (Explicit Opt-In for ENFORCE mode)
         try:
             cwd = Path(os.getcwd()).resolve()
-            if target == cwd or target.is_relative_to(cwd):
+            if target == cwd or _is_relative_to(target, cwd):
                 if any(cwd == root for root in allowed_roots):
                     return
                 msg = (
@@ -1004,7 +1023,7 @@ def _as_path_text(value, context, error=ValueError):
     ``except (ValueError, PermissionError)``.
     """
     try:
-        text = os.fspath(value)
+        text = fspath(value)
     except TypeError as exc:
         six.raise_from(error(
             "Security Violation [{0}]: {1!r} is not a filesystem path.".format(context, value)
@@ -1021,13 +1040,13 @@ def _as_path_text(value, context, error=ValueError):
             six.raise_from(error(
                 "Security Violation [{0}]: {1!r} is not decodable as a filesystem path.".format(context, text)
             ), exc)
-    # os.fspath() hands back a str SUBCLASS unchanged, so every check below would
+    # fspath() hands back a str SUBCLASS unchanged, so every check below would
     # run on attacker-controlled methods: a subclass overriding startswith,
     # replace, split or __contains__ passes all of them while carrying a hostile
     # value. str.__str__ is used rather than str(): it ignores a __str__ override
     # and yields an exact str holding the real characters.
     if type(text) is not str:
-        text = str.__str__(text)
+        text = _exact_text(text)
     return text
 
 
@@ -1282,7 +1301,9 @@ def _reject_unsafe_open(
         # Windows, but a stat still refuses a directory or device.
         try:
             st = os.stat(raw)
-        except FileNotFoundError:
+        except EnvironmentError as exc:
+            if not is_errno(exc, errno.ENOENT):
+                raise
             if must_exist:
                 raise
             return
@@ -1309,11 +1330,9 @@ def _reject_unsafe_open(
     )
     try:
         fd = os.open(raw, flags)
-    except FileNotFoundError:
-        if must_exist:
+    except EnvironmentError as exc:
+        if not is_errno(exc, errno.ENOENT, errno.ENOTDIR):
             raise
-        return
-    except NotADirectoryError:
         if must_exist:
             raise
         return
@@ -1426,7 +1445,9 @@ def _reject_tamperable_dir(raw, context):
     leaf = raw.rstrip("/\\") or raw
     try:
         top = os.lstat(leaf)
-    except FileNotFoundError:
+    except EnvironmentError as exc:
+        if not is_errno(exc, errno.ENOENT):
+            raise
         _refuse(raw, "does not exist")
     if stat.S_ISLNK(top.st_mode):
         _refuse(raw, "is a symlink, not the directory it names")
@@ -1449,7 +1470,9 @@ def _reject_tamperable_dir(raw, context):
             entry = os.path.join(dirpath, name)
             try:
                 st = os.lstat(entry)
-            except FileNotFoundError:
+            except EnvironmentError as exc:
+                if not is_errno(exc, errno.ENOENT):
+                    raise
                 _refuse(entry, "vanished while the directory was being audited")
             if stat.S_ISLNK(st.st_mode):
                 _refuse(entry, "is a symlink inside the tool directory")
@@ -1500,7 +1523,7 @@ def open_package_resource(
     # The root is caller-supplied, so bound IT too: this helper opens resources
     # that ship inside NLTK, nothing else.
     installed_package = Path(__file__).resolve().parent
-    if not (root == installed_package or root.is_relative_to(installed_package)):
+    if not (root == installed_package or _is_relative_to(root, installed_package)):
         raise PermissionError(
             "Security Violation [{0}]: package root {1!r} is outside the installed NLTK package {2!r}.".format(context, str(root), str(installed_package))
         )
@@ -1510,7 +1533,7 @@ def open_package_resource(
         six.raise_from(PermissionError(
             "Security Violation [{0}]: {1!r} is not resolvable.".format(context, text)
         ), exc)
-    if not (target == root or target.is_relative_to(root)):
+    if not (target == root or _is_relative_to(target, root)):
         raise PermissionError(
             "Security Violation [{0}]: {1!r} escapes the package directory {2!r}.".format(context, text, str(root))
         )
@@ -1572,7 +1595,7 @@ def validate_zip_archive(
                 # from this resolved path (CWE-22 / CWE-59).
                 member_path = (target / name_str).resolve()
                 if _zip_member_is_unsafe(name_str) or not (
-                    member_path == target or member_path.is_relative_to(target)
+                    member_path == target or _is_relative_to(member_path, target)
                 ):
                     # the member name comes from the archive, so the exception
                     # text is sanitised for the raise as well as the warning
@@ -2061,7 +2084,7 @@ def _fd_realpath(fd):
 
             f_getpath = 50  # <sys/fcntl.h> F_GETPATH
             buf = fcntl.fcntl(fd, f_getpath, b"\x00" * 1024)
-            return os.fsdecode(buf.split(b"\x00", 1)[0])
+            return fsdecode(buf.split(b"\x00", 1)[0])
         except (OSError, ValueError):
             return None
     try:  # Linux and other /proc systems
@@ -2250,9 +2273,9 @@ def open(file, mode="r", context="pathsec.open", required_root=None, **kwargs):
 
     # 2. Force extraction of the real path from PathLike objects
     try:
-        raw_path = os.fspath(file)
+        raw_path = fspath(file)
     except TypeError:
-        raise TypeError("Path must be a string, bytes, or os.PathLike")
+        raise TypeError("Path must be a string, bytes, or PathLike")
 
     # 3. Strict primitive enforcement against type manipulation
     if type(raw_path) not in (str, bytes):
@@ -2261,7 +2284,7 @@ def open(file, mode="r", context="pathsec.open", required_root=None, **kwargs):
         )
 
     if type(raw_path) is bytes:
-        raw_path = os.fsdecode(raw_path)
+        raw_path = fsdecode(raw_path)
 
     # 4. Execution Substitution: validate and open the pure primitive, discarding the original object
     validate_path(raw_path, context=context, required_root=required_root)
@@ -2356,12 +2379,12 @@ class ZipFile(zipfile.ZipFile):
     def __init__(self, file, *args, **kwargs):
         # zipfile.ZipFile also accepts file-like objects (e.g., io.BytesIO).
         # We only strictly normalize and validate path-like objects.
-        if isinstance(file, (str, bytes, os.PathLike)):
+        if isinstance(file, (str, bytes, PathLike)):
             try:
-                raw_path = os.fspath(file)
+                raw_path = fspath(file)
             except TypeError:
                 raise TypeError(
-                    "Path must be a string, bytes, or os.PathLike"
+                    "Path must be a string, bytes, or PathLike"
                 )
 
             if type(raw_path) not in (str, bytes):
@@ -2370,7 +2393,7 @@ class ZipFile(zipfile.ZipFile):
                 )
 
             if type(raw_path) is bytes:
-                raw_path = os.fsdecode(raw_path)
+                raw_path = fsdecode(raw_path)
 
             validate_path(raw_path, context="pathsec.ZipFile")
             file_to_open = raw_path
@@ -2431,7 +2454,7 @@ class ZipFile(zipfile.ZipFile):
         # would follow a component swapped for a symlink after validation.
         if (
             getattr(member, "filename", None) is None
-            or os.open not in os.supports_dir_fd
+            or os.open not in getattr(os, "supports_dir_fd", ())
             or not getattr(os, "O_NOFOLLOW", 0)
         ):
             return super(ZipFile, self)._extract_member(member, targetpath, pwd)
@@ -2671,7 +2694,9 @@ def unlink(path, context="pathsec.unlink"):
     validate_path(os.path.dirname(os.path.abspath(text)) or os.curdir, context=context)
     try:
         st = os.lstat(text)
-    except FileNotFoundError:
+    except EnvironmentError as exc:
+        if not is_errno(exc, errno.ENOENT):
+            raise
         return
     if stat.S_ISDIR(st.st_mode):
         raise PermissionError(
@@ -2700,7 +2725,8 @@ def replace(src, dst, context="pathsec.replace"):
         raise PermissionError(
             "Security Violation [{0}]: {1!r} is not a single-linked regular file".format(context, s_text)
         )
-    os.replace(s_text, d_text)
+    # 2.7 has no os.replace: POSIX rename replaces atomically, Windows refuses
+    getattr(os, "replace", os.rename)(s_text, d_text)
     after = os.lstat(d_text)
     if not stat.S_ISREG(after.st_mode) or (after.st_dev, after.st_ino) != (
         st.st_dev,
@@ -2764,7 +2790,9 @@ def ensure_private_dir(path, mode=0o700, context="pathsec.ensure_private_dir"):
     if not os.path.isdir(text):
         try:
             os.mkdir(text, mode)
-        except FileExistsError:
+        except EnvironmentError as exc:
+            if not is_errno(exc, errno.EEXIST):
+                raise
             # something else stands at the name: a file is reported as the
             # name clash it is, a directory raced in is judged below
             if not os.path.isdir(text):
@@ -2788,7 +2816,9 @@ def pin_files(names, context="pathsec.pin_files"):
             pins[name] = open(
                 name, "rb", context=context
             )  # sandboxed-open ok: pathsec.open
-        except FileNotFoundError:
+        except EnvironmentError as exc:
+            if not is_errno(exc, errno.ENOENT):
+                raise
             continue
         except BaseException:
             release(pins)
@@ -2811,7 +2841,9 @@ def verify_pinned(pins, names, context="pathsec.verify_pinned"):
         for name in names:
             try:
                 st = os.lstat(name)
-            except FileNotFoundError:
+            except EnvironmentError as exc:
+                if not is_errno(exc, errno.ENOENT):
+                    raise
                 continue
             if not stat.S_ISREG(st.st_mode):
                 raise PermissionError(

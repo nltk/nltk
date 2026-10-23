@@ -389,7 +389,7 @@ def parse(source):
             data = stream.read()
 
     _screen(data)
-    buffer = io.StringIO(data) if isinstance(data, six.string_types) else io.BytesIO(data)
+    buffer = (io.StringIO(data) if isinstance(data, six.text_type) else io.BytesIO(data)) if isinstance(data, six.string_types) else io.BytesIO(data)
     if HAVE_DEFUSEDXML:
         tree = _defused_parse(buffer)
     else:

@@ -219,7 +219,7 @@ _MAX_INTRODUCER_SPAN = 64
 _MAX_CACHE_PATTERN_LEN = 2000
 
 
-class TimedPattern:
+class TimedPattern(object):
     """A compiled :mod:`regex` pattern whose match operations are bounded by a
     wall-clock timeout.
 
