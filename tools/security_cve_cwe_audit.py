@@ -41,6 +41,7 @@ This is dev-only maintenance tooling; it is not shipped in the wheel or sdist.
 import argparse
 import fnmatch
 import gzip
+import http.client
 import io
 import json
 import os
@@ -60,11 +61,133 @@ CWE_CSV_URL = "https://cwe.mitre.org/data/csv/2000.csv.zip"
 # The NVD is the enriched mirror of the CVE Program (cve.org) records; a CVE id on
 # cve.org is the same record here, plus NVD's CWE/CPE mapping used below.
 NVD_API = "https://services.nvd.nist.gov/rest/json/cves/2.0"
+# An NVD API key raises the limit from 5 to 50 requests per 30 s; read from the
+# environment for the request header only, never written anywhere.
+NVD_API_KEY_ENV = "NVD_API_KEY"
+# The recency sweep: every record of the last ``since_months`` whose text
+# mentions Python, in windows of at most 120 days (the API's date-range cap).
+RECENCY_CLASS = "recent-python"
+RECENCY_KEYWORD = "python"
+# 119: the API refuses a span that reaches 120 days once the end of day is added.
+RECENCY_WINDOW_DAYS = 119
+# The complete publication stream: every record published in the window, no
+# keyword, at the maximum page size, filtered locally for a Python context, so
+# the ledger provably reaches the newest id (raw pages under CACHE/full).
+STREAM_CLASS = "stream-all"
+STREAM_PAGE = 2000
+# Names that make a record OURS to triage by hand when no operation keyword
+# matches: the library, its dependencies, its tools, the interpreter itself.
+OWN_NAMES = (
+    "nltk",
+    "cpython",
+    "python software foundation",
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "scikit-learn",
+    "sklearn",
+    "gensim",
+    "pandas",
+    "joblib",
+    "tqdm",
+    "pyparsing",
+    "defusedxml",
+    "twython",
+    "pyyaml",
+    "setuptools",
+    "crfsuite",
+    "weka",
+    "corenlp",
+    "stanford nlp",
+    "mallet",
+    "senna",
+    "maltparser",
+    "hunpos",
+    "prover9",
+    "megam",
+    "graphviz",
+    "bllip",
+    "libexpat",
+    "pyexpat",
+    "zlib module",
+    "python zlib",
+    "sqlite3",
+    "python sqlite",
+    "requests library",
+    "python-requests",
+    "requests module",
+    "python click",
+    "click library",
+)
+# In scope for the stream: the text or the CPE names a Python context or a
+# product the class queries enumerate.
+STREAM_SCOPE_WORDS = (
+    "python",
+    "pypi",
+    "cpython",
+    "nltk",
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "scikit-learn",
+    "sklearn",
+    "gensim",
+    "pandas",
+    "joblib",
+    "tqdm",
+    "pyparsing",
+    "defusedxml",
+    "twython",
+    "pyyaml",
+    "setuptools",
+    "crfsuite",
+    "weka",
+    "corenlp",
+    "stanford nlp",
+    "mallet",
+    "senna",
+    "maltparser",
+    "hunpos",
+    "prover9",
+    "megam",
+    "graphviz",
+    "bllip",
+    "libexpat",
+    "zlib",
+    "sqlite",
+)
+# GitHub Advisory Database, pip ecosystem: the curated PyPI feed, days ahead of
+# the NVD's enrichment and holding advisories with no CVE id at all.
+GHSA_API = "https://api.github.com/advisories"
+GHSA_CLASS = "ghsa-pip"
+GHSA_FIRST_YEAR = 2006
+# CISA Known Exploited Vulnerabilities: every ledger row in it is flagged and
+# every KEV record with a Python context is classified against the surfaces.
+KEV_URL = (
+    "https://www.cisa.gov/sites/default/files/feeds/"
+    "known_exploited_vulnerabilities.json"
+)
+# The CVE Program's own records (what cve.org renders): the CNA container holds
+# the authoritative description, CWE and affected products. Pulled per id.
+CVE_ORG_API = "https://cveawg.mitre.org/api/cve/{}"
+# Marker records read every run so the ledger shows each source answering: one
+# old record and the newest ids known when set; the highest id read must reach them.
+MARKER_CVES = ("CVE-2015-5477", "CVE-2026-109618", "CVE-2026-109619")
+# The CVE List V5 bulk download behind cve.org's Downloads page: every record as
+# one JSON file, a midnight zip plus hourly deltas on GitHub; read whole and
+# filtered locally, the zips under CACHE/full and only the extract committed.
+CVELIST_RELEASES_API = "https://api.github.com/repos/CVEProject/cvelistV5/releases"
+CVELIST_CLASS = "cvelist-all"
+# Notes about a catalog that could not be refreshed live; rendered at the top of
+# the ledger so a stale catalog is declared, never silent.
+CATALOG_NOTES = []
 # Committed snapshot (NOT dot-hidden, NOT gitignored): the pulled CWE dictionary
 # and every NVD dump live here gzipped so they travel with the branch and
 # ``--offline`` reproduces the ledger with zero network. Refresh by re-running
 # online; the fetch helpers rewrite the .gz in place.
 CACHE = os.path.join(os.path.dirname(__file__), "security_audit_cache")
+# Bulk pages of the full stream and the CVE List zips: large, ignored by git.
+STREAM_CACHE = os.path.join(CACHE, "full")
 # The generated ledger lives with the other pentest ledgers.
 DEFAULT_LEDGER = os.path.join(
     os.path.dirname(__file__), "pentest", "ledgers", "SECURITY_LEDGER.md"
@@ -96,6 +219,14 @@ ECOSYSTEM_KEYWORDS = {
     "search-path-binary": "untrusted search path python",
     "compile-eval": "python code injection eval",
     "jvm-java": "java deserialization",
+    "redos-python": "python regular expression denial of service",
+    "expat": "libexpat",
+    "zlib": "python zlib",
+    "sqlite": "python sqlite",
+    "urllib": "python urllib",
+    "http-server": "python http.server",
+    "html-injection": "python html injection",
+    "symlink-race": "python symlink race",
     # optional scientific / ML dependencies NLTK imports (never vendored)
     "numpy": "numpy",
     "scipy": "scipy",
@@ -103,6 +234,17 @@ ECOSYSTEM_KEYWORDS = {
     "scikit-learn": "scikit-learn",
     "gensim": "gensim",
     "pandas": "pandas dataframe",
+    # runtime dependencies (install_requires and extras) and the build toolchain
+    "click": "python click",
+    "joblib": "joblib",
+    "regex-module": "python regex module",
+    "tqdm": "tqdm",
+    "requests": "python requests library",
+    "pyparsing": "pyparsing",
+    "defusedxml": "defusedxml",
+    "twython": "twython",
+    "pyyaml": "pyyaml",
+    "setuptools": "setuptools",
     # external NLP tools NLTK drives via subprocess / a JVM
     "weka": "weka",
     "stanford-corenlp": "stanford corenlp",
@@ -113,6 +255,8 @@ ECOSYSTEM_KEYWORDS = {
     "prover9-mace": "prover9",
     "megam": "megam",
     "crfsuite": "crfsuite",
+    "graphviz": "graphviz",
+    "bllip": "bllip",
 }
 
 # Optional dependencies: a CVE here is inherited, remediated by upgrading the dep;
@@ -125,6 +269,16 @@ DEPENDENCY_CLASSES = {
     "scikit-learn",
     "gensim",
     "pandas",
+    "click",
+    "joblib",
+    "regex-module",
+    "tqdm",
+    "requests",
+    "pyparsing",
+    "defusedxml",
+    "twython",
+    "pyyaml",
+    "setuptools",
 }
 # External tools driven over a subprocess/JVM boundary: exploitable through NLTK
 # only via the model/config path it hands them, which is the GHSA-8mgp / GHSA-j456
@@ -140,6 +294,8 @@ WRAPPED_TOOL_CLASSES = {
     "megam",
     "crfsuite",
     "jvm-java",
+    "graphviz",
+    "bllip",
 }
 
 # Class -> (required surface, guard note) fallback verdict for a CVE that no
@@ -205,6 +361,36 @@ ECOSYSTEM_CLASS_GUARD = {
         "GUARDED: JVM invoked via argv list; model/config paths validate_tool_path "
         "(GHSA-8mgp / GHSA-j456 containment class)",
     ),
+    "redos-python": ("regex", "GUARDED: nltk.redos (timeout + compile-time refusal)"),
+    "expat": (
+        "xml",
+        "GUARDED: nltk.xmlsec / defusedxml (XXE + entity caps); expat itself is "
+        "CPython's, remediated by upgrading Python",
+    ),
+    "zlib": (
+        "archive",
+        "GUARDED: pathsec ZipFile decompression-bomb caps + size bounds; zlib "
+        "itself is CPython's, remediated by upgrading Python",
+    ),
+    "sqlite": ("sql", "GUARDED: chat80 uses parameterized sqlite (bound params)"),
+    "urllib": (
+        "network",
+        "GUARDED: nltk.pathsec SSRF (IP filter, redirect re-validate, pin) on the "
+        "downloader and CoreNLP client",
+    ),
+    "http-server": (
+        "http_server",
+        "GUARDED: wordnet_app loopback bind + HMAC shutdown token + html.escape",
+    ),
+    "html-injection": (
+        "html_output",
+        "GUARDED: html.escape at the wordnet_app HTML sinks",
+    ),
+    "symlink-race": (
+        "file_io",
+        "GUARDED: nltk.pathsec containment (resolves symlinks before check) + "
+        "make_staging_dir (0700 data root)",
+    ),
     # optional dependencies (surface irrelevant; verdict is INHERITED, see classify)
     "numpy": (
         "native_c",
@@ -235,6 +421,55 @@ ECOSYSTEM_CLASS_GUARD = {
         "native_c",
         "INHERITED: optional dep (test/demo tabular output); NLTK builds its own "
         "frames; remediate by upgrading pandas",
+    ),
+    "click": (
+        "native_c",
+        "INHERITED: runtime dep (nltk.cli command parsing); remediate by "
+        "upgrading click",
+    ),
+    "joblib": (
+        "pickle",
+        "INHERITED: runtime dep (parallel loops only; no joblib.load of untrusted "
+        "files, model loads go through picklesec); remediate by upgrading joblib",
+    ),
+    "regex-module": (
+        "regex",
+        "INHERITED: runtime dep, the engine behind nltk.redos; its timeout and "
+        "the compile-time refusal bound every pattern; remediate by upgrading regex",
+    ),
+    "tqdm": (
+        "html_output",
+        "INHERITED: runtime dep (progress bars); NLTK passes counts, not untrusted "
+        "text, to tqdm; remediate by upgrading tqdm",
+    ),
+    "requests": (
+        "network",
+        "INHERITED: optional dep (CoreNLP client, twitter); URLs go through the "
+        "SSRF guard first; remediate by upgrading requests",
+    ),
+    "pyparsing": (
+        "regex",
+        "INHERITED: optional dep (tgrep grammar); the tgrep pattern is bounded by "
+        "nltk.redos limits before parsing; remediate by upgrading pyparsing",
+    ),
+    "defusedxml": (
+        "xml",
+        "INHERITED: optional fast path under nltk.xmlsec, which keeps its own "
+        "entity and depth caps; remediate by upgrading defusedxml",
+    ),
+    "twython": (
+        "network",
+        "INHERITED: optional dep (twitter client); remediate by upgrading twython",
+    ),
+    "pyyaml": (
+        "yaml",
+        "INHERITED: optional dep; nltk.jsontags routes yaml through safe_load "
+        "only; remediate by upgrading pyyaml",
+    ),
+    "setuptools": (
+        "native_c",
+        "INHERITED: build-time dep of the sdist only, never imported at runtime; "
+        "remediate by upgrading setuptools on the build host",
     ),
     # external tools over the subprocess/JVM boundary
     "weka": (
@@ -276,9 +511,38 @@ ECOSYSTEM_CLASS_GUARD = {
         "subprocess_jvm",
         "GUARDED: python-crfsuite model path validate_tool_path (staged data root)",
     ),
+    "graphviz": (
+        "subprocess_jvm",
+        "GUARDED: dot is run through spawn_trusted (trusted-exec chokepoint) with "
+        "an argv list; the graph text is escaped",
+    ),
+    "bllip": (
+        "file_io",
+        "GUARDED: BLLIP model directory validate_tool_path (data-root bounded)",
+    ),
+    RECENCY_CLASS: (
+        None,
+        "REVIEW: surfaced by the recency sweep only; no operation keyword matched, "
+        "triaged by hand in the manual-triage section",
+    ),
+    STREAM_CLASS: (
+        None,
+        "REVIEW: surfaced by the full publication stream only; no operation keyword "
+        "matched, triaged by hand in the manual-triage section",
+    ),
+    CVELIST_CLASS: (
+        None,
+        "REVIEW: surfaced by the complete CVE List only; no operation keyword "
+        "matched, triaged by hand in the manual-triage section",
+    ),
+    GHSA_CLASS: (
+        None,
+        "REVIEW: pip-ecosystem advisory with no operation keyword matched, triaged "
+        "by hand in the manual-triage section",
+    ),
 }
 
-# ---- code-surface inventory (what NLTK actually contains) -------------------
+# == code-surface inventory (what NLTK actually contains) ==
 
 SURFACE_PATTERNS = {
     "file_io": r"\bopen\(|pathsec_open|io\.open|codecs\.open",
@@ -576,6 +840,16 @@ GUARD_TESTS = [
     ),
     ("megam", ["test_attack_java_tool_expanded.py", "test_attack_tool_injection_*.py"]),
     (
+        "spawn_trusted",
+        [
+            "test_pathsec_trusted_exec.py",
+            "test_tool_search_path_security.py",
+            "test_attack_trusted_symlink_expanded.py",
+            "test_attack_translate_expanded.py",
+        ],
+    ),
+    ("loopback bind", ["test_output_exposure_security.py", "test_attack_wordnet_*.py"]),
+    (
         "jsontags",
         [
             "test_attack_json_*.py",
@@ -727,6 +1001,69 @@ PILLAR_VERDICT = {
 }
 
 
+# Hand-written verdicts, keyed by id, for records no keyword rule classified;
+# the text is the evidence. A record missing here renders as REVIEW: open work.
+MANUAL_TRIAGE = {
+    'CVE-2025-29088': "INHERITED: a defect in the SQLite engine itself, which reaches NLTK only through CPython's bundled sqlite3 module; chat80 opens its store read-only with bound parameters; remediate by upgrading Python",
+    'CVE-2024-0232': "INHERITED: a defect in the SQLite engine itself, which reaches NLTK only through CPython's bundled sqlite3 module; chat80 opens its store read-only with bound parameters; remediate by upgrading Python",
+    'CVE-2021-31239': "INHERITED: a defect in the SQLite engine itself, which reaches NLTK only through CPython's bundled sqlite3 module; chat80 opens its store read-only with bound parameters; remediate by upgrading Python",
+    'CVE-2020-13435': "INHERITED: a defect in the SQLite engine itself, which reaches NLTK only through CPython's bundled sqlite3 module; chat80 opens its store read-only with bound parameters; remediate by upgrading Python",
+    'CVE-2019-19924': "INHERITED: a defect in the SQLite engine itself, which reaches NLTK only through CPython's bundled sqlite3 module; chat80 opens its store read-only with bound parameters; remediate by upgrading Python",
+    'CVE-2019-19926': "INHERITED: a defect in the SQLite engine itself, which reaches NLTK only through CPython's bundled sqlite3 module; chat80 opens its store read-only with bound parameters; remediate by upgrading Python",
+    'CVE-2019-19242': "INHERITED: a defect in the SQLite engine itself, which reaches NLTK only through CPython's bundled sqlite3 module; chat80 opens its store read-only with bound parameters; remediate by upgrading Python",
+    'CVE-2019-19244': "INHERITED: a defect in the SQLite engine itself, which reaches NLTK only through CPython's bundled sqlite3 module; chat80 opens its store read-only with bound parameters; remediate by upgrading Python",
+    'CVE-2019-16168': "INHERITED: a defect in the SQLite engine itself, which reaches NLTK only through CPython's bundled sqlite3 module; chat80 opens its store read-only with bound parameters; remediate by upgrading Python",
+    'CVE-2019-8457': "INHERITED: a defect in the SQLite engine itself, which reaches NLTK only through CPython's bundled sqlite3 module; chat80 opens its store read-only with bound parameters; remediate by upgrading Python",
+    'CVE-2015-3415': "INHERITED: a defect in the SQLite engine itself, which reaches NLTK only through CPython's bundled sqlite3 module; chat80 opens its store read-only with bound parameters; remediate by upgrading Python",
+    'CVE-2021-36690': 'N/A: the sqlite3 command-line shell, which NLTK never spawns; the vendor disputes the record',
+    'CVE-2026-54619': "N/A: the Ruby sqlite3 gem; NLTK uses CPython's sqlite3 module",
+    'CVE-2026-54620': "N/A: the Ruby sqlite3 gem; NLTK uses CPython's sqlite3 module",
+    'CVE-2011-0995': 'N/A: the Ruby sqlite3 gem packaging on SUSE; not a Python surface',
+    'CVE-2022-43441': 'N/A: the Node.js sqlite3 binding; not a Python surface',
+    'CVE-2022-21227': 'N/A: the Node.js sqlite3 binding; not a Python surface',
+    'CVE-2016-10695': 'N/A: an npm sqlite3 trunk module downloading binaries over HTTP; not a Python surface',
+    'CVE-2026-58041': 'N/A: Node.js node:sqlite; not a Python surface',
+    'CVE-2026-54687': 'N/A: an n8n node exposing a SQLite path; not a Python surface',
+    'CVE-2025-47736': 'N/A: a Rust SQLite parser crate; not a Python surface',
+    'CVE-2021-28305': "N/A: the Rust diesel crate's SQLite backend; not a Python surface",
+    'CVE-2021-0646': "N/A: Android's SQLite build; not a Python surface",
+    'CVE-2019-2195': "N/A: Android's sqlite3_android tokenizer; not a Python surface",
+    'CVE-2022-40278': 'N/A: Samsung TizenRT provisioning database; not a Python surface',
+    'CVE-2022-40280': 'N/A: Samsung TizenRT provisioning database; not a Python surface',
+    'CVE-2014-1422': 'N/A: Ubuntu trust-store; not a Python surface',
+    'CVE-2013-4376': "N/A: X2Go Server's SQLite wrapper; not a Python surface",
+    'CVE-2011-1717': "N/A: Skype for Android's local databases; not a Python surface",
+    'CVE-2026-23838': "N/A: Tandoor Recipes' NixOS packaging exposing its SQLite file; not a surface here",
+    'CVE-2025-59163': "N/A: the vet supply-chain tool's MCP server; not a surface here",
+    'CVE-2025-54119': 'N/A: the ADOdb PHP library; not a Python surface',
+    'CVE-2026-41138': 'N/A: another package evaluating untrusted text through pandas; NLTK never calls pandas.eval or DataFrame.query, and its only pandas use renders tables it builds itself',
+    'CVE-2026-35052': 'N/A: another package evaluating untrusted text through pandas; NLTK never calls pandas.eval or DataFrame.query, and its only pandas use renders tables it builds itself',
+    'CVE-2025-46725': 'N/A: another package evaluating untrusted text through pandas; NLTK never calls pandas.eval or DataFrame.query, and its only pandas use renders tables it builds itself',
+    'CVE-2025-0185': 'N/A: another package evaluating untrusted text through pandas; NLTK never calls pandas.eval or DataFrame.query, and its only pandas use renders tables it builds itself',
+    'CVE-2024-12366': 'N/A: another package evaluating untrusted text through pandas; NLTK never calls pandas.eval or DataFrame.query, and its only pandas use renders tables it builds itself',
+    'CVE-2023-46134': 'N/A: another package evaluating untrusted text through pandas; NLTK never calls pandas.eval or DataFrame.query, and its only pandas use renders tables it builds itself',
+    'CVE-2023-39660': 'N/A: another package evaluating untrusted text through pandas; NLTK never calls pandas.eval or DataFrame.query, and its only pandas use renders tables it builds itself',
+    'CVE-2023-39661': 'N/A: another package evaluating untrusted text through pandas; NLTK never calls pandas.eval or DataFrame.query, and its only pandas use renders tables it builds itself',
+    'CVE-2023-39662': 'N/A: another package evaluating untrusted text through pandas; NLTK never calls pandas.eval or DataFrame.query, and its only pandas use renders tables it builds itself',
+    'CVE-2026-27952': 'N/A: a RestrictedPython sandbox allowlisting numpy in another product; NLTK runs no code sandbox',
+    'CVE-2022-41890': "N/A: TensorFlow's numpy-compatible shape helper; NLTK does not import TensorFlow",
+    'CVE-2022-26488': "INHERITED: the Python for Windows installer's PATH handling; remediated by upgrading the interpreter, not by this library",
+    'CVE-2021-44550': "INHERITED: the CoreNLP server's NERServlet; NLTK is a client of the server and never exposes it; deploy CoreNLP 4.4.0 or later",
+    'CVE-2020-28439': "N/A: an npm CoreNLP wrapper; NLTK's client is nltk.parse.corenlp",
+    'CVE-2014-1829': 'INHERITED: the requests dependency (netrc leak on redirect, fixed in 2.3.0); remediate by upgrading requests',
+    'CVE-2014-8650': 'N/A: the requests-kerberos add-on, which NLTK does not use',
+    'CVE-2020-15720': "N/A: Dogtag PKI's client hard-coding requests verification off; NLTK's CoreNLP client leaves verification on",
+    'CVE-2026-105745': 'N/A: Docling importing entry points before honouring its plugin switch; NLTK loads no entry-point plugins',
+    'CVE-2026-113731': 'N/A: the djust MCP tool reading templates by absolute path; not a surface here',
+    'CVE-2026-24811': "N/A: the ROOT framework's bundled zlib; NLTK uses CPython's zlib",
+    'CVE-2026-24812': "N/A: the ROOT framework's bundled zlib; NLTK uses CPython's zlib",
+    'CVE-2017-14919': 'N/A: Node.js zlib windowBits; not a Python surface',
+    'CVE-2026-54769': "N/A: another package evaluating untrusted text through pandas; NLTK never calls pandas.eval or DataFrame.query, and its only pandas use renders tables it builds itself",
+    'CVE-2025-30990': "N/A: another project's record; it names a product NLTK neither imports nor drives, and the operation is not present here",
+    'CVE-2018-8823': "N/A: another project's record; it names a product NLTK neither imports nor drives, and the operation is not present here",
+}
+
+
 def _sh(cmd):
     return subprocess.run(
         cmd, shell=True, capture_output=True, text=True
@@ -788,14 +1125,31 @@ def fetch_cwe(offline=False):
     downstream classifier already treats as a category/view node.
     """
     if offline and _cache_has("cwec_dictionary.xml"):
+        import datetime
+
+        age = os.path.getmtime(os.path.join(CACHE, "cwec_dictionary.xml.gz"))
+        CATALOG_NOTES.append(
+            "MITRE CWE dictionary: offline run, cached copy written %s"
+            % datetime.date.fromtimestamp(age).isoformat()
+        )
         data = _cache_read("cwec_dictionary.xml")
     else:
-        with urllib.request.urlopen(CWE_XML_URL, timeout=120) as r:
-            zbytes = r.read()
-        with zipfile.ZipFile(io.BytesIO(zbytes)) as z:
-            name = [n for n in z.namelist() if n.endswith(".xml")][0]
-            data = z.read(name)
-        _cache_write("cwec_dictionary.xml", data)
+        try:
+            zbytes = _get_with_retries(
+                urllib.request.Request(CWE_XML_URL), timeout=180, attempts=3
+            )
+            with zipfile.ZipFile(io.BytesIO(zbytes)) as z:
+                name = [n for n in z.namelist() if n.endswith(".xml")][0]
+                data = z.read(name)
+            _cache_write("cwec_dictionary.xml", data)
+        except Exception as e:
+            if not _cache_has("cwec_dictionary.xml"):
+                raise
+            CATALOG_NOTES.append(
+                "MITRE CWE dictionary: the live fetch failed (%s); the cached "
+                "dictionary was used, re-run to refresh" % e
+            )
+            data = _cache_read("cwec_dictionary.xml")
 
     # Parse securely from the in-memory bytes. Prefer defusedxml (refuses DTD,
     # general/external entities and external DTD loads); else fall back to stdlib
@@ -863,28 +1217,71 @@ def fetch_cwe(offline=False):
     return out
 
 
+def _get_with_retries(req, timeout, attempts=5, backoff=30):
+    """GET with retries: a rate-limit or gateway error and a connection timeout
+    both sleep ``backoff`` seconds and try again; the last error propagates."""
+    import time
+    import urllib.error
+
+    last = None
+    for attempt in range(attempts):
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                return r.read()
+        except urllib.error.HTTPError as e:
+            last = e
+            if e.code not in (403, 429, 500, 502, 503, 504):
+                raise
+        except (urllib.error.URLError, TimeoutError, OSError, http.client.HTTPException) as e:
+            last = e
+        sys.stderr.write(
+            "  retry %d/%d after %s\n" % (attempt + 1, attempts, last)
+        )
+        time.sleep(backoff)
+    raise last
+
+
+def _nvd_get(url, timeout=120):
+    """GET an NVD URL, with the API key header when the environment holds one."""
+    req = urllib.request.Request(url)
+    key = os.environ.get(NVD_API_KEY_ENV)
+    if key:
+        req.add_header("apiKey", key)
+    return _get_with_retries(req, timeout)
+
+
+def _nvd_delay():
+    """Seconds between NVD requests: the published limits with and without a key."""
+    return 0.8 if os.environ.get(NVD_API_KEY_ENV) else 7
+
+
+def _cve_fields(c):
+    """(cwe, description, published date) of one NVD ``cve`` record."""
+    desc = next((x["value"] for x in c["descriptions"] if x["lang"] == "en"), "")
+    cwe = ""
+    for w in c.get("weaknesses", []):
+        for dd in w.get("description", []):
+            if dd["value"].startswith("CWE-"):
+                cwe = dd["value"]
+                break
+    return cwe, desc, (c.get("published") or "")[:10]
+
+
 def fetch_nvd_cves(keyword="nltk", offline=False):
-    """Return list of (cve_id, cwe, description) the NVD attributes to nltk."""
+    """Return list of (cve_id, cwe, description, published) the NVD attributes to nltk."""
     name = "nvd_%s.json" % keyword
     if offline and _cache_has(name):
         raw = _cache_read(name)
     else:
         url = f"{NVD_API}?keywordSearch={keyword}&resultsPerPage=200"
-        with urllib.request.urlopen(url, timeout=60) as r:
-            raw = r.read()
+        raw = _nvd_get(url)
         _cache_write(name, raw)
     d = json.loads(raw)
     out = []
     for v in d.get("vulnerabilities", []):
         c = v["cve"]
-        desc = next((x["value"] for x in c["descriptions"] if x["lang"] == "en"), "")
-        cwe = ""
-        for w in c.get("weaknesses", []):
-            for dd in w.get("description", []):
-                if dd["value"].startswith("CWE-"):
-                    cwe = dd["value"]
-                    break
-        out.append((c["id"], cwe, desc))
+        cwe, desc, published = _cve_fields(c)
+        out.append((c["id"], cwe, desc, published))
     return sorted(out)
 
 
@@ -947,21 +1344,487 @@ def _harvest_nvd(d, label, agg):
     for v in d.get("vulnerabilities", []):
         c = v["cve"]
         cid = c["id"]
-        desc = next((x["value"] for x in c["descriptions"] if x["lang"] == "en"), "")
-        cwe = ""
-        for w in c.get("weaknesses", []):
-            for dd in w.get("description", []):
-                if dd["value"].startswith("CWE-"):
-                    cwe = dd["value"]
-                    break
-        e = agg.setdefault(cid, {"cwe": cwe, "desc": desc, "classes": []})
+        cwe, desc, published = _cve_fields(c)
+        e = agg.setdefault(
+            cid, {"cwe": cwe, "desc": desc, "classes": [], "published": published}
+        )
         if label not in e["classes"]:
             e["classes"].append(label)
         if cwe and not e["cwe"]:
             e["cwe"] = cwe
+        if published and not e["published"]:
+            e["published"] = published
 
 
-def fetch_ecosystem_cves(offline=False, delay=7, page=200, max_pages=25):
+def _in_stream_scope(c):
+    """True when an NVD ``cve`` record names a Python context or one of the
+    products the class queries enumerate, in its text or its CPE criteria."""
+    text = " ".join(x["value"] for x in c.get("descriptions", [])).lower()
+    if any(w in text for w in STREAM_SCOPE_WORDS):
+        return True
+    for conf in c.get("configurations", []):
+        for node in conf.get("nodes", []):
+            for m in node.get("cpeMatch", []):
+                crit = m.get("criteria", "").lower()
+                if ":python:" in crit or any(w in crit for w in STREAM_SCOPE_WORDS):
+                    return True
+    return False
+
+
+def _cve_number(cid):
+    try:
+        return tuple(int(x) for x in cid.split("-")[1:3])
+    except ValueError:
+        return (0, 0)
+
+
+def fetch_full_stream(since, offline=False, delay=None, max_pages=200):
+    """Read EVERY record the NVD published from ``since`` (ISO date) to today, no
+    keyword, in RECENCY_WINDOW_DAYS windows at STREAM_PAGE records a page.
+    Returns (rows, stats): rows are the in-scope records as
+    (cve_id, cwe, desc, [STREAM_CLASS], published); stats carries the totals per
+    window, the in-scope count and the highest id read, which the ledger prints
+    so the sweep provably reaches the newest publication."""
+    import datetime
+    import time
+
+    if delay is None:
+        delay = _nvd_delay()
+    os.makedirs(STREAM_CACHE, exist_ok=True)
+    today = datetime.date.today()
+    start = datetime.date.fromisoformat(since)
+    windows = []
+    cursor = start
+    while cursor < today:
+        end = min(cursor + datetime.timedelta(days=RECENCY_WINDOW_DAYS), today)
+        windows.append((cursor.isoformat(), end.isoformat()))
+        cursor = end
+    net = [False]
+    agg = {}
+    stats = {"windows": [], "read": 0, "in_scope": 0, "highest": "", "since": since}
+    for window_start, window_end in windows:
+        read = 0
+        total = None
+        index = 0
+        pages = 0
+        while total is None or (read < total and pages < max_pages):
+            name = "nvd_full_%s_%s_p%d.json.gz" % (window_start, window_end, index)
+            path = os.path.join(STREAM_CACHE, name)
+            if offline and os.path.exists(path):
+                with gzip.open(path, "rb") as fh:
+                    d = json.loads(fh.read())
+            else:
+                if net[0]:
+                    time.sleep(delay)
+                net[0] = True
+                url = (
+                    "{}?pubStartDate={}T00:00:00.000&pubEndDate={}T23:59:59.999"
+                    "&resultsPerPage={}&startIndex={}".format(
+                        NVD_API, window_start, window_end, STREAM_PAGE, index
+                    )
+                )
+                try:
+                    raw = _nvd_get(url)
+                except Exception as e:
+                    sys.stderr.write(
+                        "  %s %s p%d: fetch failed (%s)\n"
+                        % (STREAM_CLASS, window_start, index, e)
+                    )
+                    break
+                with gzip.open(path, "wb") as fh:
+                    fh.write(raw)
+                d = json.loads(raw)
+            total = d.get("totalResults", 0)
+            got = d.get("vulnerabilities", [])
+            if not got:
+                break
+            for v in got:
+                c = v["cve"]
+                if _cve_number(c["id"]) > _cve_number(stats["highest"]):
+                    stats["highest"] = c["id"]
+                if _in_stream_scope(c):
+                    cwe, desc, published = _cve_fields(c)
+                    e = agg.setdefault(
+                        c["id"],
+                        {"cwe": cwe, "desc": desc, "classes": [STREAM_CLASS],
+                         "published": published},
+                    )
+                    if cwe and not e["cwe"]:
+                        e["cwe"] = cwe
+            read += len(got)
+            index += len(got)
+            pages += 1
+        stats["windows"].append((window_start, window_end, total or 0, read))
+        stats["read"] += read
+    stats["in_scope"] = len(agg)
+    rows = sorted(
+        (cid, e["cwe"], e["desc"], e["classes"], e["published"])
+        for cid, e in agg.items()
+    )
+    return rows, stats
+
+
+def fetch_ghsa_pip(first_year=GHSA_FIRST_YEAR, offline=False, per_page=100, max_pages=60):
+    """Every GitHub Advisory Database record for the pip ecosystem, read one
+    calendar year at a time from ``first_year`` to today (a closed year is cached
+    for good; the current year is re-read). Returns rows (ghsa_id, cve_id, cwe,
+    desc, published, [package names], severity), newest first."""
+    import datetime
+
+    today = datetime.date.today()
+    rows = []
+    for year in range(first_year, today.year + 1):
+        start = "%d-01-01" % year
+        end = today.isoformat() if year == today.year else "%d-12-31" % year
+        rows.extend(_fetch_ghsa_window(start, end, offline, per_page, max_pages))
+    seen = set()
+    unique = []
+    for r in sorted(rows, key=lambda r: r[4], reverse=True):
+        if r[0] not in seen:
+            seen.add(r[0])
+            unique.append(r)
+    return unique
+
+
+def _github_page(url):
+    """(body bytes, next-page URL or None) for one GitHub REST page; the
+    global advisories endpoint paginates by cursor in the Link header."""
+    import time
+    import urllib.error
+
+    req = urllib.request.Request(url)
+    req.add_header("Accept", "application/vnd.github+json")
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    if token:
+        req.add_header("Authorization", "Bearer " + token)
+    last = None
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(req, timeout=60) as r:
+                body = r.read()
+                link = r.headers.get("Link", "")
+                break
+        except (urllib.error.URLError, TimeoutError, OSError, http.client.HTTPException) as e:
+            last = e
+            time.sleep(20)
+    else:
+        raise last
+    nxt = None
+    for part in link.split(","):
+        if 'rel="next"' in part:
+            nxt = part.split(";")[0].strip().strip("<>")
+    return body, nxt
+
+
+def _fetch_ghsa_window(since, until, offline, per_page, max_pages):
+    import time
+
+    rows = []
+    url = "{}?ecosystem=pip&published={}..{}&per_page={}".format(
+        GHSA_API, since, until, per_page
+    )
+    closed_year = until.endswith("-12-31")
+    for page in range(1, max_pages + 1):
+        name = "ghsa_pip_%s_%s_cursor%d.json" % (since, until, page)
+        if _cache_has(name) and (offline or closed_year):
+            cached = json.loads(_cache_read(name))
+            items, url = cached["items"], cached.get("next")
+        else:
+            if url is None:
+                break
+            try:
+                raw, url = _github_page(url)
+            except Exception as e:
+                CATALOG_NOTES.append(
+                    "GitHub Advisory Database (pip): %s..%s page %d failed (%s); "
+                    "the feed is partial, re-run to complete" % (since, until, page, e)
+                )
+                break
+            items = json.loads(raw)
+            _cache_write(name, json.dumps({"items": items, "next": url}).encode("utf-8"))
+            time.sleep(1)
+        if not items:
+            break
+        for a in items:
+            cwe = (a.get("cwes") or [{}])[0].get("cwe_id", "") if a.get("cwes") else ""
+            desc = "%s. %s" % (a.get("summary", ""), a.get("description") or "")
+            packages = sorted(
+                {
+                    v["package"]["name"].lower()
+                    for v in a.get("vulnerabilities", [])
+                    if v.get("package")
+                }
+            )
+            rows.append(
+                (
+                    a["ghsa_id"],
+                    a.get("cve_id") or "",
+                    cwe,
+                    desc,
+                    (a.get("published_at") or "")[:10],
+                    packages,
+                    a.get("severity") or "",
+                )
+            )
+        if url is None:
+            break
+    return rows
+
+
+def fetch_cve_record(cid, offline=False):
+    """One CVE Program record from the CVE Services API: dict with state,
+    published, cwes (CNA problem types), description, affected ([vendor
+    product]) and the cna name, or None when the record cannot be read."""
+    import time
+
+    name = "cveorg_%s.json" % cid
+    if _cache_has(name) and offline:
+        raw = _cache_read(name)
+    else:
+        req = urllib.request.Request(CVE_ORG_API.format(cid))
+        req.add_header("Accept", "application/json")
+        try:
+            raw = _get_with_retries(req, timeout=60, attempts=3, backoff=10)
+        except Exception as e:
+            if _cache_has(name):
+                raw = _cache_read(name)
+            else:
+                CATALOG_NOTES.append("cve.org record %s: fetch failed (%s)" % (cid, e))
+                return None
+        else:
+            _cache_write(name, raw)
+            time.sleep(0.5)
+    d = json.loads(raw)
+    meta = d.get("cveMetadata", {})
+    cna = d.get("containers", {}).get("cna", {})
+    cwes = []
+    for pt in cna.get("problemTypes", []):
+        for desc in pt.get("descriptions", []):
+            cwe = desc.get("cweId") or ""
+            if not cwe and desc.get("description", "").startswith("CWE-"):
+                cwe = desc["description"].split()[0]
+            if cwe and cwe not in cwes:
+                cwes.append(cwe)
+    description = next(
+        (x.get("value", "") for x in cna.get("descriptions", []) if x.get("lang", "").startswith("en")),
+        "",
+    )
+    affected = [
+        "%s %s" % (a.get("vendor", ""), a.get("product", ""))
+        for a in cna.get("affected", [])
+    ]
+    return {
+        "id": meta.get("cveId", cid),
+        "state": meta.get("state", ""),
+        "published": (meta.get("datePublished") or "")[:10],
+        "cwes": cwes,
+        "description": description,
+        "affected": affected,
+        "cna": cna.get("providerMetadata", {}).get("shortName", ""),
+    }
+
+
+def _github_json(url):
+    req = urllib.request.Request(url)
+    req.add_header("Accept", "application/vnd.github+json")
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    if token:
+        req.add_header("Authorization", "Bearer " + token)
+    return json.loads(_get_with_retries(req, timeout=60, attempts=3, backoff=20))
+
+
+def _download(url, path):
+    """Stream a large asset to ``path`` (skipped when it is already there)."""
+    if os.path.exists(path) and os.path.getsize(path) > 0:
+        return path
+    req = urllib.request.Request(url)
+    tmp = path + ".part"
+    with urllib.request.urlopen(req, timeout=300) as r, open(tmp, "wb") as fh:
+        while True:
+            chunk = r.read(1 << 20)
+            if not chunk:
+                break
+            fh.write(chunk)
+    os.replace(tmp, path)
+    return path
+
+
+def _cvelist_record(data):
+    """Compact row of one CVE List V5 record: (id, state, published, [cwes],
+    description, [affected vendor product], cna)."""
+    meta = data.get("cveMetadata", {})
+    cna = data.get("containers", {}).get("cna", {})
+    cwes = []
+    for pt in cna.get("problemTypes", []):
+        for desc in pt.get("descriptions", []):
+            cwe = desc.get("cweId") or ""
+            if not cwe and desc.get("description", "").startswith("CWE-"):
+                cwe = desc["description"].split()[0]
+            if cwe and cwe not in cwes:
+                cwes.append(cwe)
+    description = next(
+        (x.get("value", "") for x in cna.get("descriptions", []) if x.get("lang", "").startswith("en")),
+        "",
+    )
+    affected = [
+        "%s %s" % (a.get("vendor", ""), a.get("product", "")) for a in cna.get("affected", [])
+    ]
+    return (
+        meta.get("cveId", ""),
+        meta.get("state", ""),
+        (meta.get("datePublished") or "")[:10],
+        cwes,
+        description,
+        affected,
+        cna.get("providerMetadata", {}).get("shortName", ""),
+    )
+
+
+def _cvelist_in_scope(row):
+    text = (row[4] + " " + " ".join(row[5])).lower()
+    return any(w in text for w in STREAM_SCOPE_WORDS)
+
+
+def _walk_cvelist_zip(path, visit):
+    """Call ``visit(record_dict)`` for every CVE JSON inside a CVE List V5 zip,
+    the midnight archive (a zip holding one inner zip) or an hourly delta zip."""
+    with zipfile.ZipFile(path) as outer:
+        inner_names = [n for n in outer.namelist() if n.lower().endswith(".zip")]
+        if inner_names:
+            with outer.open(inner_names[0]) as inner_fh:
+                data = io.BytesIO(inner_fh.read())
+            with zipfile.ZipFile(data) as inner:
+                for name in inner.namelist():
+                    if name.endswith(".json") and "/CVE-" in name:
+                        with inner.open(name) as fh:
+                            visit(json.load(fh))
+        else:
+            for name in outer.namelist():
+                if name.endswith(".json") and "/CVE-" in name:
+                    with outer.open(name) as fh:
+                        visit(json.load(fh))
+
+
+def fetch_cve_list_v5(offline=False):
+    """Read the complete CVE List V5: the latest midnight archive plus every
+    hourly delta released since it. Returns (rows, stats): rows are the in-scope
+    records as (cve_id, cwe, desc, [CVELIST_CLASS], published), stats holds the
+    release tag, record counts by state and by year, the highest id and the
+    delta tags applied. Offline, the committed in-scope extract is replayed."""
+    extract = "cvelist_v5_scope.json"
+    if offline and _cache_has(extract):
+        saved = json.loads(_cache_read(extract))
+        return [tuple(r) for r in saved["rows"]], saved["stats"]
+    os.makedirs(STREAM_CACHE, exist_ok=True)
+    releases = _github_json(CVELIST_RELEASES_API + "?per_page=40")
+    midnight = None
+    for rel in releases:
+        for asset in rel.get("assets", []):
+            if asset["name"].endswith("_all_CVEs_at_midnight.zip.zip"):
+                midnight = (rel["tag_name"], asset["name"], asset["browser_download_url"])
+                break
+        if midnight:
+            break
+    deltas = []
+    if midnight:
+        day = midnight[1].split("_all_CVEs")[0]
+        for rel in releases:
+            for asset in rel.get("assets", []):
+                name = asset["name"]
+                if name.startswith(day + "_delta_CVEs_at_") and name.endswith(".zip"):
+                    deltas.append((rel["tag_name"], name, asset["browser_download_url"]))
+    if midnight is None:
+        CATALOG_NOTES.append("CVE List V5: no midnight archive among the latest releases")
+        return [], {}
+    stats = {
+        "release": midnight[0],
+        "deltas": [d[0] for d in deltas],
+        "records": 0,
+        "by_state": {},
+        "by_year": {},
+        "highest": "",
+        "in_scope": 0,
+    }
+    agg = {}
+
+    def visit(data):
+        row = _cvelist_record(data)
+        cid, state, published = row[0], row[1], row[2]
+        if not cid:
+            return
+        stats["records"] += 1
+        stats["by_state"][state] = stats["by_state"].get(state, 0) + 1
+        year = cid.split("-")[1] if "-" in cid else "?"
+        stats["by_year"][year] = stats["by_year"].get(year, 0) + 1
+        if _cve_number(cid) > _cve_number(stats["highest"]):
+            stats["highest"] = cid
+        if state != "REJECTED" and _cvelist_in_scope(row):
+            agg[cid] = (cid, row[3][0] if row[3] else "", row[4], [CVELIST_CLASS], published)
+
+    path = _download(midnight[2], os.path.join(STREAM_CACHE, midnight[1]))
+    _walk_cvelist_zip(path, visit)
+    for tag, name, url in sorted(deltas):
+        try:
+            dpath = _download(url, os.path.join(STREAM_CACHE, name))
+            _walk_cvelist_zip(dpath, visit)
+        except Exception as e:
+            CATALOG_NOTES.append("CVE List V5 delta %s: %s" % (tag, e))
+    stats["in_scope"] = len(agg)
+    rows = sorted(agg.values())
+    _cache_write(extract, json.dumps({"rows": rows, "stats": stats}).encode("utf-8"))
+    return rows, stats
+
+
+def fetch_kev(offline=False):
+    """The CISA Known Exploited Vulnerabilities catalog: {cve_id: (date added,
+    vendor, product, name, short description)}."""
+    name = "cisa_kev.json"
+    if offline and _cache_has(name):
+        raw = _cache_read(name)
+    else:
+        try:
+            raw = _get_with_retries(urllib.request.Request(KEV_URL), timeout=120, attempts=3)
+            _cache_write(name, raw)
+        except Exception as e:
+            if not _cache_has(name):
+                CATALOG_NOTES.append("CISA KEV: fetch failed (%s); no cached copy" % e)
+                return {}
+            CATALOG_NOTES.append(
+                "CISA KEV: the live fetch failed (%s); the cached catalog was used" % e
+            )
+            raw = _cache_read(name)
+    d = json.loads(raw)
+    out = {}
+    for v in d.get("vulnerabilities", []):
+        out[v["cveID"]] = (
+            v.get("dateAdded", ""),
+            v.get("vendorProject", ""),
+            v.get("product", ""),
+            v.get("vulnerabilityName", ""),
+            v.get("shortDescription", ""),
+        )
+    return out
+
+
+def _recency_windows(since_months, today=None):
+    """[(start, end)] ISO date pairs of at most RECENCY_WINDOW_DAYS covering the
+    last ``since_months`` months up to ``today`` (newest window last)."""
+    import datetime
+
+    today = today or datetime.date.today()
+    start = today - datetime.timedelta(days=int(round(since_months * 30.44)))
+    out = []
+    cursor = start
+    while cursor < today:
+        end = min(cursor + datetime.timedelta(days=RECENCY_WINDOW_DAYS), today)
+        out.append((cursor.isoformat(), end.isoformat()))
+        cursor = end
+    return out
+
+
+def fetch_ecosystem_cves(
+    offline=False, delay=None, page=200, max_pages=25, since_months=0
+):
     """Sweep every ECOSYSTEM_KEYWORDS class on the NVD, PAGINATED to exhaustion.
 
     Each class is paged through startIndex=0,page,2*page,... until every
@@ -975,10 +1838,22 @@ def fetch_ecosystem_cves(offline=False, delay=7, page=200, max_pages=25):
     """
     import time
 
+    if delay is None:
+        delay = _nvd_delay()
     agg = {}
     class_counts = {}
     capped = []
     net = [False]  # gate the rate-limit sleep on having actually hit the network
+
+    def _fetch(name, query):
+        if offline and _cache_has(name):
+            return json.loads(_cache_read(name))
+        if net[0]:
+            time.sleep(delay)  # the NVD rate limit, with or without a key
+        net[0] = True
+        raw = _nvd_get("{}?{}".format(NVD_API, query))
+        _cache_write(name, raw)
+        return json.loads(raw)
 
     def _get(label, start):
         name = (
@@ -986,18 +1861,26 @@ def fetch_ecosystem_cves(offline=False, delay=7, page=200, max_pages=25):
             if start == 0
             else "nvd_eco_%s_p%d.json" % (label, start)
         )
-        if offline and _cache_has(name):
-            return json.loads(_cache_read(name))
-        if net[0]:
-            time.sleep(delay)  # NVD unauthenticated rate limit (5 req / 30s)
-        net[0] = True
-        url = "{}?keywordSearch={}&resultsPerPage={}&startIndex={}".format(
-            NVD_API, urllib.parse.quote(ECOSYSTEM_KEYWORDS[label]), page, start
+        return _fetch(
+            name,
+            "keywordSearch={}&resultsPerPage={}&startIndex={}".format(
+                urllib.parse.quote(ECOSYSTEM_KEYWORDS[label]), page, start
+            ),
         )
-        with urllib.request.urlopen(url, timeout=60) as r:
-            raw = r.read()
-        _cache_write(name, raw)
-        return json.loads(raw)
+
+    def _get_recent(window_start, window_end, start):
+        name = "nvd_recent_%s_%s_p%d.json" % (window_start, window_end, start)
+        return _fetch(
+            name,
+            "keywordSearch={}&pubStartDate={}T00:00:00.000&pubEndDate={}T23:59:59.999"
+            "&resultsPerPage={}&startIndex={}".format(
+                urllib.parse.quote(RECENCY_KEYWORD),
+                window_start,
+                window_end,
+                page,
+                start,
+            ),
+        )
 
     for label in ECOSYSTEM_KEYWORDS:
         try:
@@ -1026,7 +1909,44 @@ def fetch_ecosystem_cves(offline=False, delay=7, page=200, max_pages=25):
             pages += 1
         if pulled < total:
             capped.append((label, total))
-    rows = sorted((cid, e["cwe"], e["desc"], e["classes"]) for cid, e in agg.items())
+    if since_months:
+        recent_total = 0
+        for window_start, window_end in _recency_windows(since_months):
+            try:
+                d = _get_recent(window_start, window_end, 0)
+            except Exception as e:
+                sys.stderr.write(
+                    "  %s %s..%s: fetch failed (%s)\n"
+                    % (RECENCY_CLASS, window_start, window_end, e)
+                )
+                continue
+            total = d.get("totalResults", 0)
+            recent_total += total
+            _harvest_nvd(d, RECENCY_CLASS, agg)
+            pulled = len(d.get("vulnerabilities", []))
+            pages = 1
+            while pulled < total and pages < max_pages:
+                try:
+                    d = _get_recent(window_start, window_end, pages * page)
+                except Exception as e:
+                    sys.stderr.write(
+                        "  %s %s p%d: fetch failed (%s)\n"
+                        % (RECENCY_CLASS, window_start, pages * page, e)
+                    )
+                    break
+                got = d.get("vulnerabilities", [])
+                if not got:
+                    break
+                _harvest_nvd(d, RECENCY_CLASS, agg)
+                pulled += len(got)
+                pages += 1
+            if pulled < total:
+                capped.append(("%s %s" % (RECENCY_CLASS, window_start), total))
+        class_counts[RECENCY_CLASS] = recent_total
+    rows = sorted(
+        (cid, e["cwe"], e["desc"], e["classes"], e["published"])
+        for cid, e in agg.items()
+    )
     return rows, class_counts, capped
 
 
@@ -1046,6 +1966,16 @@ def classify_ecosystem_cve(cwe, desc, classes, surfaces):
     hit = _classify_text(desc, surfaces)
     if hit:
         return hit
+    if primary in (RECENCY_CLASS, STREAM_CLASS, CVELIST_CLASS, GHSA_CLASS):
+        low = desc.lower()
+        if any(n in low for n in OWN_NAMES):
+            return "REVIEW (recent, unmatched)", ECOSYSTEM_CLASS_GUARD[primary][1]
+        return (
+            "N/A",
+            "another Python package's record: names neither this library, a "
+            "dependency, a wrapped tool nor the interpreter, and no operation "
+            "class present here matches its text",
+        )
     surface, note = ECOSYSTEM_CLASS_GUARD.get(primary, (None, ""))
     if surface is None:
         return "N/A", note or "no NLTK-equivalent surface"
@@ -1095,12 +2025,119 @@ def resolve_proving_tests(note, test_files, cap=3):
     return "GAP: unmapped guard", False
 
 
-def generate(offline=False, out_path=None):
+def _probe_files(ghsa_id):
+    """Advisory probe files on disk for a GHSA id (ghsa_<id>*.py under nltk/test)."""
+    import glob as _glob
+
+    stem = ghsa_id.lower().replace("-", "_")
+    return sorted(
+        os.path.basename(p)
+        for p in _glob.glob(os.path.join("nltk", "test", "**", stem + "*.py"), recursive=True)
+    )
+
+
+def _quoted(text, width):
+    """Record text quoted as inline code: it is data from another project's
+    advisory, not prose of this playbook, and the hygiene gate reads it so."""
+    flat = " ".join(text.split()).replace("`", "'").replace("|", "/")
+    if len(flat) > width:
+        flat = flat[: width - 3] + "..."
+    return "`%s`" % flat if flat else ""
+
+
+def _previous_ids(path):
+    """The CWE and CVE ids the ledger at ``path`` already lists, or empty sets."""
+    import re
+
+    if not os.path.exists(path):
+        return set(), set()
+    with open(path, encoding="utf-8") as fh:
+        text = fh.read()
+    cwes = set(re.findall(r"^\| (CWE-\d+) \|", text, re.M))
+    cves = set(re.findall(r"^\| (CVE-\d{4}-\d+) \|", text, re.M))
+    return cwes, cves
+
+
+def _cutoff(since_months):
+    import datetime
+
+    days = int(round(since_months * 30.44))
+    return (datetime.date.today() - datetime.timedelta(days=days)).isoformat()
+
+
+def _merge_rows(eco_rows, extra_rows):
+    """Fold extra (cid, cwe, desc, classes, published) rows into the ecosystem
+    rows: a known id gains the extra classes, a new id is appended."""
+    by_id = {r[0]: list(r) for r in eco_rows}
+    for cid, cwe, desc, classes, published in extra_rows:
+        if cid in by_id:
+            row = by_id[cid]
+            for c in classes:
+                if c not in row[3]:
+                    row[3].append(c)
+            if cwe and not row[1]:
+                row[1] = cwe
+            if published and not row[4]:
+                row[4] = published
+        else:
+            by_id[cid] = [cid, cwe, desc, list(classes), published]
+    return sorted(tuple(r) for r in by_id.values())
+
+
+def generate(
+    offline=False,
+    out_path=None,
+    since_months=12,
+    full_since=None,
+    ghsa_first_year=GHSA_FIRST_YEAR,
+    cvelist=True,
+    kev=True,
+):
     if out_path is None:
         out_path = DEFAULT_LEDGER
+    del CATALOG_NOTES[:]
+    prev_cwes, prev_cves = _previous_ids(out_path)
     cwes = fetch_cwe(offline)
     cves = fetch_nvd_cves("nltk", offline)
-    eco_rows, eco_counts, eco_capped = fetch_ecosystem_cves(offline)
+    eco_rows, eco_counts, eco_capped = fetch_ecosystem_cves(
+        offline, since_months=since_months
+    )
+    stream_stats = {}
+    if full_since:
+        stream_rows, stream_stats = fetch_full_stream(full_since, offline)
+        eco_rows = _merge_rows(eco_rows, stream_rows)
+        eco_counts[STREAM_CLASS] = stream_stats.get("read", 0)
+    cvelist_stats = {}
+    if cvelist:
+        cvelist_rows, cvelist_stats = fetch_cve_list_v5(offline)
+        eco_rows = _merge_rows(eco_rows, cvelist_rows)
+        eco_counts[CVELIST_CLASS] = cvelist_stats.get("records", 0)
+    ghsa_rows = fetch_ghsa_pip(ghsa_first_year, offline) if ghsa_first_year else []
+    kev_map = fetch_kev(offline) if kev else {}
+    # A record naming this library that the NVD product query did not return
+    # (enrichment lag, or a CNA record the NVD has not mapped yet) is still a
+    # product CVE: fold it into the product table with its source named.
+    product_ids = {cid for cid, *_ in cves}
+    product_source = {cid: "NVD product query" for cid in product_ids}
+    extra = []
+    for cid, cwe, desc, classes, published in eco_rows:
+        if cid not in product_ids and "nltk" in desc.lower():
+            extra.append((cid, cwe, desc, published))
+            product_ids.add(cid)
+            product_source[cid] = ", ".join(classes)
+    for ghsa_id, cve_id, cwe, desc, published, packages, severity in ghsa_rows:
+        if cve_id and cve_id not in product_ids and "nltk" in packages:
+            extra.append((cve_id, cwe, desc, published))
+            product_ids.add(cve_id)
+            product_source[cve_id] = "GitHub Advisory Database (%s)" % ghsa_id
+    cves = sorted(set(cves) | set(extra))
+    product_records = {cid: fetch_cve_record(cid, offline) for cid, *_ in cves}
+    ghsa_by_cve = {
+        cve_id: ghsa_id
+        for ghsa_id, cve_id, cwe, desc, published, packages, severity in ghsa_rows
+        if cve_id and "nltk" in packages
+    }
+    markers = {cid: fetch_cve_record(cid, offline) for cid in MARKER_CVES}
     surfaces = inventory_surfaces()
     childof = {c[0]: c[4] for c in cwes}
     addressed = set(_sh("grep -rhoE 'CWE-[0-9]+' nltk/ --include='*.py'").split())
@@ -1152,13 +2189,78 @@ def generate(offline=False, out_path=None):
         "NIST NVD catalogs, classified by evidence against this codebase. Re-run to refresh.\n"
     )
     lines.append(
-        "**Totals:** %d CWEs classified (%s); %d NVD CVEs.\n"
+        "**Totals:** %d CWEs classified (%s); %d NVD CVEs on the product; highest CVE "
+        "id reached: NVD stream %s, CVE List %s.\n"
         % (
             len(cwe_rows),
             ", ".join("%d %s" % (v, k) for k, v in sorted(stats.items())),
             len(cves),
+            stream_stats.get("highest") or "n/a",
+            cvelist_stats.get("highest") or "n/a",
         )
     )
+    lines.append("## Sources read this run\n")
+    if CATALOG_NOTES:
+        lines.append("> **Catalog notes:** " + " ".join(CATALOG_NOTES) + "\n")
+    lines.append("| Source | What was read | Reached |\n|---|---|---|")
+    lines.append(
+        "| MITRE CWE dictionary | `%s` | %d ids |" % (CWE_XML_URL, len(cwe_rows))
+    )
+    lines.append(
+        "| NIST NVD, product query | `%s?keywordSearch=nltk` | %d records |"
+        % (NVD_API, len(cves))
+    )
+    lines.append(
+        "| NIST NVD, %d class queries, paginated | keyword queries in the class table below | %d distinct records |"
+        % (len(ECOSYSTEM_KEYWORDS), sum(1 for r in eco_rows if any(c in ECOSYSTEM_KEYWORDS for c in r[3])))
+    )
+    if since_months:
+        lines.append(
+            "| NIST NVD, recency sweep | every record with `%s` in its text published in the last %d months, %d-day windows | %d records |"
+            % (RECENCY_KEYWORD, since_months, RECENCY_WINDOW_DAYS, eco_counts.get(RECENCY_CLASS, 0))
+        )
+    if stream_stats:
+        lines.append(
+            "| NIST NVD, complete publication stream | every record published since %s, no keyword, %d per page | %d records read, %d in scope, highest id **%s** |"
+            % (stream_stats["since"], STREAM_PAGE, stream_stats["read"], stream_stats["in_scope"], stream_stats["highest"] or "none")
+        )
+    if cvelist_stats:
+        years = sorted(cvelist_stats.get("by_year", {}).items())
+        lines.append(
+            "| CVE List V5 (cve.org Downloads) | release `%s` + hourly deltas %s; every record | %d records (%s), %d in scope, highest id **%s** |"
+            % (
+                cvelist_stats.get("release", ""),
+                ", ".join(cvelist_stats.get("deltas", [])) or "none",
+                cvelist_stats.get("records", 0),
+                ", ".join("%d %s" % (v, k) for k, v in sorted(cvelist_stats.get("by_state", {}).items())),
+                cvelist_stats.get("in_scope", 0),
+                cvelist_stats.get("highest", "") or "none",
+            )
+        )
+        lines.append(
+            "| CVE List V5 by year | records per id year | %s |"
+            % ", ".join("%s: %d" % (k, v) for k, v in years)
+        )
+    lines.append(
+        "| GitHub Advisory Database, pip | `%s?ecosystem=pip` one calendar year at a time from %d | %d advisories, newest %s |"
+        % (GHSA_API, ghsa_first_year, len(ghsa_rows), ghsa_rows[0][4] if ghsa_rows else "none")
+    )
+    lines.append(
+        "| CISA Known Exploited Vulnerabilities | `%s` | %d records, newest added %s |"
+        % (KEV_URL, len(kev_map), max((v[0] for v in kev_map.values()), default="none"))
+    )
+    for cid in MARKER_CVES:
+        rec = markers.get(cid)
+        lines.append(
+            "| cve.org record `%s` | `%s` | %s |"
+            % (
+                cid,
+                CVE_ORG_API.format(cid),
+                ("%s, published %s, CNA %s, CWE %s" % (rec["state"], rec["published"], rec["cna"], ", ".join(rec["cwes"]) or "none"))
+                if rec else "not reached",
+            )
+        )
+    lines.append("")
     lines.append("## Code-surface inventory (files per construct)\n")
     lines.append("| surface | files | present |\n|---|---|---|")
     for k, v in surfaces.items():
@@ -1191,9 +2293,16 @@ def generate(offline=False, out_path=None):
             )
         )
     lines.append("\n## Every NVD CVE attributed to the nltk product\n")
-    lines.append("| CVE | CWE | NLTK status | Commit | Proving tests |")
-    lines.append("|---|---|---|---|---|")
-    for cid, cwe, desc in cves:
+    lines.append(
+        "The cve.org column is the CVE Program record itself (state, CNA CWE), "
+        "cross-checked against the NVD's CWE.\n"
+    )
+    lines.append(
+        "| CVE | Source | CWE | cve.org record | NLTK status | Commit | Proving tests |"
+    )
+    lines.append("|---|---|---|---|---|---|---|")
+    product_status = {}
+    for cid, cwe, desc, published in cves:
         if "llama" in desc.lower():
             status, cm, pt = "N/A: dependency (llama_index), not NLTK", "", "-"
         elif _sh("grep -rlE '%s' nltk/ --include='*.py'" % cid):
@@ -1206,22 +2315,53 @@ def generate(offline=False, out_path=None):
             if not pt:
                 pt = "GAP: no test references %s" % cwe
                 gaps.append(("CVE", cid, status))
+        elif any(c in addressed for c in (product_records.get(cid) or {}).get("cwes", [])):
+            cna_cwe = next(c for c in product_records[cid]["cwes"] if c in addressed)
+            status, cm = "COVERED by %s class (chokepoint, CNA CWE)" % cna_cwe, commit(cna_cwe)
+            pt = tests_for_tag(cna_cwe)
+            if not pt:
+                pt = "GAP: no test references %s" % cna_cwe
+                gaps.append(("CVE", cid, status))
+        elif cid in ghsa_by_cve and _probe_files(ghsa_by_cve[cid]):
+            status, cm = "PATCHED+TESTED (advisory probe %s)" % ghsa_by_cve[cid], ""
+            pt = ", ".join(_probe_files(ghsa_by_cve[cid]))
         else:
             status, cm, pt = "advisory-only / older-version fix", "", "-"
+            if cid in ghsa_by_cve:
+                status = "advisory %s without a probe file: GAP" % ghsa_by_cve[cid]
+                gaps.append(("CVE", cid, status))
+        product_status[cid] = (cwe, published, status, desc)
+        rec = product_records.get(cid)
+        rec_text = (
+            "%s; CNA CWE %s" % (rec["state"], ", ".join(rec["cwes"]) or "none")
+            if rec
+            else "no public record (reserved or not reached)"
+        )
+        if rec and rec["cwes"] and cwe and cwe not in rec["cwes"]:
+            rec_text += "; differs from NVD"
         lines.append(
-            "| {} | {} | {} | {} | {} |".format(
+            "| {} | {} | {} | {} | {} | {} | {} |".format(
                 cid,
+                product_source.get(cid, ""),
                 cwe or "-",
+                rec_text,
                 status,
                 "`%s`" % cm if cm else "",
                 pt.replace("|", "\\|"),
             )
         )
 
-    # ---- Python-ecosystem inherited-surface sweep ---------------------------
+    # == Python-ecosystem inherited-surface sweep ==
     eco_stats = {}
     eco_render = []
-    for cid, cwe, desc, classes in eco_rows:
+    eco_meta = {}
+    for cid, cwe, desc, classes, published in eco_rows:
+        if cid in product_status:
+            st, verdict, cm = product_status[cid][2], "see the nltk product table", ""
+            eco_stats[st] = eco_stats.get(st, 0) + 1
+            eco_render.append((cid, cwe, classes, st, verdict, cm))
+            eco_meta[cid] = (published, desc)
+            continue
         if _sh("grep -rlE '%s' nltk/ --include='*.py'" % cid):
             has_t = bool(_sh("grep -rlE '%s' nltk/test/ --include='*.py'" % cid))
             st = "PATCHED+TESTED" if has_t else "PATCHED"
@@ -1229,8 +2369,12 @@ def generate(offline=False, out_path=None):
         else:
             st, verdict = classify_ecosystem_cve(cwe, desc, classes, surfaces)
             cm = commit(cwe) if cwe in addressed else ""
+            if st == "REVIEW (recent, unmatched)" and cid in MANUAL_TRIAGE:
+                verdict = MANUAL_TRIAGE[cid]
+                st = "INHERITED (dep)" if verdict.startswith("INHERITED") else "N/A (triaged)"
         eco_stats[st] = eco_stats.get(st, 0) + 1
         eco_render.append((cid, cwe, classes, st, verdict, cm))
+        eco_meta[cid] = (published, desc)
 
     lines.append(
         "\n## Python-ecosystem inherited-surface CVEs (json/zip/tar/pickle/xml/"
@@ -1289,7 +2433,176 @@ def generate(offline=False, out_path=None):
             )
         )
 
-    # ---- Coverage gaps: APPLICABLE/IN-SCOPE rows with no proving test -----------
+    # == GitHub Advisory Database, pip ecosystem ==
+    our_packages = {"nltk"} | {
+        k for k in DEPENDENCY_CLASSES
+    } | {"regex", "python-crfsuite", "scikit-learn", "pyyaml", "numpy", "scipy"}
+    ghsa_stats = {}
+    ghsa_render = []
+    for ghsa_id, cve_id, cwe, desc, published, packages, severity in ghsa_rows:
+        if cve_id and cve_id in product_status:
+            st, verdict = product_status[cve_id][2], "see the nltk product table"
+        elif "nltk" in packages:
+            st, verdict = "NLTK advisory", "an advisory on this library; probe coverage is gated in CI (test_advisory_coverage_ci)"
+        elif any(pk in our_packages for pk in packages):
+            dep = next(pk for pk in packages if pk in our_packages)
+            st, verdict = "INHERITED (dep)", "dependency %s; remediate by upgrading it" % dep
+        else:
+            hit = _classify_text(desc, surfaces)
+            if hit:
+                st, verdict = hit
+                st = {"APPLICABLE": "IN-SCOPE (guarded)"}.get(st, st)
+            else:
+                st, verdict = "N/A", "another package's advisory with no operation class present here"
+        if cve_id and cve_id in kev_map:
+            verdict += "; **in CISA KEV since %s**" % kev_map[cve_id][0]
+        ghsa_stats[st] = ghsa_stats.get(st, 0) + 1
+        ghsa_render.append((published, ghsa_id, cve_id, cwe, packages, severity, st, verdict))
+        eco_meta.setdefault(cve_id or ghsa_id, (published, desc))
+    lines.append("\n## GitHub Advisory Database, pip ecosystem: every advisory since %d\n" % ghsa_first_year)
+    lines.append(
+        "Read one calendar year at a time. An advisory on this library points at the "
+        "probe gate; one on a dependency is inherited; any other is classified by its "
+        "operation class against the surfaces here, so a class that repeats across "
+        "the ecosystem is checked for an instance in this code. **%d advisories (%s).**\n"
+        % (len(ghsa_render), ", ".join("%d %s" % (v, k) for k, v in sorted(ghsa_stats.items())))
+    )
+    lines.append("| Published | GHSA | CVE | CWE | Package(s) | Severity | NLTK verdict | Guard / evidence |")
+    lines.append("|---|---|---|---|---|---|---|---|")
+    for published, ghsa_id, cve_id, cwe, packages, severity, st, verdict in ghsa_render:
+        lines.append(
+            "| {} | {} | {} | {} | {} | {} | {} | {} |".format(
+                published, ghsa_id, cve_id or "-", cwe or "-",
+                _quoted(", ".join(packages), 60), severity, st, verdict.replace("|", "\\|"),
+            )
+        )
+    # == CISA KEV cross-reference ==
+    ledger_ids = set(product_status) | {r[0] for r in eco_render} | {
+        r[2] for r in ghsa_render if r[2]
+    }
+    kev_hits = sorted((cid, v) for cid, v in kev_map.items() if cid in ledger_ids)
+    kev_python = sorted(
+        (cid, v) for cid, v in kev_map.items()
+        if cid not in ledger_ids
+        and any(w in (" ".join(v[1:])).lower() for w in STREAM_SCOPE_WORDS)
+    )
+    lines.append("\n## CISA Known Exploited Vulnerabilities: cross-reference\n")
+    lines.append(
+        "Every KEV record that is also a ledger row is listed with the ledger's "
+        "verdict (exploitation in the wild raises its priority, it does not change "
+        "the evidence); every other KEV record with a Python context is classified "
+        "here so none is overlooked. **%d ledger rows in KEV, %d further KEV records "
+        "with a Python context.**\n" % (len(kev_hits), len(kev_python))
+    )
+    lines.append("| Added to KEV | CVE | Vendor / product | Ledger verdict |")
+    lines.append("|---|---|---|---|")
+    status_index = {cid: v[2] for cid, v in product_status.items()}
+    status_index.update({r[0]: r[3] for r in eco_render})
+    status_index.update({r[2]: r[6] for r in ghsa_render if r[2]})
+    for cid, (added, vendor, product, name, short) in kev_hits:
+        lines.append("| {} | {} | {} | {} |".format(added, cid, _quoted(vendor + " " + product, 60), status_index.get(cid, "")))
+    for cid, (added, vendor, product, name, short) in kev_python:
+        hit = _classify_text(name + " " + short, surfaces)
+        verdict = "%s: %s" % hit if hit else "N/A: no operation class present here"
+        lines.append("| {} | {} | {} | {} |".format(added, cid, _quoted(vendor + " " + product, 60), verdict.replace("|", "\\|")))
+    # == Published in the last N months: every record, with its verdict ==
+    cutoff = _cutoff(since_months) if since_months else None
+    recent = []
+    if cutoff:
+        for cid, (cwe, published, status, desc) in product_status.items():
+            if published >= cutoff:
+                recent.append((published, cid, cwe, "nltk product", status, desc))
+        for cid, cwe, classes, st, verdict, cm in eco_render:
+            published, desc = eco_meta[cid]
+            if published >= cutoff:
+                recent.append((published, cid, cwe, ", ".join(classes), st, desc))
+        listed = {r[1] for r in recent}
+        for published, ghsa_id, cve_id, cwe, packages, severity, st, verdict in ghsa_render:
+            key = cve_id or ghsa_id
+            if published >= cutoff and key not in listed:
+                recent.append((published, key, cwe, GHSA_CLASS, st, ""))
+                listed.add(key)
+        recent.sort(reverse=True)
+        recent_stats = {}
+        for row in recent:
+            recent_stats[row[4]] = recent_stats.get(row[4], 0) + 1
+        lines.append(
+            "\n## Published in the last %d months (since %s): every record, with "
+            "its verdict\n" % (since_months, cutoff)
+        )
+        lines.append(
+            "The recency sweep queries the NVD for every record published in this "
+            "window whose description mentions Python, in %d-day windows, on top of "
+            "the class queries above; a record no class query would have reached is "
+            "listed here with the class `%s` and triaged by hand below. "
+            "**%d records (%s).**\n"
+            % (
+                RECENCY_WINDOW_DAYS,
+                RECENCY_CLASS,
+                len(recent),
+                ", ".join("%d %s" % (v, k) for k, v in sorted(recent_stats.items())),
+            )
+        )
+        lines.append("| Published | CVE | CWE | Class(es) | NLTK verdict |")
+        lines.append("|---|---|---|---|---|")
+        for published, cid, cwe, classes, st, desc in recent:
+            lines.append(
+                "| {} | {} | {} | {} | {} |".format(
+                    published, cid, cwe or "-", classes, st
+                )
+            )
+    # == Manual triage: recency-only rows no keyword rule classified ==
+    review = [
+        (cid, cwe, eco_meta[cid][0], eco_meta[cid][1])
+        for cid, cwe, classes, st, verdict, cm in eco_render
+        if st == "REVIEW (recent, unmatched)"
+    ]
+    lines.append("\n## Manual triage: recent records no rule classified\n")
+    if review:
+        lines.append(
+            "These %d records were reached by the recency sweep only and matched no "
+            "operation keyword. Each is read and settled below; a verdict written "
+            "here is evidence, so a row left as REVIEW is open work, not a pass.\n"
+            % len(review)
+        )
+        lines.append("| Published | CVE | CWE | Record (first 160 chars) | Triage |")
+        lines.append("|---|---|---|---|---|")
+        for cid, cwe, published, desc in sorted(review, key=lambda r: r[2], reverse=True):
+            blurb = _quoted(desc, 160)
+            lines.append(
+                "| {} | {} | {} | {} | {} |".format(
+                    published, cid, cwe or "-", blurb, MANUAL_TRIAGE.get(cid, "REVIEW")
+                )
+            )
+    else:
+        lines.append("**None.** Every recency-sweep record matched an operation rule.\n")
+    # == New catalog entries since the previous ledger ==
+    new_cwes = [r for r in cwe_rows if r[0] not in prev_cwes] if prev_cwes else []
+    all_cves = [cid for cid, *_ in cves] + [r[0] for r in eco_render]
+    new_cves = sorted(set(c for c in all_cves if c not in prev_cves)) if prev_cves else []
+    lines.append("\n## New catalog entries since the previous ledger\n")
+    if not prev_cwes and not prev_cves:
+        lines.append("No previous ledger was found at the output path; nothing to diff.\n")
+    else:
+        lines.append(
+            "Against the ledger this run replaced (%d CWE ids, %d CVE ids): "
+            "**%d new CWEs, %d new CVEs.** Every one is classified in the tables "
+            "above; this section only makes the delta visible.\n"
+            % (len(prev_cwes), len(prev_cves), len(new_cwes), len(new_cves))
+        )
+        if new_cwes:
+            lines.append("| New CWE | Name | Verdict |\n|---|---|---|")
+            for tag, name, ab, st, verdict, cm in new_cwes:
+                lines.append(
+                    "| {} | {} | {} |".format(tag, name.replace("|", "\\|")[:58], st)
+                )
+        if new_cves:
+            status_of = {cid: st for cid, cwe, classes, st, v, cm in eco_render}
+            status_of.update({cid: v[2] for cid, v in product_status.items()})
+            lines.append("\n| New CVE | Verdict |\n|---|---|")
+            for cid in new_cves:
+                lines.append("| {} | {} |".format(cid, status_of.get(cid, "")))
+    # == Coverage gaps: APPLICABLE/IN-SCOPE rows with no proving test ==
     gap_section = [
         "\n## Coverage gaps (APPLICABLE / IN-SCOPE rows lacking a proving test)\n"
     ]
@@ -1315,7 +2628,21 @@ def generate(offline=False, out_path=None):
 
     with open(out_path, "w", encoding="utf-8") as fh:
         fh.write("\n".join(lines) + "\n")
-    return stats, len(cwe_rows), len(cves), len(eco_render), eco_stats, len(gaps)
+    return (
+        stats,
+        len(cwe_rows),
+        len(cves),
+        len(eco_render),
+        eco_stats,
+        len(gaps),
+        len(recent),
+        len(review),
+        len(new_cwes),
+        len(new_cves),
+        len(ghsa_render),
+        len(kev_hits),
+        stream_stats.get("highest") or cvelist_stats.get("highest") or "",
+    )
 
 
 def main(argv=None):
@@ -1326,11 +2653,54 @@ def main(argv=None):
         help="reuse cached catalogs instead of fetching",
     )
     ap.add_argument("-o", "--out", default=DEFAULT_LEDGER)
+    ap.add_argument(
+        "--since-months",
+        type=int,
+        default=12,
+        help="recency sweep window in months (0 disables the sweep)",
+    )
+    ap.add_argument(
+        "--full-since",
+        default=_cutoff(12),
+        help="read the complete NVD publication stream from this ISO date (empty disables)",
+    )
+    ap.add_argument(
+        "--ghsa-first-year",
+        type=int,
+        default=GHSA_FIRST_YEAR,
+        help="first calendar year of the GitHub pip advisory pull (0 disables)",
+    )
+    ap.add_argument("--no-cvelist", action="store_true", help="skip the CVE List V5 bulk read")
+    ap.add_argument("--no-kev", action="store_true", help="skip the CISA KEV catalog")
     args = ap.parse_args(argv)
-    stats, ncwe, ncve, neco, eco_stats, ngaps = generate(args.offline, args.out)
+    (
+        stats,
+        ncwe,
+        ncve,
+        neco,
+        eco_stats,
+        ngaps,
+        nrecent,
+        nreview,
+        nnewcwe,
+        nnewcve,
+        nghsa,
+        nkev,
+        highest,
+    ) = generate(
+        args.offline,
+        args.out,
+        args.since_months,
+        args.full_since or None,
+        args.ghsa_first_year,
+        not args.no_cvelist,
+        not args.no_kev,
+    )
     print(
         "wrote %s: %d CWEs (%s), %d nltk-product CVEs, %d ecosystem CVEs (%s); "
-        "%d coverage gaps"
+        "%d coverage gaps; %d records published in the last %d months, %d awaiting "
+        "manual triage; %d new CWEs and %d new CVEs since the previous ledger; "
+        "%d pip advisories; %d ledger rows in CISA KEV; highest CVE id reached %s"
         % (
             args.out,
             ncwe,
@@ -1339,6 +2709,14 @@ def main(argv=None):
             neco,
             ", ".join("%d %s" % (v, k) for k, v in sorted(eco_stats.items())),
             ngaps,
+            nrecent,
+            args.since_months,
+            nreview,
+            nnewcwe,
+            nnewcve,
+            nghsa,
+            nkev,
+            highest or "n/a",
         )
     )
     return 0
