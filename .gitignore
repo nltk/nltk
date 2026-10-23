@@ -70,3 +70,6 @@ venv.bak/
 # macOS
 .DS_Store
 tools/.security_audit_cache/
+
+# Bulk CVE List and NVD stream pages read by tools/security_cve_cwe_audit.py (hundreds of MB)
+tools/security_audit_cache/full/
