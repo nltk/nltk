@@ -136,6 +136,19 @@ repos:
       language: system
       pass_filenames: false
       always_run: true
+    - id: no-machine-leaks
+      name: no developer home directory or credential token in the tree
+      description: >-
+        A path under a developer's home directory works on one machine and
+        ships in the sdist (CWE-200/CWE-540); a credential token in the tree
+        is public forever (CWE-798). Fails on any /Users/<name>, /home/<name>
+        or C:\Users\<name> whose <name> is not a documented placeholder, and
+        on PyPI/GitHub/AWS/HF/Anthropic/Google/Slack token shapes and PEM
+        private keys, unless annotated `# machine-leak ok: <reason>`.
+      entry: python tools/check_no_machine_leaks.py
+      language: system
+      pass_filenames: false
+      always_run: true
     - id: all-yaml-through-jsontags
       name: every YAML deserialization routes through nltk.jsontags
       description: >-

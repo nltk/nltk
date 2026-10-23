@@ -119,9 +119,7 @@ def _plant_secret(outside):
     return secret
 
 
-# ---------------------------------------------------------------------------
 # Real models, trained once per module before any sandbox narrows the roots.
-# ---------------------------------------------------------------------------
 
 
 @pytest.fixture(scope="module")
@@ -186,9 +184,7 @@ def _param_file(loc, attr="weights", lang=LANG):
     return os.path.join(loc, f"averaged_perceptron_tagger_{lang}.{attr}.json")
 
 
-# ---------------------------------------------------------------------------
 # The six claims and the reporter's negative controls, on develop
-# ---------------------------------------------------------------------------
 
 
 class TestIssueClaimsAreClosedOnDevelop:
@@ -319,9 +315,7 @@ class TestReporterNegativeControls:
         _refused(load_maxent_params, str(planted))
 
 
-# ---------------------------------------------------------------------------
 # The gap: a parameter-file name planted inside an in-root save_to_json loc
-# ---------------------------------------------------------------------------
 
 
 @POSIX_ONLY
@@ -503,9 +497,7 @@ class TestSaveToJsonTeeth:
         assert "_create_model_file(" in inspect.getsource(PerceptronTagger.save_to_json)
 
 
-# ---------------------------------------------------------------------------
 # The wider probe: vectors that were already closed on develop, pinned
-# ---------------------------------------------------------------------------
 
 
 def _sinks(pathsec_sandbox, parser, depgraphs, trained_tagger, maxent_params):

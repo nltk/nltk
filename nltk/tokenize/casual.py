@@ -184,8 +184,8 @@ REGEXPS = (
     # email addresses
     r"""[\w.+-]{1,64}@[\w-]{1,63}\.(?:[\w-]\.?){1,251}[\w-]""",
     # Zero-Width-Joiner and Skin tone modifier emojis
-    """.(?:
-        [\U0001f3fb-\U0001f3ff]?(?:\u200d.[\U0001f3fb-\U0001f3ff]?)+
+    r"""\S(?:
+        [\U0001f3fb-\U0001f3ff]?(?:\u200d\S[\U0001f3fb-\U0001f3ff]?)+
         |
         [\U0001f3fb-\U0001f3ff]
     )""",

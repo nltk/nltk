@@ -1510,9 +1510,6 @@ def _configure_real_tool(monkeypatch):
     scratch cache: the ``staging_tempdir()`` the wrapper allocates under that
     path is released on teardown instead of being handed to a later test that
     sandboxes a single throwaway root and expects its scratch file inside it."""
-    jdk = "/Users/alvas/nltk_tools/jdk/jdk-21.0.12.1+1/Contents/Home"
-    if not os.environ.get("JAVA_HOME") and os.path.isdir(jdk):
-        monkeypatch.setenv("JAVA_HOME", jdk)
     monkeypatch.setattr(internals, "_java_bin", None)
     monkeypatch.setattr(nltk.data, "_STAGING_TEMPDIR", None, raising=False)
 
