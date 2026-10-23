@@ -208,6 +208,26 @@ DATA_UPDATES = [
 _PY3_DATA_UPDATES = [os.path.join(*path_list) for path_list in DATA_UPDATES]
 
 
+def keyword_only(positional):
+    """Refuse positional arguments beyond ``positional``: Python 2 has no
+    bare ``*`` separator, so the security helpers keep their keyword-only
+    parameters keyword-only through this guard."""
+
+    def decorate(fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            if len(args) > positional:
+                raise TypeError(
+                    "%s() takes at most %d positional argument%s (%d given)"
+                    % (fn.__name__, positional, "" if positional == 1 else "s", len(args))
+                )
+            return fn(*args, **kwargs)
+
+        return wrapper
+
+    return decorate
+
+
 def add_py3_data(path):
     if PY3:
         for item in _PY3_DATA_UPDATES:
