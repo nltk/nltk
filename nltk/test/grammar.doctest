@@ -86,3 +86,49 @@ Grammars with mixed rules can be converted into Chomsky Normal Form:
     <Grammar with 15 productions>
     >>> grammar.chomsky_normal_form()
     <Grammar with 18 productions>
+
+Probabilistic Chomsky normal form
+--------------------------------
+
+``PCFG.chomsky_normal_form()`` preserves each finite string's probability,
+summed over all parses, without modifying the input. Already-CNF grammars are
+returned unchanged. Otherwise, unreachable and zero-probability rules are removed.
+
+For example, unary paths are combined without losing their weights:
+
+    >>> grammar = PCFG.fromstring("""
+    ... A -> B [0.3] | B C [0.7]
+    ... B -> C [0.8] | B C [0.2]
+    ... C -> 'c' [0.5] | D [0.5]
+    ... D -> 'd' [1.0]
+    ... """)
+    >>> cnf = grammar.chomsky_normal_form()
+    >>> for rule in sorted(cnf.productions(), key=str):
+    ...     print(rule)
+    A -> 'c' [0.12]
+    A -> 'd' [0.12]
+    A -> B C [0.76]
+    B -> 'c' [0.4]
+    B -> 'd' [0.4]
+    B -> B C [0.2]
+    C -> 'c' [0.5]
+    C -> 'd' [0.5]
+
+Each lexical exit from ``A`` has weight ``0.3 * 0.8 * 0.5 = 0.12``;
+``A -> B C`` has weight ``0.7 + 0.3 * 0.2 = 0.76``. ``D`` becomes unreachable.
+The unary paths are acyclic, although the binary rule ``B -> B C`` is recursive.
+
+If conversion is needed, probabilities must be finite and nonnegative, with
+each LHS total within ``1e-12`` of one. Floating-point rounding and underflow
+still limit accuracy. ``flexible=True`` retains unary rules; empty productions
+are unsupported. Tree structure and Viterbi scores can change. See
+``PCFG.remove_unitary_rules`` for the algorithm reference.
+
+The grammar reader accepts the default ``@$@`` padding. Include the start symbol
+when serializing, since production order need not identify it:
+
+    >>> text = '% start ' + str(cnf.start()) + '\n'
+    >>> text += '\n'.join(map(str, cnf.productions()))
+    >>> restored = PCFG.fromstring(text)
+    >>> restored.start() == cnf.start() and restored.productions() == cnf.productions()
+    True
