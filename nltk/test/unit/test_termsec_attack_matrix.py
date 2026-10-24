@@ -550,6 +550,8 @@ class TestNumericBombs(object):
             safe_print(self._BOMB)
 
     def test_bomb_refused_even_with_interpreter_guard_disabled(self):
+        if not hasattr(sys, "set_int_max_str_digits"):
+            pytest.skip("no int-to-str digit limit on this interpreter (3.11+)")
         import sys
 
         saved = sys.get_int_max_str_digits()
@@ -573,6 +575,8 @@ class TestNumericBombs(object):
         # between the interpreter's 4300-digit limit and our backstop: the
         # exact int passes through and the interpreter guard raises at the
         # conversion, promptly, on every path that stringifies it
+        if not hasattr(sys, "set_int_max_str_digits"):
+            pytest.skip("no int-to-str digit limit on this interpreter (3.11+)")
         import csv
         import io
         import sys
@@ -636,6 +640,8 @@ class TestNumericBombs(object):
         assert not _has_live_control(out)
 
     def test_fraction_with_huge_terms_fails_closed(self):
+        if not hasattr(sys, "set_int_max_str_digits"):
+            pytest.skip("no int-to-str digit limit on this interpreter (3.11+)")
         import sys
         from fractions import Fraction
 
@@ -651,6 +657,8 @@ class TestNumericBombs(object):
         # the size is read with the unbound builtin int.bit_length, so a
         # subclass overriding bit_length to underreport is still refused:
         # the payload is real even though the object lies
+        if not hasattr(sys, "set_int_max_str_digits"):
+            pytest.skip("no int-to-str digit limit on this interpreter (3.11+)")
         import sys
 
         class EvasiveInt(int):
