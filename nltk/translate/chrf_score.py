@@ -191,6 +191,9 @@ def corpus_chrf(
     assert len(references) == len(
         hypotheses
     ), "The number of hypotheses and their references should be the same"
+    if min_len > max_len:
+        raise ValueError("min_len must be less than or equal to max_len")
+
     num_sents = len(hypotheses)
 
     # Keep f-scores for each n-gram order separate
@@ -218,4 +221,8 @@ def corpus_chrf(
     total_scores = [sum(fscores) for n, fscores in ngram_fscores.items()]
 
     # macro-average over n-gram orders and over all sentences
+    if num_sents == 0:
+        return 0.0
+    if num_ngram_sizes == 0:
+        return 0.0
     return (sum(total_scores) / num_ngram_sizes) / num_sents
