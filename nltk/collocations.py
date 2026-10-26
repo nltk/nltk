@@ -1,15 +1,16 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Collocations and Association Measures
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Joel Nothman <jnothman@student.usyd.edu.au>
-# URL: <http://nltk.org>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 """
 Tools to identify collocations --- words that often appear consecutively
 --- within corpora. They may also be used to find other associations between
 word occurrences.
-See Manning and Schutze ch. 5 at http://nlp.stanford.edu/fsnlp/promo/colloc.pdf
+See Manning and Schutze ch. 5 at https://nlp.stanford.edu/fsnlp/promo/colloc.pdf
 and the Text::NSP Perl package at http://ngram.sourceforge.net
 
 Finding collocations requires first calculating the frequencies of words and
@@ -23,7 +24,8 @@ these functionalities, dependent on being provided a function which scores a
 ngram given appropriate frequency counts. A number of standard association
 measures are provided in bigram_measures and trigram_measures.
 """
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
 # Possible TODOs:
 # - consider the distinction between f(x,_) and f(x) and whether our
@@ -32,13 +34,17 @@ from __future__ import print_function
 #   and unigram counts (raw_freq, pmi, student_t)
 
 import itertools as _itertools
-from six import iteritems
 
-from nltk.probability import FreqDist
-from nltk.util import ngrams
 # these two unused imports are referenced in collocations.doctest
-from nltk.metrics import ContingencyMeasures, BigramAssocMeasures, TrigramAssocMeasures, QuadgramAssocMeasures
-from nltk.metrics.spearman import ranks_from_scores, spearman_correlation
+from nltk.metrics import (
+    BigramAssocMeasures,
+    ContingencyMeasures,
+    QuadgramAssocMeasures,
+    TrigramAssocMeasures,
+)
+from nltk.probability import FreqDist
+from nltk.termsec import safe_print
+from nltk.util import ngrams
 
 
 class AbstractCollocationFinder(object):
@@ -61,9 +67,9 @@ class AbstractCollocationFinder(object):
     def _build_new_documents(
         cls, documents, window_size, pad_left=False, pad_right=False, pad_symbol=None
     ):
-        '''
+        """
         Pad the document with the place holder according to the window_size
-        '''
+        """
         padding = (pad_symbol,) * (window_size - 1)
         if pad_right:
             return _itertools.chain.from_iterable(
@@ -93,7 +99,7 @@ class AbstractCollocationFinder(object):
         if the function returns True when passed an ngram tuple.
         """
         tmp_ngram = FreqDist()
-        for ngram, freq in iteritems(self.ngram_fd):
+        for ngram, freq in self.ngram_fd.items():
             if not fn(ngram, freq):
                 tmp_ngram[ngram] = freq
         self.ngram_fd = tmp_ngram
@@ -352,8 +358,8 @@ def demo(scorer=None, compare_scorer=None):
     """Finds bigram collocations in the files of the WebText corpus."""
     from nltk.metrics import (
         BigramAssocMeasures,
-        spearman_correlation,
         ranks_from_scores,
+        spearman_correlation,
     )
 
     if scorer is None:
@@ -363,7 +369,7 @@ def demo(scorer=None, compare_scorer=None):
 
     from nltk.corpus import stopwords, webtext
 
-    ignored_words = stopwords.words('english')
+    ignored_words = stopwords.words("english")
     word_filter = lambda w: len(w) < 3 or w.lower() in ignored_words
 
     for file in webtext.fileids():
@@ -377,32 +383,43 @@ def demo(scorer=None, compare_scorer=None):
             ranks_from_scores(cf.score_ngrams(scorer)),
             ranks_from_scores(cf.score_ngrams(compare_scorer)),
         )
-        print(file)
-        print('\t', [' '.join(tup) for tup in cf.nbest(scorer, 15)])
-        print('\t Correlation to %s: %0.4f' % (compare_scorer.__name__, corr))
+        safe_print(file)
+        safe_print("\t", [" ".join(tup) for tup in cf.nbest(scorer, 15)])
+        safe_print("	 Correlation to {0}: {1:0.4f}".format(compare_scorer.__name__, corr))
 
 
 # Slows down loading too much
 # bigram_measures = BigramAssocMeasures()
 # trigram_measures = TrigramAssocMeasures()
 
-if __name__ == '__main__':
+# Command-line interface for demonstrating bigram collocations.
+#
+# Usage: python -m nltk.collocations [scorer] [compare_scorer]
+#
+# Demonstrates bigram collocations on the WebText corpus.
+# Defaults to likelihood_ratio and raw_freq if not specified.
+#
+# Available scorers:
+#   chi_sq, dice, fisher, jaccard, likelihood_ratio, mi_like,
+#   phi_sq, pmi, poisson_stirling, raw_freq, student_t
+if __name__ == "__main__":
     import sys
+
     from nltk.metrics import BigramAssocMeasures
 
     try:
-        scorer = eval('BigramAssocMeasures.' + sys.argv[1])
+        scorer = getattr(BigramAssocMeasures, sys.argv[1], None)
     except IndexError:
         scorer = None
     try:
-        compare_scorer = eval('BigramAssocMeasures.' + sys.argv[2])
+        compare_scorer = getattr(BigramAssocMeasures, sys.argv[2], None)
     except IndexError:
         compare_scorer = None
 
     demo(scorer, compare_scorer)
 
 __all__ = [
-    'BigramCollocationFinder',
-    'TrigramCollocationFinder',
-    'QuadgramCollocationFinder',
+    "BigramCollocationFinder",
+    "TrigramCollocationFinder",
+    "QuadgramCollocationFinder",
 ]

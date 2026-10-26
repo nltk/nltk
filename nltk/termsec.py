@@ -24,7 +24,6 @@ text - including tabs, newlines and non-ASCII/emoji - untouched. Route every
 untrusted-string terminal write through it.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
-from __future__ import absolute_import, division, print_function, unicode_literals
 import six
 import sys
 import unicodedata
@@ -369,6 +368,7 @@ def safe_print(*values, **kwargs):
     sep = kwargs.pop("sep", " ")
     end = kwargs.pop("end", "\n")
     single_line = kwargs.pop("single_line", False)
+    flush = kwargs.pop("flush", False)  # 2.7's print has no flush keyword
     sep = sanitize_terminal(sep) if isinstance(sep, six.string_types) else sep
     end = sanitize_terminal(end) if isinstance(end, six.string_types) else end
     print(
@@ -377,6 +377,8 @@ def safe_print(*values, **kwargs):
         end=end,
         **kwargs
     )
+    if flush:
+        (kwargs.get("file") or sys.stdout).flush()
 
 
 def __getattr__(name):

@@ -1,19 +1,20 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+# -*- coding: utf-8 -*-
+import six
 # Natural Language Toolkit: Stemmers
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 #         Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import unicode_literals
 import re
 
+from nltk import redos
 from nltk.stem.api import StemmerI
-from nltk.compat import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class RegexpStemmer(StemmerI):
     """
     A stemmer that uses regular expressions to identify morphological
@@ -43,17 +44,22 @@ class RegexpStemmer(StemmerI):
     """
 
     def __init__(self, regexp, min=0):
-
-        if not hasattr(regexp, 'pattern'):
-            regexp = re.compile(regexp)
-        self._regexp = regexp
+        # ``regexp`` is documented "str or regexp" and is applied to caller
+        # text, so a catastrophically backtracking one hangs the process
+        # (CWE-1333). Route BOTH a string and a pre-compiled pattern through
+        # redos.compile: a raw stdlib pattern has no wall-clock bound, and the
+        # old ``hasattr(...,'pattern')`` guard let it through unhardened. This
+        # mirrors RegexpTokenizer/RegexpTagger. See ``nltk/redos.py``.
+        flags = getattr(regexp, "flags", 0)
+        pattern = getattr(regexp, "pattern", regexp)
+        self._regexp = redos.compile(pattern, flags)
         self._min = min
 
     def stem(self, word):
         if len(word) < self._min:
             return word
         else:
-            return self._regexp.sub('', word)
+            return self._regexp.sub("", word)
 
     def __repr__(self):
-        return '<RegexpStemmer: {!r}>'.format(self._regexp.pattern)
+        return "<RegexpStemmer: {0!r}>".format(self._regexp.pattern)

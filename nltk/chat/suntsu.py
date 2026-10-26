@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Sun Tsu-Bot
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Sam Huston 2007
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -11,30 +12,32 @@ Tsu bot responds to all queries with a Sun Tsu sayings
 Quoted from Sun Tsu's The Art of War
 Translated by LIONEL GILES, M.A. 1910
 Hosted by the Gutenberg Project
-http://www.gutenberg.org/
+https://www.gutenberg.org/
 """
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
 from nltk.chat.util import Chat, reflections
+from nltk.termsec import safe_print
 
 pairs = (
-    (r'quit', ("Good-bye.", "Plan well", "May victory be your future")),
+    (r"quit", ("Good-bye.", "Plan well", "May victory be your future")),
     (
-        r'[^\?]*\?',
+        r"[^\?]*\?",
         (
             "Please consider whether you can answer your own question.",
             "Ask me no questions!",
         ),
     ),
     (
-        r'[0-9]+(.*)',
+        r"[0-9]+(.*)",
         (
             "It is the rule in war, if our forces are ten to the enemy's one, to surround him; if five to one, to attack him; if twice as numerous, to divide our army into two.",
             "There are five essentials for victory",
         ),
     ),
     (
-        r'[A-Ca-c](.*)',
+        r"[A-Ca-c](.*)",
         (
             "The art of war is of vital importance to the State.",
             "All warfare is based on deception.",
@@ -45,7 +48,7 @@ pairs = (
         ),
     ),
     (
-        r'[D-Fd-f](.*)',
+        r"[D-Fd-f](.*)",
         (
             "The skillful soldier does not raise a second levy, neither are his supply-wagons loaded more than twice.",
             "Bring war material with you from home, but forage on the enemy.",
@@ -54,7 +57,7 @@ pairs = (
         ),
     ),
     (
-        r'[G-Ig-i](.*)',
+        r"[G-Ig-i](.*)",
         (
             "Heaven signifies night and day, cold and heat, times and seasons.",
             "It is the rule in war, if our forces are ten to the enemy's one, to surround him; if five to one, to attack him; if twice as numerous, to divide our army into two.",
@@ -63,7 +66,7 @@ pairs = (
         ),
     ),
     (
-        r'[J-Lj-l](.*)',
+        r"[J-Lj-l](.*)",
         (
             "There are three ways in which a ruler can bring misfortune upon his army.",
             "By commanding the army to advance or to retreat, being ignorant of the fact that it cannot obey. This is called hobbling the army.",
@@ -78,7 +81,7 @@ pairs = (
         ),
     ),
     (
-        r'[M-Om-o](.*)',
+        r"[M-Om-o](.*)",
         (
             "If you know the enemy and know yourself, you need not fear the result of a hundred battles.",
             "If you know yourself but not the enemy, for every victory gained you will also suffer a defeat.",
@@ -87,7 +90,7 @@ pairs = (
         ),
     ),
     (
-        r'[P-Rp-r](.*)',
+        r"[P-Rp-r](.*)",
         (
             "Security against defeat implies defensive tactics; ability to defeat the enemy means taking the offensive.",
             "Standing on the defensive indicates insufficient strength; attacking, a superabundance of strength.",
@@ -97,7 +100,7 @@ pairs = (
         ),
     ),
     (
-        r'[S-Us-u](.*)',
+        r"[S-Us-u](.*)",
         (
             "What the ancients called a clever fighter is one who not only wins, but excels in winning with ease.",
             "Hence his victories bring him neither reputation for wisdom nor credit for courage.",
@@ -108,7 +111,7 @@ pairs = (
         ),
     ),
     (
-        r'[V-Zv-z](.*)',
+        r"[V-Zv-z](.*)",
         (
             "It is a matter of life and death, a road either to safety or to ruin.",
             "Hold out baits to entice the enemy. Feign disorder, and crush him.",
@@ -118,17 +121,17 @@ pairs = (
             "Just as water retains no constant shape, so in warfare there are no constant conditions.",
         ),
     ),
-    (r'(.*)', ("Your statement insults me.", "")),
+    (r"(.*)", ("Your statement insults me.", "")),
 )
 
 suntsu_chatbot = Chat(pairs, reflections)
 
 
 def suntsu_chat():
-    print("Talk to the program by typing in plain English, using normal upper-")
-    print('and lower-case letters and punctuation.  Enter "quit" when done.')
-    print('=' * 72)
-    print("You seek enlightenment?")
+    safe_print("Talk to the program by typing in plain English, using normal upper-")
+    safe_print('and lower-case letters and punctuation.  Enter "quit" when done.')
+    safe_print("=" * 72)
+    safe_print("You seek enlightenment?")
 
     suntsu_chatbot.converse()
 

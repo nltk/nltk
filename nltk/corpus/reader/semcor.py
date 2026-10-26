@@ -1,20 +1,23 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: SemCor Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Nathan Schneider <nschneid@cs.cmu.edu>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 Corpus reader for the SemCor Corpus.
 """
-from __future__ import absolute_import, unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
-__docformat__ = 'epytext en'
+__docformat__ = "epytext en"
 
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView
 from nltk.tree import Tree
+from nltk.xmlsec import parse as safe_parse
 
 
 class SemcorCorpusReader(XMLCorpusReader):
@@ -35,7 +38,7 @@ class SemcorCorpusReader(XMLCorpusReader):
         :return: the given file(s) as a list of words and punctuation symbols.
         :rtype: list(str)
         """
-        return self._items(fileids, 'word', False, False, False)
+        return self._items(fileids, "word", False, False, False)
 
     def chunks(self, fileids=None):
         """
@@ -44,9 +47,9 @@ class SemcorCorpusReader(XMLCorpusReader):
             that form a unit.
         :rtype: list(list(str))
         """
-        return self._items(fileids, 'chunk', False, False, False)
+        return self._items(fileids, "chunk", False, False, False)
 
-    def tagged_chunks(self, fileids=None, tag=('pos' or 'sem' or 'both')):
+    def tagged_chunks(self, fileids=None, tag=("pos" or "sem" or "both")):
         """
         :return: the given file(s) as a list of tagged chunks, represented
             in tree form.
@@ -59,7 +62,7 @@ class SemcorCorpusReader(XMLCorpusReader):
             have no lemma.  Other chunks not in WordNet have no semantic tag.
             Punctuation tokens have `None` for their part of speech tag.)
         """
-        return self._items(fileids, 'chunk', False, tag != 'sem', tag != 'pos')
+        return self._items(fileids, "chunk", False, tag != "sem", tag != "pos")
 
     def sents(self, fileids=None):
         """
@@ -67,7 +70,7 @@ class SemcorCorpusReader(XMLCorpusReader):
             as a list of word strings.
         :rtype: list(list(str))
         """
-        return self._items(fileids, 'word', True, False, False)
+        return self._items(fileids, "word", True, False, False)
 
     def chunk_sents(self, fileids=None):
         """
@@ -75,9 +78,9 @@ class SemcorCorpusReader(XMLCorpusReader):
             as a list of chunks.
         :rtype: list(list(list(str)))
         """
-        return self._items(fileids, 'chunk', True, False, False)
+        return self._items(fileids, "chunk", True, False, False)
 
-    def tagged_sents(self, fileids=None, tag=('pos' or 'sem' or 'both')):
+    def tagged_sents(self, fileids=None, tag=("pos" or "sem" or "both")):
         """
         :return: the given file(s) as a list of sentences. Each sentence
             is represented as a list of tagged chunks (in tree form).
@@ -90,10 +93,10 @@ class SemcorCorpusReader(XMLCorpusReader):
             have no lemma.  Other chunks not in WordNet have no semantic tag.
             Punctuation tokens have `None` for their part of speech tag.)
         """
-        return self._items(fileids, 'chunk', True, tag != 'sem', tag != 'pos')
+        return self._items(fileids, "chunk", True, tag != "sem", tag != "pos")
 
     def _items(self, fileids, unit, bracket_sent, pos_tag, sem_tag):
-        if unit == 'word' and not bracket_sent:
+        if unit == "word" and not bracket_sent:
             # the result of the SemcorWordView may be a multiword unit, so the
             # LazyConcatenation will make sure the sentence is flattened
             _ = lambda *args: LazyConcatenation(
@@ -122,23 +125,24 @@ class SemcorCorpusReader(XMLCorpusReader):
         :param sem_tag: Whether to include semantic tags, namely WordNet lemma
             and OOV named entity status.
         """
-        assert unit in ('token', 'word', 'chunk')
+        assert unit in ("token", "word", "chunk")
         result = []
 
-        xmldoc = ElementTree.parse(fileid).getroot()
-        for xmlsent in xmldoc.findall('.//s'):
+        with fileid.open() as fp:
+            xmldoc = safe_parse(fp).getroot()
+        for xmlsent in xmldoc.findall(".//s"):
             sent = []
             for xmlword in _all_xmlwords_in(xmlsent):
                 itm = SemcorCorpusReader._word(
                     xmlword, unit, pos_tag, sem_tag, self._wordnet
                 )
-                if unit == 'word':
+                if unit == "word":
                     sent.extend(itm)
                 else:
                     sent.append(itm)
 
             if bracket_sent:
-                result.append(SemcorSentence(xmlsent.attrib['snum'], sent))
+                result.append(SemcorSentence(xmlsent.attrib["snum"], sent))
             else:
                 result.extend(sent)
 
@@ -151,29 +155,29 @@ class SemcorCorpusReader(XMLCorpusReader):
         if not tkn:
             tkn = ""  # fixes issue 337?
 
-        lemma = xmlword.get('lemma', tkn)  # lemma or NE class
-        lexsn = xmlword.get('lexsn')  # lex_sense (locator for the lemma's sense)
+        lemma = xmlword.get("lemma", tkn)  # lemma or NE class
+        lexsn = xmlword.get("lexsn")  # lex_sense (locator for the lemma's sense)
         if lexsn is not None:
-            sense_key = lemma + '%' + lexsn
-            wnpos = ('n', 'v', 'a', 'r', 's')[
-                int(lexsn.split(':')[0]) - 1
+            sense_key = lemma + "%" + lexsn
+            wnpos = ("n", "v", "a", "r", "s")[
+                int(lexsn.split(":")[0]) - 1
             ]  # see http://wordnet.princeton.edu/man/senseidx.5WN.html
         else:
             sense_key = wnpos = None
         redef = xmlword.get(
-            'rdf', tkn
+            "rdf", tkn
         )  # redefinition--this indicates the lookup string
         # does not exactly match the enclosed string, e.g. due to typographical adjustments
         # or discontinuity of a multiword expression. If a redefinition has occurred,
         # the "rdf" attribute holds its inflected form and "lemma" holds its lemma.
         # For NEs, "rdf", "lemma", and "pn" all hold the same value (the NE class).
-        sensenum = xmlword.get('wnsn')  # WordNet sense number
-        isOOVEntity = 'pn' in xmlword.keys()  # a "personal name" (NE) not in WordNet
+        sensenum = xmlword.get("wnsn")  # WordNet sense number
+        isOOVEntity = "pn" in xmlword.keys()  # a "personal name" (NE) not in WordNet
         pos = xmlword.get(
-            'pos'
+            "pos"
         )  # part of speech for the whole chunk (None for punctuation)
 
-        if unit == 'token':
+        if unit == "token":
             if not pos_tag and not sem_tag:
                 itm = tkn
             else:
@@ -184,8 +188,8 @@ class SemcorCorpusReader(XMLCorpusReader):
                 )
             return itm
         else:
-            ww = tkn.split('_')  # TODO: case where punctuation intervenes in MWE
-            if unit == 'word':
+            ww = tkn.split("_")  # TODO: case where punctuation intervenes in MWE
+            if unit == "word":
                 return ww
             else:
                 if sensenum is not None:
@@ -194,27 +198,27 @@ class SemcorCorpusReader(XMLCorpusReader):
                     except Exception:
                         # cannot retrieve the wordnet.Lemma object. possible reasons:
                         #  (a) the wordnet corpus is not downloaded;
-                        #  (b) a nonexistant sense is annotated: e.g., such.s.00 triggers:
+                        #  (b) a nonexistent sense is annotated: e.g., such.s.00 triggers:
                         #  nltk.corpus.reader.wordnet.WordNetError: No synset found for key u'such%5:00:01:specified:00'
                         # solution: just use the lemma name as a string
                         try:
-                            sense = '%s.%s.%02d' % (
+                            sense = "%s.%s.%02d" % (
                                 lemma,
                                 wnpos,
                                 int(sensenum),
                             )  # e.g.: reach.v.02
                         except ValueError:
                             sense = (
-                                lemma + '.' + wnpos + '.' + sensenum
+                                lemma + "." + wnpos + "." + sensenum
                             )  # e.g. the sense number may be "2;1"
 
                 bottom = [Tree(pos, ww)] if pos_tag else ww
 
                 if sem_tag and isOOVEntity:
                     if sensenum is not None:
-                        return Tree(sense, [Tree('NE', bottom)])
+                        return Tree(sense, [Tree("NE", bottom)])
                     else:  # 'other' NE
-                        return Tree('NE', bottom)
+                        return Tree("NE", bottom)
                 elif sem_tag and sensenum is not None:
                     return Tree(sense, bottom)
                 elif pos_tag:
@@ -223,14 +227,25 @@ class SemcorCorpusReader(XMLCorpusReader):
                     return bottom  # chunk as a list
 
 
-def _all_xmlwords_in(elt, result=None):
+#: Bound recursion over nested XML so an adversarially deep corpus file raises
+#: ValueError instead of an uncaught RecursionError (CWE-674).
+MAX_XML_DEPTH = 500
+
+
+def _all_xmlwords_in(elt, result=None, _depth=0, max_depth=None):
+    if max_depth is None:
+        max_depth = MAX_XML_DEPTH
+    if _depth > max_depth:
+        raise ValueError(
+            "XML nesting depth exceeds MAX_XML_DEPTH ({0}); the input may be adversarially deep.".format(max_depth)
+        )
     if result is None:
         result = []
     for child in elt:
-        if child.tag in ('wf', 'punc'):
+        if child.tag in ("wf", "punc"):
             result.append(child)
         else:
-            _all_xmlwords_in(child, result)
+            _all_xmlwords_in(child, result, _depth + 1, max_depth)
     return result
 
 
@@ -260,9 +275,9 @@ class SemcorWordView(XMLCorpusView):
             and OOV named entity status.
         """
         if bracket_sent:
-            tagspec = '.*/s'
+            tagspec = ".*/s"
         else:
-            tagspec = '.*/s/(punc|wf)'
+            tagspec = ".*/s/(punc|wf)"
 
         self._unit = unit
         self._sent = bracket_sent
@@ -286,12 +301,12 @@ class SemcorWordView(XMLCorpusView):
     def handle_sent(self, elt):
         sent = []
         for child in elt:
-            if child.tag in ('wf', 'punc'):
+            if child.tag in ("wf", "punc"):
                 itm = self.handle_word(child)
-                if self._unit == 'word':
+                if self._unit == "word":
                     sent.extend(itm)
                 else:
                     sent.append(itm)
             else:
-                raise ValueError('Unexpected element %s' % child.tag)
-        return SemcorSentence(elt.attrib['snum'], sent)
+                raise ValueError("Unexpected element %s" % child.tag)
+        return SemcorSentence(elt.attrib["snum"], sent)

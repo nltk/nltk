@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Trevor Cohn <tacohn@csse.unimelb.edu.au>
-# URL: <http://nltk.sourceforge.net>
+# URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
 
 r"""
@@ -16,15 +17,15 @@ money expressions, and any other non-whitespace sequences:
 
     >>> from nltk.tokenize import RegexpTokenizer
     >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
-    >>> tokenizer = RegexpTokenizer('\w+|\$[\d\.]+|\S+')
-    >>> tokenizer.tokenize(s)
+    >>> tokenizer = RegexpTokenizer(r'\w+|\$[\d\.]+|\S+')
+    >>> tokenizer.tokenize(s) # doctest: +NORMALIZE_WHITESPACE
     ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York', '.',
     'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
 
 A ``RegexpTokenizer`` can use its regexp to match delimiters instead:
 
-    >>> tokenizer = RegexpTokenizer('\s+', gaps=True)
-    >>> tokenizer.tokenize(s)
+    >>> tokenizer = RegexpTokenizer(r'\s+', gaps=True)
+    >>> tokenizer.tokenize(s) # doctest: +NORMALIZE_WHITESPACE
     ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.',
     'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
 
@@ -34,7 +35,7 @@ the start or end of the string.
 The material between the tokens is discarded.  For example,
 the following tokenizer selects just the capitalized words:
 
-    >>> capword_tokenizer = RegexpTokenizer('[A-Z]\w+')
+    >>> capword_tokenizer = RegexpTokenizer(r'[A-Z]\w+')
     >>> capword_tokenizer.tokenize(s)
     ['Good', 'New', 'York', 'Please', 'Thanks']
 
@@ -43,17 +44,17 @@ that use pre-defined regular expressions.
 
     >>> from nltk.tokenize import BlanklineTokenizer
     >>> # Uses '\s*\n\s*\n\s*':
-    >>> BlanklineTokenizer().tokenize(s)
+    >>> BlanklineTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
     ['Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.',
     'Thanks.']
 
 All of the regular expression tokenizers are also available as functions:
 
     >>> from nltk.tokenize import regexp_tokenize, wordpunct_tokenize, blankline_tokenize
-    >>> regexp_tokenize(s, pattern='\w+|\$[\d\.]+|\S+')
+    >>> regexp_tokenize(s, pattern=r'\w+|\$[\d\.]+|\S+') # doctest: +NORMALIZE_WHITESPACE
     ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York', '.',
     'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
-    >>> wordpunct_tokenize(s)
+    >>> wordpunct_tokenize(s) # doctest: +NORMALIZE_WHITESPACE
     ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York',
      '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
     >>> blankline_tokenize(s)
@@ -65,22 +66,22 @@ argument.  This differs from the conventions used by Python's
 ``re`` functions, where the pattern is always the first argument.
 (This is for consistency with the other NLTK tokenizers.)
 """
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
 import re
 
+from nltk import redos
 from nltk.tokenize.api import TokenizerI
 from nltk.tokenize.util import regexp_span_tokenize
-from nltk.compat import python_2_unicode_compatible
 
 
-@python_2_unicode_compatible
 class RegexpTokenizer(TokenizerI):
-    """
+    r"""
     A tokenizer that splits a string using a regular expression, which
     matches either the tokens or the separators between tokens.
 
-        >>> tokenizer = RegexpTokenizer('\w+|\$[\d\.]+|\S+')
+        >>> tokenizer = RegexpTokenizer(r'\w+|\$[\d\.]+|\S+')
 
     :type pattern: str
     :param pattern: The pattern used to build this tokenizer.
@@ -110,7 +111,7 @@ class RegexpTokenizer(TokenizerI):
         flags=re.UNICODE | re.MULTILINE | re.DOTALL,
     ):
         # If they gave us a regexp object, extract the pattern.
-        pattern = getattr(pattern, 'pattern', pattern)
+        pattern = getattr(pattern, "pattern", pattern)
 
         self._pattern = pattern
         self._gaps = gaps
@@ -120,7 +121,12 @@ class RegexpTokenizer(TokenizerI):
 
     def _check_regexp(self):
         if self._regexp is None:
-            self._regexp = re.compile(self._pattern, self._flags)
+            # ``pattern`` is caller-supplied, so compile it through ``redos``:
+            # a crafted pattern (e.g. ``(a+)+$``) would otherwise backtrack
+            # catastrophically and hang the process (CWE-1333). ``redos``
+            # compiles with the ``regex`` engine and bounds every match with a
+            # wall-clock timeout. See ``nltk/redos.py``.
+            self._regexp = redos.compile(self._pattern, self._flags)
 
     def tokenize(self, text):
         self._check_regexp()
@@ -143,11 +149,14 @@ class RegexpTokenizer(TokenizerI):
                 if not (self._discard_empty and left == right):
                     yield left, right
         else:
-            for m in re.finditer(self._regexp, text):
+            # ``self._regexp`` is a ``redos.TimedPattern``; call its own
+            # ``finditer`` so the wall-clock timeout is applied (a bare
+            # ``re.finditer(pattern, ...)`` would neither accept it nor bound it).
+            for m in self._regexp.finditer(text):
                 yield m.span()
 
     def __repr__(self):
-        return '%s(pattern=%r, gaps=%r, discard_empty=%r, flags=%r)' % (
+        return "{}(pattern={!r}, gaps={!r}, discard_empty={!r}, flags={!r})".format(
             self.__class__.__name__,
             self._pattern,
             self._gaps,
@@ -163,13 +172,13 @@ class WhitespaceTokenizer(RegexpTokenizer):
 
         >>> from nltk.tokenize import WhitespaceTokenizer
         >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
-        >>> WhitespaceTokenizer().tokenize(s)
+        >>> WhitespaceTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
         ['Good', 'muffins', 'cost', '$3.88', 'in', 'New', 'York.',
         'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks.']
     """
 
     def __init__(self):
-        RegexpTokenizer.__init__(self, r'\s+', gaps=True)
+        RegexpTokenizer.__init__(self, r"\s+", gaps=True)
 
 
 class BlanklineTokenizer(RegexpTokenizer):
@@ -180,23 +189,26 @@ class BlanklineTokenizer(RegexpTokenizer):
     """
 
     def __init__(self):
-        RegexpTokenizer.__init__(self, r'\s*\n\s*\n\s*', gaps=True)
+        # The leading run is taken only when no whitespace precedes it: split
+        # retried ``\s*`` from every position of a space run with no blank line
+        # after it, O(n**2) (CWE-407). No split ever began inside such a run.
+        RegexpTokenizer.__init__(self, r"(?:(?<!\s)\s*)?\n\s*\n\s*", gaps=True)
 
 
 class WordPunctTokenizer(RegexpTokenizer):
-    """
+    r"""
     Tokenize a text into a sequence of alphabetic and
     non-alphabetic characters, using the regexp ``\w+|[^\w\s]+``.
 
         >>> from nltk.tokenize import WordPunctTokenizer
-        >>> s = "Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\n\\nThanks."
-        >>> WordPunctTokenizer().tokenize(s)
+        >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\n\nThanks."
+        >>> WordPunctTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
         ['Good', 'muffins', 'cost', '$', '3', '.', '88', 'in', 'New', 'York',
         '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
     """
 
     def __init__(self):
-        RegexpTokenizer.__init__(self, r'\w+|[^\w\s]+')
+        RegexpTokenizer.__init__(self, r"\w+|[^\w\s]+")
 
 
 ######################################################################

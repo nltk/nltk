@@ -1,14 +1,17 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+# -*- coding: utf-8 -*-
+import six
 # Natural Language Toolkit: Cooper storage for Quantifier Ambiguity
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function
 
-from nltk.sem.logic import LambdaExpression, ApplicationExpression, Variable
 from nltk.parse import load_parser
 from nltk.parse.featurechart import InstantiateVarsChart
+from nltk.sem.logic import ApplicationExpression, LambdaExpression, Variable
+from nltk.termsec import safe_print
 
 
 class CooperStore(object):
@@ -26,10 +29,10 @@ class CooperStore(object):
         self.featstruct = featstruct
         self.readings = []
         try:
-            self.core = featstruct['CORE']
-            self.store = featstruct['STORE']
+            self.core = featstruct["CORE"]
+            self.store = featstruct["STORE"]
         except KeyError:
-            print("%s is not a Cooper storage structure" % featstruct)
+            safe_print("%s is not a Cooper storage structure" % featstruct)
 
     def _permute(self, lst):
         """
@@ -46,7 +49,7 @@ class CooperStore(object):
             yield ()
 
     def s_retrieve(self, trace=False):
-        """
+        r"""
         Carry out S-Retrieval of binding operators in store. If hack=True,
         serialize the bindop and core as strings and reparse. Ugh.
 
@@ -62,7 +65,7 @@ class CooperStore(object):
         """
         for perm, store_perm in enumerate(self._permute(self.store)):
             if trace:
-                print("Permutation %s" % (perm + 1))
+                safe_print("Permutation %s" % (perm + 1))
             term = self.core
             for bindop in store_perm:
                 # we just want the arguments that are wrapped by the 'bo' predicate
@@ -73,7 +76,7 @@ class CooperStore(object):
                     quant, LambdaExpression(varex.variable, term)
                 )
                 if trace:
-                    print("  ", term)
+                    safe_print("  ", term)
                 term = term.simplify()
             self.readings.append(term)
 
@@ -83,7 +86,7 @@ def parse_with_bindops(sentence, grammar=None, trace=0):
     Use a grammar with Binding Operators to parse a sentence.
     """
     if not grammar:
-        grammar = 'grammars/book_grammars/storage.fcfg'
+        grammar = "grammars/book_grammars/storage.fcfg"
     parser = load_parser(grammar, trace=trace, chart_class=InstantiateVarsChart)
     # Parse the sentence.
     tokens = sentence.split()
@@ -95,31 +98,31 @@ def demo():
 
     sentence = "every girl chases a dog"
     # sentence = "a man gives a bone to every dog"
-    print()
-    print("Analyis of sentence '%s'" % sentence)
-    print("=" * 50)
+    safe_print()
+    safe_print("Analysis of sentence '%s'" % sentence)
+    safe_print("=" * 50)
     trees = cs.parse_with_bindops(sentence, trace=0)
     for tree in trees:
-        semrep = cs.CooperStore(tree.label()['SEM'])
-        print()
-        print("Binding operators:")
-        print("-" * 15)
+        semrep = cs.CooperStore(tree.label()["SEM"])
+        safe_print()
+        safe_print("Binding operators:")
+        safe_print("-" * 15)
         for s in semrep.store:
-            print(s)
-        print()
-        print("Core:")
-        print("-" * 15)
-        print(semrep.core)
-        print()
-        print("S-Retrieval:")
-        print("-" * 15)
+            safe_print(s)
+        safe_print()
+        safe_print("Core:")
+        safe_print("-" * 15)
+        safe_print(semrep.core)
+        safe_print()
+        safe_print("S-Retrieval:")
+        safe_print("-" * 15)
         semrep.s_retrieve(trace=True)
-        print("Readings:")
-        print("-" * 15)
+        safe_print("Readings:")
+        safe_print("-" * 15)
 
         for i, reading in enumerate(semrep.readings):
-            print("%s: %s" % (i + 1, reading))
+            safe_print("{0}: {1}".format(i + 1, reading))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

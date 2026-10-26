@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Porter Stemmer
 
@@ -12,23 +13,22 @@ with some optional deviations that can be turned on or off with the
 Martin Porter, the algorithm's inventor, maintains a web page about the
 algorithm at
 
-    http://www.tartarus.org/~martin/PorterStemmer/
+    https://www.tartarus.org/~martin/PorterStemmer/
 
 which includes another Python implementation and other implementations
 in many languages.
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
-from __future__ import print_function, unicode_literals
+__docformat__ = "plaintext"
 
-__docformat__ = 'plaintext'
 
-import re
-
+from nltk import redos
 from nltk.stem.api import StemmerI
-from nltk.compat import python_2_unicode_compatible
+from nltk.termsec import safe_print
 
 
-@python_2_unicode_compatible
 class PorterStemmer(StemmerI):
     """
     A word stemmer based on the Porter stemming algorithm.
@@ -36,7 +36,7 @@ class PorterStemmer(StemmerI):
         Porter, M. "An algorithm for suffix stripping."
         Program 14.3 (1980): 130-137.
 
-    See http://www.tartarus.org/~martin/PorterStemmer/ for the homepage
+    See https://www.tartarus.org/~martin/PorterStemmer/ for the homepage
     of the algorithm.
 
     Martin Porter has endorsed several modifications to the Porter
@@ -47,30 +47,33 @@ class PorterStemmer(StemmerI):
     passing the appropriate constant to the class constructor's `mode`
     attribute:
 
-        PorterStemmer.ORIGINAL_ALGORITHM
-        - Implementation that is faithful to the original paper.
+    - PorterStemmer.ORIGINAL_ALGORITHM
 
-          Note that Martin Porter has deprecated this version of the
-          algorithm. Martin distributes implementations of the Porter
-          Stemmer in many languages, hosted at:
+        An implementation that is faithful to the original paper.
 
-            http://www.tartarus.org/~martin/PorterStemmer/
+        Note that Martin Porter has deprecated this version of the
+        algorithm. Martin distributes implementations of the Porter
+        Stemmer in many languages, hosted at:
 
-          and all of these implementations include his extensions. He
-          strongly recommends against using the original, published
-          version of the algorithm; only use this mode if you clearly
-          understand why you are choosing to do so.
+        https://www.tartarus.org/~martin/PorterStemmer/
 
-        PorterStemmer.MARTIN_EXTENSIONS
-        - Implementation that only uses the modifications to the
-          algorithm that are included in the implementations on Martin
-          Porter's website. He has declared Porter frozen, so the
-          behaviour of those implementations should never change.
+        and all of these implementations include his extensions. He
+        strongly recommends against using the original, published
+        version of the algorithm; only use this mode if you clearly
+        understand why you are choosing to do so.
 
-        PorterStemmer.NLTK_EXTENSIONS (default)
-        - Implementation that includes further improvements devised by
-          NLTK contributors or taken from other modified implementations
-          found on the web.
+    - PorterStemmer.MARTIN_EXTENSIONS
+
+        An implementation that only uses the modifications to the
+        algorithm that are included in the implementations on Martin
+        Porter's website. He has declared Porter frozen, so the
+        behaviour of those implementations should never change.
+
+    - PorterStemmer.NLTK_EXTENSIONS (default)
+
+        An implementation that includes further improvements devised by
+        NLTK contributors or taken from other modified implementations
+        found on the web.
 
     For the best stemming, you should use the default NLTK_EXTENSIONS
     version. However, if you need to get the same results as either the
@@ -80,9 +83,9 @@ class PorterStemmer(StemmerI):
     """
 
     # Modes the Stemmer can be instantiated in
-    NLTK_EXTENSIONS = 'NLTK_EXTENSIONS'
-    MARTIN_EXTENSIONS = 'MARTIN_EXTENSIONS'
-    ORIGINAL_ALGORITHM = 'ORIGINAL_ALGORITHM'
+    NLTK_EXTENSIONS = "NLTK_EXTENSIONS"
+    MARTIN_EXTENSIONS = "MARTIN_EXTENSIONS"
+    ORIGINAL_ALGORITHM = "ORIGINAL_ALGORITHM"
 
     def __init__(self, mode=NLTK_EXTENSIONS):
         if mode not in (
@@ -122,7 +125,7 @@ class PorterStemmer(StemmerI):
                 for val in irregular_forms[key]:
                     self.pool[val] = key
 
-        self.vowels = frozenset(['a', 'e', 'i', 'o', 'u'])
+        self.vowels = frozenset(["a", "e", "i", "o", "u"])
 
     def _is_consonant(self, word, i):
         """Returns True if word[i] is a consonant, False otherwise
@@ -138,15 +141,44 @@ class PorterStemmer(StemmerI):
         """
         if word[i] in self.vowels:
             return False
-        if word[i] == 'y':
-            if i == 0:
-                return True
-            else:
-                return not self._is_consonant(word, i - 1)
+        if word[i] == "y":
+            # A 'y' counts as a consonant when the letter before it is not
+            # one, and as a vowel otherwise.  Resolve a run of 'y's
+            # iteratively instead of recursively so that a token such as
+            # "yyyy..." cannot drive the recursion depth past the
+            # interpreter limit and raise an uncaught RecursionError
+            # (CWE-674).
+            negate = False
+            while i > 0 and word[i] == "y":
+                negate = not negate
+                i -= 1
+            return (word[i] not in self.vowels) != negate
         return True
 
+    def _consonant_flags(self, word):
+        """Classify every character of ``word`` as consonant/vowel in a single
+        left-to-right O(n) pass.
+
+        Returns a list of bools (``True`` == consonant) equivalent to calling
+        ``_is_consonant(word, i)`` for each ``i``, but without that method's
+        per-call backward walk over a run of 'y's. Callers that classify every
+        position (``_measure``, ``_contains_vowel``) would otherwise be O(n^2)
+        -- a quadratic-time DoS on a token like ``"yyyy..."`` (CWE-407). A 'y'
+        is a consonant iff the preceding letter is not one (or it starts the
+        word), which is exactly the previous flag we just computed.
+        """
+        flags = []
+        for i, ch in enumerate(word):
+            if ch in self.vowels:
+                flags.append(False)
+            elif ch == "y":
+                flags.append(True if i == 0 else not flags[i - 1])
+            else:
+                flags.append(True)
+        return flags
+
     def _measure(self, stem):
-        """Returns the 'measure' of stem, per definition in the paper
+        r"""Returns the 'measure' of stem, per definition in the paper
 
         From the paper:
 
@@ -179,32 +211,27 @@ class PorterStemmer(StemmerI):
                 m=1    TROUBLE,  OATS,  TREES,  IVY.
                 m=2    TROUBLES,  PRIVATE,  OATEN,  ORRERY.
         """
-        cv_sequence = ''
-
         # Construct a string of 'c's and 'v's representing whether each
-        # character in `stem` is a consonant or a vowel.
+        # character in `stem` is a consonant or a vowel, in a single O(n) pass
+        # (see _consonant_flags; a per-position _is_consonant loop is O(n^2)).
         # e.g. 'falafel' becomes 'cvcvcvc',
         #      'architecture' becomes 'vcccvcvccvcv'
-        for i in range(len(stem)):
-            if self._is_consonant(stem, i):
-                cv_sequence += 'c'
-            else:
-                cv_sequence += 'v'
+        cv_sequence = "".join(
+            "c" if is_cons else "v" for is_cons in self._consonant_flags(stem)
+        )
 
-        # Count the number of 'vc' occurences, which is equivalent to
+        # Count the number of 'vc' occurrences, which is equivalent to
         # the number of 'VC' occurrences in Porter's reduced form in the
         # docstring above, which is in turn equivalent to `m`
-        return cv_sequence.count('vc')
+        return cv_sequence.count("vc")
 
     def _has_positive_measure(self, stem):
         return self._measure(stem) > 0
 
     def _contains_vowel(self, stem):
         """Returns True if stem contains a vowel, else False"""
-        for i in range(len(stem)):
-            if not self._is_consonant(stem, i):
-                return True
-        return False
+        # Single O(n) pass (a per-position _is_consonant loop is O(n^2)).
+        return not all(self._consonant_flags(stem))
 
     def _ends_double_consonant(self, word):
         """Implements condition *d from the paper
@@ -230,7 +257,7 @@ class PorterStemmer(StemmerI):
             and self._is_consonant(word, len(word) - 3)
             and not self._is_consonant(word, len(word) - 2)
             and self._is_consonant(word, len(word) - 1)
-            and word[-1] not in ('w', 'x', 'y')
+            and word[-1] not in ("w", "x", "y")
         ) or (
             self.mode == self.NLTK_EXTENSIONS
             and len(word) == 2
@@ -241,7 +268,7 @@ class PorterStemmer(StemmerI):
     def _replace_suffix(self, word, suffix, replacement):
         """Replaces `suffix` of `word` with `replacement"""
         assert word.endswith(suffix), "Given word doesn't end with given suffix"
-        if suffix == '':
+        if suffix == "":
             return word + replacement
         else:
             return word[: -len(suffix)] + replacement
@@ -257,7 +284,7 @@ class PorterStemmer(StemmerI):
         """
         for rule in rules:
             suffix, replacement, condition = rule
-            if suffix == '*d' and self._ends_double_consonant(word):
+            if suffix == "*d" and self._ends_double_consonant(word):
                 stem = word[:-2]
                 if condition is None or condition(stem):
                     return stem + replacement
@@ -265,7 +292,7 @@ class PorterStemmer(StemmerI):
                     # Don't try any further rules
                     return word
             if word.endswith(suffix):
-                stem = self._replace_suffix(word, suffix, '')
+                stem = self._replace_suffix(word, suffix, "")
                 if condition is None or condition(stem):
                     return stem + replacement
                 else:
@@ -288,16 +315,16 @@ class PorterStemmer(StemmerI):
         # this NLTK-only rule extends the original algorithm, so
         # that 'flies'->'fli' but 'dies'->'die' etc
         if self.mode == self.NLTK_EXTENSIONS:
-            if word.endswith('ies') and len(word) == 4:
-                return self._replace_suffix(word, 'ies', 'ie')
+            if word.endswith("ies") and len(word) == 4:
+                return self._replace_suffix(word, "ies", "ie")
 
         return self._apply_rule_list(
             word,
             [
-                ('sses', 'ss', None),  # SSES -> SS
-                ('ies', 'i', None),  # IES  -> I
-                ('ss', 'ss', None),  # SS   -> SS
-                ('s', '', None),  # S    ->
+                ("sses", "ss", None),  # SSES -> SS
+                ("ies", "i", None),  # IES  -> I
+                ("ss", "ss", None),  # SS   -> SS
+                ("s", "", None),  # S    ->
             ],
         )
 
@@ -337,25 +364,25 @@ class PorterStemmer(StemmerI):
         # this NLTK-only block extends the original algorithm, so that
         # 'spied'->'spi' but 'died'->'die' etc
         if self.mode == self.NLTK_EXTENSIONS:
-            if word.endswith('ied'):
+            if word.endswith("ied"):
                 if len(word) == 4:
-                    return self._replace_suffix(word, 'ied', 'ie')
+                    return self._replace_suffix(word, "ied", "ie")
                 else:
-                    return self._replace_suffix(word, 'ied', 'i')
+                    return self._replace_suffix(word, "ied", "i")
 
         # (m>0) EED -> EE
-        if word.endswith('eed'):
-            stem = self._replace_suffix(word, 'eed', '')
+        if word.endswith("eed"):
+            stem = self._replace_suffix(word, "eed", "")
             if self._measure(stem) > 0:
-                return stem + 'ee'
+                return stem + "ee"
             else:
                 return word
 
         rule_2_or_3_succeeded = False
 
-        for suffix in ['ed', 'ing']:
+        for suffix in ["ed", "ing"]:
             if word.endswith(suffix):
-                intermediate_stem = self._replace_suffix(word, suffix, '')
+                intermediate_stem = self._replace_suffix(word, suffix, "")
                 if self._contains_vowel(intermediate_stem):
                     rule_2_or_3_succeeded = True
                     break
@@ -366,20 +393,20 @@ class PorterStemmer(StemmerI):
         return self._apply_rule_list(
             intermediate_stem,
             [
-                ('at', 'ate', None),  # AT -> ATE
-                ('bl', 'ble', None),  # BL -> BLE
-                ('iz', 'ize', None),  # IZ -> IZE
+                ("at", "ate", None),  # AT -> ATE
+                ("bl", "ble", None),  # BL -> BLE
+                ("iz", "ize", None),  # IZ -> IZE
                 # (*d and not (*L or *S or *Z))
                 # -> single letter
                 (
-                    '*d',
+                    "*d",
                     intermediate_stem[-1],
-                    lambda stem: intermediate_stem[-1] not in ('l', 's', 'z'),
+                    lambda stem: intermediate_stem[-1] not in ("l", "s", "z"),
                 ),
                 # (m=1 and *o) -> E
                 (
-                    '',
-                    'e',
+                    "",
+                    "e",
                     lambda stem: (self._measure(stem) == 1 and self._ends_cvc(stem)),
                 ),
             ],
@@ -424,11 +451,13 @@ class PorterStemmer(StemmerI):
             word,
             [
                 (
-                    'y',
-                    'i',
-                    nltk_condition
-                    if self.mode == self.NLTK_EXTENSIONS
-                    else original_condition,
+                    "y",
+                    "i",
+                    (
+                        nltk_condition
+                        if self.mode == self.NLTK_EXTENSIONS
+                        else original_condition
+                    ),
                 )
             ],
         )
@@ -467,39 +496,39 @@ class PorterStemmer(StemmerI):
             # Instead of applying the ALLI -> AL rule after '(a)bli' per
             # the published algorithm, instead we apply it first, and,
             # if it succeeds, run the result through step2 again.
-            if word.endswith('alli') and self._has_positive_measure(
-                self._replace_suffix(word, 'alli', '')
+            if word.endswith("alli") and self._has_positive_measure(
+                self._replace_suffix(word, "alli", "")
             ):
-                return self._step2(self._replace_suffix(word, 'alli', 'al'))
+                return self._step2(self._replace_suffix(word, "alli", "al"))
 
-        bli_rule = ('bli', 'ble', self._has_positive_measure)
-        abli_rule = ('abli', 'able', self._has_positive_measure)
+        bli_rule = ("bli", "ble", self._has_positive_measure)
+        abli_rule = ("abli", "able", self._has_positive_measure)
 
         rules = [
-            ('ational', 'ate', self._has_positive_measure),
-            ('tional', 'tion', self._has_positive_measure),
-            ('enci', 'ence', self._has_positive_measure),
-            ('anci', 'ance', self._has_positive_measure),
-            ('izer', 'ize', self._has_positive_measure),
+            ("ational", "ate", self._has_positive_measure),
+            ("tional", "tion", self._has_positive_measure),
+            ("enci", "ence", self._has_positive_measure),
+            ("anci", "ance", self._has_positive_measure),
+            ("izer", "ize", self._has_positive_measure),
             abli_rule if self.mode == self.ORIGINAL_ALGORITHM else bli_rule,
-            ('alli', 'al', self._has_positive_measure),
-            ('entli', 'ent', self._has_positive_measure),
-            ('eli', 'e', self._has_positive_measure),
-            ('ousli', 'ous', self._has_positive_measure),
-            ('ization', 'ize', self._has_positive_measure),
-            ('ation', 'ate', self._has_positive_measure),
-            ('ator', 'ate', self._has_positive_measure),
-            ('alism', 'al', self._has_positive_measure),
-            ('iveness', 'ive', self._has_positive_measure),
-            ('fulness', 'ful', self._has_positive_measure),
-            ('ousness', 'ous', self._has_positive_measure),
-            ('aliti', 'al', self._has_positive_measure),
-            ('iviti', 'ive', self._has_positive_measure),
-            ('biliti', 'ble', self._has_positive_measure),
+            ("alli", "al", self._has_positive_measure),
+            ("entli", "ent", self._has_positive_measure),
+            ("eli", "e", self._has_positive_measure),
+            ("ousli", "ous", self._has_positive_measure),
+            ("ization", "ize", self._has_positive_measure),
+            ("ation", "ate", self._has_positive_measure),
+            ("ator", "ate", self._has_positive_measure),
+            ("alism", "al", self._has_positive_measure),
+            ("iveness", "ive", self._has_positive_measure),
+            ("fulness", "ful", self._has_positive_measure),
+            ("ousness", "ous", self._has_positive_measure),
+            ("aliti", "al", self._has_positive_measure),
+            ("iviti", "ive", self._has_positive_measure),
+            ("biliti", "ble", self._has_positive_measure),
         ]
 
         if self.mode == self.NLTK_EXTENSIONS:
-            rules.append(('fulli', 'ful', self._has_positive_measure))
+            rules.append(("fulli", "ful", self._has_positive_measure))
 
             # The 'l' of the 'logi' -> 'log' rule is put with the stem,
             # so that short stems like 'geo' 'theo' etc work like
@@ -531,13 +560,13 @@ class PorterStemmer(StemmerI):
         return self._apply_rule_list(
             word,
             [
-                ('icate', 'ic', self._has_positive_measure),
-                ('ative', '', self._has_positive_measure),
-                ('alize', 'al', self._has_positive_measure),
-                ('iciti', 'ic', self._has_positive_measure),
-                ('ical', 'ic', self._has_positive_measure),
-                ('ful', '', self._has_positive_measure),
-                ('ness', '', self._has_positive_measure),
+                ("icate", "ic", self._has_positive_measure),
+                ("ative", "", self._has_positive_measure),
+                ("alize", "al", self._has_positive_measure),
+                ("iciti", "ic", self._has_positive_measure),
+                ("ical", "ic", self._has_positive_measure),
+                ("ful", "", self._has_positive_measure),
+                ("ness", "", self._has_positive_measure),
             ],
         )
 
@@ -574,30 +603,30 @@ class PorterStemmer(StemmerI):
         return self._apply_rule_list(
             word,
             [
-                ('al', '', measure_gt_1),
-                ('ance', '', measure_gt_1),
-                ('ence', '', measure_gt_1),
-                ('er', '', measure_gt_1),
-                ('ic', '', measure_gt_1),
-                ('able', '', measure_gt_1),
-                ('ible', '', measure_gt_1),
-                ('ant', '', measure_gt_1),
-                ('ement', '', measure_gt_1),
-                ('ment', '', measure_gt_1),
-                ('ent', '', measure_gt_1),
+                ("al", "", measure_gt_1),
+                ("ance", "", measure_gt_1),
+                ("ence", "", measure_gt_1),
+                ("er", "", measure_gt_1),
+                ("ic", "", measure_gt_1),
+                ("able", "", measure_gt_1),
+                ("ible", "", measure_gt_1),
+                ("ant", "", measure_gt_1),
+                ("ement", "", measure_gt_1),
+                ("ment", "", measure_gt_1),
+                ("ent", "", measure_gt_1),
                 # (m>1 and (*S or *T)) ION ->
                 (
-                    'ion',
-                    '',
-                    lambda stem: self._measure(stem) > 1 and stem[-1] in ('s', 't'),
+                    "ion",
+                    "",
+                    lambda stem: self._measure(stem) > 1 and stem[-1] in ("s", "t"),
                 ),
-                ('ou', '', measure_gt_1),
-                ('ism', '', measure_gt_1),
-                ('ate', '', measure_gt_1),
-                ('iti', '', measure_gt_1),
-                ('ous', '', measure_gt_1),
-                ('ive', '', measure_gt_1),
-                ('ize', '', measure_gt_1),
+                ("ou", "", measure_gt_1),
+                ("ism", "", measure_gt_1),
+                ("ate", "", measure_gt_1),
+                ("iti", "", measure_gt_1),
+                ("ous", "", measure_gt_1),
+                ("ive", "", measure_gt_1),
+                ("ize", "", measure_gt_1),
             ],
         )
 
@@ -629,8 +658,8 @@ class PorterStemmer(StemmerI):
         # no explicit mention of the inconsistency; you have to infer it
         # from the examples.
         # For this reason, we can't use _apply_rule_list here.
-        if word.endswith('e'):
-            stem = self._replace_suffix(word, 'e', '')
+        if word.endswith("e"):
+            stem = self._replace_suffix(word, "e", "")
             if self._measure(stem) > 1:
                 return stem
             if self._measure(stem) == 1 and not self._ends_cvc(stem):
@@ -649,20 +678,23 @@ class PorterStemmer(StemmerI):
                                     roll           ->  roll
         """
         return self._apply_rule_list(
-            word, [('ll', 'l', lambda stem: self._measure(word[:-1]) > 1)]
+            word, [("ll", "l", lambda stem: self._measure(word[:-1]) > 1)]
         )
 
-    def stem(self, word):
-        stem = word.lower()
+    def stem(self, word, to_lowercase=True):
+        """
+        :param to_lowercase: if `to_lowercase=True` the word always lowercase
+        """
+        stem = word.lower() if to_lowercase else word
 
-        if self.mode == self.NLTK_EXTENSIONS and word in self.pool:
-            return self.pool[word]
+        if self.mode == self.NLTK_EXTENSIONS and stem in self.pool:
+            return self.pool[stem]
 
         if self.mode != self.ORIGINAL_ALGORITHM and len(word) <= 2:
             # With this line, strings of length 1 or 2 don't go through
             # the stemming process, although no mention is made of this
             # in the published algorithm.
-            return word
+            return stem
 
         stem = self._step1a(stem)
         stem = self._step1b(stem)
@@ -676,7 +708,7 @@ class PorterStemmer(StemmerI):
         return stem
 
     def __repr__(self):
-        return '<PorterStemmer>'
+        return "<PorterStemmer>"
 
 
 def demo():
@@ -685,29 +717,29 @@ def demo():
     the Penn Treebank corpus.
     """
 
-    from nltk.corpus import treebank
     from nltk import stem
+    from nltk.corpus import treebank
 
     stemmer = stem.PorterStemmer()
 
     orig = []
     stemmed = []
     for item in treebank.fileids()[:3]:
-        for (word, tag) in treebank.tagged_words(item):
+        for word, tag in treebank.tagged_words(item):
             orig.append(word)
             stemmed.append(stemmer.stem(word))
 
     # Convert the results to a string, and word-wrap them.
-    results = ' '.join(stemmed)
-    results = re.sub(r"(.{,70})\s", r'\1\n', results + ' ').rstrip()
+    results = " ".join(stemmed)
+    results = redos.sub(r"(.{,70})\s", r"\1\n", results + " ").rstrip()
 
     # Convert the original to a string, and word wrap it.
-    original = ' '.join(orig)
-    original = re.sub(r"(.{,70})\s", r'\1\n', original + ' ').rstrip()
+    original = " ".join(orig)
+    original = redos.sub(r"(.{,70})\s", r"\1\n", original + " ").rstrip()
 
     # Print the results.
-    print('-Original-'.center(70).replace(' ', '*').replace('-', ' '))
-    print(original)
-    print('-Results-'.center(70).replace(' ', '*').replace('-', ' '))
-    print(results)
-    print('*' * 70)
+    safe_print("-Original-".center(70).replace(" ", "*").replace("-", " "))
+    safe_print(original)
+    safe_print("-Results-".center(70).replace(" ", "*").replace("-", " "))
+    safe_print(results)
+    safe_print("*" * 70)

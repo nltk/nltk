@@ -1,17 +1,31 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+# -*- coding: utf-8 -*-
+import six
+from nltk.compat import TimeoutError, perf_counter
 # Natural Language Toolkit: Recursive Descent Parser
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, unicode_literals
+
+import time
 
 from nltk.grammar import Nonterminal
-from nltk.tree import Tree, ImmutableTree
-from nltk.compat import unicode_repr
-
 from nltk.parse.api import ParserI
+from nltk.termsec import safe_print
+from nltk.tree import ImmutableTree, Tree
+
+#: Default wall-clock limit, in seconds, for a single :meth:`RecursiveDescentParser.parse`
+#: call. Top-down recursive-descent search runs unbounded on a left-recursive or
+#: highly ambiguous grammar -- a tiny crafted grammar makes a short input consume
+#: CPU forever (CWE-407 / CWE-674). A legitimate parse of a well-formed grammar
+#: finishes in a small fraction of a second, so this is generous head-room for
+#: real use while capping a crafted grammar's CPU burn. Set ``max_time=None`` on
+#: the parser to disable the bound.
+DEFAULT_MAX_TIME = 5.0
+
 
 ##//////////////////////////////////////////////////////
 ##  Recursive Descent Parser
@@ -52,7 +66,7 @@ class RecursiveDescentParser(ParserI):
     :see: ``nltk.grammar``
     """
 
-    def __init__(self, grammar, trace=0):
+    def __init__(self, grammar, trace=0, max_time=DEFAULT_MAX_TIME):
         """
         Create a new ``RecursiveDescentParser``, that uses ``grammar``
         to parse texts.
@@ -64,9 +78,19 @@ class RecursiveDescentParser(ParserI):
             parsing a text.  ``0`` will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
+        :type max_time: float or None
+        :param max_time: Wall-clock limit, in seconds, for a single
+            ``parse()`` call.  Top-down search on a left-recursive or
+            highly ambiguous grammar is unbounded, so a crafted grammar
+            can otherwise pin a CPU core indefinitely (CWE-407/CWE-674);
+            when the limit is exceeded, ``parse()`` raises
+            ``TimeoutError``.  Defaults to ``DEFAULT_MAX_TIME``; ``None``
+            disables the bound.
         """
         self._grammar = grammar
         self._trace = trace
+        self._max_time = max_time
+        self._parse_deadline = None
 
     def grammar(self):
         return self._grammar
@@ -84,6 +108,9 @@ class RecursiveDescentParser(ParserI):
         frontier = [()]
         if self._trace:
             self._trace_start(initial_tree, frontier, tokens)
+        # Arm the wall-clock bound on the first step (measures parsing, not the
+        # lazy generator's setup); see ``_parse`` and ``DEFAULT_MAX_TIME``.
+        self._parse_deadline = None
         return self._parse(tokens, initial_tree, frontier)
 
     def _parse(self, remaining_text, tree, frontier):
@@ -111,6 +138,20 @@ class RecursiveDescentParser(ParserI):
             in left-to-right order of location within the tree.
         """
 
+        # Bound total wall-clock time. Every recursive step re-enters ``_parse``,
+        # so checking here covers the whole search. The deadline is armed on the
+        # first step (so it times the parse, not the lazy generator's setup). A
+        # left-recursive or highly ambiguous grammar would otherwise loop
+        # unboundedly (CWE-407/CWE-674); ``max_time=None`` disables the bound.
+        if self._max_time is not None:
+            now = perf_counter()
+            if self._parse_deadline is None:
+                self._parse_deadline = now + self._max_time
+            elif now > self._parse_deadline:
+                raise TimeoutError(
+                    "RecursiveDescentParser exceeded its {0}s time limit; the grammar may be ambiguous or left-recursive. Pass max_time=None to disable the limit.".format(self._max_time)
+                )
+
         # If the tree covers the text, and there's nothing left to
         # expand, then we've found a complete parse; return it.
         if len(remaining_text) == 0 and len(frontier) == 0:
@@ -125,13 +166,13 @@ class RecursiveDescentParser(ParserI):
 
         # If the next element on the frontier is a tree, expand it.
         elif isinstance(tree[frontier[0]], Tree):
-            for result in self._expand(remaining_text, tree, frontier):
-                yield result
+            for _yf_item in self._expand(remaining_text, tree, frontier):
+                yield _yf_item
 
         # If the next element on the frontier is a token, match it.
         else:
-            for result in self._match(remaining_text, tree, frontier):
-                yield result
+            for _yf_item in self._match(remaining_text, tree, frontier):
+                yield _yf_item
 
     def _match(self, rtext, tree, frontier):
         """
@@ -169,8 +210,8 @@ class RecursiveDescentParser(ParserI):
             newtree[frontier[0]] = rtext[0]
             if self._trace:
                 self._trace_match(newtree, frontier[1:], rtext[0])
-            for result in self._parse(rtext[1:], newtree, frontier[1:]):
-                yield result
+            for _yf_item in self._parse(rtext[1:], newtree, frontier[1:]):
+                yield _yf_item
         else:
             # If it's a non-matching terminal, fail.
             if self._trace:
@@ -227,10 +268,10 @@ class RecursiveDescentParser(ParserI):
                 ]
                 if self._trace:
                     self._trace_expand(newtree, new_frontier, production)
-                for result in self._parse(
+                for _yf_item in self._parse(
                     remaining_text, newtree, new_frontier + frontier[1:]
                 ):
-                    yield result
+                    yield _yf_item
 
     def _production_to_tree(self, production):
         """
@@ -280,17 +321,17 @@ class RecursiveDescentParser(ParserI):
         """
 
         if treeloc == ():
-            print("*", end=' ')
+            safe_print("*", end=" ")
         if isinstance(tree, Tree):
             if len(tree) == 0:
-                print(unicode_repr(Nonterminal(tree.label())), end=' ')
+                safe_print(repr(Nonterminal(tree.label())), end=" ")
             for i in range(len(tree)):
                 if treeloc is not None and i == treeloc[0]:
                     self._trace_fringe(tree[i], treeloc[1:])
                 else:
                     self._trace_fringe(tree[i])
         else:
-            print(unicode_repr(tree), end=' ')
+            safe_print(repr(tree), end=" ")
 
     def _trace_tree(self, tree, frontier, operation):
         """
@@ -301,48 +342,48 @@ class RecursiveDescentParser(ParserI):
         :rtype: None
         """
         if self._trace == 2:
-            print('  %c [' % operation, end=' ')
+            safe_print("  %c [" % operation, end=" ")
         else:
-            print('    [', end=' ')
+            safe_print("    [", end=" ")
         if len(frontier) > 0:
             self._trace_fringe(tree, frontier[0])
         else:
             self._trace_fringe(tree)
-        print(']')
+        safe_print("]")
 
     def _trace_start(self, tree, frontier, text):
-        print('Parsing %r' % " ".join(text))
+        safe_print("Parsing %r" % " ".join(text))
         if self._trace > 2:
-            print('Start:')
+            safe_print("Start:")
         if self._trace > 1:
-            self._trace_tree(tree, frontier, ' ')
+            self._trace_tree(tree, frontier, " ")
 
     def _trace_expand(self, tree, frontier, production):
         if self._trace > 2:
-            print('Expand: %s' % production)
+            safe_print("Expand: %s" % production)
         if self._trace > 1:
-            self._trace_tree(tree, frontier, 'E')
+            self._trace_tree(tree, frontier, "E")
 
     def _trace_match(self, tree, frontier, tok):
         if self._trace > 2:
-            print('Match: %r' % tok)
+            safe_print("Match: %r" % tok)
         if self._trace > 1:
-            self._trace_tree(tree, frontier, 'M')
+            self._trace_tree(tree, frontier, "M")
 
     def _trace_succeed(self, tree, frontier):
         if self._trace > 2:
-            print('GOOD PARSE:')
+            safe_print("GOOD PARSE:")
         if self._trace == 1:
-            print('Found a parse:\n%s' % tree)
+            safe_print("Found a parse:\n%s" % tree)
         if self._trace > 1:
-            self._trace_tree(tree, frontier, '+')
+            self._trace_tree(tree, frontier, "+")
 
     def _trace_backtrack(self, tree, frontier, toks=None):
         if self._trace > 2:
             if toks:
-                print('Backtrack: %r match failed' % toks[0])
+                safe_print("Backtrack: %r match failed" % toks[0])
             else:
-                print('Backtrack')
+                safe_print("Backtrack")
 
 
 ##//////////////////////////////////////////////////////
@@ -373,8 +414,8 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
     :see: ``nltk.grammar``
     """
 
-    def __init__(self, grammar, trace=0):
-        super(SteppingRecursiveDescentParser, self).__init__(grammar, trace)
+    def __init__(self, grammar, trace=0, max_time=DEFAULT_MAX_TIME):
+        super(SteppingRecursiveDescentParser, self).__init__(grammar, trace, max_time)
         self._rtext = None
         self._tree = None
         self._frontier = [()]
@@ -394,8 +435,17 @@ class SteppingRecursiveDescentParser(RecursiveDescentParser):
     def parse(self, tokens):
         tokens = list(tokens)
         self.initialize(tokens)
+        # step() bypasses the base _parse deadline, so bound the stepping loop
+        # directly: a left-recursive or ambiguous grammar loops unbounded
+        # otherwise (CWE-407/674). max_time=None disables the bound.
+        deadline = None
+        if self._max_time is not None:
+            deadline = perf_counter() + self._max_time
         while self.step() is not None:
-            pass
+            if deadline is not None and perf_counter() > deadline:
+                raise TimeoutError(
+                    "SteppingRecursiveDescentParser exceeded its {0}s time limit; the grammar may be ambiguous or left-recursive. Pass max_time=None to disable the limit.".format(self._max_time)
+                )
         return self.parses()
 
     def initialize(self, tokens):
@@ -661,7 +711,7 @@ def demo():
     A demonstration of the recursive descent parser.
     """
 
-    from nltk import parse, CFG
+    from nltk import CFG, parse
 
     grammar = CFG.fromstring(
         """
@@ -678,13 +728,13 @@ def demo():
     )
 
     for prod in grammar.productions():
-        print(prod)
+        safe_print(prod)
 
-    sent = 'I saw a man in the park'.split()
+    sent = "I saw a man in the park".split()
     parser = parse.RecursiveDescentParser(grammar, trace=2)
     for p in parser.parse(sent):
-        print(p)
+        safe_print(p)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

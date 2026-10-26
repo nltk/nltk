@@ -1,19 +1,20 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+# -*- coding: utf-8 -*-
+import six
 # Natural Language Toolkit: Lexical Functional Grammar
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2019 NLTK Project
-# URL: <http://nltk.org/>
+# Copyright (C) 2001-2026 NLTK Project
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, division, unicode_literals
 
 from itertools import chain
 
 from nltk.internals import Counter
-from nltk.compat import python_2_unicode_compatible
+from nltk.termsec import safe_print
 
 
-@python_2_unicode_compatible
 class FStructure(dict):
     def safeappend(self, key, item):
         """
@@ -43,15 +44,15 @@ class FStructure(dict):
         depgraph = DependencyGraph()
         nodes = depgraph.nodes
 
-        self._to_depgraph(nodes, 0, 'ROOT')
+        self._to_depgraph(nodes, 0, "ROOT")
 
         # Add all the dependencies for all the nodes
         for address, node in nodes.items():
-            for n2 in (n for n in nodes.values() if n['rel'] != 'TOP'):
-                if n2['head'] == address:
-                    relation = n2['rel']
-                    node['deps'].setdefault(relation, [])
-                    node['deps'][relation].append(n2['address'])
+            for n2 in (n for n in nodes.values() if n["rel"] != "TOP"):
+                if n2["head"] == address:
+                    relation = n2["rel"]
+                    node["deps"].setdefault(relation, [])
+                    node["deps"][relation].append(n2["address"])
 
         depgraph.root = nodes[1]
 
@@ -62,11 +63,11 @@ class FStructure(dict):
 
         nodes[index].update(
             {
-                'address': index,
-                'word': self.pred[0],
-                'tag': self.pred[1],
-                'head': head,
-                'rel': rel,
+                "address": index,
+                "word": self.pred[0],
+                "tag": self.pred[1],
+                "head": head,
+                "rel": rel,
             }
         )
 
@@ -78,11 +79,11 @@ class FStructure(dict):
                     new_index = len(nodes)
                     nodes[new_index].update(
                         {
-                            'address': new_index,
-                            'word': item[0],
-                            'tag': item[1],
-                            'head': index,
-                            'rel': feature,
+                            "address": new_index,
+                            "word": item[0],
+                            "tag": item[1],
+                            "head": index,
+                            "rel": feature,
                         }
                     )
                 elif isinstance(item, list):
@@ -90,7 +91,7 @@ class FStructure(dict):
                         n._to_depgraph(nodes, index, feature)
                 else:
                     raise Exception(
-                        'feature %s is not an FStruct, a list, or a tuple' % feature
+                        "feature %s is not an FStruct, a list, or a tuple" % feature
                     )
 
     @staticmethod
@@ -102,9 +103,9 @@ class FStructure(dict):
         if not label_counter:
             label_counter = Counter()
 
-        if node['rel'].lower() in ['spec', 'punct']:
+        if node["rel"].lower() in ["spec", "punct"]:
             # the value of a 'spec' entry is a word, not an FStructure
-            return (node['word'], node['tag'])
+            return (node["word"], node["tag"])
 
         else:
             fstruct = FStructure()
@@ -113,19 +114,22 @@ class FStructure(dict):
 
             fstruct.parent = parent
 
-            word, tag = node['word'], node['tag']
-            if tag[:2] == 'VB':
-                if tag[2:3] == 'D':
-                    fstruct.safeappend('tense', ('PAST', 'tense'))
+            word, tag = node["word"], node["tag"]
+            if tag[:2] == "VB":
+                if tag[2:3] == "D":
+                    fstruct.safeappend("tense", ("PAST", "tense"))
                 fstruct.pred = (word, tag[:2])
 
             if not fstruct.pred:
                 fstruct.pred = (word, tag)
 
-            children = [depgraph.nodes[idx] for idx in chain(*node['deps'].values())]
+            children = [
+                depgraph.nodes[idx]
+                for idx in chain.from_iterable(node["deps"].values())
+            ]
             for child in children:
                 fstruct.safeappend(
-                    child['rel'],
+                    child["rel"],
                     FStructure._read_depgraph(child, depgraph, label_counter, fstruct),
                 )
 
@@ -140,32 +144,32 @@ class FStructure(dict):
         :type value: int
         """
         letter = [
-            'f',
-            'g',
-            'h',
-            'i',
-            'j',
-            'k',
-            'l',
-            'm',
-            'n',
-            'o',
-            'p',
-            'q',
-            'r',
-            's',
-            't',
-            'u',
-            'v',
-            'w',
-            'x',
-            'y',
-            'z',
-            'a',
-            'b',
-            'c',
-            'd',
-            'e',
+            "f",
+            "g",
+            "h",
+            "i",
+            "j",
+            "k",
+            "l",
+            "m",
+            "n",
+            "o",
+            "p",
+            "q",
+            "r",
+            "s",
+            "t",
+            "u",
+            "v",
+            "w",
+            "x",
+            "y",
+            "z",
+            "a",
+            "b",
+            "c",
+            "d",
+            "e",
         ][value - 1]
         num = int(value) // 26
         if num > 0:
@@ -174,18 +178,18 @@ class FStructure(dict):
             return letter
 
     def __repr__(self):
-        return self.__unicode__().replace('\n', '')
+        return self.__str__().replace("\n", "")
 
     def __str__(self):
         return self.pretty_format()
 
     def pretty_format(self, indent=3):
         try:
-            accum = '%s:[' % self.label
+            accum = "%s:[" % self.label
         except NameError:
-            accum = '['
+            accum = "["
         try:
-            accum += 'pred \'%s\'' % (self.pred[0])
+            accum += "pred '%s'" % (self.pred[0])
         except NameError:
             pass
 
@@ -193,24 +197,24 @@ class FStructure(dict):
             for item in self[feature]:
                 if isinstance(item, FStructure):
                     next_indent = indent + len(feature) + 3 + len(self.label)
-                    accum += '\n%s%s %s' % (
-                        ' ' * (indent),
+                    accum += "\n{}{} {}".format(
+                        " " * (indent),
                         feature,
                         item.pretty_format(next_indent),
                     )
                 elif isinstance(item, tuple):
-                    accum += '\n%s%s \'%s\'' % (' ' * (indent), feature, item[0])
+                    accum += "\n{}{} '{}'".format(" " * (indent), feature, item[0])
                 elif isinstance(item, list):
-                    accum += '\n%s%s {%s}' % (
-                        ' ' * (indent),
+                    accum += "\n{}{} {{{}}}".format(
+                        " " * (indent),
                         feature,
-                        ('\n%s' % (' ' * (indent + len(feature) + 2))).join(item),
+                        ("\n%s" % (" " * (indent + len(feature) + 2))).join(item),
                     )
                 else:  # ERROR
                     raise Exception(
-                        'feature %s is not an FStruct, a list, or a tuple' % feature
+                        "feature %s is not an FStruct, a list, or a tuple" % feature
                     )
-        return accum + ']'
+        return accum + "]"
 
 
 def demo_read_depgraph():
@@ -254,8 +258,8 @@ dog     NN      3       OBJ
 
     depgraphs = [dg1, dg2, dg3, dg4]
     for dg in depgraphs:
-        print(FStructure.read_depgraph(dg))
+        safe_print(FStructure.read_depgraph(dg))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo_read_depgraph()

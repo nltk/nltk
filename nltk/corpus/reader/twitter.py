@@ -1,28 +1,28 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 A reader for corpora that consist of Tweets. It is assumed that the Tweets
 have been serialised into line-delimited JSON.
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
-import json
 import os
 
-from six import string_types
-
-from nltk.tokenize import TweetTokenizer
-
-from nltk.corpus.reader.util import StreamBackedCorpusView, concat, ZipFilePathPointer
 from nltk.corpus.reader.api import CorpusReader
+from nltk.corpus.reader.util import StreamBackedCorpusView, ZipFilePathPointer, concat
+from nltk.jsontags import safe_json_loads
+from nltk.tokenize import TweetTokenizer
 
 
 class TwitterCorpusReader(CorpusReader):
-    """
+    r"""
     Reader for corpora that consist of Tweets represented as a list of line-delimited JSON.
 
     Individual Tweets can be tokenized using the default tokenizer, or by a
@@ -59,17 +59,13 @@ class TwitterCorpusReader(CorpusReader):
     """
 
     def __init__(
-        self, root, fileids=None, word_tokenizer=TweetTokenizer(), encoding='utf8'
+        self, root, fileids=None, word_tokenizer=TweetTokenizer(), encoding="utf8"
     ):
         """
-
         :param root: The root directory for this corpus.
-
         :param fileids: A list or regexp specifying the fileids in this corpus.
-
         :param word_tokenizer: Tokenizer for breaking the text of Tweets into
-        smaller units, including but not limited to words.
-
+            smaller units, including but not limited to words.
         """
         CorpusReader.__init__(self, root, fileids, encoding)
 
@@ -77,7 +73,7 @@ class TwitterCorpusReader(CorpusReader):
             if isinstance(path, ZipFilePathPointer):
                 pass
             elif os.path.getsize(path) == 0:
-                raise ValueError("File {} is empty".format(path))
+                raise ValueError("File {0} is empty".format(path))
         """Check that all user-created corpus files are non-empty."""
 
         self._word_tokenizer = word_tokenizer
@@ -89,7 +85,7 @@ class TwitterCorpusReader(CorpusReader):
         <https://dev.twitter.com/docs/platform-objects/tweets>`_
 
         :return: the given file(s) as a list of dictionaries deserialised
-        from JSON.
+            from JSON.
         :rtype: list(dict)
         """
         return concat(
@@ -110,7 +106,7 @@ class TwitterCorpusReader(CorpusReader):
         tweets = []
         for jsono in fulltweets:
             try:
-                text = jsono['text']
+                text = jsono["text"]
                 if isinstance(text, bytes):
                     text = text.decode(self.encoding)
                 tweets.append(text)
@@ -121,23 +117,13 @@ class TwitterCorpusReader(CorpusReader):
     def tokenized(self, fileids=None):
         """
         :return: the given file(s) as a list of the text content of Tweets as
-        as a list of words, screenanames, hashtags, URLs and punctuation symbols.
+            as a list of words, screenanames, hashtags, URLs and punctuation symbols.
 
         :rtype: list(list(str))
         """
         tweets = self.strings(fileids)
         tokenizer = self._word_tokenizer
         return [tokenizer.tokenize(t) for t in tweets]
-
-    def raw(self, fileids=None):
-        """
-        Return the corpora in their raw form.
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, string_types):
-            fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
 
     def _read_tweets(self, stream):
         """
@@ -148,6 +134,8 @@ class TwitterCorpusReader(CorpusReader):
             line = stream.readline()
             if not line:
                 return tweets
-            tweet = json.loads(line)
+            # Tweet JSON is genuinely untrusted third-party data; bound its size
+            # and nesting depth so a hostile line cannot crash the interpreter.
+            tweet = safe_json_loads(line, context="TwitterCorpusReader._read_tweets")
             tweets.append(tweet)
         return tweets

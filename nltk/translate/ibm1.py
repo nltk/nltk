@@ -9,7 +9,7 @@
 # Based on earlier version by:
 #         Will Zhang <wilzzha@gmail.com>
 #         Guan Gui <ggui@student.unimelb.edu.au>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -18,42 +18,45 @@ Lexical translation model that ignores word order.
 In IBM Model 1, word order is ignored for simplicity. As long as the
 word alignments are equivalent, it doesn't matter where the word occurs
 in the source or target sentence. Thus, the following three alignments
-are equally likely.
+are equally likely::
 
-Source: je mange du jambon
-Target: i eat some ham
-Alignment: (0,0) (1,1) (2,2) (3,3)
+    Source: je mange du jambon
+    Target: i eat some ham
+    Alignment: (0,0) (1,1) (2,2) (3,3)
 
-Source: je mange du jambon
-Target: some ham eat i
-Alignment: (0,2) (1,3) (2,1) (3,1)
+    Source: je mange du jambon
+    Target: some ham eat i
+    Alignment: (0,2) (1,3) (2,1) (3,1)
 
-Source: du jambon je mange
-Target: eat i some ham
-Alignment: (0,3) (1,2) (2,0) (3,1)
+    Source: du jambon je mange
+    Target: eat i some ham
+    Alignment: (0,3) (1,2) (2,0) (3,1)
 
 Note that an alignment is represented here as
 (word_index_in_target, word_index_in_source).
 
 The EM algorithm used in Model 1 is:
-E step - In the training data, count how many times a source language
+
+:E step: In the training data, count how many times a source language
          word is translated into a target language word, weighted by
          the prior probability of the translation.
 
-M step - Estimate the new probability of translation based on the
+:M step: Estimate the new probability of translation based on the
          counts from the Expectation step.
 
+Notations
+---------
 
-Notations:
-i: Position in the source sentence
-    Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
-j: Position in the target sentence
-    Valid values are 1, 2, ..., length of target sentence
-s: A word in the source language
-t: A word in the target language
+:i: Position in the source sentence
+     Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
+:j: Position in the target sentence
+     Valid values are 1, 2, ..., length of target sentence
+:s: A word in the source language
+:t: A word in the target language
 
+References
+----------
 
-References:
 Philipp Koehn. 2010. Statistical Machine Translation.
 Cambridge University Press, New York.
 
@@ -62,14 +65,14 @@ Robert L. Mercer. 1993. The Mathematics of Statistical Machine
 Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
-from __future__ import division
-from collections import defaultdict
-from nltk.translate import AlignedSent
-from nltk.translate import Alignment
-from nltk.translate import IBMModel
-from nltk.translate.ibm_model import Counts
 import warnings
+from collections import defaultdict
+
+from nltk.translate import AlignedSent, Alignment, IBMModel
+from nltk.translate.ibm_model import Counts
 
 
 class IBMModel1(IBMModel):
@@ -78,7 +81,7 @@ class IBMModel1(IBMModel):
 
     >>> bitext = []
     >>> bitext.append(AlignedSent(['klein', 'ist', 'das', 'haus'], ['the', 'house', 'is', 'small']))
-    >>> bitext.append(AlignedSent(['das', 'haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
+    >>> bitext.append(AlignedSent(['das', 'haus', 'ist', 'ja', 'gro\xdf'], ['the', 'house', 'is', 'big']))
     >>> bitext.append(AlignedSent(['das', 'buch', 'ist', 'ja', 'klein'], ['the', 'book', 'is', 'small']))
     >>> bitext.append(AlignedSent(['das', 'haus'], ['the', 'house']))
     >>> bitext.append(AlignedSent(['das', 'buch'], ['the', 'book']))
@@ -86,14 +89,14 @@ class IBMModel1(IBMModel):
 
     >>> ibm1 = IBMModel1(bitext, 5)
 
-    >>> print(ibm1.translation_table['buch']['book'])
-    0.889...
-    >>> print(ibm1.translation_table['das']['book'])
-    0.061...
-    >>> print(ibm1.translation_table['buch'][None])
-    0.113...
-    >>> print(ibm1.translation_table['ja'][None])
-    0.072...
+    >>> print(round(ibm1.translation_table['buch']['book'], 3))
+    0.889
+    >>> print(round(ibm1.translation_table['das']['book'], 3))
+    0.062
+    >>> print(round(ibm1.translation_table['buch'][None], 3))
+    0.113
+    >>> print(round(ibm1.translation_table['ja'][None], 3))
+    0.073
 
     >>> test_sentence = bitext[2]
     >>> test_sentence.words
@@ -133,7 +136,7 @@ class IBMModel1(IBMModel):
             self.set_uniform_probabilities(sentence_aligned_corpus)
         else:
             # Set user-defined probabilities
-            self.translation_table = probability_tables['translation_table']
+            self.translation_table = probability_tables["translation_table"]
 
         for n in range(0, iterations):
             self.train(sentence_aligned_corpus)
@@ -148,7 +151,7 @@ class IBMModel1(IBMModel):
                 + str(len(self.trg_vocab))
                 + " words). "
                 "Results may be less accurate."
-            )
+            )  # unsafe-print ok: literal text with a numeric vocabulary or length bound
 
         for t in self.trg_vocab:
             self.translation_table[t] = defaultdict(lambda: initial_prob)
@@ -187,7 +190,7 @@ class IBMModel1(IBMModel):
         :return: Probability of t for all s in ``src_sentence``
         :rtype: dict(str): float
         """
-        alignment_prob_for_t = defaultdict(lambda: 0.0)
+        alignment_prob_for_t = defaultdict(float)
         for t in trg_sentence:
             for s in src_sentence:
                 alignment_prob_for_t[t] += self.prob_alignment_point(s, t)

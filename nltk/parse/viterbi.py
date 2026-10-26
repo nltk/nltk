@@ -1,24 +1,36 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+# -*- coding: utf-8 -*-
+import six
+from nltk.compat import TimeoutError, perf_counter
 # Natural Language Toolkit: Viterbi Probabilistic Parser
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, unicode_literals
 
+import time
 from functools import reduce
-from nltk.tree import Tree, ProbabilisticTree
-from nltk.compat import python_2_unicode_compatible
 
 from nltk.parse.api import ParserI
+from nltk.termsec import safe_print
+from nltk.tree import ProbabilisticTree, Tree
+
+#: Default wall-clock limit, in seconds, for a single :meth:`ViterbiParser.parse`
+#: call. The Viterbi dynamic program keeps only the best tree, but ``_match_rhs``
+#: first enumerates *every* child-list matching a production's right-hand side; a
+#: long-RHS production over an all-spanning ambiguous nonterminal makes that set
+#: combinatorial (C(n, k)), so a crafted grammar can exhaust CPU/memory on a
+#: modest input (CWE-407). When the limit is exceeded, ``parse`` raises
+#: ``TimeoutError``; ``max_time=None`` disables the bound.
+DEFAULT_MAX_TIME = 5.0
 
 ##//////////////////////////////////////////////////////
 ##  Viterbi PCFG Parser
 ##//////////////////////////////////////////////////////
 
 
-@python_2_unicode_compatible
 class ViterbiParser(ParserI):
     """
     A bottom-up ``PCFG`` parser that uses dynamic programming to find
@@ -75,7 +87,7 @@ class ViterbiParser(ParserI):
         when parsing a text.
     """
 
-    def __init__(self, grammar, trace=0):
+    def __init__(self, grammar, trace=0, max_time=DEFAULT_MAX_TIME):
         """
         Create a new ``ViterbiParser`` parser, that uses ``grammar`` to
         parse texts.
@@ -87,9 +99,17 @@ class ViterbiParser(ParserI):
             parsing a text.  ``0`` will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
+        :type max_time: float or None
+        :param max_time: Wall-clock limit, in seconds, for a single ``parse()``
+            call.  A crafted long-RHS/ambiguous grammar makes ``_match_rhs``
+            enumerate combinatorially many child lists (CWE-407); when the limit
+            is exceeded, ``parse()`` raises ``TimeoutError``.  Defaults to
+            ``DEFAULT_MAX_TIME``; ``None`` disables the bound.
         """
         self._grammar = grammar
         self._trace = trace
+        self._max_time = max_time
+        self._parse_deadline = None
 
     def grammar(self):
         return self._grammar
@@ -113,6 +133,12 @@ class ViterbiParser(ParserI):
         tokens = list(tokens)
         self._grammar.check_coverage(tokens)
 
+        # Arm the wall-clock bound; ``_match_rhs`` checks it on every recursive
+        # entry so a combinatorial child-list enumeration cannot run unbounded.
+        self._parse_deadline = (
+            None if self._max_time is None else perf_counter() + self._max_time
+        )
+
         # The most likely constituent table.  This table specifies the
         # most likely constituent for a given span and type.
         # Constituents can be either Trees or tokens.  For Trees,
@@ -124,7 +150,9 @@ class ViterbiParser(ParserI):
         # Initialize the constituents dictionary with the words from
         # the text.
         if self._trace:
-            print(('Inserting tokens into the most likely' + ' constituents table...'))
+            safe_print(
+                "Inserting tokens into the most likely" + " constituents table..."
+            )
         for index in range(len(tokens)):
             token = tokens[index]
             constituents[index, index + 1, token] = token
@@ -135,11 +163,9 @@ class ViterbiParser(ParserI):
         # that might cover that span to the constituents dictionary.
         for length in range(1, len(tokens) + 1):
             if self._trace:
-                print(
-                    (
-                        'Finding the most likely constituents'
-                        + ' spanning %d text elements...' % length
-                    )
+                safe_print(
+                    "Finding the most likely constituents"
+                    + " spanning %d text elements..." % length
                 )
             for start in range(len(tokens) - length + 1):
                 span = (start, start + length)
@@ -198,7 +224,7 @@ class ViterbiParser(ParserI):
             # ProbabilisticTree whose probability is the product
             # of the childrens' probabilities and the production's
             # probability.
-            for (production, children) in instantiations:
+            for production, children in instantiations:
                 subtrees = [c for c in children if isinstance(c, Tree)]
                 p = reduce(lambda pr, t: pr * t.prob(), subtrees, production.prob())
                 node = production.lhs().symbol()
@@ -210,9 +236,9 @@ class ViterbiParser(ParserI):
                 if self._trace > 1:
                     if c is None or c != tree:
                         if c is None or c.prob() < tree.prob():
-                            print('   Insert:', end=' ')
+                            safe_print("   Insert:", end=" ")
                         else:
-                            print('  Discard:', end=' ')
+                            safe_print("  Discard:", end=" ")
                         self._trace_production(production, p, span, len(tokens))
                 if c is None or c.prob() < tree.prob():
                     constituents[span[0], span[1], production.lhs()] = tree
@@ -278,6 +304,17 @@ class ViterbiParser(ParserI):
         """
         (start, end) = span
 
+        # Bound the combinatorial child-list enumeration (CWE-407). This method
+        # recurses once per RHS symbol per split with no memoisation, so the
+        # deadline (armed in ``parse``) is checked on every entry.
+        if (
+            self._parse_deadline is not None
+            and perf_counter() > self._parse_deadline
+        ):
+            raise TimeoutError(
+                "ViterbiParser exceeded its {0}s time limit; the grammar may have a long right-hand side over an ambiguous nonterminal. Pass max_time=None to disable the limit.".format(self._max_time)
+            )
+
         # Base case
         if start >= end and rhs == ():
             return [[]]
@@ -308,22 +345,22 @@ class ViterbiParser(ParserI):
         :rtype: None
         """
 
-        str = '|' + '.' * span[0]
-        str += '=' * (span[1] - span[0])
-        str += '.' * (width - span[1]) + '| '
-        str += '%s' % production
+        str = "|" + "." * span[0]
+        str += "=" * (span[1] - span[0])
+        str += "." * (width - span[1]) + "| "
+        str += "%s" % production
         if self._trace > 2:
-            str = '%-40s %12.10f ' % (str, p)
+            str = "{0:<40} {1:12.10f} ".format(str, p)
 
-        print(str)
+        safe_print(str)
 
     def _trace_lexical_insertion(self, token, index, width):
-        str = '   Insert: |' + '.' * index + '=' + '.' * (width - index - 1) + '| '
-        str += '%s' % (token,)
-        print(str)
+        str = "   Insert: |" + "." * index + "=" + "." * (width - index - 1) + "| "
+        str += "{0}".format(token)
+        safe_print(str)
 
     def __repr__(self):
-        return '<ViterbiParser for %r>' % self._grammar
+        return "<ViterbiParser for %r>" % self._grammar
 
 
 ##//////////////////////////////////////////////////////
@@ -338,29 +375,72 @@ def demo():
     be found; and then each parser is run on the same demo, and a
     summary of the results are displayed.
     """
-    import sys, time
+    import sys
+    import time
+
     from nltk import tokenize
+    from nltk.grammar import PCFG
     from nltk.parse import ViterbiParser
-    from nltk.grammar import toy_pcfg1, toy_pcfg2
+
+    toy_pcfg1 = PCFG.fromstring(
+        """
+    S -> NP VP [1.0]
+    NP -> Det N [0.5] | NP PP [0.25] | 'John' [0.1] | 'I' [0.15]
+    Det -> 'the' [0.8] | 'my' [0.2]
+    N -> 'man' [0.5] | 'telescope' [0.5]
+    VP -> VP PP [0.1] | V NP [0.7] | V [0.2]
+    V -> 'ate' [0.35] | 'saw' [0.65]
+    PP -> P NP [1.0]
+    P -> 'with' [0.61] | 'under' [0.39]
+    """
+    )
+
+    toy_pcfg2 = PCFG.fromstring(
+        """
+    S    -> NP VP         [1.0]
+    VP   -> V NP          [.59]
+    VP   -> V             [.40]
+    VP   -> VP PP         [.01]
+    NP   -> Det N         [.41]
+    NP   -> Name          [.28]
+    NP   -> NP PP         [.31]
+    PP   -> P NP          [1.0]
+    V    -> 'saw'         [.21]
+    V    -> 'ate'         [.51]
+    V    -> 'ran'         [.28]
+    N    -> 'boy'         [.11]
+    N    -> 'cookie'      [.12]
+    N    -> 'table'       [.13]
+    N    -> 'telescope'   [.14]
+    N    -> 'hill'        [.5]
+    Name -> 'Jack'        [.52]
+    Name -> 'Bob'         [.48]
+    P    -> 'with'        [.61]
+    P    -> 'under'       [.39]
+    Det  -> 'the'         [.41]
+    Det  -> 'a'           [.31]
+    Det  -> 'my'          [.28]
+    """
+    )
 
     # Define two demos.  Each demo has a sentence and a grammar.
     demos = [
-        ('I saw the man with my telescope', toy_pcfg1),
-        ('the boy saw Jack with Bob under the table with a telescope', toy_pcfg2),
+        ("I saw the man with my telescope", toy_pcfg1),
+        ("the boy saw Jack with Bob under the table with a telescope", toy_pcfg2),
     ]
 
     # Ask the user which demo they want to use.
-    print()
+    safe_print()
     for i in range(len(demos)):
-        print('%3s: %s' % (i + 1, demos[i][0]))
-        print('     %r' % demos[i][1])
-        print()
-    print('Which demo (%d-%d)? ' % (1, len(demos)), end=' ')
+        safe_print("{0:>3}: {1}".format(i + 1, demos[i][0]))
+        safe_print("     %r" % demos[i][1])
+        safe_print()
+    safe_print("Which demo (%d-%d)? " % (1, len(demos)), end=" ")
     try:
         snum = int(sys.stdin.readline().strip()) - 1
         sent, grammar = demos[snum]
-    except:
-        print('Bad sentence number')
+    except Exception:
+        safe_print("Bad sentence number")
         return
 
     # Tokenize the sentence.
@@ -369,7 +449,7 @@ def demo():
     parser = ViterbiParser(grammar)
     all_parses = {}
 
-    print('\nsent: %s\nparser: %s\ngrammar: %s' % (sent, parser, grammar))
+    safe_print("\nsent: {0}\nparser: {1}\ngrammar: {2}".format(sent, parser, grammar))
     parser.trace(3)
     t = time.time()
     parses = parser.parse_all(tokens)
@@ -382,34 +462,34 @@ def demo():
         all_parses[p.freeze()] = 1
 
     # Print some summary statistics
-    print()
-    print('Time (secs)   # Parses   Average P(parse)')
-    print('-----------------------------------------')
-    print('%11.4f%11d%19.14f' % (time, num_parses, average))
+    safe_print()
+    safe_print("Time (secs)   # Parses   Average P(parse)")
+    safe_print("-----------------------------------------")
+    safe_print("%11.4f%11d%19.14f" % (time, num_parses, average))
     parses = all_parses.keys()
     if parses:
         p = reduce(lambda a, b: a + b.prob(), parses, 0) / len(parses)
     else:
         p = 0
-    print('------------------------------------------')
-    print('%11s%11d%19.14f' % ('n/a', len(parses), p))
+    safe_print("------------------------------------------")
+    safe_print("%11s%11d%19.14f" % ("n/a", len(parses), p))
 
     # Ask the user if we should draw the parses.
-    print()
-    print('Draw parses (y/n)? ', end=' ')
-    if sys.stdin.readline().strip().lower().startswith('y'):
+    safe_print()
+    safe_print("Draw parses (y/n)? ", end=" ")
+    if sys.stdin.readline().strip().lower().startswith("y"):
         from nltk.draw.tree import draw_trees
 
-        print('  please wait...')
+        safe_print("  please wait...")
         draw_trees(*parses)
 
     # Ask the user if we should print the parses.
-    print()
-    print('Print parses (y/n)? ', end=' ')
-    if sys.stdin.readline().strip().lower().startswith('y'):
+    safe_print()
+    safe_print("Print parses (y/n)? ", end=" ")
+    if sys.stdin.readline().strip().lower().startswith("y"):
         for parse in parses:
-            print(parse)
+            safe_print(parse)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

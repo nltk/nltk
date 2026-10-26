@@ -1,20 +1,21 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
 # -*- coding: utf-8 -*-
+import six
 # Natural Language Toolkit: Transformation-based learning
 #
 # Copyright (C) 2001-2013 NLTK Project
 # Author: Marcus Uneson <marcus.uneson@gmail.com>
 #   based on previous (nltk2) version by
 #   Christopher Maloof, Edward Loper, Steven Bird
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see  LICENSE.TXT
-
-from __future__ import print_function, division
 
 import bisect
 import textwrap
 from collections import defaultdict
 
-from nltk.tag import untag, BrillTagger
+from nltk.tag import BrillTagger, untag
+from nltk.termsec import safe_print
 
 ######################################################################
 #  Brill Tagger Trainer
@@ -94,19 +95,19 @@ class BrillTaggerTrainer(object):
     # Training
 
     def train(self, train_sents, max_rules=200, min_score=2, min_acc=None):
-        """
+        r"""
         Trains the Brill tagger on the corpus *train_sents*,
         producing at most *max_rules* transformations, each of which
         reduces the net number of errors in the corpus by at least
         *min_score*, and each of which has accuracy not lower than
         *min_acc*.
 
-        #imports
+        >>> # Relevant imports
         >>> from nltk.tbl.template import Template
         >>> from nltk.tag.brill import Pos, Word
         >>> from nltk.tag import untag, RegexpTagger, BrillTaggerTrainer
 
-        #some data
+        >>> # Load some data
         >>> from nltk.corpus import treebank
         >>> training_data = treebank.tagged_sents()[:100]
         >>> baseline_data = treebank.tagged_sents()[100:200]
@@ -114,7 +115,7 @@ class BrillTaggerTrainer(object):
         >>> testing_data = [untag(s) for s in gold_data]
 
         >>> backoff = RegexpTagger([
-        ... (r'^-?[0-9]+(.[0-9]+)?$', 'CD'),   # cardinal numbers
+        ... (r'^-?[0-9]+(\.[0-9]+)?$', 'CD'),  # cardinal numbers
         ... (r'(The|the|A|a|An|an)$', 'AT'),   # articles
         ... (r'.*able$', 'JJ'),                # adjectives
         ... (r'.*ness$', 'NN'),                # nouns formed from adjectives
@@ -126,21 +127,20 @@ class BrillTaggerTrainer(object):
         ... ])
 
         >>> baseline = backoff #see NOTE1
+        >>> baseline.accuracy(gold_data) #doctest: +ELLIPSIS
+        0.243...
 
-        >>> baseline.evaluate(gold_data) #doctest: +ELLIPSIS
-        0.2450142...
-
-        #templates
+        >>> # Set up templates
         >>> Template._cleartemplates() #clear any templates created in earlier tests
         >>> templates = [Template(Pos([-1])), Template(Pos([-1]), Word([0]))]
 
-        #construct a BrillTaggerTrainer
+        >>> # Construct a BrillTaggerTrainer
         >>> tt = BrillTaggerTrainer(baseline, templates, trace=3)
 
         >>> tagger1 = tt.train(training_data, max_rules=10)
         TBL train (fast) (seqs: 100; tokens: 2417; tpls: 2; min score: 2; min acc: None)
         Finding initial useful rules...
-            Found 845 useful rules.
+            Found 847 useful rules.
         <BLANKLINE>
                    B      |
            S   F   r   O  |        Score = Fixed - Broken
@@ -153,7 +153,7 @@ class BrillTaggerTrainer(object):
           85  85   0   0  | NN->, if Pos:NN@[-1] & Word:,@[0]
           69  69   0   0  | NN->. if Pos:NN@[-1] & Word:.@[0]
           51  51   0   0  | NN->IN if Pos:NN@[-1] & Word:of@[0]
-          47  63  16 161  | NN->IN if Pos:NNS@[-1]
+          47  63  16 162  | NN->IN if Pos:NNS@[-1]
           33  33   0   0  | NN->TO if Pos:NN@[-1] & Word:to@[0]
           26  26   0   0  | IN->. if Pos:NNS@[-1] & Word:.@[0]
           24  24   0   0  | IN->, if Pos:NNS@[-1] & Word:,@[0]
@@ -165,11 +165,11 @@ class BrillTaggerTrainer(object):
 
         >>> train_stats = tagger1.train_stats()
         >>> [train_stats[stat] for stat in ['initialerrors', 'finalerrors', 'rulescores']]
-        [1775, 1269, [132, 85, 69, 51, 47, 33, 26, 24, 22, 17]]
+        [1776, 1270, [132, 85, 69, 51, 47, 33, 26, 24, 22, 17]]
 
         >>> tagger1.print_template_statistics(printunused=False)
         TEMPLATE STATISTICS (TRAIN)  2 templates, 10 rules)
-        TRAIN (   2417 tokens) initial  1775 0.2656 final:  1269 0.4750
+        TRAIN (   2417 tokens) initial  1776 0.2652 final:  1270 0.4746
         #ID | Score (train) |  #Rules     | Template
         --------------------------------------------
         001 |   305   0.603 |   7   0.700 | Template(Pos([-1]),Word([0]))
@@ -177,8 +177,8 @@ class BrillTaggerTrainer(object):
         <BLANKLINE>
         <BLANKLINE>
 
-        >>> tagger1.evaluate(gold_data) # doctest: +ELLIPSIS
-        0.43996...
+        >>> round(tagger1.accuracy(gold_data),5)
+        0.43834
 
         >>> tagged, test_stats = tagger1.batch_tag_incremental(testing_data, gold_data)
 
@@ -188,13 +188,13 @@ class BrillTaggerTrainer(object):
         True
 
         >>> [test_stats[stat] for stat in ['initialerrors', 'finalerrors', 'rulescores']]
-        [1855, 1376, [100, 85, 67, 58, 27, 36, 27, 16, 31, 32]]
+        [1859, 1380, [100, 85, 67, 58, 27, 36, 27, 16, 31, 32]]
 
-        # a high-accuracy tagger
+        >>> # A high-accuracy tagger
         >>> tagger2 = tt.train(training_data, max_rules=10, min_acc=0.99)
         TBL train (fast) (seqs: 100; tokens: 2417; tpls: 2; min score: 2; min acc: 0.99)
         Finding initial useful rules...
-            Found 845 useful rules.
+            Found 847 useful rules.
         <BLANKLINE>
                    B      |
            S   F   r   O  |        Score = Fixed - Broken
@@ -214,8 +214,9 @@ class BrillTaggerTrainer(object):
           18  18   0   0  | CD->-NONE- if Pos:NN@[-1] & Word:0@[0]
           18  18   0   0  | NN->CC if Pos:NN@[-1] & Word:and@[0]
 
-        >>> tagger2.evaluate(gold_data)  # doctest: +ELLIPSIS
-        0.44159544...
+        >>> round(tagger2.accuracy(gold_data), 8)
+        0.43996744
+
         >>> tagger2.rules()[2:4]
         (Rule('001', 'NN', '.', [(Pos([-1]),'NN'), (Word([0]),'.')]), Rule('001', 'NN', 'IN', [(Pos([-1]),'NN'), (Word([0]),'of')]))
 
@@ -236,7 +237,6 @@ class BrillTaggerTrainer(object):
         :type min_acc: float or None
         :return: the learned tagger
         :rtype: BrillTagger
-
         """
         # FIXME: several tests are a bit too dependent on tracing format
         # FIXME: tests in trainer.fast and trainer.brillorig are exact duplicates
@@ -253,22 +253,22 @@ class BrillTaggerTrainer(object):
 
         # Collect some statistics on the training process
         trainstats = {}
-        trainstats['min_acc'] = min_acc
-        trainstats['min_score'] = min_score
-        trainstats['tokencount'] = sum(len(t) for t in test_sents)
-        trainstats['sequencecount'] = len(test_sents)
-        trainstats['templatecount'] = len(self._templates)
-        trainstats['rulescores'] = []
-        trainstats['initialerrors'] = sum(
+        trainstats["min_acc"] = min_acc
+        trainstats["min_score"] = min_score
+        trainstats["tokencount"] = sum(len(t) for t in test_sents)
+        trainstats["sequencecount"] = len(test_sents)
+        trainstats["templatecount"] = len(self._templates)
+        trainstats["rulescores"] = []
+        trainstats["initialerrors"] = sum(
             tag[1] != truth[1]
             for paired in zip(test_sents, train_sents)
             for (tag, truth) in zip(*paired)
         )
-        trainstats['initialacc'] = (
-            1 - trainstats['initialerrors'] / trainstats['tokencount']
+        trainstats["initialacc"] = (
+            1 - trainstats["initialerrors"] / trainstats["tokencount"]
         )
         if self._trace > 0:
-            print(
+            safe_print(
                 "TBL train (fast) (seqs: {sequencecount}; tokens: {tokencount}; "
                 "tpls: {templatecount}; min score: {min_score}; min acc: {min_acc})".format(
                     **trainstats
@@ -279,16 +279,16 @@ class BrillTaggerTrainer(object):
         # by the initial tagger, and use those to generate repair
         # rules, which are added to the rule mappings.
         if self._trace:
-            print("Finding initial useful rules...")
+            safe_print("Finding initial useful rules...")
         self._init_mappings(test_sents, train_sents)
         if self._trace:
-            print(("    Found %d useful rules." % len(self._rule_scores)))
+            safe_print("    Found {0} useful rules.".format(len(self._rule_scores)))
 
         # Let the user know what we're up to.
         if self._trace > 2:
             self._trace_header()
         elif self._trace == 1:
-            print("Selecting rules...")
+            safe_print("Selecting rules...")
 
         # Repeatedly select the best rule, and add it to `rules`.
         rules = []
@@ -299,7 +299,7 @@ class BrillTaggerTrainer(object):
                 if rule:
                     rules.append(rule)
                     score = self._rule_scores[rule]
-                    trainstats['rulescores'].append(score)
+                    trainstats["rulescores"].append(score)
                 else:
                     break  # No more good rules left!
 
@@ -320,15 +320,15 @@ class BrillTaggerTrainer(object):
 
         # The user can cancel training manually:
         except KeyboardInterrupt:
-            print("Training stopped manually -- %d rules found" % len(rules))
+            safe_print("Training stopped manually -- {0} rules found".format(len(rules)))
 
         # Discard our tag position mapping & rule mappings.
         self._clean()
-        trainstats['finalerrors'] = trainstats['initialerrors'] - sum(
-            trainstats['rulescores']
+        trainstats["finalerrors"] = trainstats["initialerrors"] - sum(
+            trainstats["rulescores"]
         )
-        trainstats['finalacc'] = (
-            1 - trainstats['finalerrors'] / trainstats['tokencount']
+        trainstats["finalacc"] = (
+            1 - trainstats["finalerrors"] / trainstats["tokencount"]
         )
         # Create and return a tagger from the rules we found.
         return BrillTagger(self._initial_tagger, rules, trainstats)
@@ -349,7 +349,6 @@ class BrillTaggerTrainer(object):
         # mapping and all the rule-related mappings.
         for sentnum, sent in enumerate(test_sents):
             for wordnum, (word, tag) in enumerate(sent):
-
                 # Initialize tag_positions
                 self._tag_positions[tag].append((sentnum, wordnum))
 
@@ -373,8 +372,8 @@ class BrillTaggerTrainer(object):
         in the sentence *sent* and generate the tag *new_tag*.
         """
         for template in self._templates:
-            for rule in template.applicable_rules(sent, wordnum, new_tag):
-                yield rule
+            for _yf_item in template.applicable_rules(sent, wordnum, new_tag):
+                yield _yf_item
 
     def _update_rule_applies(self, rule, sentnum, wordnum, train_sents):
         """
@@ -497,7 +496,7 @@ class BrillTaggerTrainer(object):
             self._trace_apply(len(update_positions))
 
         # Update test_sents.
-        for (sentnum, wordnum) in update_positions:
+        for sentnum, wordnum in update_positions:
             text = test_sents[sentnum][wordnum][0]
             test_sents[sentnum][wordnum] = (text, new_tag)
 
@@ -578,7 +577,7 @@ class BrillTaggerTrainer(object):
     # Tracing
 
     def _trace_header(self):
-        print(
+        safe_print(
             """
            B      |
    S   F   r   O  |        Score = Fixed - Broken
@@ -601,31 +600,34 @@ class BrillTaggerTrainer(object):
 
         rulestr = rule.format(self._ruleformat)
         if self._trace > 2:
-            print(
-                '%4d%4d%4d%4d  |' % (score, num_fixed, num_broken, num_other), end=' '
+            safe_print(
+                "{:4d}{:4d}{:4d}{:4d}  |".format(
+                    score, num_fixed, num_broken, num_other
+                ),
+                end=" ",
             )
-            print(
+            safe_print(
                 textwrap.fill(
                     rulestr,
-                    initial_indent=' ' * 20,
+                    initial_indent=" " * 20,
                     width=79,
-                    subsequent_indent=' ' * 18 + '|   ',
+                    subsequent_indent=" " * 18 + "|   ",
                 ).strip()
             )
         else:
-            print(rulestr)
+            safe_print(rulestr)
 
     def _trace_apply(self, num_updates):
-        prefix = ' ' * 18 + '|'
-        print(prefix)
-        print(prefix, 'Applying rule to %d positions.' % num_updates)
+        prefix = " " * 18 + "|"
+        safe_print(prefix)
+        safe_print(prefix, "Applying rule to {0} positions.".format(num_updates))
 
     def _trace_update_rules(self, num_obsolete, num_new, num_unseen):
-        prefix = ' ' * 18 + '|'
-        print(prefix, 'Updated rule tables:')
-        print(prefix, ('  - %d rule applications removed' % num_obsolete))
-        print(
+        prefix = " " * 18 + "|"
+        safe_print(prefix, "Updated rule tables:")
+        safe_print(prefix, ("  - {0} rule applications removed".format(num_obsolete)))
+        safe_print(
             prefix,
-            ('  - %d rule applications added (%d novel)' % (num_new, num_unseen)),
+            ("  - {0} rule applications added ({1} novel)".format(num_new, num_unseen)),
         )
-        print(prefix)
+        safe_print(prefix)

@@ -57,7 +57,6 @@ Usage::
 so it is a drop-in replacement for a compiled pattern at those call sites.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
-from __future__ import absolute_import, division, print_function, unicode_literals
 import six
 
 import functools

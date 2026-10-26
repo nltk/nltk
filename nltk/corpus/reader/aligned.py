@@ -1,14 +1,12 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+# -*- coding: utf-8 -*-
+import six
 # Natural Language Toolkit: Aligned Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
-# URL: <http://nltk.org/>
+# Copyright (C) 2001-2026 NLTK Project
+# URL: <https://www.nltk.org/>
 # Author: Steven Bird <stevenbird1@gmail.com>
 # For license information, see LICENSE.TXT
-
-from six import string_types
-
-from nltk.tokenize import WhitespaceTokenizer, RegexpTokenizer
-from nltk.translate import AlignedSent, Alignment
 
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import (
@@ -16,6 +14,8 @@ from nltk.corpus.reader.util import (
     concat,
     read_alignedsent_block,
 )
+from nltk.tokenize import RegexpTokenizer, WhitespaceTokenizer
+from nltk.translate import AlignedSent, Alignment
 
 
 class AlignedCorpusReader(CorpusReader):
@@ -28,11 +28,11 @@ class AlignedCorpusReader(CorpusReader):
         self,
         root,
         fileids,
-        sep='/',
+        sep="/",
         word_tokenizer=WhitespaceTokenizer(),
-        sent_tokenizer=RegexpTokenizer('\n', gaps=True),
+        sent_tokenizer=RegexpTokenizer("\n", gaps=True),
         alignedsent_block_reader=read_alignedsent_block,
-        encoding='latin1',
+        encoding="latin1",
     ):
         """
         Construct a new Aligned Corpus reader for a set of documents
@@ -49,17 +49,6 @@ class AlignedCorpusReader(CorpusReader):
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
         self._alignedsent_block_reader = alignedsent_block_reader
-
-    def raw(self, fileids=None):
-        """
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, string_types):
-            fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):
         """

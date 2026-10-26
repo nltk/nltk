@@ -1,10 +1,23 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
 # -*- coding: utf-8 -*-
+import six
 # Natural Language Toolkit: Phrase Extraction Algorithm
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Authors: Liling Tan, Fredrik Hedman, Petra Barancikova
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
+
+#: Largest sentence length for which :func:`phrase_extraction` expands the
+#: default ``max_phrase_length`` to the full sentence length. The default
+#: enumerates every phrase pair up to that length, which is O(n**2) pairs each
+#: holding an O(n)-word string -- O(n**3) total work/memory -- so leaving
+#: ``max_phrase_length`` at its default over a few-hundred-word sentence pair
+#: pins the CPU and exhausts memory (CWE-770). When the defaulted length would
+#: exceed this, ``phrase_extraction`` raises ``ValueError`` asking for an
+#: explicit ``max_phrase_length``. This only affects the default; an explicitly
+#: supplied ``max_phrase_length`` is never capped.
+MAX_PHRASE_EXTRACTION_DEFAULT_LEN = 256
 
 
 def extract(
@@ -41,11 +54,11 @@ def extract(
     :type f_start: int
     :param f_start: Starting index of the possible foreign language phrases
     :type f_end: int
-    :param f_end: Starting index of the possible foreign language phrases
+    :param f_end: End index of the possible foreign language phrases
     :type e_start: int
     :param e_start: Starting index of the possible source language phrases
     :type e_end: int
-    :param e_end: Starting index of the possible source language phrases
+    :param e_end: End index of the possible source language phrases
     :type srctext: list
     :param srctext: The source language tokens, a list of string.
     :type trgtext: list
@@ -74,9 +87,7 @@ def extract(
             src_phrase = " ".join(srctext[e_start : e_end + 1])
             trg_phrase = " ".join(trgtext[fs : fe + 1])
             # Include more data for later ordering.
-            phrases.add(
-                ((e_start, e_end + 1), (f_start, f_end + 1), src_phrase, trg_phrase)
-            )
+            phrases.add(((e_start, e_end + 1), (fs, fe + 1), src_phrase, trg_phrase))
             fe += 1
             if fe in f_aligned or fe >= trglen:
                 break
@@ -111,20 +122,20 @@ def phrase_extraction(srctext, trgtext, alignment, max_phrase_length=0):
     ...
     ((0, 1), (0, 1), 'michael', 'michael')
     ((0, 2), (0, 4), 'michael assumes', 'michael geht davon aus')
-    ((0, 2), (0, 4), 'michael assumes', 'michael geht davon aus ,')
+    ((0, 2), (0, 5), 'michael assumes', 'michael geht davon aus ,')
     ((0, 3), (0, 6), 'michael assumes that', 'michael geht davon aus , dass')
     ((0, 4), (0, 7), 'michael assumes that he', 'michael geht davon aus , dass er')
     ((0, 9), (0, 10), 'michael assumes that he will stay in the house', 'michael geht davon aus , dass er im haus bleibt')
     ((1, 2), (1, 4), 'assumes', 'geht davon aus')
-    ((1, 2), (1, 4), 'assumes', 'geht davon aus ,')
+    ((1, 2), (1, 5), 'assumes', 'geht davon aus ,')
     ((1, 3), (1, 6), 'assumes that', 'geht davon aus , dass')
     ((1, 4), (1, 7), 'assumes that he', 'geht davon aus , dass er')
     ((1, 9), (1, 10), 'assumes that he will stay in the house', 'geht davon aus , dass er im haus bleibt')
-    ((2, 3), (5, 6), 'that', ', dass')
+    ((2, 3), (4, 6), 'that', ', dass')
     ((2, 3), (5, 6), 'that', 'dass')
-    ((2, 4), (5, 7), 'that he', ', dass er')
+    ((2, 4), (4, 7), 'that he', ', dass er')
     ((2, 4), (5, 7), 'that he', 'dass er')
-    ((2, 9), (5, 10), 'that he will stay in the house', ', dass er im haus bleibt')
+    ((2, 9), (4, 10), 'that he will stay in the house', ', dass er im haus bleibt')
     ((2, 9), (5, 10), 'that he will stay in the house', 'dass er im haus bleibt')
     ((3, 4), (6, 7), 'he', 'er')
     ((3, 9), (6, 10), 'he will stay in the house', 'er im haus bleibt')
@@ -152,6 +163,11 @@ def phrase_extraction(srctext, trgtext, alignment, max_phrase_length=0):
     :type max_phrase_length: int
     :param max_phrase_length: maximal phrase length, if 0 or not specified
         it is set to a length of the longer sentence (srctext or trgtext).
+    :raise ValueError: if ``max_phrase_length`` is left at its default and the
+        longer sentence exceeds ``MAX_PHRASE_EXTRACTION_DEFAULT_LEN``, since
+        enumerating every phrase pair up to the full length is O(n**3) in work
+        and memory and can exhaust the process (CWE-770). Pass an explicit
+        ``max_phrase_length`` to bound the phrase length.
     """
 
     srctext = srctext.split()  # e
@@ -160,7 +176,25 @@ def phrase_extraction(srctext, trgtext, alignment, max_phrase_length=0):
     trglen = len(trgtext)  # len(f)
     # Keeps an index of which source/target words that are aligned.
     f_aligned = [j for _, j in alignment]
-    max_phrase_length = max_phrase_length or max(srclen, trglen)
+    if not max_phrase_length:
+        # The default expands to the full sentence length, which makes
+        # phrase_extraction enumerate O(n**2) phrase pairs each holding an
+        # O(n)-word string -- O(n**3) total -- so a few-hundred-word sentence
+        # pair pins the CPU and exhausts memory (CWE-770). Refuse the unbounded
+        # default for long sentences instead of running it; an explicit
+        # max_phrase_length (an informed choice) is never capped.
+        max_phrase_length = max(srclen, trglen)
+        if max_phrase_length > MAX_PHRASE_EXTRACTION_DEFAULT_LEN:
+            raise ValueError(
+                "phrase_extraction() called with the default max_phrase_length "
+                "on a sentence pair of length %d: enumerating every phrase pair "
+                "up to that length is O(n**2) pairs each holding an O(n)-word "
+                "string (O(n**3) total) and can exhaust memory/CPU (CWE-770). "
+                "Pass an explicit max_phrase_length (e.g. 7, the usual "
+                "phrase-based MT limit), or raise "
+                "nltk.translate.phrase_based.MAX_PHRASE_EXTRACTION_DEFAULT_LEN."
+                % max_phrase_length
+            )
 
     # set of phrase pairs BP
     bp = set()

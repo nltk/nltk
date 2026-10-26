@@ -8,9 +8,8 @@
 #
 """Centralized I/O security sentinel for NLTK."""
 from __future__ import absolute_import, division, print_function, unicode_literals
-from __future__ import absolute_import, division, print_function, unicode_literals
 import six
-from nltk.compat import FileNotFoundError, PermissionError, FileExistsError, is_errno, PathLike, fspath, fsdecode, fsencode
+from nltk.compat import FileNotFoundError, PermissionError, FileExistsError, is_errno, PathLike, fspath, fsdecode, fsencode, casefold, makedirs
 from nltk.compat import keyword_only
 
 """Centralized I/O security sentinel for NLTK."""
@@ -1034,7 +1033,7 @@ def _as_path_text(value, context, error=ValueError):
         # subclass can override; the unbound bytes.decode reads the real bytes.
         try:
             text = bytes.decode(
-                text, sys.getfilesystemencoding(), sys.getfilesystemencodeerrors()
+                text, sys.getfilesystemencoding(), getattr(sys, "getfilesystemencodeerrors", lambda: "strict")()
             )
         except (UnicodeDecodeError, ValueError) as exc:
             six.raise_from(error(
@@ -1538,7 +1537,7 @@ def open_package_resource(
             "Security Violation [{0}]: {1!r} escapes the package directory {2!r}.".format(context, text, str(root))
         )
     _reject_aliased_or_special(str(target), context)
-    return builtins.open(target, mode, **kwargs)
+    return builtins.open(fspath(target), mode, **kwargs)
 
 
 def _zip_member_is_unsafe(name_str):
@@ -2472,7 +2471,7 @@ class ZipFile(zipfile.ZipFile):
             parts = [p for p in rel.split(os.sep) if p not in ("", os.curdir)]
         if not parts and member.is_dir():
             # "./" names the extraction base itself; the stdlib creates it.
-            os.makedirs(root, exist_ok=True)
+            makedirs(root, exist_ok=True)
             return root
         if not parts or os.pardir in parts:
             raise PermissionError(
@@ -2490,7 +2489,7 @@ class ZipFile(zipfile.ZipFile):
         try:
             # The extraction base (the trusted destination) may not exist yet;
             # the stdlib extractor makedirs it, so create it before dir_fd.
-            os.makedirs(root, exist_ok=True)
+            makedirs(root, exist_ok=True)
             dir_fd = os.open(root, os.O_RDONLY | getattr(os, "O_DIRECTORY", 0))
             try:
                 for component in dirs:

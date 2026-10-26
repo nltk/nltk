@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 # Chomsky random text generator, version 1.1, Raymond Hettinger, 2005/09/13
-# http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/440546
+# https://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/440546
 
 """
 CHOMSKY is an aid to writing linguistic papers in the style
@@ -12,7 +13,8 @@ To generate n sentences of linguistic wisdom, type
     (CHOMSKY n)  -- for example
     (CHOMSKY 5) generates half a screen of linguistic truth.
 """
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
 leadins = """To characterize a linguistic level L,
     On the other hand,
@@ -116,10 +118,11 @@ scope of a complex symbol.
     the strong generative capacity of the theory."""
 # List of OBJECTs selected for profound sententiousness.
 
-import textwrap, random
+import random
+import textwrap
 from itertools import chain, islice
 
-from six.moves import zip
+from nltk.termsec import safe_print
 
 
 def generate_chomsky(times=5, line_length=72):
@@ -128,9 +131,9 @@ def generate_chomsky(times=5, line_length=72):
         phraselist = list(map(str.strip, part.splitlines()))
         random.shuffle(phraselist)
         parts.append(phraselist)
-    output = chain(*islice(zip(*parts), 0, times))
-    print(textwrap.fill(" ".join(output), line_length))
+    output = chain.from_iterable(islice(zip(*parts), 0, times))
+    safe_print(textwrap.fill(" ".join(output), line_length))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     generate_chomsky()

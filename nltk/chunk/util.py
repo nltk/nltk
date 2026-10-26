@@ -1,24 +1,26 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+# -*- coding: utf-8 -*-
+import six
 # Natural Language Toolkit: Chunk format conversions
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, unicode_literals, division
 
 import re
 
-from nltk.tree import Tree
+from nltk import redos
+from nltk.metrics import accuracy as _accuracy
 from nltk.tag.mapping import map_tag
 from nltk.tag.util import str2tuple
-from nltk.compat import python_2_unicode_compatible
+from nltk.termsec import safe_print
+from nltk.tree import Tree
 
 ##//////////////////////////////////////////////////////
 ## EVALUATION
 ##//////////////////////////////////////////////////////
-
-from nltk.metrics import accuracy as _accuracy
 
 
 def accuracy(chunker, gold):
@@ -120,10 +122,12 @@ class ChunkScore(object):
         self._tp = set()
         self._fp = set()
         self._fn = set()
-        self._max_tp = kwargs.get('max_tp_examples', 100)
-        self._max_fp = kwargs.get('max_fp_examples', 100)
-        self._max_fn = kwargs.get('max_fn_examples', 100)
-        self._chunk_label = kwargs.get('chunk_label', '.*')
+        self._max_tp = kwargs.get("max_tp_examples", 100)
+        self._max_fp = kwargs.get("max_fp_examples", 100)
+        self._max_fn = kwargs.get("max_fn_examples", 100)
+        self._chunk_label = kwargs.get("chunk_label", ".*")
+        # caller regex: compiled once through redos (bounds compile + match time)
+        self._chunk_label_rx = redos.compile(self._chunk_label)
         self._tp_num = 0
         self._fp_num = 0
         self._fn_num = 0
@@ -154,8 +158,8 @@ class ChunkScore(object):
         :type guessed: chunk structure
         :param guessed: The chunked sentence to be scored.
         """
-        self._correct |= _chunksets(correct, self._count, self._chunk_label)
-        self._guessed |= _chunksets(guessed, self._count, self._chunk_label)
+        self._correct |= _chunksets(correct, self._count, self._chunk_label_rx)
+        self._guessed |= _chunksets(guessed, self._count, self._chunk_label_rx)
         self._count += 1
         self._measuresNeedUpdate = True
         # Keep track of per-tag accuracy (if possible)
@@ -284,7 +288,7 @@ class ChunkScore(object):
 
         :rtype: str
         """
-        return '<ChunkScoring of ' + repr(len(self)) + ' chunks>'
+        return "<ChunkScoring of " + repr(len(self)) + " chunks>"
 
     def __str__(self):
         """
@@ -297,21 +301,22 @@ class ChunkScore(object):
         """
         return (
             "ChunkParse score:\n"
-            + ("    IOB Accuracy: {:5.1f}%%\n".format(self.accuracy() * 100))
-            + ("    Precision:    {:5.1f}%%\n".format(self.precision() * 100))
-            + ("    Recall:       {:5.1f}%%\n".format(self.recall() * 100))
-            + ("    F-Measure:    {:5.1f}%%".format(self.f_measure() * 100))
+            + "    IOB Accuracy: {0:5.1f}%\n".format(self.accuracy() * 100)
+            + "    Precision:    {0:5.1f}%\n".format(self.precision() * 100)
+            + "    Recall:       {0:5.1f}%\n".format(self.recall() * 100)
+            + "    F-Measure:    {0:5.1f}%".format(self.f_measure() * 100)
         )
 
 
 # extract chunks, and assign unique id, the absolute position of
 # the first word of the chunk
 def _chunksets(t, count, chunk_label):
+    # chunk_label is a redos-compiled TimedPattern (bounds compile + match time)
     pos = 0
     chunks = []
     for child in t:
         if isinstance(child, Tree):
-            if re.match(chunk_label, child.label()):
+            if chunk_label.match(child.label()):
                 chunks.append(((count, pos), child.freeze()))
             pos += len(child.leaves())
         else:
@@ -320,7 +325,7 @@ def _chunksets(t, count, chunk_label):
 
 
 def tagstr2tree(
-    s, chunk_label="NP", root_label="S", sep='/', source_tagset=None, target_tagset=None
+    s, chunk_label="NP", root_label="S", sep="/", source_tagset=None, target_tagset=None
 ):
     """
     Divide a string of bracketted tagged text into
@@ -339,20 +344,20 @@ def tagstr2tree(
     :rtype: Tree
     """
 
-    WORD_OR_BRACKET = re.compile(r'\[|\]|[^\[\]\s]+')
+    WORD_OR_BRACKET = redos.compile(r"\[|\]|[^\[\]\s]+")
 
     stack = [Tree(root_label, [])]
     for match in WORD_OR_BRACKET.finditer(s):
         text = match.group()
-        if text[0] == '[':
+        if text[0] == "[":
             if len(stack) != 1:
-                raise ValueError('Unexpected [ at char {:d}'.format(match.start()))
+                raise ValueError("Unexpected [ at char {0:d}".format(match.start()))
             chunk = Tree(chunk_label, [])
             stack[-1].append(chunk)
             stack.append(chunk)
-        elif text[0] == ']':
+        elif text[0] == "]":
             if len(stack) != 2:
-                raise ValueError('Unexpected ] at char {:d}'.format(match.start()))
+                raise ValueError("Unexpected ] at char {0:d}".format(match.start()))
             stack.pop()
         else:
             if sep is None:
@@ -364,16 +369,16 @@ def tagstr2tree(
                 stack[-1].append((word, tag))
 
     if len(stack) != 1:
-        raise ValueError('Expected ] at char {:d}'.format(len(s)))
+        raise ValueError("Expected ] at char {0:d}".format(len(s)))
     return stack[0]
 
 
 ### CONLL
 
-_LINE_RE = re.compile('(\S+)\s+(\S+)\s+([IOB])-?(\S+)?')
+_LINE_RE = redos.compile(r"(\S+)\s+(\S+)\s+([IOB])-?(\S+)?")
 
 
-def conllstr2tree(s, chunk_types=('NP', 'PP', 'VP'), root_label="S"):
+def conllstr2tree(s, chunk_types=("NP", "PP", "VP"), root_label="S"):
     """
     Return a chunk structure for a single sentence
     encoded in the given CONLL 2000 style string.
@@ -393,29 +398,29 @@ def conllstr2tree(s, chunk_types=('NP', 'PP', 'VP'), root_label="S"):
 
     stack = [Tree(root_label, [])]
 
-    for lineno, line in enumerate(s.split('\n')):
+    for lineno, line in enumerate(s.split("\n")):
         if not line.strip():
             continue
 
         # Decode the line.
         match = _LINE_RE.match(line)
         if match is None:
-            raise ValueError('Error on line {:d}'.format(lineno))
+            raise ValueError("Error on line {0:d}".format(lineno))
         (word, tag, state, chunk_type) = match.groups()
 
         # If it's a chunk type we don't care about, treat it as O.
         if chunk_types is not None and chunk_type not in chunk_types:
-            state = 'O'
+            state = "O"
 
         # For "Begin"/"Outside", finish any completed chunks -
         # also do so for "Inside" which don't match the previous token.
-        mismatch_I = state == 'I' and chunk_type != stack[-1].label()
-        if state in 'BO' or mismatch_I:
+        mismatch_I = state == "I" and chunk_type != stack[-1].label()
+        if state in "BO" or mismatch_I:
             if len(stack) == 2:
                 stack.pop()
 
         # For "Begin", start a new chunk.
-        if state == 'B' or mismatch_I:
+        if state == "B" or mismatch_I:
             chunk = Tree(chunk_type, [])
             stack[-1].append(chunk)
             stack.append(chunk)
@@ -454,22 +459,22 @@ def tree2conlltags(t):
 
 
 def conlltags2tree(
-    sentence, chunk_types=('NP', 'PP', 'VP'), root_label='S', strict=False
+    sentence, chunk_types=("NP", "PP", "VP"), root_label="S", strict=False
 ):
     """
     Convert the CoNLL IOB format to a tree.
     """
     tree = Tree(root_label, [])
-    for (word, postag, chunktag) in sentence:
+    for word, postag, chunktag in sentence:
         if chunktag is None:
             if strict:
                 raise ValueError("Bad conll tag sequence")
             else:
                 # Treat as O
                 tree.append((word, postag))
-        elif chunktag.startswith('B-'):
+        elif chunktag.startswith("B-"):
             tree.append(Tree(chunktag[2:], [(word, postag)]))
-        elif chunktag.startswith('I-'):
+        elif chunktag.startswith("I-"):
             if (
                 len(tree) == 0
                 or not isinstance(tree[-1], Tree)
@@ -482,7 +487,7 @@ def conlltags2tree(
                     tree.append(Tree(chunktag[2:], [(word, postag)]))
             else:
                 tree[-1].append((word, postag))
-        elif chunktag == 'O':
+        elif chunktag == "O":
             tree.append((word, postag))
         else:
             raise ValueError("Bad conll tag {0!r}".format(chunktag))
@@ -499,24 +504,24 @@ def tree2conllstr(t):
     :rtype: str
     """
     lines = [" ".join(token) for token in tree2conlltags(t)]
-    return '\n'.join(lines)
+    return "\n".join(lines)
 
 
 ### IEER
 
-_IEER_DOC_RE = re.compile(
-    r'<DOC>\s*'
-    r'(<DOCNO>\s*(?P<docno>.+?)\s*</DOCNO>\s*)?'
-    r'(<DOCTYPE>\s*(?P<doctype>.+?)\s*</DOCTYPE>\s*)?'
-    r'(<DATE_TIME>\s*(?P<date_time>.+?)\s*</DATE_TIME>\s*)?'
-    r'<BODY>\s*'
-    r'(<HEADLINE>\s*(?P<headline>.+?)\s*</HEADLINE>\s*)?'
-    r'<TEXT>(?P<text>.*?)</TEXT>\s*'
-    r'</BODY>\s*</DOC>\s*',
+_IEER_DOC_RE = redos.compile(
+    r"<DOC>\s*"
+    r"(<DOCNO>\s*(?P<docno>.+?)\s*</DOCNO>\s*)?"
+    r"(<DOCTYPE>\s*(?P<doctype>.+?)\s*</DOCTYPE>\s*)?"
+    r"(<DATE_TIME>\s*(?P<date_time>.+?)\s*</DATE_TIME>\s*)?"
+    r"<BODY>\s*"
+    r"(<HEADLINE>\s*(?P<headline>.+?)\s*</HEADLINE>\s*)?"
+    r"<TEXT>(?P<text>.*?)</TEXT>\s*"
+    r"</BODY>\s*</DOC>\s*",
     re.DOTALL,
 )
 
-_IEER_TYPE_RE = re.compile('<b_\w+\s+[^>]*?type="(?P<type>\w+)"')
+_IEER_TYPE_RE = redos.compile(r'<b_\w+\s+[^>]*?type="(?P<type>\w+)"')
 
 
 def _ieer_read_text(s, root_label):
@@ -525,44 +530,47 @@ def _ieer_read_text(s, root_label):
     # return the empty list in place of a Tree
     if s is None:
         return []
-    for piece_m in re.finditer('<[^>]+>|[^\s<]+', s):
+    # Bound the tag body and keep `<` out of it: `<`*N with no `>` was O(n**2)
+    # re-anchoring (CWE-407); excluding the anchor makes the scan stop at the
+    # next tag, so the pass is O(n) rather than O(n*bound).
+    for piece_m in redos.finditer(r"<[^<>]{1,400}>|[^\s<]+", s):
         piece = piece_m.group()
         try:
-            if piece.startswith('<b_'):
+            if piece.startswith("<b_"):
                 m = _IEER_TYPE_RE.match(piece)
                 if m is None:
-                    print('XXXX', piece)
-                chunk = Tree(m.group('type'), [])
+                    safe_print("XXXX", piece)
+                chunk = Tree(m.group("type"), [])
                 stack[-1].append(chunk)
                 stack.append(chunk)
-            elif piece.startswith('<e_'):
+            elif piece.startswith("<e_"):
                 stack.pop()
             #           elif piece.startswith('<'):
             #               print "ERROR:", piece
             #               raise ValueError # Unexpected HTML
             else:
                 stack[-1].append(piece)
-        except (IndexError, ValueError):
-            raise ValueError(
-                'Bad IEER string (error at character {:d})'.format(piece_m.start())
-            )
+        except (IndexError, ValueError) as e:
+            six.raise_from(ValueError(
+                "Bad IEER string (error at character {0:d})".format(piece_m.start())
+            ), e)
     if len(stack) != 1:
-        raise ValueError('Bad IEER string')
+        raise ValueError("Bad IEER string")
     return stack[0]
 
 
 def ieerstr2tree(
     s,
     chunk_types=[
-        'LOCATION',
-        'ORGANIZATION',
-        'PERSON',
-        'DURATION',
-        'DATE',
-        'CARDINAL',
-        'PERCENT',
-        'MONEY',
-        'MEASURE',
+        "LOCATION",
+        "ORGANIZATION",
+        "PERSON",
+        "DURATION",
+        "DATE",
+        "CARDINAL",
+        "PERCENT",
+        "MONEY",
+        "MEASURE",
     ],
     root_label="S",
 ):
@@ -582,26 +590,25 @@ def ieerstr2tree(
     m = _IEER_DOC_RE.match(s)
     if m:
         return {
-            'text': _ieer_read_text(m.group('text'), root_label),
-            'docno': m.group('docno'),
-            'doctype': m.group('doctype'),
-            'date_time': m.group('date_time'),
+            "text": _ieer_read_text(m.group("text"), root_label),
+            "docno": m.group("docno"),
+            "doctype": m.group("doctype"),
+            "date_time": m.group("date_time"),
             #'headline': m.group('headline')
             # we want to capture NEs in the headline too!
-            'headline': _ieer_read_text(m.group('headline'), root_label),
+            "headline": _ieer_read_text(m.group("headline"), root_label),
         }
     else:
         return _ieer_read_text(s, root_label)
 
 
 def demo():
-
     s = "[ Pierre/NNP Vinken/NNP ] ,/, [ 61/CD years/NNS ] old/JJ ,/, will/MD join/VB [ the/DT board/NN ] ./."
     import nltk
 
-    t = nltk.chunk.tagstr2tree(s, chunk_label='NP')
+    t = nltk.chunk.tagstr2tree(s, chunk_label="NP")
     t.pprint()
-    print()
+    safe_print()
 
     s = """
 These DT B-NP
@@ -633,14 +640,14 @@ better JJR I-ADJP
 . . O
 """
 
-    conll_tree = conllstr2tree(s, chunk_types=('NP', 'PP'))
+    conll_tree = conllstr2tree(s, chunk_types=("NP", "PP"))
     conll_tree.pprint()
 
     # Demonstrate CoNLL output
-    print("CoNLL output:")
-    print(nltk.chunk.tree2conllstr(conll_tree))
-    print()
+    safe_print("CoNLL output:")
+    safe_print(nltk.chunk.tree2conllstr(conll_tree))
+    safe_print()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

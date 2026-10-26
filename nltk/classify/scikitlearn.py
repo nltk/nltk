@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to scikit-learn classifiers
 #
 # Author: Lars Buitinck <L.J.Buitinck@uva.nl>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 """
-scikit-learn (http://scikit-learn.org) is a machine learning library for
+scikit-learn (https://scikit-learn.org) is a machine learning library for
 Python. It supports many classification algorithms, including SVMs,
 Naive Bayes, logistic regression (MaxEnt) and decision trees.
 
@@ -30,13 +31,12 @@ best 1000 features:
 ...                      ('nb', MultinomialNB())])
 >>> classif = SklearnClassifier(pipeline)
 """
-from __future__ import print_function, unicode_literals
-
-from six.moves import zip
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
-from nltk import compat
+from nltk.termsec import safe_print
 
 try:
     from sklearn.feature_extraction import DictVectorizer
@@ -44,10 +44,9 @@ try:
 except ImportError:
     pass
 
-__all__ = ['SklearnClassifier']
+__all__ = ["SklearnClassifier"]
 
 
-@compat.python_2_unicode_compatible
 class SklearnClassifier(ClassifierI):
     """Wrapper for scikit-learn classifiers."""
 
@@ -122,27 +121,18 @@ class SklearnClassifier(ClassifierI):
 
     def _make_probdist(self, y_proba):
         classes = self._encoder.classes_
-        return DictionaryProbDist(dict((classes[i], p) for i, p in enumerate(y_proba)))
-
-
-# skip doctests if scikit-learn is not installed
-def setup_module(module):
-    from nose import SkipTest
-
-    try:
-        import sklearn
-    except ImportError:
-        raise SkipTest("scikit-learn is not installed")
+        return DictionaryProbDist({classes[i]: p for i, p in enumerate(y_proba)})
 
 
 if __name__ == "__main__":
-    from nltk.classify.util import names_demo, names_demo_features
     from sklearn.linear_model import LogisticRegression
     from sklearn.naive_bayes import BernoulliNB
 
+    from nltk.classify.util import names_demo, names_demo_features
+
     # Bernoulli Naive Bayes is designed for binary classification. We set the
     # binarize option to False since we know we're passing boolean features.
-    print("scikit-learn Naive Bayes:")
+    safe_print("scikit-learn Naive Bayes:")
     names_demo(
         SklearnClassifier(BernoulliNB(binarize=False)).train,
         features=names_demo_features,
@@ -150,7 +140,7 @@ if __name__ == "__main__":
 
     # The C parameter on logistic regression (MaxEnt) controls regularization.
     # The higher it's set, the less regularized the classifier is.
-    print("\n\nscikit-learn logistic regression:")
+    safe_print("\n\nscikit-learn logistic regression:")
     names_demo(
         SklearnClassifier(LogisticRegression(C=1000)).train,
         features=names_demo_features,

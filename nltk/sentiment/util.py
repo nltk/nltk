@@ -1,31 +1,34 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 #
 # Natural Language Toolkit: Sentiment Analyzer
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 Utility methods for Sentiment Analysis.
 """
-from __future__ import division
+from __future__ import absolute_import, division, print_function, unicode_literals
+import io
+import six
 
-import codecs
 import csv
-import json
-import pickle
 import random
 import re
 import sys
 import time
 from copy import deepcopy
-from itertools import tee
 
 import nltk
+from nltk import redos
 from nltk.corpus import CategorizedPlaintextCorpusReader
 from nltk.data import load
+from nltk.jsontags import safe_json_loads
+from nltk.pathsec import open as pathsec_open
+from nltk.termsec import safe_print, sanitize_terminal
+from nltk.tokenize import PunktTokenizer
 from nltk.tokenize.casual import EMOTICON_RE
 
 # ////////////////////////////////////////////////////////////
@@ -43,94 +46,90 @@ NEGATION = r"""
     |
     n't"""
 
-NEGATION_RE = re.compile(NEGATION, re.VERBOSE)
+NEGATION_RE = redos.compile(NEGATION, re.VERBOSE)
 
-CLAUSE_PUNCT = r'^[.:;!?]$'
-CLAUSE_PUNCT_RE = re.compile(CLAUSE_PUNCT)
+CLAUSE_PUNCT = r"^[.:;!?]$"
+CLAUSE_PUNCT_RE = redos.compile(CLAUSE_PUNCT)
 
 # Happy and sad emoticons
 
-HAPPY = set(
-    [
-        ':-)',
-        ':)',
-        ';)',
-        ':o)',
-        ':]',
-        ':3',
-        ':c)',
-        ':>',
-        '=]',
-        '8)',
-        '=)',
-        ':}',
-        ':^)',
-        ':-D',
-        ':D',
-        '8-D',
-        '8D',
-        'x-D',
-        'xD',
-        'X-D',
-        'XD',
-        '=-D',
-        '=D',
-        '=-3',
-        '=3',
-        ':-))',
-        ":'-)",
-        ":')",
-        ':*',
-        ':^*',
-        '>:P',
-        ':-P',
-        ':P',
-        'X-P',
-        'x-p',
-        'xp',
-        'XP',
-        ':-p',
-        ':p',
-        '=p',
-        ':-b',
-        ':b',
-        '>:)',
-        '>;)',
-        '>:-)',
-        '<3',
-    ]
-)
+HAPPY = {
+    ":-)",
+    ":)",
+    ";)",
+    ":o)",
+    ":]",
+    ":3",
+    ":c)",
+    ":>",
+    "=]",
+    "8)",
+    "=)",
+    ":}",
+    ":^)",
+    ":-D",
+    ":D",
+    "8-D",
+    "8D",
+    "x-D",
+    "xD",
+    "X-D",
+    "XD",
+    "=-D",
+    "=D",
+    "=-3",
+    "=3",
+    ":-))",
+    ":'-)",
+    ":')",
+    ":*",
+    ":^*",
+    ">:P",
+    ":-P",
+    ":P",
+    "X-P",
+    "x-p",
+    "xp",
+    "XP",
+    ":-p",
+    ":p",
+    "=p",
+    ":-b",
+    ":b",
+    ">:)",
+    ">;)",
+    ">:-)",
+    "<3",
+}
 
-SAD = set(
-    [
-        ':L',
-        ':-/',
-        '>:/',
-        ':S',
-        '>:[',
-        ':@',
-        ':-(',
-        ':[',
-        ':-||',
-        '=L',
-        ':<',
-        ':-[',
-        ':-<',
-        '=\\',
-        '=/',
-        '>:(',
-        ':(',
-        '>.<',
-        ":'-(",
-        ":'(",
-        ':\\',
-        ':-c',
-        ':c',
-        ':{',
-        '>:\\',
-        ';(',
-    ]
-)
+SAD = {
+    ":L",
+    ":-/",
+    ">:/",
+    ":S",
+    ">:[",
+    ":@",
+    ":-(",
+    ":[",
+    ":-||",
+    "=L",
+    ":<",
+    ":-[",
+    ":-<",
+    "=\\",
+    "=/",
+    ">:(",
+    ":(",
+    ">.<",
+    ":'-(",
+    ":'(",
+    ":\\",
+    ":-c",
+    ":c",
+    ":{",
+    ">:\\",
+    ";(",
+}
 
 
 def timer(method):
@@ -148,23 +147,12 @@ def timer(method):
         # in Python 2.x round() will return a float, so we convert it to int
         secs = int(round(tot_time % 60))
         if hours == 0 and mins == 0 and secs < 10:
-            print('[TIMER] {0}(): {:.3f} seconds'.format(method.__name__, tot_time))
+            safe_print("[TIMER] {0}(): {1:.3f} seconds".format(method.__name__, method.__name__))
         else:
-            print(
-                '[TIMER] {0}(): {1}h {2}m {3}s'.format(
-                    method.__name__, hours, mins, secs
-                )
-            )
+            safe_print("[TIMER] {0}(): {1}h {2}m {3}s".format(method.__name__, hours, mins, secs))
         return result
 
     return timed
-
-
-def pairwise(iterable):
-    """s -> (s0,s1), (s1,s2), (s2, s3), ..."""
-    a, b = tee(iterable)
-    next(b, None)
-    return zip(a, b)
 
 
 # ////////////////////////////////////////////////////////////
@@ -198,7 +186,7 @@ def extract_unigram_feats(document, unigrams, handle_negation=False):
     if handle_negation:
         document = mark_negation(document)
     for word in unigrams:
-        features['contains({0})'.format(word)] = word in set(document)
+        features["contains({0})".format(word)] = word in set(document)
     return features
 
 
@@ -215,15 +203,13 @@ def extract_bigram_feats(document, bigrams):
 
     >>> bigrams = [('global', 'warming'), ('police', 'prevented'), ('love', 'you')]
     >>> document = 'ice is melting due to global warming'.split()
-    >>> sorted(extract_bigram_feats(document, bigrams).items())
+    >>> sorted(extract_bigram_feats(document, bigrams).items()) # doctest: +NORMALIZE_WHITESPACE
     [('contains(global - warming)', True), ('contains(love - you)', False),
     ('contains(police - prevented)', False)]
     """
     features = {}
     for bigr in bigrams:
-        features['contains({0} - {1})'.format(bigr[0], bigr[1])] = bigr in nltk.bigrams(
-            document
-        )
+        features["contains({0} - {1})".format(bigr[0], bigr[1])] = bigr in nltk.bigrams(document)
     return features
 
 
@@ -240,7 +226,7 @@ def mark_negation(document, double_neg_flip=False, shallow=False):
     :param document: a list of words/tokens, or a tuple (words, label).
     :param shallow: if True, the method will modify the original document in place.
     :param double_neg_flip: if True, double negation is considered affirmation
-        (we activate/deactivate negation scope everytime we find a negation).
+        (we activate/deactivate negation scope every time we find a negation).
     :return: if `shallow == True` the method will modify the original document
         and return it. If `shallow == False` the method will return a modified
         document, leaving the original unmodified.
@@ -264,11 +250,11 @@ def mark_negation(document, double_neg_flip=False, shallow=False):
                 neg_scope = not neg_scope
                 continue
             else:
-                doc[i] += '_NEG'
+                doc[i] += "_NEG"
         elif neg_scope and CLAUSE_PUNCT_RE.search(word):
             neg_scope = not neg_scope
         elif neg_scope and not CLAUSE_PUNCT_RE.search(word):
-            doc[i] += '_NEG'
+            doc[i] += "_NEG"
 
     return document
 
@@ -277,32 +263,29 @@ def output_markdown(filename, **kwargs):
     """
     Write the output of an analysis to a file.
     """
-    with codecs.open(filename, 'at') as outfile:
-        text = '\n*** \n\n'
-        text += '{0} \n\n'.format(time.strftime("%d/%m/%Y, %H:%M"))
+
+    # Each key and value is one line of the report: a line break or control
+    # sequence inside one would add report lines of its own (CWE-93 / CWE-150),
+    # so every piece is written escaped onto its single line.
+    def line(value):
+        return sanitize_terminal(str(value), single_line=True)
+
+    with pathsec_open(filename, "at", context="output_markdown") as outfile:
+        text = "\n*** \n\n"
+        text += "{} \n\n".format(time.strftime("%d/%m/%Y, %H:%M"))
         for k in sorted(kwargs):
             if isinstance(kwargs[k], dict):
                 dictionary = kwargs[k]
-                text += '  - **{0}:**\n'.format(k)
+                text += "  - **{0}:**\\n".format(line(k))
                 for entry in sorted(dictionary):
-                    text += '    - {0}: {1} \n'.format(entry, dictionary[entry])
+                    text += "    - {0}: {1} \\n".format(line(entry), line(dictionary[entry]))
             elif isinstance(kwargs[k], list):
-                text += '  - **{0}:**\n'.format(k)
+                text += "  - **{0}:**\\n".format(line(k))
                 for entry in kwargs[k]:
-                    text += '    - {0}\n'.format(entry)
+                    text += "    - {0}\\n".format(line(entry))
             else:
-                text += '  - **{0}:** {1} \n'.format(k, kwargs[k])
+                text += "  - **{0}:** {1} \\n".format(line(k), line(kwargs[k]))
         outfile.write(text)
-
-
-def save_file(content, filename):
-    """
-    Store `content` in `filename`. Can be used to store a SentimentAnalyzer.
-    """
-    print("Saving", filename)
-    with codecs.open(filename, 'wb') as storage_file:
-        # The protocol=2 parameter is for python2 compatibility
-        pickle.dump(content, storage_file, protocol=2)
 
 
 def split_train_test(all_instances, n=None):
@@ -328,22 +311,22 @@ def split_train_test(all_instances, n=None):
 def _show_plot(x_values, y_values, x_labels=None, y_labels=None):
     try:
         import matplotlib.pyplot as plt
-    except ImportError:
-        raise ImportError(
-            'The plot function requires matplotlib to be installed.'
-            'See http://matplotlib.org/'
-        )
+    except ImportError as e:
+        six.raise_from(ImportError(
+            "The plot function requires matplotlib to be installed."
+            "See https://matplotlib.org/"
+        ), e)
 
-    plt.locator_params(axis='y', nbins=3)
+    plt.locator_params(axis="y", nbins=3)
     axes = plt.axes()
     axes.yaxis.grid()
-    plt.plot(x_values, y_values, 'ro', color='red')
+    plt.plot(x_values, y_values, "ro", color="red")
     plt.ylim(ymin=-1.2, ymax=1.2)
     plt.tight_layout(pad=5)
     if x_labels:
-        plt.xticks(x_values, x_labels, rotation='vertical')
+        plt.xticks(x_values, x_labels, rotation="vertical")
     if y_labels:
-        plt.yticks([-1, 0, 1], y_labels, rotation='horizontal')
+        plt.yticks([-1, 0, 1], y_labels, rotation="horizontal")
     # Pad margins so that markers are not clipped by the axes
     plt.margins(0.2)
     plt.show()
@@ -358,8 +341,8 @@ def json2csv_preprocess(
     json_file,
     outfile,
     fields,
-    encoding='utf8',
-    errors='replace',
+    encoding="utf8",
+    errors="replace",
     gzip_compress=False,
     skip_retweets=True,
     skip_tongue_tweets=True,
@@ -391,47 +374,74 @@ def json2csv_preprocess(
         limit is reached the conversion will stop. It can be useful to create
         subsets of the original tweets json data.
     """
-    with codecs.open(json_file, encoding=encoding) as fp:
-        (writer, outf) = outf_writer_compat(outfile, encoding, errors, gzip_compress)
-        # write the list of fields as header
-        writer.writerow(fields)
+    with pathsec_open(
+        json_file, "rt", encoding=encoding, context="json2csv_preprocess"
+    ) as fp:
+        import gzip
 
-        if remove_duplicates == True:
-            tweets_cache = []
+        from nltk.csvsec import sanitize_csv_field
+        from nltk.twitter.common import extract_fields
+
+        if gzip_compress:
+            outf = pathsec_open(outfile, "wb", context="json2csv_preprocess")
+            if six.PY2:  # 2.7 gzip has no text mode
+                outf = io.TextIOWrapper(gzip.open(outf, "wb"), encoding=encoding, errors=errors, newline="")
+            else:
+                outf = gzip.open(outf, "wt", newline="", encoding=encoding, errors=errors)
+        else:
+            outf = pathsec_open(
+                outfile,
+                "w",
+                newline="",
+                encoding=encoding,
+                errors=errors,
+                context="json2csv_preprocess",
+            )
+        writer = csv.writer(outf)
+        # Every cell, header included, goes through the CSV sanitiser: a tweet
+        # beginning with = + - @ would otherwise reach a spreadsheet as a
+        # formula (CWE-1236), a control sequence a terminal (CWE-150).
+        writer.writerow([sanitize_csv_field(c) for c in fields])
+
+        if remove_duplicates:
+            # a set: the membership test below runs once per tweet, and a list
+            # made a large file quadratic (CWE-407)
+            tweets_cache = set()
         i = 0
         for line in fp:
-            tweet = json.loads(line)
+            # Untrusted tweet line: bound size and nesting depth before parsing.
+            tweet = safe_json_loads(line, context="sentiment.json2csv_preprocess")
             row = extract_fields(tweet, fields)
             try:
-                text = row[fields.index('text')]
+                text = row[fields.index("text")]
                 # Remove retweets
-                if skip_retweets == True:
-                    if re.search(r'\bRT\b', text):
+                if skip_retweets:
+                    if redos.search(r"\bRT\b", text):
                         continue
                 # Remove tweets containing ":P" and ":-P" emoticons
-                if skip_tongue_tweets == True:
-                    if re.search(r'\:\-?P\b', text):
+                if skip_tongue_tweets:
+                    if redos.search(r"\:\-?P\b", text):
                         continue
                 # Remove tweets containing both happy and sad emoticons
-                if skip_ambiguous_tweets == True:
+                if skip_ambiguous_tweets:
                     all_emoticons = EMOTICON_RE.findall(text)
                     if all_emoticons:
                         if (set(all_emoticons) & HAPPY) and (set(all_emoticons) & SAD):
                             continue
                 # Strip off emoticons from all tweets
-                if strip_off_emoticons == True:
-                    row[fields.index('text')] = re.sub(
-                        r'(?!\n)\s+', ' ', EMOTICON_RE.sub('', text)
+                if strip_off_emoticons:
+                    row[fields.index("text")] = redos.sub(
+                        r"(?!\n)\s+", " ", EMOTICON_RE.sub("", text)
                     )
                 # Remove duplicate tweets
-                if remove_duplicates == True:
-                    if row[fields.index('text')] in tweets_cache:
+                if remove_duplicates:
+                    if row[fields.index("text")] in tweets_cache:
                         continue
                     else:
-                        tweets_cache.append(row[fields.index('text')])
+                        tweets_cache.add(row[fields.index("text")])
             except ValueError:
                 pass
-            writer.writerow(row)
+            writer.writerow([sanitize_csv_field(c) for c in row])
             i += 1
             if limit and i >= limit:
                 break
@@ -458,52 +468,31 @@ def parse_tweets_set(
     """
     tweets = []
     if not sent_tokenizer:
-        sent_tokenizer = load('tokenizers/punkt/english.pickle')
+        sent_tokenizer = PunktTokenizer()
 
-    # If we use Python3.x we can proceed using the 'rt' flag
-    if sys.version_info[0] == 3:
-        with codecs.open(filename, 'rt') as csvfile:
-            reader = csv.reader(csvfile)
-            if skip_header == True:
-                next(reader, None)  # skip the header
-            i = 0
-            for tweet_id, text in reader:
-                # text = text[1]
-                i += 1
-                sys.stdout.write('Loaded {0} tweets\r'.format(i))
-                # Apply sentence and word tokenizer to text
-                if word_tokenizer:
-                    tweet = [
-                        w
-                        for sent in sent_tokenizer.tokenize(text)
-                        for w in word_tokenizer.tokenize(sent)
-                    ]
-                else:
-                    tweet = text
-                tweets.append((tweet, label))
-    # If we use Python2.x we need to handle encoding problems
-    elif sys.version_info[0] < 3:
-        with codecs.open(filename) as csvfile:
-            reader = csv.reader(csvfile)
-            if skip_header == True:
-                next(reader, None)  # skip the header
-            i = 0
-            for row in reader:
-                unicode_row = [x.decode('utf8') for x in row]
-                text = unicode_row[1]
-                i += 1
-                sys.stdout.write('Loaded {0} tweets\r'.format(i))
-                # Apply sentence and word tokenizer to text
-                if word_tokenizer:
-                    tweet = [
-                        w.encode('utf8')
-                        for sent in sent_tokenizer.tokenize(text)
-                        for w in word_tokenizer.tokenize(sent)
-                    ]
-                else:
-                    tweet = text
-                tweets.append((tweet, label))
-    print("Loaded {0} tweets".format(i))
+    with pathsec_open(filename, "rt", context="parse_tweets_set") as csvfile:
+        reader = csv.reader(csvfile)
+        if skip_header:
+            next(reader, None)  # skip the header
+        i = 0
+        for tweet_id, text in reader:
+            # text = text[1]
+            i += 1
+            sys.stdout.write(
+                "Loaded {0} tweets\\r".format(i)
+            )  # unsafe-print ok: literal/numeric status line, no untrusted value
+            # Apply sentence and word tokenizer to text
+            if word_tokenizer:
+                tweet = [
+                    w
+                    for sent in sent_tokenizer.tokenize(text)
+                    for w in word_tokenizer.tokenize(sent)
+                ]
+            else:
+                tweet = text
+            tweets.append((tweet, label))
+
+    safe_print("Loaded {0} tweets".format(i))
     return tweets
 
 
@@ -517,8 +506,9 @@ def demo_tweets(trainer, n_instances=None, output=None):
     Train and test Naive Bayes classifier on 10000 tweets, tokenized using
     TweetTokenizer.
     Features are composed of:
-        - 1000 most frequent unigrams
-        - 100 top bigrams (using BigramAssocMeasures.pmi)
+
+    - 1000 most frequent unigrams
+    - 100 top bigrams (using BigramAssocMeasures.pmi)
 
     :param trainer: `train` method of a classifier.
     :param n_instances: the number of total tweets that have to be used for
@@ -526,9 +516,9 @@ def demo_tweets(trainer, n_instances=None, output=None):
         negative.
     :param output: the output file where results have to be reported.
     """
-    from nltk.tokenize import TweetTokenizer
+    from nltk.corpus import stopwords, twitter_samples
     from nltk.sentiment import SentimentAnalyzer
-    from nltk.corpus import twitter_samples, stopwords
+    from nltk.tokenize import TweetTokenizer
 
     # Different customizations for the TweetTokenizer
     tokenizer = TweetTokenizer(preserve_case=False)
@@ -538,17 +528,17 @@ def demo_tweets(trainer, n_instances=None, output=None):
     if n_instances is not None:
         n_instances = int(n_instances / 2)
 
-    fields = ['id', 'text']
+    fields = ["id", "text"]
     positive_json = twitter_samples.abspath("positive_tweets.json")
-    positive_csv = 'positive_tweets.csv'
+    positive_csv = "positive_tweets.csv"
     json2csv_preprocess(positive_json, positive_csv, fields, limit=n_instances)
 
     negative_json = twitter_samples.abspath("negative_tweets.json")
-    negative_csv = 'negative_tweets.csv'
+    negative_csv = "negative_tweets.csv"
     json2csv_preprocess(negative_json, negative_csv, fields, limit=n_instances)
 
-    neg_docs = parse_tweets_set(negative_csv, label='neg', word_tokenizer=tokenizer)
-    pos_docs = parse_tweets_set(positive_csv, label='pos', word_tokenizer=tokenizer)
+    neg_docs = parse_tweets_set(negative_csv, label="neg", word_tokenizer=tokenizer)
+    pos_docs = parse_tweets_set(positive_csv, label="pos", word_tokenizer=tokenizer)
 
     # We separately split subjective and objective instances to keep a balanced
     # uniform class distribution in both train and test sets.
@@ -583,8 +573,8 @@ def demo_tweets(trainer, n_instances=None, output=None):
     try:
         classifier.show_most_informative_features()
     except AttributeError:
-        print(
-            'Your classifier does not provide a show_most_informative_features() method.'
+        safe_print(
+            "Your classifier does not provide a show_most_informative_features() method."
         )
     results = sentim_analyzer.evaluate(test_set)
 
@@ -592,7 +582,7 @@ def demo_tweets(trainer, n_instances=None, output=None):
         extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
         output_markdown(
             output,
-            Dataset='labeled_tweets',
+            Dataset="labeled_tweets",
             Classifier=type(classifier).__name__,
             Tokenizer=tokenizer.__class__.__name__,
             Feats=extr,
@@ -607,7 +597,8 @@ def demo_movie_reviews(trainer, n_instances=None, output=None):
     The corpus has been preprocessed using the default sentence tokenizer and
     WordPunctTokenizer.
     Features are composed of:
-        - most frequent unigrams
+
+    - most frequent unigrams
 
     :param trainer: `train` method of a classifier.
     :param n_instances: the number of total reviews that have to be used for
@@ -622,12 +613,12 @@ def demo_movie_reviews(trainer, n_instances=None, output=None):
         n_instances = int(n_instances / 2)
 
     pos_docs = [
-        (list(movie_reviews.words(pos_id)), 'pos')
-        for pos_id in movie_reviews.fileids('pos')[:n_instances]
+        (list(movie_reviews.words(pos_id)), "pos")
+        for pos_id in movie_reviews.fileids("pos")[:n_instances]
     ]
     neg_docs = [
-        (list(movie_reviews.words(neg_id)), 'neg')
-        for neg_id in movie_reviews.fileids('neg')[:n_instances]
+        (list(movie_reviews.words(neg_id)), "neg")
+        for neg_id in movie_reviews.fileids("neg")[:n_instances]
     ]
     # We separately split positive and negative instances to keep a balanced
     # uniform class distribution in both train and test sets.
@@ -651,8 +642,8 @@ def demo_movie_reviews(trainer, n_instances=None, output=None):
     try:
         classifier.show_most_informative_features()
     except AttributeError:
-        print(
-            'Your classifier does not provide a show_most_informative_features() method.'
+        safe_print(
+            "Your classifier does not provide a show_most_informative_features() method."
         )
     results = sentim_analyzer.evaluate(test_set)
 
@@ -660,9 +651,9 @@ def demo_movie_reviews(trainer, n_instances=None, output=None):
         extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
         output_markdown(
             output,
-            Dataset='Movie_reviews',
+            Dataset="Movie_reviews",
             Classifier=type(classifier).__name__,
-            Tokenizer='WordPunctTokenizer',
+            Tokenizer="WordPunctTokenizer",
             Feats=extr,
             Results=results,
             Instances=n_instances,
@@ -683,17 +674,17 @@ def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=Non
         and negative.
     :param output: the output file where results have to be reported.
     """
-    from nltk.sentiment import SentimentAnalyzer
     from nltk.corpus import subjectivity
+    from nltk.sentiment import SentimentAnalyzer
 
     if n_instances is not None:
         n_instances = int(n_instances / 2)
 
     subj_docs = [
-        (sent, 'subj') for sent in subjectivity.sents(categories='subj')[:n_instances]
+        (sent, "subj") for sent in subjectivity.sents(categories="subj")[:n_instances]
     ]
     obj_docs = [
-        (sent, 'obj') for sent in subjectivity.sents(categories='obj')[:n_instances]
+        (sent, "obj") for sent in subjectivity.sents(categories="obj")[:n_instances]
     ]
 
     # We separately split subjective and objective instances to keep a balanced
@@ -721,21 +712,21 @@ def demo_subjectivity(trainer, save_analyzer=False, n_instances=None, output=Non
     try:
         classifier.show_most_informative_features()
     except AttributeError:
-        print(
-            'Your classifier does not provide a show_most_informative_features() method.'
+        safe_print(
+            "Your classifier does not provide a show_most_informative_features() method."
         )
     results = sentim_analyzer.evaluate(test_set)
 
-    if save_analyzer == True:
-        save_file(sentim_analyzer, 'sa_subjectivity.pickle')
+    if save_analyzer:
+        sentim_analyzer.save_file(sentim_analyzer, "sa_subjectivity.pickle")
 
     if output:
         extr = [f.__name__ for f in sentim_analyzer.feat_extractors]
         output_markdown(
             output,
-            Dataset='subjectivity',
+            Dataset="subjectivity",
             Classifier=type(classifier).__name__,
-            Tokenizer='WhitespaceTokenizer',
+            Tokenizer="WhitespaceTokenizer",
             Feats=extr,
             Instances=n_instances,
             Results=results,
@@ -756,15 +747,15 @@ def demo_sent_subjectivity(text):
 
     word_tokenizer = regexp.WhitespaceTokenizer()
     try:
-        sentim_analyzer = load('sa_subjectivity.pickle')
+        sentim_analyzer = load("sa_subjectivity.pickle")
     except LookupError:
-        print('Cannot find the sentiment analyzer you want to load.')
-        print('Training a new one using NaiveBayesClassifier.')
+        safe_print("Cannot find the sentiment analyzer you want to load.")
+        safe_print("Training a new one using NaiveBayesClassifier.")
         sentim_analyzer = demo_subjectivity(NaiveBayesClassifier.train, True)
 
     # Tokenize and convert to lower case
     tokenized_text = [word.lower() for word in word_tokenizer.tokenize(text)]
-    print(sentim_analyzer.classify(tokenized_text))
+    safe_print(sentim_analyzer.classify(tokenized_text))
 
 
 def demo_liu_hu_lexicon(sentence, plot=False):
@@ -799,15 +790,15 @@ def demo_liu_hu_lexicon(sentence, plot=False):
             y.append(0)  # neutral
 
     if pos_words > neg_words:
-        print('Positive')
+        safe_print("Positive")
     elif pos_words < neg_words:
-        print('Negative')
+        safe_print("Negative")
     elif pos_words == neg_words:
-        print('Neutral')
+        safe_print("Neutral")
 
-    if plot == True:
+    if plot:
         _show_plot(
-            x, y, x_labels=tokenized_sent, y_labels=['Negative', 'Neutral', 'Positive']
+            x, y, x_labels=tokenized_sent, y_labels=["Negative", "Neutral", "Positive"]
         )
 
 
@@ -820,7 +811,7 @@ def demo_vader_instance(text):
     from nltk.sentiment import SentimentIntensityAnalyzer
 
     vader_analyzer = SentimentIntensityAnalyzer()
-    print(vader_analyzer.polarity_scores(text))
+    safe_print(vader_analyzer.polarity_scores(text))
 
 
 def demo_vader_tweets(n_instances=None, output=None):
@@ -831,21 +822,20 @@ def demo_vader_tweets(n_instances=None, output=None):
     :param output: the output file where results have to be reported.
     """
     from collections import defaultdict
+
     from nltk.corpus import twitter_samples
+    from nltk.metrics import accuracy as eval_accuracy
+    from nltk.metrics import f_measure as eval_f_measure
+    from nltk.metrics import precision as eval_precision
+    from nltk.metrics import recall as eval_recall
     from nltk.sentiment import SentimentIntensityAnalyzer
-    from nltk.metrics import (
-        accuracy as eval_accuracy,
-        precision as eval_precision,
-        recall as eval_recall,
-        f_measure as eval_f_measure,
-    )
 
     if n_instances is not None:
         n_instances = int(n_instances / 2)
 
-    fields = ['id', 'text']
+    fields = ["id", "text"]
     positive_json = twitter_samples.abspath("positive_tweets.json")
-    positive_csv = 'positive_tweets.csv'
+    positive_csv = "positive_tweets.csv"
     json2csv_preprocess(
         positive_json,
         positive_csv,
@@ -855,7 +845,7 @@ def demo_vader_tweets(n_instances=None, output=None):
     )
 
     negative_json = twitter_samples.abspath("negative_tweets.json")
-    negative_csv = 'negative_tweets.csv'
+    negative_csv = "negative_tweets.csv"
     json2csv_preprocess(
         negative_json,
         negative_csv,
@@ -864,8 +854,8 @@ def demo_vader_tweets(n_instances=None, output=None):
         limit=n_instances,
     )
 
-    pos_docs = parse_tweets_set(positive_csv, label='pos')
-    neg_docs = parse_tweets_set(negative_csv, label='neg')
+    pos_docs = parse_tweets_set(positive_csv, label="pos")
+    neg_docs = parse_tweets_set(negative_csv, label="neg")
 
     # We separately split subjective and objective instances to keep a balanced
     # uniform class distribution in both train and test sets.
@@ -887,43 +877,43 @@ def demo_vader_tweets(n_instances=None, output=None):
         labels.add(label)
         gold_results[label].add(i)
         acc_gold_results.append(label)
-        score = vader_analyzer.polarity_scores(text)['compound']
+        score = vader_analyzer.polarity_scores(text)["compound"]
         if score > 0:
-            observed = 'pos'
+            observed = "pos"
         else:
-            observed = 'neg'
+            observed = "neg"
         num += 1
         acc_test_results.append(observed)
         test_results[observed].add(i)
     metrics_results = {}
     for label in labels:
         accuracy_score = eval_accuracy(acc_gold_results, acc_test_results)
-        metrics_results['Accuracy'] = accuracy_score
+        metrics_results["Accuracy"] = accuracy_score
         precision_score = eval_precision(gold_results[label], test_results[label])
-        metrics_results['Precision [{0}]'.format(label)] = precision_score
+        metrics_results["Precision [{0}]".format(label)] = precision_score
         recall_score = eval_recall(gold_results[label], test_results[label])
-        metrics_results['Recall [{0}]'.format(label)] = recall_score
+        metrics_results["Recall [{0}]".format(label)] = recall_score
         f_measure_score = eval_f_measure(gold_results[label], test_results[label])
-        metrics_results['F-measure [{0}]'.format(label)] = f_measure_score
+        metrics_results["F-measure [{0}]".format(label)] = f_measure_score
 
     for result in sorted(metrics_results):
-        print('{0}: {1}'.format(result, metrics_results[result]))
+        safe_print("{0}: {1}".format(result, metrics_results[result]))
 
     if output:
         output_markdown(
             output,
-            Approach='Vader',
-            Dataset='labeled_tweets',
+            Approach="Vader",
+            Dataset="labeled_tweets",
             Instances=n_instances,
             Results=metrics_results,
         )
 
 
-if __name__ == '__main__':
-    from nltk.classify import NaiveBayesClassifier, MaxentClassifier
-    from nltk.classify.scikitlearn import SklearnClassifier
+if __name__ == "__main__":
     from sklearn.svm import LinearSVC
-    from nltk.twitter.common import outf_writer_compat, extract_fields
+
+    from nltk.classify import MaxentClassifier, NaiveBayesClassifier
+    from nltk.classify.scikitlearn import SklearnClassifier
 
     naive_bayes = NaiveBayesClassifier.train
     svm = SklearnClassifier(LinearSVC()).train

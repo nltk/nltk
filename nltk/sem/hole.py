@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Logic
 #
 # Author:     Peter Wang
 # Updated by: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2019 NLTK Project
-# URL: <http://nltk.org>
+# Copyright (C) 2001-2026 NLTK Project
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -19,16 +20,12 @@ After parsing, the semantic representation is in the form of an underspecified
 representation that is not easy to read.  We use a "plugging" algorithm to
 convert that representation into first-order logic formulas.
 """
-from __future__ import print_function, unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
 from functools import reduce
 
-from six import itervalues
-
-from nltk import compat
 from nltk.parse import load_parser
-
-from nltk.sem.skolemize import skolemize
 from nltk.sem.logic import (
     AllExpression,
     AndExpression,
@@ -40,7 +37,8 @@ from nltk.sem.logic import (
     NegatedExpression,
     OrExpression,
 )
-
+from nltk.sem.skolemize import skolemize
+from nltk.termsec import safe_print
 
 # Note that in this code there may be multiple types of trees being referred to:
 #
@@ -52,17 +50,17 @@ from nltk.sem.logic import (
 
 
 class Constants(object):
-    ALL = 'ALL'
-    EXISTS = 'EXISTS'
-    NOT = 'NOT'
-    AND = 'AND'
-    OR = 'OR'
-    IMP = 'IMP'
-    IFF = 'IFF'
-    PRED = 'PRED'
-    LEQ = 'LEQ'
-    HOLE = 'HOLE'
-    LABEL = 'LABEL'
+    ALL = "ALL"
+    EXISTS = "EXISTS"
+    NOT = "NOT"
+    AND = "AND"
+    OR = "OR"
+    IMP = "IMP"
+    IFF = "IFF"
+    PRED = "PRED"
+    LEQ = "LEQ"
+    HOLE = "HOLE"
+    LABEL = "LABEL"
 
     MAP = {
         ALL: lambda v, e: AllExpression(v.variable, e),
@@ -143,7 +141,7 @@ class HoleSemantics(object):
 
     def _find_top_nodes(self, node_list):
         top_nodes = node_list.copy()
-        for f in itervalues(self.fragments):
+        for f in self.fragments.values():
             # the label is the first argument of the predicate
             args = f[1]
             for arg in args:
@@ -207,7 +205,7 @@ class HoleSemantics(object):
                 head = [(a, ancestors) for a in args if self.is_node(a)]
                 self._plug_nodes(head + queue[1:], potential_labels, plug_acc, record)
         else:
-            raise Exception('queue empty')
+            raise Exception("queue empty")
 
     def _plug_hole(self, hole, ancestors0, queue, potential_labels0, plug_acc0, record):
         """
@@ -302,7 +300,6 @@ class HoleSemantics(object):
             return node
 
 
-@compat.python_2_unicode_compatible
 class Constraint(object):
     """
     This class represents a constraint of the form (L =< N),
@@ -326,15 +323,15 @@ class Constraint(object):
         return hash(repr(self))
 
     def __repr__(self):
-        return '(%s < %s)' % (self.lhs, self.rhs)
+        return "({0} < {1})".format(self.lhs, self.rhs)
 
 
 def hole_readings(sentence, grammar_filename=None, verbose=False):
     if not grammar_filename:
-        grammar_filename = 'grammars/sample_grammars/hole.fcfg'
+        grammar_filename = "grammars/sample_grammars/hole.fcfg"
 
     if verbose:
-        print('Reading grammar file', grammar_filename)
+        safe_print("Reading grammar file", grammar_filename)
 
     parser = load_parser(grammar_filename)
 
@@ -342,16 +339,16 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
     tokens = sentence.split()
     trees = list(parser.parse(tokens))
     if verbose:
-        print('Got %d different parses' % len(trees))
+        safe_print("Got %d different parses" % len(trees))
 
     all_readings = []
     for tree in trees:
         # Get the semantic feature from the top of the parse tree.
-        sem = tree.label()['SEM'].simplify()
+        sem = tree.label()["SEM"].simplify()
 
         # Print the raw semantic representation.
         if verbose:
-            print('Raw:       ', sem)
+            safe_print("Raw:       ", sem)
 
         # Skolemize away all quantifiers.  All variables become unique.
         while isinstance(sem, LambdaExpression):
@@ -359,7 +356,7 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
         skolemized = skolemize(sem)
 
         if verbose:
-            print('Skolemized:', skolemized)
+            safe_print("Skolemized:", skolemized)
 
         # Break the hole semantics representation down into its components
         # i.e. holes, labels, formula fragments and constraints.
@@ -367,14 +364,14 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
 
         # Maybe show the details of the semantic representation.
         if verbose:
-            print('Holes:       ', hole_sem.holes)
-            print('Labels:      ', hole_sem.labels)
-            print('Constraints: ', hole_sem.constraints)
-            print('Top hole:    ', hole_sem.top_hole)
-            print('Top labels:  ', hole_sem.top_most_labels)
-            print('Fragments:')
+            safe_print("Holes:       ", hole_sem.holes)
+            safe_print("Labels:      ", hole_sem.labels)
+            safe_print("Constraints: ", hole_sem.constraints)
+            safe_print("Top hole:    ", hole_sem.top_hole)
+            safe_print("Top labels:  ", hole_sem.top_most_labels)
+            safe_print("Fragments:")
             for l, f in hole_sem.fragments.items():
-                print('\t%s: %s' % (l, f))
+                safe_print("	{0}: {1}".format(l, f))
 
         # Find all the possible ways to plug the formulas together.
         pluggings = hole_sem.pluggings()
@@ -385,18 +382,18 @@ def hole_readings(sentence, grammar_filename=None, verbose=False):
         # Print out the formulas in a textual format.
         if verbose:
             for i, r in enumerate(readings):
-                print()
-                print('%d. %s' % (i, r))
-            print()
+                safe_print()
+                safe_print("%d. %s" % (i, r))
+            safe_print()
 
         all_readings.extend(readings)
 
     return all_readings
 
 
-if __name__ == '__main__':
-    for r in hole_readings('a dog barks'):
-        print(r)
-    print()
-    for r in hole_readings('every girl chases a dog'):
-        print(r)
+if __name__ == "__main__":
+    for r in hole_readings("a dog barks"):
+        safe_print(r)
+    safe_print()
+    for r in hole_readings("every girl chases a dog"):
+        safe_print(r)

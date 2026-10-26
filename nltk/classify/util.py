@@ -1,25 +1,29 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Classifier Utility Functions
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (minor additions)
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 Utility functions and classes for classifiers.
 """
-from __future__ import print_function, division
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
 import math
 
 # from nltk.util import Deprecated
 import nltk.classify.util  # for accuracy & log_likelihood
+from nltk.termsec import safe_print
 from nltk.util import LazyMap
 
 ######################################################################
 # { Helper Functions
 ######################################################################
+
 
 # alternative name possibility: 'map_featurefunc()'?
 # alternative name possibility: 'detect_features()'?
@@ -79,7 +83,7 @@ def attested_labels(tokens):
         labels.  A classified token has the form ``(token, label)``.
     :type tokens: list
     """
-    return tuple(set(label for (tok, label) in tokens))
+    return tuple({label for (tok, label) in tokens})
 
 
 def log_likelihood(classifier, gold):
@@ -108,10 +112,10 @@ class CutoffChecker(object):
 
     def __init__(self, cutoffs):
         self.cutoffs = cutoffs.copy()
-        if 'min_ll' in cutoffs:
-            cutoffs['min_ll'] = -abs(cutoffs['min_ll'])
-        if 'min_lldelta' in cutoffs:
-            cutoffs['min_lldelta'] = abs(cutoffs['min_lldelta'])
+        if "min_ll" in cutoffs:
+            cutoffs["min_ll"] = -abs(cutoffs["min_ll"])
+        if "min_lldelta" in cutoffs:
+            cutoffs["min_lldelta"] = abs(cutoffs["min_lldelta"])
         self.ll = None
         self.acc = None
         self.iter = 1
@@ -119,32 +123,32 @@ class CutoffChecker(object):
     def check(self, classifier, train_toks):
         cutoffs = self.cutoffs
         self.iter += 1
-        if 'max_iter' in cutoffs and self.iter >= cutoffs['max_iter']:
+        if "max_iter" in cutoffs and self.iter >= cutoffs["max_iter"]:
             return True  # iteration cutoff.
 
         new_ll = nltk.classify.util.log_likelihood(classifier, train_toks)
         if math.isnan(new_ll):
             return True
 
-        if 'min_ll' in cutoffs or 'min_lldelta' in cutoffs:
-            if 'min_ll' in cutoffs and new_ll >= cutoffs['min_ll']:
+        if "min_ll" in cutoffs or "min_lldelta" in cutoffs:
+            if "min_ll" in cutoffs and new_ll >= cutoffs["min_ll"]:
                 return True  # log likelihood cutoff
             if (
-                'min_lldelta' in cutoffs
+                "min_lldelta" in cutoffs
                 and self.ll
-                and ((new_ll - self.ll) <= abs(cutoffs['min_lldelta']))
+                and ((new_ll - self.ll) <= abs(cutoffs["min_lldelta"]))
             ):
                 return True  # log likelihood delta cutoff
             self.ll = new_ll
 
-        if 'max_acc' in cutoffs or 'min_accdelta' in cutoffs:
+        if "max_acc" in cutoffs or "min_accdelta" in cutoffs:
             new_acc = nltk.classify.util.log_likelihood(classifier, train_toks)
-            if 'max_acc' in cutoffs and new_acc >= cutoffs['max_acc']:
+            if "max_acc" in cutoffs and new_acc >= cutoffs["max_acc"]:
                 return True  # log likelihood cutoff
             if (
-                'min_accdelta' in cutoffs
+                "min_accdelta" in cutoffs
                 and self.acc
-                and ((new_acc - self.acc) <= abs(cutoffs['min_accdelta']))
+                and ((new_acc - self.acc) <= abs(cutoffs["min_accdelta"]))
             ):
                 return True  # log likelihood delta cutoff
             self.acc = new_acc
@@ -159,35 +163,36 @@ class CutoffChecker(object):
 
 def names_demo_features(name):
     features = {}
-    features['alwayson'] = True
-    features['startswith'] = name[0].lower()
-    features['endswith'] = name[-1].lower()
-    for letter in 'abcdefghijklmnopqrstuvwxyz':
-        features['count(%s)' % letter] = name.lower().count(letter)
-        features['has(%s)' % letter] = letter in name.lower()
+    features["alwayson"] = True
+    features["startswith"] = name[0].lower()
+    features["endswith"] = name[-1].lower()
+    for letter in "abcdefghijklmnopqrstuvwxyz":
+        features["count(%s)" % letter] = name.lower().count(letter)
+        features["has(%s)" % letter] = letter in name.lower()
     return features
 
 
 def binary_names_demo_features(name):
     features = {}
-    features['alwayson'] = True
-    features['startswith(vowel)'] = name[0].lower() in 'aeiouy'
-    features['endswith(vowel)'] = name[-1].lower() in 'aeiouy'
-    for letter in 'abcdefghijklmnopqrstuvwxyz':
-        features['count(%s)' % letter] = name.lower().count(letter)
-        features['has(%s)' % letter] = letter in name.lower()
-        features['startswith(%s)' % letter] = letter == name[0].lower()
-        features['endswith(%s)' % letter] = letter == name[-1].lower()
+    features["alwayson"] = True
+    features["startswith(vowel)"] = name[0].lower() in "aeiouy"
+    features["endswith(vowel)"] = name[-1].lower() in "aeiouy"
+    for letter in "abcdefghijklmnopqrstuvwxyz":
+        features["count(%s)" % letter] = name.lower().count(letter)
+        features["has(%s)" % letter] = letter in name.lower()
+        features["startswith(%s)" % letter] = letter == name[0].lower()
+        features["endswith(%s)" % letter] = letter == name[-1].lower()
     return features
 
 
 def names_demo(trainer, features=names_demo_features):
-    from nltk.corpus import names
     import random
 
+    from nltk.corpus import names
+
     # Construct a list of classified names, using the names corpus.
-    namelist = [(name, 'male') for name in names.words('male.txt')] + [
-        (name, 'female') for name in names.words('female.txt')
+    namelist = [(name, "male") for name in names.words("male.txt")] + [
+        (name, "female") for name in names.words("female.txt")
     ]
 
     # Randomly split the names into a test & train set.
@@ -197,13 +202,13 @@ def names_demo(trainer, features=names_demo_features):
     test = namelist[5000:5500]
 
     # Train up a classifier.
-    print('Training classifier...')
+    safe_print("Training classifier...")
     classifier = trainer([(features(n), g) for (n, g) in train])
 
     # Run the classifier on the test data.
-    print('Testing classifier...')
+    safe_print("Testing classifier...")
     acc = accuracy(classifier, [(features(n), g) for (n, g) in test])
-    print('Accuracy: %6.4f' % acc)
+    safe_print("Accuracy: %6.4f" % acc)
 
     # For classifiers that can find probabilities, show the log
     # likelihood and some sample probability distributions.
@@ -211,15 +216,15 @@ def names_demo(trainer, features=names_demo_features):
         test_featuresets = [features(n) for (n, g) in test]
         pdists = classifier.prob_classify_many(test_featuresets)
         ll = [pdist.logprob(gold) for ((name, gold), pdist) in zip(test, pdists)]
-        print('Avg. log likelihood: %6.4f' % (sum(ll) / len(test)))
-        print()
-        print('Unseen Names      P(Male)  P(Female)\n' + '-' * 40)
-        for ((name, gender), pdist) in list(zip(test, pdists))[:5]:
-            if gender == 'male':
-                fmt = '  %-15s *%6.4f   %6.4f'
+        safe_print("Avg. log likelihood: %6.4f" % (sum(ll) / len(test)))
+        safe_print()
+        safe_print("Unseen Names      P(Male)  P(Female)\n" + "-" * 40)
+        for (name, gender), pdist in list(zip(test, pdists))[:5]:
+            if gender == "male":
+                fmt = "  %-15s *%6.4f   %6.4f"
             else:
-                fmt = '  %-15s  %6.4f  *%6.4f'
-            print(fmt % (name, pdist.prob('male'), pdist.prob('female')))
+                fmt = "  %-15s  %6.4f  *%6.4f"
+            safe_print(fmt % (name, pdist.prob("male"), pdist.prob("female")))
     except NotImplementedError:
         pass
 
@@ -228,11 +233,12 @@ def names_demo(trainer, features=names_demo_features):
 
 
 def partial_names_demo(trainer, features=names_demo_features):
-    from nltk.corpus import names
     import random
 
-    male_names = names.words('male.txt')
-    female_names = names.words('female.txt')
+    from nltk.corpus import names
+
+    male_names = names.words("male.txt")
+    female_names = names.words("female.txt")
 
     random.seed(654321)
     random.shuffle(male_names)
@@ -252,13 +258,13 @@ def partial_names_demo(trainer, features=names_demo_features):
     random.shuffle(test)
 
     # Train up a classifier.
-    print('Training classifier...')
+    safe_print("Training classifier...")
     classifier = trainer(positive, unlabeled)
 
     # Run the classifier on the test data.
-    print('Testing classifier...')
+    safe_print("Testing classifier...")
     acc = accuracy(classifier, [(features(n), m) for (n, m) in test])
-    print('Accuracy: %6.4f' % acc)
+    safe_print("Accuracy: %6.4f" % acc)
 
     # For classifiers that can find probabilities, show the log
     # likelihood and some sample probability distributions.
@@ -266,15 +272,15 @@ def partial_names_demo(trainer, features=names_demo_features):
         test_featuresets = [features(n) for (n, m) in test]
         pdists = classifier.prob_classify_many(test_featuresets)
         ll = [pdist.logprob(gold) for ((name, gold), pdist) in zip(test, pdists)]
-        print('Avg. log likelihood: %6.4f' % (sum(ll) / len(test)))
-        print()
-        print('Unseen Names      P(Male)  P(Female)\n' + '-' * 40)
-        for ((name, is_male), pdist) in zip(test, pdists)[:5]:
-            if is_male == True:
-                fmt = '  %-15s *%6.4f   %6.4f'
+        safe_print("Avg. log likelihood: %6.4f" % (sum(ll) / len(test)))
+        safe_print()
+        safe_print("Unseen Names      P(Male)  P(Female)\n" + "-" * 40)
+        for (name, is_male), pdist in zip(test, pdists)[:5]:
+            if is_male:
+                fmt = "  %-15s *%6.4f   %6.4f"
             else:
-                fmt = '  %-15s  %6.4f  *%6.4f'
-            print(fmt % (name, pdist.prob(True), pdist.prob(False)))
+                fmt = "  %-15s  %6.4f  *%6.4f"
+            safe_print(fmt % (name, pdist.prob(True), pdist.prob(False)))
     except NotImplementedError:
         pass
 
@@ -286,35 +292,36 @@ _inst_cache = {}
 
 
 def wsd_demo(trainer, word, features, n=1000):
-    from nltk.corpus import senseval
     import random
 
+    from nltk.corpus import senseval
+
     # Get the instances.
-    print('Reading data...')
+    safe_print("Reading data...")
     global _inst_cache
     if word not in _inst_cache:
         _inst_cache[word] = [(i, i.senses[0]) for i in senseval.instances(word)]
     instances = _inst_cache[word][:]
     if n > len(instances):
         n = len(instances)
-    senses = list(set(l for (i, l) in instances))
-    print('  Senses: ' + ' '.join(senses))
+    senses = list({l for (i, l) in instances})
+    safe_print("  Senses: " + " ".join(senses))
 
     # Randomly split the names into a test & train set.
-    print('Splitting into test & train...')
+    safe_print("Splitting into test & train...")
     random.seed(123456)
     random.shuffle(instances)
     train = instances[: int(0.8 * n)]
     test = instances[int(0.8 * n) : n]
 
     # Train up a classifier.
-    print('Training classifier...')
+    safe_print("Training classifier...")
     classifier = trainer([(features(i), l) for (i, l) in train])
 
     # Run the classifier on the test data.
-    print('Testing classifier...')
+    safe_print("Testing classifier...")
     acc = accuracy(classifier, [(features(i), l) for (i, l) in test])
-    print('Accuracy: %6.4f' % acc)
+    safe_print("Accuracy: %6.4f" % acc)
 
     # For classifiers that can find probabilities, show the log
     # likelihood and some sample probability distributions.
@@ -322,7 +329,7 @@ def wsd_demo(trainer, word, features, n=1000):
         test_featuresets = [features(i) for (i, n) in test]
         pdists = classifier.prob_classify_many(test_featuresets)
         ll = [pdist.logprob(gold) for ((name, gold), pdist) in zip(test, pdists)]
-        print('Avg. log likelihood: %6.4f' % (sum(ll) / len(test)))
+        safe_print("Avg. log likelihood: %6.4f" % (sum(ll) / len(test)))
     except NotImplementedError:
         pass
 
@@ -336,9 +343,9 @@ def check_megam_config():
     """
     try:
         _megam_bin
-    except NameError:
-        err_msg = str(
+    except NameError as e:
+        err_msg = six.text_type(
             "Please configure your megam binary first, e.g.\n"
             ">>> nltk.config_megam('/usr/bin/local/megam')"
         )
-        raise NameError(err_msg)
+        six.raise_from(NameError(err_msg), e)

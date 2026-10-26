@@ -1,26 +1,26 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Tagged Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Jacob Perkins <japerk@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 A reader for corpora whose documents contain part-of-speech-tagged words.
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
 import os
 
-from six import string_types
-
-from nltk.tag import str2tuple, map_tag
-from nltk.tokenize import *
-
 from nltk.corpus.reader.api import *
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.timit import read_timit_block
+from nltk.corpus.reader.util import *
+from nltk.tag import map_tag, str2tuple
+from nltk.tokenize import *
 
 
 class TaggedCorpusReader(CorpusReader):
@@ -43,11 +43,11 @@ class TaggedCorpusReader(CorpusReader):
         self,
         root,
         fileids,
-        sep='/',
+        sep="/",
         word_tokenizer=WhitespaceTokenizer(),
-        sent_tokenizer=RegexpTokenizer('\n', gaps=True),
+        sent_tokenizer=RegexpTokenizer("\n", gaps=True),
         para_block_reader=read_blankline_block,
-        encoding='utf8',
+        encoding="utf8",
         tagset=None,
     ):
         """
@@ -66,17 +66,6 @@ class TaggedCorpusReader(CorpusReader):
         self._sent_tokenizer = sent_tokenizer
         self._para_block_reader = para_block_reader
         self._tagset = tagset
-
-    def raw(self, fileids=None):
-        """
-        :return: the given file(s) as a single string.
-        :rtype: str
-        """
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, string_types):
-            fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):
         """
@@ -256,40 +245,14 @@ class CategorizedTaggedCorpusReader(CategorizedCorpusReader, TaggedCorpusReader)
         CategorizedCorpusReader.__init__(self, kwargs)
         TaggedCorpusReader.__init__(self, *args, **kwargs)
 
-    def _resolve(self, fileids, categories):
-        if fileids is not None and categories is not None:
-            raise ValueError('Specify fileids or categories, not both')
-        if categories is not None:
-            return self.fileids(categories)
-        else:
-            return fileids
-
-    def raw(self, fileids=None, categories=None):
-        return TaggedCorpusReader.raw(self, self._resolve(fileids, categories))
-
-    def words(self, fileids=None, categories=None):
-        return TaggedCorpusReader.words(self, self._resolve(fileids, categories))
-
-    def sents(self, fileids=None, categories=None):
-        return TaggedCorpusReader.sents(self, self._resolve(fileids, categories))
-
-    def paras(self, fileids=None, categories=None):
-        return TaggedCorpusReader.paras(self, self._resolve(fileids, categories))
-
     def tagged_words(self, fileids=None, categories=None, tagset=None):
-        return TaggedCorpusReader.tagged_words(
-            self, self._resolve(fileids, categories), tagset
-        )
+        return super(CategorizedTaggedCorpusReader, self).tagged_words(self._resolve(fileids, categories), tagset)
 
     def tagged_sents(self, fileids=None, categories=None, tagset=None):
-        return TaggedCorpusReader.tagged_sents(
-            self, self._resolve(fileids, categories), tagset
-        )
+        return super(CategorizedTaggedCorpusReader, self).tagged_sents(self._resolve(fileids, categories), tagset)
 
     def tagged_paras(self, fileids=None, categories=None, tagset=None):
-        return TaggedCorpusReader.tagged_paras(
-            self, self._resolve(fileids, categories), tagset
-        )
+        return super(CategorizedTaggedCorpusReader, self).tagged_paras(self._resolve(fileids, categories), tagset)
 
 
 class TaggedCorpusView(StreamBackedCorpusView):
@@ -360,21 +323,21 @@ class MacMorphoCorpusReader(TaggedCorpusReader):
     sentence.
     """
 
-    def __init__(self, root, fileids, encoding='utf8', tagset=None):
+    def __init__(self, root, fileids, encoding="utf8", tagset=None):
         TaggedCorpusReader.__init__(
             self,
             root,
             fileids,
-            sep='_',
+            sep="_",
             word_tokenizer=LineTokenizer(),
-            sent_tokenizer=RegexpTokenizer('.*\n'),
+            sent_tokenizer=RegexpTokenizer(".*\n"),
             para_block_reader=self._read_block,
             encoding=encoding,
             tagset=tagset,
         )
 
     def _read_block(self, stream):
-        return read_regexp_block(stream, r'.*', r'.*_\.')
+        return read_regexp_block(stream, r".*", r".*_\.")
 
 
 class TimitTaggedCorpusReader(TaggedCorpusReader):
@@ -388,7 +351,7 @@ class TimitTaggedCorpusReader(TaggedCorpusReader):
         )
 
     def paras(self):
-        raise NotImplementedError('use sents() instead')
+        raise NotImplementedError("use sents() instead")
 
     def tagged_paras(self):
-        raise NotImplementedError('use tagged_sents() instead')
+        raise NotImplementedError("use tagged_sents() instead")

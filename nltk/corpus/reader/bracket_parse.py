@@ -1,27 +1,80 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Penn Treebank Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 """
 Corpus reader for corpora that consist of parenthesis-delineated parse trees.
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
 import sys
 
-from nltk.tree import Tree
-from nltk.tag import map_tag
-
-from nltk.corpus.reader.util import *
+from nltk import redos
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.tag import map_tag
+from nltk.tree import Tree
 
 # we use [^\s()]+ instead of \S+? to avoid matching ()
-SORTTAGWRD = re.compile(r'\((\d+) ([^\s()]+) ([^\s()]+)\)')
-TAGWORD = re.compile(r'\(([^\s()]+) ([^\s()]+)\)')
-WORD = re.compile(r'\([^\s()]+ ([^\s()]+)\)')
-EMPTY_BRACKETS = re.compile(r'\s*\(\s*\(')
+SORTTAGWRD = redos.compile(r"\((\d+) ([^\s()]+) ([^\s()]+)\)")
+TAGWORD = redos.compile(r"\(([^\s()]+) ([^\s()]+)\)")
+WORD = redos.compile(r"\([^\s()]+ ([^\s()]+)\)")
+EMPTY_BRACKETS = redos.compile(r"\s*\(\s*\(")
+
+# Alpino word/category nodes are one-per-line XML elements. ``AlpinoCorpusReader``
+# parses each one by pulling its attributes out with a single linear scan instead
+# of chaining several lazy ``.*?`` groups that rescan the line: the previous
+# patterns backtracked quadratically on a long, malformed ``<node ...`` line
+# (CWE-1333). ``^`` (with re.MULTILINE) plus the ``[^>\n]`` class keep every match
+# inside a single tag on a single line, so each line is scanned at most once.
+ALPINO_NODE = redos.compile(
+    r"^[ \t]*<node (?P<body>[^>\n]*?)(?P<selfclose>/?)>", re.MULTILINE
+)
+# ALPINO_NODE (above) was hardened, but ALPINO_ATTR.findall over the node body
+# is itself O(n**2): the leading greedy ``\w+`` is retried by findall at every
+# position of a long attribute-less body. redos.compile bounds it (CWE-1333).
+# Bound the attribute name: the unbounded `\w+` before `="` is O(n**2) under findall
+# on a crafted Alpino line (CWE-407); XML attribute names are short.
+ALPINO_ATTR = redos.compile(r'(\w{1,64})="([^"]*)"')
+# The old substitutions captured ``begin="(\d+)"``, ``pos="(\w+)"``,
+# ``cat="(\w+)"`` and ``word="([^"]+)"``, i.e. they only converted a node when
+# these fields had the expected shape (else the tag was left untouched). Keep
+# those constraints so behaviour is byte-for-byte identical on malformed input --
+# in particular, ``ordered`` output must not emit a non-numeric ``begin`` that
+# would then fail to match ``SORTTAGWRD`` and skew the tagging/ordering.
+ALPINO_DIGITS = redos.compile(r"\d+")
+ALPINO_WORD = redos.compile(r"\w+")
+
+
+def _alpino_node_to_sexpr(match, ordered):
+    """Convert one Alpino ``<node>`` element to s-expression notation.
+
+    A self-closing ``<node .../>`` is a leaf word node and becomes ``(pos word)``
+    -- or ``(begin pos word)`` when ``ordered`` is set; an opening ``<node ...>``
+    is a category node and becomes ``(cat``. Nodes whose fields do not have the
+    shape the old regexes required are returned unchanged so later substitutions
+    can handle them.
+    """
+    attrs = dict(ALPINO_ATTR.findall(match.group("body")))
+    if match.group("selfclose"):
+        pos, word = attrs.get("pos"), attrs.get("word")
+        if not word or not pos or not ALPINO_WORD.fullmatch(pos):
+            return match.group(0)
+        if ordered:
+            begin = attrs.get("begin")
+            if not begin or not ALPINO_DIGITS.fullmatch(begin):
+                return match.group(0)
+            return "({0} {1} {2})".format(begin, pos, word)
+        return "({0} {1})".format(pos, word)
+    cat = attrs.get("cat")
+    if not cat or not ALPINO_WORD.fullmatch(cat):
+        return match.group(0)
+    return "({0}".format(cat)
 
 
 class BracketParseCorpusReader(SyntaxCorpusReader):
@@ -37,8 +90,8 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
         root,
         fileids,
         comment_char=None,
-        detect_blocks='unindented_paren',
-        encoding='utf8',
+        detect_blocks="unindented_paren",
+        encoding="utf8",
         tagset=None,
     ):
         """
@@ -47,60 +100,58 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
         :param comment_char: The character which can appear at the start of
             a line to indicate that the rest of the line is a comment.
         :param detect_blocks: The method that is used to find blocks
-          in the corpus; can be 'unindented_paren' (every unindented
-          parenthesis starts a new parse) or 'sexpr' (brackets are
-          matched).
+            in the corpus; can be 'unindented_paren' (every unindented
+            parenthesis starts a new parse) or 'sexpr' (brackets are
+            matched).
         :param tagset: The name of the tagset used by this corpus, to be used
-              for normalizing or converting the POS tags returned by the
-              tagged_...() methods.
+            for normalizing or converting the POS tags returned by the
+            ``tagged_...()`` methods.
         """
-        # FIXME: Why is it inheritting from SyntaxCorpusReader but initializing
-        #       from CorpusReader?
-        CorpusReader.__init__(self, root, fileids, encoding)
+        SyntaxCorpusReader.__init__(self, root, fileids, encoding)
         self._comment_char = comment_char
         self._detect_blocks = detect_blocks
         self._tagset = tagset
 
     def _read_block(self, stream):
-        if self._detect_blocks == 'sexpr':
+        if self._detect_blocks == "sexpr":
             return read_sexpr_block(stream, comment_char=self._comment_char)
-        elif self._detect_blocks == 'blankline':
+        elif self._detect_blocks == "blankline":
             return read_blankline_block(stream)
-        elif self._detect_blocks == 'unindented_paren':
+        elif self._detect_blocks == "unindented_paren":
             # Tokens start with unindented left parens.
-            toks = read_regexp_block(stream, start_re=r'^\(')
+            toks = read_regexp_block(stream, start_re=r"^\(")
             # Strip any comments out of the tokens.
             if self._comment_char:
-                toks = [
-                    re.sub('(?m)^%s.*' % re.escape(self._comment_char), '', tok)
-                    for tok in toks
-                ]
+                comment_src = "(?m)^%s.*" % re.escape(self._comment_char)
+                comment_rx = redos.compile(comment_src)  # bound compile + match time
+                toks = [comment_rx.sub("", tok) for tok in toks]
             return toks
         else:
-            assert 0, 'bad block type'
+            assert 0, "bad block type"
 
     def _normalize(self, t):
-        # If there's an empty set of brackets surrounding the actual
-        # parse, then strip them off.
-        if EMPTY_BRACKETS.match(t):
-            t = t.strip()[1:-1]
         # Replace leaves of the form (!), (,), with (! !), (, ,)
-        t = re.sub(r"\((.)\)", r"(\1 \1)", t)
+        t = redos.sub(r"\((.)\)", r"(\1 \1)", t)
         # Replace leaves of the form (tag word root) with (tag word)
-        t = re.sub(r"\(([^\s()]+) ([^\s()]+) [^\s()]+\)", r"(\1 \2)", t)
+        t = redos.sub(r"\(([^\s()]+) ([^\s()]+) [^\s()]+\)", r"(\1 \2)", t)
         return t
 
     def _parse(self, t):
         try:
-            return Tree.fromstring(self._normalize(t))
+            tree = Tree.fromstring(self._normalize(t))
+            # If there's an empty node at the top, strip it off
+            if tree.label() == "" and len(tree) == 1:
+                return tree[0]
+            else:
+                return tree
 
         except ValueError as e:
             sys.stderr.write("Bad tree detected; trying to recover...\n")
             # Try to recover, if we can:
-            if e.args == ('mismatched parens',):
+            if e.args == ("mismatched parens",):
                 for n in range(1, 5):
                     try:
-                        v = Tree(self._normalize(t + ')' * n))
+                        v = Tree(self._normalize(t + ")" * n))
                         sys.stderr.write(
                             "  Recovered by adding %d close " "paren(s)\n" % n
                         )
@@ -110,7 +161,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
             # Try something else:
             sys.stderr.write("  Recovered by returning a flat parse.\n")
             # sys.stderr.write(' '.join(t.split())+'\n')
-            return Tree('S', self._tag(t))
+            return Tree("S", self._tag(t))
 
     def _tag(self, t, tagset=None):
         tagged_sent = [(w, p) for (p, w) in TAGWORD.findall(self._normalize(t))]
@@ -145,74 +196,42 @@ class CategorizedBracketParseCorpusReader(
         CategorizedCorpusReader.__init__(self, kwargs)
         BracketParseCorpusReader.__init__(self, *args, **kwargs)
 
-    def _resolve(self, fileids, categories):
-        if fileids is not None and categories is not None:
-            raise ValueError('Specify fileids or categories, not both')
-        if categories is not None:
-            return self.fileids(categories)
-        else:
-            return fileids
-
-    def raw(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.raw(self, self._resolve(fileids, categories))
-
-    def words(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.words(self, self._resolve(fileids, categories))
-
-    def sents(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.sents(self, self._resolve(fileids, categories))
-
-    def paras(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.paras(self, self._resolve(fileids, categories))
-
     def tagged_words(self, fileids=None, categories=None, tagset=None):
-        return BracketParseCorpusReader.tagged_words(
-            self, self._resolve(fileids, categories), tagset
-        )
+        return super(CategorizedBracketParseCorpusReader, self).tagged_words(self._resolve(fileids, categories), tagset)
 
     def tagged_sents(self, fileids=None, categories=None, tagset=None):
-        return BracketParseCorpusReader.tagged_sents(
-            self, self._resolve(fileids, categories), tagset
-        )
+        return super(CategorizedBracketParseCorpusReader, self).tagged_sents(self._resolve(fileids, categories), tagset)
 
     def tagged_paras(self, fileids=None, categories=None, tagset=None):
-        return BracketParseCorpusReader.tagged_paras(
-            self, self._resolve(fileids, categories), tagset
-        )
+        return super(CategorizedBracketParseCorpusReader, self).tagged_paras(self._resolve(fileids, categories), tagset)
 
     def parsed_words(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.parsed_words(
-            self, self._resolve(fileids, categories)
-        )
+        return super(CategorizedBracketParseCorpusReader, self).parsed_words(self._resolve(fileids, categories))
 
     def parsed_sents(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.parsed_sents(
-            self, self._resolve(fileids, categories)
-        )
+        return super(CategorizedBracketParseCorpusReader, self).parsed_sents(self._resolve(fileids, categories))
 
     def parsed_paras(self, fileids=None, categories=None):
-        return BracketParseCorpusReader.parsed_paras(
-            self, self._resolve(fileids, categories)
-        )
+        return super(CategorizedBracketParseCorpusReader, self).parsed_paras(self._resolve(fileids, categories))
 
 
 class AlpinoCorpusReader(BracketParseCorpusReader):
     """
     Reader for the Alpino Dutch Treebank.
-    This corpus has a lexical breakdown structure embedded, as read by _parse
+    This corpus has a lexical breakdown structure embedded, as read by `_parse`
     Unfortunately this puts punctuation and some other words out of the sentence
-    order in the xml element tree. This is no good for tag_ and word_
-    _tag and _word will be overridden to use a non-default new parameter 'ordered'
+    order in the xml element tree. This is no good for `tag_` and `word_`
+    `_tag` and `_word` will be overridden to use a non-default new parameter 'ordered'
     to the overridden _normalize function. The _parse function can then remain
     untouched.
     """
 
-    def __init__(self, root, encoding='ISO-8859-1', tagset=None):
+    def __init__(self, root, encoding="ISO-8859-1", tagset=None):
         BracketParseCorpusReader.__init__(
             self,
             root,
-            'alpino\.xml',
-            detect_blocks='blankline',
+            r"alpino\.xml",
+            detect_blocks="blankline",
             encoding=encoding,
             tagset=tagset,
         )
@@ -220,7 +239,7 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
     def _normalize(self, t, ordered=False):
         """Normalize the xml sentence element in t.
         The sentence elements <alpino_ds>, although embedded in a few overall
-        xml elements, are seperated by blank lines. That's how the reader can
+        xml elements, are separated by blank lines. That's how the reader can
         deliver them one at a time.
         Each sentence has a few category subnodes that are of no use to us.
         The remaining word nodes may or may not appear in the proper order.
@@ -237,18 +256,13 @@ class AlpinoCorpusReader(BracketParseCorpusReader):
         if t[:10] != "<alpino_ds":
             return ""
         # convert XML to sexpr notation
-        t = re.sub(r'  <node .*? cat="(\w+)".*>', r"(\1", t)
-        if ordered:
-            t = re.sub(
-                r'  <node. *?begin="(\d+)".*? pos="(\w+)".*? word="([^"]+)".*?/>',
-                r"(\1 \2 \3)",
-                t,
-            )
-        else:
-            t = re.sub(r'  <node .*?pos="(\w+)".*? word="([^"]+)".*?/>', r"(\1 \2)", t)
-        t = re.sub(r"  </node>", r")", t)
-        t = re.sub(r"<sentence>.*</sentence>", r"", t)
-        t = re.sub(r"</?alpino_ds.*>", r"", t)
+        t = ALPINO_NODE.sub(lambda m: _alpino_node_to_sexpr(m, ordered), t)
+        t = redos.sub(r"  </node>", r")", t)
+        # Keeping the anchor out of each run stops a scan at the next anchor, so
+        # a crafted line is O(n), not O(n*bound) (CWE-407); the shipped corpus
+        # peaks at 512 chars of <sentence> body and 24 of <alpino_ds> tail.
+        t = redos.sub(r"<sentence>(?:(?!<sentence>).){0,8192}</sentence>", r"", t)
+        t = redos.sub(r"</?alpino_ds[^<>]{0,1024}>", r"", t)
         return t
 
     def _tag(self, t, tagset=None):

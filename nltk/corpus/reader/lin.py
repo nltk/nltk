@@ -1,60 +1,75 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+# -*- coding: utf-8 -*-
+import six
 # Natural Language Toolkit: Lin's Thesaurus
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Dan Blanchard <dblanchard@ets.org>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.txt
-from __future__ import print_function
 
-import re
 from collections import defaultdict
 from functools import reduce
 
+from nltk import redos
 from nltk.corpus.reader import CorpusReader
+from nltk.pathsec import open as pathsec_open
+from nltk.termsec import safe_print
 
 
 class LinThesaurusCorpusReader(CorpusReader):
-    """ Wrapper for the LISP-formatted thesauruses distributed by Dekang Lin. """
+    """Wrapper for the LISP-formatted thesauruses distributed by Dekang Lin."""
 
-    # Compiled regular expression for extracting the key from the first line of each
-    # thesaurus entry
-    _key_re = re.compile(r'\("?([^"]+)"? \(desc [0-9.]+\).+')
+    # Compiled regular expression for extracting the key from the first line of
+    # each thesaurus entry. ``[^"]+`` does not exclude ``(``, so on a paren-heavy
+    # line the greedy group spans the remainder, the required `` (desc ..)`` is
+    # absent, and ``sub`` retries at every position -- O(n**2) over corpus data.
+    # redos.compile bounds match time with a wall-clock timeout (CWE-1333).
+    # The key is always at the start of an entry's first line, so pin the match
+    # there (\A): a repeated `(` anchor with a `[^"]` run whose terminator the
+    # attacker omits re-scanned at every `(`, O(n**2) under .sub (CWE-407).
+    _key_re = redos.compile(r'\A\("?([^"]{1,512})"? \(desc [0-9.]+\).+')
 
     @staticmethod
     def __defaultdict_factory():
-        ''' Factory for creating defaultdict of defaultdict(dict)s '''
+        """Factory for creating defaultdict of defaultdict(dict)s"""
         return defaultdict(dict)
 
     def __init__(self, root, badscore=0.0):
-        '''
+        """
         Initialize the thesaurus.
 
         :param root: root directory containing thesaurus LISP files
         :type root: C{string}
         :param badscore: the score to give to words which do not appear in each other's sets of synonyms
         :type badscore: C{float}
-        '''
+        """
 
-        super(LinThesaurusCorpusReader, self).__init__(root, r'sim[A-Z]\.lsp')
+        super(LinThesaurusCorpusReader, self).__init__(root, r"sim[A-Z]\.lsp")
         self._thesaurus = defaultdict(LinThesaurusCorpusReader.__defaultdict_factory)
         self._badscore = badscore
         for path, encoding, fileid in self.abspaths(
             include_encoding=True, include_fileid=True
         ):
-            with open(path) as lin_file:
+            # Open through the pathsec sentinel (containment + O_NOFOLLOW /
+            # hardlink guards) so a symlinked/hardlinked simN.lsp inside the
+            # corpus root cannot leak an outside-root file (CWE-59, GHSA-p4rw).
+            with pathsec_open(
+                path, context="LinThesaurusCorpusReader", required_root=self.root
+            ) as lin_file:
                 first = True
                 for line in lin_file:
                     line = line.strip()
                     # Start of entry
                     if first:
-                        key = LinThesaurusCorpusReader._key_re.sub(r'\1', line)
+                        key = LinThesaurusCorpusReader._key_re.sub(r"\1", line)
                         first = False
                     # End of entry
-                    elif line == '))':
+                    elif line == "))":
                         first = True
                     # Lines with pairs of ngrams and scores
                     else:
-                        split_line = line.split('\t')
+                        split_line = line.split("\t")
                         if len(split_line) == 2:
                             ngram, score = split_line
                             self._thesaurus[fileid][key][ngram.strip('"')] = float(
@@ -62,7 +77,7 @@ class LinThesaurusCorpusReader(CorpusReader):
                             )
 
     def similarity(self, ngram1, ngram2, fileid=None):
-        '''
+        """
         Returns the similarity score for two ngrams.
 
         :param ngram1: first ngram to compare
@@ -73,7 +88,7 @@ class LinThesaurusCorpusReader(CorpusReader):
         :type fileid: C{string}
         :return: If fileid is specified, just the score for the two ngrams; otherwise,
                  list of tuples of fileids and scores.
-        '''
+        """
         # Entries don't contain themselves, so make sure similarity between item and itself is 1.0
         if ngram1 == ngram2:
             if fileid:
@@ -101,7 +116,7 @@ class LinThesaurusCorpusReader(CorpusReader):
                 ]
 
     def scored_synonyms(self, ngram, fileid=None):
-        '''
+        """
         Returns a list of scored synonyms (tuples of synonyms and scores) for the current ngram
 
         :param ngram: ngram to lookup
@@ -111,7 +126,7 @@ class LinThesaurusCorpusReader(CorpusReader):
         :return: If fileid is specified, list of tuples of scores and synonyms; otherwise,
                  list of tuples of fileids and lists, where inner lists consist of tuples of
                  scores and synonyms.
-        '''
+        """
         if fileid:
             return self._thesaurus[fileid][ngram].items()
         else:
@@ -121,7 +136,7 @@ class LinThesaurusCorpusReader(CorpusReader):
             ]
 
     def synonyms(self, ngram, fileid=None):
-        '''
+        """
         Returns a list of synonyms for the current ngram.
 
         :param ngram: ngram to lookup
@@ -130,7 +145,7 @@ class LinThesaurusCorpusReader(CorpusReader):
         :type fileid: C{string}
         :return: If fileid is specified, list of synonyms; otherwise, list of tuples of fileids and
                  lists, where inner lists contain synonyms.
-        '''
+        """
         if fileid:
             return self._thesaurus[fileid][ngram].keys()
         else:
@@ -140,13 +155,13 @@ class LinThesaurusCorpusReader(CorpusReader):
             ]
 
     def __contains__(self, ngram):
-        '''
+        """
         Determines whether or not the given ngram is in the thesaurus.
 
         :param ngram: ngram to lookup
         :type ngram: C{string}
         :return: whether the given ngram is in the thesaurus.
-        '''
+        """
         return reduce(
             lambda accum, fileid: accum or (ngram in self._thesaurus[fileid]),
             self._fileids,
@@ -164,21 +179,21 @@ def demo():
 
     word1 = "business"
     word2 = "enterprise"
-    print("Getting synonyms for " + word1)
-    print(thes.synonyms(word1))
+    safe_print("Getting synonyms for " + word1)
+    safe_print(thes.synonyms(word1))
 
-    print("Getting scored synonyms for " + word1)
-    print(thes.scored_synonyms(word1))
+    safe_print("Getting scored synonyms for " + word1)
+    safe_print(thes.scored_synonyms(word1))
 
-    print("Getting synonyms from simN.lsp (noun subsection) for " + word1)
-    print(thes.synonyms(word1, fileid="simN.lsp"))
+    safe_print("Getting synonyms from simN.lsp (noun subsection) for " + word1)
+    safe_print(thes.synonyms(word1, fileid="simN.lsp"))
 
-    print("Getting synonyms from simN.lsp (noun subsection) for " + word1)
-    print(thes.synonyms(word1, fileid="simN.lsp"))
+    safe_print("Getting synonyms from simN.lsp (noun subsection) for " + word1)
+    safe_print(thes.synonyms(word1, fileid="simN.lsp"))
 
-    print("Similarity score for %s and %s:" % (word1, word2))
-    print(thes.similarity(word1, word2))
+    safe_print("Similarity score for {0} and {1}:".format(word1, word2))
+    safe_print(thes.similarity(word1, word2))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

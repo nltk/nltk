@@ -1,19 +1,23 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit (NLTK) Help
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Authors: Steven Bird <stevenbird1@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 Provide structured access to documentation.
 """
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
-import re
 from textwrap import wrap
 
-from nltk.data import load
+from nltk import redos
+from nltk.data import find, open_datafile
+from nltk.jsontags import safe_json_load
+from nltk.termsec import safe_print
 
 
 def brown_tagset(tagpattern=None):
@@ -38,28 +42,41 @@ def _print_entries(tags, tagdict):
         entry = tagdict[tag]
         defn = [tag + ": " + entry[0]]
         examples = wrap(
-            entry[1], width=75, initial_indent='    ', subsequent_indent='    '
+            entry[1], width=75, initial_indent="    ", subsequent_indent="    "
         )
-        print("\n".join(defn + examples))
+        safe_print("\n".join(defn + examples))
 
 
 def _format_tagset(tagset, tagpattern=None):
-    tagdict = load("help/tagsets/" + tagset + ".pickle")
+    # Load tagset from json file.
+    with open_datafile(find("help/tagsets_json/PY3_json/"), "{0}.json".format(tagset)) as fin:
+        # Bounded parse (size + nesting depth) so a tampered tagset file cannot
+        # crash the interpreter through the recursive C decoder.
+        tagdict = safe_json_load(fin, context="nltk.help._format_tagset")
+
     if not tagpattern:
         _print_entries(sorted(tagdict), tagdict)
     elif tagpattern in tagdict:
         _print_entries([tagpattern], tagdict)
     else:
-        tagpattern = re.compile(tagpattern)
-        tags = [tag for tag in sorted(tagdict) if tagpattern.match(tag)]
+        try:
+            compiled = redos.compile(tagpattern)
+        except (ValueError, redos.error) as exc:
+            # redos refuses an oversized/over-nested pattern; fail closed with a
+            # clear message (a ValueError, matching every other caller-controlled
+            # compile site) rather than silently degrading.
+            raise ValueError(
+                "Invalid or oversized tag pattern {0!r}: {1}".format(tagpattern, exc)
+            )
+        tags = [tag for tag in sorted(tagdict) if compiled.match(tag)]
         if tags:
             _print_entries(tags, tagdict)
         else:
-            print("No matching tags found.")
+            safe_print("No matching tags found.")
 
 
-if __name__ == '__main__':
-    brown_tagset(r'NN.*')
-    upenn_tagset(r'.*\$')
-    claws5_tagset('UNDEFINED')
-    brown_tagset(r'NN')
+if __name__ == "__main__":
+    brown_tagset(r"NN.*")
+    upenn_tagset(r".*\$")
+    claws5_tagset("UNDEFINED")
+    brown_tagset(r"NN")

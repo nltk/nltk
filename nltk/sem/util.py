@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Semantic Interpretation
 #
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #
-# Copyright (C) 2001-2019 NLTK Project
-# URL: <http://nltk.org/>
+# Copyright (C) 2001-2026 NLTK Project
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -12,11 +13,12 @@ extraction of the semantic representation of the root node of the the
 syntax tree, followed by evaluation of the semantic representation in
 a first-order model.
 """
-from __future__ import print_function, unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
-import codecs
+from nltk.pathsec import open as _secure_open
 from nltk.sem import evaluate
-
+from nltk.termsec import safe_print
 
 ##############################################################
 ## Utility functions for connecting parse output to semantics
@@ -32,7 +34,7 @@ def parse_sents(inputs, grammar, trace=0):
     :param grammar: ``FeatureGrammar`` or name of feature-based grammar
     :type grammar: nltk.grammar.FeatureGrammar
     :rtype: list(nltk.tree.Tree) or dict(list(str)): list(Tree)
-    :return: a mapping from input sentences to a list of ``Tree``s
+    :return: a mapping from input sentences to a list of ``Tree`` instances.
     """
     # put imports here to avoid circult dependencies
     from nltk.grammar import FeatureGrammar
@@ -50,7 +52,7 @@ def parse_sents(inputs, grammar, trace=0):
     return parses
 
 
-def root_semrep(syntree, semkey='SEM'):
+def root_semrep(syntree, semkey="SEM"):
     """
     Find the semantic representation at the root of a tree.
 
@@ -66,12 +68,12 @@ def root_semrep(syntree, semkey='SEM'):
     try:
         return node[semkey]
     except KeyError:
-        print(node, end=' ')
-        print("has no specification for the feature %s" % semkey)
+        safe_print(node, end=" ")
+        safe_print("has no specification for the feature %s" % semkey)
     raise
 
 
-def interpret_sents(inputs, grammar, semkey='SEM', trace=0):
+def interpret_sents(inputs, grammar, semkey="SEM", trace=0):
     """
     Add the semantic representation to each syntactic parse tree
     of each input sentence.
@@ -114,24 +116,24 @@ def demo_model0():
     global m0, g0
     # Initialize a valuation of non-logical constants."""
     v = [
-        ('john', 'b1'),
-        ('mary', 'g1'),
-        ('suzie', 'g2'),
-        ('fido', 'd1'),
-        ('tess', 'd2'),
-        ('noosa', 'n'),
-        ('girl', set(['g1', 'g2'])),
-        ('boy', set(['b1', 'b2'])),
-        ('dog', set(['d1', 'd2'])),
-        ('bark', set(['d1', 'd2'])),
-        ('walk', set(['b1', 'g2', 'd1'])),
-        ('chase', set([('b1', 'g1'), ('b2', 'g1'), ('g1', 'd1'), ('g2', 'd2')])),
+        ("john", "b1"),
+        ("mary", "g1"),
+        ("suzie", "g2"),
+        ("fido", "d1"),
+        ("tess", "d2"),
+        ("noosa", "n"),
+        ("girl", {"g1", "g2"}),
+        ("boy", {"b1", "b2"}),
+        ("dog", {"d1", "d2"}),
+        ("bark", {"d1", "d2"}),
+        ("walk", {"b1", "g2", "d1"}),
+        ("chase", {("b1", "g1"), ("b2", "g1"), ("g1", "d1"), ("g2", "d2")}),
         (
-            'see',
-            set([('b1', 'g1'), ('b2', 'd2'), ('g1', 'b1'), ('d2', 'b1'), ('g2', 'n')]),
+            "see",
+            {("b1", "g1"), ("b2", "d2"), ("g1", "b1"), ("d2", "b1"), ("g2", "n")},
         ),
-        ('in', set([('b1', 'n'), ('b2', 'n'), ('d2', 'n')])),
-        ('with', set([('b1', 'g1'), ('g1', 'b1'), ('d1', 'b1'), ('b1', 'd1')])),
+        ("in", {("b1", "n"), ("b2", "n"), ("d2", "n")}),
+        ("with", {("b1", "g1"), ("g1", "b1"), ("d1", "b1"), ("b1", "d1")}),
     ]
     # Read in the data from ``v``
     val = evaluate.Valuation(v)
@@ -143,13 +145,15 @@ def demo_model0():
     g0 = evaluate.Assignment(dom)
 
 
-def read_sents(filename, encoding='utf8'):
-    with codecs.open(filename, 'r', encoding) as fp:
+def read_sents(filename, encoding="utf8"):
+    # Reroute to secure sentinel for path validation
+    with _secure_open(filename, "r", encoding=encoding) as fp:
         sents = [l.rstrip() for l in fp]
 
-    # get rid of blank lines
+    # Filter out blank lines and comments
     sents = [l for l in sents if len(l) > 0]
-    sents = [l for l in sents if not l[0] == '#']
+    sents = [l for l in sents if not l[0] == "#"]
+
     return sents
 
 
@@ -169,12 +173,12 @@ def demo_legacy_grammar():
     S[sem=<hello>] -> 'hello'
     """
     )
-    print("Reading grammar: %s" % g)
-    print("*" * 20)
-    for reading in interpret_sents(['hello'], g, semkey='sem'):
+    safe_print("Reading grammar: %s" % g)
+    safe_print("*" * 20)
+    for reading in interpret_sents(["hello"], g, semkey="sem"):
         syn, sem = reading[0]
-        print()
-        print("output: ", sem)
+        safe_print()
+        safe_print("output: ", sem)
 
 
 def demo():
@@ -192,9 +196,9 @@ def demo():
         beta=True,
         syntrace=0,
         semtrace=0,
-        demo='default',
-        grammar='',
-        sentences='',
+        demo="default",
+        grammar="",
+        sentences="",
     )
 
     opts.add_option(
@@ -252,27 +256,30 @@ def demo():
 
     (options, args) = opts.parse_args()
 
-    SPACER = '-' * 30
+    SPACER = "-" * 30
 
     demo_model0()
 
     sents = [
-        'Fido sees a boy with Mary',
-        'John sees Mary',
-        'every girl chases a dog',
-        'every boy chases a girl',
-        'John walks with a girl in Noosa',
-        'who walks',
+        "Fido sees a boy with Mary",
+        "John sees Mary",
+        "every girl chases a dog",
+        "every boy chases a girl",
+        "John walks with a girl in Noosa",
+        "who walks",
     ]
 
-    gramfile = 'grammars/sample_grammars/sem2.fcfg'
+    gramfile = "grammars/sample_grammars/sem2.fcfg"
 
     if options.sentences:
         sentsfile = options.sentences
     if options.grammar:
         gramfile = options.grammar
+
     if options.model:
-        exec("import %s as model" % options.model)
+        opts.error(
+            "--model is currently unsupported in demo(); the CLI always uses the built-in demo model"
+        )
 
     if sents is None:
         sents = read_sents(sentsfile)
@@ -288,20 +295,18 @@ def demo():
 
     for i, sent in enumerate(sents):
         n = 1
-        print('\nSentence: %s' % sent)
-        print(SPACER)
+        safe_print("\nSentence: %s" % sent)
+        safe_print(SPACER)
         if options.evaluate:
-
-            for (syntree, semrep, value) in evaluations[i]:
+            for syntree, semrep, value in evaluations[i]:
                 if isinstance(value, dict):
                     value = set(value.keys())
-                print('%d:  %s' % (n, semrep))
-                print(value)
+                safe_print("%d:  %s" % (n, semrep))
+                safe_print(value)
                 n += 1
         else:
-
-            for (syntree, semrep) in semreps[i]:
-                print('%d:  %s' % (n, semrep))
+            for syntree, semrep in semreps[i]:
+                safe_print("%d:  %s" % (n, semrep))
                 n += 1
 
 

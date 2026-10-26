@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Relation Extraction
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -19,47 +20,51 @@ The two serialization outputs are "rtuple" and "clause".
 - A clause is an atom of the form ``relsym(subjsym, objsym)``,
   where the relation, subject and object have been canonicalized to single strings.
 """
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
+from nltk.compat import html_entities
 
 # todo: get a more general solution to canonicalized symbols for clauses -- maybe use xmlcharrefs?
 
-from collections import defaultdict
 import re
+from collections import defaultdict
 
-from six.moves import html_entities
+from nltk import redos
+from nltk.redos import reharden
+from nltk.termsec import safe_print
 
 # Dictionary that associates corpora with NE classes
 NE_CLASSES = {
-    'ieer': [
-        'LOCATION',
-        'ORGANIZATION',
-        'PERSON',
-        'DURATION',
-        'DATE',
-        'CARDINAL',
-        'PERCENT',
-        'MONEY',
-        'MEASURE',
+    "ieer": [
+        "LOCATION",
+        "ORGANIZATION",
+        "PERSON",
+        "DURATION",
+        "DATE",
+        "CARDINAL",
+        "PERCENT",
+        "MONEY",
+        "MEASURE",
     ],
-    'conll2002': ['LOC', 'PER', 'ORG'],
-    'ace': [
-        'LOCATION',
-        'ORGANIZATION',
-        'PERSON',
-        'DURATION',
-        'DATE',
-        'CARDINAL',
-        'PERCENT',
-        'MONEY',
-        'MEASURE',
-        'FACILITY',
-        'GPE',
+    "conll2002": ["LOC", "PER", "ORG"],
+    "ace": [
+        "LOCATION",
+        "ORGANIZATION",
+        "PERSON",
+        "DURATION",
+        "DATE",
+        "CARDINAL",
+        "PERCENT",
+        "MONEY",
+        "MEASURE",
+        "FACILITY",
+        "GPE",
     ],
 }
 
 # Allow abbreviated class labels
-short2long = dict(LOC='LOCATION', ORG='ORGANIZATION', PER='PERSON')
-long2short = dict(LOCATION='LOC', ORGANIZATION='ORG', PERSON='PER')
+short2long = dict(LOC="LOCATION", ORG="ORGANIZATION", PER="PERSON")
+long2short = dict(LOCATION="LOC", ORGANIZATION="ORG", PERSON="PER")
 
 
 def _expand(type):
@@ -86,7 +91,7 @@ def class_abbrev(type):
         return type
 
 
-def _join(lst, sep=' ', untag=False):
+def _join(lst, sep=" ", untag=False):
     """
     Join a list into a string, turning tags tuples into tag strings or just words.
     :param untag: if ``True``, omit the tag from tagged input strings.
@@ -110,12 +115,6 @@ def descape_entity(m, defs=html_entities.entitydefs):
 
 
     """
-    # s = 'mcglashan_&amp;_sarrail'
-    # l = ['mcglashan', '&amp;', 'sarrail']
-    # pattern = re.compile("&(\w+?);")
-    # new = list2sym(l)
-    # s = pattern.sub(descape_entity, s)
-    # print s, new
     try:
         return defs[m.group(1)]
 
@@ -130,11 +129,11 @@ def list2sym(lst):
     :return: a Unicode string without whitespace
     :rtype: unicode
     """
-    sym = _join(lst, '_', untag=True)
+    sym = _join(lst, "_", untag=True)
     sym = sym.lower()
-    ENT = re.compile("&(\w+?);")
+    ENT = redos.compile(r"&(\w+?);")
     sym = ENT.sub(descape_entity, sym)
-    sym = sym.replace('.', '')
+    sym = sym.replace(".", "")
     return sym
 
 
@@ -181,33 +180,32 @@ def semi_rel2reldict(pairs, window=5, trace=False):
     :rtype: list(defaultdict)
     """
     result = []
-    while len(pairs) > 2:
+    for k in range(len(pairs) - 2):
         reldict = defaultdict(str)
-        reldict['lcon'] = _join(pairs[0][0][-window:])
-        reldict['subjclass'] = pairs[0][1].label()
-        reldict['subjtext'] = _join(pairs[0][1].leaves())
-        reldict['subjsym'] = list2sym(pairs[0][1].leaves())
-        reldict['filler'] = _join(pairs[1][0])
-        reldict['untagged_filler'] = _join(pairs[1][0], untag=True)
-        reldict['objclass'] = pairs[1][1].label()
-        reldict['objtext'] = _join(pairs[1][1].leaves())
-        reldict['objsym'] = list2sym(pairs[1][1].leaves())
-        reldict['rcon'] = _join(pairs[2][0][:window])
+        reldict["lcon"] = _join(pairs[k][0][-window:])
+        reldict["subjclass"] = pairs[k][1].label()
+        reldict["subjtext"] = _join(pairs[k][1].leaves())
+        reldict["subjsym"] = list2sym(pairs[k][1].leaves())
+        reldict["filler"] = _join(pairs[k + 1][0])
+        reldict["untagged_filler"] = _join(pairs[k + 1][0], untag=True)
+        reldict["objclass"] = pairs[k + 1][1].label()
+        reldict["objtext"] = _join(pairs[k + 1][1].leaves())
+        reldict["objsym"] = list2sym(pairs[k + 1][1].leaves())
+        reldict["rcon"] = _join(pairs[k + 2][0][:window])
         if trace:
-            print(
+            safe_print(
                 "(%s(%s, %s)"
                 % (
-                    reldict['untagged_filler'],
-                    reldict['subjclass'],
-                    reldict['objclass'],
+                    reldict["untagged_filler"],
+                    reldict["subjclass"],
+                    reldict["objclass"],
                 )
             )
         result.append(reldict)
-        pairs = pairs[1:]
     return result
 
 
-def extract_rels(subjclass, objclass, doc, corpus='ace', pattern=None, window=10):
+def extract_rels(subjclass, objclass, doc, corpus="ace", pattern=None, window=10):
     """
     Filter the output of ``semi_rel2reldict`` according to specified NE classes and a filler pattern.
 
@@ -249,20 +247,25 @@ def extract_rels(subjclass, objclass, doc, corpus='ace', pattern=None, window=10
                 "your value for the object type has not been recognized: %s" % objclass
             )
 
-    if corpus == 'ace' or corpus == 'conll2002':
+    if corpus == "ace" or corpus == "conll2002":
         pairs = tree2semi_rel(doc)
-    elif corpus == 'ieer':
+    elif corpus == "ieer":
         pairs = tree2semi_rel(doc.text) + tree2semi_rel(doc.headline)
     else:
         raise ValueError("corpus type not recognized")
 
     reldicts = semi_rel2reldict(pairs)
 
+    if pattern is not None:
+        # A caller-supplied pattern is run over corpus text; re-derive it under the
+        # ReDoS wall-clock cap (and the compile-time source guard) before matching.
+        pattern = reharden(pattern)
+
     relfilter = lambda x: (
-        x['subjclass'] == subjclass
-        and len(x['filler'].split()) <= window
-        and pattern.match(x['filler'])
-        and x['objclass'] == objclass
+        x["subjclass"] == subjclass
+        and len(x["filler"].split()) <= window
+        and pattern.match(x["filler"])
+        and x["objclass"] == objclass
     )
 
     return list(filter(relfilter, reldicts))
@@ -275,19 +278,19 @@ def rtuple(reldict, lcon=False, rcon=False):
     :type reldict: defaultdict
     """
     items = [
-        class_abbrev(reldict['subjclass']),
-        reldict['subjtext'],
-        reldict['filler'],
-        class_abbrev(reldict['objclass']),
-        reldict['objtext'],
+        class_abbrev(reldict["subjclass"]),
+        reldict["subjtext"],
+        reldict["filler"],
+        class_abbrev(reldict["objclass"]),
+        reldict["objtext"],
     ]
-    format = '[%s: %r] %r [%s: %r]'
+    format = "[%s: %r] %r [%s: %r]"
     if lcon:
-        items = [reldict['lcon']] + items
-        format = '...%r)' + format
+        items = [reldict["lcon"]] + items
+        format = "...%r)" + format
     if rcon:
-        items.append(reldict['rcon'])
-        format = format + '(%r...'
+        items.append(reldict["rcon"])
+        format = format + "(%r..."
     printargs = tuple(items)
     return format % printargs
 
@@ -300,7 +303,7 @@ def clause(reldict, relsym):
     :param relsym: a label for the relation
     :type relsym: str
     """
-    items = (relsym, reldict['subjsym'], reldict['objsym'])
+    items = (relsym, reldict["subjsym"], reldict["objsym"])
     return "%s(%r, %r)" % items
 
 
@@ -308,9 +311,16 @@ def clause(reldict, relsym):
 # Demos of relation extraction with regular expressions
 #######################################################
 
+
 ############################################
 # Example of in(ORG, LOC)
 ############################################
+# The ``in`` relation filter of ``in_demo``: the atomic group commits to the
+# last ``in`` (the greedy ``.*`` finds it first), so the ``ing`` lookahead runs
+# once; retried per earlier ``in`` it was O(n**2) on corpus text (CWE-407).
+_IN_RE = redos.compile(r"(?>.*\bin\b)(?!\b.+ing)")
+
+
 def in_demo(trace=0, sql=True):
     """
     Select pairs of organizations and locations whose mentions occur with an
@@ -327,7 +337,6 @@ def in_demo(trace=0, sql=True):
             import sqlite3
 
             connection = sqlite3.connect(":memory:")
-            connection.text_factory = sqlite3.OptimizedUnicode
             cur = connection.cursor()
             cur.execute(
                 """create table Locations
@@ -338,22 +347,22 @@ def in_demo(trace=0, sql=True):
 
             warnings.warn("Cannot import sqlite; sql flag will be ignored.")
 
-    IN = re.compile(r'.*\bin\b(?!\b.+ing)')
+    IN = _IN_RE
 
-    print()
-    print("IEER: in(ORG, LOC) -- just the clauses:")
-    print("=" * 45)
+    safe_print()
+    safe_print("IEER: in(ORG, LOC) -- just the clauses:")
+    safe_print("=" * 45)
 
     for file in ieer.fileids():
         for doc in ieer.parsed_docs(file):
             if trace:
-                print(doc.docno)
-                print("=" * 15)
-            for rel in extract_rels('ORG', 'LOC', doc, corpus='ieer', pattern=IN):
-                print(clause(rel, relsym='IN'))
+                safe_print(doc.docno)
+                safe_print("=" * 15)
+            for rel in extract_rels("ORG", "LOC", doc, corpus="ieer", pattern=IN):
+                safe_print(clause(rel, relsym="IN"))
                 if sql:
                     try:
-                        rtuple = (rel['subjtext'], rel['objtext'], doc.docno)
+                        rtuple = (rel["subjtext"], rel["objtext"], doc.docno)
                         cur.execute(
                             """insert into Locations
                                     values (?, ?, ?)""",
@@ -369,11 +378,11 @@ def in_demo(trace=0, sql=True):
                 """select OrgName from Locations
                         where LocationName = 'Atlanta'"""
             )
-            print()
-            print("Extract data from SQL table: ORGs in Atlanta")
-            print("-" * 15)
+            safe_print()
+            safe_print("Extract data from SQL table: ORGs in Atlanta")
+            safe_print("-" * 15)
             for row in cur:
-                print(row)
+                safe_print(row)
         except NameError:
             pass
 
@@ -386,7 +395,7 @@ def in_demo(trace=0, sql=True):
 def roles_demo(trace=0):
     from nltk.corpus import ieer
 
-    roles = """
+    roles = r"""
     (.*(                   # assorted roles
     analyst|
     chair(wo)?man|
@@ -412,21 +421,21 @@ def roles_demo(trace=0):
     writer|
     ,\sof\sthe?\s*  # "X, of (the) Y"
     """
-    ROLES = re.compile(roles, re.VERBOSE)
+    ROLES = redos.compile(roles, re.VERBOSE)
 
-    print()
-    print("IEER: has_role(PER, ORG) -- raw rtuples:")
-    print("=" * 45)
+    safe_print()
+    safe_print("IEER: has_role(PER, ORG) -- raw rtuples:")
+    safe_print("=" * 45)
 
     for file in ieer.fileids():
         for doc in ieer.parsed_docs(file):
             lcon = rcon = False
             if trace:
-                print(doc.docno)
-                print("=" * 15)
+                safe_print(doc.docno)
+                safe_print("=" * 15)
                 lcon = rcon = True
-            for rel in extract_rels('PER', 'ORG', doc, corpus='ieer', pattern=ROLES):
-                print(rtuple(rel, lcon=lcon, rcon=rcon))
+            for rel in extract_rels("PER", "ORG", doc, corpus="ieer", pattern=ROLES):
+                safe_print(rtuple(rel, lcon=lcon, rcon=rcon))
 
 
 ##############################################
@@ -435,12 +444,11 @@ def roles_demo(trace=0):
 
 
 def ieer_headlines():
-
     from nltk.corpus import ieer
     from nltk.tree import Tree
 
-    print("IEER: First 20 Headlines")
-    print("=" * 45)
+    safe_print("IEER: First 20 Headlines")
+    safe_print("=" * 45)
 
     trees = [
         (doc.docno, doc.headline)
@@ -448,8 +456,8 @@ def ieer_headlines():
         for doc in ieer.parsed_docs(file)
     ]
     for tree in trees[:20]:
-        print()
-        print("%s:\n%s" % tree)
+        safe_print()
+        safe_print("%s:\n%s" % tree)
 
 
 #############################################
@@ -475,20 +483,20 @@ def conllned(trace=1):
     .*       # followed by anything
     van/Prep # followed by van ('of')
     """
-    VAN = re.compile(vnv, re.VERBOSE)
+    VAN = redos.compile(vnv, re.VERBOSE)
 
-    print()
-    print("Dutch CoNLL2002: van(PER, ORG) -- raw rtuples with context:")
-    print("=" * 45)
+    safe_print()
+    safe_print("Dutch CoNLL2002: van(PER, ORG) -- raw rtuples with context:")
+    safe_print("=" * 45)
 
-    for doc in conll2002.chunked_sents('ned.train'):
+    for doc in conll2002.chunked_sents("ned.train"):
         lcon = rcon = False
         if trace:
             lcon = rcon = True
         for rel in extract_rels(
-            'PER', 'ORG', doc, corpus='conll2002', pattern=VAN, window=10
+            "PER", "ORG", doc, corpus="conll2002", pattern=VAN, window=10
         ):
-            print(rtuple(rel, lcon=lcon, rcon=rcon))
+            safe_print(rtuple(rel, lcon=lcon, rcon=rcon))
 
 
 #############################################
@@ -506,37 +514,37 @@ def conllesp():
     del/SP
     )
     """
-    DE = re.compile(de, re.VERBOSE)
+    DE = redos.compile(de, re.VERBOSE)
 
-    print()
-    print("Spanish CoNLL2002: de(ORG, LOC) -- just the first 10 clauses:")
-    print("=" * 45)
+    safe_print()
+    safe_print("Spanish CoNLL2002: de(ORG, LOC) -- just the first 10 clauses:")
+    safe_print("=" * 45)
     rels = [
         rel
-        for doc in conll2002.chunked_sents('esp.train')
-        for rel in extract_rels('ORG', 'LOC', doc, corpus='conll2002', pattern=DE)
+        for doc in conll2002.chunked_sents("esp.train")
+        for rel in extract_rels("ORG", "LOC", doc, corpus="conll2002", pattern=DE)
     ]
     for r in rels[:10]:
-        print(clause(r, relsym='DE'))
-    print()
+        safe_print(clause(r, relsym="DE"))
+    safe_print()
 
 
 def ne_chunked():
-    print()
-    print("1500 Sentences from Penn Treebank, as processed by NLTK NE Chunker")
-    print("=" * 45)
-    ROLE = re.compile(
-        r'.*(chairman|president|trader|scientist|economist|analyst|partner).*'
+    safe_print()
+    safe_print("1500 Sentences from Penn Treebank, as processed by NLTK NE Chunker")
+    safe_print("=" * 45)
+    ROLE = redos.compile(
+        r".*(chairman|president|trader|scientist|economist|analyst|partner).*"
     )
     rels = []
     for i, sent in enumerate(nltk.corpus.treebank.tagged_sents()[:1500]):
         sent = nltk.ne_chunk(sent)
-        rels = extract_rels('PER', 'ORG', sent, corpus='ace', pattern=ROLE, window=7)
+        rels = extract_rels("PER", "ORG", sent, corpus="ace", pattern=ROLE, window=7)
         for rel in rels:
-            print('{0:<5}{1}'.format(i, rtuple(rel)))
+            safe_print("{0:<5}{1}".format(i, rtuple(rel)))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import nltk
     from nltk.sem import relextract
 

@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Agreement Metrics
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Tom Lippincott <tom@cs.columbia.edu>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
@@ -50,10 +51,10 @@ Expected results from the Artstein and Poesio survey paper:
     >>> t = AnnotationTask(data=[x.split() for x in open(os.path.join(os.path.dirname(__file__), "artstein_poesio_example.txt"))])
     >>> t.avg_Ao()
     0.88
-    >>> t.pi()
-    0.7995322418977615...
-    >>> t.S()
-    0.8199999999999998...
+    >>> round(t.pi(), 5)
+    0.79953
+    >>> round(t.S(), 2)
+    0.82
 
     This would have returned a wrong value (0.0) in @785fb79 as coders are in
     the wrong order. Subsequently, all values for pi(), S(), and kappa() would
@@ -68,24 +69,32 @@ Expected results from the Artstein and Poesio survey paper:
     1.0
 
 """
-from __future__ import print_function, unicode_literals, division
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
+from nltk.compat import isclose
 
 import logging
+import math
 from itertools import groupby
 from operator import itemgetter
 
-from six import iteritems
-
-from nltk.probability import FreqDist, ConditionalFreqDist
 from nltk.internals import deprecated
-from nltk.compat import python_2_unicode_compatible
-
 from nltk.metrics.distance import binary_distance
+from nltk.pathsec import open as pathsec_open
+from nltk.probability import ConditionalFreqDist, FreqDist
+from nltk.termsec import safe_print, sanitize_terminal
 
 log = logging.getLogger(__name__)
 
+#: Most distinct labels an ``AnnotationTask`` accepts. ``Disagreement``/``alpha``/
+#: ``weighted_kappa`` run a double loop over the distinct label set K, so a
+#: task with one unique label per item is O(|K|**2) (CWE-407); |K| is
+#: attacker-controlled. A real study has a tiny fixed label set, so this is a
+#: distinct-count bound (like ``NgramCounter.MAX_NGRAMS``), not a data-length
+#: cap -- large low-cardinality data stays linear.
+MAX_AGREEMENT_LABELS = 10000
 
-@python_2_unicode_compatible
+
 class AnnotationTask(object):
     """Represents an annotation task, i.e. people assign labels to items.
 
@@ -99,22 +108,36 @@ class AnnotationTask(object):
     is the MASI metric, which requires Python sets.
     """
 
-    def __init__(self, data=None, distance=binary_distance):
+    def __init__(self, data=None, distance=binary_distance, missing_values=None):
         """Initialize an annotation task.
 
         The data argument can be None (to create an empty annotation task) or a sequence of 3-tuples,
         each representing a coder's labeling of an item:
-            (coder,item,label)
+        ``(coder,item,label)``
 
         The distance argument is a function taking two arguments (labels) and producing a numerical distance.
         The distance from a label to itself should be zero:
-            distance(l,l) = 0
+        ``distance(l,l) = 0``
+
+        Missing data (a coder not annotating an item) is represented by simply
+        omitting that ``(coder, item, label)`` triple: Krippendorff's ``alpha``
+        drops items annotated by fewer than two coders. As a convenience,
+        ``missing_values`` may be a collection of label values that stand for
+        "not annotated" (e.g. ``[None]`` or ``["", None]``); triples whose label
+        is one of them are dropped on load, so a placeholder is not counted as a
+        real category. Membership is tested with ``==``/hashing, so the values
+        must be hashable, like any label. Note the other coefficients
+        (``kappa``, ``pi``, ``S``, ``weighted_kappa``) assume every coder rated
+        every item; ``missing_values`` is meaningful only for ``alpha``.
         """
         self.distance = distance
         self.I = set()
         self.K = set()
         self.C = set()
         self.data = []
+        self.missing_values = (
+            frozenset(missing_values) if missing_values else frozenset()
+        )
         if data is not None:
             self.load_array(data)
 
@@ -122,7 +145,7 @@ class AnnotationTask(object):
         return "\r\n".join(
             map(
                 lambda x: "%s\t%s\t%s"
-                % (x['coder'], x['item'].replace('_', "\t"), ",".join(x['labels'])),
+                % (x["coder"], x["item"].replace("_", "\t"), ",".join(x["labels"])),
                 self.data,
             )
         )
@@ -134,49 +157,57 @@ class AnnotationTask(object):
             (coder,item,label)
         """
         for coder, item, labels in array:
+            # A missing-value placeholder means this coder did not annotate this
+            # item; drop the triple rather than treat the placeholder as a real
+            # label (issues #2865, #2732).
+            if labels in self.missing_values:
+                continue
             self.C.add(coder)
             self.K.add(labels)
             self.I.add(item)
-            self.data.append({'coder': coder, 'labels': labels, 'item': item})
+            self.data.append({"coder": coder, "labels": labels, "item": item})
+        if len(self.K) > MAX_AGREEMENT_LABELS:
+            raise ValueError(
+                "AnnotationTask has more than {0} distinct labels: agreement coefficients are quadratic in the label set (CWE-407). A real study has a small fixed label set.".format(MAX_AGREEMENT_LABELS)
+            )
 
     def agr(self, cA, cB, i, data=None):
-        """Agreement between two coders on a given item
-
-        """
+        """Agreement between two coders on a given item"""
         data = data or self.data
         # cfedermann: we don't know what combination of coder/item will come
         # first in x; to avoid StopIteration problems due to assuming an order
         # cA,cB, we allow either for k1 and then look up the missing as k2.
-        k1 = next((x for x in data if x['coder'] in (cA, cB) and x['item'] == i))
-        if k1['coder'] == cA:
-            k2 = next((x for x in data if x['coder'] == cB and x['item'] == i))
+        k1 = next(x for x in data if x["coder"] in (cA, cB) and x["item"] == i)
+        if k1["coder"] == cA:
+            k2 = next(x for x in data if x["coder"] == cB and x["item"] == i)
         else:
-            k2 = next((x for x in data if x['coder'] == cA and x['item'] == i))
+            k2 = next(x for x in data if x["coder"] == cA and x["item"] == i)
 
-        ret = 1.0 - float(self.distance(k1['labels'], k2['labels']))
-        log.debug("Observed agreement between %s and %s on %s: %f", cA, cB, i, ret)
+        ret = 1.0 - float(self.distance(k1["labels"], k2["labels"]))
         log.debug(
-            "Distance between \"%r\" and \"%r\": %f",
-            k1['labels'],
-            k2['labels'],
-            1.0 - ret,
+            "Observed agreement between %s and %s on %s: %f",
+            sanitize_terminal(cA),
+            sanitize_terminal(cB),
+            sanitize_terminal(i),
+            ret,
+        )
+        log.debug(
+            'Distance between "%r" and "%r": %f', k1["labels"], k2["labels"], 1.0 - ret
         )
         return ret
 
     def Nk(self, k):
-        return float(sum(1 for x in self.data if x['labels'] == k))
+        return float(sum(1 for x in self.data if x["labels"] == k))
 
     def Nik(self, i, k):
-        return float(sum(1 for x in self.data if x['item'] == i and x['labels'] == k))
+        return float(sum(1 for x in self.data if x["item"] == i and x["labels"] == k))
 
     def Nck(self, c, k):
-        return float(sum(1 for x in self.data if x['coder'] == c and x['labels'] == k))
+        return float(sum(1 for x in self.data if x["coder"] == c and x["labels"] == k))
 
-    @deprecated('Use Nk, Nik or Nck instead')
+    @deprecated("Use Nk, Nik or Nck instead")
     def N(self, k=None, i=None, c=None):
-        """Implements the "n-notation" used in Artstein and Poesio (2007)
-
-        """
+        """Implements the "n-notation" used in Artstein and Poesio (2007)"""
         if k is not None and i is None and c is None:
             ret = self.Nk(k)
         elif k is not None and i is not None and c is None:
@@ -185,9 +216,15 @@ class AnnotationTask(object):
             ret = self.Nck(c, k)
         else:
             raise ValueError(
-                "You must pass either i or c, not both! (k=%r,i=%r,c=%r)" % (k, i, c)
+                "You must pass either i or c, not both! (k={0!r},i={1!r},c={2!r})".format(k, i, c)
             )
-        log.debug("Count on N[%s,%s,%s]: %d", k, i, c, ret)
+        log.debug(
+            "Count on N[%s,%s,%s]: %d",
+            sanitize_terminal(k),
+            sanitize_terminal(i),
+            sanitize_terminal(c),
+            ret,
+        )
         return ret
 
     def _grouped_data(self, field, data=None):
@@ -195,16 +232,19 @@ class AnnotationTask(object):
         return groupby(sorted(data, key=itemgetter(field)), itemgetter(field))
 
     def Ao(self, cA, cB):
-        """Observed agreement between two coders on all items.
-
-        """
+        """Observed agreement between two coders on all items."""
         data = self._grouped_data(
-            'item', (x for x in self.data if x['coder'] in (cA, cB))
+            "item", (x for x in self.data if x["coder"] in (cA, cB))
         )
         ret = sum(self.agr(cA, cB, item, item_data) for item, item_data in data) / len(
             self.I
         )
-        log.debug("Observed agreement between %s and %s: %f", cA, cB, ret)
+        log.debug(
+            "Observed agreement between %s and %s: %f",
+            sanitize_terminal(cA),
+            sanitize_terminal(cB),
+            ret,
+        )
         return ret
 
     def _pairwise_average(self, function):
@@ -222,32 +262,47 @@ class AnnotationTask(object):
         ret = total / n
         return ret
 
-    def avg_Ao(self):
-        """Average observed agreement across all coders and items.
+    def _chance_corrected_agreement(self, observed, expected):
+        """Handle degenerate perfect-agreement cases consistently.
 
+        When expected agreement is 1.0 and observed agreement is also 1.0,
+        returns 1.0 (perfect agreement). Raises ValueError if expected is 1.0
+        but observed is not, since that indicates a violated distance contract
+        (distance(l, l) must be 0) or otherwise undefined coefficient semantics.
         """
+        if isclose(expected, 1.0):
+            if isclose(observed, 1.0):
+                return 1.0
+            raise ValueError(
+                "Expected agreement is 1.0 but observed agreement is {0:.4f}. This indicates a distance function that violates distance(l, l) = 0, or otherwise undefined coefficient semantics.".format(observed)
+            )
+        return (observed - expected) / (1.0 - expected)
+
+    def avg_Ao(self):
+        """Average observed agreement across all coders and items."""
         ret = self._pairwise_average(self.Ao)
         log.debug("Average observed agreement: %f", ret)
         return ret
 
     def Do_Kw_pairwise(self, cA, cB, max_distance=1.0):
-        """The observed disagreement for the weighted kappa coefficient.
-
-        """
+        """The observed disagreement for the weighted kappa coefficient."""
         total = 0.0
-        data = (x for x in self.data if x['coder'] in (cA, cB))
-        for i, itemdata in self._grouped_data('item', data):
+        data = (x for x in self.data if x["coder"] in (cA, cB))
+        for i, itemdata in self._grouped_data("item", data):
             # we should have two items; distance doesn't care which comes first
-            total += self.distance(next(itemdata)['labels'], next(itemdata)['labels'])
+            total += self.distance(next(itemdata)["labels"], next(itemdata)["labels"])
 
         ret = total / (len(self.I) * max_distance)
-        log.debug("Observed disagreement between %s and %s: %f", cA, cB, ret)
+        log.debug(
+            "Observed disagreement between %s and %s: %f",
+            sanitize_terminal(cA),
+            sanitize_terminal(cB),
+            ret,
+        )
         return ret
 
     def Do_Kw(self, max_distance=1.0):
-        """Averaged over all labelers
-
-        """
+        """Averaged over all labelers"""
         ret = self._pairwise_average(
             lambda cA, cB: self.Do_Kw_pairwise(cA, cB, max_distance)
         )
@@ -256,12 +311,11 @@ class AnnotationTask(object):
 
     # Agreement Coefficients
     def S(self):
-        """Bennett, Albert and Goldstein 1954
-
-        """
+        """Bennett, Albert and Goldstein 1954"""
+        if len(self.K) == 0:
+            raise ValueError("Cannot calculate S, no data present!")
         Ae = 1.0 / len(self.K)
-        ret = (self.avg_Ao() - Ae) / (1.0 - Ae)
-        return ret
+        return self._chance_corrected_agreement(self.avg_Ao(), Ae)
 
     def pi(self):
         """Scott 1955; here, multi-pi.
@@ -269,27 +323,30 @@ class AnnotationTask(object):
 
         """
         total = 0.0
-        label_freqs = FreqDist(x['labels'] for x in self.data)
-        for k, f in iteritems(label_freqs):
-            total += f ** 2
+        label_freqs = FreqDist(x["labels"] for x in self.data)
+        for k, f in label_freqs.items():
+            total += f**2
         Ae = total / ((len(self.I) * len(self.C)) ** 2)
-        return (self.avg_Ao() - Ae) / (1 - Ae)
+        return self._chance_corrected_agreement(self.avg_Ao(), Ae)
 
     def Ae_kappa(self, cA, cB):
         Ae = 0.0
         nitems = float(len(self.I))
-        label_freqs = ConditionalFreqDist((x['labels'], x['coder']) for x in self.data)
+        label_freqs = ConditionalFreqDist((x["labels"], x["coder"]) for x in self.data)
         for k in label_freqs.conditions():
             Ae += (label_freqs[k][cA] / nitems) * (label_freqs[k][cB] / nitems)
         return Ae
 
     def kappa_pairwise(self, cA, cB):
-        """
-
-        """
+        """ """
         Ae = self.Ae_kappa(cA, cB)
-        ret = (self.Ao(cA, cB) - Ae) / (1.0 - Ae)
-        log.debug("Expected agreement between %s and %s: %f", cA, cB, Ae)
+        ret = self._chance_corrected_agreement(self.Ao(cA, cB), Ae)
+        log.debug(
+            "Expected agreement between %s and %s: %f",
+            sanitize_terminal(cA),
+            sanitize_terminal(cB),
+            Ae,
+        )
         return ret
 
     def kappa(self):
@@ -305,25 +362,23 @@ class AnnotationTask(object):
 
         """
         Ae = self._pairwise_average(self.Ae_kappa)
-        return (self.avg_Ao() - Ae) / (1.0 - Ae)
+        return self._chance_corrected_agreement(self.avg_Ao(), Ae)
 
     def Disagreement(self, label_freqs):
         total_labels = sum(label_freqs.values())
         pairs = 0.0
-        for j, nj in iteritems(label_freqs):
-            for l, nl in iteritems(label_freqs):
+        for j, nj in label_freqs.items():
+            for l, nl in label_freqs.items():
                 pairs += float(nj * nl) * self.distance(l, j)
         return 1.0 * pairs / (total_labels * (total_labels - 1))
 
     def alpha(self):
-        """Krippendorff 1980
-
-        """
+        """Krippendorff 1980"""
         # check for degenerate cases
         if len(self.K) == 0:
             raise ValueError("Cannot calculate alpha, no data present!")
         if len(self.K) == 1:
-            log.debug("Only one annotation value, allpha returning 1.")
+            log.debug("Only one annotation value, alpha returning 1.")
             return 1
         if len(self.C) == 1 and len(self.I) == 1:
             raise ValueError("Cannot calculate alpha, only one coder and item present!")
@@ -331,10 +386,9 @@ class AnnotationTask(object):
         total_disagreement = 0.0
         total_ratings = 0
         all_valid_labels_freq = FreqDist([])
-
-        total_do = 0.0 # Total observed disagreement for all items.
-        for i, itemdata in self._grouped_data('item'):
-            label_freqs = FreqDist(x['labels'] for x in itemdata)
+        total_do = 0.0  # Total observed disagreement for all items.
+        for i, itemdata in self._grouped_data("item"):
+            label_freqs = FreqDist(x["labels"] for x in itemdata)
             labels_count = sum(label_freqs.values())
             if labels_count < 2:
                 # Ignore the item.
@@ -342,43 +396,48 @@ class AnnotationTask(object):
             all_valid_labels_freq += label_freqs
             total_do += self.Disagreement(label_freqs) * labels_count
 
+        if len(all_valid_labels_freq.keys()) == 1:
+            log.debug("Only one valid annotation value, alpha returning 1.")
+            return 1
+
         do = total_do / sum(all_valid_labels_freq.values())
 
-        de = self.Disagreement(all_valid_labels_freq) # Expected disagreement.
+        de = self.Disagreement(all_valid_labels_freq)  # Expected disagreement.
         k_alpha = 1.0 - do / de
 
         return k_alpha
 
     def weighted_kappa_pairwise(self, cA, cB, max_distance=1.0):
-        """Cohen 1968
-
-        """
+        """Cohen 1968"""
         total = 0.0
         label_freqs = ConditionalFreqDist(
-            (x['coder'], x['labels']) for x in self.data if x['coder'] in (cA, cB)
+            (x["coder"], x["labels"]) for x in self.data if x["coder"] in (cA, cB)
         )
         for j in self.K:
             for l in self.K:
                 total += label_freqs[cA][j] * label_freqs[cB][l] * self.distance(j, l)
         De = total / (max_distance * pow(len(self.I), 2))
-        log.debug("Expected disagreement between %s and %s: %f", cA, cB, De)
+        log.debug(
+            "Expected disagreement between %s and %s: %f",
+            sanitize_terminal(cA),
+            sanitize_terminal(cB),
+            De,
+        )
         Do = self.Do_Kw_pairwise(cA, cB)
         ret = 1.0 - (Do / De)
         return ret
 
     def weighted_kappa(self, max_distance=1.0):
-        """Cohen 1968
-
-        """
+        """Cohen 1968"""
         return self._pairwise_average(
             lambda cA, cB: self.weighted_kappa_pairwise(cA, cB, max_distance)
         )
 
 
-if __name__ == '__main__':
-
-    import re
+if __name__ == "__main__":
     import optparse
+    import re
+
     from nltk.metrics import distance
 
     # process command-line arguments
@@ -423,7 +482,7 @@ if __name__ == '__main__':
         "-v",
         "--verbose",
         dest="verbose",
-        default='0',
+        default="0",
         help="how much debugging to print on stderr (0-4)",
     )
     parser.add_option(
@@ -455,7 +514,7 @@ if __name__ == '__main__':
         action="store_true",
         help="calculate agreement for every subset of the annotators",
     )
-    (options, remainder) = parser.parse_args()
+    options, remainder = parser.parse_args()
 
     if not options.file:
         parser.print_help()
@@ -465,7 +524,7 @@ if __name__ == '__main__':
 
     # read in data from the specified file
     data = []
-    with open(options.file, 'r') as infile:
+    with pathsec_open(options.file, context="agreement.__main__") as infile:
         for l in infile:
             toks = l.split(options.columnsep)
             coder, object_, labels = (
@@ -490,6 +549,6 @@ if __name__ == '__main__':
     if options.thorough:
         pass
     else:
-        print(getattr(task, options.agreement)())
+        safe_print(getattr(task, options.agreement)())
 
     logging.shutdown()

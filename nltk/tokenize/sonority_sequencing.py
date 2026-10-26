@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Christopher Hench <chris.l.hench@gmail.com>
 #         Alex Estes
-# URL: <http://nltk.sourceforge.net>
+# URL: <https://www.nltk.org>
 # For license information, see LICENSE.TXT
 
 """
@@ -18,10 +19,11 @@ universal syllabification algorithm, but that does not mean it performs equally
 across languages. Bartlett et al. (2009) is a good benchmark for English accuracy
 if utilizing IPA (pg. 311).
 
-Importantly, if a custom hiearchy is supplied and vowels span across more than
+Importantly, if a custom hierarchy is supplied and vowels span across more than
 one level, they should be given separately to the `vowels` class attribute.
 
 References:
+
 - Otto Jespersen. 1904. Lehrbuch der Phonetik.
   Leipzig, Teubner. Chapter 13, Silbe, pp. 185-203.
 - Elisabeth Selkirk. 1984. On the major class features and syllable theory.
@@ -30,21 +32,30 @@ References:
 - Susan Bartlett, et al. 2009. On the Syllabification of Phonemes.
   In HLT-NAACL. pp. 308-316.
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
-from __future__ import unicode_literals
 import warnings
-
-import re
 from string import punctuation
 
+from nltk import redos
+from nltk.termsec import sanitize_terminal
 from nltk.tokenize.api import TokenizerI
 from nltk.util import ngrams
+
+# Upper bound on distinct fallback "vowel" characters accumulated across tokens.
+# assign_values() treats every unknown char as a vowel and remembers it on the
+# instance; without a cap an attacker-controlled stream of distinct codepoints
+# grows self.vowels without limit until the joined pattern trips redos's
+# MAX_PATTERN_LENGTH refusal. Far above any real phoneme inventory (< 100).
+_MAX_VOWEL_CHARS = 1024
 
 
 class SyllableTokenizer(TokenizerI):
     """
     Syllabifies words based on the Sonority Sequencing Principle (SSP).
 
+        >>> from nltk.tokenize import SyllableTokenizer
         >>> from nltk import word_tokenize
         >>> SSP = SyllableTokenizer()
         >>> SSP.tokenize('justification')
@@ -54,7 +65,7 @@ class SyllableTokenizer(TokenizerI):
         [['This'], ['is'], ['a'], ['foo', 'bar', '-', 'li', 'ke'], ['sen', 'ten', 'ce'], ['.']]
     """
 
-    def __init__(self, lang='en', sonority_hierarchy=False):
+    def __init__(self, lang="en", sonority_hierarchy=False):
         """
         :param lang: Language parameter, default is English, 'en'
         :type lang: str
@@ -66,12 +77,13 @@ class SyllableTokenizer(TokenizerI):
         # If vowels are spread across multiple levels, they should be
         # passed assigned self.vowels var together, otherwise should be
         # placed in first index of hierarchy.
-        if not sonority_hierarchy and lang == 'en':
-            sonority_hierarchy = ['aeiouy',  # vowels.
-                                  'lmnrw',  # nasals.
-                                  'zvsf',  # fricatives.
-                                  'bcdgtkpqxhj'  # stops.
-                                  ]
+        if not sonority_hierarchy and lang == "en":
+            sonority_hierarchy = [
+                "aeiouy",  # vowels.
+                "lmnrw",  # nasals.
+                "zvsf",  # fricatives.
+                "bcdgtkpqxhj",  # stops.
+            ]
 
         self.vowels = sonority_hierarchy[0]
         self.phoneme_map = {}
@@ -97,12 +109,18 @@ class SyllableTokenizer(TokenizerI):
             try:
                 syllables_values.append((c, self.phoneme_map[c]))
             except KeyError:
-                if c not in punctuation:
-                    warnings.warn("Character not defined in sonority_hierarchy,"
-                                  " assigning as vowel: '{}'".format(c))
+                if c not in "0123456789" and c not in punctuation:
+                    warnings.warn(
+                        "Character not defined in sonority_hierarchy,"
+                        " assigning as vowel: '{}'".format(sanitize_terminal(c))
+                    )
                     syllables_values.append((c, max(self.phoneme_map.values())))
-                    self.vowels += c
-                else: # If it's a punctuation, assing -1.
+                    # Remember the char as a vowel, but stop growing the set past
+                    # the cap so the pattern built from it in validate_syllables
+                    # stays bounded (CWE-400 / CWE-407).
+                    if c not in self.vowels and len(self.vowels) < _MAX_VOWEL_CHARS:
+                        self.vowels += c
+                else:  # If it's a punctuation or numbers, assign -1.
                     syllables_values.append((c, -1))
         return syllables_values
 
@@ -119,15 +137,21 @@ class SyllableTokenizer(TokenizerI):
         """
         valid_syllables = []
         front = ""
+        vowel_source = "|".join(self.vowels)
+        vowel_pattern = redos.compile(vowel_source)  # bounds compile + match time
         for i, syllable in enumerate(syllable_list):
             if syllable in punctuation:
                 valid_syllables.append(syllable)
                 continue
-            if not re.search('|'.join(self.vowels), syllable):
+            if not vowel_pattern.search(syllable):
                 if len(valid_syllables) == 0:
                     front += syllable
                 else:
-                    valid_syllables = valid_syllables[:-1] + [valid_syllables[-1] + syllable]
+                    # Merge the vowelless syllable into the previous one in
+                    # place. The original ``valid_syllables[:-1] + [...]`` rebuilt
+                    # the whole list every time, so a token that produced many
+                    # vowelless syllables cost O(n^2) (CWE-407); this is O(1).
+                    valid_syllables[-1] = valid_syllables[-1] + syllable
             else:
                 if len(valid_syllables) == 0:
                     valid_syllables.append(front + syllable)
@@ -135,6 +159,12 @@ class SyllableTokenizer(TokenizerI):
                     valid_syllables.append(syllable)
 
         return valid_syllables
+
+    #: Maximum token length accepted by :meth:`tokenize`. A real word/token is
+    #: short; syllabification is super-linear in token length, so a
+    #: pathologically long single "token" would be a CPU DoS (CWE-407). Raise it
+    #: if you genuinely need to syllabify very long tokens.
+    MAX_TOKEN_LEN = 4096
 
     def tokenize(self, token):
         """
@@ -146,12 +176,23 @@ class SyllableTokenizer(TokenizerI):
         :return syllable_list: Single word or token broken up into syllables.
         :rtype: list(str)
         """
-        # assign values from hierarchy
-        syllables_values = self.assign_values(token)
-
-        # if only one vowel return word
+        # if only one vowel return word. This path is O(n) (a few ``str.count``
+        # scans), so it is safe for arbitrarily long low-vowel tokens (e.g. a
+        # long digit run) and is checked before the length guard below.
         if sum(token.count(x) for x in self.vowels) <= 1:
             return [token]
+
+        # The syllabification loop below is linear after the ``validate_syllables``
+        # fix, but ``assign_values``/``ngrams`` still materialise per-character
+        # structures, so a pathologically long single "token" is a memory/CPU
+        # DoS (CWE-407). A real word/token is short; reject the oversized ones.
+        if len(token) > self.MAX_TOKEN_LEN:
+            raise ValueError(
+                "SyllableTokenizer: token length exceeds MAX_TOKEN_LEN ({0}); syllabification materialises per-character structures over the token (CWE-407). Raise MAX_TOKEN_LEN for longer tokens.".format(self.MAX_TOKEN_LEN)
+            )
+
+        # assign values from hierarchy
+        syllables_values = self.assign_values(token)
 
         syllable_list = []
         syllable = syllables_values[0][0]  # start syllable with first phoneme
@@ -163,7 +204,7 @@ class SyllableTokenizer(TokenizerI):
             focal_phoneme = phonemes[1]
 
             # These cases trigger syllable break.
-            if focal_value == -1: # If it's a punctuation, just break.
+            if focal_value == -1:  # If it's a punctuation, just break.
                 syllable_list.append(syllable)
                 syllable_list.append(focal_phoneme)
                 syllable = ""

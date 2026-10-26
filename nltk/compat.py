@@ -1,3 +1,4 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Compatibility
 #
@@ -6,8 +7,8 @@
 # URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import absolute_import, print_function
 import os
+import re
 import sys
 from functools import update_wrapper, wraps
 import fractions
@@ -373,6 +374,133 @@ except ImportError:  # Python 2.7: the subprocess32 backport carries it
 
         class TimeoutExpired(Exception):
             """``subprocess.TimeoutExpired`` stand-in without the backport."""
+
+
+if six.PY3:
+    from html import escape as html_escape  # noqa: F401
+    import html.entities as html_entities  # noqa: F401
+else:
+    import cgi as _cgi
+    import htmlentitydefs as html_entities  # noqa: F401
+
+    def html_escape(s, quote=True):
+        """``html.escape`` for 2.7 (the single quote escaped too)."""
+        s = _cgi.escape(s, quote)
+        return s.replace("'", "&#x27;") if quote else s
+
+
+import textwrap as _textwrap
+
+if hasattr(_textwrap, "indent"):
+    textwrap_indent = _textwrap.indent
+else:
+
+    def textwrap_indent(text, prefix, predicate=None):
+        """``textwrap.indent`` (3.3+) for 2.7."""
+        if predicate is None:
+            predicate = lambda line: line.strip()
+        return "".join((prefix + line) if predicate(line) else line for line in text.splitlines(True))
+
+
+import math as _math
+
+#: ``math.log2`` (3.3+); the two-argument log on 2.7.
+log2 = getattr(_math, "log2", None) or (lambda x: _math.log(x, 2))
+
+
+import itertools as _itertools
+import os as _os
+import shutil as _shutil
+import subprocess as _subprocess
+import binascii as _binascii
+import keyword as _keyword
+
+zip_longest = six.moves.zip_longest
+filterfalse = six.moves.filterfalse
+queue = six.moves.queue
+
+if hasattr(_itertools, "accumulate"):
+    accumulate = _itertools.accumulate
+else:
+
+    def accumulate(iterable, func=None):
+        """``itertools.accumulate`` (3.2+) for 2.7."""
+        it = iter(iterable)
+        try:
+            total = next(it)
+        except StopIteration:
+            return
+        yield total
+        for element in it:
+            total = func(total, element) if func is not None else total + element
+            yield total
+
+
+inf = float("inf")
+nan = float("nan")
+isfinite = getattr(_math, "isfinite", None) or (lambda x: not (_math.isinf(x) or _math.isnan(x)))
+gcd = getattr(_math, "gcd", None)
+if gcd is None:
+    from fractions import gcd  # noqa: F401
+
+
+def isclose(a, b, rel_tol=1e-09, abs_tol=0.0):
+    """``math.isclose`` (3.5+) for 2.7."""
+    if hasattr(_math, "isclose"):
+        return _math.isclose(a, b, rel_tol=rel_tol, abs_tol=abs_tol)
+    if a == b:
+        return True
+    if _math.isinf(a) or _math.isinf(b):
+        return False
+    return abs(a - b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
+
+
+#: ``os.replace`` (3.3+): rename replaces atomically on POSIX 2.7 as well.
+replace = getattr(_os, "replace", None) or _os.rename
+
+
+def makedirs(name, mode=0o777, exist_ok=False):
+    """``os.makedirs`` with ``exist_ok`` (3.2+) for 2.7."""
+    try:
+        _os.makedirs(name, mode)
+    except OSError as exc:
+        if not exist_ok or exc.errno != _errno.EEXIST or not _os.path.isdir(name):
+            raise
+
+
+if hasattr(_shutil, "which"):
+    which = _shutil.which
+else:
+    from backports.shutil_which import which  # noqa: F401
+
+DEVNULL = getattr(_subprocess, "DEVNULL", None)
+if DEVNULL is None:
+    DEVNULL = _os.open(_os.devnull, _os.O_RDWR)
+
+try:
+    from secrets import token_urlsafe  # noqa: F401
+except ImportError:  # Python 2.7: the same construction over os.urandom
+    import base64 as _base64
+
+    def token_urlsafe(nbytes=32):
+        return _base64.urlsafe_b64encode(_os.urandom(nbytes)).rstrip(b"=").decode("ascii")
+
+
+def isidentifier(name):
+    """``str.isidentifier`` (3) for both interpreters."""
+    if six.PY3:
+        return name.isidentifier()
+    return bool(re.match(r"^[A-Za-z_][A-Za-z0-9_]*$", name))
+
+
+def bytes_hex(data):
+    """``bytes.hex`` (3.5+) for 2.7."""
+    return _binascii.hexlify(data).decode("ascii")
+
+
+def casefold(text):
+    """``str.casefold`` (3.3+); ``lower`` is the closest 2.7 has."""
+    return text.casefold() if hasattr(text, "casefold") else text.lower()
 
 
 _ERRNO_CLASSES = {

@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Texts
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -13,25 +14,27 @@ Functionality includes: concordancing, collocation discovery,
 regular expression search over tokenized strings, and
 distributional similarity.
 """
-from __future__ import print_function, division, unicode_literals, absolute_import
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
+from nltk.compat import TimeoutError
 
-from math import log
-from collections import defaultdict, Counter, namedtuple
-from functools import reduce
-import re
 import sys
+import unicodedata
+from collections import Counter, defaultdict, namedtuple
+from functools import reduce
+from math import log
 
-from six import text_type
-
+from nltk import redos
+from nltk.collocations import BigramCollocationFinder
 from nltk.lm import MLE
 from nltk.lm.preprocessing import padded_everygram_pipeline
-from nltk.probability import FreqDist
+from nltk.metrics import BigramAssocMeasures, f_measure
 from nltk.probability import ConditionalFreqDist as CFD
-from nltk.util import tokenwrap, LazyConcatenation
-from nltk.metrics import f_measure, BigramAssocMeasures
-from nltk.collocations import BigramCollocationFinder
-from nltk.compat import python_2_unicode_compatible
+from nltk.probability import FreqDist
+from nltk.redos import DEFAULT_TIMEOUT as _REDOS_DEFAULT_TIMEOUT
+from nltk.termsec import safe_print
 from nltk.tokenize import sent_tokenize
+from nltk.util import LazyConcatenation, cut_string, tokenwrap
 
 ConcordanceLine = namedtuple(
     "ConcordanceLine",
@@ -130,7 +133,6 @@ class ContextIndex(object):
             return fd
 
 
-@python_2_unicode_compatible
 class ConcordanceIndex(object):
     """
     An index that can be used to look up the offset locations at which
@@ -190,22 +192,36 @@ class ConcordanceIndex(object):
     def find_concordance(self, word, width=80):
         """
         Find all concordance lines given the query word.
+
+        Provided with a list of words, these will be found as a phrase.
         """
-        half_width = (width - len(word) - 2) // 2
+        if isinstance(word, list):
+            phrase = word
+        else:
+            phrase = [word]
+
+        phrase_str = " ".join(phrase)
+        phrase_len = sum(1 for char in phrase_str if not unicodedata.combining(char))
+        half_width = (width - phrase_len - 2) // 2
         context = width // 4  # approx number of words of context
 
         # Find the instances of the word to create the ConcordanceLine
         concordance_list = []
-        offsets = self.offsets(word)
+        offsets = self.offsets(phrase[0])
+        for i, word in enumerate(phrase[1:]):
+            word_offsets = {offset - i - 1 for offset in self.offsets(word)}
+            offsets = sorted(word_offsets.intersection(offsets))
         if offsets:
             for i in offsets:
-                query_word = self._tokens[i]
+                query_word = " ".join(self._tokens[i : i + len(phrase)])
                 # Find the context of query word.
                 left_context = self._tokens[max(0, i - context) : i]
-                right_context = self._tokens[i + 1 : i + context]
+                right_context = self._tokens[i + len(phrase) : i + context]
                 # Create the pretty lines with the query_word in the middle.
-                left_print = " ".join(left_context)[-half_width:]
-                right_print = " ".join(right_context)[:half_width]
+                left_print = cut_string(" ".join(left_context), -half_width).rjust(
+                    half_width
+                )
+                right_print = cut_string(" ".join(right_context), half_width)
                 # The WYSIWYG line of the concordance.
                 line_print = " ".join([left_print, query_word, right_print])
                 # Create the ConcordanceLine
@@ -224,8 +240,8 @@ class ConcordanceIndex(object):
     def print_concordance(self, word, width=80, lines=25):
         """
         Print concordance lines given the query word.
-        :param word: The target word
-        :type word: str
+        :param word: The target word or phrase (a list of strings)
+        :type word: str or list
         :param lines: The number of lines to display (default=25)
         :type lines: int
         :param width: The width of each line, in characters (default=80)
@@ -236,12 +252,30 @@ class ConcordanceIndex(object):
         concordance_list = self.find_concordance(word, width=width)
 
         if not concordance_list:
-            print("no matches")
+            safe_print("no matches")
         else:
             lines = min(lines, len(concordance_list))
-            print("Displaying {} of {} matches:".format(lines, len(concordance_list)))
+            safe_print("Displaying {0} of {1} matches:".format(lines, len(concordance_list)))
             for i, concordance_line in enumerate(concordance_list[:lines]):
-                print(concordance_line.line)
+                safe_print(concordance_line.line)
+
+
+#: Default wall-clock limit, in seconds, for :meth:`TokenSearcher.findall` (and
+#: :meth:`Text.findall`). The search applies an attacker-influenceable token
+#: regex across the whole corpus; a quantified token group (e.g. ``<a>+<b>``) can
+#: trigger super-linear, potentially catastrophic backtracking on a crafted query
+#: or corpus (CWE-1333), so the search is abandoned with a ``TimeoutError`` once
+#: this many seconds elapse. Benign searches finish in well under a second; set it
+#: to ``None`` to disable. Shares :data:`nltk.redos.DEFAULT_TIMEOUT` so every
+#: caller-supplied-pattern sink in NLTK uses one, deliberately tight, bound
+#: (the earlier 60s value was itself a DoS amplifier: the busy-wait window is
+#: the damage).
+TOKENSEARCH_TIMEOUT = _REDOS_DEFAULT_TIMEOUT
+
+#: Sentinel for the ``timeout`` defaults below: resolving ``TOKENSEARCH_TIMEOUT``
+#: inside the methods (rather than binding it as a literal default at definition
+#: time) means a later ``nltk.text.TOKENSEARCH_TIMEOUT = ...`` still takes effect.
+_TIMEOUT_UNSET = object()
 
 
 class TokenSearcher(object):
@@ -258,15 +292,14 @@ class TokenSearcher(object):
     def __init__(self, tokens):
         self._raw = "".join("<" + w + ">" for w in tokens)
 
-    def findall(self, regexp):
+    def findall(self, regexp, timeout=_TIMEOUT_UNSET):
         """
         Find instances of the regular expression in the text.
         The text is a list of tokens, and a regexp pattern to match
         a single token must be surrounded by angle brackets.  E.g.
 
         >>> from nltk.text import TokenSearcher
-        >>> print('hack'); from nltk.book import text1, text5, text9
-        hack...
+        >>> from nltk.book import text1, text5, text9
         >>> text5.findall("<.*><.*><bro>")
         you rule bro; telling you bro; u twizted bro
         >>> text1.findall("<a>(<.*>)<man>")
@@ -281,15 +314,39 @@ class TokenSearcher(object):
 
         :param regexp: A regular expression
         :type regexp: str
+        :param timeout: wall-clock limit, in seconds, for the search; ``None``
+            disables it. Defaults to ``TOKENSEARCH_TIMEOUT``.
+        :type timeout: float or None
         """
-        # preprocess the regular expression
-        regexp = re.sub(r"\s", "", regexp)
-        regexp = re.sub(r"<", "(?:<(?:", regexp)
-        regexp = re.sub(r">", ")>)", regexp)
-        regexp = re.sub(r"(?<!\\)\.", "[^>]", regexp)
+        if timeout is _TIMEOUT_UNSET:
+            timeout = TOKENSEARCH_TIMEOUT
 
-        # perform the search
-        hits = re.findall(regexp, self._raw)
+        # preprocess the regular expression
+        regexp = redos.sub(r"\s", "", regexp)
+        regexp = redos.sub(r"<", "(?:<(?:", regexp)
+        regexp = redos.sub(r">", ")>)", regexp)
+        regexp = redos.sub(r"(?<!\\)\.", "[^>]", regexp)
+
+        # Perform the search with the third-party ``regex`` engine: unlike the
+        # stdlib ``re`` it does not re-scan a long run of a quantified token from
+        # every position (which is quadratic in the corpus length), and it honours
+        # a wall-clock ``timeout`` so a crafted query/corpus cannot pin a CPU core
+        # indefinitely (CWE-1333). The output is identical to ``re.findall`` for
+        # these patterns.
+        try:
+            # redos.compile refuses a compile-time DoS and wraps the pattern; its
+            # findall takes the per-call wall-clock timeout.
+            hits = redos.compile(regexp).findall(self._raw, timeout=timeout)
+        except TimeoutError:
+            raise TimeoutError(
+                "TokenSearcher.findall exceeded its {0}s time limit; the query may be too expensive for this corpus (pass timeout=None to disable the limit).".format(timeout)
+            )
+        except (ValueError, redos.error) as exc:
+            # redos refuses an oversized/over-nested query at compile time; report
+            # it as a bad query rather than letting the raw refusal escape.
+            raise ValueError(
+                "TokenSearcher.findall could not compile the query: {0}".format(exc)
+            )
 
         # Sanity check
         for h in hits:
@@ -301,7 +358,6 @@ class TokenSearcher(object):
         return hits
 
 
-@python_2_unicode_compatible
 class Text(object):
     """
     A wrapper around a sequence of simple (string) tokens, which is
@@ -343,9 +399,9 @@ class Text(object):
             self.name = name
         elif "]" in tokens[:20]:
             end = tokens[:20].index("]")
-            self.name = " ".join(text_type(tok) for tok in tokens[1:end])
+            self.name = " ".join(str(tok) for tok in tokens[1:end])
         else:
-            self.name = " ".join(text_type(tok) for tok in tokens[:8]) + "..."
+            self.name = " ".join(str(tok) for tok in tokens[:8]) + "..."
 
     # ////////////////////////////////////////////////////////////
     # Support item & slice access
@@ -366,8 +422,8 @@ class Text(object):
         Prints a concordance for ``word`` with the specified context window.
         Word matching is not case-sensitive.
 
-        :param word: The target word
-        :type word: str
+        :param word: The target word or phrase (a list of strings)
+        :type word: str or list
         :param width: The width of each line, in characters (default=80)
         :type width: int
         :param lines: The number of lines to display (default=25)
@@ -387,8 +443,8 @@ class Text(object):
         Generate a concordance for ``word`` with the specified context window.
         Word matching is not case-sensitive.
 
-        :param word: The target word
-        :type word: str
+        :param word: The target word or phrase (a list of strings)
+        :type word: str or list
         :param width: The width of each line, in characters (default=80)
         :type width: int
         :param lines: The number of lines to display (default=25)
@@ -406,10 +462,15 @@ class Text(object):
         """
         Return collocations derived from the text, ignoring stopwords.
 
+            >>> from nltk.book import text4
+            >>> text4.collocation_list()[:2]
+            [('United', 'States'), ('fellow', 'citizens')]
+
         :param num: The maximum number of collocations to return.
         :type num: int
         :param window_size: The number of tokens spanned by a collocation (default=2)
         :type window_size: int
+        :rtype: list(tuple(str, str))
         """
         if not (
             "_collocations" in self.__dict__
@@ -427,12 +488,23 @@ class Text(object):
             finder.apply_freq_filter(2)
             finder.apply_word_filter(lambda w: len(w) < 3 or w.lower() in ignored_words)
             bigram_measures = BigramAssocMeasures()
-            self._collocations = finder.nbest(bigram_measures.likelihood_ratio, num)
-        return [w1 + " " + w2 for w1, w2 in self._collocations]
+            self._collocations = list(
+                finder.nbest(bigram_measures.likelihood_ratio, num)
+            )
+        return self._collocations
 
     def collocations(self, num=20, window_size=2):
         """
         Print collocations derived from the text, ignoring stopwords.
+
+            >>> from nltk.book import text4
+            >>> text4.collocations() # doctest: +NORMALIZE_WHITESPACE
+            United States; fellow citizens; years ago; four years; Federal
+            Government; General Government; Vice President; American people; God
+            bless; Chief Justice; one another; fellow Americans; Old World;
+            Almighty God; Fellow citizens; Chief Magistrate; every citizen; Indian
+            tribes; public debt; foreign nations
+
 
         :param num: The maximum number of collocations to print.
         :type num: int
@@ -443,7 +515,7 @@ class Text(object):
         collocation_strings = [
             w1 + " " + w2 for w1, w2 in self.collocation_list(num, window_size)
         ]
-        print(tokenwrap(collocation_strings, separator="; "))
+        safe_print(tokenwrap(collocation_strings, separator="; "))
 
     def count(self, word):
         """
@@ -491,9 +563,9 @@ class Text(object):
                 if c in contexts and not w == word
             )
             words = [w for w, _ in fd.most_common(num)]
-            print(tokenwrap(words))
+            safe_print(tokenwrap(words))
         else:
-            print("No matches")
+            safe_print("No matches")
 
     def common_contexts(self, words, num=20):
         """
@@ -515,13 +587,13 @@ class Text(object):
         try:
             fd = self._word_context_index.common_contexts(words, True)
             if not fd:
-                print("No common contexts were found")
+                safe_print("No common contexts were found")
             else:
                 ranked_contexts = [w for w, _ in fd.most_common(num)]
-                print(tokenwrap(w1 + "_" + w2 for w1, w2 in ranked_contexts))
+                safe_print(tokenwrap(w1 + "_" + w2 for w1, w2 in ranked_contexts))
 
         except ValueError as e:
-            print(e)
+            safe_print(e)
 
     def dispersion_plot(self, words):
         """
@@ -554,16 +626,15 @@ class Text(object):
         :type text_seed: list(str)
 
         :param random_seed: A random seed or an instance of `random.Random`. If provided,
-        makes the random sampling part of generation reproducible. (default=42)
+            makes the random sampling part of generation reproducible. (default=42)
         :type random_seed: int
-
         """
         # Create the model when using it the first time.
         self._tokenized_sents = [
             sent.split(" ") for sent in sent_tokenize(" ".join(self.tokens))
         ]
-        if not hasattr(self, "trigram_model"):
-            print("Building ngram index...", file=sys.stderr)
+        if not hasattr(self, "_trigram_model"):
+            safe_print("Building ngram index...", file=sys.stderr)
             self._trigram_model = self._train_default_ngram_lm(
                 self._tokenized_sents, n=3
             )
@@ -586,7 +657,7 @@ class Text(object):
 
         prefix = " ".join(text_seed) + " " if text_seed else ""
         output_str = prefix + tokenwrap(generated_tokens[:length])
-        print(output_str)
+        safe_print(output_str)
         return output_str
 
     def plot(self, *args):
@@ -594,7 +665,7 @@ class Text(object):
         See documentation for FreqDist.plot()
         :seealso: nltk.prob.FreqDist.plot()
         """
-        self.vocab().plot(*args)
+        return self.vocab().plot(*args)
 
     def vocab(self):
         """
@@ -605,14 +676,13 @@ class Text(object):
             self._vocab = FreqDist(self)
         return self._vocab
 
-    def findall(self, regexp):
+    def findall(self, regexp, timeout=_TIMEOUT_UNSET):
         """
         Find instances of the regular expression in the text.
         The text is a list of tokens, and a regexp pattern to match
         a single token must be surrounded by angle brackets.  E.g.
 
-        >>> print('hack'); from nltk.book import text1, text5, text9
-        hack...
+        >>> from nltk.book import text1, text5, text9
         >>> text5.findall("<.*><.*><bro>")
         you rule bro; telling you bro; u twizted bro
         >>> text1.findall("<a>(<.*>)<man>")
@@ -627,20 +697,25 @@ class Text(object):
 
         :param regexp: A regular expression
         :type regexp: str
+        :param timeout: wall-clock limit, in seconds, for the search; ``None``
+            disables it. Defaults to ``TOKENSEARCH_TIMEOUT``.
+        :type timeout: float or None
         """
+        if timeout is _TIMEOUT_UNSET:
+            timeout = TOKENSEARCH_TIMEOUT
 
         if "_token_searcher" not in self.__dict__:
             self._token_searcher = TokenSearcher(self)
 
-        hits = self._token_searcher.findall(regexp)
+        hits = self._token_searcher.findall(regexp, timeout=timeout)
         hits = [" ".join(h) for h in hits]
-        print(tokenwrap(hits, "; "))
+        safe_print(tokenwrap(hits, "; "))
 
     # ////////////////////////////////////////////////////////////
     # Helper Methods
     # ////////////////////////////////////////////////////////////
 
-    _CONTEXT_RE = re.compile("\w+|[\.\!\?]")
+    _CONTEXT_RE = redos.compile(r"\w+|[\.\!\?]")
 
     def _context(self, tokens, i):
         """
@@ -682,8 +757,7 @@ class TextCollection(Text):
 
     >>> import nltk.corpus
     >>> from nltk.text import TextCollection
-    >>> print('hack'); from nltk.book import text1, text2, text3
-    hack...
+    >>> from nltk.book import text1, text2, text3
     >>> gutenberg = TextCollection(nltk.corpus.gutenberg)
     >>> mytexts = TextCollection([text1, text2, text3])
 
@@ -700,13 +774,13 @@ class TextCollection(Text):
         self._idf_cache = {}
 
     def tf(self, term, text):
-        """ The frequency of the term in text. """
+        """The frequency of the term in text."""
         return text.count(term) / len(text)
 
     def idf(self, term):
-        """ The number of texts in the corpus divided by the
+        """The number of texts in the corpus divided by the
         number of texts that the term appears in.
-        If a term does not appear in the corpus, 0.0 is returned. """
+        If a term does not appear in the corpus, 0.0 is returned."""
         # idf values are cached for performance.
         idf = self._idf_cache.get(term)
         if idf is None:
@@ -725,30 +799,30 @@ def demo():
     from nltk.corpus import brown
 
     text = Text(brown.words(categories="news"))
-    print(text)
-    print()
-    print("Concordance:")
+    safe_print(text)
+    safe_print()
+    safe_print("Concordance:")
     text.concordance("news")
-    print()
-    print("Distributionally similar words:")
+    safe_print()
+    safe_print("Distributionally similar words:")
     text.similar("news")
-    print()
-    print("Collocations:")
+    safe_print()
+    safe_print("Collocations:")
     text.collocations()
-    print()
+    safe_print()
     # print("Automatically generated text:")
     # text.generate()
     # print()
-    print("Dispersion plot:")
+    safe_print("Dispersion plot:")
     text.dispersion_plot(["news", "report", "said", "announced"])
-    print()
-    print("Vocabulary plot:")
+    safe_print()
+    safe_print("Vocabulary plot:")
     text.plot(50)
-    print()
-    print("Indexing:")
-    print("text[3]:", text[3])
-    print("text[3:5]:", text[3:5])
-    print("text.vocab()['news']:", text.vocab()["news"])
+    safe_print()
+    safe_print("Indexing:")
+    safe_print("text[3]:", text[3])
+    safe_print("text[3:5]:", text[3:5])
+    safe_print("text.vocab()['news']:", text.vocab()["news"])
 
 
 if __name__ == "__main__":

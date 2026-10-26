@@ -90,7 +90,6 @@ expat pass plus a breadth-first walk of the built tree for depth, together
 a fifth to a third of the tree build on the largest real corpora.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
-from __future__ import absolute_import, division, print_function, unicode_literals
 import six
 from nltk.compat import keyword_only
 

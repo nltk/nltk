@@ -32,7 +32,6 @@ so no caller ever needs a per-type special case:
 re-exported from :mod:`nltk.termsec` for backward compatibility.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
-from __future__ import absolute_import, division, print_function, unicode_literals
 import six
 from nltk.compat import SimpleNamespace, keyword_only
 
@@ -256,14 +255,14 @@ if six.PY2 and "unix" not in _csv.list_dialects():
     class _UnixDialect(_csv.Dialect):
         """The ``unix`` dialect Python 3 registers (2.7 has only the excel pair)."""
 
-        delimiter = str(",")
-        quotechar = str('"')
+        delimiter = six.text_type(",")
+        quotechar = six.text_type('"')
         doublequote = True
         skipinitialspace = False
-        lineterminator = str("\n")
+        lineterminator = six.text_type("\n")
         quoting = _csv.QUOTE_ALL
 
-    _csv.register_dialect(str("unix"), _UnixDialect)
+    _csv.register_dialect(six.text_type("unix"), _UnixDialect)
 
 
 def _merged_dialect(dialect, fmtparams):

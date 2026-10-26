@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Indian Language POS-Tagged Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -17,13 +18,12 @@ Contents:
   - Marathi: IIT Bombay
   - Telugu: IIIT Hyderabad
 """
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
-from six import string_types
-
-from nltk.tag import str2tuple, map_tag
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.tag import map_tag, str2tuple
 
 
 class IndianCorpusReader(CorpusReader):
@@ -71,13 +71,6 @@ class IndianCorpusReader(CorpusReader):
             ]
         )
 
-    def raw(self, fileids=None):
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, string_types):
-            fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
-
 
 class IndianCorpusView(StreamBackedCorpusView):
     def __init__(
@@ -90,9 +83,9 @@ class IndianCorpusView(StreamBackedCorpusView):
 
     def read_block(self, stream):
         line = stream.readline()
-        if line.startswith('<'):
+        if line.startswith("<"):
             return []
-        sent = [str2tuple(word, sep='_') for word in line.split()]
+        sent = [str2tuple(word, sep="_") for word in line.split()]
         if self._tag_mapping_function:
             sent = [(w, self._tag_mapping_function(t)) for (w, t) in sent]
         if not self._tagged:

@@ -1,24 +1,28 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Opinion Lexicon Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 CorpusReader for the Opinion Lexicon.
 
-- Opinion Lexicon information -
+Opinion Lexicon information
+===========================
+
 Authors: Minqing Hu and Bing Liu, 2004.
-    Department of Computer Sicence
+    Department of Computer Science
     University of Illinois at Chicago
 
 Contact: Bing Liu, liub@cs.uic.edu
-        http://www.cs.uic.edu/~liub
+        https://www.cs.uic.edu/~liub
 
 Distributed with permission.
 
 Related papers:
+
 - Minqing Hu and Bing Liu. "Mining and summarizing customer reviews".
     Proceedings of the ACM SIGKDD International Conference on Knowledge Discovery
     & Data Mining (KDD-04), Aug 22-25, 2004, Seattle, Washington, USA.
@@ -27,7 +31,8 @@ Related papers:
     Comparing Opinions on the Web". Proceedings of the 14th International World
     Wide Web conference (WWW-2005), May 10-14, 2005, Chiba, Japan.
 """
-from six import string_types
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
 from nltk.corpus.reader import WordListCorpusReader
 from nltk.corpus.reader.api import *
@@ -64,10 +69,10 @@ class OpinionLexiconCorpusReader(WordListCorpusReader):
 
     Note that words from `words()` method are sorted by file id, not alphabetically:
 
-        >>> opinion_lexicon.words()[0:10]
+        >>> opinion_lexicon.words()[0:10] # doctest: +NORMALIZE_WHITESPACE
         ['2-faced', '2-faces', 'abnormal', 'abolish', 'abominable', 'abominably',
         'abominate', 'abomination', 'abort', 'aborted']
-        >>> sorted(opinion_lexicon.words())[0:10]
+        >>> sorted(opinion_lexicon.words())[0:10] # doctest: +NORMALIZE_WHITESPACE
         ['2-faced', '2-faces', 'a+', 'abnormal', 'abolish', 'abominable', 'abominably',
         'abominate', 'abomination', 'abort']
     """
@@ -86,7 +91,7 @@ class OpinionLexiconCorpusReader(WordListCorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, string_types):
+        elif isinstance(fileids, six.string_types):
             fileids = [fileids]
         return concat(
             [
@@ -102,7 +107,7 @@ class OpinionLexiconCorpusReader(WordListCorpusReader):
         :return: a list of positive words.
         :rtype: list(str)
         """
-        return self.words('positive-words.txt')
+        return self.words("positive-words.txt")
 
     def negative(self):
         """
@@ -111,7 +116,7 @@ class OpinionLexiconCorpusReader(WordListCorpusReader):
         :return: a list of negative words.
         :rtype: list(str)
         """
-        return self.words('negative-words.txt')
+        return self.words("negative-words.txt")
 
     def _read_word_block(self, stream):
         words = []

@@ -1,19 +1,18 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+# -*- coding: utf-8 -*-
+import six
 # Natural Language Toolkit: Discourse Representation Theory (DRT)
 #
 # Author: Dan Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2019 NLTK Project
-# URL: <http://nltk.org/>
+# Copyright (C) 2001-2026 NLTK Project
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
-from __future__ import print_function, unicode_literals
 
 import operator
 from functools import reduce
 from itertools import chain
 
-from six import string_types
-
-from nltk.compat import python_2_unicode_compatible
 from nltk.sem.logic import (
     APP,
     AbstractVariableExpression,
@@ -31,35 +30,27 @@ from nltk.sem.logic import (
     ImpExpression,
     IndividualVariableExpression,
     LambdaExpression,
-    Tokens,
     LogicParser,
     NegatedExpression,
     OrExpression,
+    Tokens,
     Variable,
     is_eventvar,
     is_funcvar,
     is_indvar,
     unique_variable,
 )
-
-# Import Tkinter-based modules if they are available
-try:
-    from six.moves.tkinter import Canvas, Tk
-    from six.moves.tkinter_font import Font
-    from nltk.util import in_idle
-
-except ImportError:
-    # No need to print a warning here, nltk.draw has already printed one.
-    pass
+from nltk.termsec import safe_print
+from nltk.util import in_idle
 
 
 class DrtTokens(Tokens):
-    DRS = 'DRS'
-    DRS_CONC = '+'
-    PRONOUN = 'PRO'
-    OPEN_BRACKET = '['
-    CLOSE_BRACKET = ']'
-    COLON = ':'
+    DRS = "DRS"
+    DRS_CONC = "+"
+    PRONOUN = "PRO"
+    OPEN_BRACKET = "["
+    CLOSE_BRACKET = "]"
+    COLON = ":"
 
     PUNCT = [DRS_CONC, OPEN_BRACKET, CLOSE_BRACKET, COLON]
 
@@ -139,7 +130,7 @@ class DrtParser(LogicParser):
             # Support expressions like: DRS([x y],C) == DRS([x,y],C)
             if refs and self.token(0) == DrtTokens.COMMA:
                 self.token()  # swallow the comma
-            refs.append(self.get_next_token_variable('quantified'))
+            refs.append(self.get_next_token_variable("quantified"))
         self.assertNextToken(DrtTokens.CLOSE_BRACKET)
         return refs
 
@@ -156,7 +147,7 @@ class DrtParser(LogicParser):
 
     def handle_prop(self, tok, context):
         variable = self.make_VariableExpression(tok)
-        self.assertNextToken(':')
+        self.assertNextToken(":")
         drs = self.process_next_expression(DrtTokens.COLON)
         return DrtProposition(variable, drs)
 
@@ -179,7 +170,7 @@ class DrtParser(LogicParser):
                     return DRS(first.refs, first.conds, second)
                 if isinstance(first, DrtConcatenation):
                     return DrtConcatenation(first.first, first.second, second)
-                raise Exception('Antecedent of implication must be a DRS')
+                raise Exception("Antecedent of implication must be a DRS")
 
             return make_imp_expression
         else:
@@ -217,7 +208,7 @@ class DrtExpression(object):
         return DrtNegatedExpression(self)
 
     def __and__(self, other):
-        raise NotImplementedError()
+        return NotImplemented
 
     def __or__(self, other):
         assert isinstance(other, DrtExpression)
@@ -229,7 +220,7 @@ class DrtExpression(object):
             return DRS(self.refs, self.conds, other)
         if isinstance(self, DrtConcatenation):
             return DrtConcatenation(self.first, self.second, other)
-        raise Exception('Antecedent of implication must be a DRS')
+        raise Exception("Antecedent of implication must be a DRS")
 
     def equiv(self, other, prover=None):
         """
@@ -267,7 +258,7 @@ class DrtExpression(object):
         raise NotImplementedError()
 
     def is_pronoun_function(self):
-        """ Is self of the form "PRO(x)"? """
+        """Is self of the form "PRO(x)"?"""
         return (
             isinstance(self, DrtApplicationExpression)
             and isinstance(self.function, DrtAbstractVariableExpression)
@@ -292,23 +283,22 @@ class DrtExpression(object):
         Draw the DRS
         :return: the pretty print string
         """
-        return '\n'.join(self._pretty())
+        return "\n".join(self._pretty())
 
     def pretty_print(self):
-        print(self.pretty_format())
+        safe_print(self.pretty_format())
 
     def draw(self):
         DrsDrawer(self).draw()
 
 
-@python_2_unicode_compatible
 class DRS(DrtExpression, Expression):
     """A Discourse Representation Structure."""
 
     def __init__(self, refs, conds, consequent=None):
         """
         :param refs: list of ``DrtIndividualVariableExpression`` for the
-        discourse referents
+            discourse referents
         :param conds: list of ``Expression`` for the conditions
         """
         self.refs = refs
@@ -388,7 +378,7 @@ class DRS(DrtExpression, Expression):
         """:see: AbstractExpression.get_refs()"""
         if recursive:
             conds_refs = self.refs + list(
-                chain(*(c.get_refs(True) for c in self.conds))
+                chain.from_iterable(c.get_refs(True) for c in self.conds)
             )
             if self.consequent:
                 conds_refs.extend(self.consequent.get_refs(True))
@@ -419,7 +409,7 @@ class DRS(DrtExpression, Expression):
                 and isinstance(cond.second, AbstractVariableExpression)
             ):
                 drs = DRS(
-                    list(set(drs.refs) - set([cond.second.variable])),
+                    list(set(drs.refs) - {cond.second.variable}),
                     drs.conds[:i] + drs.conds[i + 1 :],
                     drs.consequent,
                 )
@@ -469,7 +459,7 @@ class DRS(DrtExpression, Expression):
             return accum
 
     def _pretty(self):
-        refs_line = ' '.join(self._order_ref_strings(self.refs))
+        refs_line = " ".join(self._order_ref_strings(self.refs))
 
         cond_lines = [
             cond
@@ -481,12 +471,12 @@ class DRS(DrtExpression, Expression):
         length = max([len(refs_line)] + list(map(len, cond_lines)))
         drs = (
             [
-                ' _' + '_' * length + '_ ',
-                '| ' + refs_line.ljust(length) + ' |',
-                '|-' + '-' * length + '-|',
+                " _" + "_" * length + "_ ",
+                "| " + refs_line.ljust(length) + " |",
+                "|-" + "-" * length + "-|",
             ]
-            + ['| ' + line.ljust(length) + ' |' for line in cond_lines]
-            + ['|_' + '_' * length + '_|']
+            + ["| " + line.ljust(length) + " |" for line in cond_lines]
+            + ["|_" + "_" * length + "_|"]
         )
         if self.consequent:
             return DrtBinaryExpression._assemble_pretty(
@@ -522,7 +512,7 @@ class DRS(DrtExpression, Expression):
         if isinstance(other, DRS):
             if len(self.refs) == len(other.refs):
                 converted_other = other
-                for (r1, r2) in zip(self.refs, converted_other.refs):
+                for r1, r2 in zip(self.refs, converted_other.refs):
                     varex = self.make_VariableExpression(r1)
                     converted_other = converted_other.replace(r2, varex, True)
                 if self.consequent == converted_other.consequent and len(
@@ -540,17 +530,17 @@ class DRS(DrtExpression, Expression):
     __hash__ = Expression.__hash__
 
     def __str__(self):
-        drs = '([%s],[%s])' % (
-            ','.join(self._order_ref_strings(self.refs)),
-            ', '.join("%s" % cond for cond in self.conds),
+        drs = "([{}],[{}])".format(
+            ",".join(self._order_ref_strings(self.refs)),
+            ", ".join("%s" % cond for cond in self.conds),
         )  # map(str, self.conds)))
         if self.consequent:
             return (
                 DrtTokens.OPEN
                 + drs
-                + ' '
+                + " "
                 + DrtTokens.IMP
-                + ' '
+                + " "
                 + "%s" % self.consequent
                 + DrtTokens.CLOSE
             )
@@ -582,7 +572,7 @@ class DrtAbstractVariableExpression(DrtExpression, AbstractVariableExpression):
 
     def _pretty(self):
         s = "%s" % self
-        blank = ' ' * len(s)
+        blank = " " * len(s)
         return [blank, blank, s, blank]
 
     def eliminate_equality(self):
@@ -611,7 +601,6 @@ class DrtConstantExpression(DrtAbstractVariableExpression, ConstantExpression):
     pass
 
 
-@python_2_unicode_compatible
 class DrtProposition(DrtExpression, Expression):
     def __init__(self, variable, drs):
         self.variable = variable
@@ -655,11 +644,11 @@ class DrtProposition(DrtExpression, Expression):
 
     def _pretty(self):
         drs_s = self.drs._pretty()
-        blank = ' ' * len("%s" % self.variable)
+        blank = " " * len("%s" % self.variable)
         return (
-            [blank + ' ' + line for line in drs_s[:1]]
-            + ["%s" % self.variable + ':' + line for line in drs_s[1:2]]
-            + [blank + ' ' + line for line in drs_s[2:]]
+            [blank + " " + line for line in drs_s[:1]]
+            + ["%s" % self.variable + ":" + line for line in drs_s[1:2]]
+            + [blank + " " + line for line in drs_s[2:]]
         )
 
     def visit(self, function, combinator):
@@ -671,7 +660,7 @@ class DrtProposition(DrtExpression, Expression):
         return combinator(self.variable, function(self.drs))
 
     def __str__(self):
-        return 'prop(%s, %s)' % (self.variable, self.drs)
+        return "prop({0}, {1})".format(self.variable, self.drs)
 
 
 class DrtNegatedExpression(DrtExpression, NegatedExpression):
@@ -685,10 +674,10 @@ class DrtNegatedExpression(DrtExpression, NegatedExpression):
     def _pretty(self):
         term_lines = self.term._pretty()
         return (
-            ['    ' + line for line in term_lines[:2]]
-            + ['__  ' + line for line in term_lines[2:3]]
-            + ['  | ' + line for line in term_lines[3:4]]
-            + ['    ' + line for line in term_lines[4:]]
+            ["    " + line for line in term_lines[:2]]
+            + ["__  " + line for line in term_lines[2:3]]
+            + ["  | " + line for line in term_lines[3:4]]
+            + ["    " + line for line in term_lines[4:]]
         )
 
 
@@ -712,14 +701,20 @@ class DrtLambdaExpression(DrtExpression, LambdaExpression):
         while term.__class__ == self.__class__:
             variables.append(term.variable)
             term = term.term
-        var_string = ' '.join("%s" % v for v in variables) + DrtTokens.DOT
+        var_string = " ".join("%s" % v for v in variables) + DrtTokens.DOT
         term_lines = term._pretty()
-        blank = ' ' * len(var_string)
+        blank = " " * len(var_string)
         return (
-            ['    ' + blank + line for line in term_lines[:1]]
-            + [' \  ' + blank + line for line in term_lines[1:2]]
-            + [' /\ ' + var_string + line for line in term_lines[2:3]]
-            + ['    ' + blank + line for line in term_lines[3:]]
+            ["    " + blank + line for line in term_lines[:1]]
+            + [r" \  " + blank + line for line in term_lines[1:2]]
+            + [r" /\ " + var_string + line for line in term_lines[2:3]]
+            + ["    " + blank + line for line in term_lines[3:]]
+        )
+
+    def get_refs(self, recursive=False):
+        """:see: AbstractExpression.get_refs()"""
+        return (
+            [self.variable] + self.term.get_refs(True) if recursive else [self.variable]
         )
 
 
@@ -742,19 +737,19 @@ class DrtBinaryExpression(DrtExpression, BinaryExpression):
         max_lines = max(len(first_lines), len(second_lines))
         first_lines = _pad_vertically(first_lines, max_lines)
         second_lines = _pad_vertically(second_lines, max_lines)
-        blank = ' ' * len(op)
+        blank = " " * len(op)
         first_second_lines = list(zip(first_lines, second_lines))
         return (
             [
-                ' ' + first_line + ' ' + blank + ' ' + second_line + ' '
+                " " + first_line + " " + blank + " " + second_line + " "
                 for first_line, second_line in first_second_lines[:2]
             ]
             + [
-                '(' + first_line + ' ' + op + ' ' + second_line + ')'
+                "(" + first_line + " " + op + " " + second_line + ")"
                 for first_line, second_line in first_second_lines[2:3]
             ]
             + [
-                ' ' + first_line + ' ' + blank + ' ' + second_line + ' '
+                " " + first_line + " " + blank + " " + second_line + " "
                 for first_line, second_line in first_second_lines[3:]
             ]
         )
@@ -782,7 +777,6 @@ class DrtEqualityExpression(DrtBinaryExpression, EqualityExpression):
         return EqualityExpression(self.first.fol(), self.second.fol())
 
 
-@python_2_unicode_compatible
 class DrtConcatenation(DrtBooleanExpression):
     """DRS of the form '(DRS + DRS)'"""
 
@@ -869,7 +863,7 @@ class DrtConcatenation(DrtBooleanExpression):
             other_refs = other.get_refs()
             if len(self_refs) == len(other_refs):
                 converted_other = other
-                for (r1, r2) in zip(self_refs, other_refs):
+                for r1, r2 in zip(self_refs, other_refs):
                     varex = self.make_VariableExpression(r1)
                     converted_other = converted_other.replace(r2, varex, True)
                 return (
@@ -898,7 +892,7 @@ class DrtConcatenation(DrtBooleanExpression):
         )
         if self.consequent:
             drs = DrtBinaryExpression._assemble_pretty(
-                drs, DrtTokens.IMP, self._pretty(self.consequent)
+                drs, DrtTokens.IMP, self.consequent._pretty()
             )
         return drs
 
@@ -919,14 +913,14 @@ class DrtConcatenation(DrtBooleanExpression):
     def __str__(self):
         first = self._str_subex(self.first)
         second = self._str_subex(self.second)
-        drs = Tokens.OPEN + first + ' ' + self.getOp() + ' ' + second + Tokens.CLOSE
+        drs = Tokens.OPEN + first + " " + self.getOp() + " " + second + Tokens.CLOSE
         if self.consequent:
             return (
                 DrtTokens.OPEN
                 + drs
-                + ' '
+                + " "
                 + DrtTokens.IMP
-                + ' '
+                + " "
                 + "%s" % self.consequent
                 + DrtTokens.CLOSE
             )
@@ -961,26 +955,25 @@ class DrtApplicationExpression(DrtExpression, ApplicationExpression):
         func_args_lines = list(zip(function_lines, list(zip(*args_lines))))
         return (
             [
-                func_line + ' ' + ' '.join(args_line) + ' '
+                func_line + " " + " ".join(args_line) + " "
                 for func_line, args_line in func_args_lines[:2]
             ]
             + [
-                func_line + '(' + ','.join(args_line) + ')'
+                func_line + "(" + ",".join(args_line) + ")"
                 for func_line, args_line in func_args_lines[2:3]
             ]
             + [
-                func_line + ' ' + ' '.join(args_line) + ' '
+                func_line + " " + " ".join(args_line) + " "
                 for func_line, args_line in func_args_lines[3:]
             ]
         )
 
 
 def _pad_vertically(lines, max_lines):
-    pad_line = [' ' * len(lines[0])]
+    pad_line = [" " * len(lines[0])]
     return lines + pad_line * (max_lines - len(lines))
 
 
-@python_2_unicode_compatible
 class PossibleAntecedents(list, DrtExpression, Expression):
     def free(self):
         """Set of free variables."""
@@ -999,23 +992,74 @@ class PossibleAntecedents(list, DrtExpression, Expression):
 
     def _pretty(self):
         s = "%s" % self
-        blank = ' ' * len(s)
+        blank = " " * len(s)
         return [blank, blank, s]
 
     def __str__(self):
-        return '[' + ','.join("%s" % it for it in self) + ']'
+        return "[" + ",".join("%s" % it for it in self) + "]"
 
 
 class AnaphoraResolutionException(Exception):
     pass
 
 
-def resolve_anaphora(expression, trail=[]):
+#: Upper bound on the number of (pronoun, discourse-referent) examinations a
+#: single ``resolve_anaphora`` call may perform. Each pronoun condition scans
+#: every referent on the trail and retains the compatible ones as candidate
+#: antecedents, so a DRS with N referents and N pronouns costs O(N**2) time and
+#: retained memory; a small crafted DRS string then pins the CPU and exhausts
+#: memory (CWE-770; CVE-2026-12873). Once this many examinations have been made,
+#: resolution raises ``AnaphoraResolutionException`` instead of running
+#: unbounded. Raise it if you legitimately need to resolve a larger discourse.
+MAX_ANAPHORA_OPERATIONS = 1000000
+
+
+class _AnaphoraBudget(object):
+    """Counts candidate-antecedent examinations and aborts runaway resolution.
+
+    The whole resolution shares one budget, so it bounds the total O(N**2) work
+    regardless of how the DRS is structured.
+    """
+
+    __slots__ = ("remaining", "limit")
+
+    def __init__(self, limit):
+        # ``limit`` comes from the module-global ``MAX_ANAPHORA_OPERATIONS``,
+        # which callers may override; validate it so a bad value fails clearly
+        # here rather than as an obscure error mid-resolution.
+        if not isinstance(limit, int) or limit < 1:
+            raise ValueError(
+                "MAX_ANAPHORA_OPERATIONS must be a positive int, got {0!r}".format(limit)
+            )
+        self.remaining = limit
+        self.limit = limit
+
+    def spend(self):
+        self.remaining -= 1
+        if self.remaining < 0:
+            raise AnaphoraResolutionException(
+                "Refusing to resolve anaphora: examining candidate antecedents "
+                "exceeded the limit of %d (pronoun, referent) steps, which a DRS "
+                "with many referents and pronouns reaches at O(n**2) time and "
+                "memory (CWE-770). Resolve a smaller discourse, or raise "
+                "nltk.sem.drt.MAX_ANAPHORA_OPERATIONS." % self.limit
+            )
+
+
+def resolve_anaphora(expression, trail=[], budget=None):
+    # A shared budget bounds the total (pronoun, referent) examinations across
+    # the whole resolution: each pronoun scans every referent on the trail and
+    # retains the compatible ones, so a DRS with many referents and pronouns is
+    # O(N**2) in time and retained memory and a small crafted string can exhaust
+    # the process (CWE-770; CVE-2026-12873).
+    if budget is None:
+        budget = _AnaphoraBudget(MAX_ANAPHORA_OPERATIONS)
     if isinstance(expression, ApplicationExpression):
         if expression.is_pronoun_function():
             possible_antecedents = PossibleAntecedents()
             for ancestor in trail:
                 for ref in ancestor.get_refs():
+                    budget.spend()
                     refex = expression.make_VariableExpression(ref)
 
                     # ==========================================================
@@ -1032,14 +1076,18 @@ def resolve_anaphora(expression, trail=[]):
                 resolution = possible_antecedents
             return expression.make_EqualityExpression(expression.argument, resolution)
         else:
-            r_function = resolve_anaphora(expression.function, trail + [expression])
-            r_argument = resolve_anaphora(expression.argument, trail + [expression])
+            r_function = resolve_anaphora(
+                expression.function, trail + [expression], budget
+            )
+            r_argument = resolve_anaphora(
+                expression.argument, trail + [expression], budget
+            )
             return expression.__class__(r_function, r_argument)
 
     elif isinstance(expression, DRS):
         r_conds = []
         for cond in expression.conds:
-            r_cond = resolve_anaphora(cond, trail + [expression])
+            r_cond = resolve_anaphora(cond, trail + [expression], budget)
 
             # if the condition is of the form '(x = [])' then raise exception
             if isinstance(r_cond, EqualityExpression):
@@ -1057,7 +1105,9 @@ def resolve_anaphora(expression, trail=[]):
 
             r_conds.append(r_cond)
         if expression.consequent:
-            consequent = resolve_anaphora(expression.consequent, trail + [expression])
+            consequent = resolve_anaphora(
+                expression.consequent, trail + [expression], budget
+            )
         else:
             consequent = None
         return expression.__class__(expression.refs, r_conds, consequent)
@@ -1067,36 +1117,39 @@ def resolve_anaphora(expression, trail=[]):
 
     elif isinstance(expression, NegatedExpression):
         return expression.__class__(
-            resolve_anaphora(expression.term, trail + [expression])
+            resolve_anaphora(expression.term, trail + [expression], budget)
         )
 
     elif isinstance(expression, DrtConcatenation):
         if expression.consequent:
-            consequent = resolve_anaphora(expression.consequent, trail + [expression])
+            consequent = resolve_anaphora(
+                expression.consequent, trail + [expression], budget
+            )
         else:
             consequent = None
         return expression.__class__(
-            resolve_anaphora(expression.first, trail + [expression]),
-            resolve_anaphora(expression.second, trail + [expression]),
+            resolve_anaphora(expression.first, trail + [expression], budget),
+            resolve_anaphora(expression.second, trail + [expression], budget),
             consequent,
         )
 
     elif isinstance(expression, BinaryExpression):
         return expression.__class__(
-            resolve_anaphora(expression.first, trail + [expression]),
-            resolve_anaphora(expression.second, trail + [expression]),
+            resolve_anaphora(expression.first, trail + [expression], budget),
+            resolve_anaphora(expression.second, trail + [expression], budget),
         )
 
     elif isinstance(expression, LambdaExpression):
         return expression.__class__(
-            expression.variable, resolve_anaphora(expression.term, trail + [expression])
+            expression.variable,
+            resolve_anaphora(expression.term, trail + [expression], budget),
         )
 
 
 class DrsDrawer(object):
     BUFFER = 3  # Space between elements
     TOPSPACE = 10  # Space above whole DRS
-    OUTERSPACE = 6  # Space to the left, right, and bottom of the whle DRS
+    OUTERSPACE = 6  # Space to the left, right, and bottom of the while DRS
 
     def __init__(self, drs, size_canvas=True, canvas=None):
         """
@@ -1106,10 +1159,16 @@ class DrsDrawer(object):
         """
         master = None
         if not canvas:
+
+            # Only import tkinter if the user has indicated that they
+            # want to draw a UI. See issue #2949 for more info.
+            from tkinter import Canvas, Tk
+            from tkinter.font import Font
+
             master = Tk()
             master.title("DRT")
 
-            font = Font(family='helvetica', size=12)
+            font = Font(family="helvetica", size=12)
 
             if size_canvas:
                 canvas = Canvas(master, width=0, height=0)
@@ -1163,8 +1222,8 @@ class DrsDrawer(object):
         :param y: the left side of the current drawing area
         :return: the bottom-rightmost point
         """
-        if isinstance(item, string_types):
-            self.canvas.create_text(x, y, anchor='nw', font=self.canvas.font, text=item)
+        if isinstance(item, six.string_types):
+            self.canvas.create_text(x, y, anchor="nw", font=self.canvas.font, text=item)
         elif isinstance(item, tuple):
             # item is the lower-right of a box
             (right, bottom) = item
@@ -1185,7 +1244,7 @@ class DrsDrawer(object):
         :param y: the left side of the current drawing area
         :return: the bottom-rightmost point
         """
-        if isinstance(item, string_types):
+        if isinstance(item, six.string_types):
             return (x + self.canvas.font.measure(item), y + self._get_text_height())
         elif isinstance(item, tuple):
             return item
@@ -1261,9 +1320,9 @@ class DrsDrawer(object):
 
         # Handle Discourse Referents
         if expression.refs:
-            refs = ' '.join("%s" % r for r in expression.refs)
+            refs = " ".join("%s" % r for r in expression.refs)
         else:
-            refs = '     '
+            refs = "     "
         (max_right, bottom) = command(refs, left, bottom)
         bottom += self.BUFFER * 2
 
@@ -1308,7 +1367,7 @@ class DrsDrawer(object):
         right = command(DrtTokens.OPEN, right, centred_string_top)[0]
 
         # Handle each arg
-        for (i, arg) in enumerate(args):
+        for i, arg in enumerate(args):
             arg_drawing_top = self._get_centered_top(
                 y, line_height, arg._drawing_height
             )
@@ -1316,7 +1375,7 @@ class DrsDrawer(object):
 
             if i + 1 < len(args):
                 # since it's not the last arg, add a comma
-                right = command(DrtTokens.COMMA + ' ', right, centred_string_top)[0]
+                right = command(DrtTokens.COMMA + " ", right, centred_string_top)[0]
 
         # Handle close paren
         right = command(DrtTokens.CLOSE, right, centred_string_top)[0]
@@ -1360,7 +1419,7 @@ class DrsDrawer(object):
         )
 
         # Handle the operator
-        right = command(' %s ' % expression.getOp(), right, centred_string_top)[0]
+        right = command(" %s " % expression.getOp(), right, centred_string_top)[0]
 
         # Handle the second operand
         second_height = expression.second._drawing_height
@@ -1393,36 +1452,38 @@ class DrsDrawer(object):
 
 
 def demo():
-    print('=' * 20 + 'TEST PARSE' + '=' * 20)
+    safe_print("=" * 20 + "TEST PARSE" + "=" * 20)
     dexpr = DrtExpression.fromstring
-    print(dexpr(r'([x,y],[sees(x,y)])'))
-    print(dexpr(r'([x],[man(x), walks(x)])'))
-    print(dexpr(r'\x.\y.([],[sees(x,y)])'))
-    print(dexpr(r'\x.([],[walks(x)])(john)'))
-    print(dexpr(r'(([x],[walks(x)]) + ([y],[runs(y)]))'))
-    print(dexpr(r'(([],[walks(x)]) -> ([],[runs(x)]))'))
-    print(dexpr(r'([x],[PRO(x), sees(John,x)])'))
-    print(dexpr(r'([x],[man(x), -([],[walks(x)])])'))
-    print(dexpr(r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])'))
+    safe_print(dexpr(r"([x,y],[sees(x,y)])"))
+    safe_print(dexpr(r"([x],[man(x), walks(x)])"))
+    safe_print(dexpr(r"\x.\y.([],[sees(x,y)])"))
+    safe_print(dexpr(r"\x.([],[walks(x)])(john)"))
+    safe_print(dexpr(r"(([x],[walks(x)]) + ([y],[runs(y)]))"))
+    safe_print(dexpr(r"(([],[walks(x)]) -> ([],[runs(x)]))"))
+    safe_print(dexpr(r"([x],[PRO(x), sees(John,x)])"))
+    safe_print(dexpr(r"([x],[man(x), -([],[walks(x)])])"))
+    safe_print(dexpr(r"([],[(([x],[man(x)]) -> ([],[walks(x)]))])"))
 
-    print('=' * 20 + 'Test fol()' + '=' * 20)
-    print(dexpr(r'([x,y],[sees(x,y)])').fol())
+    safe_print("=" * 20 + "Test fol()" + "=" * 20)
+    safe_print(dexpr(r"([x,y],[sees(x,y)])").fol())
 
-    print('=' * 20 + 'Test alpha conversion and lambda expression equality' + '=' * 20)
-    e1 = dexpr(r'\x.([],[P(x)])')
-    print(e1)
-    e2 = e1.alpha_convert(Variable('z'))
-    print(e2)
-    print(e1 == e2)
-
-    print('=' * 20 + 'Test resolve_anaphora()' + '=' * 20)
-    print(resolve_anaphora(dexpr(r'([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])')))
-    print(
-        resolve_anaphora(dexpr(r'([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])'))
+    safe_print(
+        "=" * 20 + "Test alpha conversion and lambda expression equality" + "=" * 20
     )
-    print(resolve_anaphora(dexpr(r'(([x,y],[]) + ([],[PRO(x)]))')))
+    e1 = dexpr(r"\x.([],[P(x)])")
+    safe_print(e1)
+    e2 = e1.alpha_convert(Variable("z"))
+    safe_print(e2)
+    safe_print(e1 == e2)
 
-    print('=' * 20 + 'Test pretty_print()' + '=' * 20)
+    safe_print("=" * 20 + "Test resolve_anaphora()" + "=" * 20)
+    safe_print(resolve_anaphora(dexpr(r"([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])")))
+    safe_print(
+        resolve_anaphora(dexpr(r"([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])"))
+    )
+    safe_print(resolve_anaphora(dexpr(r"(([x,y],[]) + ([],[PRO(x)]))")))
+
+    safe_print("=" * 20 + "Test pretty_print()" + "=" * 20)
     dexpr(r"([],[])").pretty_print()
     dexpr(
         r"([],[([x],[big(x), dog(x)]) -> ([],[bark(x)]) -([x],[walk(x)])])"
@@ -1434,24 +1495,22 @@ def demo():
 
 def test_draw():
     try:
-        from six.moves.tkinter import Tk
-    except ImportError:
-        from nose import SkipTest
-
-        raise SkipTest("tkinter is required, but it's not available.")
+        from tkinter import Tk
+    except ImportError as e:
+        raise ValueError("tkinter is required, but it's not available.")
 
     expressions = [
-        r'x',
-        r'([],[])',
-        r'([x],[])',
-        r'([x],[man(x)])',
-        r'([x,y],[sees(x,y)])',
-        r'([x],[man(x), walks(x)])',
-        r'\x.([],[man(x), walks(x)])',
-        r'\x y.([],[sees(x,y)])',
-        r'([],[(([],[walks(x)]) + ([],[runs(x)]))])',
-        r'([x],[man(x), -([],[walks(x)])])',
-        r'([],[(([x],[man(x)]) -> ([],[walks(x)]))])',
+        r"x",
+        r"([],[])",
+        r"([x],[])",
+        r"([x],[man(x)])",
+        r"([x,y],[sees(x,y)])",
+        r"([x],[man(x), walks(x)])",
+        r"\x.([],[man(x), walks(x)])",
+        r"\x y.([],[sees(x,y)])",
+        r"([],[(([],[walks(x)]) + ([],[runs(x)]))])",
+        r"([x],[man(x), -([],[walks(x)])])",
+        r"([],[(([x],[man(x)]) -> ([],[walks(x)]))])",
     ]
 
     for e in expressions:
@@ -1459,5 +1518,5 @@ def test_draw():
         d.draw()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: An Incremental Earley Chart Parser
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Peter Ljunglöf <peter.ljunglof@heatherleaf.se>
 #         Rob Speer <rspeer@mit.edu>
 #         Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Jean Mark Gawron <gawron@mail.sdsu.edu>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -25,35 +25,39 @@ This is appealing for, say, speech recognizer hypothesis filtering.
 The main parser class is ``EarleyChartParser``, which is a top-down
 algorithm, originally formulated by Jay Earley (1970).
 """
-from __future__ import print_function, division
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
+from nltk.compat import TimeoutError, perf_counter
 
-from six.moves import range
+from nltk.compat import perf_counter
 
 from nltk.parse.chart import (
+    DEFAULT_MAX_TIME,
+    BottomUpPredictCombineRule,
+    BottomUpPredictRule,
+    CachedTopDownPredictRule,
     Chart,
     ChartParser,
     EdgeI,
+    EmptyPredictRule,
+    FilteredBottomUpPredictCombineRule,
+    FilteredSingleEdgeFundamentalRule,
     LeafEdge,
     LeafInitRule,
-    BottomUpPredictRule,
-    BottomUpPredictCombineRule,
-    TopDownInitRule,
     SingleEdgeFundamentalRule,
-    EmptyPredictRule,
-    CachedTopDownPredictRule,
-    FilteredSingleEdgeFundamentalRule,
-    FilteredBottomUpPredictCombineRule,
+    TopDownInitRule,
 )
 from nltk.parse.featurechart import (
+    FeatureBottomUpPredictCombineRule,
+    FeatureBottomUpPredictRule,
     FeatureChart,
     FeatureChartParser,
+    FeatureEmptyPredictRule,
+    FeatureSingleEdgeFundamentalRule,
     FeatureTopDownInitRule,
     FeatureTopDownPredictRule,
-    FeatureEmptyPredictRule,
-    FeatureBottomUpPredictRule,
-    FeatureBottomUpPredictCombineRule,
-    FeatureSingleEdgeFundamentalRule,
 )
+from nltk.termsec import safe_print
 
 # ////////////////////////////////////////////////////////////
 # Incremental Chart
@@ -100,7 +104,7 @@ class IncrementalChart(Chart):
         # Make sure it's a valid index.
         for key in restr_keys:
             if not hasattr(EdgeI, key):
-                raise ValueError('Bad restriction: %s' % key)
+                raise ValueError("Bad restriction: %s" % key)
 
         # Create the index.
         index = self._indexes[restr_keys] = tuple({} for x in self._positions())
@@ -114,7 +118,7 @@ class IncrementalChart(Chart):
 
     def _register_with_indexes(self, edge):
         end = edge.end()
-        for (restr_keys, index) in self._indexes.items():
+        for restr_keys, index in self._indexes.items():
             vals = tuple(getattr(edge, key)() for key in restr_keys)
             index[end].setdefault(vals, []).append(edge)
 
@@ -150,7 +154,7 @@ class FeatureIncrementalChart(IncrementalChart, FeatureChart):
         # Make sure it's a valid index.
         for key in restr_keys:
             if not hasattr(EdgeI, key):
-                raise ValueError('Bad restriction: %s' % key)
+                raise ValueError("Bad restriction: %s" % key)
 
         # Create the index.
         index = self._indexes[restr_keys] = tuple({} for x in self._positions())
@@ -167,7 +171,7 @@ class FeatureIncrementalChart(IncrementalChart, FeatureChart):
 
     def _register_with_indexes(self, edge):
         end = edge.end()
-        for (restr_keys, index) in self._indexes.items():
+        for restr_keys, index in self._indexes.items():
             vals = tuple(
                 self._get_type_if_possible(getattr(edge, key)()) for key in restr_keys
             )
@@ -197,8 +201,8 @@ class CompleterRule(CompleteFundamentalRule):
 
     def apply(self, chart, grammar, edge):
         if not isinstance(edge, LeafEdge):
-            for new_edge in self._fundamental_rule.apply(chart, grammar, edge):
-                yield new_edge
+            for _yf_item in self._fundamental_rule.apply(chart, grammar, edge):
+                yield _yf_item
 
 
 class ScannerRule(CompleteFundamentalRule):
@@ -206,8 +210,8 @@ class ScannerRule(CompleteFundamentalRule):
 
     def apply(self, chart, grammar, edge):
         if isinstance(edge, LeafEdge):
-            for new_edge in self._fundamental_rule.apply(chart, grammar, edge):
-                yield new_edge
+            for _yf_item in self._fundamental_rule.apply(chart, grammar, edge):
+                yield _yf_item
 
 
 class PredictorRule(CachedTopDownPredictRule):
@@ -219,8 +223,8 @@ class FilteredCompleteFundamentalRule(FilteredSingleEdgeFundamentalRule):
         # Since the Filtered rule only works for grammars without empty productions,
         # we only have to bother with complete edges here.
         if edge.is_complete():
-            for new_edge in self._apply_complete(chart, grammar, edge):
-                yield new_edge
+            for _yf_item in self._apply_complete(chart, grammar, edge):
+                yield _yf_item
 
 
 # ////////////////////////////////////////////////////////////
@@ -237,8 +241,8 @@ class FeatureCompleteFundamentalRule(FeatureSingleEdgeFundamentalRule):
         for right_edge in chart.select(
             start=end, end=end, is_complete=True, lhs=left_edge.nextsym()
         ):
-            for new_edge in fr.apply(chart, grammar, left_edge, right_edge):
-                yield new_edge
+            for _yf_item in fr.apply(chart, grammar, left_edge, right_edge):
+                yield _yf_item
 
 
 class FeatureCompleterRule(CompleterRule):
@@ -313,6 +317,7 @@ class IncrementalChartParser(ChartParser):
         trace=0,
         trace_chart_width=50,
         chart_class=IncrementalChart,
+        max_time=DEFAULT_MAX_TIME,
     ):
         """
         Create a new Earley chart parser, that uses ``grammar`` to
@@ -331,11 +336,18 @@ class IncrementalChartParser(ChartParser):
             be used to display edges.
         :param chart_class: The class that should be used to create
             the charts used by this parser.
+        :type max_time: float or None
+        :param max_time: Wall-clock limit, in seconds, for a single
+            ``chart_parse``; an accumulating feature grammar can make bottom-up
+            recognition super-polynomial (CWE-407), so exceeding the limit
+            raises ``TimeoutError``.  Defaults to ``DEFAULT_MAX_TIME``; ``None``
+            disables the bound.
         """
         self._grammar = grammar
         self._trace = trace
         self._trace_chart_width = trace_chart_width
         self._chart_class = chart_class
+        self._max_time = max_time
 
         self._axioms = []
         self._inference_rules = []
@@ -362,18 +374,27 @@ class IncrementalChartParser(ChartParser):
         # Width, for printing trace edges.
         trace_edge_width = self._trace_chart_width // (chart.num_leaves() + 1)
         if trace:
-            print(chart.pretty_format_leaves(trace_edge_width))
+            safe_print(chart.pretty_format_leaves(trace_edge_width))
 
         for axiom in self._axioms:
             new_edges = list(axiom.apply(chart, grammar))
             trace_new_edges(chart, axiom, new_edges, trace, trace_edge_width)
 
+        # Wall-clock bound on recognition; an accumulating feature grammar makes
+        # this super-polynomial with no natural limit (CWE-407). max_time=None
+        # disables it.
+        deadline = None if self._max_time is None else perf_counter() + self._max_time
+
         inference_rules = self._inference_rules
         for end in range(chart.num_leaves() + 1):
             if trace > 1:
-                print("\n* Processing queue:", end, "\n")
+                safe_print("\n* Processing queue:", end, "\n")
             agenda = list(chart.select(end=end))
             while agenda:
+                if deadline is not None and perf_counter() > deadline:
+                    raise TimeoutError(
+                        "IncrementalChartParser exceeded its {0}s time limit; the grammar may be too ambiguous for this many tokens. Pass max_time=None to disable the limit.".format(self._max_time)
+                    )
                 edge = agenda.pop()
                 for rule in inference_rules:
                     new_edges = list(rule.apply(chart, grammar, edge))
@@ -511,46 +532,48 @@ def demo(
     print_grammar=False,
     print_trees=True,
     trace=2,
-    sent='I saw John with a dog with my cookie',
+    sent="I saw John with a dog with my cookie",
     numparses=5,
 ):
     """
     A demonstration of the Earley parsers.
     """
-    import sys, time
+    import sys
+    import time
+
     from nltk.parse.chart import demo_grammar
 
     # The grammar for ChartParser and SteppingChartParser:
     grammar = demo_grammar()
     if print_grammar:
-        print("* Grammar")
-        print(grammar)
+        safe_print("* Grammar")
+        safe_print(grammar)
 
     # Tokenize the sample sentence.
-    print("* Sentence:")
-    print(sent)
+    safe_print("* Sentence:")
+    safe_print(sent)
     tokens = sent.split()
-    print(tokens)
-    print()
+    safe_print(tokens)
+    safe_print()
 
     # Do the parsing.
     earley = EarleyChartParser(grammar, trace=trace)
-    t = time.clock()
+    t = perf_counter()
     chart = earley.chart_parse(tokens)
     parses = list(chart.parses(grammar.start()))
-    t = time.clock() - t
+    t = perf_counter() - t
 
     # Print results.
     if numparses:
-        assert len(parses) == numparses, 'Not all parses found'
+        assert len(parses) == numparses, "Not all parses found"
     if print_trees:
         for tree in parses:
-            print(tree)
+            safe_print(tree)
     else:
-        print("Nr trees:", len(parses))
+        safe_print("Nr trees:", len(parses))
     if print_times:
-        print("Time:", t)
+        safe_print("Time:", t)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()

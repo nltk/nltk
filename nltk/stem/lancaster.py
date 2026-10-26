@@ -1,22 +1,28 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Stemmers
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Steven Tomcavage <stomcava@law.upenn.edu>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 A word stemmer based on the Lancaster (Paice/Husk) stemming algorithm.
 Paice, Chris D. "Another Stemmer." ACM SIGIR Forum 24.3 (1990): 56-61.
 """
-from __future__ import unicode_literals
-import re
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
+from nltk import redos
 from nltk.stem.api import StemmerI
-from nltk.compat import python_2_unicode_compatible
+
+#: Longest token the stemmer will process. The rule loop scans the word once per
+#: pass (``__getLastLetter``) and a chainable ``>`` rule can run one pass per two
+#: characters, so a crafted token is O(len**2) (CWE-770). No real word approaches
+#: this, so an over-long token is returned unstemmed rather than pinning a CPU.
+MAX_WORD_LEN = 1000
 
 
-@python_2_unicode_compatible
 class LancasterStemmer(StemmerI):
     """
     Lancaster Stemmer
@@ -173,8 +179,7 @@ class LancasterStemmer(StemmerI):
     )
 
     def __init__(self, rule_tuple=None, strip_prefix_flag=False):
-        """Create an instance of the Lancaster stemmer.
-        """
+        """Create an instance of the Lancaster stemmer."""
         # Setup an empty rule dictionary - this will be filled in later
         self.rule_dictionary = {}
         # Check if a user wants to strip prefix
@@ -192,7 +197,7 @@ class LancasterStemmer(StemmerI):
         """
         # If there is no argument for the function, use class' own rule tuple.
         rule_tuple = rule_tuple if rule_tuple else self._rule_tuple
-        valid_rule = re.compile("^[a-z]+\*?\d[a-z]*[>\.]?$")
+        valid_rule = redos.compile(r"^[a-z]+\*?\d[a-z]*[>\.]?$")
         # Empty any old rules from the rule set before adding new ones
         self.rule_dictionary = {}
 
@@ -206,11 +211,14 @@ class LancasterStemmer(StemmerI):
                 self.rule_dictionary[first_letter] = [rule]
 
     def stem(self, word):
-        """Stem a word using the Lancaster stemmer.
-        """
+        """Stem a word using the Lancaster stemmer."""
         # Lower-case the word, since all the rules are lower-cased
         word = word.lower()
         word = self.__stripPrefix(word) if self._strip_prefix else word
+
+        # An over-long token makes __doStemming O(len**2); leave it unstemmed.
+        if len(word) > MAX_WORD_LEN:
+            return word
 
         # Save a copy of the original word
         intact_word = word
@@ -222,15 +230,13 @@ class LancasterStemmer(StemmerI):
         return self.__doStemming(word, intact_word)
 
     def __doStemming(self, word, intact_word):
-        """Perform the actual word stemming
-        """
+        """Perform the actual word stemming"""
 
-        valid_rule = re.compile("^([a-z]+)(\*?)(\d)([a-z]*)([>\.]?)$")
+        valid_rule = redos.compile(r"^([a-z]+)(\*?)(\d)([a-z]*)([>\.]?)$")
 
         proceed = True
 
         while proceed:
-
             # Find the position of the last letter of the word to be stemmed
             last_letter_position = self.__getLastLetter(word)
 
@@ -270,7 +276,7 @@ class LancasterStemmer(StemmerI):
                                         word, remove_total, append_string
                                     )
                                     rule_was_applied = True
-                                    if cont_flag == '.':
+                                    if cont_flag == ".":
                                         proceed = False
                                     break
                             elif self.__isAcceptable(word, remove_total):
@@ -278,17 +284,16 @@ class LancasterStemmer(StemmerI):
                                     word, remove_total, append_string
                                 )
                                 rule_was_applied = True
-                                if cont_flag == '.':
+                                if cont_flag == ".":
                                     proceed = False
                                 break
                 # If no rules apply, the word doesn't need any more stemming
-                if rule_was_applied == False:
+                if not rule_was_applied:
                     proceed = False
         return word
 
     def __getLastLetter(self, word):
-        """Get the zero-based index of the last alphabetic character in this string
-        """
+        """Get the zero-based index of the last alphabetic character in this string"""
         last_letter = -1
         for position in range(len(word)):
             if word[position].isalpha():
@@ -298,8 +303,7 @@ class LancasterStemmer(StemmerI):
         return last_letter
 
     def __isAcceptable(self, word, remove_total):
-        """Determine if the word is acceptable for stemming.
-        """
+        """Determine if the word is acceptable for stemming."""
         word_is_acceptable = False
         # If the word starts with a vowel, it must be at least 2
         # characters long to be stemmed
@@ -316,8 +320,7 @@ class LancasterStemmer(StemmerI):
         return word_is_acceptable
 
     def __applyRule(self, word, remove_total, append_string):
-        """Apply the stemming rule to the word
-        """
+        """Apply the stemming rule to the word"""
         # Remove letters from the end of the word
         new_word_length = len(word) - remove_total
         word = word[0:new_word_length]
@@ -349,4 +352,4 @@ class LancasterStemmer(StemmerI):
         return word
 
     def __repr__(self):
-        return '<LancasterStemmer>'
+        return "<LancasterStemmer>"

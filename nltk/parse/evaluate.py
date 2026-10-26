@@ -1,12 +1,13 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+# -*- coding: utf-8 -*-
+import six
 # Natural Language Toolkit: evaluation of dependency parser
 #
 # Author: Long Duong <longdt219@gmail.com>
 #
-# Copyright (C) 2001-2019 NLTK Project
-# URL: <http://nltk.org/>
+# Copyright (C) 2001-2026 NLTK Project
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
-from __future__ import division
 
 import unicodedata
 
@@ -63,9 +64,9 @@ class DependencyEvaluator(object):
     >>> de = DependencyEvaluator([parsed_sent],[gold_sent])
     >>> las, uas = de.eval()
     >>> las
-    0.6...
+    0.6
     >>> uas
-    0.8...
+    0.8
     >>> abs(uas - 0.8) < 0.00001
     True
     """
@@ -84,7 +85,7 @@ class DependencyEvaluator(object):
         :param input: the input string
         :return: Unicode string after remove all punctuation
         """
-        punc_cat = set(["Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po"])
+        punc_cat = {"Pc", "Pd", "Ps", "Pe", "Pi", "Pf", "Po"}
         return "".join(x for x in inStr if unicodedata.category(x) not in punc_cat)
 
     def eval(self):

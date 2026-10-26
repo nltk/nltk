@@ -1,33 +1,24 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
+# -*- coding: utf-8 -*-
+import six
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Masato Hagiwara <hagisan@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
-
-# For more information, see http://lilyx.net/pages/nltkjapanesecorpus.html
-from __future__ import print_function
 
 import sys
 
-from six import string_types
-
 from nltk.corpus.reader import util
-
-from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
+from nltk.corpus.reader.util import *
+from nltk.termsec import safe_print
 
 
 class ChasenCorpusReader(CorpusReader):
-    def __init__(self, root, fileids, encoding='utf8', sent_splitter=None):
+    def __init__(self, root, fileids, encoding="utf8", sent_splitter=None):
         self._sent_splitter = sent_splitter
         CorpusReader.__init__(self, root, fileids, encoding)
-
-    def raw(self, fileids=None):
-        if fileids is None:
-            fileids = self._fileids
-        elif isinstance(fileids, string_types):
-            fileids = [fileids]
-        return concat([self.open(f).read() for f in fileids])
 
     def words(self, fileids=None):
         return concat(
@@ -103,15 +94,13 @@ class ChasenCorpusView(StreamBackedCorpusView):
         """Reads one paragraph at a time."""
         block = []
         for para_str in read_regexp_block(stream, r".", r"^EOS\n"):
-
             para = []
 
             sent = []
             for line in para_str.splitlines():
-
-                _eos = line.strip() == 'EOS'
-                _cells = line.split('\t')
-                w = (_cells[0], '\t'.join(_cells[1:]))
+                _eos = line.strip() == "EOS"
+                _cells = line.split("\t")
+                w = (_cells[0], "\t".join(_cells[1:]))
                 if not _eos:
                     sent.append(w)
 
@@ -142,30 +131,28 @@ class ChasenCorpusView(StreamBackedCorpusView):
 
 
 def demo():
-
     import nltk
     from nltk.corpus.util import LazyCorpusLoader
 
-    jeita = LazyCorpusLoader('jeita', ChasenCorpusReader, r'.*chasen', encoding='utf-8')
-    print('/'.join(jeita.words()[22100:22140]))
+    jeita = LazyCorpusLoader("jeita", ChasenCorpusReader, r".*chasen", encoding="utf-8")
+    safe_print("/".join(jeita.words()[22100:22140]))
 
-    print(
-        '\nEOS\n'.join(
-            '\n'.join("%s/%s" % (w[0], w[1].split('\t')[2]) for w in sent)
+    safe_print(
+        "\nEOS\n".join(
+            "\n".join("{}/{}".format(w[0], w[1].split("\t")[2]) for w in sent)
             for sent in jeita.tagged_sents()[2170:2173]
         )
     )
 
 
 def test():
-
     from nltk.corpus.util import LazyCorpusLoader
 
-    jeita = LazyCorpusLoader('jeita', ChasenCorpusReader, r'.*chasen', encoding='utf-8')
+    jeita = LazyCorpusLoader("jeita", ChasenCorpusReader, r".*chasen", encoding="utf-8")
 
-    assert isinstance(jeita.tagged_words()[0][1], string_types)
+    assert isinstance(jeita.tagged_words()[0][1], six.string_types)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     demo()
     test()

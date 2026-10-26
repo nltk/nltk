@@ -1,9 +1,10 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Classifier Interface
 #
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Dan Garrette <dhgarrette@gmail.com>
 #
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -17,16 +18,17 @@ the model builder tries to build a model for the assumptions. Given a set of ass
 goal *G*, the model builder tries to find a counter-model, in the sense of a model that will satisfy
 the assumptions plus the negation of *G*.
 """
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
-from abc import ABCMeta, abstractmethod
 import threading
 import time
+from abc import ABCMeta, abstractmethod
 
-from six import add_metaclass
+from nltk.termsec import safe_print
 
 
-@add_metaclass(ABCMeta)
+@six.add_metaclass(ABCMeta)
 class Prover(object):
     """
     Interface for trying to prove a goal from assumptions.  Both the goal and
@@ -48,7 +50,7 @@ class Prover(object):
         """
 
 
-@add_metaclass(ABCMeta)
+@six.add_metaclass(ABCMeta)
 class ModelBuilder(object):
     """
     Interface for trying to build a model of set of formulas.
@@ -74,7 +76,7 @@ class ModelBuilder(object):
         """
 
 
-@add_metaclass(ABCMeta)
+@six.add_metaclass(ABCMeta)
 class TheoremToolCommand(object):
     """
     This class holds a goal and a list of assumptions to be used in proving
@@ -96,7 +98,7 @@ class TheoremToolCommand(object):
         Retract assumptions from the assumption list.
 
         :param debug: If True, give warning when ``retracted`` is not present on
-        assumptions list.
+            assumptions list.
         :type debug: bool
         :param retracted: assumptions to be retracted
         :type retracted: list(sem.Expression)
@@ -224,7 +226,7 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         Retract assumptions from the assumption list.
 
         :param debug: If True, give warning when ``retracted`` is not present on
-        assumptions list.
+            assumptions list.
         :type debug: bool
         :param retracted: assumptions to be retracted
         :type retracted: list(sem.Expression)
@@ -232,7 +234,7 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         retracted = set(retracted)
         result_list = list(filter(lambda a: a not in retracted, self._assumptions))
         if debug and result_list == self._assumptions:
-            print(Warning("Assumptions list has not been changed:"))
+            safe_print(Warning("Assumptions list has not been changed:"))
             self.print_assumptions()
 
         self._assumptions = result_list
@@ -260,7 +262,7 @@ class BaseTheoremToolCommand(TheoremToolCommand):
         Print the list of the current assumptions.
         """
         for a in self.assumptions():
-            print(a)
+            safe_print(a)
 
 
 class BaseProverCommand(BaseTheoremToolCommand, ProverCommand):
@@ -356,7 +358,7 @@ class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
         :return: str
         """
         if self._result is None:
-            raise LookupError('You have to call build_model() first to ' 'get a model!')
+            raise LookupError("You have to call build_model() first to " "get a model!")
         else:
             return self._decorate_model(self._model, format)
 
@@ -490,7 +492,7 @@ class ModelBuilderCommandDecorator(TheoremToolCommandDecorator, ModelBuilderComm
         :return: str
         """
         if self._result is None:
-            raise LookupError('You have to call build_model() first to ' 'get a model!')
+            raise LookupError("You have to call build_model() first to " "get a model!")
         else:
             return self._decorate_model(self._model, format)
 
@@ -520,26 +522,26 @@ class ParallelProverBuilder(Prover, ModelBuilder):
         self._modelbuilder = modelbuilder
 
     def _prove(self, goal=None, assumptions=None, verbose=False):
-        return self._run(goal, assumptions, verbose), ''
+        return self._run(goal, assumptions, verbose), ""
 
     def _build_model(self, goal=None, assumptions=None, verbose=False):
-        return not self._run(goal, assumptions, verbose), ''
+        return not self._run(goal, assumptions, verbose), ""
 
     def _run(self, goal, assumptions, verbose):
         # Set up two thread, Prover and ModelBuilder to run in parallel
         tp_thread = TheoremToolThread(
-            lambda: self._prover.prove(goal, assumptions, verbose), verbose, 'TP'
+            lambda: self._prover.prove(goal, assumptions, verbose), verbose, "TP"
         )
         mb_thread = TheoremToolThread(
             lambda: self._modelbuilder.build_model(goal, assumptions, verbose),
             verbose,
-            'MB',
+            "MB",
         )
 
         tp_thread.start()
         mb_thread.start()
 
-        while tp_thread.isAlive() and mb_thread.isAlive():
+        while tp_thread.is_alive() and mb_thread.is_alive():
             # wait until either the prover or the model builder is done
             pass
 
@@ -575,16 +577,16 @@ class ParallelProverBuilderCommand(BaseProverCommand, BaseModelBuilderCommand):
     def _run(self, verbose):
         # Set up two thread, Prover and ModelBuilder to run in parallel
         tp_thread = TheoremToolThread(
-            lambda: BaseProverCommand.prove(self, verbose), verbose, 'TP'
+            lambda: BaseProverCommand.prove(self, verbose), verbose, "TP"
         )
         mb_thread = TheoremToolThread(
-            lambda: BaseModelBuilderCommand.build_model(self, verbose), verbose, 'MB'
+            lambda: BaseModelBuilderCommand.build_model(self, verbose), verbose, "MB"
         )
 
         tp_thread.start()
         mb_thread.start()
 
-        while tp_thread.isAlive() and mb_thread.isAlive():
+        while tp_thread.is_alive() and mb_thread.is_alive():
             # wait until either the prover or the model builder is done
             pass
 
@@ -607,13 +609,13 @@ class TheoremToolThread(threading.Thread):
         try:
             self._result = self._command()
             if self._verbose:
-                print(
-                    'Thread %s finished with result %s at %s'
+                safe_print(
+                    "Thread %s finished with result %s at %s"
                     % (self._name, self._result, time.localtime(time.time()))
                 )
         except Exception as e:
-            print(e)
-            print('Thread %s completed abnormally' % (self._name))
+            safe_print(e)
+            safe_print("Thread %s completed abnormally" % (self._name))
 
     @property
     def result(self):

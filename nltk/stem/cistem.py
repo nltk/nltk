@@ -1,18 +1,24 @@
+from __future__ import absolute_import, division, print_function, unicode_literals
 # -*- coding: utf-8 -*-
+import six
 # Natural Language Toolkit: CISTEM Stemmer for German
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Leonie Weissweiler <l.weissweiler@outlook.de>
+#         Tom Aarsen <> (modifications)
 # Algorithm: Leonie Weissweiler <l.weissweiler@outlook.de>
 #            Alexander Fraser <fraser@cis.lmu.de>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-from __future__ import unicode_literals
-import re
-from nltk.stem.api import StemmerI
-from nltk.compat import python_2_unicode_compatible
+try:
+    from typing import Tuple
+except ImportError:  # Python 2.7 typing backport lacks some names
+    Tuple = object
 
-@python_2_unicode_compatible
+from nltk import redos
+from nltk.stem.api import StemmerI
+
+
 class Cistem(StemmerI):
     """
     CISTEM Stemmer for German
@@ -24,7 +30,7 @@ class Cistem(StemmerI):
     In Proceedings of the German Society for Computational Linguistics and Language
     Technology (GSCL)
     which can be read here:
-    http://www.cis.lmu.de/~weissweiler/cistem/
+    https://www.cis.lmu.de/~weissweiler/cistem/
 
     In the paper, we conducted an analysis of publicly available stemmers,
     developed two gold standards for German stemming and evaluated the stemmers
@@ -41,19 +47,20 @@ class Cistem(StemmerI):
     :param case_insensitive: if True, the stemming is case insensitive. False by default.
     :type case_insensitive: bool
     """
-    strip_ge = re.compile(r"^ge(.{4,})")
-    repl_xx = re.compile(r"(.)\1")
-    strip_emr = re.compile(r"e[mr]$")
-    strip_nd = re.compile(r"nd$")
-    strip_t = re.compile(r"t$")
-    strip_esn = re.compile(r"[esn]$")
-    repl_xx_back = re.compile(r"(.)\*")
 
-    def __init__(self, case_insensitive=False):
+    strip_ge = redos.compile(r"^ge(.{4,})")
+    repl_xx = redos.compile(r"(.)\1")
+    repl_xx_back = redos.compile(r"(.)\*")
+    # The end-anchored suffix patterns (e[mr]$, nd$, t$, [esn]$) are applied by
+    # direct end-of-string character checks in ``_segment_inner`` (see there),
+    # not via ``re``, so that stemming is linear rather than quadratic in the
+    # word length (CWE-770; CVE-2026-12868).
+
+    def __init__(self, case_insensitive = False):
         self._case_insensitive = case_insensitive
 
     @staticmethod
-    def replace_to(word):
+    def replace_to(word) :
         word = word.replace("sch", "$")
         word = word.replace("ei", "%")
         word = word.replace("ie", "&")
@@ -62,7 +69,7 @@ class Cistem(StemmerI):
         return word
 
     @staticmethod
-    def replace_back(word):
+    def replace_back(word) :
         word = Cistem.repl_xx_back.sub(r"\1\1", word)
         word = word.replace("%", "ei")
         word = word.replace("&", "ie")
@@ -70,18 +77,17 @@ class Cistem(StemmerI):
 
         return word
 
-    def stem(self, word):
-        """
-        This method takes the word to be stemmed and returns the stemmed word.
+    def stem(self, word) :
+        """Stems the input word.
 
-        :param word: the word that is to be stemmed
-        :type word: unicode
-        :return word: the stemmed word
-        :rtype: unicode
+        :param word: The word that is to be stemmed.
+        :type word: str
+        :return: The stemmed word.
+        :rtype: str
 
         >>> from nltk.stem.cistem import Cistem
         >>> stemmer = Cistem()
-        >>> s1 = "Speicherbehältern"
+        >>> s1 = "Speicherbeh\xe4ltern"
         >>> stemmer.stem(s1)
         'speicherbehalt'
         >>> s2 = "Grenzpostens"
@@ -104,41 +110,16 @@ class Cistem(StemmerI):
         upper = word[0].isupper()
         word = word.lower()
 
-        word = word.replace("ü", "u")
-        word = word.replace("ö", "o")
-        word = word.replace("ä", "a")
-        word = word.replace("ß", "ss")
+        word = word.replace("\xfc", "u")
+        word = word.replace("\xf6", "o")
+        word = word.replace("\xe4", "a")
+        word = word.replace("\xdf", "ss")
 
         word = Cistem.strip_ge.sub(r"\1", word)
-        word = Cistem.replace_to(word)
 
-        while len(word) > 3:
-            if len(word) > 5:
-                (word, success) = Cistem.strip_emr.subn("", word)
-                if success != 0:
-                    continue
+        return self._segment_inner(word, upper)[0]
 
-                (word, success) = Cistem.strip_nd.subn("", word)
-                if success != 0:
-                    continue
-
-            if not upper or self._case_insensitive:
-                (word, success) = Cistem.strip_t.subn("", word)
-                if success != 0:
-                    continue
-
-            (word, success) = Cistem.strip_esn.subn("", word)
-            if success != 0:
-                continue
-            else:
-                break
-
-        word = Cistem.replace_back(word)
-
-        return word
-
-
-    def segment(self, word):
+    def segment(self, word) :
         """
         This method works very similarly to stem (:func:'cistem.stem'). The difference is that in
         addition to returning the stem, it also returns the rest that was removed at
@@ -146,18 +127,16 @@ class Cistem(StemmerI):
         can be concatenated to form the original word, all subsitutions that altered
         the stem in any other way than by removing letters at the end were left out.
 
-        :param word: the word that is to be stemmed
-        :type word: unicode
-        :return word: the stemmed word
-        :rtype: unicode
-        :return word: the removed suffix
-        :rtype: unicode
+        :param word: The word that is to be stemmed.
+        :type word: str
+        :return: A tuple of the stemmed word and the removed suffix.
+        :rtype: Tuple[str, str]
 
         >>> from nltk.stem.cistem import Cistem
         >>> stemmer = Cistem()
-        >>> s1 = "Speicherbehältern"
-        >>> print("('" + stemmer.segment(s1)[0] + "', '" + stemmer.segment(s1)[1] + "')")
-        ('speicherbehält', 'ern')
+        >>> s1 = "Speicherbeh\xe4ltern"
+        >>> stemmer.segment(s1)
+        ('speicherbeh\xe4lt', 'ern')
         >>> s2 = "Grenzpostens"
         >>> stemmer.segment(s2)
         ('grenzpost', 'ens')
@@ -165,56 +144,97 @@ class Cistem(StemmerI):
         >>> stemmer.segment(s3)
         ('ausgefeilt', 'ere')
         >>> stemmer = Cistem(True)
-        >>> print("('" + stemmer.segment(s1)[0] + "', '" + stemmer.segment(s1)[1] + "')")
-        ('speicherbehäl', 'tern')
+        >>> stemmer.segment(s1)
+        ('speicherbeh\xe4l', 'tern')
         >>> stemmer.segment(s2)
         ('grenzpo', 'stens')
         >>> stemmer.segment(s3)
         ('ausgefeil', 'tere')
         """
-
-        rest_length = 0
-
         if len(word) == 0:
             return ("", "")
 
         upper = word[0].isupper()
         word = word.lower()
 
-        original = word[:]
+        return self._segment_inner(word, upper)
 
+    def _segment_inner(self, word, upper):
+        """Inner method for iteratively applying the code stemming regexes.
+        This method receives a pre-processed variant of the word to be stemmed,
+        or the word to be segmented, and returns a tuple of the word and the
+        removed suffix.
+
+        :param word: A pre-processed variant of the word that is to be stemmed.
+        :type word: str
+        :param upper: Whether the original word started with a capital letter.
+        :type upper: bool
+        :return: A tuple of the stemmed word and the removed suffix.
+        :rtype: Tuple[str, str]
+        """
+
+        rest_length = 0
+        word_copy = word[:]
+
+        # Pre-processing before applying the substitution patterns
         word = Cistem.replace_to(word)
+        rest = ""
 
-        while len(word) > 3:
-            if len(word) > 5:
-                (word, success) = Cistem.strip_emr.subn("", word)
-                if success != 0:
+        # Apply the substitution patterns. Each pattern (e[mr]$, nd$, t$, [esn]$)
+        # only ever strips one or two characters anchored at the end of the
+        # string. The original loop rebuilt the whole remaining string on every
+        # removal via the compiled ``re`` patterns' ``Pattern.subn`` -- O(n) work
+        # per step over O(n) steps, i.e. O(n**2) in the word length, so a single
+        # long word pins a CPU core (CWE-770; CVE-2026-12868). Strip characters
+        # off the end of a list in O(1) per step instead, joining once at the end.
+        #
+        # Python's ``$`` matches at the end of the string *or* just before a
+        # single trailing newline, so such a newline is transparent to the
+        # anchored patterns and is preserved (``_strip`` pops it aside and
+        # restores it); ``j`` is the index of the last character the patterns
+        # act on.
+        chars = list(word)
+
+        def _strip(count):
+            if chars[-1] == "\n":
+                newline = chars.pop()
+                del chars[-count:]
+                chars.append(newline)
+            else:
+                del chars[-count:]
+
+        while len(chars) > 3:
+            j = -2 if chars[-1] == "\n" else -1
+            if len(chars) > 5:
+                if chars[j] in "mr" and chars[j - 1] == "e":  # e[mr]$
+                    _strip(2)
                     rest_length += 2
                     continue
 
-                (word, success) = Cistem.strip_nd.subn("", word)
-                if success != 0:
+                if chars[j] == "d" and chars[j - 1] == "n":  # nd$
+                    _strip(2)
                     rest_length += 2
                     continue
 
             if not upper or self._case_insensitive:
-                (word, success) = Cistem.strip_t.subn("", word)
-                if success != 0:
+                if chars[j] == "t":  # t$
+                    _strip(1)
                     rest_length += 1
                     continue
 
-            (word, success) = Cistem.strip_esn.subn("", word)
-            if success != 0:
+            if chars[j] in "esn":  # [esn]$
+                _strip(1)
                 rest_length += 1
                 continue
             else:
                 break
 
+        word = "".join(chars)
+
+        # Post-processing after applying the substitution patterns
         word = Cistem.replace_back(word)
 
         if rest_length:
-            rest = original[-rest_length:]
-        else:
-            rest = ""
+            rest = word_copy[-rest_length:]
 
         return (word, rest)

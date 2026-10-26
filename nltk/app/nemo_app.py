@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 # Finding (and Replacing) Nemo, Version 1.1, Aristide Grange 2006/06/06
-# http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/496783
+# https://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/496783
 
 """
 Finding (and Replacing) Nemo
@@ -7,20 +8,14 @@ Finding (and Replacing) Nemo
 Instant Regular Expressions
 Created by Aristide Grange
 """
-import re
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
+from nltk.compat import TimeoutError
 import itertools
+import re
+from tkinter import SEL_FIRST, SEL_LAST, Frame, Label, PhotoImage, Scrollbar, Text, Tk
 
-from six.moves.tkinter import (
-    Frame,
-    Label,
-    PhotoImage,
-    Scrollbar,
-    Text,
-    Tk,
-    SEL_FIRST,
-    SEL_LAST,
-)
-
+from nltk import redos
 
 windowTitle = "Finding (and Replacing) Nemo"
 initialFind = r"n(.*?)e(.*?)m(.*?)o"
@@ -58,12 +53,12 @@ textParams = {
 }
 
 
-class Zone:
+class Zone(object):
     def __init__(self, image, initialField, initialText):
         frm = Frame(root)
         frm.config(background="white")
-        self.image = PhotoImage(format='gif', data=images[image.upper()])
-        self.imageDimmed = PhotoImage(format='gif', data=images[image])
+        self.image = PhotoImage(format="gif", data=images[image.upper()])
+        self.imageDimmed = PhotoImage(format="gif", data=images[image])
         self.img = Label(frm)
         self.img.config(borderwidth=0)
         self.img.pack(side="left")
@@ -91,7 +86,9 @@ class Zone:
         try:
             self.substitute()
             self.img.config(image=self.image)
-        except re.error:
+        except (re.error, ValueError, TimeoutError):
+            # A hostile field regex: bad pattern (re.error), a compile-time DoS
+            # bomb (ValueError) or a match-time ReDoS (TimeoutError from the sub).
             self.img.config(image=self.imageDimmed)
 
 
@@ -103,18 +100,20 @@ class FindZone(Zone):
             self.txt.tag_add(
                 "emph" + color, "1.0+%sc" % m.start("emph"), "1.0+%sc" % m.end("emph")
             )
-        except:
+        except Exception:
             pass
 
     def substitute(self, *args):
         for color in colors:
             self.txt.tag_remove(color, "1.0", "end")
             self.txt.tag_remove("emph" + color, "1.0", "end")
-        self.rex = re.compile("")  # default value in case of misformed regexp
-        self.rex = re.compile(self.fld.get("1.0", "end")[:-1], re.MULTILINE)
+        self.rex = redos.compile("")  # default value in case of malformed regexp
+        # GUI field regexes run .sub over the whole buffer; redos.compile refuses a
+        # compile-time DoS and returns a match-time (wall-clock) bounded pattern.
+        self.rex = redos.compile(self.fld.get("1.0", "end")[:-1], re.MULTILINE)
         try:
-            re.compile("(?P<emph>%s)" % self.fld.get(SEL_FIRST, SEL_LAST))
-            self.rexSel = re.compile(
+            redos.compile("(?P<emph>%s)" % self.fld.get(SEL_FIRST, SEL_LAST))
+            self.rexSel = redos.compile(
                 "%s(?P<emph>%s)%s"
                 % (
                     self.fld.get("1.0", SEL_FIRST),
@@ -123,7 +122,7 @@ class FindZone(Zone):
                 ),
                 re.MULTILINE,
             )
-        except:
+        except Exception:
             self.rexSel = self.rex
         self.rexSel.sub(self.addTags, self.txt.get("1.0", "end"))
 
@@ -160,15 +159,15 @@ def app():
     sz.fld.bind("<Button-1>", launchRefresh)
     sz.fld.bind("<ButtonRelease-1>", launchRefresh)
     sz.fld.bind("<B1-Motion>", launchRefresh)
-    sz.rexSel = re.compile("")
+    sz.rexSel = redos.compile("")
     rz = ReplaceZone("repl", initialRepl, "")
-    rex0 = re.compile(r"(?<!\\)\\([0-9]+)")
+    rex0 = redos.compile(r"(?<!\\)\\([0-9]+)")
     root.bind_all("<Key>", launchRefresh)
     launchRefresh(None)
     root.mainloop()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app()
 
-__all__ = ['app']
+__all__ = ["app"]

@@ -1,25 +1,29 @@
+# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Plaintext Corpus Reader
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """Corpus reader for the XML version of the British National Corpus."""
+from __future__ import absolute_import, division, print_function, unicode_literals
+import six
 
 from nltk.corpus.reader.util import concat
-from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView, ElementTree
+from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView
+from nltk.xmlsec import parse as safe_parse
 
 
 class BNCCorpusReader(XMLCorpusReader):
-    """Corpus reader for the XML version of the British National Corpus.
+    r"""Corpus reader for the XML version of the British National Corpus.
 
     For access to the complete XML data structure, use the ``xml()``
     method.  For access to simple word lists and tagged word lists, use
     ``words()``, ``sents()``, ``tagged_words()``, and ``tagged_sents()``.
 
     You can obtain the full version of the BNC corpus at
-    http://www.ota.ox.ac.uk/desc/2554
+    https://www.ota.ox.ac.uk/desc/2554
 
     If you extracted the archive to a directory called `BNC`, then you can
     instantiate the reader as::
@@ -57,7 +61,7 @@ class BNCCorpusReader(XMLCorpusReader):
             word tokens.  Otherwise, leave the spaces on the tokens.
         :param stem: If true, then use word stems instead of word strings.
         """
-        tag = 'c5' if c5 else 'pos'
+        tag = "c5" if c5 else "pos"
         return self._views(fileids, False, tag, strip_space, stem)
 
     def sents(self, fileids=None, strip_space=True, stem=False):
@@ -85,7 +89,7 @@ class BNCCorpusReader(XMLCorpusReader):
             word tokens.  Otherwise, leave the spaces on the tokens.
         :param stem: If true, then use word stems instead of word strings.
         """
-        tag = 'c5' if c5 else 'pos'
+        tag = "c5" if c5 else "pos"
         return self._views(
             fileids, sent=True, tag=tag, strip_space=strip_space, stem=stem
         )
@@ -113,8 +117,9 @@ class BNCCorpusReader(XMLCorpusReader):
         """
         result = []
 
-        xmldoc = ElementTree.parse(fileid).getroot()
-        for xmlsent in xmldoc.findall('.//s'):
+        with fileid.open() as fp:
+            xmldoc = safe_parse(fp).getroot()
+        for xmlsent in xmldoc.findall(".//s"):
             sent = []
             for xmlword in _all_xmlwords_in(xmlsent):
                 word = xmlword.text
@@ -123,14 +128,14 @@ class BNCCorpusReader(XMLCorpusReader):
                 if strip_space or stem:
                     word = word.strip()
                 if stem:
-                    word = xmlword.get('hw', word)
-                if tag == 'c5':
-                    word = (word, xmlword.get('c5'))
-                elif tag == 'pos':
-                    word = (word, xmlword.get('pos', xmlword.get('c5')))
+                    word = xmlword.get("hw", word)
+                if tag == "c5":
+                    word = (word, xmlword.get("c5"))
+                elif tag == "pos":
+                    word = (word, xmlword.get("pos", xmlword.get("c5")))
                 sent.append(word)
             if bracket_sent:
-                result.append(BNCSentence(xmlsent.attrib['n'], sent))
+                result.append(BNCSentence(xmlsent.attrib["n"], sent))
             else:
                 result.extend(sent)
 
@@ -138,14 +143,25 @@ class BNCCorpusReader(XMLCorpusReader):
         return result
 
 
-def _all_xmlwords_in(elt, result=None):
+#: Bound recursion over nested XML so an adversarially deep corpus file raises
+#: ValueError instead of an uncaught RecursionError (CWE-674).
+MAX_XML_DEPTH = 500
+
+
+def _all_xmlwords_in(elt, result=None, _depth=0, max_depth=None):
+    if max_depth is None:
+        max_depth = MAX_XML_DEPTH
+    if _depth > max_depth:
+        raise ValueError(
+            "XML nesting depth exceeds MAX_XML_DEPTH ({0}); the input may be adversarially deep.".format(max_depth)
+        )
     if result is None:
         result = []
     for child in elt:
-        if child.tag in ('c', 'w'):
+        if child.tag in ("c", "w"):
             result.append(child)
         else:
-            _all_xmlwords_in(child, result)
+            _all_xmlwords_in(child, result, _depth + 1, max_depth)
     return result
 
 
@@ -165,9 +181,16 @@ class BNCWordView(XMLCorpusView):
     A stream backed corpus view specialized for use with the BNC corpus.
     """
 
-    tags_to_ignore = set(
-        ['pb', 'gap', 'vocal', 'event', 'unclear', 'shift', 'pause', 'align']
-    )
+    tags_to_ignore = {
+        "pb",
+        "gap",
+        "vocal",
+        "event",
+        "unclear",
+        "shift",
+        "pause",
+        "align",
+    }
     """These tags are ignored. For their description refer to the
     technical documentation, for example,
     http://www.natcorp.ox.ac.uk/docs/URG/ref-vocal.html
@@ -183,9 +206,9 @@ class BNCWordView(XMLCorpusView):
         :param stem: If true, then substitute stems for words.
         """
         if sent:
-            tagspec = '.*/s'
+            tagspec = ".*/s"
         else:
-            tagspec = '.*/s/(.*/)?(c|w)'
+            tagspec = ".*/s/(.*/)?(c|w)"
         self._sent = sent
         self._tag = tag
         self._strip_space = strip_space
@@ -200,7 +223,7 @@ class BNCWordView(XMLCorpusView):
 
         # Read in a tasty header.
         self._open()
-        self.read_block(self._stream, '.*/teiHeader$', self.handle_header)
+        self.read_block(self._stream, ".*/teiHeader$", self.handle_header)
         self.close()
 
         # Reset tag context.
@@ -208,22 +231,22 @@ class BNCWordView(XMLCorpusView):
 
     def handle_header(self, elt, context):
         # Set up some metadata!
-        titles = elt.findall('titleStmt/title')
+        titles = elt.findall("titleStmt/title")
         if titles:
-            self.title = '\n'.join(title.text.strip() for title in titles)
+            self.title = "\n".join(title.text.strip() for title in titles)
 
-        authors = elt.findall('titleStmt/author')
+        authors = elt.findall("titleStmt/author")
         if authors:
-            self.author = '\n'.join(author.text.strip() for author in authors)
+            self.author = "\n".join(author.text.strip() for author in authors)
 
-        editors = elt.findall('titleStmt/editor')
+        editors = elt.findall("titleStmt/editor")
         if editors:
-            self.editor = '\n'.join(editor.text.strip() for editor in editors)
+            self.editor = "\n".join(editor.text.strip() for editor in editors)
 
-        resps = elt.findall('titleStmt/respStmt')
+        resps = elt.findall("titleStmt/respStmt")
         if resps:
-            self.resps = '\n\n'.join(
-                '\n'.join(resp_elt.text.strip() for resp_elt in resp) for resp in resps
+            self.resps = "\n\n".join(
+                "\n".join(resp_elt.text.strip() for resp_elt in resp) for resp in resps
             )
 
     def handle_elt(self, elt, context):
@@ -239,20 +262,20 @@ class BNCWordView(XMLCorpusView):
         if self._strip_space or self._stem:
             word = word.strip()
         if self._stem:
-            word = elt.get('hw', word)
-        if self._tag == 'c5':
-            word = (word, elt.get('c5'))
-        elif self._tag == 'pos':
-            word = (word, elt.get('pos', elt.get('c5')))
+            word = elt.get("hw", word)
+        if self._tag == "c5":
+            word = (word, elt.get("c5"))
+        elif self._tag == "pos":
+            word = (word, elt.get("pos", elt.get("c5")))
         return word
 
     def handle_sent(self, elt):
         sent = []
         for child in elt:
-            if child.tag in ('mw', 'hi', 'corr', 'trunc'):
+            if child.tag in ("mw", "hi", "corr", "trunc"):
                 sent += [self.handle_word(w) for w in child]
-            elif child.tag in ('w', 'c'):
+            elif child.tag in ("w", "c"):
                 sent.append(self.handle_word(child))
             elif child.tag not in self.tags_to_ignore:
-                raise ValueError('Unexpected element %s' % child.tag)
-        return BNCSentence(elt.attrib['n'], sent)
+                raise ValueError("Unexpected element %s" % child.tag)
+        return BNCSentence(elt.attrib["n"], sent)

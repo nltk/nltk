@@ -1,21 +1,24 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter client
 #
-# Copyright (C) 2001-2019 NLTK Project
+# Copyright (C) 2001-2026 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Lorenzo Rubio <lrnzcig@gmail.com>
-# URL: <http://nltk.org/>
+# URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
-Authentication utilities to accompany :module:`twitterclient`.
+Authentication utilities to accompany `twitterclient`.
 """
-
-from __future__ import print_function
+from __future__ import absolute_import, division, print_function, unicode_literals
+import io
+import six
 
 import os
-import pprint
+
 from twython import Twython
+
+from nltk.termsec import safe_print
 
 
 def credsfromfile(creds_file=None, subdir=None, verbose=False):
@@ -33,12 +36,12 @@ class Authenticate(object):
     """
 
     def __init__(self):
-        self.creds_file = 'credentials.txt'
+        self.creds_file = "credentials.txt"
         self.creds_fullpath = None
 
         self.oauth = {}
         try:
-            self.twitter_dir = os.environ['TWITTER']
+            self.twitter_dir = os.environ["TWITTER"]
             self.creds_subdir = self.twitter_dir
         except KeyError:
             self.twitter_dir = None
@@ -48,25 +51,22 @@ class Authenticate(object):
         """
         Read OAuth credentials from a text file.
 
-        ::
-           File format for OAuth 1
-           =======================
+        File format for OAuth 1::
+
            app_key=YOUR_APP_KEY
            app_secret=YOUR_APP_SECRET
            oauth_token=OAUTH_TOKEN
            oauth_token_secret=OAUTH_TOKEN_SECRET
 
 
-        ::
-           File format for OAuth 2
-           =======================
+        File format for OAuth 2::
 
            app_key=YOUR_APP_KEY
            app_secret=YOUR_APP_SECRET
            access_token=ACCESS_TOKEN
 
-        :param str file_name: File containing credentials. ``None`` (default) reads\
-        data from `TWITTER/'credentials.txt'`
+        :param str file_name: File containing credentials. ``None`` (default) reads
+            data from `TWITTER/'credentials.txt'`
         """
         if creds_file is not None:
             self.creds_file = creds_file
@@ -86,15 +86,17 @@ class Authenticate(object):
         )
 
         if not os.path.isfile(self.creds_fullpath):
-            raise OSError('Cannot find file {}'.format(self.creds_fullpath))
+            raise OSError("Cannot find file {0}".format(self.creds_fullpath))
 
-        with open(self.creds_fullpath) as infile:
+        with io.open(
+            self.creds_fullpath, encoding="utf8"
+        ) as infile:  # sandboxed-open ok: operator credentials path, not attacker input
             if verbose:
-                print('Reading credentials file {}'.format(self.creds_fullpath))
+                safe_print("Reading credentials file {0}".format(self.creds_fullpath))
 
             for line in infile:
-                if '=' in line:
-                    name, value = line.split('=', 1)
+                if "=" in line:
+                    name, value = line.split("=", 1)
                     self.oauth[name.strip()] = value.strip()
 
         self._validate_creds_file(verbose=verbose)
@@ -104,20 +106,23 @@ class Authenticate(object):
     def _validate_creds_file(self, verbose=False):
         """Check validity of a credentials file."""
         oauth1 = False
-        oauth1_keys = ['app_key', 'app_secret', 'oauth_token', 'oauth_token_secret']
+        oauth1_keys = ["app_key", "app_secret", "oauth_token", "oauth_token_secret"]
         oauth2 = False
-        oauth2_keys = ['app_key', 'app_secret', 'access_token']
+        oauth2_keys = ["app_key", "app_secret", "access_token"]
         if all(k in self.oauth for k in oauth1_keys):
             oauth1 = True
         elif all(k in self.oauth for k in oauth2_keys):
             oauth2 = True
 
         if not (oauth1 or oauth2):
-            msg = 'Missing or incorrect entries in {}\n'.format(self.creds_file)
-            msg += pprint.pformat(self.oauth)
+            # Report only the key names present, never the secret values: this
+            # message can reach stderr/logs, so pretty-printing the creds dict
+            # would leak app_secret/access_token (CWE-532/CWE-209/CWE-200).
+            msg = "Missing or incorrect entries in {0}\n".format(self.creds_file)
+            msg += "found keys: {0}".format(sorted(self.oauth))
             raise ValueError(msg)
         elif verbose:
-            print('Credentials file "{}" looks good'.format(self.creds_file))
+            safe_print('Credentials file "{0}" looks good'.format(self.creds_file))
 
 
 def add_access_token(creds_file=None):
@@ -127,16 +132,18 @@ def add_access_token(creds_file=None):
     """
     if creds_file is None:
         path = os.path.dirname(__file__)
-        creds_file = os.path.join(path, 'credentials2.txt')
+        creds_file = os.path.join(path, "credentials2.txt")
     oauth2 = credsfromfile(creds_file=creds_file)
-    app_key = oauth2['app_key']
-    app_secret = oauth2['app_secret']
+    app_key = oauth2["app_key"]
+    app_secret = oauth2["app_secret"]
 
     twitter = Twython(app_key, app_secret, oauth_version=2)
     access_token = twitter.obtain_access_token()
-    tok = 'access_token={}\n'.format(access_token)
-    with open(creds_file, 'a') as infile:
-        print(tok, file=infile)
+    tok = "access_token={0}\n".format(access_token)
+    with io.open(
+        creds_file, "a", encoding="utf8"
+    ) as infile:  # sandboxed-open ok: operator credentials path, not attacker input
+        safe_print(tok, file=infile)
 
 
 def guess_path(pth):
