@@ -11,11 +11,17 @@ instead of re-joining it.
 """
 
 import os
-import pathlib
 import shutil
 import tempfile
 
-from ._base import FIXED, QUADRATIC_RATIO, VULNERABLE, probe, register_data_root
+from ._base import (
+    FIXED,
+    QUADRATIC_RATIO,
+    VULNERABLE,
+    probe,
+    register_data_root,
+    write_private,
+)
 
 _BOUNDS = ("MAX_XML_DEPTH", "MAX_XML_PATH_LENGTH")
 
@@ -50,9 +56,7 @@ def _wide(depth, name_len, siblings):
 
 
 def _write_doc(root, text):
-    path = os.path.join(root, "doc.xml")
-    pathlib.Path(path).write_text(text, encoding="utf-8")
-    return path
+    return write_private(path=os.path.join(root, "doc.xml"), data=text)
 
 
 def _read(text):

@@ -96,6 +96,8 @@ _DRAFT_WITH_PROBE = {
     "GHSA-ffr9-mgrr-wcvr",
     "GHSA-gpwc-27cw-rh9r",
     "GHSA-8fx7-8jr8-84rv",
+    # StreamBackedCorpusView stat leak, fixed alongside GHSA-qg35-44qx-7vrr.
+    "GHSA-w674-vqhw-g3pg",
 }
 
 
