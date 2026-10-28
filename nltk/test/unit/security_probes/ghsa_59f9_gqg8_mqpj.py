@@ -15,7 +15,7 @@ import pathlib
 import shutil
 import tempfile
 
-from ._base import FIXED, VULNERABLE, probe
+from ._base import FIXED, VULNERABLE, makedirs_private, probe, write_private
 
 
 @probe("GHSA-59f9-gqg8-mqpj")
@@ -27,15 +27,14 @@ def _maxent_params_outside_root():
     from nltk.data import FileSystemPathPointer
 
     outside = tempfile.mkdtemp(prefix=".nltk_59f9_", dir=pathlib.Path.home())
-    planted = os.path.join(outside, "planted")
-    os.mkdir(planted)
+    planted = makedirs_private(path=os.path.join(outside, "planted"))
     for name, body in (
         ("weights.txt", "0.1\n0.2\n"),
         ("mapping.tab", "a\tb\tc\t0\n"),
         ("labels.txt", "x\ny\n"),
         ("alwayson.tab", ""),
     ):
-        pathlib.Path(planted, name).write_text(body, encoding="utf-8")
+        write_private(path=os.path.join(planted, name), data=body)
     saved_to = os.path.join(outside, "saved")
     enforce = pathsec.ENFORCE
     pathsec.ENFORCE = True

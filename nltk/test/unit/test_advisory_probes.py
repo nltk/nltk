@@ -14,8 +14,10 @@ import pkgutil
 import re
 import shutil
 import tempfile
+import types
 import warnings
 from collections import Counter
+from collections.abc import Callable
 
 import pytest
 
@@ -1552,4 +1554,67 @@ def test_readline_reparse_probe_has_teeth(ghsa, monkeypatch):
     status, detail = probe()
     assert status == probes.VULNERABLE, detail  # the measured ratio, for the CI log
     monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+@pytest.mark.parametrize("sub", ["pos", "psd"])
+def test_qg35_ycoe_subdir_symlink_probe_has_teeth(sub: str) -> None:
+    """Turn off the YCOE scoped check for one subdir. The global sandbox lets
+    that subdir's link into the sibling corpus through, so the probe has to flip
+    on it. Run once per subdir so each link has to reach its sink."""
+    import nltk.corpus.reader.ycoe as ycoe
+
+    probe: Callable[[], tuple[str, str]] = probes.PROBES["GHSA-qg35-44qx-7vrr"]
+    assert _skip_if_static(probe) == probes.FIXED
+
+    real: Callable[..., None] = ycoe.validate_path
+
+    def skip_one(path: str, *args: object, **kwargs: object) -> None:
+        if os.path.basename(path) == sub:
+            return None
+        return real(path, *args, **kwargs)
+
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(ycoe, "validate_path", skip_one)
+        status, detail = probe()
+    assert status == probes.VULNERABLE, detail
+    assert detail.startswith(sub), detail
+    assert probe()[0] == probes.FIXED
+
+
+def test_w674_corpus_view_size_probe_has_teeth() -> None:
+    """Drop the containment check ahead of the constructor's stat. The view then
+    sizes the outside file and the probe must flip."""
+    # ``import nltk.corpus.reader.util as m`` binds nltk.tokenize.util instead
+    view_util: types.ModuleType = importlib.import_module("nltk.corpus.reader.util")
+    probe: Callable[[], tuple[str, str]] = probes.PROBES["GHSA-w674-vqhw-g3pg"]
+    assert _skip_if_static(probe) == probes.FIXED
+
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(view_util, "validate_path", lambda *args, **kwargs: None)
+        status, detail = probe()
+    assert status == probes.VULNERABLE, detail
+    assert "sized" in detail, detail
+    assert probe()[0] == probes.FIXED
+
+
+def test_w674_corpus_view_existence_oracle_probe_has_teeth() -> None:
+    """Stat the fileid before the real check. Nothing gets sized, but a missing
+    outside path now fails construction and a present one doesn't, so the probe
+    has to report the oracle."""
+    view_util: types.ModuleType = importlib.import_module("nltk.corpus.reader.util")
+    probe: Callable[[], tuple[str, str]] = probes.PROBES["GHSA-w674-vqhw-g3pg"]
+    assert _skip_if_static(probe) == probes.FIXED
+
+    real: Callable[..., None] = view_util.validate_path
+
+    def stat_first(path: str, *args: object, **kwargs: object) -> None:
+        os.stat(path)
+        return real(path, *args, **kwargs)
+
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(view_util, "validate_path", stat_first)
+        status, detail = probe()
+    assert status == probes.VULNERABLE, detail
+    assert "existence oracle" in detail, detail
     assert probe()[0] == probes.FIXED

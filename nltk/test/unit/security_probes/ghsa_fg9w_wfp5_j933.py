@@ -4,7 +4,15 @@ bllipparser C extension without a pathsec check (CWE-22 / CWE-73 / CWE-400)."""
 import os
 import tempfile
 
-from ._base import FIXED, STATIC, VULNERABLE, is_security_rejection, probe
+from ._base import (
+    FIXED,
+    STATIC,
+    VULNERABLE,
+    is_security_rejection,
+    makedirs_private,
+    probe,
+    write_private,
+)
 
 
 class _SpyExtension:
@@ -73,16 +81,11 @@ def _repp_config_dir_with_a_planted_link():
     base = tempfile.mkdtemp(prefix=".nltk_fg9w_repp_", dir=os.path.expanduser("~"))
     try:
         tree = os.path.join(base, "repp")
-        os.makedirs(os.path.join(tree, "src"))
-        os.makedirs(os.path.join(tree, "erg"))
+        makedirs_private(path=os.path.join(tree, "src"))
+        makedirs_private(path=os.path.join(tree, "erg"))
         for name in ("src/repp", "erg/repp.set"):
-            with open(
-                os.path.join(tree, name), "wb"
-            ):  # sandboxed-open ok: probe fixture under ~
-                pass
-        victim = os.path.join(base, "victim.set")
-        with open(victim, "w") as handle:  # sandboxed-open ok: probe fixture under ~
-            handle.write("outside")
+            write_private(path=os.path.join(tree, name), data=b"")
+        victim = write_private(path=os.path.join(base, "victim.set"), data="outside")
         try:
             os.symlink(victim, os.path.join(tree, "erg", "planted.set"))
         except OSError as exc:
@@ -130,8 +133,7 @@ def _senna_data_dir_with_a_planted_link():
         raise RuntimeError("probe: spawn intercepted")
 
     try:
-        tool = os.path.join(base, "senna")
-        os.mkdir(tool)
+        tool = makedirs_private(path=os.path.join(base, "senna"))
         os_name = system()
         if os_name == "Linux":
             name = "senna-linux64" if architecture()[0] == "64bit" else "senna-linux32"
@@ -141,13 +143,8 @@ def _senna_data_dir_with_a_planted_link():
             name = "senna-osx"
         else:
             name = "senna"
-        binary = os.path.join(tool, name)
-        with open(binary, "wb"):  # sandboxed-open ok: probe fixture under ~
-            pass
-        os.chmod(binary, 0o755)
-        victim = os.path.join(base, "victim.dat")
-        with open(victim, "w") as handle:  # sandboxed-open ok: probe fixture under ~
-            handle.write("outside")
+        write_private(path=os.path.join(tool, name), data=b"", mode=0o700)
+        victim = write_private(path=os.path.join(base, "victim.dat"), data="outside")
         try:
             os.symlink(victim, os.path.join(tool, "planted.dat"))
         except OSError as exc:
@@ -192,20 +189,12 @@ def _candc_models_with_a_planted_link():
 
     try:
         tool = os.path.join(base, "candc")
-        os.makedirs(os.path.join(tool, "bin"))
-        os.makedirs(os.path.join(tool, "models", "boxer"))
+        makedirs_private(path=os.path.join(tool, "bin"))
+        makedirs_private(path=os.path.join(tool, "models", "boxer"))
         for name in ("candc", "boxer"):
-            binary = os.path.join(tool, "bin", name)
-            with open(binary, "wb"):  # sandboxed-open ok: probe fixture under ~
-                pass
-            os.chmod(binary, 0o755)
-        with open(
-            os.path.join(tool, "models", "boxer", "super"), "w"
-        ):  # sandboxed-open ok: probe fixture under ~
-            pass
-        victim = os.path.join(base, "victim.dat")
-        with open(victim, "w") as handle:  # sandboxed-open ok: probe fixture under ~
-            handle.write("outside")
+            write_private(path=os.path.join(tool, "bin", name), data=b"", mode=0o700)
+        write_private(path=os.path.join(tool, "models", "boxer", "super"), data="")
+        victim = write_private(path=os.path.join(base, "victim.dat"), data="outside")
         try:
             os.symlink(victim, os.path.join(tool, "models", "boxer", "planted"))
         except OSError as exc:
@@ -256,10 +245,8 @@ def _bllip_model_paths():
     outside = tempfile.mkdtemp(
         prefix=".nltk_fg9w_outside_", dir=os.path.expanduser("~")
     )
-    model = os.path.join(outside, "parser")
-    os.makedirs(model, exist_ok=True)
-    with open(os.path.join(model, "pSgT.txt"), "wb") as handle:
-        handle.write(b"model data")
+    model = makedirs_private(path=os.path.join(outside, "parser"))
+    write_private(path=os.path.join(model, "pSgT.txt"), data=b"model data")
 
     _ABSENT = object()
     saved = {
