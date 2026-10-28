@@ -68,9 +68,11 @@ The operation of replacing the left hand side (*lhs*) of a production
 with the right hand side (*rhs*) in a tree (*tree*) is known as
 "expanding" *lhs* to *rhs* in *tree*.
 """
+
 import re
-from collections import deque
+from collections import defaultdict, deque
 from functools import total_ordering
+from math import fsum, isclose, isfinite
 
 from nltk import redos
 from nltk.featstruct import SLASH, TYPE, FeatDict, FeatStruct, FeatStructReader
@@ -1299,6 +1301,242 @@ class PCFG(CFG):
         )
         return cls(start, productions)
 
+    def chomsky_normal_form(self, new_token_padding="@$@", flexible=False):
+        """
+        Return a PCFG in Chomsky normal form, preserving string probabilities.
+
+        Already-CNF inputs are returned unchanged. Otherwise, remove unreachable
+        and zero-probability rules, isolate terminals, binarize, and sum unary
+        paths (including cycles). The input grammar is not modified.
+
+        Conversion requires finite, nonnegative probabilities summing to one per
+        LHS within ``1e-12``, stricter than the constructor's tolerance. Empty
+        productions are unsupported. Tree structure and Viterbi scores may change.
+
+        :param new_token_padding: Separator in generated nonterminal names.
+            Use characters accepted by ``standard_nonterm_parser`` if the
+            productions will be read back with ``PCFG.fromstring``.
+        :param flexible: If True, retain nonlexical unary rules.
+        :return: A probabilistic grammar in (optionally flexible) CNF.
+        :rtype: PCFG
+        :raises ValueError: If there are empty rules or invalid probabilities.
+
+        See ``remove_unitary_rules`` for the unary construction's reference.
+        """
+        if self.is_chomsky_normal_form():
+            return self
+        if self.productions(empty=True):
+            raise ValueError(
+                "Grammar has Empty rules. Cannot deal with them at the moment"
+            )
+        self._validate_cnf_probabilities()
+        grammar = self._remove_unreachable(self)
+        grammar = self.eliminate_start(grammar)
+        grammar = self.remove_mixed_rules(grammar, new_token_padding)
+        grammar = self.binarize(grammar, new_token_padding)
+        if flexible or grammar.is_chomsky_normal_form():
+            return grammar
+        return self.remove_unitary_rules(grammar)
+
+    def _validate_cnf_probabilities(self):
+        totals = defaultdict(list)
+        for rule in self.productions():
+            probability = rule.prob()
+            if not isfinite(probability) or not 0 <= probability <= 1:
+                raise ValueError("CNF conversion requires probabilities in [0, 1]")
+            totals[rule.lhs()].append(probability)
+        for lhs, probabilities in totals.items():
+            if not isclose(fsum(probabilities), 1.0, rel_tol=0, abs_tol=1e-12):
+                raise ValueError(
+                    f"CNF conversion requires probabilities for {lhs!r} "
+                    "to sum to 1 within 1e-12"
+                )
+
+    @staticmethod
+    def _cnf_nonterminals(grammar):
+        # Include symbols that occur only on a right-hand side, too.
+        used = {grammar.start()}
+        for rule in grammar.productions():
+            used.add(rule.lhs())
+            used.update(symbol for symbol in rule.rhs() if is_nonterminal(symbol))
+        return used
+
+    @staticmethod
+    def _fresh_nonterminal(used, name):
+        symbol = Nonterminal(name)
+        suffix = 0
+        while symbol in used:
+            suffix += 1
+            symbol = Nonterminal(f"{name}_{suffix}")
+        used.add(symbol)
+        return symbol
+
+    @classmethod
+    def _remove_unreachable(cls, grammar):
+        reachable = {grammar.start()}
+        pending = [grammar.start()]
+        while pending:
+            for rule in grammar.productions(lhs=pending.pop()):
+                if rule.prob() == 0:
+                    continue
+                for symbol in rule.rhs():
+                    if is_nonterminal(symbol) and symbol not in reachable:
+                        reachable.add(symbol)
+                        pending.append(symbol)
+        productions = [
+            rule
+            for rule in grammar.productions()
+            if rule.lhs() in reachable and rule.prob() > 0
+        ]
+        if productions == grammar.productions():
+            return grammar
+        if not productions:
+            # An undefined start has no finite derivations, but an empty
+            # production list cannot be used to construct a PCFG.
+            dead = cls._fresh_nonterminal(cls._cnf_nonterminals(grammar), "CNF@$@DEAD")
+            productions = [
+                ProbabilisticProduction(grammar.start(), [dead, dead], prob=1.0),
+                ProbabilisticProduction(dead, [dead, dead], prob=1.0),
+            ]
+        return cls(grammar.start(), productions)
+
+    @classmethod
+    def eliminate_start(cls, grammar):
+        """Introduce a fresh start symbol if the start occurs on a RHS."""
+        start = grammar.start()
+        if not any(start in rule.rhs() for rule in grammar.productions()):
+            return grammar
+        new_start = cls._fresh_nonterminal(cls._cnf_nonterminals(grammar), "S0_SIGMA")
+        return cls(
+            new_start,
+            [ProbabilisticProduction(new_start, [start], prob=1.0)]
+            + grammar.productions(),
+        )
+
+    @classmethod
+    def remove_mixed_rules(cls, grammar, padding="@$@"):
+        """Isolate terminals in longer rules using probability-one rules."""
+        used = cls._cnf_nonterminals(grammar)
+        terminals = {}
+        result = []
+        for rule in grammar.productions():
+            if len(rule) <= 1 or rule.is_nonlexical():
+                result.append(rule)
+                continue
+            rhs = []
+            for symbol in rule.rhs():
+                if is_nonterminal(symbol):
+                    rhs.append(symbol)
+                    continue
+                if symbol not in terminals:
+                    fresh = cls._fresh_nonterminal(
+                        used, f"CNF{padding}LEX{len(terminals)}"
+                    )
+                    terminals[symbol] = fresh
+                    result.append(ProbabilisticProduction(fresh, [symbol], prob=1.0))
+                rhs.append(terminals[symbol])
+            result.append(ProbabilisticProduction(rule.lhs(), rhs, prob=rule.prob()))
+        return cls(grammar.start(), result)
+
+    @classmethod
+    def binarize(cls, grammar, padding="@$@"):
+        """Binarize with fresh auxiliaries and the weight on the first edge."""
+        used = cls._cnf_nonterminals(grammar)
+        result = []
+        for rule in grammar.productions():
+            if len(rule) <= 2:
+                result.append(rule)
+                continue
+            lhs = rule.lhs()
+            probability = rule.prob()
+            for symbol in rule.rhs()[:-2]:
+                # Distinct bases avoid rescanning all earlier auxiliaries.
+                fresh = cls._fresh_nonterminal(used, f"CNF{padding}BIN{len(result)}")
+                result.append(
+                    ProbabilisticProduction(lhs, [symbol, fresh], prob=probability)
+                )
+                lhs, probability = fresh, 1.0
+            result.append(ProbabilisticProduction(lhs, rule.rhs()[-2:], prob=1.0))
+        return cls(grammar.start(), result)
+
+    @classmethod
+    def remove_unitary_rules(cls, grammar):
+        """
+        Sum all unary paths to each distinct non-unary right-hand side.
+
+        Solve ``X = U X + B`` by nonnegative state elimination, where ``U``
+        contains unary transitions and ``B`` contains direct non-unary exits.
+        This is Gaussian elimination on the hitting-probability equations in
+        Lemma B.13 of https://arxiv.org/abs/1201.2374 . Closed unary classes
+        retain their probability through a fresh nonterminating binary symbol.
+        """
+        grammar._validate_cnf_probabilities()
+        unary = defaultdict(dict)
+        predecessors = defaultdict(set)
+        exits = defaultdict(dict)
+        symbols = dict.fromkeys([grammar.start()])
+        for rule in grammar.productions():
+            lhs, rhs, probability = rule.lhs(), rule.rhs(), rule.prob()
+            symbols[lhs] = None
+            for symbol in rhs:
+                if is_nonterminal(symbol):
+                    symbols[symbol] = None
+            if probability == 0:
+                continue
+            if len(rhs) == 1 and is_nonterminal(rhs[0]):
+                row, target = unary[lhs], rhs[0]
+                predecessors[target].add(lhs)
+            else:
+                row, target = exits[lhs], rhs
+            row[target] = row.get(target, 0.0) + probability
+
+        dead = cls._fresh_nonterminal(set(symbols), "CNF@$@DEAD")
+        needs_dead = False
+        for pivot in symbols:
+            loop = unary[pivot].pop(pivot, 0.0)
+            if not unary[pivot] and not exits[pivot]:
+                # A closed unary class (or an undefined symbol) has no finite
+                # derivations. Do not condition away the mass entering it.
+                exits[pivot][(dead, dead)] = 1.0
+                needs_dead = True
+            elif loop:
+                # For a stochastic row this equals 1 - loop. Summing the
+                # remaining mass avoids catastrophic cancellation near 1.
+                remaining = fsum((*unary[pivot].values(), *exits[pivot].values()))
+                for row in (unary[pivot], exits[pivot]):
+                    for target in row:
+                        row[target] /= remaining
+            # Visit only incoming unary edges, not every binary auxiliary.
+            for source in predecessors.pop(pivot, ()):
+                if source == pivot:
+                    continue
+                probability = unary[source].pop(pivot, 0.0)
+                if probability == 0:
+                    continue
+                for target, weight in unary[pivot].items():
+                    unary[source][target] = (
+                        unary[source].get(target, 0.0) + probability * weight
+                    )
+                    predecessors[target].add(source)
+                for target, weight in exits[pivot].items():
+                    exits[source][target] = (
+                        exits[source].get(target, 0.0) + probability * weight
+                    )
+
+        for lhs in symbols:
+            if not isclose(fsum(exits[lhs].values()), 1.0, rel_tol=0, abs_tol=1e-12):
+                raise ValueError("Unary elimination lost probability mass numerically")
+        result = [
+            # Roundoff can put a probability-one exit just above one.
+            ProbabilisticProduction(lhs, rhs, prob=min(probability, 1.0))
+            for lhs in symbols
+            for rhs, probability in exits[lhs].items()
+            if probability > 0
+        ]
+        if needs_dead:
+            result.append(ProbabilisticProduction(dead, [dead, dead], prob=1.0))
+        return cls._remove_unreachable(cls(grammar.start(), result))
+
 
 #################################################################
 # Inducing Grammars
@@ -1493,7 +1731,7 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
     return (start, productions)
 
 
-_STANDARD_NONTERM_RE = redos.compile(r"( [\w/][\w/^<>-]* ) \s*", re.VERBOSE)
+_STANDARD_NONTERM_RE = redos.compile(r"( [\w/][\w/^<>@$-]* ) \s*", re.VERBOSE)
 
 
 def standard_nonterm_parser(string, pos):

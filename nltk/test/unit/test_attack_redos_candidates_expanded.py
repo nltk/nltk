@@ -351,6 +351,52 @@ def test_caller_sinks_hostile_pattern_bounded():
     )
 
 
+@pytest.mark.parametrize("grammar_class", ["CFG", "PCFG"])
+def test_grammar_cnf_symbols_bounded(grammar_class):
+    # Exercise the actual nonterminal regex, including the @$@ CNF padding,
+    # in the subprocess harness so a future backtracking regression cannot hang CI.
+    code = (
+        _CHILD_PREAMBLE
+        + f"from nltk import {grammar_class} as Grammar\n"
+        + r"""
+import pytest
+from nltk import PCFG, Nonterminal
+from nltk.grammar import _STANDARD_NONTERM_RE
+from nltk.test.unit import timing
+from nltk.tree import Tree
+
+assert isinstance(_STANDARD_NONTERM_RE, redos.TimedPattern)
+weight = " [1]" if Grammar is PCFG else ""
+with timing.budget(2.0, cpu_bound=True):
+    for size in (1000, 10000, 100000):
+        symbol = "N" + "@$@" * size
+        source = f"% start {symbol}\nS -> {symbol}{weight}\n{symbol} -> 'x'{weight}"
+        grammar = Grammar.fromstring(source)
+        assert grammar.start() == Nonterminal(symbol)
+        assert grammar.productions()[0].rhs() == (Nonterminal(symbol),)
+        assert grammar.productions()[1].lhs() == Nonterminal(symbol)
+        tree = Tree.fromstring(f"(S ({symbol} x))")
+        assert tree[0].label() == symbol and tree.leaves() == ["x"]
+
+        # Invalid first character, near-miss LHS/RHS, and start directive.
+        # These must raise a parse error, not consume the regex timeout.
+        for malformed in (
+            f"{'@$@' * size}N -> 'x'{weight}",
+            f"{symbol}{' ' * size}! -> 'x'{weight}",
+            f"S -> {symbol}!{weight}",
+            f"% start {symbol}!\nS -> 'x'{weight}",
+        ):
+            with pytest.raises(ValueError):
+                Grammar.fromstring(malformed)
+report("grammar_cnf_symbols", "BOUNDED")
+"""
+    )
+    res = _run_child(code, GUARDED_BUDGET)
+    _assert_no_hang(res, f"{grammar_class} CNF symbols")
+    assert res.returncode == 0, res.stderr
+    _assert_cases(res, {"grammar_cnf_symbols": {"BOUNDED"}})
+
+
 # ==========================================================================
 # Family 4: compile-time refusal (in-process -- refusal is instant, no hang)
 # ==========================================================================
