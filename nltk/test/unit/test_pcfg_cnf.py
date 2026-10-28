@@ -188,6 +188,55 @@ def test_unreachable_closed_cycle():
     assert len(converted.productions()) == 1
 
 
+@pytest.mark.parametrize("start", ["S", "CNF@$@DEAD"])
+@pytest.mark.parametrize("flexible", [False, True])
+def test_undefined_start_preserves_zero_finite_mass(start, flexible):
+    grammar = PCFG.fromstring(f"% start {start}\nA -> B [1]\nB -> 'b' [1]")
+    before = list(grammar.productions())
+    assert enumerate_distribution(grammar) == {}
+    converted = grammar.chomsky_normal_form(flexible=flexible)
+    assert_cnf(converted)
+    assert converted.start() == grammar.start()
+    assert all(len(rule.rhs()) == 2 for rule in converted.productions())
+    assert converted.start() not in {
+        symbol for rule in converted.productions() for symbol in rule.rhs()
+    }
+    for length in range(4):
+        assert inside(converted, ("b",) * length) == 0
+    loaded = PCFG.fromstring(
+        f"% start {converted.start()}\n" + "\n".join(map(str, converted.productions()))
+    )
+    assert loaded.productions() == converted.productions()
+    assert grammar.productions() == before
+
+
+def test_sparse_unary_elimination_scales_linearly(monkeypatch):
+    # Count symbol lookups rather than relying on machine-dependent timings.
+    original_hash = Nonterminal.__hash__
+    lookups = 0
+
+    def count_hash(symbol):
+        nonlocal lookups
+        lookups += 1
+        return original_hash(symbol)
+
+    counts = []
+    for size in (128, 256):
+        grammar = PCFG.fromstring(
+            "S -> A [1]\nA -> " + " ".join(["N"] * size) + " [1]\nN -> 'n' [1]"
+        )
+        binary = PCFG.binarize(grammar)
+        lookups = 0
+        with monkeypatch.context() as patch:
+            patch.setattr(Nonterminal, "__hash__", count_hash)
+            converted = PCFG.remove_unitary_rules(binary)
+        counts.append(lookups)
+        assert_cnf(converted)
+        assert enumerate_distribution(converted) == {("n",) * size: 1.0}
+    # Doubling a sparsely unary grammar should not quadruple the work.
+    assert counts[1] < 3 * counts[0]
+
+
 @pytest.mark.parametrize("probability", [1e-8, 1e-13, 1e-20])
 def test_small_positive_probabilities_survive(probability):
     grammar = PCFG.fromstring(

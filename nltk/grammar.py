@@ -1390,6 +1390,14 @@ class PCFG(CFG):
         ]
         if productions == grammar.productions():
             return grammar
+        if not productions:
+            # An undefined start has no finite derivations, but an empty
+            # production list cannot be used to construct a PCFG.
+            dead = cls._fresh_nonterminal(cls._cnf_nonterminals(grammar), "CNF@$@DEAD")
+            productions = [
+                ProbabilisticProduction(grammar.start(), [dead, dead], prob=1.0),
+                ProbabilisticProduction(dead, [dead, dead], prob=1.0),
+            ]
         return cls(grammar.start(), productions)
 
     @classmethod
@@ -1464,6 +1472,7 @@ class PCFG(CFG):
         """
         grammar._validate_cnf_probabilities()
         unary = defaultdict(dict)
+        predecessors = defaultdict(set)
         exits = defaultdict(dict)
         symbols = dict.fromkeys([grammar.start()])
         for rule in grammar.productions():
@@ -1476,6 +1485,7 @@ class PCFG(CFG):
                 continue
             if len(rhs) == 1 and is_nonterminal(rhs[0]):
                 row, target = unary[lhs], rhs[0]
+                predecessors[target].add(lhs)
             else:
                 row, target = exits[lhs], rhs
             row[target] = row.get(target, 0.0) + probability
@@ -1496,17 +1506,22 @@ class PCFG(CFG):
                 for row in (unary[pivot], exits[pivot]):
                     for target in row:
                         row[target] /= remaining
-            for source in symbols:
+            # Visit only incoming unary edges, not every binary auxiliary.
+            for source in predecessors.pop(pivot, ()):
                 if source == pivot:
                     continue
                 probability = unary[source].pop(pivot, 0.0)
                 if probability == 0:
                     continue
-                for table in (unary, exits):
-                    for target, weight in table[pivot].items():
-                        table[source][target] = (
-                            table[source].get(target, 0.0) + probability * weight
-                        )
+                for target, weight in unary[pivot].items():
+                    unary[source][target] = (
+                        unary[source].get(target, 0.0) + probability * weight
+                    )
+                    predecessors[target].add(source)
+                for target, weight in exits[pivot].items():
+                    exits[source][target] = (
+                        exits[source].get(target, 0.0) + probability * weight
+                    )
 
         for lhs in symbols:
             if not isclose(fsum(exits[lhs].values()), 1.0, rel_tol=0, abs_tol=1e-12):
