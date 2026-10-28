@@ -10,6 +10,7 @@ umask 002 they come out group-writable, the trust checks refuse them, and the
 test trips on that refusal before it gets to the guard it was written for.
 """
 
+import errno
 import os
 
 
@@ -17,8 +18,12 @@ def write_private(path: str, data: str | bytes, mode: int = 0o600) -> str:
     """Create ``path`` with ``data`` and ``mode``.
 
     The umask only clears bits, so the file never ends up more open than
-    ``mode``. ``O_EXCL`` fails if anything is already at ``path``, symlinks
-    included. Use ``mode=0o700`` for an executable.
+    ``mode``. Use ``mode=0o700`` for an executable.
+
+    Raises:
+        FileExistsError: Something is already at ``path``, a dangling symlink
+            included. ``O_EXCL`` never overwrites, so pass a fresh path or
+            remove the old fixture first.
     """
     # without O_BINARY, Windows writes \n as \r\n
     flags: int = os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_BINARY", 0)
@@ -34,13 +39,19 @@ def makedirs_private(path: str) -> str:
 
     ``os.makedirs(path, mode=0o700)`` only applies the mode to the leaf, so a
     parent it creates under umask 002 ends up 0775. Directories that already
-    exist keep their mode.
+    exist, ``path`` included, keep their mode and are never tightened, so
+    start from a base that is already private. See ``make_home_dir`` in
+    ``conftest.py`` for one that pathsec's private-chain check accepts.
     """
     missing: list[str] = []
     level: str = os.path.abspath(path)
     while not os.path.isdir(level):
         missing.append(level)
-        level = os.path.dirname(level)
+        parent: str = os.path.dirname(level)
+        # dirname of a root is the root, so a missing drive would loop forever
+        if parent == level:
+            raise FileNotFoundError(errno.ENOENT, "root does not exist", level)
+        level = parent
     for level in reversed(missing):
         os.mkdir(level, mode=0o700)
     return path
