@@ -679,10 +679,6 @@ def test_child_env_forwards_only_the_checkout_root():
     assert env["PYTHONSAFEPATH"] == "1"  # -c child does not prepend its cwd either
 
 
-@pytest.mark.skipif(
-    sys.version_info < (3, 11),
-    reason="PYTHONSAFEPATH (drops the -c child's implicit cwd) needs Python 3.11+",
-)
 def test_child_env_pins_nltk_to_checkout_from_a_hostile_cwd(tmp_path):
     """Reproduction: run a ``-c`` child from a cwd seeded with a hostile ``nltk.py``
     and ``sitecustomize.py``. With ``_child_env`` the child still imports ``nltk``
