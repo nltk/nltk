@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter client
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Lorenzo Rubio <lrnzcig@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 
@@ -22,23 +22,21 @@ requests you can currently make to the Twitter API. Currently, `rate limits
 for the search API <https://dev.twitter.com/rest/public/rate-limiting>`_ are
 divided into 15 minute windows.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
 
 import datetime
-import gzip
 import itertools
 import json
 import os
 import time
+import gzip
 
 import requests
-from twython import Twython, TwythonStreamer
-from twython.exceptions import TwythonError, TwythonRateLimitError
 
-from nltk.termsec import safe_print
-from nltk.twitter.api import BasicTweetHandler, TweetHandlerI
+from twython import Twython, TwythonStreamer
+from twython.exceptions import TwythonRateLimitError, TwythonError
+
 from nltk.twitter.util import credsfromfile, guess_path
+from nltk.twitter.api import TweetHandlerI, BasicTweetHandler
 
 
 class Streamer(TwythonStreamer):
@@ -46,10 +44,11 @@ class Streamer(TwythonStreamer):
     Retrieve data from the Twitter Streaming API.
 
     The streaming API requires
-    `OAuth 1.0 <https://en.wikipedia.org/wiki/OAuth>`_ authentication.
+    `OAuth 1.0 <http://en.wikipedia.org/wiki/OAuth>`_ authentication.
     """
 
     def __init__(self, app_key, app_secret, oauth_token, oauth_token_secret):
+
         self.handler = None
         self.do_continue = True
         TwythonStreamer.__init__(
@@ -70,7 +69,7 @@ class Streamer(TwythonStreamer):
         """
         if self.do_continue:
             if self.handler is not None:
-                if "text" in data:
+                if 'text' in data:
                     self.handler.counter += 1
                     self.handler.handle(data)
                     self.do_continue = self.handler.do_continue()
@@ -86,13 +85,14 @@ class Streamer(TwythonStreamer):
         :param data: The response from Twitter API
 
         """
-        safe_print(status_code)
+        print(status_code)
 
     def sample(self):
         """
         Wrapper for 'statuses / sample' API call
         """
         while self.do_continue:
+
             # Stream in an endless loop until limit is reached. See twython
             # issue 288: https://github.com/ryanmcgrath/twython/issues/288
             # colditzjb commented on 9 Dec 2014
@@ -101,10 +101,10 @@ class Streamer(TwythonStreamer):
                 self.statuses.sample()
             except requests.exceptions.ChunkedEncodingError as e:
                 if e is not None:
-                    safe_print("Error (stream will continue): {0}".format(e))
+                    print("Error (stream will continue): {0}".format(e))
                 continue
 
-    def filter(self, track="", follow="", lang="en"):
+    def filter(self, track='', follow='', lang='en'):
         """
         Wrapper for 'statuses / filter' API call
         """
@@ -112,13 +112,13 @@ class Streamer(TwythonStreamer):
             # Stream in an endless loop until limit is reached
 
             try:
-                if track == "" and follow == "":
+                if track == '' and follow == '':
                     msg = "Please supply a value for 'track', 'follow'"
                     raise ValueError(msg)
                 self.statuses.filter(track=track, follow=follow, lang=lang)
             except requests.exceptions.ChunkedEncodingError as e:
                 if e is not None:
-                    safe_print("Error (stream will continue): {0}".format(e))
+                    print("Error (stream will continue): {0}".format(e))
                 continue
 
 
@@ -128,14 +128,6 @@ class Query(Twython):
     """
 
     def __init__(self, app_key, app_secret, oauth_token, oauth_token_secret):
-        """
-        :param app_key: (optional) Your applications key
-        :param app_secret: (optional) Your applications secret key
-        :param oauth_token: (optional) When using **OAuth 1**, combined with
-            oauth_token_secret to make authenticated calls
-        :param oauth_token_secret: (optional) When using **OAuth 1** combined
-            with oauth_token to make authenticated calls
-        """
         self.handler = None
         self.do_continue = True
         Twython.__init__(self, app_key, app_secret, oauth_token, oauth_token_secret)
@@ -165,7 +157,7 @@ class Query(Twython):
         ids = [line.strip() for line in ids_f if line]
 
         if verbose:
-            safe_print("Counted {0} Tweet IDs in {1}.".format(len(ids), ids_f))
+            print("Counted {0} Tweet IDs in {1}.".format(len(ids), ids_f))
 
         # The Twitter endpoint takes lists of up to 100 ids, so we chunk the
         # ids.
@@ -175,7 +167,7 @@ class Query(Twython):
 
         return itertools.chain.from_iterable(chunked_tweets)
 
-    def _search_tweets(self, keywords, limit=100, lang="en"):
+    def _search_tweets(self, keywords, limit=100, lang='en'):
         """
         Assumes that the handler has been informed. Fetches Tweets from
         search_tweets generator output and passses them to handler
@@ -199,7 +191,7 @@ class Query(Twython):
         self,
         keywords,
         limit=100,
-        lang="en",
+        lang='en',
         max_id=None,
         retries_after_twython_exception=0,
     ):
@@ -228,19 +220,19 @@ class Query(Twython):
             self.handler.max_id = max_id
         else:
             results = self.search(
-                q=keywords, count=min(100, limit), lang=lang, result_type="recent"
+                q=keywords, count=min(100, limit), lang=lang, result_type='recent'
             )
-            count = len(results["statuses"])
+            count = len(results['statuses'])
             if count == 0:
-                safe_print("No Tweets available through REST API for those keywords")
+                print("No Tweets available through REST API for those keywords")
                 return
             count_from_query = count
-            self.handler.max_id = results["statuses"][count - 1]["id"] - 1
+            self.handler.max_id = results['statuses'][count - 1]['id'] - 1
 
-            for result in results["statuses"]:
+            for result in results['statuses']:
                 yield result
                 self.handler.counter += 1
-                if not self.handler.do_continue():
+                if self.handler.do_continue() == False:
                     return
 
         # Pagination loop: keep fetching Tweets until the desired count is
@@ -254,33 +246,33 @@ class Query(Twython):
                     count=mcount,
                     lang=lang,
                     max_id=self.handler.max_id,
-                    result_type="recent",
+                    result_type='recent',
                 )
             except TwythonRateLimitError as e:
-                safe_print("Waiting for 15 minutes -{0}".format(e))
+                print("Waiting for 15 minutes -{0}".format(e))
                 time.sleep(15 * 60)  # wait 15 minutes
                 continue
             except TwythonError as e:
-                safe_print("Fatal error in Twython request -{0}".format(e))
+                print("Fatal error in Twython request -{0}".format(e))
                 if retries_after_twython_exception == retries:
                     raise e
                 retries += 1
 
-            count = len(results["statuses"])
+            count = len(results['statuses'])
             if count == 0:
-                safe_print("No more Tweets available through rest api")
+                print("No more Tweets available through rest api")
                 return
             count_from_query += count
             # the max_id is also present in the Tweet metadata
             # results['search_metadata']['next_results'], but as part of a
             # query and difficult to fetch. This is doing the equivalent
             # (last tweet id minus one)
-            self.handler.max_id = results["statuses"][count - 1]["id"] - 1
+            self.handler.max_id = results['statuses'][count - 1]['id'] - 1
 
-            for result in results["statuses"]:
+            for result in results['statuses']:
                 yield result
                 self.handler.counter += 1
-                if not self.handler.do_continue():
+                if self.handler.do_continue() == False:
                     return
 
     def user_info_from_id(self, userids):
@@ -294,7 +286,7 @@ class Query(Twython):
         """
         return [self.show_user(user_id=userid) for userid in userids]
 
-    def user_tweets(self, screen_name, limit, include_rts="false"):
+    def user_tweets(self, screen_name, limit, include_rts='false'):
         """
         Return a collection of the most recent Tweets posted by the user
 
@@ -323,13 +315,13 @@ class Twitter(object):
 
     def tweets(
         self,
-        keywords="",
-        follow="",
+        keywords='',
+        follow='',
         to_screen=True,
         stream=True,
         limit=100,
         date_limit=None,
-        lang="en",
+        lang='en',
         repeat=False,
         gzip_compress=False,
     ):
@@ -339,28 +331,28 @@ class Twitter(object):
         :param str keywords: Keywords to use for searching or filtering
         :param list follow: UserIDs to use for filtering Tweets from the public stream
         :param bool to_screen: If `True`, display the tweet texts on the screen,\
-            otherwise print to a file
+        otherwise print to a file
 
         :param bool stream: If `True`, use the live public stream,\
-            otherwise search past public Tweets
+        otherwise search past public Tweets
 
         :param int limit: The number of data items to process in the current\
-            round of processing.
+        round of processing.
 
         :param tuple date_limit: The date at which to stop collecting\
-            new data. This should be entered as a tuple which can serve as the\
-            argument to `datetime.datetime`.\
-            E.g. `date_limit=(2015, 4, 1, 12, 40)` for 12:30 pm on April 1 2015.
-            Note that, in the case of streaming, this is the maximum date, i.e.\
-            a date in the future; if not, it is the minimum date, i.e. a date\
-            in the past
+        new data. This should be entered as a tuple which can serve as the\
+        argument to `datetime.datetime`.\
+        E.g. `date_limit=(2015, 4, 1, 12, 40)` for 12:30 pm on April 1 2015.
+        Note that, in the case of streaming, this is the maximum date, i.e.\
+        a date in the future; if not, it is the minimum date, i.e. a date\
+        in the past
 
         :param str lang: language
 
         :param bool repeat: A flag to determine whether multiple files should\
-            be written. If `True`, the length of each file will be set by the\
-            value of `limit`. Use only if `to_screen` is `False`. See also
-            :py:func:`handle`.
+        be written. If `True`, the length of each file will be set by the\
+        value of `limit`. Use only if `to_screen` is `False`. See also
+        :py:func:`handle`.
 
         :param gzip_compress: if `True`, output files are compressed with gzip.
         """
@@ -406,13 +398,13 @@ class Twitter(object):
 
         if stream:
             self.streamer.register(handler)
-            if keywords == "" and follow == "":
+            if keywords == '' and follow == '':
                 self.streamer.sample()
             else:
                 self.streamer.filter(track=keywords, follow=follow, lang=lang)
         else:
             self.query.register(handler)
-            if keywords == "":
+            if keywords == '':
                 raise ValueError("Please supply at least one keyword to search for.")
             else:
                 self.query._search_tweets(keywords, limit=limit, lang=lang)
@@ -431,17 +423,15 @@ class TweetViewer(TweetHandlerI):
         :rtype: bool
         :param data: Tweet object returned by Twitter API
         """
-        # Tweet text is untrusted network data; neutralise any terminal control
-        # sequences before writing it to the terminal (CWE-150).
-        text = data["text"]
-        safe_print(text)
+        text = data['text']
+        print(text)
 
         self.check_date_limit(data)
         if self.do_stop:
             return
 
     def on_finish(self):
-        safe_print("Written {0} Tweets".format(self.counter))
+        print('Written {0} Tweets'.format(self.counter))
 
 
 class TweetWriter(TweetHandlerI):
@@ -454,8 +444,8 @@ class TweetWriter(TweetHandlerI):
         limit=2000,
         upper_date_limit=None,
         lower_date_limit=None,
-        fprefix="tweets",
-        subdir="twitter-files",
+        fprefix='tweets',
+        subdir='twitter-files',
         repeat=False,
         gzip_compress=False,
     ):
@@ -485,7 +475,7 @@ class TweetWriter(TweetHandlerI):
         written. If `True`, the length of each file will be set by the value\
         of `limit`. See also :py:func:`handle`.
 
-        :param gzip_compress: if `True`, output files are compressed with gzip.
+        :param gzip_compress: if `True`, ouput files are compressed with gzip.
         """
         self.fprefix = fprefix
         self.subdir = guess_path(subdir)
@@ -507,13 +497,13 @@ class TweetWriter(TweetHandlerI):
                 os.mkdir(subdir)
 
         fname = os.path.join(subdir, fprefix)
-        fmt = "%Y%m%d-%H%M%S"
+        fmt = '%Y%m%d-%H%M%S'
         timestamp = datetime.datetime.now().strftime(fmt)
         if self.gzip_compress:
-            suffix = ".gz"
+            suffix = '.gz'
         else:
-            suffix = ""
-        outfile = "{0}.{1}.json{2}".format(fname, timestamp, suffix)
+            suffix = ''
+        outfile = '{0}.{1}.json{2}'.format(fname, timestamp, suffix)
         return outfile
 
     def handle(self, data):
@@ -525,18 +515,14 @@ class TweetWriter(TweetHandlerI):
         """
         if self.startingup:
             if self.gzip_compress:
-                self.output = gzip.open(
-                    self.fname, "w"
-                )  # sandboxed-open ok: operator output path
+                self.output = gzip.open(self.fname, 'w')
             else:
-                self.output = open(
-                    self.fname, "w"
-                )  # sandboxed-open ok: operator output path
-            safe_print("Writing to {0}".format(self.fname))
+                self.output = open(self.fname, 'w')
+            print('Writing to {0}'.format(self.fname))
 
         json_data = json.dumps(data)
         if self.gzip_compress:
-            self.output.write((json_data + "\n").encode("utf-8"))
+            self.output.write((json_data + "\n").encode('utf-8'))
         else:
             self.output.write(json_data + "\n")
 
@@ -547,12 +533,12 @@ class TweetWriter(TweetHandlerI):
         self.startingup = False
 
     def on_finish(self):
-        safe_print("Written {0} Tweets".format(self.counter))
+        print('Written {0} Tweets'.format(self.counter))
         if self.output:
             self.output.close()
 
     def do_continue(self):
-        if not self.repeat:
+        if self.repeat == False:
             return TweetHandlerI.do_continue(self)
 
         if self.do_stop:

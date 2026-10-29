@@ -59,11 +59,11 @@ def sentence_gleu(references, hypothesis, min_len=1, max_len=4):
 
     An example to evaluate normal machine translation outputs
 
-        >>> ref1 = six.text_type('It is a guide to action that ensures that the military '
+        >>> ref1 = str('It is a guide to action that ensures that the military '
         ...            'will forever heed Party commands').split()
-        >>> hyp1 = six.text_type('It is a guide to action which ensures that the military '
+        >>> hyp1 = str('It is a guide to action which ensures that the military '
         ...            'always obeys the commands of the party').split()
-        >>> hyp2 = six.text_type('It is to insure the troops forever hearing the activity '
+        >>> hyp2 = str('It is to insure the troops forever hearing the activity '
         ...            'guidebook that party direct').split()
         >>> sentence_gleu([ref1], hyp1) # doctest: +ELLIPSIS
         0.4393...

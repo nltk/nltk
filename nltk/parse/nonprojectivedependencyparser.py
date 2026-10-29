@@ -1,32 +1,19 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-# -*- coding: utf-8 -*-
-import six
-from nltk.compat import TimeoutError, perf_counter
 # Natural Language Toolkit: Dependency Grammars
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
 #
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
+from __future__ import print_function
 
-import logging
 import math
-import time
+import logging
+
+from six.moves import range
 
 from nltk.parse.dependencygraph import DependencyGraph
-from nltk.termsec import safe_print, sanitize_terminal
-
-#: Default wall-clock limit, in seconds, for a single
-#: :meth:`NonprojectiveDependencyParser.parse` call. The parser enumerates every
-#: grammatical head-assignment through the lattice; with a dense grammar (many
-#: words able to head many others) that set is exponential in the number of
-#: tokens, so a short input can exhaust CPU and memory (CWE-407). When the limit
-#: is exceeded, ``parse`` raises ``TimeoutError``. A wall-clock bound (rather than
-#: a token cap) is used because the blow-up depends on grammar *density*, not just
-#: length; ``max_time=None`` disables it.
-DEFAULT_MAX_TIME = 5.0
 
 logger = logging.getLogger(__name__)
 
@@ -49,15 +36,15 @@ class DependencyScorerI(object):
 
     def __init__(self):
         if self.__class__ == DependencyScorerI:
-            raise TypeError("DependencyScorerI is an abstract interface")
+            raise TypeError('DependencyScorerI is an abstract interface')
 
     def train(self, graphs):
         """
         :type graphs: list(DependencyGraph)
         :param graphs: A list of dependency graphs to train the scorer.
-            Typically the edges present in the graphs can be used as
-            positive training examples, and the edges not present as negative
-            examples.
+        Typically the edges present in the graphs can be used as
+        positive training examples, and the edges not present as negative
+        examples.
         """
         raise NotImplementedError()
 
@@ -65,23 +52,21 @@ class DependencyScorerI(object):
         """
         :type graph: DependencyGraph
         :param graph: A dependency graph whose set of edges need to be
-            scored.
+        scored.
         :rtype: A three-dimensional list of numbers.
         :return: The score is returned in a multidimensional(3) list, such
-            that the outer-dimension refers to the head, and the
-            inner-dimension refers to the dependencies.  For instance,
-            scores[0][1] would reference the list of scores corresponding to
-            arcs from node 0 to node 1.  The node's 'address' field can be used
-            to determine its number identification.
+        that the outer-dimension refers to the head, and the
+        inner-dimension refers to the dependencies.  For instance,
+        scores[0][1] would reference the list of scores corresponding to
+        arcs from node 0 to node 1.  The node's 'address' field can be used
+        to determine its number identification.
 
         For further illustration, a score list corresponding to Fig.2 of
-        Keith Hall's 'K-best Spanning Tree Parsing' paper::
-
+        Keith Hall's 'K-best Spanning Tree Parsing' paper:
               scores = [[[], [5],  [1],  [1]],
                        [[], [],   [11], [4]],
                        [[], [10], [],   [5]],
                        [[], [8],  [8],  []]]
-
         When used in conjunction with a MaxEntClassifier, each score would
         correspond to the confidence of a particular edge being classified
         with the positive training examples.
@@ -133,17 +118,17 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
         for graph in graphs:
             for head_node in graph.nodes.values():
                 for child_index, child_node in graph.nodes.items():
-                    if child_index in head_node["deps"]:
+                    if child_index in head_node['deps']:
                         label = "T"
                     else:
                         label = "F"
                     labeled_examples.append(
                         (
                             dict(
-                                a=head_node["word"],
-                                b=head_node["tag"],
-                                c=child_node["word"],
-                                d=child_node["tag"],
+                                a=head_node['word'],
+                                b=head_node['tag'],
+                                c=child_node['word'],
+                                d=child_node['tag'],
                             ),
                             label,
                         )
@@ -168,11 +153,13 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
         for head_node in graph.nodes.values():
             for child_node in graph.nodes.values():
                 edges.append(
-                    dict(
-                        a=head_node["word"],
-                        b=head_node["tag"],
-                        c=child_node["word"],
-                        d=child_node["tag"],
+                    (
+                        dict(
+                            a=head_node['word'],
+                            b=head_node['tag'],
+                            c=child_node['word'],
+                            d=child_node['tag'],
+                        )
                     )
                 )
 
@@ -181,7 +168,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
         row = []
         count = 0
         for pdist in self.classifier.prob_classify_many(edges):
-            logger.debug("%.4f %.4f", pdist.prob("T"), pdist.prob("F"))
+            logger.debug('%.4f %.4f', pdist.prob('T'), pdist.prob('F'))
             # smoothing in case the probability = 0
             row.append([math.log(pdist.prob("T") + 0.00000000001)])
             count += 1
@@ -198,7 +185,7 @@ class NaiveBayesDependencyScorer(DependencyScorerI):
 # A short class necessary to show parsing example from paper
 class DemoScorer(DependencyScorerI):
     def train(self, graphs):
-        safe_print("Training...")
+        print('Training...')
 
     def score(self, graph):
         # scores for Keith Hall 'K-best Spanning Tree Parsing' paper
@@ -246,6 +233,7 @@ class ProbabilisticNonprojectiveParser(object):
     1
 
     Rule based example
+    ------------------
 
     >>> from nltk.grammar import DependencyGrammar
 
@@ -269,7 +257,7 @@ class ProbabilisticNonprojectiveParser(object):
         """
         Creates a new non-projective parser.
         """
-        logging.debug("initializing prob. nonprojective...")
+        logging.debug('initializing prob. nonprojective...')
 
     def train(self, graphs, dependency_scorer):
         """
@@ -311,12 +299,12 @@ class ProbabilisticNonprojectiveParser(object):
         :type g_graph, b_graph, c_graph: DependencyGraph
         :param g_graph, b_graph, c_graph: Graphs which need to be updated.
         """
-        logger.debug("Collapsing nodes...")
+        logger.debug('Collapsing nodes...')
         # Collapse all cycle nodes into v_n+1 in G_Graph
         for cycle_node_index in cycle_path:
             g_graph.remove_by_address(cycle_node_index)
         g_graph.add_node(new_node)
-        g_graph.redirect_arcs(cycle_path, new_node["address"])
+        g_graph.redirect_arcs(cycle_path, new_node['address'])
 
     def update_edge_scores(self, new_node, cycle_path):
         """
@@ -328,23 +316,20 @@ class ProbabilisticNonprojectiveParser(object):
         :type cycle_path: A list of integers.
         :param cycle_path: A list of node addresses that belong to the cycle.
         """
-        # Debug lines use %r: lazily formatted, and repr of the numeric
-        # containers logged here is identical to str while escaping any
-        # control byte that could reach a stderr handler.
-        logger.debug("cycle %r", cycle_path)
+        logger.debug('cycle %s', cycle_path)
 
         cycle_path = self.compute_original_indexes(cycle_path)
 
-        logger.debug("old cycle %r", cycle_path)
-        logger.debug("Prior to update: %r", self.scores)
+        logger.debug('old cycle %s', cycle_path)
+        logger.debug('Prior to update: %s', self.scores)
 
         for i, row in enumerate(self.scores):
             for j, column in enumerate(self.scores[i]):
-                logger.debug("%r", self.scores[i][j])
+                logger.debug(self.scores[i][j])
                 if j in cycle_path and i not in cycle_path and self.scores[i][j]:
                     subtract_val = self.compute_max_subtract_score(j, cycle_path)
 
-                    logger.debug("%r - %r", self.scores[i][j], subtract_val)
+                    logger.debug('%s - %s', self.scores[i][j], subtract_val)
 
                     new_vals = []
                     for cur_val in self.scores[i][j]:
@@ -357,7 +342,7 @@ class ProbabilisticNonprojectiveParser(object):
                 if i in cycle_path and j in cycle_path:
                     self.scores[i][j] = []
 
-        logger.debug("After update: %r", self.scores)
+        logger.debug('After update: %s', self.scores)
 
     def compute_original_indexes(self, new_indexes):
         """
@@ -369,7 +354,7 @@ class ProbabilisticNonprojectiveParser(object):
 
         :type new_indexes: A list of integers.
         :param new_indexes: A list of node addresses to check for
-            subsumed nodes.
+        subsumed nodes.
         """
         swapped = True
         while swapped:
@@ -394,10 +379,10 @@ class ProbabilisticNonprojectiveParser(object):
 
         :type column_index: integer.
         :param column_index: A index representing the column of incoming arcs
-            to a particular node being updated
+        to a particular node being updated
         :type cycle_indexes: A list of integers.
         :param cycle_indexes: Only arcs from cycle nodes are considered.  This
-            is a list of such nodes addresses.
+        is a list of such nodes addresses.
         """
         max_score = -100000
         for row_index in cycle_indexes:
@@ -413,23 +398,24 @@ class ProbabilisticNonprojectiveParser(object):
 
         :type node_index: integer.
         :param node_index: The address of the 'destination' node,
-            the node that is arced to.
+        the node that is arced to.
         """
         originals = self.compute_original_indexes([node_index])
-        logger.debug("originals: %r", originals)
+        logger.debug('originals: %s', originals)
 
         max_arc = None
         max_score = None
         for row_index in range(len(self.scores)):
             for col_index in range(len(self.scores[row_index])):
+                # print self.scores[row_index][col_index]
                 if col_index in originals and (
                     max_score is None or self.scores[row_index][col_index] > max_score
                 ):
                     max_score = self.scores[row_index][col_index]
                     max_arc = row_index
-                    logger.debug("%r, %r", row_index, col_index)
+                    logger.debug('%s, %s', row_index, col_index)
 
-        logger.debug("%r", max_score)
+        logger.debug(max_score)
 
         for key in self.inner_nodes:
             replaced_nodes = self.inner_nodes[key]
@@ -474,15 +460,16 @@ class ProbabilisticNonprojectiveParser(object):
         g_graph = DependencyGraph()
         for index, token in enumerate(tokens):
             g_graph.nodes[index + 1].update(
-                {"word": token, "tag": tags[index], "rel": "NTOP", "address": index + 1}
+                {'word': token, 'tag': tags[index], 'rel': 'NTOP', 'address': index + 1}
             )
+        # print (g_graph.nodes)
 
         # Fully connect non-root nodes in g_graph
         g_graph.connect_graph()
         original_graph = DependencyGraph()
         for index, token in enumerate(tokens):
             original_graph.nodes[index + 1].update(
-                {"word": token, "tag": tags[index], "rel": "NTOP", "address": index + 1}
+                {'word': token, 'tag': tags[index], 'rel': 'NTOP', 'address': index + 1}
             )
 
         b_graph = DependencyGraph()
@@ -490,32 +477,32 @@ class ProbabilisticNonprojectiveParser(object):
 
         for index, token in enumerate(tokens):
             c_graph.nodes[index + 1].update(
-                {"word": token, "tag": tags[index], "rel": "NTOP", "address": index + 1}
+                {'word': token, 'tag': tags[index], 'rel': 'NTOP', 'address': index + 1}
             )
 
         # Assign initial scores to g_graph edges
         self.initialize_edge_scores(g_graph)
-        logger.debug("%r", self.scores)
+        logger.debug(self.scores)
         # Initialize a list of unvisited vertices (by node address)
-        unvisited_vertices = [vertex["address"] for vertex in c_graph.nodes.values()]
+        unvisited_vertices = [vertex['address'] for vertex in c_graph.nodes.values()]
         # Iterate over unvisited vertices
         nr_vertices = len(tokens)
         betas = {}
         while unvisited_vertices:
             # Mark current node as visited
             current_vertex = unvisited_vertices.pop(0)
-            logger.debug("current_vertex: %r", current_vertex)
+            logger.debug('current_vertex: %s', current_vertex)
             # Get corresponding node n_i to vertex v_i
             current_node = g_graph.get_by_address(current_vertex)
-            logger.debug("current_node: %r", current_node)
+            logger.debug('current_node: %s', current_node)
             # Get best in-edge node b for current node
             best_in_edge = self.best_incoming_arc(current_vertex)
             betas[current_vertex] = self.original_best_arc(current_vertex)
-            logger.debug("best in arc: %r --> %r", best_in_edge, current_vertex)
+            logger.debug('best in arc: %s --> %s', best_in_edge, current_vertex)
             # b_graph = Union(b_graph, b)
             for new_vertex in [current_vertex, best_in_edge]:
                 b_graph.nodes[new_vertex].update(
-                    {"word": "TEMP", "rel": "NTOP", "address": new_vertex}
+                    {'word': 'TEMP', 'rel': 'NTOP', 'address': new_vertex}
                 )
             b_graph.add_arc(best_in_edge, current_vertex)
             # Beta(current node) = b  - stored for parse recovery
@@ -523,17 +510,17 @@ class ProbabilisticNonprojectiveParser(object):
             cycle_path = b_graph.contains_cycle()
             if cycle_path:
                 # Create a new node v_n+1 with address = len(nodes) + 1
-                new_node = {"word": "NONE", "rel": "NTOP", "address": nr_vertices + 1}
+                new_node = {'word': 'NONE', 'rel': 'NTOP', 'address': nr_vertices + 1}
                 # c_graph = Union(c_graph, v_n+1)
                 c_graph.add_node(new_node)
                 # Collapse all nodes in cycle C into v_n+1
                 self.update_edge_scores(new_node, cycle_path)
                 self.collapse_nodes(new_node, cycle_path, g_graph, b_graph, c_graph)
                 for cycle_index in cycle_path:
-                    c_graph.add_arc(new_node["address"], cycle_index)
+                    c_graph.add_arc(new_node['address'], cycle_index)
                     # self.replaced_by[cycle_index] = new_node['address']
 
-                self.inner_nodes[new_node["address"]] = cycle_path
+                self.inner_nodes[new_node['address']] = cycle_path
 
                 # Add v_n+1 to list of unvisited vertices
                 unvisited_vertices.insert(0, nr_vertices + 1)
@@ -545,33 +532,30 @@ class ProbabilisticNonprojectiveParser(object):
                 for cycle_node_address in cycle_path:
                     b_graph.remove_by_address(cycle_node_address)
 
-            if logger.isEnabledFor(logging.DEBUG):
-                # the graph dumps carry the input words, so they are sanitised;
-                # guarded so parsing pays nothing when debug logging is off
-                logger.debug("g_graph: %s", sanitize_terminal(g_graph))
-                logger.debug("b_graph: %s", sanitize_terminal(b_graph))
-                logger.debug("c_graph: %s", sanitize_terminal(c_graph))
-                logger.debug("Betas: %r", betas)
-                logger.debug("replaced nodes %r", self.inner_nodes)
+            logger.debug('g_graph: %s', g_graph)
+            logger.debug('b_graph: %s', b_graph)
+            logger.debug('c_graph: %s', c_graph)
+            logger.debug('Betas: %s', betas)
+            logger.debug('replaced nodes %s', self.inner_nodes)
 
         # Recover parse tree
-        logger.debug("Final scores: %r", self.scores)
+        logger.debug('Final scores: %s', self.scores)
 
-        logger.debug("Recovering parse...")
+        logger.debug('Recovering parse...')
         for i in range(len(tokens) + 1, nr_vertices + 1):
             betas[betas[i][1]] = betas[i]
 
-        logger.debug("Betas: %r", betas)
+        logger.debug('Betas: %s', betas)
         for node in original_graph.nodes.values():
             # TODO: It's dangerous to assume that deps it a dictionary
             # because it's a default dictionary. Ideally, here we should not
             # be concerned how dependencies are stored inside of a dependency
             # graph.
-            node["deps"] = {}
+            node['deps'] = {}
         for i in range(1, len(tokens) + 1):
             original_graph.add_arc(betas[i][0], betas[i][1])
 
-        logger.debug("Done.")
+        logger.debug('Done.')
         yield original_graph
 
 
@@ -590,21 +574,14 @@ class NonprojectiveDependencyParser(object):
     projective parser will not.
     """
 
-    def __init__(self, dependency_grammar, max_time=DEFAULT_MAX_TIME):
+    def __init__(self, dependency_grammar):
         """
         Creates a new ``NonprojectiveDependencyParser``.
 
         :param dependency_grammar: a grammar of word-to-word relations.
         :type dependency_grammar: DependencyGrammar
-        :param max_time: Wall-clock limit, in seconds, for a single ``parse()``
-            call.  A dense grammar makes the head-assignment enumeration
-            exponential (CWE-407); when the limit is exceeded, ``parse()``
-            raises ``TimeoutError``.  Defaults to ``DEFAULT_MAX_TIME``; ``None``
-            disables the bound.
-        :type max_time: float or None
         """
         self._grammar = dependency_grammar
-        self._max_time = max_time
 
     def parse(self, tokens):
         """
@@ -626,21 +603,21 @@ class NonprojectiveDependencyParser(object):
 
         for index, token in enumerate(tokens):
             self._graph.nodes[index] = {
-                "word": token,
-                "deps": [],
-                "rel": "NTOP",
-                "address": index,
+                'word': token,
+                'deps': [],
+                'rel': 'NTOP',
+                'address': index,
             }
 
         for head_node in self._graph.nodes.values():
             deps = []
             for dep_node in self._graph.nodes.values():
                 if (
-                    self._grammar.contains(head_node["word"], dep_node["word"])
-                    and head_node["word"] != dep_node["word"]
+                    self._grammar.contains(head_node['word'], dep_node['word'])
+                    and head_node['word'] != dep_node['word']
                 ):
-                    deps.append(dep_node["address"])
-            head_node["deps"] = deps
+                    deps.append(dep_node['address'])
+            head_node['deps'] = deps
 
         # Create lattice of possible heads
         roots = []
@@ -662,19 +639,12 @@ class NonprojectiveDependencyParser(object):
 
             # Traverse lattice
             analyses = []
-            for _ in roots:
+            for root in roots:
                 stack = []
                 analysis = [[] for i in range(len(possible_heads))]
-            deadline = (
-                None if self._max_time is None else perf_counter() + self._max_time
-            )
             i = 0
             forward = True
             while i >= 0:
-                if deadline is not None and perf_counter() > deadline:
-                    raise TimeoutError(
-                        "NonprojectiveDependencyParser exceeded its {0}s time limit; the grammar may be too dense for this many tokens. Pass max_time=None to disable the limit.".format(self._max_time)
-                    )
                 if forward:
                     if len(possible_heads[i]) == 1:
                         analysis[i] = possible_heads[i][0]
@@ -727,13 +697,13 @@ class NonprojectiveDependencyParser(object):
                 head_address = head_index + 1
 
                 node = graph.nodes[address]
-                node.update({"word": token, "address": address})
+                node.update({'word': token, 'address': address})
 
                 if head_address == 0:
-                    rel = "ROOT"
+                    rel = 'ROOT'
                 else:
-                    rel = ""
-                graph.nodes[head_index + 1]["deps"][rel].append(address)
+                    rel = ''
+                graph.nodes[head_index + 1]['deps'][rel].append(address)
 
             # TODO: check for cycles
             yield graph
@@ -753,20 +723,20 @@ def demo():
 def hall_demo():
     npp = ProbabilisticNonprojectiveParser()
     npp.train([], DemoScorer())
-    for parse_graph in npp.parse(["v1", "v2", "v3"], [None, None, None]):
-        safe_print(parse_graph)
+    for parse_graph in npp.parse(['v1', 'v2', 'v3'], [None, None, None]):
+        print(parse_graph)
 
 
 def nonprojective_conll_parse_demo():
     from nltk.parse.dependencygraph import conll_data2
 
-    graphs = [DependencyGraph(entry) for entry in conll_data2.split("\n\n") if entry]
+    graphs = [DependencyGraph(entry) for entry in conll_data2.split('\n\n') if entry]
     npp = ProbabilisticNonprojectiveParser()
     npp.train(graphs, NaiveBayesDependencyScorer())
     for parse_graph in npp.parse(
-        ["Cathy", "zag", "hen", "zwaaien", "."], ["N", "V", "Pron", "Adj", "N", "Punc"]
+        ['Cathy', 'zag', 'hen', 'zwaaien', '.'], ['N', 'V', 'Pron', 'Adj', 'N', 'Punc']
     ):
-        safe_print(parse_graph)
+        print(parse_graph)
 
 
 def rule_based_demo():
@@ -782,27 +752,27 @@ def rule_based_demo():
     'dachshund' -> 'his'
     """
     )
-    safe_print(grammar)
+    print(grammar)
     ndp = NonprojectiveDependencyParser(grammar)
     graphs = ndp.parse(
         [
-            "the",
-            "man",
-            "in",
-            "the",
-            "corner",
-            "taught",
-            "his",
-            "dachshund",
-            "to",
-            "play",
-            "golf",
+            'the',
+            'man',
+            'in',
+            'the',
+            'corner',
+            'taught',
+            'his',
+            'dachshund',
+            'to',
+            'play',
+            'golf',
         ]
     )
-    safe_print("Graphs:")
+    print('Graphs:')
     for graph in graphs:
-        safe_print(graph)
+        print(graph)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     demo()

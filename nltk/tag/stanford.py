@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to the Stanford Part-of-speech and Named-Entity Taggers
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Nitin Madnani <nmadnani@ets.org>
 #         Rami Al-Rfou' <ralrfou@cs.stonybrook.edu>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -16,25 +16,19 @@ list of paths).
 
 For more details see the documentation for StanfordPOSTagger and StanfordNERTagger.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
-from nltk.compat import FileNotFoundError
 
+from abc import abstractmethod
 import os
 import tempfile
-import warnings
-from abc import abstractmethod
 from subprocess import PIPE
+import warnings
 
-from nltk import pathsec
-from nltk.data import staging_tempdir
-from nltk.internals import find_file, find_jar, java
-from nltk.pathsec import has_line_unsafe_char
-from nltk.pathsec import open as pathsec_open
-from nltk.pathsec import validate_tool_path
+from six import text_type
+
+from nltk.internals import find_file, find_jar, config_java, java, _java_options
 from nltk.tag.api import TaggerI
 
-_stanford_url = "https://nlp.stanford.edu/software"
+_stanford_url = 'https://nlp.stanford.edu/software'
 
 
 class StanfordTagger(TaggerI):
@@ -48,20 +42,20 @@ class StanfordTagger(TaggerI):
     - ``_JAR`` file: Class constant that represents the jar file name.
     """
 
-    _SEPARATOR = ""
-    _JAR = ""
+    _SEPARATOR = ''
+    _JAR = ''
 
     def __init__(
         self,
         model_filename,
         path_to_jar=None,
-        encoding="utf8",
+        encoding='utf8',
         verbose=False,
-        java_options="-mx1000m",
+        java_options='-mx1000m',
     ):
         # Raise deprecation warning.
         warnings.warn(
-            six.text_type(
+            str(
                 "\nThe StanfordTokenizer will "
                 "be deprecated in version 3.2.6.\n"
                 "Please use \033[91mnltk.parse.corenlp.CoreNLPParser\033[0m instead."
@@ -72,25 +66,16 @@ class StanfordTagger(TaggerI):
 
         if not self._JAR:
             warnings.warn(
-                "The StanfordTagger class is not meant to be "
-                "instantiated directly. Did you mean "
-                "StanfordPOSTagger or StanfordNERTagger?"
+                'The StanfordTagger class is not meant to be '
+                'instantiated directly. Did you mean '
+                'StanfordPOSTagger or StanfordNERTagger?'
             )
         self._stanford_jar = find_jar(
             self._JAR, path_to_jar, searchpath=(), url=_stanford_url, verbose=verbose
         )
 
         self._stanford_model = find_file(
-            model_filename, env_vars=("STANFORD_MODELS",), verbose=verbose
-        )
-        # Fail fast: the model is a JVM subprocess argument, so bound it here as
-        # well as at the hand-off, refuse a tamperable or oversized model, and
-        # keep only the checked string, never an out-of-sandbox path or object.
-        self._stanford_model = validate_tool_path(
-            self._stanford_model,
-            context="{0}".format(type(self).__name__),
-            max_bytes=pathsec.MAX_TOOL_MODEL_BYTES,
-            require_private=True,
+            model_filename, env_vars=('STANFORD_MODELS',), verbose=verbose
         )
 
         self._encoding = encoding
@@ -109,77 +94,34 @@ class StanfordTagger(TaggerI):
 
     def tag_sents(self, sentences):
         encoding = self._encoding
+        default_options = ' '.join(_java_options)
+        config_java(options=self.java_options, verbose=False)
 
-        # A line break in a token would inject an extra input line and silently
-        # mislabel output (parse_output re-aligns tags by sentence); a tab, NUL
-        # or other control character would be re-split or truncated by the
-        # tool. Refuse them by the shared line-safety rule, then build the
-        # input once and require exactly one separator per sentence gap.
-        for sentence in sentences:
-            for token in sentence:
-                if has_line_unsafe_char(token):
-                    raise ValueError(
-                        "Tokens cannot contain newline characters, nor a tab, "
-                        "another line break, a control character or NUL: %r" % (token,)
-                    )
-        _input = "\n".join(" ".join(x) for x in sentences)
-        if _input.count("\n") != max(len(sentences) - 1, 0) or "\r" in _input:
-            raise ValueError("Tokens cannot contain newline characters.")
+        # Create a temporary input file
+        _input_fh, self._input_file_path = tempfile.mkstemp(text=True)
 
-        input_file_path = None
-        java_succeeded = False
-        try:
-            # Create a temporary input file
-            _input_fh, input_file_path = tempfile.mkstemp(
-                text=True, dir=staging_tempdir()
-            )
-            self._input_file_path = input_file_path
+        cmd = list(self._cmd)
+        cmd.extend(['-encoding', encoding])
 
-            # The model is handed to the JVM subprocess pathsec.open cannot wrap:
-            # re-check it and freeze the checked string BEFORE _cmd reads it, so
-            # the argv never carries a swapped or re-resolving value (GHSA-8mgp).
-            self._stanford_model = validate_tool_path(
-                self._stanford_model,
-                context="StanfordTagger.tag_sents",
-                max_bytes=pathsec.MAX_TOOL_MODEL_BYTES,
-                require_private=True,
-            )
-            cmd = list(self._cmd)
-            cmd.extend(["-encoding", encoding])
+        # Write the actual sentences to the temporary input file
+        _input_fh = os.fdopen(_input_fh, 'wb')
+        _input = '\n'.join((' '.join(x) for x in sentences))
+        if isinstance(_input, text_type) and encoding:
+            _input = _input.encode(encoding)
+        _input_fh.write(_input)
+        _input_fh.close()
 
-            # mkstemp gives a race-free path inside the pathsec-validated 0700
-            # staging dir; reopen it through pathsec_open (the same chokepoint the
-            # rest of nltk stages tool input through) rather than the raw fd.
-            os.close(_input_fh)
-            if isinstance(_input, six.string_types) and encoding:
-                _input = _input.encode(encoding)
-            with pathsec_open(
-                input_file_path, "wb", context="StanfordTagger.tag_sents"
-            ) as input_fh:
-                input_fh.write(_input)
+        # Run the tagger and get the output
+        stanpos_output, _stderr = java(
+            cmd, classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE
+        )
+        stanpos_output = stanpos_output.decode(encoding)
 
-            # Run the tagger and get the output
-            stanpos_output, _stderr = java(
-                cmd,
-                classpath=self._stanford_jar,
-                stdout=PIPE,
-                stderr=PIPE,
-                options=self.java_options,
-            )
-            # java() returns text (universal_newlines=True), so only decode when
-            # an older/bytes-returning path is in play.
-            if isinstance(stanpos_output, bytes):
-                stanpos_output = stanpos_output.decode(encoding)
-            java_succeeded = True
-        finally:
-            if input_file_path:
-                try:
-                    pathsec.unlink(input_file_path, context="StanfordTagger")
-                except FileNotFoundError:
-                    pass
-                except OSError:
-                    if java_succeeded:
-                        raise
+        # Delete the temporary file
+        os.unlink(self._input_file_path)
+
+        # Return java configurations to their default values
+        config_java(options=default_options, verbose=False)
 
         return self.parse_output(stanpos_output, sentences)
 
@@ -190,9 +132,7 @@ class StanfordTagger(TaggerI):
             sentence = []
             for tagged_word in tagged_sentence.strip().split():
                 word_tags = tagged_word.strip().split(self._SEPARATOR)
-                sentence.append(
-                    ("".join(word_tags[:-1]), word_tags[-1].replace("0", "").upper())
-                )
+                sentence.append((''.join(word_tags[:-1]), word_tags[-1]))
             tagged_sentences.append(sentence)
         return tagged_sentences
 
@@ -202,19 +142,19 @@ class StanfordPOSTagger(StanfordTagger):
     A class for pos tagging with Stanford Tagger. The input is the paths to:
      - a model trained on training data
      - (optionally) the path to the stanford tagger jar file. If not specified here,
-       then this jar file must be specified in the CLASSPATH environment variable.
+       then this jar file must be specified in the CLASSPATH envinroment variable.
      - (optionally) the encoding of the training data (default: UTF-8)
 
     Example:
 
         >>> from nltk.tag import StanfordPOSTagger
-        >>> st = StanfordPOSTagger('english-bidirectional-distsim.tagger') # doctest: +SKIP
-        >>> st.tag('What is the airspeed of an unladen swallow ?'.split()) # doctest: +SKIP
+        >>> st = StanfordPOSTagger('english-bidirectional-distsim.tagger')
+        >>> st.tag('What is the airspeed of an unladen swallow ?'.split())
         [('What', 'WP'), ('is', 'VBZ'), ('the', 'DT'), ('airspeed', 'NN'), ('of', 'IN'), ('an', 'DT'), ('unladen', 'JJ'), ('swallow', 'VB'), ('?', '.')]
     """
 
-    _SEPARATOR = "_"
-    _JAR = "stanford-postagger.jar"
+    _SEPARATOR = '_'
+    _JAR = 'stanford-postagger.jar'
 
     def __init__(self, *args, **kwargs):
         super(StanfordPOSTagger, self).__init__(*args, **kwargs)
@@ -222,15 +162,15 @@ class StanfordPOSTagger(StanfordTagger):
     @property
     def _cmd(self):
         return [
-            "edu.stanford.nlp.tagger.maxent.MaxentTagger",
-            "-model",
+            'edu.stanford.nlp.tagger.maxent.MaxentTagger',
+            '-model',
             self._stanford_model,
-            "-textFile",
+            '-textFile',
             self._input_file_path,
-            "-tokenize",
-            "false",
-            "-outputFormatOptions",
-            "keepEmptySentences",
+            '-tokenize',
+            'false',
+            '-outputFormatOptions',
+            'keepEmptySentences',
         ]
 
 
@@ -240,7 +180,7 @@ class StanfordNERTagger(StanfordTagger):
 
     - a model trained on training data
     - (optionally) the path to the stanford tagger jar file. If not specified here,
-      then this jar file must be specified in the CLASSPATH environment variable.
+      then this jar file must be specified in the CLASSPATH envinroment variable.
     - (optionally) the encoding of the training data (default: UTF-8)
 
     Example:
@@ -253,9 +193,9 @@ class StanfordNERTagger(StanfordTagger):
          ('University', 'ORGANIZATION'), ('in', 'O'), ('NY', 'LOCATION')]
     """
 
-    _SEPARATOR = "/"
-    _JAR = "stanford-ner.jar"
-    _FORMAT = "slashTags"
+    _SEPARATOR = '/'
+    _JAR = 'stanford-ner.jar'
+    _FORMAT = 'slashTags'
 
     def __init__(self, *args, **kwargs):
         super(StanfordNERTagger, self).__init__(*args, **kwargs)
@@ -264,27 +204,27 @@ class StanfordNERTagger(StanfordTagger):
     def _cmd(self):
         # Adding -tokenizerFactory edu.stanford.nlp.process.WhitespaceTokenizer -tokenizerOptions tokenizeNLs=false for not using stanford Tokenizer
         return [
-            "edu.stanford.nlp.ie.crf.CRFClassifier",
-            "-loadClassifier",
+            'edu.stanford.nlp.ie.crf.CRFClassifier',
+            '-loadClassifier',
             self._stanford_model,
-            "-textFile",
+            '-textFile',
             self._input_file_path,
-            "-outputFormat",
+            '-outputFormat',
             self._FORMAT,
-            "-tokenizerFactory",
-            "edu.stanford.nlp.process.WhitespaceTokenizer",
-            "-tokenizerOptions",
-            '"tokenizeNLs=false"',
+            '-tokenizerFactory',
+            'edu.stanford.nlp.process.WhitespaceTokenizer',
+            '-tokenizerOptions',
+            '\"tokenizeNLs=false\"',
         ]
 
     def parse_output(self, text, sentences):
-        if self._FORMAT == "slashTags":
+        if self._FORMAT == 'slashTags':
             # Joint together to a big list
             tagged_sentences = []
             for tagged_sentence in text.strip().split("\n"):
                 for tagged_word in tagged_sentence.strip().split():
                     word_tags = tagged_word.strip().split(self._SEPARATOR)
-                    tagged_sentences.append(("".join(word_tags[:-1]), word_tags[-1]))
+                    tagged_sentences.append((''.join(word_tags[:-1]), word_tags[-1]))
 
             # Separate it according to the input
             result = []
@@ -295,3 +235,15 @@ class StanfordNERTagger(StanfordTagger):
             return result
 
         raise NotImplementedError
+
+
+def setup_module(module):
+    from nose import SkipTest
+
+    try:
+        StanfordPOSTagger('english-bidirectional-distsim.tagger')
+    except LookupError:
+        raise SkipTest(
+            'Doctests from nltk.tag.stanford are skipped because one \
+                       of the stanford jars cannot be found.'
+        )

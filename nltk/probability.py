@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Probability and Statistics
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (additions)
 #         Trevor Cohn <tacohn@cs.mu.oz.au> (additions)
@@ -10,7 +10,7 @@
 #         Geoffrey Sampson <sampson@cantab.net> (additions)
 #         Ilia Kurenkov <ilia.kurenkov@gmail.com> (additions)
 #
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -37,27 +37,29 @@ implementation of the ``ConditionalProbDistI`` interface is
 ``ConditionalProbDist``, a derived distribution.
 
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
+from __future__ import print_function, unicode_literals, division
 
-import array
 import math
 import random
 import warnings
-from abc import ABCMeta, abstractmethod
-from collections import Counter, defaultdict
+import array
+from collections import defaultdict, Counter
 from functools import reduce
+from abc import ABCMeta, abstractmethod
 
+from six import itervalues, text_type, add_metaclass
+
+from nltk import compat
 from nltk.internals import raise_unorderable_types
-from nltk.termsec import safe_print
 
-_NINF = float("-1e300")
+_NINF = float('-1e300')
 
 ##//////////////////////////////////////////////////////
 ##  Frequency Distributions
 ##//////////////////////////////////////////////////////
 
 
+@compat.python_2_unicode_compatible
 class FreqDist(Counter):
     """
     A frequency distribution for the outcomes of an experiment.  A
@@ -244,75 +246,64 @@ class FreqDist(Counter):
         """
         if len(self) == 0:
             raise ValueError(
-                "A FreqDist must have at least one sample before max is defined."
+                'A FreqDist must have at least one sample before max is defined.'
             )
         return self.most_common(1)[0][0]
 
-    def plot(
-        self, *args, **kwargs
-    ):
+    def plot(self, *args, **kwargs):
         """
         Plot samples from the frequency distribution
         displaying the most frequent sample first.  If an integer
         parameter is supplied, stop after this many samples have been
-        plotted.  For a cumulative plot, specify cumulative=True. Additional
-        ``**kwargs`` are passed to matplotlib's plot function.
+        plotted.  For a cumulative plot, specify cumulative=True.
         (Requires Matplotlib to be installed.)
 
-        :param title: The title for the graph.
+        :param title: The title for the graph
         :type title: str
-        :param cumulative: Whether the plot is cumulative. (default = False)
-        :type cumulative: bool
-        :param percents: Whether the plot uses percents instead of counts. (default = False)
-        :type percents: bool
-        :param show: Whether to show the plot, or only return the ax.
-        :type show: bool
+        :param cumulative: A flag to specify whether the plot is cumulative (default = False)
+        :type title: bool
         """
-        title = kwargs.pop('title', "")
-        cumulative = kwargs.pop('cumulative', False)
-        percents = kwargs.pop('percents', False)
-        show = kwargs.pop('show', False)
         try:
             import matplotlib.pyplot as plt
-        except ImportError as e:
-            six.raise_from(ValueError(
-                "The plot function requires matplotlib to be installed."
-                "See https://matplotlib.org/"
-            ), e)
+        except ImportError:
+            raise ValueError(
+                'The plot function requires matplotlib to be installed.'
+                'See http://matplotlib.org/'
+            )
 
         if len(args) == 0:
             args = [len(self)]
         samples = [item for item, _ in self.most_common(*args)]
 
+        cumulative = _get_kwarg(kwargs, 'cumulative', False)
+        percents = _get_kwarg(kwargs, 'percents', False)
         if cumulative:
             freqs = list(self._cumulative_frequencies(samples))
-            ylabel = "Cumulative "
+            ylabel = "Cumulative Counts"
+            if percents:
+                freqs = [f / freqs[len(freqs) - 1] * 100 for f in freqs]
+                ylabel = "Cumulative Percents"
         else:
             freqs = [self[sample] for sample in samples]
-            ylabel = ""
-
-        if percents:
-            freqs = [f / self.N() * 100 for f in freqs]
-            ylabel += "Percents"
-        else:
-            ylabel += "Counts"
+            ylabel = "Counts"
+        # percents = [f * 100 for f in freqs]  only in ProbDist?
 
         ax = plt.gca()
-        ax.grid(True, color="silver")
+        ax.grid(True, color = "silver")
 
         if "linewidth" not in kwargs:
             kwargs["linewidth"] = 2
-        if title:
-            ax.set_title(title)
+        if "title" in kwargs:
+            ax.set_title(kwargs["title"])
+            del kwargs["title"]
 
         ax.plot(freqs, **kwargs)
         ax.set_xticks(range(len(samples)))
-        ax.set_xticklabels([str(s) for s in samples], rotation=90)
+        ax.set_xticklabels([text_type(s) for s in samples], rotation=90)
         ax.set_xlabel("Samples")
         ax.set_ylabel(ylabel)
 
-        if show:
-            plt.show()
+        plt.show()
 
         return ax
 
@@ -330,26 +321,24 @@ class FreqDist(Counter):
         """
         if len(args) == 0:
             args = [len(self)]
-        samples = _get_kwarg(
-            kwargs, "samples", [item for item, _ in self.most_common(*args)]
-        )
+        samples = [item for item, _ in self.most_common(*args)]
 
-        cumulative = _get_kwarg(kwargs, "cumulative", False)
+        cumulative = _get_kwarg(kwargs, 'cumulative', False)
         if cumulative:
             freqs = list(self._cumulative_frequencies(samples))
         else:
             freqs = [self[sample] for sample in samples]
         # percents = [f * 100 for f in freqs]  only in ProbDist?
 
-        width = max(len("{0}".format(s)) for s in samples)
+        width = max(len("%s" % s) for s in samples)
         width = max(width, max(len("%d" % f) for f in freqs))
 
         for i in range(len(samples)):
-            safe_print("%*s" % (width, samples[i]), end=" ")
-        safe_print()
+            print("%*s" % (width, samples[i]), end=' ')
+        print()
         for i in range(len(samples)):
-            safe_print("%*d" % (width, freqs[i]), end=" ")
-        safe_print()
+            print("%*d" % (width, freqs[i]), end=' ')
+        print()
 
     def copy(self):
         """
@@ -402,47 +391,16 @@ class FreqDist(Counter):
         return self.__class__(super(FreqDist, self).__and__(other))
 
     def __le__(self, other):
-        """
-        Returns True if this frequency distribution is a subset of the other
-        and for no key the value exceeds the value of the same key from
-        the other frequency distribution.
-
-        The <= operator forms partial order and satisfying the axioms
-        reflexivity, antisymmetry and transitivity.
-
-        >>> FreqDist('a') <= FreqDist('a')
-        True
-        >>> a = FreqDist('abc')
-        >>> b = FreqDist('aabc')
-        >>> (a <= b, b <= a)
-        (True, False)
-        >>> FreqDist('a') <= FreqDist('abcd')
-        True
-        >>> FreqDist('abc') <= FreqDist('xyz')
-        False
-        >>> FreqDist('xyz') <= FreqDist('abc')
-        False
-        >>> c = FreqDist('a')
-        >>> d = FreqDist('aa')
-        >>> e = FreqDist('aaa')
-        >>> c <= d and d <= e and c <= e
-        True
-        """
         if not isinstance(other, FreqDist):
             raise_unorderable_types("<=", self, other)
         return set(self).issubset(other) and all(
             self[key] <= other[key] for key in self
         )
 
-    def __ge__(self, other):
-        if not isinstance(other, FreqDist):
-            raise_unorderable_types(">=", self, other)
-        return set(self).issuperset(other) and all(
-            self[key] >= other[key] for key in other
-        )
-
+    # @total_ordering doesn't work here, since the class inherits from a builtin class
+    __ge__ = lambda self, other: not self <= other or self == other
     __lt__ = lambda self, other: self <= other and not self == other
-    __gt__ = lambda self, other: self >= other and not self == other
+    __gt__ = lambda self, other: not self <= other
 
     def __repr__(self):
         """
@@ -460,7 +418,7 @@ class FreqDist(Counter):
         :type maxlen: int
         :param stream: The stream to print to. stdout by default
         """
-        safe_print(self.pformat(maxlen=maxlen), file=stream)
+        print(self.pformat(maxlen=maxlen), file=stream)
 
     def pformat(self, maxlen=10):
         """
@@ -470,10 +428,10 @@ class FreqDist(Counter):
         :type maxlen: int
         :rtype: string
         """
-        items = ["{!r}: {!r}".format(*item) for item in self.most_common(maxlen)]
+        items = ['{0!r}: {1!r}'.format(*item) for item in self.most_common(maxlen)]
         if len(self) > maxlen:
-            items.append("...")
-        return "FreqDist({{{0}}})".format(", ".join(items))
+            items.append('...')
+        return 'FreqDist({{{0}}})'.format(', '.join(items))
 
     def __str__(self):
         """
@@ -481,16 +439,7 @@ class FreqDist(Counter):
 
         :rtype: string
         """
-        return "<FreqDist with %d samples and %d outcomes>" % (len(self), self.N())
-
-    def __iter__(self):
-        """
-        Return an iterator which yields tokens ordered by frequency.
-
-        :rtype: iterator
-        """
-        for token, _ in self.most_common(self.B()):
-            yield token
+        return '<FreqDist with %d samples and %d outcomes>' % (len(self), self.N())
 
 
 ##//////////////////////////////////////////////////////
@@ -498,7 +447,7 @@ class FreqDist(Counter):
 ##//////////////////////////////////////////////////////
 
 
-@six.add_metaclass(ABCMeta)
+@add_metaclass(ABCMeta)
 class ProbDistI(object):
     """
     A probability distribution for the outcomes of an experiment.  A
@@ -602,6 +551,7 @@ class ProbDistI(object):
         return random.choice(list(self.samples()))
 
 
+@compat.python_2_unicode_compatible
 class UniformProbDist(ProbDistI):
     """
     A probability distribution that assigns equal probability to each
@@ -621,7 +571,7 @@ class UniformProbDist(ProbDistI):
         """
         if len(samples) == 0:
             raise ValueError(
-                "A Uniform probability distribution must " + "have at least one sample."
+                'A Uniform probability distribution must ' + 'have at least one sample.'
             )
         self._sampleset = set(samples)
         self._prob = 1.0 / len(self._sampleset)
@@ -637,9 +587,10 @@ class UniformProbDist(ProbDistI):
         return self._samples
 
     def __repr__(self):
-        return "<UniformProbDist with %d samples>" % len(self._sampleset)
+        return '<UniformProbDist with %d samples>' % len(self._sampleset)
 
 
+@compat.python_2_unicode_compatible
 class RandomProbDist(ProbDistI):
     """
     Generates a random probability distribution whereby each sample
@@ -650,7 +601,7 @@ class RandomProbDist(ProbDistI):
     def __init__(self, samples):
         if len(samples) == 0:
             raise ValueError(
-                "A probability distribution must " + "have at least one sample."
+                'A probability distribution must ' + 'have at least one sample.'
             )
         self._probs = self.unirand(samples)
         self._samples = list(self._probs.keys())
@@ -675,10 +626,10 @@ class RandomProbDist(ProbDistI):
             # can be subtracted from any element without risking probs not (0 1)
             randrow[-1] -= total - 1
 
-        return {s: randrow[i] for i, s in enumerate(samples)}
+        return dict((s, randrow[i]) for i, s in enumerate(samples))
 
     def max(self):
-        if not hasattr(self, "_max"):
+        if not hasattr(self, '_max'):
             self._max = max((p, v) for (v, p) in self._probs.items())[1]
         return self._max
 
@@ -689,9 +640,10 @@ class RandomProbDist(ProbDistI):
         return self._samples
 
     def __repr__(self):
-        return "<RandomUniformProbDist with %d samples>" % len(self._probs)
+        return '<RandomUniformProbDist with %d samples>' % len(self._probs)
 
 
+@compat.python_2_unicode_compatible
 class DictionaryProbDist(ProbDistI):
     """
     A probability distribution whose probabilities are directly
@@ -718,8 +670,8 @@ class DictionaryProbDist(ProbDistI):
         if normalize:
             if len(prob_dict) == 0:
                 raise ValueError(
-                    "A DictionaryProbDist must have at least one sample "
-                    + "before it can be normalized."
+                    'A DictionaryProbDist must have at least one sample '
+                    + 'before it can be normalized.'
                 )
             if log:
                 value_sum = sum_logs(list(self._prob_dict.values()))
@@ -728,7 +680,7 @@ class DictionaryProbDist(ProbDistI):
                     for x in prob_dict:
                         self._prob_dict[x] = logp
                 else:
-                    for x, p in self._prob_dict.items():
+                    for (x, p) in self._prob_dict.items():
                         self._prob_dict[x] -= value_sum
             else:
                 value_sum = sum(self._prob_dict.values())
@@ -738,7 +690,7 @@ class DictionaryProbDist(ProbDistI):
                         self._prob_dict[x] = p
                 else:
                     norm_factor = 1.0 / value_sum
-                    for x, p in self._prob_dict.items():
+                    for (x, p) in self._prob_dict.items():
                         self._prob_dict[x] *= norm_factor
 
     def prob(self, sample):
@@ -759,7 +711,7 @@ class DictionaryProbDist(ProbDistI):
                 return math.log(self._prob_dict[sample], 2)
 
     def max(self):
-        if not hasattr(self, "_max"):
+        if not hasattr(self, '_max'):
             self._max = max((p, v) for (v, p) in self._prob_dict.items())[1]
         return self._max
 
@@ -767,9 +719,10 @@ class DictionaryProbDist(ProbDistI):
         return self._prob_dict.keys()
 
     def __repr__(self):
-        return "<ProbDist with %d samples>" % len(self._prob_dict)
+        return '<ProbDist with %d samples>' % len(self._prob_dict)
 
 
+@compat.python_2_unicode_compatible
 class MLEProbDist(ProbDistI):
     """
     The maximum likelihood estimate for the probability distribution
@@ -813,9 +766,10 @@ class MLEProbDist(ProbDistI):
         :rtype: str
         :return: A string representation of this ``ProbDist``.
         """
-        return "<MLEProbDist based on %d samples>" % self._freqdist.N()
+        return '<MLEProbDist based on %d samples>' % self._freqdist.N()
 
 
+@compat.python_2_unicode_compatible
 class LidstoneProbDist(ProbDistI):
     """
     The Lidstone estimate for the probability distribution of the
@@ -855,15 +809,15 @@ class LidstoneProbDist(ProbDistI):
         if (bins == 0) or (bins is None and freqdist.N() == 0):
             name = self.__class__.__name__[:-8]
             raise ValueError(
-                "A %s probability distribution " % name + "must have at least one bin."
+                'A %s probability distribution ' % name + 'must have at least one bin.'
             )
         if (bins is not None) and (bins < freqdist.B()):
             name = self.__class__.__name__[:-8]
             raise ValueError(
-                "\nThe number of bins in a %s distribution " % name
-                + "(%d) must be greater than or equal to\n" % bins
-                + "the number of bins in the FreqDist used "
-                + "to create it (%d)." % freqdist.B()
+                '\nThe number of bins in a %s distribution ' % name
+                + '(%d) must be greater than or equal to\n' % bins
+                + 'the number of bins in the FreqDist used '
+                + 'to create it (%d).' % freqdist.B()
             )
 
         self._freqdist = freqdist
@@ -913,9 +867,10 @@ class LidstoneProbDist(ProbDistI):
 
         :rtype: str
         """
-        return "<LidstoneProbDist based on %d samples>" % self._freqdist.N()
+        return '<LidstoneProbDist based on %d samples>' % self._freqdist.N()
 
 
+@compat.python_2_unicode_compatible
 class LaplaceProbDist(LidstoneProbDist):
     """
     The Laplace estimate for the probability distribution of the
@@ -949,9 +904,10 @@ class LaplaceProbDist(LidstoneProbDist):
         :rtype: str
         :return: A string representation of this ``ProbDist``.
         """
-        return "<LaplaceProbDist based on %d samples>" % self._freqdist.N()
+        return '<LaplaceProbDist based on %d samples>' % self._freqdist.N()
 
 
+@compat.python_2_unicode_compatible
 class ELEProbDist(LidstoneProbDist):
     """
     The expected likelihood estimate for the probability distribution
@@ -986,9 +942,10 @@ class ELEProbDist(LidstoneProbDist):
 
         :rtype: str
         """
-        return "<ELEProbDist based on %d samples>" % self._freqdist.N()
+        return '<ELEProbDist based on %d samples>' % self._freqdist.N()
 
 
+@compat.python_2_unicode_compatible
 class HeldoutProbDist(ProbDistI):
     """
     The heldout estimate for the probability distribution of the
@@ -1149,10 +1106,11 @@ class HeldoutProbDist(ProbDistI):
         :rtype: str
         :return: A string representation of this ``ProbDist``.
         """
-        s = "<HeldoutProbDist: %d base samples; %d heldout samples>"
+        s = '<HeldoutProbDist: %d base samples; %d heldout samples>'
         return s % (self._base_fdist.N(), self._heldout_fdist.N())
 
 
+@compat.python_2_unicode_compatible
 class CrossValidationProbDist(ProbDistI):
     """
     The cross-validation estimate for the probability distribution of
@@ -1201,7 +1159,7 @@ class CrossValidationProbDist(ProbDistI):
 
     def samples(self):
         # [xx] nb: this is not too efficient
-        return set(sum((list(fd) for fd in self._freqdists), []))
+        return set(sum([list(fd) for fd in self._freqdists], []))
 
     def prob(self, sample):
         # Find the average probability estimate returned by each
@@ -1220,9 +1178,10 @@ class CrossValidationProbDist(ProbDistI):
 
         :rtype: str
         """
-        return "<CrossValidationProbDist: %d-way>" % len(self._freqdists)
+        return '<CrossValidationProbDist: %d-way>' % len(self._freqdists)
 
 
+@compat.python_2_unicode_compatible
 class WittenBellProbDist(ProbDistI):
     """
     The Witten-Bell estimate of a probability distribution. This distribution
@@ -1266,7 +1225,7 @@ class WittenBellProbDist(ProbDistI):
         :type bins: int
         """
         assert bins is None or bins >= freqdist.B(), (
-            "bins parameter must not be less than %d=freqdist.B()" % freqdist.B()
+            'bins parameter must not be less than %d=freqdist.B()' % freqdist.B()
         )
         if bins is None:
             bins = freqdist.B()
@@ -1304,7 +1263,7 @@ class WittenBellProbDist(ProbDistI):
 
         :rtype: str
         """
-        return "<WittenBellProbDist based on %d samples>" % self._freqdist.N()
+        return '<WittenBellProbDist based on %d samples>' % self._freqdist.N()
 
 
 ##//////////////////////////////////////////////////////
@@ -1366,6 +1325,7 @@ class WittenBellProbDist(ProbDistI):
 ##//////////////////////////////////////////////////////
 
 
+@compat.python_2_unicode_compatible
 class SimpleGoodTuringProbDist(ProbDistI):
     """
     SimpleGoodTuring ProbDist approximates from frequency to frequency of
@@ -1376,7 +1336,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
       Journal of Quantitative Linguistics, vol. 2 pp. 217-237.
     - "Speech and Language Processing (Jurafsky & Martin),
       2nd Edition, Chapter 4.5 p103 (log(Nc) =  a + b*log(c))
-    - https://www.grsampson.net/RGoodTur.html
+    - http://www.grsampson.net/RGoodTur.html
 
     Given a set of pair (xi, yi),  where the xi denotes the frequency and
     yi denotes the frequency of frequency, we want to minimize their
@@ -1400,7 +1360,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
         """
         assert (
             bins is None or bins > freqdist.B()
-        ), "bins parameter must not be less than %d=freqdist.B()+1" % (freqdist.B() + 1)
+        ), 'bins parameter must not be less than %d=freqdist.B()+1' % (freqdist.B() + 1)
         if bins is None:
             bins = freqdist.B() + 1
         self._freqdist = freqdist
@@ -1453,16 +1413,16 @@ class SimpleGoodTuringProbDist(ProbDistI):
         xy_cov = x_var = 0.0
         x_mean = sum(log_r) / len(log_r)
         y_mean = sum(log_zr) / len(log_zr)
-        for x, y in zip(log_r, log_zr):
+        for (x, y) in zip(log_r, log_zr):
             xy_cov += (x - x_mean) * (y - y_mean)
             x_var += (x - x_mean) ** 2
         self._slope = xy_cov / x_var if x_var != 0 else 0.0
         if self._slope >= -1:
             warnings.warn(
-                "SimpleGoodTuring did not find a proper best fit "
-                "line for smoothing probabilities of occurrences. "
-                "The probability estimates are likely to be "
-                "unreliable."
+                'SimpleGoodTuring did not find a proper best fit '
+                'line for smoothing probabilities of occurrences. '
+                'The probability estimates are likely to be '
+                'unreliable.'
             )
         self._intercept = y_mean - self._slope * x_mean
 
@@ -1490,7 +1450,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
         r = float(r)
         nr = float(nr)
         nr_1 = float(nr_1)
-        return (r + 1.0) ** 2 * (nr_1 / nr**2) * (1.0 + nr_1 / nr)
+        return (r + 1.0) ** 2 * (nr_1 / nr ** 2) * (1.0 + nr_1 / nr)
 
     def _renormalize(self, r, nr):
         """
@@ -1561,7 +1521,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
         prob_sum = 0.0
         for i in range(0, len(self._Nr)):
             prob_sum += self._Nr[i] * self._prob_measure(i) / self._renormal
-        safe_print("Probability Sum:", prob_sum)
+        print("Probability Sum:", prob_sum)
         # assert prob_sum != 1.0, "probability sum should be one!"
 
     def discount(self):
@@ -1586,7 +1546,7 @@ class SimpleGoodTuringProbDist(ProbDistI):
 
         :rtype: str
         """
-        return "<SimpleGoodTuringProbDist based on %d samples>" % self._freqdist.N()
+        return '<SimpleGoodTuringProbDist based on %d samples>' % self._freqdist.N()
 
 
 class MutableProbDist(ProbDistI):
@@ -1611,8 +1571,8 @@ class MutableProbDist(ProbDistI):
         :type store_logs: bool
         """
         self._samples = samples
-        self._sample_dict = {samples[i]: i for i in range(len(samples))}
-        self._data = array.array("d", [0.0]) * len(samples)
+        self._sample_dict = dict((samples[i], i) for i in range(len(samples)))
+        self._data = array.array(str("d"), [0.0]) * len(samples)
         for i in range(len(samples)):
             if store_logs:
                 self._data[i] = prob_dist.logprob(samples[i])
@@ -1639,7 +1599,7 @@ class MutableProbDist(ProbDistI):
         # inherit documentation
         i = self._sample_dict.get(sample)
         if i is None:
-            return float("-inf")
+            return float('-inf')
         return self._data[i] if self._logs else math.log(self._data[i], 2)
 
     def update(self, sample, prob, log=True):
@@ -1701,6 +1661,7 @@ class MutableProbDist(ProbDistI):
 # where possible.
 
 
+@compat.python_2_unicode_compatible
 class KneserNeyProbDist(ProbDistI):
     """
     Kneser-Ney estimate of a probability distribution. This is a version of
@@ -1749,7 +1710,7 @@ class KneserNeyProbDist(ProbDistI):
     def prob(self, trigram):
         # sample must be a triple
         if len(trigram) != 3:
-            raise ValueError("Expected an iterable with 3 members.")
+            raise ValueError('Expected an iterable with 3 members.')
         trigram = tuple(trigram)
         w0, w1, w2 = trigram
 
@@ -1807,12 +1768,12 @@ class KneserNeyProbDist(ProbDistI):
         return self._trigrams.max()
 
     def __repr__(self):
-        """
+        '''
         Return a string representation of this ProbDist
 
         :rtype: str
-        """
-        return "<KneserNeyProbDist based on {0} trigrams".format(self._trigrams.N())
+        '''
+        return '<KneserNeyProbDist based on {0} trigrams'.format(self._trigrams.N())
 
 
 ##//////////////////////////////////////////////////////
@@ -1822,7 +1783,7 @@ class KneserNeyProbDist(ProbDistI):
 
 def log_likelihood(test_pdist, actual_pdist):
     if not isinstance(test_pdist, ProbDistI) or not isinstance(actual_pdist, ProbDistI):
-        raise ValueError("expected a ProbDist.")
+        raise ValueError('expected a ProbDist.')
     # Is this right?
     return sum(
         actual_pdist.prob(s) * math.log(test_pdist.prob(s), 2) for s in actual_pdist
@@ -1839,6 +1800,7 @@ def entropy(pdist):
 ##//////////////////////////////////////////////////////
 
 
+@compat.python_2_unicode_compatible
 class ConditionalFreqDist(defaultdict):
     """
     A collection of frequency distributions for a single experiment
@@ -1900,7 +1862,7 @@ class ConditionalFreqDist(defaultdict):
         defaultdict.__init__(self, FreqDist)
 
         if cond_samples:
-            for cond, sample in cond_samples:
+            for (cond, sample) in cond_samples:
                 self[cond][sample] += 1
 
     def __reduce__(self):
@@ -1926,97 +1888,72 @@ class ConditionalFreqDist(defaultdict):
 
         :rtype: int
         """
-        return sum(fdist.N() for fdist in self.values())
+        return sum(fdist.N() for fdist in itervalues(self))
 
-    def plot(
-        self,
-        *args,
-        **kwargs
-    ):
+    def plot(self, *args, **kwargs):
         """
         Plot the given samples from the conditional frequency distribution.
-        For a cumulative plot, specify cumulative=True. Additional ``*args`` and
-        ``**kwargs`` are passed to matplotlib's plot function.
+        For a cumulative plot, specify cumulative=True.
         (Requires Matplotlib to be installed.)
 
         :param samples: The samples to plot
         :type samples: list
         :param title: The title for the graph
         :type title: str
-        :param cumulative: Whether the plot is cumulative. (default = False)
-        :type cumulative: bool
-        :param percents: Whether the plot uses percents instead of counts. (default = False)
-        :type percents: bool
         :param conditions: The conditions to plot (default is all)
         :type conditions: list
-        :param show: Whether to show the plot, or only return the ax.
-        :type show: bool
         """
-        samples = kwargs.pop('samples', None)
-        title = kwargs.pop('title', "")
-        cumulative = kwargs.pop('cumulative', False)
-        percents = kwargs.pop('percents', False)
-        conditions = kwargs.pop('conditions', None)
-        show = kwargs.pop('show', False)
         try:
-            import matplotlib.pyplot as plt  # import statement fix
-        except ImportError as e:
-            six.raise_from(ValueError(
-                "The plot function requires matplotlib to be installed."
-                "See https://matplotlib.org/"
-            ), e)
+            import matplotlib.pyplot as plt #import statment fix
+        except ImportError:
+            raise ValueError(
+                'The plot function requires matplotlib to be installed.'
+                'See http://matplotlib.org/'
+            )
 
-        if not conditions:
-            conditions = self.conditions()
-        else:
-            conditions = [c for c in conditions if c in self]
-        if not samples:
-            samples = sorted({v for c in conditions for v in self[c]})
+        cumulative = _get_kwarg(kwargs, 'cumulative', False)
+        percents = _get_kwarg(kwargs, 'percents', False)
+        conditions = [c for c in _get_kwarg(kwargs, 'conditions', self.conditions()) if c in self] # conditions should be in self
+        title = _get_kwarg(kwargs, 'title', '')
+        samples = _get_kwarg(
+            kwargs, 'samples', sorted(set(v 
+                                            for c in conditions
+                                            for v in self[c]))
+        )  # this computation could be wasted
         if "linewidth" not in kwargs:
             kwargs["linewidth"] = 2
         ax = plt.gca()
-        if conditions:
+        if (len(conditions) != 0):
             freqs = []
             for condition in conditions:
                 if cumulative:
                     # freqs should be a list of list where each sub list will be a frequency of a condition
-                    freq = list(self[condition]._cumulative_frequencies(samples))
+                    freqs.append(list(self[condition]._cumulative_frequencies(samples)))
+                    ylabel = "Cumulative Counts"
+                    legend_loc = 'lower right'
+                    if percents:
+                        freqs[-1] = [f / freqs[len(freqs) - 1] * 100 for f in freqs]
+                        ylabel = "Cumulative Percents"
                 else:
-                    freq = [self[condition][sample] for sample in samples]
-
-                if percents:
-                    freq = [f / self[condition].N() * 100 for f in freq]
-
-                freqs.append(freq)
-
-            if cumulative:
-                ylabel = "Cumulative "
-                legend_loc = "lower right"
-            else:
-                ylabel = ""
-                legend_loc = "upper right"
-
-            if percents:
-                ylabel += "Percents"
-            else:
-                ylabel += "Counts"
+                    freqs.append([self[condition][sample] for sample in samples])
+                    ylabel = "Counts"
+                    legend_loc = 'upper right'
+                # percents = [f * 100 for f in freqs] only in ConditionalProbDist?
 
             i = 0
             for freq in freqs:
-                kwargs["label"] = conditions[i]  # label for each condition
+                kwargs['label'] = conditions[i] #label for each condition
                 i += 1
                 ax.plot(freq, *args, **kwargs)
             ax.legend(loc=legend_loc)
             ax.grid(True, color="silver")
             ax.set_xticks(range(len(samples)))
-            ax.set_xticklabels([str(s) for s in samples], rotation=90)
+            ax.set_xticklabels([text_type(s) for s in samples], rotation=90)
             if title:
                 ax.set_title(title)
             ax.set_xlabel("Samples")
             ax.set_ylabel(ylabel)
-
-        if show:
-            plt.show()
+        plt.show()
 
         return ax
 
@@ -2032,13 +1969,12 @@ class ConditionalFreqDist(defaultdict):
         :type title: bool
         """
 
-        cumulative = _get_kwarg(kwargs, "cumulative", False)
-        conditions = _get_kwarg(kwargs, "conditions", sorted(self.conditions()))
+        cumulative = _get_kwarg(kwargs, 'cumulative', False)
+        conditions = _get_kwarg(kwargs, 'conditions', sorted(self.conditions()))
         samples = _get_kwarg(
-            kwargs,
-            "samples",
-            sorted({v for c in conditions if c in self for v in self[c]}),
-        )  # this computation could be wasted
+            kwargs, 'samples', sorted(set(v for c in conditions
+                                          if c in self
+                                          for v in self[c])))  # this computation could be wasted
 
         width = max(len("%s" % s) for s in samples)
         freqs = dict()
@@ -2050,15 +1986,15 @@ class ConditionalFreqDist(defaultdict):
             width = max(width, max(len("%d" % f) for f in freqs[c]))
 
         condition_size = max(len("%s" % c) for c in conditions)
-        safe_print(" " * condition_size, end=" ")
+        print(' ' * condition_size, end=' ')
         for s in samples:
-            safe_print("%*s" % (width, s), end=" ")
-        safe_print()
+            print("%*s" % (width, s), end=' ')
+        print()
         for c in conditions:
-            safe_print("%*s" % (condition_size, c), end=" ")
+            print("%*s" % (condition_size, c), end=' ')
             for f in freqs[c]:
-                safe_print("%*d" % (width, f), end=" ")
-            safe_print()
+                print("%*d" % (width, f), end=' ')
+            print()
 
     # Mathematical operators
 
@@ -2068,9 +2004,16 @@ class ConditionalFreqDist(defaultdict):
         """
         if not isinstance(other, ConditionalFreqDist):
             return NotImplemented
-        result = self.copy()
+        result = ConditionalFreqDist()
+        for cond in self.conditions():
+            newfreqdist = self[cond] + other[cond]
+            if newfreqdist:
+                result[cond] = newfreqdist
         for cond in other.conditions():
-            result[cond] += other[cond]
+            if cond not in self.conditions():
+                for elem, count in other[cond].items():
+                    if count > 0:
+                        result[cond][elem] = count
         return result
 
     def __sub__(self, other):
@@ -2079,11 +2022,16 @@ class ConditionalFreqDist(defaultdict):
         """
         if not isinstance(other, ConditionalFreqDist):
             return NotImplemented
-        result = self.copy()
+        result = ConditionalFreqDist()
+        for cond in self.conditions():
+            newfreqdist = self[cond] - other[cond]
+            if newfreqdist:
+                result[cond] = newfreqdist
         for cond in other.conditions():
-            result[cond] -= other[cond]
-            if not result[cond]:
-                del result[cond]
+            if cond not in self.conditions():
+                for elem, count in other[cond].items():
+                    if count < 0:
+                        result[cond][elem] = 0 - count
         return result
 
     def __or__(self, other):
@@ -2092,9 +2040,16 @@ class ConditionalFreqDist(defaultdict):
         """
         if not isinstance(other, ConditionalFreqDist):
             return NotImplemented
-        result = self.copy()
+        result = ConditionalFreqDist()
+        for cond in self.conditions():
+            newfreqdist = self[cond] | other[cond]
+            if newfreqdist:
+                result[cond] = newfreqdist
         for cond in other.conditions():
-            result[cond] |= other[cond]
+            if cond not in self.conditions():
+                for elem, count in other[cond].items():
+                    if count > 0:
+                        result[cond][elem] = count
         return result
 
     def __and__(self, other):
@@ -2133,23 +2088,17 @@ class ConditionalFreqDist(defaultdict):
             raise_unorderable_types(">", self, other)
         return other < self
 
-    def deepcopy(self):
-        from copy import deepcopy
-
-        return deepcopy(self)
-
-    copy = deepcopy
-
     def __repr__(self):
         """
         Return a string representation of this ``ConditionalFreqDist``.
 
         :rtype: str
         """
-        return "<ConditionalFreqDist with %d conditions>" % len(self)
+        return '<ConditionalFreqDist with %d conditions>' % len(self)
 
 
-@six.add_metaclass(ABCMeta)
+@compat.python_2_unicode_compatible
+@add_metaclass(ABCMeta)
 class ConditionalProbDistI(dict):
     """
     A collection of probability distributions for a single experiment
@@ -2186,7 +2135,7 @@ class ConditionalProbDistI(dict):
 
         :rtype: str
         """
-        return "<%s with %d conditions>" % (type(self).__name__, len(self))
+        return '<%s with %d conditions>' % (type(self).__name__, len(self))
 
 
 class ConditionalProbDist(ConditionalProbDistI):
@@ -2218,7 +2167,7 @@ class ConditionalProbDist(ConditionalProbDistI):
         >>> cpdist = ConditionalProbDist(cfdist, ELEProbDist, 10)
         >>> cpdist['passed'].max()
         'VBD'
-        >>> cpdist['passed'].prob('VBD') #doctest: +ELLIPSIS
+        >>> cpdist['passed'].prob('VBD')
         0.423...
 
     """
@@ -2352,13 +2301,13 @@ class ProbabilisticMixIn(object):
             the object.
         :type logprob: float
         """
-        if "prob" in kwargs:
-            if "logprob" in kwargs:
-                raise TypeError("Must specify either prob or logprob " "(not both)")
+        if 'prob' in kwargs:
+            if 'logprob' in kwargs:
+                raise TypeError('Must specify either prob or logprob ' '(not both)')
             else:
-                ProbabilisticMixIn.set_prob(self, kwargs["prob"])
-        elif "logprob" in kwargs:
-            ProbabilisticMixIn.set_logprob(self, kwargs["logprob"])
+                ProbabilisticMixIn.set_prob(self, kwargs['prob'])
+        elif 'logprob' in kwargs:
+            ProbabilisticMixIn.set_logprob(self, kwargs['logprob'])
         else:
             self.__prob = self.__logprob = None
 
@@ -2412,10 +2361,10 @@ class ProbabilisticMixIn(object):
 
 class ImmutableProbabilisticMixIn(ProbabilisticMixIn):
     def set_prob(self, prob):
-        raise ValueError("%s is immutable" % self.__class__.__name__)
+        raise ValueError('%s is immutable' % self.__class__.__name__)
 
     def set_logprob(self, prob):
-        raise ValueError("%s is immutable" % self.__class__.__name__)
+        raise ValueError('%s is immutable' % self.__class__.__name__)
 
 
 ## Helper function for processing keyword arguments
@@ -2507,84 +2456,84 @@ def demo(numsamples=6, numoutcomes=500):
         vals.append(tuple([n, fdist1.freq(n)] + [pdist.prob(n) for pdist in pdists]))
 
     # Print the results in a formatted table.
-    safe_print(
-        "%d samples (1-%d); %d outcomes were sampled for each FreqDist"
-        % (numsamples, numsamples, numoutcomes)
+    print(
+        (
+            '%d samples (1-%d); %d outcomes were sampled for each FreqDist'
+            % (numsamples, numsamples, numoutcomes)
+        )
     )
-    safe_print("=" * 9 * (len(pdists) + 2))
-    FORMATSTR = "      FreqDist " + "%8s " * (len(pdists) - 1) + "|  Actual"
-    safe_print(FORMATSTR % tuple(repr(pdist)[1:9] for pdist in pdists[:-1]))
-    safe_print("-" * 9 * (len(pdists) + 2))
-    FORMATSTR = "%3d   %8.6f " + "%8.6f " * (len(pdists) - 1) + "| %8.6f"
+    print('=' * 9 * (len(pdists) + 2))
+    FORMATSTR = '      FreqDist ' + '%8s ' * (len(pdists) - 1) + '|  Actual'
+    print(FORMATSTR % tuple(repr(pdist)[1:9] for pdist in pdists[:-1]))
+    print('-' * 9 * (len(pdists) + 2))
+    FORMATSTR = '%3d   %8.6f ' + '%8.6f ' * (len(pdists) - 1) + '| %8.6f'
     for val in vals:
-        safe_print(FORMATSTR % val)
+        print(FORMATSTR % val)
 
     # Print the totals for each column (should all be 1.0)
     zvals = list(zip(*vals))
     sums = [sum(val) for val in zvals[1:]]
-    safe_print("-" * 9 * (len(pdists) + 2))
-    FORMATSTR = "Total " + "%8.6f " * (len(pdists)) + "| %8.6f"
-    safe_print(FORMATSTR % tuple(sums))
-    safe_print("=" * 9 * (len(pdists) + 2))
+    print('-' * 9 * (len(pdists) + 2))
+    FORMATSTR = 'Total ' + '%8.6f ' * (len(pdists)) + '| %8.6f'
+    print(FORMATSTR % tuple(sums))
+    print('=' * 9 * (len(pdists) + 2))
 
     # Display the distributions themselves, if they're short enough.
     if len("%s" % fdist1) < 70:
-        safe_print("  fdist1: %s" % fdist1)
-        safe_print("  fdist2: %s" % fdist2)
-        safe_print("  fdist3: %s" % fdist3)
-    safe_print()
+        print('  fdist1: %s' % fdist1)
+        print('  fdist2: %s' % fdist2)
+        print('  fdist3: %s' % fdist3)
+    print()
 
-    safe_print("Generating:")
+    print('Generating:')
     for pdist in pdists:
         fdist = FreqDist(pdist.generate() for i in range(5000))
-        safe_print(
-            "{:>20} {}".format(pdist.__class__.__name__[:20], ("%s" % fdist)[:55])
-        )
-    safe_print()
+        print('%20s %s' % (pdist.__class__.__name__[:20], ("%s" % fdist)[:55]))
+    print()
 
 
 def gt_demo():
     from nltk import corpus
 
-    emma_words = corpus.gutenberg.words("austen-emma.txt")
+    emma_words = corpus.gutenberg.words('austen-emma.txt')
     fd = FreqDist(emma_words)
     sgt = SimpleGoodTuringProbDist(fd)
-    safe_print("{:>18} {:>8}  {:>14}".format("word", "frequency", "SimpleGoodTuring"))
+    print('%18s %8s  %14s' % ("word", "freqency", "SimpleGoodTuring"))
     fd_keys_sorted = (
         key for key, value in sorted(fd.items(), key=lambda item: item[1], reverse=True)
     )
     for key in fd_keys_sorted:
-        safe_print("%18s %8d  %14e" % (key, fd[key], sgt.prob(key)))
+        print('%18s %8d  %14e' % (key, fd[key], sgt.prob(key)))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     demo(6, 10)
     demo(5, 5000)
     gt_demo()
 
 __all__ = [
-    "ConditionalFreqDist",
-    "ConditionalProbDist",
-    "ConditionalProbDistI",
-    "CrossValidationProbDist",
-    "DictionaryConditionalProbDist",
-    "DictionaryProbDist",
-    "ELEProbDist",
-    "FreqDist",
-    "SimpleGoodTuringProbDist",
-    "HeldoutProbDist",
-    "ImmutableProbabilisticMixIn",
-    "LaplaceProbDist",
-    "LidstoneProbDist",
-    "MLEProbDist",
-    "MutableProbDist",
-    "KneserNeyProbDist",
-    "ProbDistI",
-    "ProbabilisticMixIn",
-    "UniformProbDist",
-    "WittenBellProbDist",
-    "add_logs",
-    "log_likelihood",
-    "sum_logs",
-    "entropy",
+    'ConditionalFreqDist',
+    'ConditionalProbDist',
+    'ConditionalProbDistI',
+    'CrossValidationProbDist',
+    'DictionaryConditionalProbDist',
+    'DictionaryProbDist',
+    'ELEProbDist',
+    'FreqDist',
+    'SimpleGoodTuringProbDist',
+    'HeldoutProbDist',
+    'ImmutableProbabilisticMixIn',
+    'LaplaceProbDist',
+    'LidstoneProbDist',
+    'MLEProbDist',
+    'MutableProbDist',
+    'KneserNeyProbDist',
+    'ProbDistI',
+    'ProbabilisticMixIn',
+    'UniformProbDist',
+    'WittenBellProbDist',
+    'add_logs',
+    'log_likelihood',
+    'sum_logs',
+    'entropy',
 ]

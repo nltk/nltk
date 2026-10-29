@@ -1,22 +1,21 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-# -*- coding: utf-8 -*-
-import six
 # Natural Language Toolkit: Expectation Maximization Clusterer
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import print_function, unicode_literals
 
 try:
     import numpy
 except ImportError:
     pass
 
+from nltk.compat import python_2_unicode_compatible
 from nltk.cluster.util import VectorSpaceClusterer
-from nltk.termsec import safe_print
 
 
+@python_2_unicode_compatible
 class EMClusterer(VectorSpaceClusterer):
     """
     The Gaussian EM clusterer models the vectors as being produced by
@@ -99,7 +98,7 @@ class EMClusterer(VectorSpaceClusterer):
 
         while not converged:
             if trace:
-                safe_print("iteration; loglikelihood", lastl)
+                print('iteration; loglikelihood', lastl)
             # E-step, calculate hidden variables, h[i,j]
             h = numpy.zeros((len(vectors), self._num_clusters), numpy.float64)
             for i in range(len(vectors)):
@@ -153,13 +152,13 @@ class EMClusterer(VectorSpaceClusterer):
 
     def _gaussian(self, mean, cvm, x):
         m = len(mean)
-        assert cvm.shape == (m, m), "bad sized covariance matrix, %s" % str(cvm.shape)
+        assert cvm.shape == (m, m), 'bad sized covariance matrix, %s' % str(cvm.shape)
         try:
             det = numpy.linalg.det(cvm)
             inv = numpy.linalg.inv(cvm)
-            a = det**-0.5 * (2 * numpy.pi) ** (-m / 2.0)
+            a = det ** -0.5 * (2 * numpy.pi) ** (-m / 2.0)
             dx = x - mean
-            safe_print(dx, inv)
+            print(dx, inv)
             b = -0.5 * numpy.dot(numpy.dot(dx, inv), dx)
             return a * numpy.exp(b)
         except OverflowError:
@@ -177,7 +176,7 @@ class EMClusterer(VectorSpaceClusterer):
         return llh
 
     def __repr__(self):
-        return "<EMClusterer means=%s>" % list(self._means)
+        return '<EMClusterer means=%s>' % list(self._means)
 
 
 def demo():
@@ -195,29 +194,64 @@ def demo():
     clusterer = cluster.EMClusterer(means, bias=0.1)
     clusters = clusterer.cluster(vectors, True, trace=True)
 
-    safe_print("Clustered:", vectors)
-    safe_print("As:       ", clusters)
-    safe_print()
+    print('Clustered:', vectors)
+    print('As:       ', clusters)
+    print()
 
     for c in range(2):
-        safe_print("Cluster:", c)
-        safe_print("Prior:  ", clusterer._priors[c])
-        safe_print("Mean:   ", clusterer._means[c])
-        safe_print("Covar:  ", clusterer._covariance_matrices[c])
-        safe_print()
+        print('Cluster:', c)
+        print('Prior:  ', clusterer._priors[c])
+        print('Mean:   ', clusterer._means[c])
+        print('Covar:  ', clusterer._covariance_matrices[c])
+        print()
 
     # classify a new vector
     vector = numpy.array([2, 2])
-    safe_print("classify(%s):" % vector, end=" ")
-    safe_print(clusterer.classify(vector))
+    print('classify(%s):' % vector, end=' ')
+    print(clusterer.classify(vector))
 
     # show the classification probabilities
     vector = numpy.array([2, 2])
-    safe_print("classification_probdist(%s):" % vector)
+    print('classification_probdist(%s):' % vector)
     pdist = clusterer.classification_probdist(vector)
     for sample in pdist.samples():
-        safe_print("{0} => {1:.0f}%".format(sample, pdist.prob(sample) * 100))
+        print('%s => %.0f%%' % (sample, pdist.prob(sample) * 100))
 
 
-if __name__ == "__main__":
+#
+#     The following demo code is broken.
+#
+#     # use a set of tokens with 2D indices
+#     vectors = [numpy.array(f) for f in [[3, 3], [1, 2], [4, 2], [4, 0], [2, 3], [3, 1]]]
+
+#     # test the EM clusterer with means given by k-means (2) and
+#     # dimensionality reduction
+#     clusterer = cluster.KMeans(2, euclidean_distance, svd_dimensions=1)
+#     print 'Clusterer:', clusterer
+#     clusters = clusterer.cluster(vectors)
+#     means = clusterer.means()
+#     print 'Means:', clusterer.means()
+#     print
+
+#     clusterer = cluster.EMClusterer(means, svd_dimensions=1)
+#     clusters = clusterer.cluster(vectors, True)
+#     print 'Clusterer:', clusterer
+#     print 'Clustered:', str(vectors)[:60], '...'
+#     print 'As:', str(clusters)[:60], '...'
+#     print
+
+#     # classify a new vector
+#     vector = numpy.array([3, 3])
+#     print 'classify(%s):' % vector,
+#     print clusterer.classify(vector)
+#     print
+
+#     # show the classification probabilities
+#     vector = numpy.array([2.2, 2])
+#     print 'classification_probdist(%s)' % vector
+#     pdist = clusterer.classification_probdist(vector)
+#     for sample in pdist:
+#         print '%s => %.0f%%' % (sample, pdist.prob(sample) *100)
+
+if __name__ == '__main__':
     demo()

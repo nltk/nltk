@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: WordNet Browser Application
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
 #         Paul Bone <pbone@students.csse.unimelb.edu.au>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -39,51 +38,54 @@ Options::
 
     -s or --server-mode
         Do not start a web browser, and do not allow a user to
-        shutdown the server through the web interface.
+        shotdown the server through the web interface.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
-from nltk.compat import FileNotFoundError, html_escape, token_urlsafe
 # TODO: throughout this package variable names and docstrings need
 # modifying to be compliant with NLTK's coding standards.  Tests also
 # need to be develop to ensure this continues to work in the face of
 # changes to other NLTK packages.
-
-import base64
-import copy
-import getopt
-import hmac
-import io
-import os
-import sys
-import threading
-import time
-import webbrowser
-from collections import defaultdict
-from http.server import BaseHTTPRequestHandler, HTTPServer
+from __future__ import print_function
 
 # Allow this program to run inside the NLTK source tree.
-from sys import argv
-from six.moves.urllib.parse import parse_qs, unquote_plus
+from sys import path
 
+import os
+import sys
+from sys import argv
+from collections import defaultdict
+import webbrowser
+import datetime
+import re
+import threading
+import time
+import getopt
+import base64
+import pickle
+import copy
+
+from six.moves.urllib.parse import unquote_plus
+
+from nltk import compat
 from nltk.corpus import wordnet as wn
-from nltk.corpus.reader.wordnet import Lemma, Synset
-from nltk.picklesec import RestrictedUnpickler, pickle_dumps
-from nltk.termsec import safe_print
+from nltk.corpus.reader.wordnet import Synset, Lemma
+
+if compat.PY3:
+    from http.server import HTTPServer, BaseHTTPRequestHandler
+else:
+    from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+
+# now included in local file
+# from util import html_header, html_trailer, \
+#    get_static_index_page, get_static_page_by_path, \
+#    page_from_word, page_from_href
 
 firstClient = True
-
-# Per-process secret token. It is embedded only in the browser's own "Shutdown"
-# link and required by the shutdown route, so a cross-site page (which cannot
-# read the link under the Same-Origin Policy) cannot forge a shutdown request
-# (CWE-352). The loopback bind already blocks remote access (CWE-306).
-_shutdown_token = token_urlsafe(32)
 
 # True if we're not also running a web browser.  The value f server_mode
 # gets set by demo().
 server_mode = None
 
-# If set this is a file object for writing log messages.
+# If set this is a file object for writting log messages.
 logfile = None
 
 
@@ -91,122 +93,80 @@ class MyServerHandler(BaseHTTPRequestHandler):
     def do_HEAD(self):
         self.send_head()
 
-    def _shutdown_authorized(self):
-        """True only for a shutdown request carrying the per-process token.
-
-        The token is generated once per server process and embedded only in the
-        browser's own Shutdown link, so a cross-site page cannot supply it; this
-        blocks CSRF-driven shutdown (CWE-352).
-        """
-        token = parse_qs(self.path.partition("?")[2]).get("token", [""])[0]
-        return bool(_shutdown_token) and hmac.compare_digest(token, _shutdown_token)
-
     def do_GET(self):
         global firstClient
         sp = self.path[1:]
-        if unquote_plus(sp.partition("?")[0]) == "SHUTDOWN THE SERVER":
+        if unquote_plus(sp) == 'SHUTDOWN THE SERVER':
             if server_mode:
                 page = "Server must be killed with SIGTERM."
                 type = "text/plain"
-            elif self._shutdown_authorized():
-                safe_print("Server shutting down!")
-                os._exit(0)
             else:
-                # Refuse a token-less / cross-site shutdown request (CWE-352).
-                self.send_response(403)
-                self.send_header("Content-type", "text/plain")
-                self.end_headers()
-                self.wfile.write(
-                    b"Forbidden: shutdown requires the per-process token "
-                    b"from the browser's Shutdown link."
-                )
-                return
+                print('Server shutting down!')
+                os._exit(0)
 
-        elif sp == "":  # First request.
-            type = "text/html"
+        elif sp == '':  # First request.
+            type = 'text/html'
             if not server_mode and firstClient:
                 firstClient = False
                 page = get_static_index_page(True)
             else:
                 page = get_static_index_page(False)
-            word = "green"
+            word = 'green'
 
-        elif sp.endswith(".html"):  # Trying to fetch a HTML file TODO:
-            type = "text/html"
+        elif sp.endswith('.html'):  # Trying to fetch a HTML file TODO:
+            type = 'text/html'
             usp = unquote_plus(sp)
-            if usp == "NLTK Wordnet Browser Database Info.html":
-                word = "* Database Info *"
+            if usp == 'NLTK Wordnet Browser Database Info.html':
+                word = '* Database Info *'
                 if os.path.isfile(usp):
-                    with open(
-                        usp
-                    ) as infile:  # sandboxed-open ok: fixed db-info filename (exact-string gated)
+                    with open(usp, 'r') as infile:
                         page = infile.read()
                 else:
                     page = (
-                        (html_header % html_escape(word)) + "<p>The database info file:"
-                        "<p><b>"
+                        (html_header % word) + '<p>The database info file:'
+                        '<p><b>'
                         + usp
-                        + "</b>"
-                        + "<p>was not found. Run this:"
-                        + "<p><b>python dbinfo_html.py</b>"
-                        + "<p>to produce it."
+                        + '</b>'
+                        + '<p>was not found. Run this:'
+                        + '<p><b>python dbinfo_html.py</b>'
+                        + '<p>to produce it.'
                         + html_trailer
                     )
             else:
                 # Handle files here.
                 word = sp
-                try:
-                    page = get_static_page_by_path(usp)
-                except FileNotFoundError:
-                    page = "Internal error: Path for static page '%s' is unknown" % usp
-                    # Set type to plain to prevent XSS by printing the path as HTML
-                    type = "text/plain"
+                page = get_static_page_by_path(usp)
         elif sp.startswith("search"):
             # This doesn't seem to work with MWEs.
-            type = "text/html"
+            type = 'text/html'
             parts = (sp.split("?")[1]).split("&")
-            word = html_escape(
-                [
-                    p.split("=")[1].replace("+", " ")
-                    for p in parts
-                    if p.startswith("nextWord")
-                ][0]
-            )
+            word = [
+                p.split("=")[1].replace("+", " ")
+                for p in parts
+                if p.startswith("nextWord")
+            ][0]
             page, word = page_from_word(word)
         elif sp.startswith("lookup_"):
             # TODO add a variation of this that takes a non ecoded word or MWE.
-            type = "text/html"
+            type = 'text/html'
             sp = sp[len("lookup_") :]
-            try:
-                page, word = page_from_href(sp)
-            except ValueError:
-                type = "text/plain"
-                page = "Could not parse lookup reference."
-                word = "* Error *"
+            page, word = page_from_href(sp)
         elif sp == "start_page":
             # if this is the first request we should display help
             # information, and possibly set a default word.
-            type = "text/html"
+            type = 'text/html'
             page, word = page_from_word("wordnet")
         else:
-            type = "text/plain"
+            type = 'text/plain'
             page = "Could not parse request: '%s'" % sp
 
         # Send result.
         self.send_head(type)
-        self.wfile.write(page.encode("utf8"))
+        self.wfile.write(page.encode('utf8'))
 
     def send_head(self, type=None):
         self.send_response(200)
-        # Pin the charset so a browser cannot sniff an HTML response as UTF-7, which
-        # would let a payload such as "+ADw-script+AD4-" (which html.escape passes
-        # through untouched, as it has none of <>"'&) decode to "<script>" in the
-        # browser. Also send X-Content-Type-Options: nosniff so a text/plain body
-        # cannot be MIME-sniffed into active HTML (CWE-79 / CWE-116).
-        if type and type.startswith("text/") and "charset=" not in type.lower():
-            type = type + "; charset=UTF-8"
-        self.send_header("Content-type", type)
-        self.send_header("X-Content-Type-Options", "nosniff")
+        self.send_header('Content-type', type)
         self.end_headers()
 
     def log_message(self, format, *args):
@@ -224,7 +184,7 @@ def get_unique_counter_from_url(sp):
     Extract the unique counter from the URL if it has one.  Otherwise return
     null.
     """
-    pos = sp.rfind("%23")
+    pos = sp.rfind('%23')
     if pos != -1:
         return int(sp[(pos + 3) :])
     else:
@@ -248,7 +208,7 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
     # so we need to force it to have a clear correct behaviour.
     #
     # Normally the server should run for as long as the user wants. they
-    # should ideally be able to control this from the UI by closing the
+    # should idealy be able to control this from the UI by closing the
     # window or tab.  Second best would be clicking a button to say
     # 'Shutdown' that first shutsdown the server and closes the window or
     # tab, or exits the text-mode browser.  Both of these are unfreasable.
@@ -266,23 +226,15 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
     # Setup logging.
     if logfilename:
         try:
-            logfile = open(
-                logfilename, "a", buffering=1
-            )  # sandboxed-open ok: operator log path
-        except OSError as e:
-            # logfilename and e are caller-influenced (a crafted path can carry
-            # terminal escapes), so route through safe_print; the old 3-arg
-            # sys.stderr.write also raised TypeError before it could report.
-            safe_print(
-                "Couldn't open {0} for writing: {1}".format(logfilename, e),
-                file=sys.stderr,
-            )
+            logfile = open(logfilename, "a", 1)  # 1 means 'line buffering'
+        except IOError as e:
+            sys.stderr.write("Couldn't open %s for writing: %s", logfilename, e)
             sys.exit(1)
     else:
         logfile = None
 
     # Compute URL and start web browser
-    url = "http://localhost:" + str(port)
+    url = 'http://localhost:' + str(port)
 
     server_ready = None
     browser_thread = None
@@ -291,11 +243,10 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
         server_ready = threading.Event()
         browser_thread = startBrowser(url, server_ready)
 
-    # Start the server. Bind to localhost only to prevent remote access
-    # and unauthenticated shutdown via /SHUTDOWN%20THE%20SERVER.
-    server = HTTPServer(("127.0.0.1", port), MyServerHandler)
+    # Start the server.
+    server = HTTPServer(('', port), MyServerHandler)
     if logfile:
-        logfile.write("NLTK Wordnet browser server running serving: %s\n" % url)
+        logfile.write('NLTK Wordnet browser server running serving: %s\n' % url)
     if runBrowser:
         server_ready.set()
 
@@ -339,15 +290,14 @@ This provides a backend to both wxbrowse and browserver.py.
 # Main logic for wordnet browser.
 #
 
-
 # This is wrapped inside a function since wn is only available if the
 # WordNet corpus is installed.
 def _pos_tuples():
     return [
-        (wn.NOUN, "N", "noun"),
-        (wn.VERB, "V", "verb"),
-        (wn.ADJ, "J", "adj"),
-        (wn.ADV, "R", "adv"),
+        (wn.NOUN, 'N', 'noun'),
+        (wn.VERB, 'V', 'verb'),
+        (wn.ADJ, 'J', 'adj'),
+        (wn.ADV, 'R', 'adv'),
     ]
 
 
@@ -357,8 +307,8 @@ def _pos_match(pos_tuple):
     tuple given to it.  It attempts to match it against the first
     non-null component of the given pos tuple.
     """
-    if pos_tuple[0] == "s":
-        pos_tuple = ("a", pos_tuple[1], pos_tuple[2])
+    if pos_tuple[0] == 's':
+        pos_tuple = ('a', pos_tuple[1], pos_tuple[2])
     for n, x in enumerate(pos_tuple):
         if x is not None:
             break
@@ -407,7 +357,7 @@ def lemma_property(word, synset, func):
         else:
             return l[0] + flattern(l[1:])
 
-    return flattern([func(l) for l in synset.lemmas() if l.name == word])
+    return flattern([func(l) for l in synset.lemmas if l.name == word])
 
 
 def rebuild_tree(orig_tree):
@@ -423,24 +373,24 @@ def get_relations_data(word, synset):
     """
     if synset.pos() == wn.NOUN:
         return (
-            (HYPONYM, "Hyponyms", synset.hyponyms()),
-            (INSTANCE_HYPONYM, "Instance hyponyms", synset.instance_hyponyms()),
-            (HYPERNYM, "Direct hypernyms", synset.hypernyms()),
+            (HYPONYM, 'Hyponyms', synset.hyponyms()),
+            (INSTANCE_HYPONYM, 'Instance hyponyms', synset.instance_hyponyms()),
+            (HYPERNYM, 'Direct hypernyms', synset.hypernyms()),
             (
                 INDIRECT_HYPERNYMS,
-                "Indirect hypernyms",
+                'Indirect hypernyms',
                 rebuild_tree(synset.tree(lambda x: x.hypernyms()))[1],
             ),
             #  hypernyms', 'Sister terms',
-            (INSTANCE_HYPERNYM, "Instance hypernyms", synset.instance_hypernyms()),
+            (INSTANCE_HYPERNYM, 'Instance hypernyms', synset.instance_hypernyms()),
             #            (CLASS_REGIONAL, ['domain term region'], ),
-            (PART_HOLONYM, "Part holonyms", synset.part_holonyms()),
-            (PART_MERONYM, "Part meronyms", synset.part_meronyms()),
-            (SUBSTANCE_HOLONYM, "Substance holonyms", synset.substance_holonyms()),
-            (SUBSTANCE_MERONYM, "Substance meronyms", synset.substance_meronyms()),
-            (MEMBER_HOLONYM, "Member holonyms", synset.member_holonyms()),
-            (MEMBER_MERONYM, "Member meronyms", synset.member_meronyms()),
-            (ATTRIBUTE, "Attributes", synset.attributes()),
+            (PART_HOLONYM, 'Part holonyms', synset.part_holonyms()),
+            (PART_MERONYM, 'Part meronyms', synset.part_meronyms()),
+            (SUBSTANCE_HOLONYM, 'Substance holonyms', synset.substance_holonyms()),
+            (SUBSTANCE_MERONYM, 'Substance meronyms', synset.substance_meronyms()),
+            (MEMBER_HOLONYM, 'Member holonyms', synset.member_holonyms()),
+            (MEMBER_MERONYM, 'Member meronyms', synset.member_meronyms()),
+            (ATTRIBUTE, 'Attributes', synset.attributes()),
             (ANTONYM, "Antonyms", lemma_property(word, synset, lambda l: l.antonyms())),
             (
                 DERIVATIONALLY_RELATED_FORM,
@@ -452,18 +402,18 @@ def get_relations_data(word, synset):
         )
     elif synset.pos() == wn.VERB:
         return (
-            (ANTONYM, "Antonym", lemma_property(word, synset, lambda l: l.antonyms())),
-            (HYPONYM, "Hyponym", synset.hyponyms()),
-            (HYPERNYM, "Direct hypernyms", synset.hypernyms()),
+            (ANTONYM, 'Antonym', lemma_property(word, synset, lambda l: l.antonyms())),
+            (HYPONYM, 'Hyponym', synset.hyponyms()),
+            (HYPERNYM, 'Direct hypernyms', synset.hypernyms()),
             (
                 INDIRECT_HYPERNYMS,
-                "Indirect hypernyms",
+                'Indirect hypernyms',
                 rebuild_tree(synset.tree(lambda x: x.hypernyms()))[1],
             ),
-            (ENTAILMENT, "Entailments", synset.entailments()),
-            (CAUSE, "Causes", synset.causes()),
-            (ALSO_SEE, "Also see", synset.also_sees()),
-            (VERB_GROUP, "Verb Groups", synset.verb_groups()),
+            (ENTAILMENT, 'Entailments', synset.entailments()),
+            (CAUSE, 'Causes', synset.causes()),
+            (ALSO_SEE, 'Also see', synset.also_sees()),
+            (VERB_GROUP, 'Verb Groups', synset.verb_groups()),
             (
                 DERIVATIONALLY_RELATED_FORM,
                 "Derivationally related form",
@@ -472,31 +422,31 @@ def get_relations_data(word, synset):
                 ),
             ),
         )
-    elif synset.pos() == wn.ADJ or synset.pos() == wn.ADJ_SAT:
+    elif synset.pos() == wn.ADJ or synset.pos == wn.ADJ_SAT:
         return (
-            (ANTONYM, "Antonym", lemma_property(word, synset, lambda l: l.antonyms())),
-            (SIMILAR, "Similar to", synset.similar_tos()),
+            (ANTONYM, 'Antonym', lemma_property(word, synset, lambda l: l.antonyms())),
+            (SIMILAR, 'Similar to', synset.similar_tos()),
             # Participle of verb - not supported by corpus
             (
                 PERTAINYM,
-                "Pertainyms",
+                'Pertainyms',
                 lemma_property(word, synset, lambda l: l.pertainyms()),
             ),
-            (ATTRIBUTE, "Attributes", synset.attributes()),
-            (ALSO_SEE, "Also see", synset.also_sees()),
+            (ATTRIBUTE, 'Attributes', synset.attributes()),
+            (ALSO_SEE, 'Also see', synset.also_sees()),
         )
     elif synset.pos() == wn.ADV:
         # This is weird. adverbs such as 'quick' and 'fast' don't seem
         # to have antonyms returned by the corpus.a
         return (
-            (ANTONYM, "Antonym", lemma_property(word, synset, lambda l: l.antonyms())),
+            (ANTONYM, 'Antonym', lemma_property(word, synset, lambda l: l.antonyms())),
         )
         # Derived from adjective - not supported by corpus
     else:
-        raise TypeError("Unhandled synset POS type: " + str(synset.pos()))
+        raise TypeError("Unhandles synset POS type: " + str(synset.pos()))
 
 
-html_header = """
+html_header = '''
 <!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01//EN'
 'http://www.w3.org/TR/html4/strict.dtd'>
 <html>
@@ -504,16 +454,16 @@ html_header = """
 <meta name='generator' content=
 'HTML Tidy for Windows (vers 14 February 2006), see www.w3.org'>
 <meta http-equiv='Content-Type' content=
-'text/html; charset=UTF-8'>
+'text/html; charset=us-ascii'>
 <title>NLTK Wordnet Browser display of: %s</title></head>
 <body bgcolor='#F5F5F5' text='#000000'>
-"""
-html_trailer = """
+'''
+html_trailer = '''
 </body>
 </html>
-"""
+'''
 
-explanation = """
+explanation = '''
 <h3>Search Help</h3>
 <ul><li>The display below the line is an example of the output the browser
 shows you when you enter a search word. The search word was <b>green</b>.</li>
@@ -532,33 +482,33 @@ synsets.</li>
 <b>Enter/Return</b> key or click the <b>Search</b> button.</li>
 </ul>
 <hr width='100%'>
-"""
+'''
 
 # HTML oriented functions
 
 
 def _bold(txt):
-    return "<b>%s</b>" % txt
+    return '<b>%s</b>' % txt
 
 
 def _center(txt):
-    return "<center>%s</center>" % txt
+    return '<center>%s</center>' % txt
 
 
 def _hlev(n, txt):
-    return "<h%d>%s</h%d>" % (n, txt, n)
+    return '<h%d>%s</h%d>' % (n, txt, n)
 
 
 def _italic(txt):
-    return "<i>%s</i>" % txt
+    return '<i>%s</i>' % txt
 
 
 def _li(txt):
-    return "<li>%s</li>" % txt
+    return '<li>%s</li>' % txt
 
 
 def pg(word, body):
-    """
+    '''
     Return a HTML page of NLTK Browser format constructed from the
     word and body
 
@@ -568,36 +518,34 @@ def pg(word, body):
     :type body: str
     :return: a HTML page for the word-body combination
     :rtype: str
-    """
-    # word is reflected into the <title>; escape it so it cannot inject markup
-    # into the page head (CWE-79).
-    return (html_header % html_escape(word)) + body + html_trailer
+    '''
+    return (html_header % word) + body + html_trailer
 
 
 def _ul(txt):
-    return "<ul>" + txt + "</ul>"
+    return '<ul>' + txt + '</ul>'
 
 
 def _abbc(txt):
     """
     abbc = asterisks, breaks, bold, center
     """
-    return _center(_bold("<br>" * 10 + "*" * 10 + " " + txt + " " + "*" * 10))
+    return _center(_bold('<br>' * 10 + '*' * 10 + ' ' + txt + ' ' + '*' * 10))
 
 
-full_hyponym_cont_text = _ul(_li(_italic("(has full hyponym continuation)"))) + "\n"
+full_hyponym_cont_text = _ul(_li(_italic('(has full hyponym continuation)'))) + '\n'
 
 
 def _get_synset(synset_key):
     """
     The synset key is the unique name of the synset, this can be
-    retrieved via synset.name()
+    retrived via synset.name()
     """
     return wn.synset(synset_key)
 
 
 def _collect_one_synset(word, synset, synset_relations):
-    """
+    '''
     Returns the HTML string for one synset or word
 
     :param word: the current word
@@ -609,11 +557,11 @@ def _collect_one_synset(word, synset, synset_relations):
     :type synset_relations: dict(synset_key, set(relation_id))
     :return: The HTML string built for this synset
     :rtype: str
-    """
+    '''
     if isinstance(synset, tuple):  # It's a word
         raise NotImplementedError("word not supported by _collect_one_synset")
 
-    typ = "S"
+    typ = 'S'
     pos_tuple = _pos_match((synset.pos(), None, None))
     assert pos_tuple is not None, "pos_tuple is null: synset.pos(): %s" % synset.pos()
     descr = pos_tuple[2]
@@ -622,25 +570,23 @@ def _collect_one_synset(word, synset, synset_relations):
     synset_label = typ + ";"
     if synset.name() in synset_relations:
         synset_label = _bold(synset_label)
-    s = "<li>{0} ({1}) ".format(make_lookup_link(ref, synset_label), descr)
+    s = '<li>%s (%s) ' % (make_lookup_link(ref, synset_label), descr)
 
     def format_lemma(w):
-        w = w.replace("_", " ")
+        w = w.replace('_', ' ')
         if w.lower() == word:
-            return _bold(html_escape(w))
+            return _bold(w)
         else:
             ref = Reference(w)
-            return make_lookup_link(ref, html_escape(w))
+            return make_lookup_link(ref, w)
 
-    s += ", ".join(format_lemma(l.name()) for l in synset.lemmas())
+    s += ', '.join(format_lemma(l.name()) for l in synset.lemmas())
 
-    # Corpus-derived text served as HTML; escape it so a crafted WordNet gloss
-    # cannot inject markup into the browser (CWE-79).
-    gl = " ({}) <i>{}</i> ".format(
-        html_escape(synset.definition()),
-        "; ".join('"%s"' % html_escape(e) for e in synset.examples()),
+    gl = " (%s) <i>%s</i> " % (
+        synset.definition(),
+        "; ".join("\"%s\"" % e for e in synset.examples()),
     )
-    return s + gl + _synset_relations(word, synset, synset_relations) + "</li>\n"
+    return s + gl + _synset_relations(word, synset, synset_relations) + '</li>\n'
 
 
 def _collect_all_synsets(word, pos, synset_relations=dict()):
@@ -648,14 +594,16 @@ def _collect_all_synsets(word, pos, synset_relations=dict()):
     Return a HTML unordered list of synsets for the given word and
     part of speech.
     """
-    return "<ul>%s\n</ul>\n" % "".join(
-        _collect_one_synset(word, synset, synset_relations)
-        for synset in wn.synsets(word, pos)
+    return '<ul>%s\n</ul>\n' % ''.join(
+        (
+            _collect_one_synset(word, synset, synset_relations)
+            for synset in wn.synsets(word, pos)
+        )
     )
 
 
 def _synset_relations(word, synset, synset_relations):
-    """
+    '''
     Builds the HTML string for the relations of a synset
 
     :param word: The current word
@@ -666,25 +614,23 @@ def _synset_relations(word, synset, synset_relations):
     :type synset_relations: dict(synset_key, set(relation_type))
     :return: The HTML for a synset's relations
     :rtype: str
-    """
+    '''
 
-    if synset.name() not in synset_relations:
+    if not synset.name() in synset_relations:
         return ""
     ref = Reference(word, synset_relations)
 
     def relation_html(r):
         if isinstance(r, Synset):
-            return make_lookup_link(
-                Reference(r.lemma_names()[0]), html_escape(r.lemma_names()[0])
-            )
+            return make_lookup_link(Reference(r.lemma_names()[0]), r.lemma_names()[0])
         elif isinstance(r, Lemma):
             return relation_html(r.synset())
         elif isinstance(r, tuple):
             # It's probably a tuple containing a Synset and a list of
             # similar tuples.  This forms a tree of synsets.
-            return "{}\n<ul>{}</ul>\n".format(
+            return "%s\n<ul>%s</ul>\n" % (
                 relation_html(r[0]),
-                "".join("<li>%s</li>\n" % relation_html(sr) for sr in r[1]),
+                ''.join('<li>%s</li>\n' % relation_html(sr) for sr in r[1]),
             )
         else:
             raise TypeError(
@@ -693,34 +639,31 @@ def _synset_relations(word, synset, synset_relations):
             )
 
     def make_synset_html(db_name, disp_name, rels):
-        synset_html = "<i>%s</i>\n" % make_lookup_link(
-            copy.deepcopy(ref).toggle_synset_relation(synset, db_name),
+        synset_html = '<i>%s</i>\n' % make_lookup_link(
+            copy.deepcopy(ref).toggle_synset_relation(synset, db_name).encode(),
             disp_name,
         )
 
         if db_name in ref.synset_relations[synset.name()]:
-            synset_html += "<ul>%s</ul>\n" % "".join(
+            synset_html += '<ul>%s</ul>\n' % ''.join(
                 "<li>%s</li>\n" % relation_html(r) for r in rels
             )
 
         return synset_html
 
-    # Do not name this local ``html``: that would shadow the module-level
-    # ``import html`` and, because the nested ``relation_html`` closes over the
-    # name, its ``html_escape(...)`` would resolve to this still-unassigned
-    # enclosing local (it runs while this value is being built) and raise
-    # NameError, so the escaping sink would never run (CWE-79).
-    relations_html = (
-        "<ul>"
-        + "\n".join(
-            "<li>%s</li>" % make_synset_html(*rel_data)
-            for rel_data in get_relations_data(word, synset)
-            if rel_data[2] != []
+    html = (
+        '<ul>'
+        + '\n'.join(
+            (
+                "<li>%s</li>" % make_synset_html(*rel_data)
+                for rel_data in get_relations_data(word, synset)
+                if rel_data[2] != []
+            )
         )
-        + "</ul>"
+        + '</ul>'
     )
 
-    return relations_html
+    return html
 
 
 class Reference(object):
@@ -728,7 +671,7 @@ class Reference(object):
     A reference to a page that may be generated by page_word
     """
 
-    def __init__(self, word, synset_relations=None):
+    def __init__(self, word, synset_relations=dict()):
         """
         Build a reference to a new page.
 
@@ -740,7 +683,7 @@ class Reference(object):
         relations for.
         """
         self.word = word
-        self.synset_relations = {} if synset_relations is None else synset_relations
+        self.synset_relations = synset_relations
 
     def encode(self):
         """
@@ -749,38 +692,16 @@ class Reference(object):
         # This uses a tuple rather than an object since the python
         # pickle representation is much smaller and there is no need
         # to represent the complete object.
-        string = pickle_dumps((self.word, self.synset_relations), -1)
+        string = pickle.dumps((self.word, self.synset_relations), -1)
         return base64.urlsafe_b64encode(string).decode()
 
     @staticmethod
     def decode(string):
         """
         Decode a reference encoded with Reference.encode
-
-        :raises ValueError: if the input isn't valid base64/pickle data, or
-            if the decoded data isn't shaped like a genuine Reference
-            (word: str, synset_relations: dict[str, set]).
-            RestrictedUnpickler only blocks class/function reconstruction;
-            it does not guarantee the *type* or *shape* of what it returns,
-            so that must still be checked before use. Any failure while
-            decoding, unpickling, or unpacking the payload is normalized to
-            ValueError so callers only need to guard against one exception
-            type.
         """
-        try:
-            raw = base64.urlsafe_b64decode(string.encode())
-            word, synset_relations = RestrictedUnpickler(io.BytesIO(raw)).load()
-        except Exception as e:
-            six.raise_from(ValueError("Malformed wordnet_app reference"), e)
-        if not isinstance(word, six.string_types) or not isinstance(synset_relations, dict):
-            raise ValueError("Malformed wordnet_app reference")
-        # Must be plain, mutable sets: toggle_synset_relation() calls .add()
-        # and .remove() on these values, which frozenset doesn't support.
-        if not all(
-            isinstance(key, six.string_types) and isinstance(value, set)
-            for key, value in synset_relations.items()
-        ):
-            raise ValueError("Malformed wordnet_app reference")
+        string = base64.urlsafe_b64decode(string.encode())
+        word, synset_relations = pickle.loads(string)
         return Reference(word, synset_relations)
 
     def toggle_synset_relation(self, synset, relation):
@@ -811,10 +732,7 @@ class Reference(object):
 
 
 def make_lookup_link(ref, label):
-    # Escape the corpus-derived href param (attribute context); callers pass an
-    # already-escaped or trusted label for the link text (CWE-79).
-    href = html_escape(str(ref.encode()), quote=True)
-    return '<a href="lookup_{0}">{1}</a>'.format(href, label)
+    return '<a href="lookup_%s">%s</a>' % (ref.encode(), label)
 
 
 def page_from_word(word):
@@ -832,7 +750,7 @@ def page_from_word(word):
 
 
 def page_from_href(href):
-    """
+    '''
     Returns a tuple of the HTML page built and the new current word
 
     :param href: The hypertext reference to be solved
@@ -841,12 +759,12 @@ def page_from_href(href):
              to be sent to the browser and
              word is the new current word
     :rtype: A tuple (str,str)
-    """
+    '''
     return page_from_reference(Reference.decode(href))
 
 
 def page_from_reference(href):
-    """
+    '''
     Returns a tuple of the HTML page built and the new current word
 
     :param href: The hypertext reference to be solved
@@ -855,11 +773,11 @@ def page_from_reference(href):
              to be sent to the browser and
              word is the new current word
     :rtype: A tuple (str,str)
-    """
+    '''
     word = href.word
     pos_forms = defaultdict(list)
-    words = word.split(",")
-    words = [w for w in [w.strip().lower().replace(" ", "_") for w in words] if w != ""]
+    words = word.split(',')
+    words = [w for w in [w.strip().lower().replace(' ', '_') for w in words] if w != ""]
     if len(words) == 0:
         # No words were found.
         return "", "Please specify a word to search for."
@@ -871,10 +789,10 @@ def page_from_reference(href):
             form = wn.morphy(w, pos)
             if form and form not in pos_forms[pos]:
                 pos_forms[pos].append(form)
-    body = ""
+    body = ''
     for pos, pos_str, name in _pos_tuples():
         if pos in pos_forms:
-            body += _hlev(3, name) + "\n"
+            body += _hlev(3, name) + '\n'
             for w in pos_forms[pos]:
                 # Not all words of exc files are in the database, skip
                 # to the next word if a KeyError is raised.
@@ -883,9 +801,7 @@ def page_from_reference(href):
                 except KeyError:
                     pass
     if not body:
-        body = "The word or words '%s' were not found in the dictionary." % html_escape(
-            word
-        )
+        body = "The word or words '%s' where not found in the dictonary." % word
     return body, word
 
 
@@ -912,7 +828,8 @@ def get_static_page_by_path(path):
         return get_static_web_help_page()
     elif path == "wx_help.html":
         return get_static_wx_help_page()
-    raise FileNotFoundError()
+    else:
+        return "Internal error: Path for static page '%s' is unknown" % path
 
 
 def get_static_web_help_page():
@@ -923,20 +840,20 @@ def get_static_web_help_page():
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-            Copyright (C) 2001-2026 NLTK Project
+            Copyright (C) 2001-2019 NLTK Project
             Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-            URL: <https://www.nltk.org/>
+            URL: <http://nltk.org/>
             For license information, see LICENSE.TXT -->
      <head>
-          <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+          <meta http-equiv='Content-Type' content='text/html; charset=us-ascii'>
           <title>NLTK Wordnet Browser display of: * Help *</title>
      </head>
 <body bgcolor='#F5F5F5' text='#000000'>
 <h2>NLTK Wordnet Browser Help</h2>
 <p>The NLTK Wordnet Browser is a tool to use in browsing the Wordnet database. It tries to behave like the Wordnet project's web browser but the difference is that the NLTK Wordnet Browser uses a local Wordnet database.
 <p><b>You are using the Javascript client part of the NLTK Wordnet BrowseServer.</b> We assume your browser is in tab sheets enabled mode.</p>
-<p>For background information on Wordnet, see the Wordnet project home page: <a href="https://wordnet.princeton.edu/"><b> https://wordnet.princeton.edu/</b></a>. For more information on the NLTK project, see the project home:
-<a href="https://www.nltk.org/"><b>https://www.nltk.org/</b></a>. To get an idea of what the Wordnet version used by this browser includes choose <b>Show Database Info</b> from the <b>View</b> submenu.</p>
+<p>For background information on Wordnet, see the Wordnet project home page: <a href="http://wordnet.princeton.edu/"><b> http://wordnet.princeton.edu/</b></a>. For more information on the NLTK project, see the project home:
+<a href="http://nltk.sourceforge.net/"><b>http://nltk.sourceforge.net/</b></a>. To get an idea of what the Wordnet version used by this browser includes choose <b>Show Database Info</b> from the <b>View</b> submenu.</p>
 <h3>Word search</h3>
 <p>The word to be searched is typed into the <b>New Word</b> field and the search started with Enter or by clicking the <b>Search</b> button. There is no uppercase/lowercase distinction: the search word is transformed to lowercase before the search.</p>
 <p>In addition, the word does not have to be in base form. The browser tries to find the possible base form(s) by making certain morphological substitutions. Typing <b>fLIeS</b> as an obscure example gives one <a href="MfLIeS">this</a>. Click the previous link to see what this kind of search looks like and then come back to this page by using the <b>Alt+LeftArrow</b> key combination.</p>
@@ -993,9 +910,9 @@ def get_static_index_page(with_shutdown):
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"  "http://www.w3.org/TR/html4/frameset.dtd">
 <HTML>
      <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-            Copyright (C) 2001-2026 NLTK Project
+            Copyright (C) 2001-2019 NLTK Project
             Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-            URL: <https://www.nltk.org/>
+            URL: <http://nltk.org/>
             For license information, see LICENSE.TXT -->
      <HEAD>
          <TITLE>NLTK Wordnet Browser</TITLE>
@@ -1026,12 +943,12 @@ def get_static_upper_page(with_shutdown):
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
     <!-- Natural Language Toolkit: Wordnet Interface: Graphical Wordnet Browser
-        Copyright (C) 2001-2026 NLTK Project
+        Copyright (C) 2001-2019 NLTK Project
         Author: Jussi Salmela <jtsalmela@users.sourceforge.net>
-        URL: <https://www.nltk.org/>
+        URL: <http://nltk.org/>
         For license information, see LICENSE.TXT -->
     <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+                <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
         <title>Untitled Document</title>
     </head>
     <body>
@@ -1047,11 +964,7 @@ def get_static_upper_page(with_shutdown):
 </html>
 """
     if with_shutdown:
-        # Carry the per-process token so the shutdown route can tell this
-        # in-app click apart from a forged cross-site request (CWE-352).
-        shutdown_link = (
-            '<a href="SHUTDOWN THE SERVER?token=%s">Shutdown</a>' % _shutdown_token
-        )
+        shutdown_link = "<a href=\"SHUTDOWN THE SERVER\">Shutdown</a>"
     else:
         shutdown_link = ""
 
@@ -1062,7 +975,7 @@ def usage():
     """
     Display the command line help message.
     """
-    safe_print(__doc__)
+    print(__doc__)
 
 
 def app():
@@ -1074,7 +987,7 @@ def app():
     server_mode = False
     help_mode = False
     logfilename = None
-    for opt, value in opts:
+    for (opt, value) in opts:
         if (opt == "-l") or (opt == "--logfile"):
             logfilename = str(value)
         elif (opt == "-p") or (opt == "--port"):
@@ -1090,7 +1003,7 @@ def app():
         wnb(port, not server_mode, logfilename)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app()
 
-__all__ = ["app"]
+__all__ = ['app']

@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: PanLex Corpus Reader
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: David Kamholz <kamholz@panlex.org>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -11,12 +10,11 @@ CorpusReader for PanLex Lite, a stripped down version of PanLex distributed
 as an SQLite database. See the README.txt in the panlex_lite corpus directory
 for more information on PanLex Lite.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
 
-from nltk import pathsec
+import os
+import sqlite3
+
 from nltk.corpus.reader.api import CorpusReader
-from nltk.data import FileSystemPathPointer
 
 
 class PanLexLiteCorpusReader(CorpusReader):
@@ -45,23 +43,12 @@ class PanLexLiteCorpusReader(CorpusReader):
     """
 
     def __init__(self, root):
-        # The corpus reader validates the root against the data sandbox
-        # (GHSA-3gq4-3j92-5w49) and gives fileids() and root like any reader.
-        CorpusReader.__init__(self, root, ["db.sqlite"])
-        if not isinstance(self._root, FileSystemPathPointer):
-            raise ValueError("PanLex Lite is an SQLite database and must be on disk")
-        # pathsec keeps db.sqlite inside the root (a link out is refused,
-        # CWE-59), pins it and its sidecars and opens it read only (CWE-367).
-        self._c = pathsec.connect_sqlite_read_only(
-            str(self.abspath("db.sqlite")),
-            context="PanLexLiteCorpusReader",
-            required_root=str(self._root),
-        ).cursor()
+        self._c = sqlite3.connect(os.path.join(root, 'db.sqlite')).cursor()
 
         self._uid_lv = {}
         self._lv_uid = {}
 
-        for row in self._c.execute("SELECT uid, lv FROM lv"):
+        for row in self._c.execute('SELECT uid, lv FROM lv'):
             self._uid_lv[row[0]] = row[1]
             self._lv_uid[row[1]] = row[0]
 
@@ -78,10 +65,10 @@ class PanLexLiteCorpusReader(CorpusReader):
         """
 
         if lc is None:
-            return self._c.execute("SELECT uid, tt FROM lv ORDER BY uid").fetchall()
+            return self._c.execute('SELECT uid, tt FROM lv ORDER BY uid').fetchall()
         else:
             return self._c.execute(
-                "SELECT uid, tt FROM lv WHERE lc = ? ORDER BY uid", (lc,)
+                'SELECT uid, tt FROM lv WHERE lc = ? ORDER BY uid', (lc,)
             ).fetchall()
 
     def meanings(self, expr_uid, expr_tt):
@@ -103,32 +90,32 @@ class PanLexLiteCorpusReader(CorpusReader):
             mn = i[0]
             uid = self._lv_uid[i[5]]
 
-            if mn not in mn_info:
+            if not mn in mn_info:
                 mn_info[mn] = {
-                    "uq": i[1],
-                    "ap": i[2],
-                    "ui": i[3],
-                    "ex": {expr_uid: [expr_tt]},
+                    'uq': i[1],
+                    'ap': i[2],
+                    'ui': i[3],
+                    'ex': {expr_uid: [expr_tt]},
                 }
 
-            if uid not in mn_info[mn]["ex"]:
-                mn_info[mn]["ex"][uid] = []
+            if not uid in mn_info[mn]['ex']:
+                mn_info[mn]['ex'][uid] = []
 
-            mn_info[mn]["ex"][uid].append(i[4])
+            mn_info[mn]['ex'][uid].append(i[4])
 
         return [Meaning(mn, mn_info[mn]) for mn in mn_info]
 
     def translations(self, from_uid, from_tt, to_uid):
         """
         Return a list of translations for an expression into a single language
-        variety.
+            variety.
 
         :param from_uid: the source expression's language variety, as a
             seven-character uniform identifier.
         :param from_tt: the source expression's text.
         :param to_uid: the target language variety, as a seven-character
             uniform identifier.
-        :return: a list of translation tuples. The first element is the expression
+        :return a list of translation tuples. The first element is the expression
             text and the second element is the translation quality.
         :rtype: list(tuple)
         """
@@ -147,35 +134,35 @@ class Meaning(dict):
 
     def __init__(self, mn, attr):
         super(Meaning, self).__init__(**attr)
-        self["mn"] = mn
+        self['mn'] = mn
 
     def id(self):
         """
         :return: the meaning's id.
         :rtype: int
         """
-        return self["mn"]
+        return self['mn']
 
     def quality(self):
         """
         :return: the meaning's source's quality (0=worst, 9=best).
         :rtype: int
         """
-        return self["uq"]
+        return self['uq']
 
     def source(self):
         """
         :return: the meaning's source id.
         :rtype: int
         """
-        return self["ap"]
+        return self['ap']
 
     def source_group(self):
         """
         :return: the meaning's source group id.
         :rtype: int
         """
-        return self["ui"]
+        return self['ui']
 
     def expressions(self):
         """
@@ -184,4 +171,4 @@ class Meaning(dict):
             texts.
         :rtype: dict
         """
-        return self["ex"]
+        return self['ex']

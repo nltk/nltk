@@ -1,21 +1,17 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-# -*- coding: utf-8 -*-
-import six
-from nltk.compat import isfinite
 # Natural Language Toolkit: Interface to TADM Classifier
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Joseph Frazee <jfrazee@mail.utexas.edu>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import print_function, unicode_literals
 
-import math
-import numbers
 import sys
+import subprocess
 
-from nltk.internals import find_binary_absolute
-from nltk.pathsec import TrustError, spawn_trusted
-from nltk.termsec import safe_print
+from six import string_types
+
+from nltk.internals import find_binary
 
 try:
     import numpy
@@ -27,23 +23,9 @@ _tadm_bin = None
 
 def config_tadm(bin=None):
     global _tadm_bin
-    # Accept only an absolute binary: a relative ``bin`` resolves against the CWD
-    # and would be executed from there (untrusted search path, CWE-426/CWE-427).
-    _tadm_bin = find_binary_absolute(
-        "tadm", bin, env_vars=["TADM"], binary_names=["tadm"], url="http://tadm.sf.net"
+    _tadm_bin = find_binary(
+        'tadm', bin, env_vars=['TADM'], binary_names=['tadm'], url='http://tadm.sf.net'
     )
-
-
-def _tadm_int(value, kind):
-    # tadm's stdin is space and newline delimited. The "%d" interpolation already
-    # rejects a string feature id/value with a TypeError, but validate up front so
-    # a hostile or buggy encoding cannot inject a field or line (CWE-93) and the
-    # error is clear. Reals are truncated as "%d" would; non-finite is refused.
-    if isinstance(value, bool) or not isinstance(value, numbers.Real):
-        raise ValueError("TADM {0} must be a number, got {1!r}".format(kind, value))
-    if not isfinite(value):
-        raise ValueError("TADM {0} must be finite, got {1!r}".format(kind, value))
-    return int(value)
 
 
 def write_tadm_file(train_toks, encoding, stream):
@@ -64,20 +46,19 @@ def write_tadm_file(train_toks, encoding, stream):
     """
     # See the following for a file format description:
     #
-    # https://sf.net/forum/forum.php?thread_id=1391502&forum_id=473054
-    # https://sf.net/forum/forum.php?thread_id=1675097&forum_id=473054
+    # http://sf.net/forum/forum.php?thread_id=1391502&forum_id=473054
+    # http://sf.net/forum/forum.php?thread_id=1675097&forum_id=473054
     labels = encoding.labels()
     for featureset, label in train_toks:
-        length_line = "%d\n" % len(labels)
+        length_line = '%d\n' % len(labels)
         stream.write(length_line)
         for known_label in labels:
             v = encoding.encode(featureset, known_label)
-            pairs = " ".join(
-                "%d %d"
-                % (_tadm_int(fid, "feature id"), _tadm_int(fval, "feature value"))
-                for (fid, fval) in v
+            line = '%d %d %s\n' % (
+                int(label == known_label),
+                len(v),
+                ' '.join('%d %d' % u for u in v),
             )
-            line = "%d %d %s\n" % (int(label == known_label), len(v), pairs)
             stream.write(line)
 
 
@@ -90,62 +71,54 @@ def parse_tadm_weights(paramfile):
     weights = []
     for line in paramfile:
         weights.append(float(line.strip()))
-    return numpy.array(weights, "d")
+    return numpy.array(weights, 'd')
 
 
 def call_tadm(args):
     """
     Call the ``tadm`` binary with the given arguments.
     """
-    if isinstance(args, six.string_types):
-        raise TypeError("args should be a list of strings")
+    if isinstance(args, string_types):
+        raise TypeError('args should be a list of strings')
     if _tadm_bin is None:
         config_tadm()
 
-    # Route through the trusted-exec chokepoint: verify the tadm binary is on a
-    # path no other local user can swap, refuse a shell, and scrub the loader
-    # environment before exec (CWE-426/427/732).
+    # Call tadm via a subprocess
     cmd = [_tadm_bin] + args
-    try:
-        p = spawn_trusted(cmd[0], cmd[1:], stdout=sys.stdout)
-    except TrustError as e:
-        six.raise_from(OSError(
-            "Refusing to run tadm at {0!r}: it is not on a trusted path. Install tadm where only you (or root) can write ({1}).".format(cmd[0], e)
-        ), e)
+    p = subprocess.Popen(cmd, stdout=sys.stdout)
     (stdout, stderr) = p.communicate()
 
     # Check the return code.
     if p.returncode != 0:
-        safe_print()
-        safe_print(stderr)
-        raise OSError("tadm command failed!")
+        print()
+        print(stderr)
+        raise OSError('tadm command failed!')
 
 
 def names_demo():
-    from nltk.classify.maxent import TadmMaxentClassifier
     from nltk.classify.util import names_demo
+    from nltk.classify.maxent import TadmMaxentClassifier
 
     classifier = names_demo(TadmMaxentClassifier.train)
 
 
 def encoding_demo():
     import sys
-
     from nltk.classify.maxent import TadmEventMaxentFeatureEncoding
 
     tokens = [
-        ({"f0": 1, "f1": 1, "f3": 1}, "A"),
-        ({"f0": 1, "f2": 1, "f4": 1}, "B"),
-        ({"f0": 2, "f2": 1, "f3": 1, "f4": 1}, "A"),
+        ({'f0': 1, 'f1': 1, 'f3': 1}, 'A'),
+        ({'f0': 1, 'f2': 1, 'f4': 1}, 'B'),
+        ({'f0': 2, 'f2': 1, 'f3': 1, 'f4': 1}, 'A'),
     ]
     encoding = TadmEventMaxentFeatureEncoding.train(tokens)
     write_tadm_file(tokens, encoding, sys.stdout)
-    safe_print()
+    print()
     for i in range(encoding.length()):
-        safe_print("%s --> %d" % (encoding.describe(i), i))
-    safe_print()
+        print('%s --> %d' % (encoding.describe(i), i))
+    print()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     encoding_demo()
     names_demo()

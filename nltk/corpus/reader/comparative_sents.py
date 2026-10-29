@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Comparative Sentence Corpus Reader
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -16,7 +15,7 @@ Annotated by: Nitin Jindal and Bing Liu, 2006.
               University of Illinois at Chicago
 
 Contact: Nitin Jindal, njindal@cs.uic.edu
-         Bing Liu, liub@cs.uic.edu (https://www.cs.uic.edu/~liub)
+         Bing Liu, liub@cs.uic.edu (http://www.cs.uic.edu/~liub)
 
 Distributed with permission.
 
@@ -34,21 +33,21 @@ Related papers:
     Proceedings of the 22nd International Conference on Computational Linguistics
     (Coling-2008), Manchester, 18-22 August, 2008.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
+import re
 
-from nltk import redos
+from six import string_types
+
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
 
 # Regular expressions for dataset components
-STARS = redos.compile(r"^\*+$")
-COMPARISON = redos.compile(r"<cs-[1234]>")
-CLOSE_COMPARISON = redos.compile(r"</cs-[1234]>")
-GRAD_COMPARISON = redos.compile(r"<cs-[123]>")
-NON_GRAD_COMPARISON = redos.compile(r"<cs-4>")
-ENTITIES_FEATS = redos.compile(r"(\d)_((?:[\.\w\s/-](?!\d_))+)")
-KEYWORD = redos.compile(r"\(([^\(]*)\)$")
+STARS = re.compile(r'^\*+$')
+COMPARISON = re.compile(r'<cs-[1234]>')
+CLOSE_COMPARISON = re.compile(r'</cs-[1234]>')
+GRAD_COMPARISON = re.compile(r'<cs-[123]>')
+NON_GRAD_COMPARISON = re.compile(r'<cs-4>')
+ENTITIES_FEATS = re.compile(r"(\d)_((?:[\.\w\s/-](?!\d_))+)")
+KEYWORD = re.compile(r'\((?!.*\()(.*)\)$')
 
 
 class Comparison(object):
@@ -66,7 +65,7 @@ class Comparison(object):
         keyword=None,
     ):
         """
-        :param text: a string (optionally tokenized) containing a comparison.
+        :param text: a string (optionally tokenized) containing a comparation.
         :param comp_type: an integer defining the type of comparison expressed.
             Values can be: 1 (Non-equal gradable), 2 (Equative), 3 (Superlative),
             4 (Non-gradable).
@@ -84,8 +83,8 @@ class Comparison(object):
 
     def __repr__(self):
         return (
-            'Comparison(text="{}", comp_type={}, entity_1="{}", entity_2="{}", '
-            'feature="{}", keyword="{}")'
+            "Comparison(text=\"{}\", comp_type={}, entity_1=\"{}\", entity_2=\"{}\", "
+            "feature=\"{}\", keyword=\"{}\")"
         ).format(
             self.text,
             self.comp_type,
@@ -102,7 +101,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
 
         >>> from nltk.corpus import comparative_sentences
         >>> comparison = comparative_sentences.comparisons()[0]
-        >>> comparison.text # doctest: +NORMALIZE_WHITESPACE
+        >>> comparison.text
         ['its', 'fast-forward', 'and', 'rewind', 'work', 'much', 'more', 'smoothly',
         'and', 'consistently', 'than', 'those', 'of', 'other', 'models', 'i', "'ve",
         'had', '.']
@@ -122,7 +121,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         fileids,
         word_tokenizer=WhitespaceTokenizer(),
         sent_tokenizer=None,
-        encoding="utf8",
+        encoding='utf8',
     ):
         """
         :param root: The root directory for this corpus.
@@ -136,7 +135,6 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         CorpusReader.__init__(self, root, fileids, encoding)
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
-        self._readme = "README.txt"
 
     def comparisons(self, fileids=None):
         """
@@ -149,7 +147,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, six.string_types):
+        elif isinstance(fileids, string_types):
             fileids = [fileids]
         return concat(
             [
@@ -174,7 +172,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
             ]
         )
 
-        keywords_set = {keyword.lower() for keyword in all_keywords if keyword}
+        keywords_set = set(keyword.lower() for keyword in all_keywords if keyword)
         return keywords_set
 
     def keywords_readme(self):
@@ -183,13 +181,31 @@ class ComparativeSentencesCorpusReader(CorpusReader):
         comparison (from listOfkeywords.txt).
         """
         keywords = []
-        with self.open("listOfkeywords.txt") as fp:
-            raw_text = fp.read()
+        raw_text = self.open("listOfkeywords.txt").read()
         for line in raw_text.split("\n"):
             if not line or line.startswith("//"):
                 continue
             keywords.append(line.strip())
         return keywords
+
+    def raw(self, fileids=None):
+        """
+        :param fileids: a list or regexp specifying the fileids that have to be
+            returned as a raw string.
+        :return: the given file(s) as a single string.
+        :rtype: str
+        """
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
+
+    def readme(self):
+        """
+        Return the contents of the corpus readme file.
+        """
+        return self.open("README.txt").read()
 
     def sents(self, fileids=None):
         """
@@ -229,10 +245,10 @@ class ComparativeSentencesCorpusReader(CorpusReader):
             line = stream.readline()
             if not line:
                 return []  # end of file.
-            comparison_tags = redos.findall(COMPARISON, line)
+            comparison_tags = re.findall(COMPARISON, line)
             if comparison_tags:
-                grad_comparisons = redos.findall(GRAD_COMPARISON, line)
-                non_grad_comparisons = redos.findall(NON_GRAD_COMPARISON, line)
+                grad_comparisons = re.findall(GRAD_COMPARISON, line)
+                non_grad_comparisons = re.findall(NON_GRAD_COMPARISON, line)
                 # Advance to the next line (it contains the comparative sentence)
                 comparison_text = stream.readline().strip()
                 if self._word_tokenizer:
@@ -245,19 +261,19 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                 if grad_comparisons:
                     # Each comparison tag has its own relations on a separate line
                     for comp in grad_comparisons:
-                        comp_type = int(redos.match(r"<cs-(\d)>", comp).group(1))
+                        comp_type = int(re.match(r'<cs-(\d)>', comp).group(1))
                         comparison = Comparison(
                             text=comparison_text, comp_type=comp_type
                         )
                         line = stream.readline()
                         entities_feats = ENTITIES_FEATS.findall(line)
                         if entities_feats:
-                            for code, entity_feat in entities_feats:
-                                if code == "1":
+                            for (code, entity_feat) in entities_feats:
+                                if code == '1':
                                     comparison.entity_1 = entity_feat.strip()
-                                elif code == "2":
+                                elif code == '2':
                                     comparison.entity_2 = entity_feat.strip()
-                                elif code == "3":
+                                elif code == '3':
                                     comparison.feature = entity_feat.strip()
                         keyword = KEYWORD.findall(line)
                         if keyword:
@@ -268,7 +284,7 @@ class ComparativeSentencesCorpusReader(CorpusReader):
                 if non_grad_comparisons:
                     for comp in non_grad_comparisons:
                         # comp_type in this case should always be 4.
-                        comp_type = int(redos.match(r"<cs-(\d)>", comp).group(1))
+                        comp_type = int(re.match(r'<cs-(\d)>', comp).group(1))
                         comparison = Comparison(
                             text=comparison_text, comp_type=comp_type
                         )
@@ -286,16 +302,16 @@ class ComparativeSentencesCorpusReader(CorpusReader):
     def _read_sent_block(self, stream):
         while True:
             line = stream.readline()
-            if redos.match(STARS, line):
+            if re.match(STARS, line):
                 while True:
                     line = stream.readline()
-                    if redos.match(STARS, line):
+                    if re.match(STARS, line):
                         break
                 continue
             if (
-                not redos.findall(COMPARISON, line)
+                not re.findall(COMPARISON, line)
                 and not ENTITIES_FEATS.findall(line)
-                and not redos.findall(CLOSE_COMPARISON, line)
+                and not re.findall(CLOSE_COMPARISON, line)
             ):
                 if self._sent_tokenizer:
                     return [

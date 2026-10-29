@@ -1,28 +1,27 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
 # -*- coding: utf-8 -*-
-import six
-from nltk.compat import FileNotFoundError
 # Natural Language Toolkit: Interface to the Stanford Tokenizer
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Xu <xxu@student.unimelb.edu.au>
 #
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import json
-import os
+from __future__ import unicode_literals, print_function
+
 import tempfile
-import warnings
+import os
+import json
 from subprocess import PIPE
+import warnings
 
-from nltk import pathsec
-from nltk.data import staging_tempdir
-from nltk.internals import find_jar, java
-from nltk.parse.corenlp import CoreNLPParser
+from six import text_type
+
+from nltk.internals import find_jar, config_java, java, _java_options
 from nltk.tokenize.api import TokenizerI
+from nltk.parse.corenlp import CoreNLPParser
 
-_stanford_url = "https://nlp.stanford.edu/software/tokenizer.shtml"
+_stanford_url = 'https://nlp.stanford.edu/software/tokenizer.shtml'
 
 
 class StanfordTokenizer(TokenizerI):
@@ -31,26 +30,26 @@ class StanfordTokenizer(TokenizerI):
 
     >>> from nltk.tokenize.stanford import StanfordTokenizer
     >>> s = "Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks."
-    >>> StanfordTokenizer().tokenize(s) # doctest: +SKIP
+    >>> StanfordTokenizer().tokenize(s)
     ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York', '.', 'Please', 'buy', 'me', 'two', 'of', 'them', '.', 'Thanks', '.']
     >>> s = "The colour of the wall is blue."
-    >>> StanfordTokenizer(options={"americanize": True}).tokenize(s) # doctest: +SKIP
+    >>> StanfordTokenizer(options={"americanize": True}).tokenize(s)
     ['The', 'color', 'of', 'the', 'wall', 'is', 'blue', '.']
     """
 
-    _JAR = "stanford-postagger.jar"
+    _JAR = 'stanford-postagger.jar'
 
     def __init__(
         self,
         path_to_jar=None,
-        encoding="utf8",
+        encoding='utf8',
         options=None,
         verbose=False,
-        java_options="-mx1000m",
+        java_options='-mx1000m',
     ):
         # Raise deprecation warning.
         warnings.warn(
-            six.text_type(
+            str(
                 "\nThe StanfordTokenizer will "
                 "be deprecated in version 3.2.5.\n"
                 "Please use \033[91mnltk.parse.corenlp.CoreNLPParser\033[0m instead.'"
@@ -62,7 +61,7 @@ class StanfordTokenizer(TokenizerI):
         self._stanford_jar = find_jar(
             self._JAR,
             path_to_jar,
-            env_vars=("STANFORD_POSTAGGER",),
+            env_vars=('STANFORD_POSTAGGER',),
             searchpath=(),
             url=_stanford_url,
             verbose=verbose,
@@ -72,7 +71,9 @@ class StanfordTokenizer(TokenizerI):
         self.java_options = java_options
 
         options = {} if options is None else options
-        self._options_cmd = ",".join("{0}={1}".format(key, val) for key, val in options.items())
+        self._options_cmd = ','.join(
+            '{0}={1}'.format(key, val) for key, val in options.items()
+        )
 
     @staticmethod
     def _parse_tokenized_output(s):
@@ -82,51 +83,51 @@ class StanfordTokenizer(TokenizerI):
         """
         Use stanford tokenizer's PTBTokenizer to tokenize multiple sentences.
         """
-        cmd = ["edu.stanford.nlp.process.PTBTokenizer"]
+        cmd = ['edu.stanford.nlp.process.PTBTokenizer']
         return self._parse_tokenized_output(self._execute(cmd, s))
 
     def _execute(self, cmd, input_, verbose=False):
         encoding = self._encoding
-        cmd.extend(["-charset", encoding])
+        cmd.extend(['-charset', encoding])
         _options_cmd = self._options_cmd
         if _options_cmd:
-            cmd.extend(["-options", self._options_cmd])
+            cmd.extend(['-options', self._options_cmd])
+
+        default_options = ' '.join(_java_options)
+
+        # Configure java.
+        config_java(options=self.java_options, verbose=verbose)
 
         # Windows is incompatible with NamedTemporaryFile() without passing in delete=False.
-        input_file_name = None
-        java_succeeded = False
-        try:
-            with tempfile.NamedTemporaryFile(
-                mode="wb", delete=False, dir=staging_tempdir()
-            ) as input_file:
-                input_file_name = input_file.name
-                # Write the actual sentences to the temporary input file
-                if isinstance(input_, six.string_types) and encoding:
-                    input_ = input_.encode(encoding)
-                input_file.write(input_)
-                input_file.flush()
+        with tempfile.NamedTemporaryFile(mode='wb', delete=False) as input_file:
+            # Write the actual sentences to the temporary input file
+            if isinstance(input_, text_type) and encoding:
+                input_ = input_.encode(encoding)
+            input_file.write(input_)
+            input_file.flush()
 
-                cmd.append(input_file_name)
+            cmd.append(input_file.name)
 
-                # Run the tagger and get the output.
-                stdout, stderr = java(
-                    cmd,
-                    classpath=self._stanford_jar,
-                    stdout=PIPE,
-                    stderr=PIPE,
-                    options=self.java_options,
-                )
-                if isinstance(stdout, bytes):
-                    stdout = stdout.decode(encoding)
-                java_succeeded = True
-        finally:
-            if input_file_name:
-                try:
-                    pathsec.unlink(input_file_name, context="StanfordTokenizer")
-                except FileNotFoundError:
-                    pass
-                except OSError:
-                    if java_succeeded:
-                        raise
+            # Run the tagger and get the output.
+            stdout, stderr = java(
+                cmd, classpath=self._stanford_jar, stdout=PIPE, stderr=PIPE
+            )
+            stdout = stdout.decode(encoding)
+
+        os.unlink(input_file.name)
+
+        # Return java configurations to their default values.
+        config_java(options=default_options, verbose=False)
 
         return stdout
+
+
+def setup_module(module):
+    from nose import SkipTest
+
+    try:
+        StanfordTokenizer()
+    except LookupError:
+        raise SkipTest(
+            'doctests from nltk.tokenize.stanford are skipped because the stanford postagger jar doesn\'t exist'
+        )

@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: List Sorting
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -11,9 +10,7 @@ This module provides a variety of list sorting algorithms, to
 illustrate the many different algorithms (recipes) for solving a
 problem, and how to analyze algorithms experimentally.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
-from nltk.termsec import safe_print
+from __future__ import print_function, division
 
 # These algorithms are taken from:
 # Levitin (2004) The Design and Analysis of Algorithms
@@ -171,11 +168,13 @@ def demo():
         shuffle(a)
         count_quick = quick(a)
 
-        safe_print(
-            ("size=%5d:  selection=%8d,  bubble=%8d,  " "merge=%6d,  quick=%6d")
-            % (size, count_selection, count_bubble, count_merge, count_quick)
+        print(
+            (
+                ("size=%5d:  selection=%8d,  bubble=%8d,  " "merge=%6d,  quick=%6d")
+                % (size, count_selection, count_bubble, count_merge, count_quick)
+            )
         )
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     demo()

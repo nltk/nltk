@@ -1,78 +1,25 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
 # -*- coding: utf-8 -*-
-import six
 # Natural Language Toolkit: Transformation-based learning
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Marcus Uneson <marcus.uneson@gmail.com>
 #   based on previous (nltk2) version by
 #   Christopher Maloof, Edward Loper, Steven Bird
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see  LICENSE.TXT
 
+from __future__ import print_function, absolute_import, division
 import os
 import pickle
+
 import random
 import time
 
-from nltk import redos
 from nltk.corpus import treebank
-from nltk.pathsec import open as pathsec_open
-from nltk.pathsec import validate_tool_path
-from nltk.picklesec import allowlisted_pickle_load, pickle_dump
-from nltk.redos import TimedPattern
+
+from nltk.tbl import error_list, Template
+from nltk.tag.brill import Word, Pos
 from nltk.tag import BrillTaggerTrainer, RegexpTagger, UnigramTagger
-from nltk.tag.brill import Pos, Word
-from nltk.tbl import Template, error_list
-from nltk.termsec import safe_print
-
-# Exact ``(module, qualname)`` allowlist for the two model files this demo reads
-# back (cached baseline + round-tripped Brill tagger). Loaded from a caller path,
-# so unpickled through an allowlist (CWE-502) instead of executing any global.
-_TBL_MODEL_ALLOWED_GLOBALS = (
-    # The trained tagger itself and its transformation rules / features.
-    ("nltk.tag.brill", "BrillTagger"),
-    ("nltk.tag.brill", "Word"),
-    ("nltk.tag.brill", "Pos"),
-    ("nltk.tbl.rule", "Rule"),
-    # The baseline tagger and the backoff taggers it wraps.
-    ("nltk.tag.sequential", "UnigramTagger"),
-    ("nltk.tag.sequential", "RegexpTagger"),
-    ("nltk.tag.sequential", "DefaultTagger"),
-    # A RegexpTagger stores each pattern as a ReDoS-bounded TimedPattern wrapping
-    # a compiled ``regex`` object, rebuilt from its source by regex._regex.compile.
-    ("nltk.redos", "TimedPattern"),
-    ("regex._regex", "compile"),
-    # The inert default-timeout sentinel a pickled RegexpTagger's TimedPattern
-    # carries; an audited safe primitive in picklesec (a bare object() exposes no
-    # attribute surface and no callable that runs code).
-    ("builtins", "object"),
-)
-
-
-def _tbl_visit(obj):
-    """Re-cap the ReDoS surface the name allowlist cannot: reset every TimedPattern
-    timeout and re-derive each RegexpTagger pattern from its source under a fresh
-    cap, so a raw / uncapped / cap-disabled pattern from an untrusted file dies."""
-    if isinstance(obj, TimedPattern):
-        obj._timeout = redos._UNSET
-        return True
-    if isinstance(obj, RegexpTagger):
-        try:
-            obj._regexps = [(redos.reharden(p), tag) for p, tag in obj._regexps]
-        except ValueError as exc:
-            raise pickle.UnpicklingError(str(exc))
-    return False
-
-
-def _load_tbl_model(file):
-    """Load a tbl demo model file through the allowlisting unpickler, then re-cap via
-    ``sanitize=`` every regex the name allowlist cannot bound (CWE-502 + CWE-1333)."""
-    return allowlisted_pickle_load(
-        file,
-        allowed_globals=_TBL_MODEL_ALLOWED_GLOBALS,
-        sanitize=_tbl_visit,
-    )
 
 
 def demo():
@@ -150,8 +97,8 @@ def demo_generated_templates():
     wordtpls = Word.expand([-1, 0, 1], [1, 2], excludezero=False)
     tagtpls = Pos.expand([-2, -1, 0, 1], [1, 2], excludezero=True)
     templates = list(Template.expand([wordtpls, tagtpls], combinations=(1, 3)))
-    safe_print(
-        "Generated {} templates for transformation-based learning".format(
+    print(
+        "Generated {0} templates for transformation-based learning".format(
             len(templates)
         )
     )
@@ -284,7 +231,7 @@ def postag(
     # defaults
     baseline_backoff_tagger = baseline_backoff_tagger or REGEXP_TAGGER
     if templates is None:
-        from nltk.tag.brill import brill24, describe_template_sets
+        from nltk.tag.brill import describe_template_sets, brill24
 
         # some pre-built template sets taken from typical systems or publications are
         # available. Print a list with describe_template_sets()
@@ -302,29 +249,23 @@ def postag(
             baseline_tagger = UnigramTagger(
                 baseline_data, backoff=baseline_backoff_tagger
             )
-            # ``cache_baseline_tagger`` is caller-supplied, so the model
-            # write/read goes through the pathsec sandbox (GHSA-8mgp-746c-j5xp).
-            with pathsec_open(
-                cache_baseline_tagger, "wb", context="tbl.demo.cache_baseline_tagger"
-            ) as print_rules:
-                pickle_dump(baseline_tagger, print_rules)
-            safe_print(
-                "Trained baseline tagger, pickled it to {}".format(
+            with open(cache_baseline_tagger, 'w') as print_rules:
+                pickle.dump(baseline_tagger, print_rules)
+            print(
+                "Trained baseline tagger, pickled it to {0}".format(
                     cache_baseline_tagger
                 )
             )
-        with pathsec_open(
-            cache_baseline_tagger, "br", context="tbl.demo.cache_baseline_tagger"
-        ) as print_rules:
-            baseline_tagger = _load_tbl_model(print_rules)
-            safe_print("Reloaded pickled tagger from {0}".format(cache_baseline_tagger))
+        with open(cache_baseline_tagger, "r") as print_rules:
+            baseline_tagger = pickle.load(print_rules)
+            print("Reloaded pickled tagger from {0}".format(cache_baseline_tagger))
     else:
         baseline_tagger = UnigramTagger(baseline_data, backoff=baseline_backoff_tagger)
-        safe_print("Trained baseline tagger")
+        print("Trained baseline tagger")
     if gold_data:
-        safe_print(
-            "    Accuracy on test set: {:0.4f}".format(
-                baseline_tagger.accuracy(gold_data)
+        print(
+            "    Accuracy on test set: {0:0.4f}".format(
+                baseline_tagger.evaluate(gold_data)
             )
         )
 
@@ -333,30 +274,30 @@ def postag(
     trainer = BrillTaggerTrainer(
         baseline_tagger, templates, trace, ruleformat=ruleformat
     )
-    safe_print("Training tbl tagger...")
+    print("Training tbl tagger...")
     brill_tagger = trainer.train(training_data, max_rules, min_score, min_acc)
-    safe_print("Trained tbl tagger in {0:0.2f} seconds".format(time.time() - tbrill))
+    print("Trained tbl tagger in {0:0.2f} seconds".format(time.time() - tbrill))
     if gold_data:
-        safe_print("    Accuracy on test set: %.4f" % brill_tagger.accuracy(gold_data))
+        print("    Accuracy on test set: %.4f" % brill_tagger.evaluate(gold_data))
 
     # printing the learned rules, if learned silently
     if trace == 1:
-        safe_print("\nLearned rules: ")
-        for ruleno, rule in enumerate(brill_tagger.rules(), 1):
-            safe_print("{0:4d} {1:s}".format(ruleno, rule.format(ruleformat)))
+        print("\nLearned rules: ")
+        for (ruleno, rule) in enumerate(brill_tagger.rules(), 1):
+            print("{0:4d} {1:s}".format(ruleno, rule.format(ruleformat)))
 
     # printing template statistics (optionally including comparison with the training data)
     # note: if not separate_baseline_data, then baseline accuracy will be artificially high
     if incremental_stats:
-        safe_print(
+        print(
             "Incrementally tagging the test data, collecting individual rule statistics"
         )
         (taggedtest, teststats) = brill_tagger.batch_tag_incremental(
             testing_data, gold_data
         )
-        safe_print("    Rule statistics collected")
+        print("    Rule statistics collected")
         if not separate_baseline_data:
-            safe_print(
+            print(
                 "WARNING: train_stats asked for separate_baseline_data=True; the baseline "
                 "will be artificially high"
             )
@@ -367,40 +308,36 @@ def postag(
             _demo_plot(
                 learning_curve_output, teststats, trainstats, take=learning_curve_take
             )
-            safe_print("Wrote plot of learning curve to {0}".format(learning_curve_output))
+            print("Wrote plot of learning curve to {0}".format(learning_curve_output))
     else:
-        safe_print("Tagging the test data")
+        print("Tagging the test data")
         taggedtest = brill_tagger.tag_sents(testing_data)
         if template_stats:
             brill_tagger.print_template_statistics()
 
     # writing error analysis to file
     if error_output is not None:
-        with pathsec_open(
-            error_output, "w", context="tbl.demo.error_output", encoding="utf-8"
-        ) as f:
-            f.write("Errors for Brill Tagger %r\n\n" % serialize_output)
-            f.write("\n".join(error_list(gold_data, taggedtest)) + "\n")
-        safe_print("Wrote tagger errors including context to {0}".format(error_output))
+        with open(error_output, 'w') as f:
+            f.write('Errors for Brill Tagger %r\n\n' % serialize_output)
+            f.write(
+                u'\n'.join(error_list(gold_data, taggedtest)).encode('utf-8') + '\n'
+            )
+        print("Wrote tagger errors including context to {0}".format(error_output))
 
     # serializing the tagger to a pickle file and reloading (just to see it works)
     if serialize_output is not None:
         taggedtest = brill_tagger.tag_sents(testing_data)
-        with pathsec_open(
-            serialize_output, "wb", context="tbl.demo.serialize_output"
-        ) as print_rules:
-            pickle_dump(brill_tagger, print_rules)
-        safe_print("Wrote pickled tagger to {0}".format(serialize_output))
-        with pathsec_open(
-            serialize_output, "br", context="tbl.demo.serialize_output"
-        ) as print_rules:
-            brill_tagger_reloaded = _load_tbl_model(print_rules)
-        safe_print("Reloaded pickled tagger from {0}".format(serialize_output))
-        taggedtest_reloaded = brill_tagger_reloaded.tag_sents(testing_data)
+        with open(serialize_output, 'w') as print_rules:
+            pickle.dump(brill_tagger, print_rules)
+        print("Wrote pickled tagger to {0}".format(serialize_output))
+        with open(serialize_output, "r") as print_rules:
+            brill_tagger_reloaded = pickle.load(print_rules)
+        print("Reloaded pickled tagger from {0}".format(serialize_output))
+        taggedtest_reloaded = brill_tagger.tag_sents(testing_data)
         if taggedtest == taggedtest_reloaded:
-            safe_print("Reloaded tagger tried on test set, results identical")
+            print("Reloaded tagger tried on test set, results identical")
         else:
-            safe_print("PROBLEM: Reloaded tagger gave different results on test set")
+            print("PROBLEM: Reloaded tagger gave different results on test set")
 
 
 def _demo_prepare_data(
@@ -409,7 +346,7 @@ def _demo_prepare_data(
     # train is the proportion of data used in training; the rest is reserved
     # for testing.
     if tagged_data is None:
-        safe_print("Loading tagged data from treebank... ")
+        print("Loading tagged data from treebank... ")
         tagged_data = treebank.tagged_sents()
     if num_sents is None or len(tagged_data) <= num_sents:
         num_sents = len(tagged_data)
@@ -431,10 +368,10 @@ def _demo_prepare_data(
     (trainseqs, traintokens) = corpus_size(training_data)
     (testseqs, testtokens) = corpus_size(testing_data)
     (bltrainseqs, bltraintokens) = corpus_size(baseline_data)
-    safe_print("Read testing data ({0:d} sents/{1:d} wds)".format(testseqs, testtokens))
-    safe_print("Read training data ({0:d} sents/{1:d} wds)".format(trainseqs, traintokens))
-    safe_print(
-        "Read baseline data ({:d} sents/{:d} wds) {:s}".format(
+    print("Read testing data ({0:d} sents/{1:d} wds)".format(testseqs, testtokens))
+    print("Read training data ({0:d} sents/{1:d} wds)".format(trainseqs, traintokens))
+    print(
+        "Read baseline data ({0:d} sents/{1:d} wds) {2:s}".format(
             bltrainseqs,
             bltraintokens,
             "" if separate_baseline_data else "[reused the training set]",
@@ -444,26 +381,15 @@ def _demo_prepare_data(
 
 
 def _demo_plot(learning_curve_output, teststats, trainstats=None, take=None):
-    """Write the learning-curve plot to ``learning_curve_output``.
-    matplotlib writes the caller-supplied path itself, so it is validated against the
-    NLTK data sandbox first (GHSA-8mgp-746c-j5xp); ``pathsec.open`` can't wrap it."""
-    # matplotlib reopens the name itself, so refuse a hardlinked or special
-    # target too and hand it the checked string (GHSA-fg9w-wfp5-j933).
-    learning_curve_output = validate_tool_path(
-        learning_curve_output,
-        context="tbl.demo.learning_curve_output",
-        for_write=True,
-        must_exist=False,
-    )
-    testcurve = [teststats["initialerrors"]]
-    for rulescore in teststats["rulescores"]:
+    testcurve = [teststats['initialerrors']]
+    for rulescore in teststats['rulescores']:
         testcurve.append(testcurve[-1] - rulescore)
-    testcurve = [1 - x / teststats["tokencount"] for x in testcurve[:take]]
+    testcurve = [1 - x / teststats['tokencount'] for x in testcurve[:take]]
 
-    traincurve = [trainstats["initialerrors"]]
-    for rulescore in trainstats["rulescores"]:
+    traincurve = [trainstats['initialerrors']]
+    for rulescore in trainstats['rulescores']:
         traincurve.append(traincurve[-1] - rulescore)
-    traincurve = [1 - x / trainstats["tokencount"] for x in traincurve[:take]]
+    traincurve = [1 - x / trainstats['tokencount'] for x in traincurve[:take]]
 
     import matplotlib.pyplot as plt
 
@@ -473,19 +399,19 @@ def _demo_plot(learning_curve_output, teststats, trainstats=None, take=None):
     plt.savefig(learning_curve_output)
 
 
-NN_CD_TAGGER = RegexpTagger([(r"^-?[0-9]+(\.[0-9]+)?$", "CD"), (r".*", "NN")])
+NN_CD_TAGGER = RegexpTagger([(r'^-?[0-9]+(.[0-9]+)?$', 'CD'), (r'.*', 'NN')])
 
 REGEXP_TAGGER = RegexpTagger(
     [
-        (r"^-?[0-9]+(\.[0-9]+)?$", "CD"),  # cardinal numbers
-        (r"(The|the|A|a|An|an)$", "AT"),  # articles
-        (r".*able$", "JJ"),  # adjectives
-        (r".*ness$", "NN"),  # nouns formed from adjectives
-        (r".*ly$", "RB"),  # adverbs
-        (r".*s$", "NNS"),  # plural nouns
-        (r".*ing$", "VBG"),  # gerunds
-        (r".*ed$", "VBD"),  # past tense verbs
-        (r".*", "NN"),  # nouns (default)
+        (r'^-?[0-9]+(.[0-9]+)?$', 'CD'),  # cardinal numbers
+        (r'(The|the|A|a|An|an)$', 'AT'),  # articles
+        (r'.*able$', 'JJ'),  # adjectives
+        (r'.*ness$', 'NN'),  # nouns formed from adjectives
+        (r'.*ly$', 'RB'),  # adverbs
+        (r'.*s$', 'NNS'),  # plural nouns
+        (r'.*ing$', 'VBG'),  # gerunds
+        (r'.*ed$', 'VBD'),  # past tense verbs
+        (r'.*', 'NN'),  # nouns (default)
     ]
 )
 
@@ -494,5 +420,5 @@ def corpus_size(seqs):
     return (len(seqs), sum(len(x) for x in seqs))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     demo_learning_curve()

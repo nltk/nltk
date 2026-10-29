@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Tokenizers
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Michael Heilman <mheilman@cmu.edu> (re-port from http://www.cis.upenn.edu/~treebank/tokenizer.sed)
-#         Tom Aarsen <> (modifications)
 #
-# URL: <https://www.nltk.org>
+# URL: <http://nltk.sourceforge.net>
 # For license information, see LICENSE.TXT
 
 r"""
@@ -17,29 +15,36 @@ The Treebank tokenizer uses regular expressions to tokenize text as in Penn Tree
 This implementation is a port of the tokenizer sed script written by Robert McIntyre
 and available at http://www.cis.upenn.edu/~treebank/tokenizer.sed.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
 
 import re
-import warnings
-try:
-    from collections.abc import Iterator
-except ImportError:  # Python 2.7
-    from collections import Iterator
-try:
-    from typing import List, Tuple
-except ImportError:  # Python 2.7 typing backport lacks some names
-    List, Tuple = (object,) * 2
-
-from nltk import redos
 from nltk.tokenize.api import TokenizerI
-from nltk.tokenize.destructive import MacIntyreContractions
 from nltk.tokenize.util import align_tokens
 
 
+class MacIntyreContractions:
+    """
+    List of contractions adapted from Robert MacIntyre's tokenizer.
+    """
+
+    CONTRACTIONS2 = [
+        r"(?i)\b(can)(?#X)(not)\b",
+        r"(?i)\b(d)(?#X)('ye)\b",
+        r"(?i)\b(gim)(?#X)(me)\b",
+        r"(?i)\b(gon)(?#X)(na)\b",
+        r"(?i)\b(got)(?#X)(ta)\b",
+        r"(?i)\b(lem)(?#X)(me)\b",
+        r"(?i)\b(mor)(?#X)('n)\b",
+        r"(?i)\b(wan)(?#X)(na)\s",
+    ]
+    CONTRACTIONS3 = [r"(?i) ('t)(?#X)(is)\b", r"(?i) ('t)(?#X)(was)\b"]
+    CONTRACTIONS4 = [r"(?i)\b(whad)(dd)(ya)\b", r"(?i)\b(wha)(t)(cha)\b"]
+
+
 class TreebankWordTokenizer(TokenizerI):
-    r"""
+    """
     The Treebank tokenizer uses regular expressions to tokenize text as in Penn Treebank.
+    This is the method that is invoked by ``word_tokenize()``.  It assumes that the
+    text has already been segmented into sentences, e.g. using ``sent_tokenize()``.
 
     This tokenizer performs the following steps:
 
@@ -48,60 +53,60 @@ class TreebankWordTokenizer(TokenizerI):
     - split off commas and single quotes, when followed by whitespace
     - separate periods that appear at the end of line
 
-    >>> from nltk.tokenize import TreebankWordTokenizer
-    >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks.'''
-    >>> TreebankWordTokenizer().tokenize(s)
-    ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks', '.']
-    >>> s = "They'll save and invest more."
-    >>> TreebankWordTokenizer().tokenize(s)
-    ['They', "'ll", 'save', 'and', 'invest', 'more', '.']
-    >>> s = "hi, my name can't hello,"
-    >>> TreebankWordTokenizer().tokenize(s)
-    ['hi', ',', 'my', 'name', 'ca', "n't", 'hello', ',']
+        >>> from nltk.tokenize import TreebankWordTokenizer
+        >>> s = '''Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\nThanks.'''
+        >>> TreebankWordTokenizer().tokenize(s)
+        ['Good', 'muffins', 'cost', '$', '3.88', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two', 'of', 'them.', 'Thanks', '.']
+        >>> s = "They'll save and invest more."
+        >>> TreebankWordTokenizer().tokenize(s)
+        ['They', "'ll", 'save', 'and', 'invest', 'more', '.']
+        >>> s = "hi, my name can't hello,"
+        >>> TreebankWordTokenizer().tokenize(s)
+        ['hi', ',', 'my', 'name', 'ca', "n't", 'hello', ',']
     """
 
     # starting quotes
     STARTING_QUOTES = [
-        (redos.compile(r"^\""), r"``"),
-        (redos.compile(r"(``)"), r" \1 "),
-        (redos.compile(r"([ \(\[{<])(\"|\'{2})"), r"\1 `` "),
+        (re.compile(r'^\"'), r'``'),
+        (re.compile(r'(``)'), r' \1 '),
+        (re.compile(r"([ \(\[{<])(\"|\'{2})"), r'\1 `` '),
     ]
 
     # punctuation
     PUNCTUATION = [
-        (redos.compile(r"([:,])([^\d])"), r" \1 \2"),
-        (redos.compile(r"([:,])$"), r" \1 "),
-        (redos.compile(r"\.\.\."), r" ... "),
-        (redos.compile(r"[;@#$%&]"), r" \g<0> "),
+        (re.compile(r'([:,])([^\d])'), r' \1 \2'),
+        (re.compile(r'([:,])$'), r' \1 '),
+        (re.compile(r'\.\.\.'), r' ... '),
+        (re.compile(r'[;@#$%&]'), r' \g<0> '),
         (
-            redos.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'),
-            r"\1 \2\3 ",
+            re.compile(r'([^\.])(\.)([\]\)}>"\']*)\s*$'),
+            r'\1 \2\3 ',
         ),  # Handles the final period.
-        (redos.compile(r"[?!]"), r" \g<0> "),
-        (redos.compile(r"([^'])' "), r"\1 ' "),
+        (re.compile(r'[?!]'), r' \g<0> '),
+        (re.compile(r"([^'])' "), r"\1 ' "),
     ]
 
     # Pads parentheses
-    PARENS_BRACKETS = (redos.compile(r"[\]\[\(\)\{\}\<\>]"), r" \g<0> ")
+    PARENS_BRACKETS = (re.compile(r'[\]\[\(\)\{\}\<\>]'), r' \g<0> ')
 
     # Optionally: Convert parentheses, brackets and converts them to PTB symbols.
     CONVERT_PARENTHESES = [
-        (redos.compile(r"\("), "-LRB-"),
-        (redos.compile(r"\)"), "-RRB-"),
-        (redos.compile(r"\["), "-LSB-"),
-        (redos.compile(r"\]"), "-RSB-"),
-        (redos.compile(r"\{"), "-LCB-"),
-        (redos.compile(r"\}"), "-RCB-"),
+        (re.compile(r'\('), '-LRB-'),
+        (re.compile(r'\)'), '-RRB-'),
+        (re.compile(r'\['), '-LSB-'),
+        (re.compile(r'\]'), '-RSB-'),
+        (re.compile(r'\{'), '-LCB-'),
+        (re.compile(r'\}'), '-RCB-'),
     ]
 
-    DOUBLE_DASHES = (redos.compile(r"--"), r" -- ")
+    DOUBLE_DASHES = (re.compile(r'--'), r' -- ')
 
     # ending quotes
     ENDING_QUOTES = [
-        (redos.compile(r"''"), " '' "),
-        (redos.compile(r'"'), " '' "),
-        (redos.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 "),
-        (redos.compile(r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1 \2 "),
+        (re.compile(r'"'), " '' "),
+        (re.compile(r'(\S)(\'\')'), r'\1 \2 '),
+        (re.compile(r"([^' ])('[sS]|'[mM]|'[dD]|') "), r"\1 \2 "),
+        (re.compile(r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1 \2 "),
     ]
 
     # List of contractions adapted from Robert MacIntyre's tokenizer.
@@ -109,41 +114,7 @@ class TreebankWordTokenizer(TokenizerI):
     CONTRACTIONS2 = list(map(re.compile, _contractions.CONTRACTIONS2))
     CONTRACTIONS3 = list(map(re.compile, _contractions.CONTRACTIONS3))
 
-    def tokenize(
-        self, text, convert_parentheses = False, return_str = False
-    ) :
-        r"""Return a tokenized copy of `text`.
-
-        >>> from nltk.tokenize import TreebankWordTokenizer
-        >>> s = '''Good muffins cost $3.88 (roughly 3,36 euros)\nin New York.  Please buy me\ntwo of them.\nThanks.'''
-        >>> TreebankWordTokenizer().tokenize(s) # doctest: +NORMALIZE_WHITESPACE
-        ['Good', 'muffins', 'cost', '$', '3.88', '(', 'roughly', '3,36',
-        'euros', ')', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two',
-        'of', 'them.', 'Thanks', '.']
-        >>> TreebankWordTokenizer().tokenize(s, convert_parentheses=True) # doctest: +NORMALIZE_WHITESPACE
-        ['Good', 'muffins', 'cost', '$', '3.88', '-LRB-', 'roughly', '3,36',
-        'euros', '-RRB-', 'in', 'New', 'York.', 'Please', 'buy', 'me', 'two',
-        'of', 'them.', 'Thanks', '.']
-
-        :param text: A string with a sentence or sentences.
-        :type text: str
-        :param convert_parentheses: if True, replace parentheses to PTB symbols,
-            e.g. `(` to `-LRB-`. Defaults to False.
-        :type convert_parentheses: bool, optional
-        :param return_str: If True, return tokens as space-separated string,
-            defaults to False.
-        :type return_str: bool, optional
-        :return: List of tokens from `text`.
-        :rtype: List[str]
-        """
-        if return_str is not False:
-            warnings.warn(
-                "Parameter 'return_str' has been deprecated and should no "
-                "longer be used.",
-                category=DeprecationWarning,
-                stacklevel=2,
-            )
-
+    def tokenize(self, text, convert_parentheses=False, return_str=False):
         for regexp, substitution in self.STARTING_QUOTES:
             text = regexp.sub(substitution, text)
 
@@ -169,24 +140,23 @@ class TreebankWordTokenizer(TokenizerI):
             text = regexp.sub(substitution, text)
 
         for regexp in self.CONTRACTIONS2:
-            text = regexp.sub(r" \1 \2 ", text)
+            text = regexp.sub(r' \1 \2 ', text)
         for regexp in self.CONTRACTIONS3:
-            text = regexp.sub(r" \1 \2 ", text)
+            text = regexp.sub(r' \1 \2 ', text)
 
         # We are not using CONTRACTIONS4 since
         # they are also commented out in the SED scripts
         # for regexp in self._contractions.CONTRACTIONS4:
         #     text = regexp.sub(r' \1 \2 \3 ', text)
 
-        return text.split()
+        return text if return_str else text.split()
 
-    def span_tokenize(self, text) :
-        r"""
-        Returns the spans of the tokens in ``text``.
+    def span_tokenize(self, text):
+        """
         Uses the post-hoc nltk.tokens.align_tokens to return the offset spans.
 
             >>> from nltk.tokenize import TreebankWordTokenizer
-            >>> s = '''Good muffins cost $3.88\nin New (York).  Please (buy) me\ntwo of them.\n(Thanks).'''
+            >>> s = '''Good muffins cost $3.88\\nin New (York).  Please (buy) me\\ntwo of them.\\n(Thanks).'''
             >>> expected = [(0, 4), (5, 12), (13, 17), (18, 19), (19, 23),
             ... (24, 26), (27, 30), (31, 32), (32, 36), (36, 37), (37, 38),
             ... (40, 46), (47, 48), (48, 51), (51, 52), (53, 55), (56, 59),
@@ -199,9 +169,22 @@ class TreebankWordTokenizer(TokenizerI):
             >>> [s[start:end] for start, end in TreebankWordTokenizer().span_tokenize(s)] == expected
             True
 
-        :param text: A string with a sentence or sentences.
-        :type text: str
-        :yield: Tuple[int, int]
+            Additional example
+            >>> from nltk.tokenize import TreebankWordTokenizer
+            >>> s = '''I said, "I'd like to buy some ''good muffins" which cost $3.88\\n each in New (York)."'''
+            >>> expected = [(0, 1), (2, 6), (6, 7), (8, 9), (9, 10), (10, 12),
+            ... (13, 17), (18, 20), (21, 24), (25, 29), (30, 32), (32, 36),
+            ... (37, 44), (44, 45), (46, 51), (52, 56), (57, 58), (58, 62),
+            ... (64, 68), (69, 71), (72, 75), (76, 77), (77, 81), (81, 82),
+            ... (82, 83), (83, 84)]
+            >>> list(TreebankWordTokenizer().span_tokenize(s)) == expected
+            True
+            >>> expected = ['I', 'said', ',', '"', 'I', "'d", 'like', 'to',
+            ... 'buy', 'some', "''", "good", 'muffins', '"', 'which', 'cost',
+            ... '$', '3.88', 'each', 'in', 'New', '(', 'York', ')', '.', '"']
+            >>> [s[start:end] for start, end in TreebankWordTokenizer().span_tokenize(s)] == expected
+            True
+
         """
         raw_tokens = self.tokenize(text)
 
@@ -211,50 +194,47 @@ class TreebankWordTokenizer(TokenizerI):
         # treated as starting quotes).
         if ('"' in text) or ("''" in text):
             # Find double quotes and converted quotes
-            matched = [m.group() for m in redos.finditer(r"``|'{2}|\"", text)]
+            matched = [m.group() for m in re.finditer(r"``|'{2}|\"", text)]
 
-            # Replace converted quotes back to double quotes. Draw matches from a
-            # forward iterator so the comprehension stays linear (CWE-407); popping
-            # index 0 off a list per token was quadratic.
-            mit = iter(matched)
+            # Replace converted quotes back to double quotes
             tokens = [
-                next(mit) if tok in ['"', "``", "''"] else tok for tok in raw_tokens
+                matched.pop(0) if tok in ['"', "``", "''"] else tok
+                for tok in raw_tokens
             ]
         else:
             tokens = raw_tokens
 
-        for _yf_item in align_tokens(tokens, text):
-            yield _yf_item
+        for tok in align_tokens(tokens, text):
+            yield tok
 
 
 class TreebankWordDetokenizer(TokenizerI):
-    r"""
+    """
     The Treebank detokenizer uses the reverse regex operations corresponding to
     the Treebank tokenizer's regexes.
 
     Note:
-
-    - There're additional assumption mades when undoing the padding of ``[;@#$%&]``
+    - There're additional assumption mades when undoing the padding of [;@#$%&]
       punctuation symbols that isn't presupposed in the TreebankTokenizer.
     - There're additional regexes added in reversing the parentheses tokenization,
-       such as the ``r'([\]\)\}\>])\s([:;,.])'``, which removes the additional right
-       padding added to the closing parentheses precedding ``[:;,.]``.
+       - the r'([\]\)\}\>])\s([:;,.])' removes the additional right padding added
+         to the closing parentheses precedding [:;,.].
     - It's not possible to return the original whitespaces as they were because
-      there wasn't explicit records of where `'\n'`, `'\t'` or `'\s'` were removed at
+      there wasn't explicit records of where '\n', '\t' or '\s' were removed at
       the text.split() operation.
 
-    >>> from nltk.tokenize.treebank import TreebankWordTokenizer, TreebankWordDetokenizer
-    >>> s = '''Good muffins cost $3.88\nin New York.  Please buy me\ntwo of them.\nThanks.'''
-    >>> d = TreebankWordDetokenizer()
-    >>> t = TreebankWordTokenizer()
-    >>> toks = t.tokenize(s)
-    >>> d.detokenize(toks)
-    'Good muffins cost $3.88 in New York. Please buy me two of them. Thanks.'
+        >>> from nltk.tokenize.treebank import TreebankWordTokenizer, TreebankWordDetokenizer
+        >>> s = '''Good muffins cost $3.88\\nin New York.  Please buy me\\ntwo of them.\\nThanks.'''
+        >>> d = TreebankWordDetokenizer()
+        >>> t = TreebankWordTokenizer()
+        >>> toks = t.tokenize(s)
+        >>> d.detokenize(toks)
+        'Good muffins cost $3.88 in New York. Please buy me two of them. Thanks.'
 
-    The MXPOST parentheses substitution can be undone using the ``convert_parentheses``
+    The MXPOST parentheses substitution can be undone using the `convert_parentheses`
     parameter:
 
-    >>> s = '''Good muffins cost $3.88\nin New (York).  Please (buy) me\ntwo of them.\n(Thanks).'''
+    >>> s = '''Good muffins cost $3.88\\nin New (York).  Please (buy) me\\ntwo of them.\\n(Thanks).'''
     >>> expected_tokens = ['Good', 'muffins', 'cost', '$', '3.88', 'in',
     ... 'New', '-LRB-', 'York', '-RRB-', '.', 'Please', '-LRB-', 'buy',
     ... '-RRB-', 'me', 'two', 'of', 'them.', '-LRB-', 'Thanks', '-RRB-', '.']
@@ -267,14 +247,14 @@ class TreebankWordDetokenizer(TokenizerI):
     During tokenization it's safe to add more spaces but during detokenization,
     simply undoing the padding doesn't really help.
 
-    - During tokenization, left and right pad is added to ``[!?]``, when
-      detokenizing, only left shift the ``[!?]`` is needed.
-      Thus ``(re.compile(r'\s([?!])'), r'\g<1>')``.
+    - During tokenization, left and right pad is added to [!?], when
+      detokenizing, only left shift the [!?] is needed.
+      Thus (re.compile(r'\s([?!])'), r'\g<1>')
 
-    - During tokenization ``[:,]`` are left and right padded but when detokenizing,
+    - During tokenization [:,] are left and right padded but when detokenizing,
       only left shift is necessary and we keep right pad after comma/colon
       if the string after is a non-digit.
-      Thus ``(re.compile(r'\s([:,])\s([^\d])'), r'\1 \2')``.
+      Thus (re.compile(r'\s([:,])\s([^\d])'), r'\1 \2')
 
     >>> from nltk.tokenize.treebank import TreebankWordDetokenizer
     >>> toks = ['hello', ',', 'i', 'ca', "n't", 'feel', 'my', 'feet', '!', 'Help', '!', '!']
@@ -290,103 +270,87 @@ class TreebankWordDetokenizer(TokenizerI):
 
     _contractions = MacIntyreContractions()
     CONTRACTIONS2 = [
-        redos.compile(pattern.replace("(?#X)", r"\s"))
+        re.compile(pattern.replace('(?#X)', '\s'))
         for pattern in _contractions.CONTRACTIONS2
     ]
     CONTRACTIONS3 = [
-        redos.compile(pattern.replace("(?#X)", r"\s"))
+        re.compile(pattern.replace('(?#X)', '\s'))
         for pattern in _contractions.CONTRACTIONS3
     ]
 
     # ending quotes
     ENDING_QUOTES = [
-        (redos.compile(r"([^' ])\s('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1\2 "),
-        (redos.compile(r"([^' ])\s('[sS]|'[mM]|'[dD]|') "), r"\1\2 "),
-        # Fix #3260: exclude single quote from attaching '' to avoid
-        # swallowing the closing single quote in nested quote sequences.
-        (redos.compile(r"([^'\s])\s(\'\')"), r"\1\2"),
-        # Remove space before closing quotes after punctuation or single quote
-        (redos.compile(r"([,.;:!?'])\s+(\"|\'\')"), r"\1\2"),
-        (
-            redos.compile(r"(\'\')\s([.,:)\]>};%])"),
-            r"\1\2",
-        ),  # Quotes followed by no-left-padded punctuations.
-        (redos.compile(r"''"), '"'),
-        # Fix #3260: swap ,"' to ,'" (inside-out closing order)
-        (redos.compile(r'([,.;:!?])"(\')'), r"\1\2" '"'),
+        (re.compile(r"([^' ])\s('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) "), r"\1\2 "),
+        (re.compile(r"([^' ])\s('[sS]|'[mM]|'[dD]|') "), r"\1\2 "),
+        (re.compile(r'(\S)(\'\')'), r'\1\2 '),
+        (re.compile(r" '' "), '"'),
     ]
 
     # Handles double dashes
-    DOUBLE_DASHES = (redos.compile(r" -- "), r"--")
+    DOUBLE_DASHES = (re.compile(r' -- '), r'--')
 
     # Optionally: Convert parentheses, brackets and converts them from PTB symbols.
     CONVERT_PARENTHESES = [
-        (redos.compile("-LRB-"), "("),
-        (redos.compile("-RRB-"), ")"),
-        (redos.compile("-LSB-"), "["),
-        (redos.compile("-RSB-"), "]"),
-        (redos.compile("-LCB-"), "{"),
-        (redos.compile("-RCB-"), "}"),
+        (re.compile('-LRB-'), '('),
+        (re.compile('-RRB-'), ')'),
+        (re.compile('-LSB-'), '['),
+        (re.compile('-RSB-'), ']'),
+        (re.compile('-LCB-'), '{'),
+        (re.compile('-RCB-'), '}'),
     ]
 
     # Undo padding on parentheses.
     PARENS_BRACKETS = [
-        (redos.compile(r"([\[\(\{\<])\s"), r"\g<1>"),
-        (redos.compile(r"\s([\]\)\}\>])"), r"\g<1>"),
-        (redos.compile(r"([\]\)\}\>])\s([:;,.])"), r"\1\2"),
+        (re.compile(r'\s([\[\(\{\<])\s'), r' \g<1>'),
+        (re.compile(r'\s([\]\)\}\>])\s'), r'\g<1> '),
+        (re.compile(r'([\]\)\}\>])\s([:;,.])'), r'\1\2'),
     ]
 
     # punctuation
     PUNCTUATION = [
-        (redos.compile(r"([^'])\s'\s"), r"\1' "),
-        (redos.compile(r"\s([?!])"), r"\g<1>"),  # Strip left pad for [?!]
+        (re.compile(r"([^'])\s'\s"), r"\1' "),
+        (re.compile(r'\s([?!])'), r'\g<1>'),  # Strip left pad for [?!]
         # (re.compile(r'\s([?!])\s'), r'\g<1>'),
-        (redos.compile(r'([^\.])\s(\.)(?!\.)([\]\)}>"\']*)'), r"\1\2\3"),
+        (re.compile(r'([^\.])\s(\.)([\]\)}>"\']*)\s*$'), r'\1\2\3'),
         # When tokenizing, [;@#$%&] are padded with whitespace regardless of
         # whether there are spaces before or after them.
         # But during detokenization, we need to distinguish between left/right
         # pad, so we split this up.
-        (redos.compile(r"([#$])\s"), r"\g<1>"),  # Left pad.
-        (redos.compile(r"\s([;%])"), r"\g<1>"),  # Right pad.
-        # (re.compile(r"\s([&*])\s"), r" \g<1> "),  # Unknown pad.
-        (redos.compile(r"\s\.\.\.\s"), r"..."),
-        # (re.compile(r"\s([:,])\s$"), r"\1"),  # .strip() takes care of it.
+        (re.compile(r'\s([#$])\s'), r' \g<1>'),  # Left pad.
+        (re.compile(r'\s([;%])\s'), r'\g<1> '),  # Right pad.
+        (re.compile(r'\s([&])\s'), r' \g<1> '),  # Unknown pad.
+        (re.compile(r'\s\.\.\.\s'), r'...'),
+        (re.compile(r'\s([:,])\s$'), r'\1'),
         (
-            redos.compile(r"\s([:,])"),
-            r"\1",
-        ),  # Just remove left padding. Punctuation in numbers won't be padded.
+            re.compile(r'\s([:,])\s([^\d])'),
+            r'\1 \2',
+        )  # Keep right pad after comma/colon before non-digits.
+        # (re.compile(r'\s([:,])\s([^\d])'), r'\1\2')
     ]
 
     # starting quotes
     STARTING_QUOTES = [
-        (redos.compile(r"([ (\[{<])\s``"), r"\1``"),
-        (redos.compile(r"(``)\s"), r"\1"),
-        (redos.compile(r"``"), r'"'),
+        (re.compile(r'([ (\[{<])\s``'), r'\1"'),
+        (re.compile(r'\s(``)\s'), r'\1'),
+        (re.compile(r'^``'), r'\"'),
     ]
 
-    def tokenize(self, tokens, convert_parentheses = False) :
+    def tokenize(self, tokens, convert_parentheses=False):
         """
-        Treebank detokenizer, created by undoing the regexes from
+        Treebank detokenizer, created by undoing the regexes from 
         the TreebankWordTokenizer.tokenize.
 
         :param tokens: A list of strings, i.e. tokenized text.
-        :type tokens: List[str]
-        :param convert_parentheses: if True, replace PTB symbols with parentheses,
-            e.g. `-LRB-` to `(`. Defaults to False.
-        :type convert_parentheses: bool, optional
+        :type tokens: list(str)
         :return: str
         """
-        text = " ".join(tokens)
-
-        # Add extra space to make things easier
-        text = " " + text + " "
-
+        text = ' '.join(tokens)
         # Reverse the contractions regexes.
         # Note: CONTRACTIONS4 are not used in tokenization.
         for regexp in self.CONTRACTIONS3:
-            text = regexp.sub(r"\1\2", text)
+            text = regexp.sub(r'\1\2', text)
         for regexp in self.CONTRACTIONS2:
-            text = regexp.sub(r"\1\2", text)
+            text = regexp.sub(r'\1\2', text)
 
         # Reverse the regexes applied for ending quotes.
         for regexp, substitution in self.ENDING_QUOTES:
@@ -417,6 +381,6 @@ class TreebankWordDetokenizer(TokenizerI):
 
         return text.strip()
 
-    def detokenize(self, tokens, convert_parentheses = False) :
-        """Duck-typing the abstract *tokenize()*."""
+    def detokenize(self, tokens, convert_parentheses=False):
+        """ Duck-typing the abstract *tokenize()*."""
         return self.tokenize(tokens, convert_parentheses)

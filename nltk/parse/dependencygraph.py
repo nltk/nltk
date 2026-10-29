@@ -1,65 +1,38 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Dependency Grammars
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Jason Narad <jason.narad@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com> (modifications)
 #
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 #
 
 """
 Tools for reading and writing dependency trees.
 The input is assumed to be in Malt-TAB format
-(https://stp.lingfil.uu.se/~nivre/research/MaltXML.html).
+(http://stp.lingfil.uu.se/~nivre/research/MaltXML.html).
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
+from __future__ import print_function, unicode_literals
 
-import operator
-import os
-import string
-import subprocess
-import warnings
 from collections import defaultdict
 from itertools import chain
 from pprint import pformat
+import subprocess
+import warnings
 
-from nltk.data import make_staging_dir
-from nltk.internals import find_binary_absolute
-from nltk.pathsec import TrustError, has_line_unsafe_char
-from nltk.pathsec import open as _secure_open
-from nltk.pathsec import spawn_trusted
-from nltk.termsec import safe_print
+from six import string_types
+
 from nltk.tree import Tree
-
-
-def _dep_addresses(deps):
-    """Return a node's dependent addresses as a list, tolerating both deps shapes.
-
-    ``_parse`` and ``add_arc`` store a node's ``deps`` as a relation->[addresses]
-    mapping, while the legacy hand-built form (and this module's doctests) uses a
-    flat list of addresses. Iterating the mapping directly yields relation-label
-    keys, not addresses, so a traversal that did so silently saw no edges on a
-    parsed graph. ``_tree`` and ``triples`` already flatten ``deps.values()``;
-    this does the same and also accepts the list form.
-    """
-    if isinstance(deps, dict):
-        return list(chain.from_iterable(deps.values()))
-    return list(deps)
+from nltk.compat import python_2_unicode_compatible
 
 
 #################################################################
 # DependencyGraph Class
 #################################################################
 
-#: Maximum depth the recursive dependency-graph traversal helpers will
-#: descend to.  Beyond this they raise ValueError instead of letting
-#: Python raise an uncaught RecursionError (CWE-674).  Configurable.
-MAX_DEPTH = 200
 
-
+@python_2_unicode_compatible
 class DependencyGraph(object):
     """
     A container for the nodes and labelled edges of a dependency structure.
@@ -71,7 +44,7 @@ class DependencyGraph(object):
         cell_extractor=None,
         zero_based=False,
         cell_separator=None,
-        top_relation_label="ROOT",
+        top_relation_label='ROOT',
     ):
         """Dependency graph.
 
@@ -84,26 +57,27 @@ class DependencyGraph(object):
         zpar).
 
         :param str cell_separator: the cell separator. If not provided, cells
-            are split by whitespace.
+        are split by whitespace.
 
         :param str top_relation_label: the label by which the top relation is
-            identified, for examlple, `ROOT`, `null` or `TOP`.
+        identified, for examlple, `ROOT`, `null` or `TOP`.
+
         """
         self.nodes = defaultdict(
             lambda: {
-                "address": None,
-                "word": None,
-                "lemma": None,
-                "ctag": None,
-                "tag": None,
-                "feats": None,
-                "head": None,
-                "deps": defaultdict(list),
-                "rel": None,
+                'address': None,
+                'word': None,
+                'lemma': None,
+                'ctag': None,
+                'tag': None,
+                'feats': None,
+                'head': None,
+                'deps': defaultdict(list),
+                'rel': None,
             }
         )
 
-        self.nodes[0].update({"ctag": "TOP", "tag": "TOP", "address": 0})
+        self.nodes[0].update({'ctag': 'TOP', 'tag': 'TOP', 'address': 0})
 
         self.root = None
 
@@ -130,21 +104,21 @@ class DependencyGraph(object):
         """
         for node in self.nodes.values():
             new_deps = []
-            for dep in node["deps"]:
+            for dep in node['deps']:
                 if dep in originals:
                     new_deps.append(redirect)
                 else:
                     new_deps.append(dep)
-            node["deps"] = new_deps
+            node['deps'] = new_deps
 
     def add_arc(self, head_address, mod_address):
         """
         Adds an arc from the node specified by head_address to the
         node specified by the mod address.
         """
-        relation = self.nodes[mod_address]["rel"]
-        self.nodes[head_address]["deps"].setdefault(relation, [])
-        self.nodes[head_address]["deps"][relation].append(mod_address)
+        relation = self.nodes[mod_address]['rel']
+        self.nodes[head_address]['deps'].setdefault(relation, [])
+        self.nodes[head_address]['deps'][relation].append(mod_address)
         # self.nodes[head_address]['deps'].append(mod_address)
 
     def connect_graph(self):
@@ -154,10 +128,10 @@ class DependencyGraph(object):
         """
         for node1 in self.nodes.values():
             for node2 in self.nodes.values():
-                if node1["address"] != node2["address"] and node2["rel"] != "TOP":
-                    relation = node2["rel"]
-                    node1["deps"].setdefault(relation, [])
-                    node1["deps"][relation].append(node2["address"])
+                if node1['address'] != node2['address'] and node2['rel'] != 'TOP':
+                    relation = node2['rel']
+                    node1['deps'].setdefault(relation, [])
+                    node1['deps'][relation].append(node2['address'])
                     # node1['deps'].append(node2['address'])
 
     def get_by_address(self, node_address):
@@ -194,76 +168,31 @@ class DependencyGraph(object):
         }
 
         """
-
-        # Neutralise values interpolated into a Graphviz double-quoted string so
-        # a word/relation carrying a quote or newline cannot break out of a label
-        # and corrupt the graph (CWE-116; graphviz has no code execution).
-        def _dot_escape(text):
-            # str.__str__ copies the real characters out of a str subclass whose
-            # __contains__ / replace / __format__ could lie (str() of any other
-            # object may hand back such a subclass too).
-            text = str.__str__(text if isinstance(text, six.string_types) else str(text))
-            if "\x00" in text:
-                # a C string ends at NUL: Graphviz would drop the rest of the label
-                raise ValueError("DependencyGraph labels cannot contain NUL: %r" % text)
-            return (
-                text.replace("\\", "\\\\")
-                .replace('"', '\\"')
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-            )
-
         # Start the digraph specification
-        s = "digraph G{\n"
-        s += "edge [dir=forward]\n"
-        s += "node [shape=plaintext]\n"
+        s = 'digraph G{\n'
+        s += 'edge [dir=forward]\n'
+        s += 'node [shape=plaintext]\n'
 
-        # An address or dependency index is interpolated bare (a DOT node id),
-        # so only an integer may stand there: a string would be a different
-        # node id, or DOT syntax of its own (CWE-116). operator.index admits
-        # every integer type (numpy included) and refuses bool and everything else.
-        def _dot_address(value):
-            if isinstance(value, bool):
-                raise ValueError(
-                    "DependencyGraph addresses must be integers to render as "
-                    "DOT node ids, not %r" % (value,)
-                )
-            try:
-                return operator.index(value)
-            except TypeError:
-                raise ValueError(
-                    "DependencyGraph addresses must be integers to render as "
-                    "DOT node ids, not %r" % (value,)
-                )
-
-        # Draw the remaining nodes (addresses are judged before they are sorted,
-        # so a non-integer one is refused here and never reaches the sort)
-        for node in sorted(
-            self.nodes.values(), key=lambda v: _dot_address(v["address"])
-        ):
-            address = _dot_address(node["address"])
-            s += '\n{} [label="{} ({})"]'.format(
-                address,
-                address,
-                _dot_escape(node["word"]),
+        # Draw the remaining nodes
+        for node in sorted(self.nodes.values(), key=lambda v: v['address']):
+            s += '\n%s [label="%s (%s)"]' % (
+                node['address'],
+                node['address'],
+                node['word'],
             )
-            for rel, deps in node["deps"].items():
+            for rel, deps in node['deps'].items():
                 for dep in deps:
-                    dep = _dot_address(dep)
                     if rel is not None:
-                        s += '\n{} -> {} [label="{}"]'.format(
-                            address, dep, _dot_escape(rel)
-                        )
+                        s += '\n%s -> %s [label="%s"]' % (node['address'], dep, rel)
                     else:
-                        s += "\n{0} -> {1} ".format(address, dep)
+                        s += '\n%s -> %s ' % (node['address'], dep)
         s += "\n}"
 
         return s
 
     def _repr_svg_(self):
         """Show SVG representation of the transducer (IPython magic).
-        >>> from nltk.test.setup_fixt import check_binary
-        >>> check_binary('dot')
+
         >>> dg = DependencyGraph(
         ...     'John N 2\\n'
         ...     'loves V 0\\n'
@@ -274,7 +203,24 @@ class DependencyGraph(object):
 
         """
         dot_string = self.to_dot()
-        return dot2img(dot_string)
+
+        try:
+            process = subprocess.Popen(
+                ['dot', '-Tsvg'],
+                stdin=subprocess.PIPE,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                universal_newlines=True,
+            )
+        except OSError:
+            raise Exception('Cannot find the dot binary from Graphviz package')
+        out, err = process.communicate(dot_string)
+        if err:
+            raise Exception(
+                'Cannot create svg representation by running dot from string: {}'
+                ''.format(dot_string)
+            )
+        return out
 
     def __str__(self):
         return pformat(self.nodes)
@@ -284,24 +230,21 @@ class DependencyGraph(object):
 
     @staticmethod
     def load(
-        filename, zero_based=False, cell_separator=None, top_relation_label="ROOT"
+        filename, zero_based=False, cell_separator=None, top_relation_label='ROOT'
     ):
         """
         :param filename: a name of a file in Malt-TAB format
         :param zero_based: nodes in the input file are numbered starting from 0
-            rather than 1 (as produced by, e.g., zpar)
+        rather than 1 (as produced by, e.g., zpar)
         :param str cell_separator: the cell separator. If not provided, cells
-            are split by whitespace.
+        are split by whitespace.
         :param str top_relation_label: the label by which the top relation is
-            identified, for examlple, `ROOT`, `null` or `TOP`.
+        identified, for examlple, `ROOT`, `null` or `TOP`.
 
         :return: a list of DependencyGraphs
 
         """
-        # Route through the pathsec sentinel so the read honours the file-access
-        # sandbox (allowed data roots, symlink resolution) instead of the builtin
-        # open, which bypasses it and can read arbitrary local files (CWE-22).
-        with _secure_open(filename) as infile:
+        with open(filename) as infile:
             return [
                 DependencyGraph(
                     tree_str,
@@ -309,7 +252,7 @@ class DependencyGraph(object):
                     cell_separator=cell_separator,
                     top_relation_label=top_relation_label,
                 )
-                for tree_str in infile.read().split("\n\n")
+                for tree_str in infile.read().split('\n\n')
             ]
 
     def left_children(self, node_index):
@@ -317,8 +260,8 @@ class DependencyGraph(object):
         Returns the number of left children under the node specified
         by the given address.
         """
-        children = chain.from_iterable(self.nodes[node_index]["deps"].values())
-        index = self.nodes[node_index]["address"]
+        children = chain.from_iterable(self.nodes[node_index]['deps'].values())
+        index = self.nodes[node_index]['address']
         return sum(1 for c in children if c < index)
 
     def right_children(self, node_index):
@@ -326,13 +269,13 @@ class DependencyGraph(object):
         Returns the number of right children under the node specified
         by the given address.
         """
-        children = chain.from_iterable(self.nodes[node_index]["deps"].values())
-        index = self.nodes[node_index]["address"]
+        children = chain.from_iterable(self.nodes[node_index]['deps'].values())
+        index = self.nodes[node_index]['address']
         return sum(1 for c in children if c > index)
 
     def add_node(self, node):
-        if not self.contains_address(node["address"]):
-            self.nodes[node["address"]].update(node)
+        if not self.contains_address(node['address']):
+            self.nodes[node['address']].update(node)
 
     def _parse(
         self,
@@ -340,7 +283,7 @@ class DependencyGraph(object):
         cell_extractor=None,
         zero_based=False,
         cell_separator=None,
-        top_relation_label="ROOT",
+        top_relation_label='ROOT',
     ):
         """Parse a sentence.
 
@@ -358,11 +301,11 @@ class DependencyGraph(object):
 
         def extract_3_cells(cells, index):
             word, tag, head = cells
-            return index, word, word, tag, tag, "", head, ""
+            return index, word, word, tag, tag, '', head, ''
 
         def extract_4_cells(cells, index):
             word, tag, head, rel = cells
-            return index, word, word, tag, tag, "", head, rel
+            return index, word, word, tag, tag, '', head, rel
 
         def extract_7_cells(cells, index):
             line_index, word, lemma, tag, _, head, rel = cells
@@ -371,7 +314,7 @@ class DependencyGraph(object):
             except ValueError:
                 # index can't be parsed as an integer, use default
                 pass
-            return index, word, lemma, tag, tag, "", head, rel
+            return index, word, lemma, tag, tag, '', head, rel
 
         def extract_10_cells(cells, index):
             line_index, word, lemma, ctag, tag, feats, head, rel, _, _ = cells
@@ -389,8 +332,8 @@ class DependencyGraph(object):
             10: extract_10_cells,
         }
 
-        if isinstance(input_, six.string_types):
-            input_ = (line for line in input_.split("\n"))
+        if isinstance(input_, string_types):
+            input_ = (line for line in input_.split('\n'))
 
         lines = (l.rstrip() for l in input_)
         lines = (l for l in lines if l)
@@ -406,11 +349,11 @@ class DependencyGraph(object):
             if cell_extractor is None:
                 try:
                     cell_extractor = extractors[cell_number]
-                except KeyError as e:
-                    six.raise_from(ValueError(
-                        "Number of tab-delimited fields ({}) not supported by "
-                        "CoNLL(10) or Malt-Tab(4) format".format(cell_number)
-                    ), e)
+                except KeyError:
+                    raise ValueError(
+                        'Number of tab-delimited fields ({0}) not supported by '
+                        'CoNLL(10) or Malt-Tab(4) format'.format(cell_number)
+                    )
 
             try:
                 index, word, lemma, ctag, tag, feats, head, rel = cell_extractor(
@@ -422,7 +365,7 @@ class DependencyGraph(object):
                 # extractor and doesn't accept or return an index.
                 word, lemma, ctag, tag, feats, head, rel = cell_extractor(cells)
 
-            if head == "_":
+            if head == '_':
                 continue
 
             head = int(head)
@@ -431,24 +374,24 @@ class DependencyGraph(object):
 
             self.nodes[index].update(
                 {
-                    "address": index,
-                    "word": word,
-                    "lemma": lemma,
-                    "ctag": ctag,
-                    "tag": tag,
-                    "feats": feats,
-                    "head": head,
-                    "rel": rel,
+                    'address': index,
+                    'word': word,
+                    'lemma': lemma,
+                    'ctag': ctag,
+                    'tag': tag,
+                    'feats': feats,
+                    'head': head,
+                    'rel': rel,
                 }
             )
 
             # Make sure that the fake root node has labeled dependencies.
             if (cell_number == 3) and (head == 0):
                 rel = top_relation_label
-            self.nodes[head]["deps"][rel].append(index)
+            self.nodes[head]['deps'][rel].append(index)
 
-        if self.nodes[0]["deps"][top_relation_label]:
-            root_address = self.nodes[0]["deps"][top_relation_label][0]
+        if self.nodes[0]['deps'][top_relation_label]:
+            root_address = self.nodes[0]['deps'][top_relation_label][0]
             self.root = self.nodes[root_address]
             self.top_relation_label = top_relation_label
         else:
@@ -457,86 +400,63 @@ class DependencyGraph(object):
             )
 
     def _word(self, node, filter=True):
-        w = node["word"]
+        w = node['word']
         if filter:
-            if w != ",":
+            if w != ',':
                 return w
         return w
 
-    def _tree(self, i, _depth=0, max_depth=None):
-        """Turn dependency graphs into NLTK trees.
+    def _tree(self, i):
+        """ Turn dependency graphs into NLTK trees.
 
         :param int i: index of a node
-        :param int _depth: current recursion depth (internal)
-        :param int max_depth: maximum depth; defaults to ``MAX_DEPTH``
         :return: either a word (if the indexed node is a leaf) or a ``Tree``.
         """
-        if max_depth is None:
-            max_depth = MAX_DEPTH
-        if _depth > max_depth:
-            raise ValueError("DependencyGraph._tree() exceeded MAX_DEPTH={0}.".format(max_depth))
         node = self.get_by_address(i)
-        word = node["word"]
-        deps = sorted(chain.from_iterable(node["deps"].values()))
+        word = node['word']
+        deps = sorted(chain.from_iterable(node['deps'].values()))
+
         if deps:
-            return Tree(
-                word,
-                [self._tree(dep, _depth + 1, max_depth) for dep in deps],
-            )
+            return Tree(word, [self._tree(dep) for dep in deps])
         else:
             return word
 
-    def tree(self, max_depth=None):
-        """Starting with the ``root`` node, build a dependency tree using the
-        NLTK ``Tree`` constructor.  Dependency labels are omitted.
-
-        :param int max_depth: maximum recursion depth; defaults to ``MAX_DEPTH``
+    def tree(self):
         """
-        if max_depth is None:
-            max_depth = MAX_DEPTH
+        Starting with the ``root`` node, build a dependency tree using the NLTK
+        ``Tree`` constructor. Dependency labels are omitted.
+        """
         node = self.root
-        word = node["word"]
-        deps = sorted(chain.from_iterable(node["deps"].values()))
-        return Tree(
-            word,
-            [self._tree(dep, 1, max_depth) for dep in deps],
-        )
 
-    def triples(self, node=None, max_depth=None):
-        """Extract dependency triples of the form:
-        ((head word, head tag), rel, (dep word, dep tag))
+        word = node['word']
+        deps = sorted(chain.from_iterable(node['deps'].values()))
+        return Tree(word, [self._tree(dep) for dep in deps])
 
-        :param int max_depth: maximum recursion depth; defaults to ``MAX_DEPTH``
+    def triples(self, node=None):
         """
-        if max_depth is None:
-            max_depth = MAX_DEPTH
+        Extract dependency triples of the form:
+        ((head word, head tag), rel, (dep word, dep tag))
+        """
+
         if not node:
             node = self.root
 
-        def _triples(node, _depth):
-            if _depth > max_depth:
-                raise ValueError(
-                    "DependencyGraph.triples() exceeded MAX_DEPTH={0}.".format(max_depth)
-                )
-            head = (node["word"], node["ctag"])
-            for i in sorted(chain.from_iterable(node["deps"].values())):
-                dep = self.get_by_address(i)
-                yield (head, dep["rel"], (dep["word"], dep["ctag"]))
-                for _yf_item in _triples(dep, _depth + 1):
-                    yield _yf_item
-
-        for _yf_item in _triples(node, 0):
-            yield _yf_item
+        head = (node['word'], node['ctag'])
+        for i in sorted(chain.from_iterable(node['deps'].values())):
+            dep = self.get_by_address(i)
+            yield (head, dep['rel'], (dep['word'], dep['ctag']))
+            for triple in self.triples(node=dep):
+                yield triple
 
     def _hd(self, i):
         try:
-            return self.nodes[i]["head"]
+            return self.nodes[i]['head']
         except IndexError:
             return None
 
     def _rel(self, i):
         try:
-            return self.nodes[i]["rel"]
+            return self.nodes[i]['rel']
         except IndexError:
             return None
 
@@ -564,65 +484,41 @@ class DependencyGraph(object):
         >>> cyclic_dg.root = top
 
         >>> cyclic_dg.contains_cycle()
-        [1, 2, 4, 3]
+        [3, 1, 2, 4]
 
         """
-        # Detect a directed cycle with an iterative depth-first search in
-        # O(V + E).  The previous implementation repeatedly recomputed a
-        # transitive closure with a triple-nested loop over a ``distances``
-        # set that grows quadratically in the number of nodes, so its running
-        # time grew as a high-degree polynomial in the (attacker-controlled)
-        # number of tokens -- roughly cubic on a graph parsed from CoNLL data
-        # and quintic on a list-``deps`` graph -- versus O(V + E) here, which
-        # let a single oversized graph exhaust CPU (CWE-407).
-        #
-        # Edges come from ``_dep_addresses``: a parsed node's ``deps`` maps
-        # relation->addresses, so iterating it bare yielded labels, not addresses,
-        # and this guard was dead on every parsed graph. Non-node targets skipped.
-        WHITE, GRAY, BLACK = 0, 1, 2
-        color = defaultdict(int)  # int() == WHITE
+        distances = {}
 
-        for start in list(self.nodes):
-            if color[start] != WHITE:
-                continue
-            color[start] = GRAY
-            path = [start]
-            stack = [iter(_dep_addresses(self.nodes[start]["deps"]))]
-            while stack:
-                for dep in stack[-1]:
-                    if dep not in self.nodes:
-                        continue
-                    if color[dep] == GRAY:
-                        # Back edge: the gray nodes from ``dep`` onward form
-                        # the cycle, in traversal order.
-                        return path[path.index(dep) :]
-                    if color[dep] == WHITE:
-                        color[dep] = GRAY
-                        path.append(dep)
-                        stack.append(iter(_dep_addresses(self.nodes[dep]["deps"])))
-                        break
-                else:
-                    color[path.pop()] = BLACK
-                    stack.pop()
+        for node in self.nodes.values():
+            for dep in node['deps']:
+                key = tuple([node['address'], dep])
+                distances[key] = 1
 
-        return False
+        for _ in self.nodes:
+            new_entries = {}
 
-    def get_cycle_path(self, curr_node, goal_node_index, _depth=0, max_depth=None):
-        if max_depth is None:
-            max_depth = MAX_DEPTH
-        if _depth > max_depth:
-            raise ValueError(
-                "DependencyGraph.get_cycle_path() exceeded MAX_DEPTH={0}.".format(max_depth)
-            )
-        for dep in _dep_addresses(curr_node["deps"]):
+            for pair1 in distances:
+                for pair2 in distances:
+                    if pair1[1] == pair2[0]:
+                        key = tuple([pair1[0], pair2[1]])
+                        new_entries[key] = distances[pair1] + distances[pair2]
+
+            for pair in new_entries:
+                distances[pair] = new_entries[pair]
+                if pair[0] == pair[1]:
+                    path = self.get_cycle_path(self.get_by_address(pair[0]), pair[0])
+                    return path
+
+        return False  # return []?
+
+    def get_cycle_path(self, curr_node, goal_node_index):
+        for dep in curr_node['deps']:
             if dep == goal_node_index:
-                return [curr_node["address"]]
-        for dep in _dep_addresses(curr_node["deps"]):
-            path = self.get_cycle_path(
-                self.get_by_address(dep), goal_node_index, _depth + 1, max_depth
-            )
+                return [curr_node['address']]
+        for dep in curr_node['deps']:
+            path = self.get_cycle_path(self.get_by_address(dep), goal_node_index)
             if len(path) > 0:
-                path.insert(0, curr_node["address"])
+                path.insert(0, curr_node['address'])
                 return path
         return []
 
@@ -636,40 +532,24 @@ class DependencyGraph(object):
         """
 
         if style == 3:
-            template = "{word}\t{tag}\t{head}\n"
+            template = '{word}\t{tag}\t{head}\n'
         elif style == 4:
-            template = "{word}\t{tag}\t{head}\t{rel}\n"
+            template = '{word}\t{tag}\t{head}\t{rel}\n'
         elif style == 10:
             template = (
-                "{i}\t{word}\t{lemma}\t{ctag}\t{tag}\t{feats}\t{head}\t{rel}\t_\t_\n"
+                '{i}\t{word}\t{lemma}\t{ctag}\t{tag}\t{feats}\t{head}\t{rel}\t_\t_\n'
             )
         else:
             raise ValueError(
-                "Number of tab-delimited fields ({}) not supported by "
-                "CoNLL(10) or Malt-Tab(4) format".format(style)
+                'Number of tab-delimited fields ({0}) not supported by '
+                'CoNLL(10) or Malt-Tab(4) format'.format(style)
             )
 
-        # Every value the template interpolates is rendered to a plain str and
-        # judged first: a tab, line break, NUL or other control character would
-        # add a column or a row to the CoNLL file MaltParser trains on (CWE-93).
-        fields = [name for _, name, _, _ in string.Formatter().parse(template) if name]
-        rows = []
-        for i, node in sorted(self.nodes.items()):
-            if node["tag"] == "TOP":
-                continue
-            texts = {}
-            for name in fields:
-                value = i if name == "i" else node[name]
-                texts[name] = str.__str__(
-                    value if isinstance(value, six.string_types) else str(value)
-                )
-            # A printable row holds none of the refused characters; only a row
-            # that is not printable pays for the per-field judgement.
-            if not "".join(texts.values()).isprintable():
-                for name in fields:
-                    _conll_field(i, name, texts[name])
-            rows.append(template.format(**texts))
-        return "".join(rows)
+        return ''.join(
+            template.format(i=i, **node)
+            for i, node in sorted(self.nodes.items())
+            if node['tag'] != 'TOP'
+        )
 
     def nx_graph(self):
         """Convert the data in a ``nodelist`` into a networkx labeled directed graph."""
@@ -681,80 +561,13 @@ class DependencyGraph(object):
         ]
         self.nx_labels = {}
         for n in nx_nodelist:
-            self.nx_labels[n] = self.nodes[n]["word"]
+            self.nx_labels[n] = self.nodes[n]['word']
 
         g = networkx.MultiDiGraph()
         g.add_nodes_from(nx_nodelist)
         g.add_edges_from(nx_edgelist)
 
         return g
-
-
-def _conll_field(address, name, value):
-    """Render one ``to_conll`` field to a plain str, refusing line-unsafe text.
-
-    The copy through ``str.__str__`` means a str subclass (or the str another
-    object renders to) cannot lie through ``__iter__``, ``__contains__`` or
-    ``__format__``: the characters judged are the characters written.
-    """
-    text = str.__str__(value if isinstance(value, six.string_types) else str(value))
-    if has_line_unsafe_char(text):
-        raise ValueError(
-            "DependencyGraph.to_conll: node %r field %r contains a tab, line "
-            "break, NUL or other control character, which would add a column "
-            "or a row to the CoNLL output: %r" % (address, name, text)
-        )
-    return text
-
-
-def dot2img(dot_string, t="svg"):
-    """
-    Create image representation fom dot_string, using the 'dot' program
-    from the Graphviz package.
-
-    Use the 't' argument to specify the image file format, for ex. 'jpeg', 'eps',
-    'json', 'png' or 'webp' (Running 'dot -T:' lists all available formats).
-
-    Note that the "capture_output" option of subprocess.run() is only available
-    with text formats (like svg), but not with binary image formats (like png).
-    """
-
-    try:
-        # Run the absolute path the finder returns, not the bare name: a
-        # CWD-relative match and a '..' component are refused, so a planted
-        # ./dot cannot be executed in place of Graphviz (CWE-426 / CWE-427).
-        dot_binary = find_binary_absolute("dot")
-    except LookupError as e:
-        six.raise_from(Exception("Cannot find the dot binary from Graphviz package"), e)
-
-    try:
-        # Route through the trusted-exec chokepoint like translate.api: verify
-        # the dot binary is on a path no other local user can swap, refuse a
-        # shell, and scrub the loader environment before exec (CWE-426/427/732).
-        text = t in ["dot", "dot_json", "json", "svg"]
-        proc = spawn_trusted(
-            dot_binary,
-            ["-T%s" % t],
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            universal_newlines=text,
-        )
-        stdout, _stderr = proc.communicate(
-            dot_string if text else bytes(dot_string, encoding="utf8")
-        )
-        return stdout
-    except TrustError as e:
-        # the reason (which directory or link failed which check) is what the
-        # operator needs to see; it used to be hidden behind the generic message
-        six.raise_from(Exception(
-            "Cannot create image representation by running dot from string: {0}: {1}".format(dot_string, e)
-        ), e)
-    except Exception as e:
-        six.raise_from(Exception(
-            "Cannot create image representation by running dot from string: {}"
-            "".format(dot_string)
-        ), e)
 
 
 class DependencyGraphError(Exception):
@@ -809,10 +622,7 @@ Nov.    NNP     9       VMOD
         networkx.draw_networkx_labels(g, pos, dg.nx_labels)
         pylab.xticks([])
         pylab.yticks([])
-        # A private staging dir under a data root, not "tree.png" in the CWD.
-        outfile = os.path.join(make_staging_dir(prefix="nltk_depgraph_"), "tree.png")
-        pylab.savefig(outfile)
-        safe_print("saved dependency tree to {0}".format(outfile))
+        pylab.savefig('tree.png')
         pylab.show()
 
 
@@ -824,29 +634,29 @@ def conll_demo():
     dg = DependencyGraph(conll_data1)
     tree = dg.tree()
     tree.pprint()
-    safe_print(dg)
-    safe_print(dg.to_conll(4))
+    print(dg)
+    print(dg.to_conll(4))
 
 
 def conll_file_demo():
-    safe_print("Mass conll_read demo...")
-    graphs = [DependencyGraph(entry) for entry in conll_data2.split("\n\n") if entry]
+    print('Mass conll_read demo...')
+    graphs = [DependencyGraph(entry) for entry in conll_data2.split('\n\n') if entry]
     for graph in graphs:
         tree = graph.tree()
-        safe_print("\n")
+        print('\n')
         tree.pprint()
 
 
 def cycle_finding_demo():
     dg = DependencyGraph(treebank_data)
-    safe_print(dg.contains_cycle())
+    print(dg.contains_cycle())
     cyclic_dg = DependencyGraph()
-    cyclic_dg.add_node({"word": None, "deps": [1], "rel": "TOP", "address": 0})
-    cyclic_dg.add_node({"word": None, "deps": [2], "rel": "NTOP", "address": 1})
-    cyclic_dg.add_node({"word": None, "deps": [4], "rel": "NTOP", "address": 2})
-    cyclic_dg.add_node({"word": None, "deps": [1], "rel": "NTOP", "address": 3})
-    cyclic_dg.add_node({"word": None, "deps": [3], "rel": "NTOP", "address": 4})
-    safe_print(cyclic_dg.contains_cycle())
+    cyclic_dg.add_node({'word': None, 'deps': [1], 'rel': 'TOP', 'address': 0})
+    cyclic_dg.add_node({'word': None, 'deps': [2], 'rel': 'NTOP', 'address': 1})
+    cyclic_dg.add_node({'word': None, 'deps': [4], 'rel': 'NTOP', 'address': 2})
+    cyclic_dg.add_node({'word': None, 'deps': [1], 'rel': 'NTOP', 'address': 3})
+    cyclic_dg.add_node({'word': None, 'deps': [3], 'rel': 'NTOP', 'address': 4})
+    print(cyclic_dg.contains_cycle())
 
 
 treebank_data = """Pierre  NNP     2       NMOD
@@ -971,5 +781,5 @@ conll_data2 = """1   Cathy             Cathy             N     N     eigen|ev|ne
 16  .                 .                 Punc  Punc  punt                             15  punct   _  _
 """
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     demo()

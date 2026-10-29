@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Categorized Sentences Corpus Reader
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -14,7 +13,7 @@ Sentence Polarity Dataset.
 - Subjectivity Dataset information -
 
 Authors: Bo Pang and Lillian Lee.
-Url: https://www.cs.cornell.edu/people/pabo/movie-review-data
+Url: http://www.cs.cornell.edu/people/pabo/movie-review-data
 
 Distributed with permission.
 
@@ -27,7 +26,7 @@ Related papers:
 - Sentence Polarity Dataset information -
 
 Authors: Bo Pang and Lillian Lee.
-Url: https://www.cs.cornell.edu/people/pabo/movie-review-data
+Url: http://www.cs.cornell.edu/people/pabo/movie-review-data
 
 Related papers:
 
@@ -35,8 +34,7 @@ Related papers:
     sentiment categorization with respect to rating scales". Proceedings of the
     ACL, 2005.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
+from six import string_types
 
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
@@ -54,7 +52,7 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
     Examples using the Subjectivity Dataset:
 
     >>> from nltk.corpus import subjectivity
-    >>> subjectivity.sents()[23] # doctest: +NORMALIZE_WHITESPACE
+    >>> subjectivity.sents()[23]
     ['television', 'made', 'him', 'famous', ',', 'but', 'his', 'biggest', 'hits',
     'happened', 'off', 'screen', '.']
     >>> subjectivity.categories()
@@ -65,7 +63,7 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
     Examples using the Sentence Polarity Dataset:
 
     >>> from nltk.corpus import sentence_polarity
-    >>> sentence_polarity.sents() # doctest: +NORMALIZE_WHITESPACE
+    >>> sentence_polarity.sents()
     [['simplistic', ',', 'silly', 'and', 'tedious', '.'], ["it's", 'so', 'laddish',
     'and', 'juvenile', ',', 'only', 'teenage', 'boys', 'could', 'possibly', 'find',
     'it', 'funny', '.'], ...]
@@ -81,7 +79,7 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
         fileids,
         word_tokenizer=WhitespaceTokenizer(),
         sent_tokenizer=None,
-        encoding="utf8",
+        encoding='utf8',
         **kwargs
     ):
         """
@@ -99,6 +97,36 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
         self._word_tokenizer = word_tokenizer
         self._sent_tokenizer = sent_tokenizer
 
+    def _resolve(self, fileids, categories):
+        if fileids is not None and categories is not None:
+            raise ValueError('Specify fileids or categories, not both')
+        if categories is not None:
+            return self.fileids(categories)
+        else:
+            return fileids
+
+    def raw(self, fileids=None, categories=None):
+        """
+        :param fileids: a list or regexp specifying the fileids that have to be
+            returned as a raw string.
+        :param categories: a list specifying the categories whose files have to
+            be returned as a raw string.
+        :return: the given file(s) as a single string.
+        :rtype: str
+        """
+        fileids = self._resolve(fileids, categories)
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
+
+    def readme(self):
+        """
+        Return the contents of the corpus Readme.txt file.
+        """
+        return self.open("README").read()
+
     def sents(self, fileids=None, categories=None):
         """
         Return all sentences in the corpus or in the specified file(s).
@@ -114,7 +142,7 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
         fileids = self._resolve(fileids, categories)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, six.string_types):
+        elif isinstance(fileids, string_types):
             fileids = [fileids]
         return concat(
             [
@@ -138,7 +166,7 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
         fileids = self._resolve(fileids, categories)
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, six.string_types):
+        elif isinstance(fileids, string_types):
             fileids = [fileids]
         return concat(
             [

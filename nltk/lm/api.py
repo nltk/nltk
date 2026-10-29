@@ -19,7 +19,7 @@ from nltk.lm.util import log_base2
 from nltk.lm.vocabulary import Vocabulary
 
 try:
-
+    from itertools import accumulate
 except ImportError:
     import operator
 

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter client
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Lorenzo Rubio <lrnzcig@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -13,7 +13,7 @@ Examples to demo the :py:mod:`twitterclient` code.
 These demo functions should all run, with the following caveats:
 
 * You must have obtained API keys from Twitter, and installed them according to
-  the instructions in the `twitter HOWTO <https://www.nltk.org/howto/twitter.html>`_.
+  the instructions in the `twitter HOWTO <http://www.nltk.org/howto/twitter.html>`_.
 
 * If you are on a slow network, some of the calls to the Twitter API may
   timeout.
@@ -30,25 +30,25 @@ For documentation about the Twitter APIs, see `The Streaming APIs Overview
 For error codes see Twitter's
 `Error Codes and Responses <https://dev.twitter.com/overview/api/response-codes>`
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
+from __future__ import print_function
 
 import datetime
-import json
 from functools import wraps
-from io import StringIO
+import json
 
-from nltk.termsec import safe_print
+from nltk.compat import StringIO
+
 from nltk.twitter import (
     Query,
     Streamer,
+    Twitter,
     TweetViewer,
     TweetWriter,
-    Twitter,
     credsfromfile,
 )
 
-SPACER = "###################################"
+
+SPACER = '###################################'
 
 
 def verbose(func):
@@ -56,10 +56,10 @@ def verbose(func):
 
     @wraps(func)
     def with_formatting(*args, **kwargs):
-        safe_print()
-        safe_print(SPACER)
-        safe_print("Using %s" % (func.__name__))
-        safe_print(SPACER)
+        print()
+        print(SPACER)
+        print("Using %s" % (func.__name__))
+        print(SPACER)
         return func(*args, **kwargs)
 
     return with_formatting
@@ -81,10 +81,10 @@ def setup():
     """
     global USERIDS, FIELDS
 
-    USERIDS = ["759251", "612473", "15108702", "6017542", "2673523800"]
+    USERIDS = ['759251', '612473', '15108702', '6017542', '2673523800']
     # UserIDs corresponding to\
     #           @CNN,    @BBCNews, @ReutersLive, @BreakingNews, @AJELive
-    FIELDS = ["id_str"]
+    FIELDS = ['id_str']
 
 
 @verbose
@@ -93,19 +93,19 @@ def twitterclass_demo():
     Use the simplified :class:`Twitter` class to write some tweets to a file.
     """
     tw = Twitter()
-    safe_print("Track from the public stream\n")
-    tw.tweets(keywords="love, hate", limit=10)  # public stream
-    safe_print(SPACER)
-    safe_print("Search past Tweets\n")
+    print("Track from the public stream\n")
+    tw.tweets(keywords='love, hate', limit=10)  # public stream
+    print(SPACER)
+    print("Search past Tweets\n")
     tw = Twitter()
-    tw.tweets(keywords="love, hate", stream=False, limit=10)  # search past tweets
-    safe_print(SPACER)
-    safe_print(
+    tw.tweets(keywords='love, hate', stream=False, limit=10)  # search past tweets
+    print(SPACER)
+    print(
         "Follow two accounts in the public stream"
         + " -- be prepared to wait a few minutes\n"
     )
     tw = Twitter()
-    tw.tweets(follow=["759251", "6017542"], stream=True, limit=5)  # public stream
+    tw.tweets(follow=['759251', '6017542'], stream=True, limit=5)  # public stream
 
 
 @verbose
@@ -131,18 +131,18 @@ def tracktoscreen_demo(track="taylor swift", limit=10):
 
 
 @verbose
-def search_demo(keywords="nltk"):
+def search_demo(keywords='nltk'):
     """
     Use the REST API to search for past tweets containing a given keyword.
     """
     oauth = credsfromfile()
     client = Query(**oauth)
     for tweet in client.search_tweets(keywords=keywords, limit=10):
-        safe_print(tweet["text"])
+        print(tweet['text'])
 
 
 @verbose
-def tweets_by_user_demo(user="NLTK_org", count=200):
+def tweets_by_user_demo(user='NLTK_org', count=200):
     """
     Use the REST API to search for past tweets by a given user.
     """
@@ -161,10 +161,10 @@ def lookup_by_userid_demo():
     client = Query(**oauth)
     user_info = client.user_info_from_id(USERIDS)
     for info in user_info:
-        name = info["screen_name"]
-        followers = info["followers_count"]
-        following = info["friends_count"]
-        safe_print("{0}, followers: {1}, following: {2}".format(name, followers, following))
+        name = info['screen_name']
+        followers = info['followers_count']
+        following = info['friends_count']
+        print("{0}, followers: {1}, following: {2}".format(name, followers, following))
 
 
 @verbose
@@ -208,17 +208,17 @@ def limit_by_time_demo(keywords="nltk"):
     client = Query(**oauth)
     client.register(TweetViewer(limit=100, lower_date_limit=date))
 
-    safe_print("Cutoff date: {0}\n".format(dt_date))
+    print("Cutoff date: {}\n".format(dt_date))
 
     for tweet in client.search_tweets(keywords=keywords):
-        safe_print("{} ".format(tweet["created_at"]), end="")
+        print("{} ".format(tweet['created_at']), end='')
         client.handler.handle(tweet)
 
 
 @verbose
 def corpusreader_demo():
     """
-    Use `TwitterCorpusReader` tp read a file of tweets, and print out
+    Use :module:`TwitterCorpusReader` tp read a file of tweets, and print out
 
     * some full tweets in JSON format;
     * some raw strings from the tweets (i.e., the value of the `text` field); and
@@ -227,23 +227,23 @@ def corpusreader_demo():
     """
     from nltk.corpus import twitter_samples as tweets
 
-    safe_print()
-    safe_print("Complete tweet documents")
-    safe_print(SPACER)
+    print()
+    print("Complete tweet documents")
+    print(SPACER)
     for tweet in tweets.docs("tweets.20150430-223406.json")[:1]:
-        safe_print(json.dumps(tweet, indent=1, sort_keys=True))
+        print(json.dumps(tweet, indent=1, sort_keys=True))
 
-    safe_print()
-    safe_print("Raw tweet strings:")
-    safe_print(SPACER)
+    print()
+    print("Raw tweet strings:")
+    print(SPACER)
     for text in tweets.strings("tweets.20150430-223406.json")[:15]:
-        safe_print(text)
+        print(text)
 
-    safe_print()
-    safe_print("Tokenized tweet strings:")
-    safe_print(SPACER)
+    print()
+    print("Tokenized tweet strings:")
+    print(SPACER)
     for toks in tweets.tokenized("tweets.20150430-223406.json")[:15]:
-        safe_print(toks)
+        print(toks)
 
 
 @verbose
@@ -271,12 +271,12 @@ def expand_tweetids_demo():
     hydrated = client.expand_tweetids(ids_f)
 
     for tweet in hydrated:
-        id_str = tweet["id_str"]
-        safe_print("id: {0}".format(id_str))
-        text = tweet["text"]
-        if text.startswith("@null"):
+        id_str = tweet['id_str']
+        print('id: {}'.format(id_str))
+        text = tweet['text']
+        if text.startswith('@null'):
             text = "[Tweet not available]"
-        safe_print(text + "\n")
+        print(text + '\n')
 
 
 ALL = [
@@ -305,6 +305,6 @@ if __name__ == "__main__":
     for demo in DEMOS:
         demo()
 
-    safe_print("\n" + SPACER)
-    safe_print("All demos completed")
-    safe_print(SPACER)
+    print("\n" + SPACER)
+    print("All demos completed")
+    print(SPACER)

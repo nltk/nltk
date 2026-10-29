@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -13,8 +13,6 @@ This package contains classes for retrieving Tweet documents using the
 Twitter API.
 
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
 try:
     import twython
 except ImportError:

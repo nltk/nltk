@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Combinatory Categorial Grammar
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Graeme Gange <ggange@csse.unimelb.edu.au>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -30,40 +29,32 @@ which should print a nice representation of the derivation.
 This entire process is shown far more clearly in the demonstration:
 python chart.py
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
-from nltk.compat import TimeoutError, perf_counter
+from __future__ import print_function, division, unicode_literals
 
 import itertools
-import time
 
-from nltk.ccg.combinator import *
-from nltk.ccg.combinator import (
-    BackwardApplication,
-    BackwardBx,
-    BackwardComposition,
-    BackwardSx,
-    BackwardT,
-    ForwardApplication,
-    ForwardComposition,
-    ForwardSubstitution,
-    ForwardT,
-)
-from nltk.ccg.lexicon import Token, fromstring
-from nltk.ccg.logic import *
+from six import string_types
+
 from nltk.parse import ParserI
-from nltk.parse.chart import (
-    DEFAULT_MAX_TIME,
-    MAX_PARSE_TREES,
-    AbstractChartRule,
-    Chart,
-    EdgeI,
-    _ParseTreeBudget,
-)
-from nltk.sem.logic import *
-from nltk.termsec import safe_print
+from nltk.parse.chart import AbstractChartRule, EdgeI, Chart
 from nltk.tree import Tree
 
+from nltk.ccg.lexicon import fromstring, Token
+from nltk.ccg.combinator import (
+    ForwardT,
+    BackwardT,
+    ForwardApplication,
+    BackwardApplication,
+    ForwardComposition,
+    BackwardComposition,
+    ForwardSubstitution,
+    BackwardBx,
+    BackwardSx,
+)
+from nltk.compat import python_2_unicode_compatible
+from nltk.ccg.combinator import *
+from nltk.ccg.logic import *
+from nltk.sem.logic import *
 
 # Based on the EdgeI class from NLTK.
 # A number of the properties of the EdgeI interface don't
@@ -114,9 +105,9 @@ class CCGEdge(EdgeI):
 
 
 class CCGLeafEdge(EdgeI):
-    """
+    '''
     Class representing leaf edges in a CCG derivation.
-    """
+    '''
 
     def __init__(self, pos, token, leaf):
         self._pos = pos
@@ -165,11 +156,12 @@ class CCGLeafEdge(EdgeI):
         return self._leaf
 
 
+@python_2_unicode_compatible
 class BinaryCombinatorRule(AbstractChartRule):
-    """
+    '''
     Class implementing application of a binary combinator to a chart.
     Takes the directed combinator to apply.
-    """
+    '''
 
     NUMEDGES = 2
 
@@ -201,12 +193,11 @@ class BinaryCombinatorRule(AbstractChartRule):
 
 # Type-raising must be handled slightly differently to the other rules, as the
 # resulting rules only span a single edge, rather than both edges.
-
-
+@python_2_unicode_compatible
 class ForwardTypeRaiseRule(AbstractChartRule):
-    """
+    '''
     Class for applying forward type raising
-    """
+    '''
 
     NUMEDGES = 2
 
@@ -226,10 +217,11 @@ class ForwardTypeRaiseRule(AbstractChartRule):
         return "%s" % self._combinator
 
 
+@python_2_unicode_compatible
 class BackwardTypeRaiseRule(AbstractChartRule):
-    """
+    '''
     Class for applying backward type raising.
-    """
+    '''
 
     NUMEDGES = 2
 
@@ -272,20 +264,15 @@ DefaultRuleSet = (
 
 
 class CCGChartParser(ParserI):
-    """
+    '''
     Chart parser for CCGs.
     Based largely on the ChartParser class from NLTK.
-    """
+    '''
 
-    def __init__(self, lexicon, rules, trace=0, max_time=DEFAULT_MAX_TIME):
+    def __init__(self, lexicon, rules, trace=0):
         self._lexicon = lexicon
         self._rules = rules
         self._trace = trace
-        #: Wall-clock limit for a single ``parse``. CCG recognition terminates
-        #: (finite category space) but an ordinary composable lexicon plus a few
-        #: dozen tokens is ~O(n**4), pinning a core for seconds (CWE-407).
-        #: ``max_time=None`` disables the bound.
-        self._max_time = max_time
 
     def lexicon(self):
         return self._lexicon
@@ -296,10 +283,6 @@ class CCGChartParser(ParserI):
         chart = CCGChart(list(tokens))
         lex = self._lexicon
 
-        deadline = (
-            None if self._max_time is None else perf_counter() + self._max_time
-        )
-
         # Initialize leaf edges.
         for index in range(chart.num_leaves()):
             for token in lex.categories(chart.leaf(index)):
@@ -309,10 +292,6 @@ class CCGChartParser(ParserI):
         # Select a span for the new edges
         for span in range(2, chart.num_leaves() + 1):
             for start in range(0, chart.num_leaves() - span + 1):
-                if deadline is not None and perf_counter() > deadline:
-                    raise TimeoutError(
-                        "CCGChartParser exceeded its {0}s time limit; the lexicon may be too composable for this many tokens. Pass max_time=None to disable the limit.".format(self._max_time)
-                    )
                 # Try all possible pairs of edges that could generate
                 # an edge for that span
                 for part in range(1, span):
@@ -339,20 +318,13 @@ class CCGChart(Chart):
     # Constructs the trees for a given parse. Unfortnunately, the parse trees need to be
     # constructed slightly differently to those in the default Chart class, so it has to
     # be reimplemented
-    def _trees(self, edge, complete, memo, tree_class, budget=None):
+    def _trees(self, edge, complete, memo, tree_class):
         assert complete, "CCGChart cannot build incomplete trees"
-
-        # Share the same node-construction budget as the base Chart so a
-        # highly-ambiguous CCG grammar cannot make tree extraction exponential
-        # either (CWE-770; CVE-2026-12886).
-        if budget is None:
-            budget = _ParseTreeBudget(MAX_PARSE_TREES)
 
         if edge in memo:
             return memo[edge]
 
         if isinstance(edge, CCGLeafEdge):
-            budget.spend()
             word = tree_class(edge.token(), [self._tokens[edge.start()]])
             leaf = tree_class((edge.token(), "Leaf"), [word])
             memo[edge] = [leaf]
@@ -362,11 +334,8 @@ class CCGChart(Chart):
         trees = []
 
         for cpl in self.child_pointer_lists(edge):
-            child_choices = [
-                self._trees(cp, complete, memo, tree_class, budget) for cp in cpl
-            ]
+            child_choices = [self._trees(cp, complete, memo, tree_class) for cp in cpl]
             for children in itertools.product(*child_choices):
-                budget.spend()
                 lhs = (
                     Token(
                         self._tokens[edge.start() : edge.end()],
@@ -400,7 +369,7 @@ def compute_semantics(children, edge):
         elif isinstance(combinator, UndirectedSubstitution):
             return compute_substitution_semantics(function, argument)
         else:
-            raise AssertionError("Unsupported combinator '" + combinator + "'")
+            raise AssertionError('Unsupported combinator \'' + combinator + '\'')
     else:
         return compute_type_raised_semantics(children[0].label()[0].semantics())
 
@@ -411,22 +380,22 @@ def compute_semantics(children, edge):
 def printCCGDerivation(tree):
     # Get the leaves and initial categories
     leafcats = tree.pos()
-    leafstr = ""
-    catstr = ""
+    leafstr = ''
+    catstr = ''
 
     # Construct a string with both the leaf word and corresponding
     # category aligned.
-    for leaf, cat in leafcats:
+    for (leaf, cat) in leafcats:
         str_cat = "%s" % cat
         nextlen = 2 + max(len(leaf), len(str_cat))
         lcatlen = (nextlen - len(str_cat)) // 2
         rcatlen = lcatlen + (nextlen - len(str_cat)) % 2
-        catstr += " " * lcatlen + str_cat + " " * rcatlen
+        catstr += ' ' * lcatlen + str_cat + ' ' * rcatlen
         lleaflen = (nextlen - len(leaf)) // 2
         rleaflen = lleaflen + (nextlen - len(leaf)) % 2
-        leafstr += " " * lleaflen + leaf + " " * rleaflen
-    safe_print(leafstr.rstrip())
-    safe_print(catstr.rstrip())
+        leafstr += ' ' * lleaflen + leaf + ' ' * rleaflen
+    print(leafstr.rstrip())
+    print(catstr.rstrip())
 
     # Display the derivation steps
     printCCGTree(0, tree)
@@ -454,18 +423,18 @@ def printCCGTree(lwidth, tree):
 
     (token, op) = tree.label()
 
-    if op == "Leaf":
+    if op == 'Leaf':
         return rwidth
 
     # Pad to the left with spaces, followed by a sequence of '-'
     # and the derivation rule.
-    safe_print(lwidth * " " + (rwidth - lwidth) * "-" + "%s" % op)
+    print(lwidth * ' ' + (rwidth - lwidth) * '-' + "%s" % op)
     # Print the resulting category on a new line.
     str_res = "%s" % (token.categ())
     if token.semantics() is not None:
         str_res += " {" + str(token.semantics()) + "}"
     respadlen = (rwidth - lwidth - len(str_res)) // 2 + lwidth
-    safe_print(respadlen * " " + str_res)
+    print(respadlen * ' ' + str_res)
     return rwidth
 
 
@@ -473,7 +442,7 @@ def printCCGTree(lwidth, tree):
 
 # Construct the lexicon
 lex = fromstring(
-    """
+    '''
     :- S, NP, N, VP    # Primitive categories, S is the target primitive
 
     Det :: NP/N         # Family of words
@@ -502,7 +471,7 @@ lex = fromstring(
     mushrooms => N
     parsnips => N
     bacon => N
-    """
+    '''
 )
 
 
@@ -512,5 +481,5 @@ def demo():
         printCCGDerivation(parse)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     demo()

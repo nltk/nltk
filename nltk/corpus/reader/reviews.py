@@ -1,23 +1,20 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Product Reviews Corpus Reader
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Pierpaolo Pantone <24alsecondo@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 CorpusReader for reviews corpora (syntax based on Customer Review Corpus).
 
-Customer Review Corpus information
-==================================
-
+- Customer Review Corpus information -
 Annotated by: Minqing Hu and Bing Liu, 2004.
-    Department of Computer Science
+    Department of Computer Sicence
     University of Illinois at Chicago
 
 Contact: Bing Liu, liub@cs.uic.edu
-        https://www.cs.uic.edu/~liub
+        http://www.cs.uic.edu/~liub
 
 Distributed with permission.
 
@@ -41,18 +38,18 @@ Related papers:
 
 Symbols used in the annotated reviews:
 
-    :[t]: the title of the review: Each [t] tag starts a review.
-    :xxxx[+|-n]: xxxx is a product feature.
-    :[+n]: Positive opinion, n is the opinion strength: 3 strongest, and 1 weakest.
-           Note that the strength is quite subjective.
-           You may want ignore it, but only considering + and -
-    :[-n]: Negative opinion
-    :##:   start of each sentence. Each line is a sentence.
-    :[u]:  feature not appeared in the sentence.
-    :[p]:  feature not appeared in the sentence. Pronoun resolution is needed.
-    :[s]:  suggestion or recommendation.
-    :[cc]: comparison with a competing product from a different brand.
-    :[cs]: comparison with a competing product from the same brand.
+    [t] : the title of the review: Each [t] tag starts a review.
+    xxxx[+|-n]: xxxx is a product feature.
+    [+n]: Positive opinion, n is the opinion strength: 3 strongest, and 1 weakest.
+          Note that the strength is quite subjective.
+          You may want ignore it, but only considering + and -
+    [-n]: Negative opinion
+    ##  : start of each sentence. Each line is a sentence.
+    [u] : feature not appeared in the sentence.
+    [p] : feature not appeared in the sentence. Pronoun resolution is needed.
+    [s] : suggestion or recommendation.
+    [cc]: comparison with a competing product from a different brand.
+    [cs]: comparison with a competing product from the same brand.
 
 Note: Some of the files (e.g. "ipod.txt", "Canon PowerShot SD500.txt") do not
     provide separation between different reviews. This is due to the fact that
@@ -61,29 +58,25 @@ Note: Some of the files (e.g. "ipod.txt", "Canon PowerShot SD500.txt") do not
     level classification and analysis, this peculiarity should be taken into
     consideration.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
 
+from __future__ import division
 
-from nltk import redos
+import re
+
+from six import string_types
+
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
 
-TITLE = redos.compile(r"^\[t\](.*)$")  # [t] Title
-# find 'feature' in feature[+3].
-# The feature label is "a word, then up to 50 single-whitespace-separated
-# words". The ``{0,50}`` bound only stops the *space-separated* attack; a long
-# bracket-less run with no spaces (``"a" * 100000``) never enters that group and
-# the leading greedy ``\w+``, retried by findall at every position, is still
-# O(n**2). redos.compile bounds compile and match time regardless (CWE-1333).
-# Bound the word runs: the leading `\w+` is unbounded (the `{0,50}` only caps the
-# space-separated repeats), so it is O(n**2) under findall on a crafted line (CWE-407);
-# feature words are short.
-FEATURES = redos.compile(r"(\w{1,80}(?:\s\w{1,80}){0,50})\[((?:\+|\-)\d)\]")
-NOTES = redos.compile(r"\[(?!t)(p|u|s|cc|cs)\]")  # find 'p' in camera[+2][p]
-SENT = redos.compile(r"##(.*)$")  # find tokenized sentence
+TITLE = re.compile(r'^\[t\](.*)$')  # [t] Title
+FEATURES = re.compile(
+    r'((?:(?:\w+\s)+)?\w+)\[((?:\+|\-)\d)\]'
+)  # find 'feature' in feature[+3]
+NOTES = re.compile(r'\[(?!t)(p|u|s|cc|cs)\]')  # find 'p' in camera[+2][p]
+SENT = re.compile(r'##(.*)$')  # find tokenized sentence
 
 
+@compat.python_2_unicode_compatible
 class Review(object):
     """
     A Review is the main block of a ReviewsCorpusReader.
@@ -132,11 +125,12 @@ class Review(object):
         return [review_line.sent for review_line in self.review_lines]
 
     def __repr__(self):
-        return 'Review(title="{}", review_lines={})'.format(
+        return 'Review(title=\"{}\", review_lines={})'.format(
             self.title, self.review_lines
         )
 
 
+@compat.python_2_unicode_compatible
 class ReviewLine(object):
     """
     A ReviewLine represents a sentence of the review, together with (optional)
@@ -156,7 +150,7 @@ class ReviewLine(object):
             self.notes = notes
 
     def __repr__(self):
-        return "ReviewLine(features={}, notes={}, sent={})".format(
+        return 'ReviewLine(features={}, notes={}, sent={})'.format(
             self.features, self.notes, self.sent
         )
 
@@ -170,10 +164,10 @@ class ReviewsCorpusReader(CorpusReader):
         >>> from nltk.corpus import product_reviews_1
         >>> camera_reviews = product_reviews_1.reviews('Canon_G3.txt')
         >>> review = camera_reviews[0]
-        >>> review.sents()[0] # doctest: +NORMALIZE_WHITESPACE
+        >>> review.sents()[0]
         ['i', 'recently', 'purchased', 'the', 'canon', 'powershot', 'g3', 'and', 'am',
         'extremely', 'satisfied', 'with', 'the', 'purchase', '.']
-        >>> review.features() # doctest: +NORMALIZE_WHITESPACE
+        >>> review.features()
         [('canon powershot g3', '+3'), ('use', '+2'), ('picture', '+2'),
         ('picture quality', '+1'), ('picture quality', '+1'), ('camera', '+2'),
         ('use', '+2'), ('feature', '+1'), ('picture quality', '+3'), ('use', '+1'),
@@ -186,8 +180,10 @@ class ReviewsCorpusReader(CorpusReader):
 
     We can compute stats for specific product features:
 
+        >>> from __future__ import division
         >>> n_reviews = len([(feat,score) for (feat,score) in product_reviews_1.features('Canon_G3.txt') if feat=='picture'])
         >>> tot = sum([int(score) for (feat,score) in product_reviews_1.features('Canon_G3.txt') if feat=='picture'])
+        >>> # We use float for backward compatibility with division in Python2.7
         >>> mean = tot / n_reviews
         >>> print(n_reviews, tot, mean)
         15 24 1.6
@@ -196,7 +192,7 @@ class ReviewsCorpusReader(CorpusReader):
     CorpusView = StreamBackedCorpusView
 
     def __init__(
-        self, root, fileids, word_tokenizer=WordPunctTokenizer(), encoding="utf8"
+        self, root, fileids, word_tokenizer=WordPunctTokenizer(), encoding='utf8'
     ):
         """
         :param root: The root directory for the corpus.
@@ -208,7 +204,6 @@ class ReviewsCorpusReader(CorpusReader):
 
         CorpusReader.__init__(self, root, fileids, encoding)
         self._word_tokenizer = word_tokenizer
-        self._readme = "README.txt"
 
     def features(self, fileids=None):
         """
@@ -222,7 +217,7 @@ class ReviewsCorpusReader(CorpusReader):
         """
         if fileids is None:
             fileids = self._fileids
-        elif isinstance(fileids, six.string_types):
+        elif isinstance(fileids, string_types):
             fileids = [fileids]
         return concat(
             [
@@ -230,6 +225,25 @@ class ReviewsCorpusReader(CorpusReader):
                 for (fileid, enc) in self.abspaths(fileids, True)
             ]
         )
+
+    def raw(self, fileids=None):
+        """
+        :param fileids: a list or regexp specifying the fileids of the files that
+            have to be returned as a raw string.
+        :return: the given file(s) as a single string.
+        :rtype: str
+        """
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
+
+    def readme(self):
+        """
+        Return the contents of the corpus README.txt file.
+        """
+        return self.open("README.txt").read()
 
     def reviews(self, fileids=None):
         """
@@ -289,7 +303,7 @@ class ReviewsCorpusReader(CorpusReader):
             line = stream.readline()
             if not line:
                 return features
-            features.extend(FEATURES.findall(line))
+            features.extend(re.findall(FEATURES, line))
         return features
 
     def _read_review_block(self, stream):
@@ -297,7 +311,7 @@ class ReviewsCorpusReader(CorpusReader):
             line = stream.readline()
             if not line:
                 return []  # end of file.
-            title_match = redos.match(TITLE, line)
+            title_match = re.match(TITLE, line)
             if title_match:
                 review = Review(
                     title=title_match.group(1).strip()
@@ -313,13 +327,13 @@ class ReviewsCorpusReader(CorpusReader):
                 return [review]
             # Start of a new review: backup to just before it starts, and
             # return the review we've already collected.
-            if redos.match(TITLE, line):
+            if re.match(TITLE, line):
                 stream.seek(oldpos)
                 return [review]
             # Anything else is part of the review line.
-            feats = FEATURES.findall(line)
-            notes = redos.findall(NOTES, line)
-            sent = redos.findall(SENT, line)
+            feats = re.findall(FEATURES, line)
+            notes = re.findall(NOTES, line)
+            sent = re.findall(SENT, line)
             if sent:
                 sent = self._word_tokenizer.tokenize(sent[0])
             review_line = ReviewLine(sent=sent, features=feats, notes=notes)
@@ -335,7 +349,7 @@ class ReviewsCorpusReader(CorpusReader):
         words = []
         for i in range(20):  # Read 20 lines at a time.
             line = stream.readline()
-            sent = redos.findall(SENT, line)
+            sent = re.findall(SENT, line)
             if sent:
                 words.extend(self._word_tokenizer.tokenize(sent[0]))
         return words

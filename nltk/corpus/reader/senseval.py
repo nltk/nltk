@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Senseval 2 Corpus Reader
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
 #         Steven Bird <stevenbird1@gmail.com> (modifications)
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -12,36 +11,31 @@ Read from the Senseval 2 Corpus.
 
 SENSEVAL [http://www.senseval.org/]
 Evaluation exercises for Word Sense Disambiguation.
-Organized by ACL-SIGLEX [https://www.siglex.org/]
+Organized by ACL-SIGLEX [http://www.siglex.org/]
 
 Prepared by Ted Pedersen <tpederse@umn.edu>, University of Minnesota,
-https://www.d.umn.edu/~tpederse/data.html
+http://www.d.umn.edu/~tpederse/data.html
 Distributed with permission.
 
 The NLTK version of the Senseval 2 files uses well-formed XML.
 Each instance of the ambiguous words "hard", "interest", "line", and "serve"
 is tagged with a sense identifier, and supplied with context.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
+from __future__ import print_function, unicode_literals
 
+import re
+from xml.etree import ElementTree
 
-from nltk import redos
-from nltk.corpus.reader.api import *
-from nltk.corpus.reader.util import *
-from nltk.termsec import safe_print
+from six import string_types
+
+from nltk import compat
 from nltk.tokenize import *
-from nltk.xmlsec import fromstring as safe_fromstring
 
-# ``(\s+)&(\s+)`` retried by sub over a whitespace run is O(n**2) on a crafted
-# instance block: a run of N spaces followed by ``&`` (with no trailing space)
-# fails the second ``\s+`` and re-scans the leading run at every offset. The
-# ``(?<!\s)`` anchors each attempt to the start of a whitespace run, so a failed
-# offset is rejected in O(1) instead of re-consuming the run: the match is now
-# linear (CWE-1333). ``redos.compile`` still bounds match time as a backstop.
-_LONE_AMP_RE = redos.compile(r"(?<!\s)(\s+)&(\s+)")
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 
+@compat.python_2_unicode_compatible
 class SensevalInstance(object):
     def __init__(self, word, position, context, senses):
         self.word = word
@@ -50,7 +44,7 @@ class SensevalInstance(object):
         self.context = context
 
     def __repr__(self):
-        return "SensevalInstance(word=%r, position=%r, " "context=%r, senses=%r)" % (
+        return 'SensevalInstance(word=%r, position=%r, ' 'context=%r, senses=%r)' % (
             self.word,
             self.position,
             self.context,
@@ -67,12 +61,22 @@ class SensevalCorpusReader(CorpusReader):
             ]
         )
 
+    def raw(self, fileids=None):
+        """
+        :return: the text contents of the given fileids, as a single string.
+        """
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
+
     def _entry(self, tree):
         elts = []
-        for lexelt in tree.findall("lexelt"):
-            for inst in lexelt.findall("instance"):
-                sense = inst[0].attrib["senseid"]
-                context = [(w.text, w.attrib["pos"]) for w in inst[1]]
+        for lexelt in tree.findall('lexelt'):
+            for inst in lexelt.findall('instance'):
+                sense = inst[0].attrib['senseid']
+                context = [(w.text, w.attrib['pos']) for w in inst[1]]
                 elts.append((sense, context))
         return elts
 
@@ -94,14 +98,14 @@ class SensevalCorpusView(StreamBackedCorpusView):
         in_instance = False
         while True:
             line = stream.readline()
-            if line == "":
+            if line == '':
                 assert instance_lines == []
                 return []
 
             # Start of a lexical element?
-            if line.lstrip().startswith("<lexelt"):
+            if line.lstrip().startswith('<lexelt'):
                 lexelt_num += 1
-                m = redos.search("item=(\"[^\"]+\"|'[^']+')", line)
+                m = re.search('item=("[^"]+"|\'[^\']+\')', line)
                 assert m is not None  # <lexelt> has no 'item=...'
                 lexelt = m.group(1)[1:-1]
                 if lexelt_num < len(self._lexelts):
@@ -111,7 +115,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
                     self._lexelt_starts.append(stream.tell())
 
             # Start of an instance?
-            if line.lstrip().startswith("<instance"):
+            if line.lstrip().startswith('<instance'):
                 assert instance_lines == []
                 in_instance = True
 
@@ -120,10 +124,10 @@ class SensevalCorpusView(StreamBackedCorpusView):
                 instance_lines.append(line)
 
             # End of an instance?
-            if line.lstrip().startswith("</instance"):
-                xml_block = "\n".join(instance_lines)
+            if line.lstrip().startswith('</instance'):
+                xml_block = '\n'.join(instance_lines)
                 xml_block = _fixXML(xml_block)
-                inst = safe_fromstring(xml_block)
+                inst = ElementTree.fromstring(xml_block)
                 return [self._parse_instance(inst, lexelt)]
 
     def _parse_instance(self, instance, lexelt):
@@ -131,42 +135,42 @@ class SensevalCorpusView(StreamBackedCorpusView):
         context = []
         position = None
         for child in instance:
-            if child.tag == "answer":
-                senses.append(child.attrib["senseid"])
-            elif child.tag == "context":
+            if child.tag == 'answer':
+                senses.append(child.attrib['senseid'])
+            elif child.tag == 'context':
                 context += self._word_tokenizer.tokenize(child.text)
                 for cword in child:
-                    if cword.tag == "compound":
+                    if cword.tag == 'compound':
                         cword = cword[0]  # is this ok to do?
 
-                    if cword.tag == "head":
+                    if cword.tag == 'head':
                         # Some santiy checks:
-                        assert position is None, "head specified twice"
+                        assert position is None, 'head specified twice'
                         assert cword.text.strip() or len(cword) == 1
                         assert not (cword.text.strip() and len(cword) == 1)
                         # Record the position of the head:
                         position = len(context)
-                        # Add on the head word itself:
+                        # Addd on the head word itself:
                         if cword.text.strip():
                             context.append(cword.text.strip())
-                        elif cword[0].tag == "wf":
-                            context.append((cword[0].text, cword[0].attrib["pos"]))
+                        elif cword[0].tag == 'wf':
+                            context.append((cword[0].text, cword[0].attrib['pos']))
                             if cword[0].tail:
                                 context += self._word_tokenizer.tokenize(cword[0].tail)
                         else:
-                            assert False, "expected CDATA or wf in <head>"
-                    elif cword.tag == "wf":
-                        context.append((cword.text, cword.attrib["pos"]))
-                    elif cword.tag == "s":
+                            assert False, 'expected CDATA or wf in <head>'
+                    elif cword.tag == 'wf':
+                        context.append((cword.text, cword.attrib['pos']))
+                    elif cword.tag == 's':
                         pass  # Sentence boundary marker.
 
                     else:
-                        safe_print("ACK", cword.tag)
-                        assert False, "expected CDATA or <wf> or <head>"
+                        print('ACK', cword.tag)
+                        assert False, 'expected CDATA or <wf> or <head>'
                     if cword.tail:
                         context += self._word_tokenizer.tokenize(cword.tail)
             else:
-                assert False, "unexpected tag %s" % child.tag
+                assert False, 'unexpected tag %s' % child.tag
         return SensevalInstance(lexelt, position, context, senses)
 
 
@@ -175,51 +179,34 @@ def _fixXML(text):
     Fix the various issues with Senseval pseudo-XML.
     """
     # <~> or <^> => ~ or ^
-    text = redos.sub(r"<([~\^])>", r"\1", text)
+    text = re.sub(r'<([~\^])>', r'\1', text)
     # fix lone &
-    text = _LONE_AMP_RE.sub(r"\1&amp;\2", text)
+    text = re.sub(r'(\s+)\&(\s+)', r'\1&amp;\2', text)
     # fix """
-    text = redos.sub(r'"""', "'\"'", text)
+    text = re.sub(r'"""', '\'"\'', text)
     # fix <s snum=dd> => <s snum="dd"/>
-    # Bound the tag bodies below and keep `<` out of every run: a repeated `<...`
-    # anchor whose run has no terminator then stops at the next anchor, so a
-    # crafted block is O(n) rather than O(n*bound) or O(n**2) (CWE-407).
-    text = redos.sub(r'(<[^<]{0,256}snum=)([^"<>]{1,256})>', r'\1"\2"/>', text)
+    text = re.sub(r'(<[^<]*snum=)([^">]+)>', r'\1"\2"/>', text)
     # fix foreign word tag
-    text = redos.sub(r"<\&frasl>\s*<p[^>]*>", "FRASL", text)
+    text = re.sub(r'<\&frasl>\s*<p[^>]*>', 'FRASL', text)
     # remove <&I .>
-    text = redos.sub(r"<\&I[^<>]{0,256}>", "", text)
+    text = re.sub(r'<\&I[^>]*>', '', text)
     # fix <{word}>
-    text = redos.sub(r"<{([^<}]{1,256})}>", r"\1", text)
+    text = re.sub(r'<{([^}]+)}>', r'\1', text)
     # remove <@>, <p>, </p>
-    text = redos.sub(r"<(@|/?p)>", r"", text)
+    text = re.sub(r'<(@|/?p)>', r'', text)
     # remove <&M .> and <&T .> and <&Ms .>
-    text = redos.sub(r"<&\w+ \.>", r"", text)
+    text = re.sub(r'<&\w+ \.>', r'', text)
     # remove <!DOCTYPE... > lines
-    text = redos.sub(r"<!DOCTYPE[^<>]{0,1024}>", r"", text)
+    text = re.sub(r'<!DOCTYPE[^>]*>', r'', text)
     # remove <[hi]> and <[/p]> etc
-    text = redos.sub(r"<\[\/?[^<>]{1,256}\]*>", r"", text)
+    text = re.sub(r'<\[\/?[^>]+\]*>', r'', text)
     # take the thing out of the brackets: <&hellip;>
-    text = redos.sub(r"<(\&\w+;)>", r"\1", text)
+    text = re.sub(r'<(\&\w+;)>', r'\1', text)
     # and remove the & for those patterns that aren't regular XML
-    text = redos.sub(r"&(?!amp|gt|lt|apos|quot)", r"", text)
+    text = re.sub(r'&(?!amp|gt|lt|apos|quot)', r'', text)
     # fix 'abc <p="foo"/>' style tags - now <wf pos="foo">abc</wf>
-    #
-    # Possessive quantifiers (regex module) prevent catastrophic backtracking
-    # *within* a single match attempt (ReDoS, CWE-1333). They are not enough on
-    # their own: when the trailing <p="..."/> tag is absent, ``sub`` retries the
-    # match at every start offset, and a leading run of spaces/tabs is re-scanned
-    # from each offset -> O(n**2) (a run of N leading spaces before a lone tag
-    # burns the redos time budget). The ``(?<![ \t])`` anchors each attempt to the
-    # start of a whitespace run, so a mid-run offset is rejected in O(1) instead of
-    # re-consuming the run; combined with the possessive token/whitespace classes
-    # (which cannot cross the separators or the literal '"'), the scan is linear
-    # and match-for-match identical to the original. ``redos.sub`` still bounds
-    # match time as a backstop for any residual pathology.
-    text = redos.sub(
-        r'(?<![ \t])[ \t]*+([^<>\s]++)[ \t]*+<p="([^"]*+"?)"/>',
-        r' <wf pos="\2">\1</wf>',
-        text,
+    text = re.sub(
+        r'[ \t]*([^<>\s]+?)[ \t]*<p="([^"]*"?)"/>', r' <wf pos="\2">\1</wf>', text
     )
-    text = redos.sub(r"(?<!\s)\s*+\"\s*+<p='\"'/>", " <wf pos='\"'>\"</wf>", text)
+    text = re.sub(r'\s*"\s*<p=\'"\'/>', " <wf pos='\"'>\"</wf>", text)
     return text

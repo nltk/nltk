@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Nonmonotonic Reasoning
 #
 # Author: Daniel H. Garrette <dhgarrette@gmail.com>
 #
-# Copyright (C) 2001-2026 NLTK Project
-# URL: <https://www.nltk.org/>
+# Copyright (C) 2001-2019 NLTK Project
+# URL: <http://nltk.org>
 # For license information, see LICENSE.TXT
 
 """
@@ -12,31 +11,31 @@ A module to perform nonmonotonic reasoning.  The ideas and demonstrations in
 this module are based on "Logical Foundations of Artificial Intelligence" by
 Michael R. Genesereth and Nils J. Nilsson.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
+from __future__ import print_function, unicode_literals
 
 from collections import defaultdict
 from functools import reduce
 
-from nltk.inference.api import Prover, ProverCommandDecorator
 from nltk.inference.prover9 import Prover9, Prover9Command
 from nltk.sem.logic import (
+    VariableExpression,
+    EqualityExpression,
+    ApplicationExpression,
+    Expression,
     AbstractVariableExpression,
     AllExpression,
-    AndExpression,
-    ApplicationExpression,
     BooleanExpression,
-    EqualityExpression,
-    ExistsExpression,
-    Expression,
-    ImpExpression,
     NegatedExpression,
+    ExistsExpression,
     Variable,
-    VariableExpression,
-    operator,
+    ImpExpression,
+    AndExpression,
     unique_variable,
+    operator,
 )
-from nltk.termsec import safe_print
+
+from nltk.inference.api import Prover, ProverCommandDecorator
+from nltk.compat import python_2_unicode_compatible
 
 
 class ProverParseError(Exception):
@@ -71,12 +70,10 @@ class ClosedDomainProver(ProverCommandDecorator):
     def replace_quants(self, ex, domain):
         """
         Apply the closed domain assumption to the expression
-
-        - Domain = union([e.free()|e.constants() for e in all_expressions])
-        - translate "exists x.P" to "(z=d1 | z=d2 | ... ) & P.replace(x,z)" OR
-                    "P.replace(x, d1) | P.replace(x, d2) | ..."
-        - translate "all x.P" to "P.replace(x, d1) & P.replace(x, d2) & ..."
-
+         - Domain = union([e.free()|e.constants() for e in all_expressions])
+         - translate "exists x.P" to "(z=d1 | z=d2 | ... ) & P.replace(x,z)" OR
+                     "P.replace(x, d1) | P.replace(x, d2) | ..."
+         - translate "all x.P" to "P.replace(x, d1) & P.replace(x, d2) & ..."
         :param ex: ``Expression``
         :param domain: set of {Variable}s
         :return: ``Expression``
@@ -112,8 +109,8 @@ class UniqueNamesProver(ProverCommandDecorator):
 
     def assumptions(self):
         """
-        - Domain = union([e.free()|e.constants() for e in all_expressions])
-        - if "d1 = d2" cannot be proven from the premises, then add "d1 != d2"
+         - Domain = union([e.free()|e.constants() for e in all_expressions])
+         - if "d1 = d2" cannot be proven from the premises, then add "d1 != d2"
         """
         assumptions = self._command.assumptions()
 
@@ -162,7 +159,7 @@ class SetHolder(list):
             if item in s:
                 return s
         # item is not found in any existing set.  so create a new set
-        new = {item}
+        new = set([item])
         self.append(new)
         return new
 
@@ -304,6 +301,7 @@ class ClosedWorldProver(ProverCommandDecorator):
                         predDict[func1].validate_sig_len(sig)
 
 
+@python_2_unicode_compatible
 class PredHolder(object):
     """
     This class will be used by a dictionary that will store information
@@ -340,7 +338,7 @@ class PredHolder(object):
             raise Exception("Signature lengths do not match")
 
     def __str__(self):
-        return "({0},{1},{2})".format(self.signatures, self.properties, self.signature_len)
+        return '(%s,%s,%s)' % (self.signatures, self.properties, self.signature_len)
 
     def __repr__(self):
         return "%s" % self
@@ -349,157 +347,157 @@ class PredHolder(object):
 def closed_domain_demo():
     lexpr = Expression.fromstring
 
-    p1 = lexpr(r"exists x.walk(x)")
-    p2 = lexpr(r"man(Socrates)")
-    c = lexpr(r"walk(Socrates)")
+    p1 = lexpr(r'exists x.walk(x)')
+    p2 = lexpr(r'man(Socrates)')
+    c = lexpr(r'walk(Socrates)')
     prover = Prover9Command(c, [p1, p2])
-    safe_print(prover.prove())
+    print(prover.prove())
     cdp = ClosedDomainProver(prover)
-    safe_print("assumptions:")
+    print('assumptions:')
     for a in cdp.assumptions():
-        safe_print("   ", a)
-    safe_print("goal:", cdp.goal())
-    safe_print(cdp.prove())
+        print('   ', a)
+    print('goal:', cdp.goal())
+    print(cdp.prove())
 
-    p1 = lexpr(r"exists x.walk(x)")
-    p2 = lexpr(r"man(Socrates)")
-    p3 = lexpr(r"-walk(Bill)")
-    c = lexpr(r"walk(Socrates)")
+    p1 = lexpr(r'exists x.walk(x)')
+    p2 = lexpr(r'man(Socrates)')
+    p3 = lexpr(r'-walk(Bill)')
+    c = lexpr(r'walk(Socrates)')
     prover = Prover9Command(c, [p1, p2, p3])
-    safe_print(prover.prove())
+    print(prover.prove())
     cdp = ClosedDomainProver(prover)
-    safe_print("assumptions:")
+    print('assumptions:')
     for a in cdp.assumptions():
-        safe_print("   ", a)
-    safe_print("goal:", cdp.goal())
-    safe_print(cdp.prove())
+        print('   ', a)
+    print('goal:', cdp.goal())
+    print(cdp.prove())
 
-    p1 = lexpr(r"exists x.walk(x)")
-    p2 = lexpr(r"man(Socrates)")
-    p3 = lexpr(r"-walk(Bill)")
-    c = lexpr(r"walk(Socrates)")
+    p1 = lexpr(r'exists x.walk(x)')
+    p2 = lexpr(r'man(Socrates)')
+    p3 = lexpr(r'-walk(Bill)')
+    c = lexpr(r'walk(Socrates)')
     prover = Prover9Command(c, [p1, p2, p3])
-    safe_print(prover.prove())
+    print(prover.prove())
     cdp = ClosedDomainProver(prover)
-    safe_print("assumptions:")
+    print('assumptions:')
     for a in cdp.assumptions():
-        safe_print("   ", a)
-    safe_print("goal:", cdp.goal())
-    safe_print(cdp.prove())
+        print('   ', a)
+    print('goal:', cdp.goal())
+    print(cdp.prove())
 
-    p1 = lexpr(r"walk(Socrates)")
-    p2 = lexpr(r"walk(Bill)")
-    c = lexpr(r"all x.walk(x)")
+    p1 = lexpr(r'walk(Socrates)')
+    p2 = lexpr(r'walk(Bill)')
+    c = lexpr(r'all x.walk(x)')
     prover = Prover9Command(c, [p1, p2])
-    safe_print(prover.prove())
+    print(prover.prove())
     cdp = ClosedDomainProver(prover)
-    safe_print("assumptions:")
+    print('assumptions:')
     for a in cdp.assumptions():
-        safe_print("   ", a)
-    safe_print("goal:", cdp.goal())
-    safe_print(cdp.prove())
+        print('   ', a)
+    print('goal:', cdp.goal())
+    print(cdp.prove())
 
-    p1 = lexpr(r"girl(mary)")
-    p2 = lexpr(r"dog(rover)")
-    p3 = lexpr(r"all x.(girl(x) -> -dog(x))")
-    p4 = lexpr(r"all x.(dog(x) -> -girl(x))")
-    p5 = lexpr(r"chase(mary, rover)")
-    c = lexpr(r"exists y.(dog(y) & all x.(girl(x) -> chase(x,y)))")
+    p1 = lexpr(r'girl(mary)')
+    p2 = lexpr(r'dog(rover)')
+    p3 = lexpr(r'all x.(girl(x) -> -dog(x))')
+    p4 = lexpr(r'all x.(dog(x) -> -girl(x))')
+    p5 = lexpr(r'chase(mary, rover)')
+    c = lexpr(r'exists y.(dog(y) & all x.(girl(x) -> chase(x,y)))')
     prover = Prover9Command(c, [p1, p2, p3, p4, p5])
-    safe_print(prover.prove())
+    print(prover.prove())
     cdp = ClosedDomainProver(prover)
-    safe_print("assumptions:")
+    print('assumptions:')
     for a in cdp.assumptions():
-        safe_print("   ", a)
-    safe_print("goal:", cdp.goal())
-    safe_print(cdp.prove())
+        print('   ', a)
+    print('goal:', cdp.goal())
+    print(cdp.prove())
 
 
 def unique_names_demo():
     lexpr = Expression.fromstring
 
-    p1 = lexpr(r"man(Socrates)")
-    p2 = lexpr(r"man(Bill)")
-    c = lexpr(r"exists x.exists y.(x != y)")
+    p1 = lexpr(r'man(Socrates)')
+    p2 = lexpr(r'man(Bill)')
+    c = lexpr(r'exists x.exists y.(x != y)')
     prover = Prover9Command(c, [p1, p2])
-    safe_print(prover.prove())
+    print(prover.prove())
     unp = UniqueNamesProver(prover)
-    safe_print("assumptions:")
+    print('assumptions:')
     for a in unp.assumptions():
-        safe_print("   ", a)
-    safe_print("goal:", unp.goal())
-    safe_print(unp.prove())
+        print('   ', a)
+    print('goal:', unp.goal())
+    print(unp.prove())
 
-    p1 = lexpr(r"all x.(walk(x) -> (x = Socrates))")
-    p2 = lexpr(r"Bill = William")
-    p3 = lexpr(r"Bill = Billy")
-    c = lexpr(r"-walk(William)")
+    p1 = lexpr(r'all x.(walk(x) -> (x = Socrates))')
+    p2 = lexpr(r'Bill = William')
+    p3 = lexpr(r'Bill = Billy')
+    c = lexpr(r'-walk(William)')
     prover = Prover9Command(c, [p1, p2, p3])
-    safe_print(prover.prove())
+    print(prover.prove())
     unp = UniqueNamesProver(prover)
-    safe_print("assumptions:")
+    print('assumptions:')
     for a in unp.assumptions():
-        safe_print("   ", a)
-    safe_print("goal:", unp.goal())
-    safe_print(unp.prove())
+        print('   ', a)
+    print('goal:', unp.goal())
+    print(unp.prove())
 
 
 def closed_world_demo():
     lexpr = Expression.fromstring
 
-    p1 = lexpr(r"walk(Socrates)")
-    p2 = lexpr(r"(Socrates != Bill)")
-    c = lexpr(r"-walk(Bill)")
+    p1 = lexpr(r'walk(Socrates)')
+    p2 = lexpr(r'(Socrates != Bill)')
+    c = lexpr(r'-walk(Bill)')
     prover = Prover9Command(c, [p1, p2])
-    safe_print(prover.prove())
+    print(prover.prove())
     cwp = ClosedWorldProver(prover)
-    safe_print("assumptions:")
+    print('assumptions:')
     for a in cwp.assumptions():
-        safe_print("   ", a)
-    safe_print("goal:", cwp.goal())
-    safe_print(cwp.prove())
+        print('   ', a)
+    print('goal:', cwp.goal())
+    print(cwp.prove())
 
-    p1 = lexpr(r"see(Socrates, John)")
-    p2 = lexpr(r"see(John, Mary)")
-    p3 = lexpr(r"(Socrates != John)")
-    p4 = lexpr(r"(John != Mary)")
-    c = lexpr(r"-see(Socrates, Mary)")
+    p1 = lexpr(r'see(Socrates, John)')
+    p2 = lexpr(r'see(John, Mary)')
+    p3 = lexpr(r'(Socrates != John)')
+    p4 = lexpr(r'(John != Mary)')
+    c = lexpr(r'-see(Socrates, Mary)')
     prover = Prover9Command(c, [p1, p2, p3, p4])
-    safe_print(prover.prove())
+    print(prover.prove())
     cwp = ClosedWorldProver(prover)
-    safe_print("assumptions:")
+    print('assumptions:')
     for a in cwp.assumptions():
-        safe_print("   ", a)
-    safe_print("goal:", cwp.goal())
-    safe_print(cwp.prove())
+        print('   ', a)
+    print('goal:', cwp.goal())
+    print(cwp.prove())
 
-    p1 = lexpr(r"all x.(ostrich(x) -> bird(x))")
-    p2 = lexpr(r"bird(Tweety)")
-    p3 = lexpr(r"-ostrich(Sam)")
-    p4 = lexpr(r"Sam != Tweety")
-    c = lexpr(r"-bird(Sam)")
+    p1 = lexpr(r'all x.(ostrich(x) -> bird(x))')
+    p2 = lexpr(r'bird(Tweety)')
+    p3 = lexpr(r'-ostrich(Sam)')
+    p4 = lexpr(r'Sam != Tweety')
+    c = lexpr(r'-bird(Sam)')
     prover = Prover9Command(c, [p1, p2, p3, p4])
-    safe_print(prover.prove())
+    print(prover.prove())
     cwp = ClosedWorldProver(prover)
-    safe_print("assumptions:")
+    print('assumptions:')
     for a in cwp.assumptions():
-        safe_print("   ", a)
-    safe_print("goal:", cwp.goal())
-    safe_print(cwp.prove())
+        print('   ', a)
+    print('goal:', cwp.goal())
+    print(cwp.prove())
 
 
 def combination_prover_demo():
     lexpr = Expression.fromstring
 
-    p1 = lexpr(r"see(Socrates, John)")
-    p2 = lexpr(r"see(John, Mary)")
-    c = lexpr(r"-see(Socrates, Mary)")
+    p1 = lexpr(r'see(Socrates, John)')
+    p2 = lexpr(r'see(John, Mary)')
+    c = lexpr(r'-see(Socrates, Mary)')
     prover = Prover9Command(c, [p1, p2])
-    safe_print(prover.prove())
+    print(prover.prove())
     command = ClosedDomainProver(UniqueNamesProver(ClosedWorldProver(prover)))
     for a in command.assumptions():
-        safe_print(a)
-    safe_print(command.prove())
+        print(a)
+    print(command.prove())
 
 
 def default_reasoning_demo():
@@ -508,49 +506,49 @@ def default_reasoning_demo():
     premises = []
 
     # define taxonomy
-    premises.append(lexpr(r"all x.(elephant(x)        -> animal(x))"))
-    premises.append(lexpr(r"all x.(bird(x)            -> animal(x))"))
-    premises.append(lexpr(r"all x.(dove(x)            -> bird(x))"))
-    premises.append(lexpr(r"all x.(ostrich(x)         -> bird(x))"))
-    premises.append(lexpr(r"all x.(flying_ostrich(x)  -> ostrich(x))"))
+    premises.append(lexpr(r'all x.(elephant(x)        -> animal(x))'))
+    premises.append(lexpr(r'all x.(bird(x)            -> animal(x))'))
+    premises.append(lexpr(r'all x.(dove(x)            -> bird(x))'))
+    premises.append(lexpr(r'all x.(ostrich(x)         -> bird(x))'))
+    premises.append(lexpr(r'all x.(flying_ostrich(x)  -> ostrich(x))'))
 
     # default properties
     premises.append(
-        lexpr(r"all x.((animal(x)  & -Ab1(x)) -> -fly(x))")
+        lexpr(r'all x.((animal(x)  & -Ab1(x)) -> -fly(x))')
     )  # normal animals don't fly
     premises.append(
-        lexpr(r"all x.((bird(x)    & -Ab2(x)) -> fly(x))")
+        lexpr(r'all x.((bird(x)    & -Ab2(x)) -> fly(x))')
     )  # normal birds fly
     premises.append(
-        lexpr(r"all x.((ostrich(x) & -Ab3(x)) -> -fly(x))")
+        lexpr(r'all x.((ostrich(x) & -Ab3(x)) -> -fly(x))')
     )  # normal ostriches don't fly
 
     # specify abnormal entities
-    premises.append(lexpr(r"all x.(bird(x)           -> Ab1(x))"))  # flight
-    premises.append(lexpr(r"all x.(ostrich(x)        -> Ab2(x))"))  # non-flying bird
-    premises.append(lexpr(r"all x.(flying_ostrich(x) -> Ab3(x))"))  # flying ostrich
+    premises.append(lexpr(r'all x.(bird(x)           -> Ab1(x))'))  # flight
+    premises.append(lexpr(r'all x.(ostrich(x)        -> Ab2(x))'))  # non-flying bird
+    premises.append(lexpr(r'all x.(flying_ostrich(x) -> Ab3(x))'))  # flying ostrich
 
     # define entities
-    premises.append(lexpr(r"elephant(E)"))
-    premises.append(lexpr(r"dove(D)"))
-    premises.append(lexpr(r"ostrich(O)"))
+    premises.append(lexpr(r'elephant(E)'))
+    premises.append(lexpr(r'dove(D)'))
+    premises.append(lexpr(r'ostrich(O)'))
 
     # print the assumptions
     prover = Prover9Command(None, premises)
     command = UniqueNamesProver(ClosedWorldProver(prover))
     for a in command.assumptions():
-        safe_print(a)
+        print(a)
 
-    print_proof("-fly(E)", premises)
-    print_proof("fly(D)", premises)
-    print_proof("-fly(O)", premises)
+    print_proof('-fly(E)', premises)
+    print_proof('fly(D)', premises)
+    print_proof('-fly(O)', premises)
 
 
 def print_proof(goal, premises):
     lexpr = Expression.fromstring
     prover = Prover9Command(lexpr(goal), premises)
     command = UniqueNamesProver(ClosedWorldProver(prover))
-    safe_print(goal, prover.prove(), command.prove())
+    print(goal, prover.prove(), command.prove())
 
 
 def demo():
@@ -561,5 +559,5 @@ def demo():
     default_reasoning_demo()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     demo()

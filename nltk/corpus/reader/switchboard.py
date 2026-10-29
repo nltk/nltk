@@ -1,19 +1,20 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-# -*- coding: utf-8 -*-
-import six
 # Natural Language Toolkit: Switchboard Corpus Reader
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import unicode_literals
+import re
 
-from nltk import redos
-from nltk.corpus.reader.api import *
+from nltk.tag import str2tuple, map_tag
+from nltk import compat
+
 from nltk.corpus.reader.util import *
-from nltk.tag import map_tag, str2tuple
+from nltk.corpus.reader.api import *
 
 
+@compat.python_2_unicode_compatible
 class SwitchboardTurn(list):
     """
     A specialized list object used to encode switchboard utterances.
@@ -30,16 +31,16 @@ class SwitchboardTurn(list):
 
     def __repr__(self):
         if len(self) == 0:
-            text = ""
+            text = ''
         elif isinstance(self[0], tuple):
-            text = " ".join("%s/%s" % w for w in self)
+            text = ' '.join('%s/%s' % w for w in self)
         else:
-            text = " ".join(self)
-        return "<{0}.{1}: {2!r}>".format(self.speaker, self.id, text)
+            text = ' '.join(self)
+        return '<%s.%s: %r>' % (self.speaker, self.id, text)
 
 
 class SwitchboardCorpusReader(CorpusReader):
-    _FILES = ["tagged"]
+    _FILES = ['tagged']
     # Use the "tagged" file even for non-tagged data methods, since
     # it's tokenized.
 
@@ -48,26 +49,26 @@ class SwitchboardCorpusReader(CorpusReader):
         self._tagset = tagset
 
     def words(self):
-        return StreamBackedCorpusView(self.abspath("tagged"), self._words_block_reader)
+        return StreamBackedCorpusView(self.abspath('tagged'), self._words_block_reader)
 
     def tagged_words(self, tagset=None):
         def tagged_words_block_reader(stream):
             return self._tagged_words_block_reader(stream, tagset)
 
-        return StreamBackedCorpusView(self.abspath("tagged"), tagged_words_block_reader)
+        return StreamBackedCorpusView(self.abspath('tagged'), tagged_words_block_reader)
 
     def turns(self):
-        return StreamBackedCorpusView(self.abspath("tagged"), self._turns_block_reader)
+        return StreamBackedCorpusView(self.abspath('tagged'), self._turns_block_reader)
 
     def tagged_turns(self, tagset=None):
         def tagged_turns_block_reader(stream):
             return self._tagged_turns_block_reader(stream, tagset)
 
-        return StreamBackedCorpusView(self.abspath("tagged"), tagged_turns_block_reader)
+        return StreamBackedCorpusView(self.abspath('tagged'), tagged_turns_block_reader)
 
     def discourses(self):
         return StreamBackedCorpusView(
-            self.abspath("tagged"), self._discourses_block_reader
+            self.abspath('tagged'), self._discourses_block_reader
         )
 
     def tagged_discourses(self, tagset=False):
@@ -75,7 +76,7 @@ class SwitchboardCorpusReader(CorpusReader):
             return self._tagged_discourses_block_reader(stream, tagset)
 
         return StreamBackedCorpusView(
-            self.abspath("tagged"), tagged_discourses_block_reader
+            self.abspath('tagged'), tagged_discourses_block_reader
         )
 
     def _discourses_block_reader(self, stream):
@@ -84,7 +85,7 @@ class SwitchboardCorpusReader(CorpusReader):
             [
                 self._parse_utterance(u, include_tag=False)
                 for b in read_blankline_block(stream)
-                for u in b.split("\n")
+                for u in b.split('\n')
                 if u.strip()
             ]
         ]
@@ -95,7 +96,7 @@ class SwitchboardCorpusReader(CorpusReader):
             [
                 self._parse_utterance(u, include_tag=True, tagset=tagset)
                 for b in read_blankline_block(stream)
-                for u in b.split("\n")
+                for u in b.split('\n')
                 if u.strip()
             ]
         ]
@@ -112,13 +113,13 @@ class SwitchboardCorpusReader(CorpusReader):
     def _tagged_words_block_reader(self, stream, tagset=None):
         return sum(self._tagged_discourses_block_reader(stream, tagset)[0], [])
 
-    _UTTERANCE_RE = redos.compile(r"(\w+)\.(\d+)\:\s*(.*)")
-    _SEP = "/"
+    _UTTERANCE_RE = re.compile('(\w+)\.(\d+)\:\s*(.*)')
+    _SEP = '/'
 
     def _parse_utterance(self, utterance, include_tag, tagset=None):
         m = self._UTTERANCE_RE.match(utterance)
         if m is None:
-            raise ValueError("Bad utterance %r" % utterance)
+            raise ValueError('Bad utterance %r' % utterance)
         speaker, id, text = m.groups()
         words = [str2tuple(s, self._SEP) for s in text.split()]
         if not include_tag:

@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: ChrF score
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Authors: Maja Popovic
 # Contributors: Liling Tan, Aleš Tamchyna (Memsource)
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-"""ChrF score implementation"""
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
+""" ChrF score implementation """
+from __future__ import division
 from collections import Counter, defaultdict
+import re
 
-from nltk import redos
 from nltk.util import ngrams
 
 
@@ -23,10 +22,10 @@ def sentence_chrf(
     Calculates the sentence level CHRF (Character n-gram F-score) described in
      - Maja Popovic. 2015. CHRF: Character n-gram F-score for Automatic MT Evaluation.
        In Proceedings of the 10th Workshop on Machine Translation.
-       https://www.statmt.org/wmt15/pdf/WMT49.pdf
+       http://www.statmt.org/wmt15/pdf/WMT49.pdf
      - Maja Popovic. 2016. CHRF Deconstructed: β Parameters and n-gram Weights.
        In Proceedings of the 1st Conference on Machine Translation.
-       https://www.statmt.org/wmt16/pdf/W16-2341.pdf
+       http://www.statmt.org/wmt16/pdf/W16-2341.pdf
 
     This implementation of CHRF only supports a single reference at the moment.
 
@@ -37,13 +36,13 @@ def sentence_chrf(
     following options: -nw 0 -b 3
 
     An example from the original BLEU paper
-    https://www.aclweb.org/anthology/P02-1040.pdf
+    http://www.aclweb.org/anthology/P02-1040.pdf
 
-        >>> ref1 = six.text_type('It is a guide to action that ensures that the military '
+        >>> ref1 = str('It is a guide to action that ensures that the military '
         ...            'will forever heed Party commands').split()
-        >>> hyp1 = six.text_type('It is a guide to action which ensures that the military '
+        >>> hyp1 = str('It is a guide to action which ensures that the military '
         ...            'always obeys the commands of the party').split()
-        >>> hyp2 = six.text_type('It is to insure the troops forever hearing the activity '
+        >>> hyp2 = str('It is to insure the troops forever hearing the activity '
         ...            'guidebook that party direct').split()
         >>> sentence_chrf(ref1, hyp1) # doctest: +ELLIPSIS
         0.6349...
@@ -60,9 +59,9 @@ def sentence_chrf(
     An example to show that this function allows users to use strings instead of
     tokens, i.e. list(str) as inputs.
 
-        >>> ref1 = six.text_type('It is a guide to action that ensures that the military '
+        >>> ref1 = str('It is a guide to action that ensures that the military '
         ...            'will forever heed Party commands')
-        >>> hyp1 = six.text_type('It is a guide to action which ensures that the military '
+        >>> hyp1 = str('It is a guide to action which ensures that the military '
         ...            'always obeys the commands of the party')
         >>> sentence_chrf(ref1, hyp1) # doctest: +ELLIPSIS
         0.6349...
@@ -104,10 +103,10 @@ def sentence_chrf(
 def _preprocess(sent, ignore_whitespace):
     if type(sent) != str:
         # turn list of tokens into a string
-        sent = " ".join(sent)
+        sent = ' '.join(sent)
 
     if ignore_whitespace:
-        sent = redos.sub(r"\s+", "", sent)
+        sent = re.sub(r'\s+', '', sent)
     return sent
 
 
@@ -147,7 +146,7 @@ def chrf_precision_recall_fscore_support(
     try:
         prec = tp / tpfp  # precision
         rec = tp / tpfn  # recall
-        factor = beta**2
+        factor = beta ** 2
         fscore = (1 + factor) * (prec * rec) / (factor * prec + rec)
     except ZeroDivisionError:
         prec = rec = fscore = epsilon
@@ -163,14 +162,14 @@ def corpus_chrf(
 
     This implementation of CHRF only supports a single reference at the moment.
 
-        >>> ref1 = six.text_type('It is a guide to action that ensures that the military '
+        >>> ref1 = str('It is a guide to action that ensures that the military '
         ...            'will forever heed Party commands').split()
-        >>> ref2 = six.text_type('It is the guiding principle which guarantees the military '
+        >>> ref2 = str('It is the guiding principle which guarantees the military '
         ...            'forces always being under the command of the Party').split()
         >>>
-        >>> hyp1 = six.text_type('It is a guide to action which ensures that the military '
+        >>> hyp1 = str('It is a guide to action which ensures that the military '
         ...            'always obeys the commands of the party').split()
-        >>> hyp2 = six.text_type('It is to insure the troops forever hearing the activity '
+        >>> hyp2 = str('It is to insure the troops forever hearing the activity '
         ...            'guidebook that party direct')
         >>> corpus_chrf([ref1, ref2, ref1, ref2], [hyp1, hyp2, hyp2, hyp1]) # doctest: +ELLIPSIS
         0.3910...
@@ -197,10 +196,11 @@ def corpus_chrf(
     num_sents = len(hypotheses)
 
     # Keep f-scores for each n-gram order separate
-    ngram_fscores = defaultdict(list)
+    ngram_fscores = defaultdict(lambda: list())
 
     # Iterate through each hypothesis and their corresponding references.
     for reference, hypothesis in zip(references, hypotheses):
+
         # preprocess both reference and hypothesis
         reference = _preprocess(reference, ignore_whitespace)
         hypothesis = _preprocess(hypothesis, ignore_whitespace)

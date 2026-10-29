@@ -1,193 +1,45 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-# -*- coding: utf-8 -*-
-import six
-from nltk.compat import PermissionError, IsADirectoryError, FileExistsError, fsdecode, makedirs
+    # -*- coding: utf-8 -*-
 # This module is a port of the Textblob Averaged Perceptron Tagger
 # Author: Matthew Honnibal <honnibal+gh@gmail.com>,
 #         Long Duong <longdt219@gmail.com> (NLTK port)
 # URL: <https://github.com/sloria/textblob-aptagger>
-#      <https://www.nltk.org/>
+#      <http://nltk.org/>
 # Copyright 2013 Matthew Honnibal
 # NLTK modifications Copyright 2015 The NLTK Project
 #
 # This module is provided under the terms of the MIT License.
 
-import errno
-import json
-import logging
-import os
+from __future__ import absolute_import
+from __future__ import print_function, division
+
 import random
-import stat
 from collections import defaultdict
-from os.path import join as path_join
-try:
-    from pathlib import Path
-except ImportError:  # Python 2.7
-    from pathlib2 import Path
-from tempfile import gettempdir
+import pickle
+import logging
 
-from nltk import jsontags, pathsec
-from nltk.data import (
-    FileSystemPathPointer,
-    find,
-    make_staging_dir,
-    open_datafile,
-)
-from nltk.jsontags import safe_json_load
-from nltk.pathsec import _fd_realpath
-from nltk.pathsec import open as pathsec_open
-from nltk.pathsec import validate_path, validate_tool_dir, validate_tool_path
 from nltk.tag.api import TaggerI
-from nltk.termsec import safe_print
-
-# The training progress line goes to this module's own logger, as the other
-# NLTK modules that log do, not to the root logger through logging.info():
-# a library must not configure or write straight into the root logger.
-_logger = logging.getLogger(__name__)
-
-
-def _validate_name_component(value, kind="language code"):
-    """Refuse a value that is really a path where a filename fragment is meant.
-
-    The model filenames are built by interpolation and then opened *relative to
-    a pinned directory descriptor*. ``O_NOFOLLOW`` and the fd only anchor the
-    base: a ``..`` inside the name walks out of the verified directory and
-    writes anywhere the process can reach, so both halves of the name (the
-    ``lang`` and the ``TAGGER_NAME`` prefix) escaped the sandbox (CWE-22).
-    Applied to the composed filename as well as to each part, so a future
-    interpolation is covered without a new check.
-    """
-    text = str(value)
-    if (
-        not text
-        or not text.strip()
-        or text in (".", "..")
-        or "\x00" in text
-        or "/" in text
-        or "\\" in text
-        or os.sep in text
-        or (os.altsep and os.altsep in text)
-    ):
-        raise ValueError(
-            "Invalid tagger {0} {1!r}: must be a single filename component (no path separators, '..' or NUL)".format(kind, value)
-        )
-    return text
-
-
-def _open_private_model_dir(loc):
-    """Create/reuse *loc* as a private directory and return a pinned O_NOFOLLOW
-    directory descriptor, closing the shared-temp symlink squat / TOCTOU race.
-
-    The leaf is created with ``os.mkdir`` (atomic: it either creates the real
-    directory or fails with ``FileExistsError``) and then re-opened with
-    ``O_NOFOLLOW|O_DIRECTORY``; so a symlink pre-planted or raced in at the
-    guessable default name is refused (``ELOOP``/``ENOTDIR``) instead of being
-    followed. The descriptor is rejected unless it is a real directory owned by
-    the current user and not group-/world-writable (CWE-59/377/378).
-    """
-    parent = os.path.dirname(loc) or "."
-    makedirs(parent, exist_ok=True)
-    try:
-        os.mkdir(loc, 0o700)
-    except FileExistsError:
-        pass
-    flags = os.O_RDONLY | getattr(os, "O_DIRECTORY", 0) | getattr(os, "O_NOFOLLOW", 0)
-    try:
-        fd = os.open(loc, flags)
-    except OSError as e:
-        if e.errno in (errno.ELOOP, errno.ENOTDIR):
-            six.raise_from(PermissionError(
-                "Refusing trained-model dir {0!r}: not a real directory (symlink / TOCTOU squat) (CWE-59)".format(loc)
-            ), e)
-        raise
-    try:
-        st = os.fstat(fd)
-        # POSIX only: on Windows st_uid is not meaningful and NTFS ACLs govern.
-        if os.name == "posix" and (st.st_uid != os.getuid() or (st.st_mode & 0o022)):
-            raise PermissionError(
-                "Refusing non-private trained-model dir {0!r}: not owned by you or group-/world-writable (CWE-377/378)".format(loc)
-            )
-        # Validate where the descriptor actually landed, not the string: the
-        # containment check ran before this open, so an intermediate directory
-        # swapped in between the two would otherwise pin an outside directory.
-        landed = _fd_realpath(fd)
-        validate_path(
-            landed if landed is not None else os.path.realpath(loc),
-            context="PerceptronTagger.save_to_json",
-        )
-    except BaseException:
-        os.close(fd)
-        raise
-    return fd
-
-
-def _dir_fd_write_supported():
-    """True when save_to_json can create its files relative to the pinned
-    directory descriptor. False on Windows and on a POSIX build without the
-    ``*at`` calls (the python.org macOS builds before 3.13), where the files
-    are written by name through :func:`nltk.pathsec.open` instead."""
-    return {os.open, os.lstat, os.unlink} <= os.supports_dir_fd
-
-
-def _create_model_file(name, dir_fd):
-    """Create the model file *name* under the pinned directory descriptor
-    *dir_fd* and return a write descriptor for it (mode 0600).
-
-    The same contained leaf write as ``pathsec.ZipFile._write_leaf``: the name
-    is created with ``O_EXCL | O_NOFOLLOW``, so an inode already standing at it
-    is never opened. Opening an existing name with ``O_TRUNC`` truncates
-    whatever inode the name reaches, and a hardlink planted at it reaches one
-    outside the sandbox (CWE-59); opening a planted FIFO blocks until a peer
-    appears (CWE-400). An existing entry is judged with ``lstat`` instead: a
-    regular, single-linked file (the previous save) is unlinked and created
-    afresh, anything else is refused.
-    """
-    flags = (
-        os.O_WRONLY
-        | os.O_CREAT
-        | os.O_EXCL
-        | getattr(os, "O_NOFOLLOW", 0)
-        | getattr(os, "O_CLOEXEC", 0)
-    )
-    try:
-        return os.open(name, flags, 0o600, dir_fd=dir_fd)
-    except (FileExistsError, IsADirectoryError):
-        # a directory at the name is EEXIST or EISDIR depending on the kernel
-        pass
-    info = os.lstat(name, dir_fd=dir_fd)
-    if not stat.S_ISREG(info.st_mode):
-        raise PermissionError(
-            "Security Violation [PerceptronTagger.save_to_json]: refusing to write model file {0!r} onto a symlink, FIFO, socket, device or directory planted at that name (CWE-59)".format(name)
-        )
-    if info.st_nlink > 1:
-        raise PermissionError(
-            "Security Violation [PerceptronTagger.save_to_json]: refusing multiply-linked model file {0!r} (st_nlink={1}); a hardlink can point at an outside-root inode (CWE-59)".format(name, info.st_nlink)
-        )
-    # Confirmed regular and single-linked: replace the entry rather than
-    # truncating through a name that could be swapped before the open.
-    os.unlink(name, dir_fd=dir_fd)
-    return os.open(name, flags, 0o600, dir_fd=dir_fd)
-
+from nltk.data import find, load
+from nltk.compat import python_2_unicode_compatible
 
 try:
     import numpy as np
 except ImportError:
     pass
 
+PICKLE = "averaged_perceptron_tagger.pickle"
 
-@jsontags.register_tag
+
 class AveragedPerceptron(object):
-    """An averaged perceptron, as implemented by Matthew Honnibal.
+
+    '''An averaged perceptron, as implemented by Matthew Honnibal.
 
     See more implementation details here:
         https://explosion.ai/blog/part-of-speech-pos-tagger-in-python
-    """
+    '''
 
-    json_tag = "nltk.tag.perceptron.AveragedPerceptron"
-
-    def __init__(self, weights=None):
+    def __init__(self):
         # Each feature gets its own weight vector, so weights is a dict-of-dicts
-        self.weights = weights if weights else {}
+        self.weights = {}
         self.classes = set()
         # The accumulated values, for the averaging. These will be keyed by
         # feature/clas tuples
@@ -199,13 +51,15 @@ class AveragedPerceptron(object):
         # Number of instances seen
         self.i = 0
 
+
     def _softmax(self, scores):
         s = np.fromiter(scores.values(), dtype=float)
         exps = np.exp(s)
         return exps / np.sum(exps)
 
+
     def predict(self, features, return_conf=False):
-        """Dot-product the features and current weights and return the best label."""
+        '''Dot-product the features and current weights and return the best label.'''
         scores = defaultdict(float)
         for feat, value in features.items():
             if feat not in self.weights or value == 0:
@@ -215,14 +69,15 @@ class AveragedPerceptron(object):
                 scores[label] += value * weight
 
         # Do a secondary alphabetic sort, for stability
-        best_label = max(self.classes, key=lambda label: (scores[label], label))
+        best_label =  max(self.classes, key=lambda label: (scores[label], label))
         # compute the confidence
-        conf = max(self._softmax(scores)) if return_conf else None
+        conf = max(self._softmax(scores)) if return_conf == True else None
 
         return best_label, conf
 
+
     def update(self, truth, guess, features):
-        """Update the feature weights."""
+        '''Update the feature weights.'''
 
         def upd_feat(c, f, w, v):
             param = (f, c)
@@ -239,7 +94,7 @@ class AveragedPerceptron(object):
             upd_feat(guess, f, weights.get(guess, 0.0), -1.0)
 
     def average_weights(self):
-        """Average weights from all iterations."""
+        '''Average weights from all iterations.'''
         for feat, weights in self.weights.items():
             new_feat_weights = {}
             for clas, weight in weights.items():
@@ -252,67 +107,33 @@ class AveragedPerceptron(object):
             self.weights[feat] = new_feat_weights
 
     def save(self, path):
-        """Save the model weights as json.
-
-        ``path`` is caller-supplied, so the write goes through the pathsec
-        sandbox: a destination outside the allowed NLTK data roots (or a symlink
-        planted at one) is refused before any bytes are written, instead of the
-        builtin ``open`` that made this an arbitrary-file write
-        (GHSA-8mgp-746c-j5xp).
-        """
-        validate_tool_path(path, context="AveragedPerceptron.save", must_exist=False)
-        with pathsec_open(path, "w", context="AveragedPerceptron.save") as fout:
-            return json.dump(self.weights, fout)
+        '''Save the pickled model weights.'''
+        with open(path, 'wb') as fout:
+            return pickle.dump(dict(self.weights), fout)
 
     def load(self, path):
-        """Load the json model weights.
-
-        The read is sandboxed for the same reason as :meth:`save`: a model path
-        outside the allowed roots is refused rather than read back to the caller
-        (GHSA-8mgp-746c-j5xp).
-        """
-        # Refuse a planted FIFO/socket/device before pathsec.open blocks on it.
-        validate_tool_path(path, context="AveragedPerceptron.load")
-        with pathsec_open(path, context="AveragedPerceptron.load") as fin:
-            # Bound size and nesting depth before the recursive C decoder runs:
-            # a model file with a raised recursion limit could otherwise
-            # segfault the interpreter (uncatchable) on deeply nested JSON.
-            self.weights = safe_json_load(fin, context="AveragedPerceptron.load")
-
-    def encode_json_obj(self):
-        return self.weights
-
-    @classmethod
-    def decode_json_obj(cls, obj):
-        return cls(obj)
+        '''Load the pickled model weights.'''
+        self.weights = load(path)
 
 
-@jsontags.register_tag
+@python_2_unicode_compatible
 class PerceptronTagger(TaggerI):
-    """
+
+    '''
     Greedy Averaged Perceptron tagger, as implemented by Matthew Honnibal.
     See more implementation details here:
-    https://explosion.ai/blog/part-of-speech-pos-tagger-in-python
+        https://explosion.ai/blog/part-of-speech-pos-tagger-in-python
 
     >>> from nltk.tag.perceptron import PerceptronTagger
+
+    Train the model
+
     >>> tagger = PerceptronTagger(load=False)
 
-    Train and save the model:
-
     >>> tagger.train([[('today','NN'),('is','VBZ'),('good','JJ'),('day','NN')],
-    ... [('yes','NNS'),('it','PRP'),('beautiful','JJ')]], save_loc=tagger.save_dir)
+    ... [('yes','NNS'),('it','PRP'),('beautiful','JJ')]])
 
-    Load the saved model:
-
-    >>> from nltk.data import FileSystemPathPointer
-    >>> tagger2 = PerceptronTagger(loc=FileSystemPathPointer(tagger.save_dir))
-    >>> print(sorted(list(tagger2.classes)))
-    ['JJ', 'NN', 'NNS', 'PRP', 'VBZ']
-
-    >>> print(tagger2.classes == tagger.classes)
-    True
-
-    >>> tagger2.tag(['today','is','a','beautiful','day'])
+    >>> tagger.tag(['today','is','a','beautiful','day'])
     [('today', 'NN'), ('is', 'PRP'), ('a', 'PRP'), ('beautiful', 'JJ'), ('day', 'NN')]
 
     Use the pretrain model (the default constructor)
@@ -324,91 +145,55 @@ class PerceptronTagger(TaggerI):
 
     >>> pretrain.tag("The red cat".split())
     [('The', 'DT'), ('red', 'JJ'), ('cat', 'NN')]
-    """
+    '''
 
-    json_tag = "nltk.tag.perceptron.PerceptronTagger"
+    START = ['-START-', '-START2-']
+    END = ['-END-', '-END2-']
 
-    START = ["-START-", "-START2-"]
-    END = ["-END-", "-END2-"]
-
-    def __init__(self, load=True, lang="eng", loc=None):
-        """
-        :param load: Load the json model upon instantiation.
-        """
+    def __init__(self, load=True):
+        '''
+        :param load: Load the pickled model upon instantiation.
+        '''
         self.model = AveragedPerceptron()
         self.tagdict = {}
         self.classes = set()
-        self.lang = lang
-        # Retained for backward compatibility; save_dir no longer derives from it.
-        self.TRAINED_TAGGER_PATH = gettempdir()
-        self.TAGGER_NAME = "averaged_perceptron_tagger"
-        self._save_dir = None
         if load:
-            self.load_from_json(lang, loc)
-
-    @property
-    def save_dir(self):
-        """This tagger's private directory for saved model artifacts.
-
-        Allocated lazily by ``nltk.data.make_staging_dir`` INSIDE an allowed data
-        root, with an unpredictable name and mode 0700. Because it already lives
-        in the pathsec sandbox, saving and loading a trained model needs no
-        widening of ``nltk.data.path``, and unlike the old guessable
-        ``<tempdir>/averaged_perceptron_tagger_<lang>``, another local user
-        cannot pre-create or symlink it to redirect the write (CWE-377/378).
-        """
-        if self._save_dir is None:
-            # Both parts land in a mkdtemp prefix, which is concatenated onto
-            # the data root, so a path-shaped part stages output outside it.
-            _validate_name_component(self.lang, "language code")
-            _validate_name_component(self.TAGGER_NAME, "tagger name")
-            self._save_dir = make_staging_dir(
-                prefix="nltk_{0}_{1}_".format(self.TAGGER_NAME, self.lang)
+            AP_MODEL_LOC = 'file:' + str(
+                find('taggers/averaged_perceptron_tagger/' + PICKLE)
             )
-        return self._save_dir
-
-    def param_files(self, lang="eng"):
-        # The one place lang and TAGGER_NAME become filenames, so validate the
-        # composed name here rather than each ingredient at each caller.
-        _validate_name_component(lang, "language code")
-        return tuple(
-            _validate_name_component(
-                "{0}_{1}.{2}.json".format(self.TAGGER_NAME, lang, attr), "model filename"
-            )
-            for attr in ("weights", "tagdict", "classes")
-        )
+            self.load(AP_MODEL_LOC)
 
     def tag(self, tokens, return_conf=False, use_tagdict=True):
-        """
+        '''
         Tag tokenized sentences.
         :params tokens: list of word
         :type tokens: list(str)
-        """
+        '''
         prev, prev2 = self.START
         output = []
 
         context = self.START + [self.normalize(w) for w in tokens] + self.END
         for i, word in enumerate(tokens):
-            tag, conf = (self.tagdict.get(word), 1.0) if use_tagdict else (None, None)
+            tag, conf = (self.tagdict.get(word), 1.0) if use_tagdict == True else (None, None)
             if not tag:
                 features = self._get_features(i, word, context, prev, prev2)
                 tag, conf = self.model.predict(features, return_conf)
-            output.append((word, tag, conf) if return_conf else (word, tag))
-
+            output.append((word, tag, conf) if return_conf == True else (word, tag))
+            
             prev2 = prev
             prev = tag
 
         return output
 
     def train(self, sentences, save_loc=None, nr_iter=5):
-        """Train a model from sentences, and save it at ``save_loc``. ``nr_iter``
+        '''Train a model from sentences, and save it at ``save_loc``. ``nr_iter``
         controls the number of Perceptron training iterations.
 
         :param sentences: A list or iterator of sentences, where each sentence
             is a list of (words, tags) tuples.
-        :param save_loc: If not ``None``, saves a json model in this location.
+        :param save_loc: If not ``None``, saves a pickled model in this location.
         :param nr_iter: Number of training iterations.
-        """
+        '''
         # We'd like to allow ``sentences`` to be either a list or an iterator,
         # the latter being especially important for a large training dataset.
         # Because ``self._make_tagdict(sentences)`` runs regardless, we make
@@ -431,191 +216,86 @@ class PerceptronTagger(TaggerI):
                     guess = self.tagdict.get(word)
                     if not guess:
                         feats = self._get_features(i, word, context, prev, prev2)
-                        guess, _ = self.model.predict(feats)
+                        guess,_ = self.model.predict(feats)
                         self.model.update(tags[i], guess, feats)
                     prev2 = prev
                     prev = guess
                     c += guess == tags[i]
                     n += 1
             random.shuffle(self._sentences)
-            _logger.info("Iter %r: %r/%r=%r", iter_, c, n, _pc(c, n))
+            logging.info("Iter {0}: {1}/{2}={3}".format(iter_, c, n, _pc(c, n)))
 
         # We don't need the training sentences anymore, and we don't want to
-        # waste space on them when we the trained tagger.
+        # waste space on them when we pickle the trained tagger.
         self._sentences = None
 
         self.model.average_weights()
-        # Save to json files.
+        # Pickle as a binary file
         if save_loc is not None:
-            self.save_to_json(lang=self.lang, loc=save_loc)
+            with open(save_loc, 'wb') as fout:
+                # changed protocol from -1 to 2 to make pickling Python 2 compatible
+                pickle.dump((self.model.weights, self.tagdict, self.classes), fout, 2)
 
-    def save_to_json(self, lang="xxx", loc=None):
-        # Fail before any directory is created, not once the fd is pinned.
-        _validate_name_component(lang, "language code")
-        if not loc:
-            loc = self.save_dir
-        # A caller-supplied destination is an unbounded write primitive otherwise:
-        # the helper below happily makedirs() a whole chain anywhere writable.
-        validate_tool_dir(loc, context="PerceptronTagger.save_to_json")
-        # The default loc (save_dir) is an unpredictable 0700 dir inside a data
-        # root, but a caller may still pass any in-sandbox path here, so the
-        # atomic checks below stay: a local attacker could pre-plant or race a
-        # symlink at a caller-chosen ``loc``. A plain
-        # ``islink`` pre-check is non-atomic (TOCTOU) and misses it once created;
-        # ``_open_private_model_dir`` instead creates/re-opens the leaf atomically
-        # with O_NOFOLLOW|O_DIRECTORY, verifies it is a real, user-owned,
-        # non-world-writable directory, and returns a pinned fd we write relative
-        # to (CWE-59/377/378).
-        #
-        # On Windows ``%TEMP%`` is per-user and ACL-protected (no such squat), and
-        # ``os.open`` cannot open a directory as a descriptor there; a POSIX
-        # build without the ``*at`` calls cannot write through one either.
-        # Those routes write each file by name through pathsec.open instead.
-        by_name = os.name != "posix" or not _dir_fd_write_supported()
-        if by_name:
-            # No descriptor pins where the files land on this route, so the
-            # sandbox itself re-checks the destination before anything is
-            # created (the caller check above is the first layer, this the second).
-            pathsec.validate_tool_dir(loc, context="PerceptronTagger.save_to_json")
-        if os.name != "posix":
-            makedirs(loc, exist_ok=True)
-            dir_fd = None
-        else:
-            dir_fd = _open_private_model_dir(loc)
-        try:
-            for param, json_file in zip(self.encode_json_obj(), self.param_files(lang)):
-                if by_name:
-                    with pathsec_open(
-                        path_join(loc, json_file),
-                        "w",
-                        context="PerceptronTagger.save_to_json",
-                    ) as fout:
-                        json.dump(param, fout)
-                    continue
-                # Created relative to the pinned directory fd by
-                # _create_model_file, which never opens an inode already standing
-                # at the name (a planted hardlink, symlink, FIFO or directory).
-                # No builtin open(): wrap the descriptor the contained create
-                # returned, so nothing re-resolves the name after the check.
-                fd = _create_model_file(json_file, dir_fd)
-                with os.fdopen(fd, "w") as fout:
-                    json.dump(param, fout)
-        finally:
-            if dir_fd is not None:
-                os.close(dir_fd)
+    def load(self, loc):
+        '''
+        :param loc: Load a pickled model at location.
+        :type loc: str
+        '''
 
-    def load_from_json(self, lang="eng", loc=None):
-        # Automatically find path to the tagger if location is not specified.
-        # loc can refer to zip or real FS
-        # Symmetric with save_to_json: lang reaches find() as a resource name and
-        # param_files() as a filename, so reject a path-shaped one up front.
-        _validate_name_component(lang, "language code")
-        if isinstance(loc, bytes):
-            loc = fsdecode(loc)
-        if isinstance(loc, (str, Path)) and not str(loc).strip():
-            # Windows strips trailing spaces from a path component, so a blank
-            # loc silently resolves to the data root itself instead of failing.
-            raise ValueError(
-                "Invalid tagger model location {0!r}: blank path names no model".format(loc)
-            )
-        if loc is None:
-            loc = find("taggers/averaged_perceptron_tagger_{0}/".format(lang))
-        elif isinstance(loc, six.string_types):
-            # Backward compatible:
-            # - absolute paths are explicit filesystem locations
-            # - relative strings are treated as NLTK resource names and resolved via find()
-            if os.path.isabs(loc):
-                # Bound it here, not at the eventual read: FileSystemPathPointer
-                # stats the path, so an unbounded loc is an existence oracle too.
-                validate_tool_dir(loc, context="PerceptronTagger.load_from_json")
-                loc = FileSystemPathPointer(loc)
-            else:
-                loc = find(loc)
-        elif isinstance(loc, Path):
-            # Explicit filesystem path
-            validate_tool_dir(str(loc), context="PerceptronTagger.load_from_json")
-            loc = FileSystemPathPointer(str(loc))
-        # else: assume loc is already a PathPointer (zip or filesystem)
-
-        # No sandbox widening here: save_dir is allocated inside a data root, so a
-        # model NLTK saved is already readable. Any other loc must be authorized by
-        # the application, since trusting a caller path would disarm pathsec.
-        def load_param(json_file):
-            with open_datafile(loc, json_file) as fin:
-                # Same bounded parse as AveragedPerceptron.load: reject an
-                # over-deep or over-large param file before the C decoder can
-                # crash on it, without touching legit (shallow) model shapes.
-                return safe_json_load(fin, context="PerceptronTagger.load_from_json")
-
-        self.decode_json_params(
-            load_param(js_file) for js_file in self.param_files(lang)
-        )
-
-    def decode_json_params(self, params):
-        weights, tagdict, class_list = params
-        self.model.weights = weights
-        self.tagdict = tagdict
-        self.classes = self.model.classes = set(class_list)
-
-    def encode_json_obj(self):
-        return self.model.weights, self.tagdict, list(self.classes)
-
-    @classmethod
-    def decode_json_obj(cls, obj):
-        tagger = cls(load=False)
-        tagger.decode_json_params(obj)
-        return tagger
+        self.model.weights, self.tagdict, self.classes = load(loc)
+        self.model.classes = self.classes
 
     def normalize(self, word):
-        """
+        '''
         Normalization used in pre-processing.
         - All words are lower cased
         - Groups of digits of length 4 are represented as !YEAR;
         - Other digits are represented as !DIGITS
 
         :rtype: str
-        """
-        if "-" in word and word[0] != "-":
-            return "!HYPHEN"
-        if word.isdigit() and len(word) == 4:
-            return "!YEAR"
-        if word and word[0].isdigit():
-            return "!DIGITS"
-        return word.lower()
+        '''
+        if '-' in word and word[0] != '-':
+            return '!HYPHEN'
+        elif word.isdigit() and len(word) == 4:
+            return '!YEAR'
+        elif word[0].isdigit():
+            return '!DIGITS'
+        else:
+            return word.lower()
 
     def _get_features(self, i, word, context, prev, prev2):
-        """Map tokens into a feature representation, implemented as a
+        '''Map tokens into a feature representation, implemented as a
         {hashable: int} dict. If the features change, a new model must be
         trained.
-        """
+        '''
 
         def add(name, *args):
-            features[" ".join((name,) + tuple(args))] += 1
+            features[' '.join((name,) + tuple(args))] += 1
 
         i += len(self.START)
         features = defaultdict(int)
         # It's useful to have a constant feature, which acts sort of like a prior
-        add("bias")
-        add("i suffix", word[-3:])
-        add("i pref1", word[0] if word else "")
-        add("i-1 tag", prev)
-        add("i-2 tag", prev2)
-        add("i tag+i-2 tag", prev, prev2)
-        add("i word", context[i])
-        add("i-1 tag+i word", prev, context[i])
-        add("i-1 word", context[i - 1])
-        add("i-1 suffix", context[i - 1][-3:])
-        add("i-2 word", context[i - 2])
-        add("i+1 word", context[i + 1])
-        add("i+1 suffix", context[i + 1][-3:])
-        add("i+2 word", context[i + 2])
+        add('bias')
+        add('i suffix', word[-3:])
+        add('i pref1', word[0])
+        add('i-1 tag', prev)
+        add('i-2 tag', prev2)
+        add('i tag+i-2 tag', prev, prev2)
+        add('i word', context[i])
+        add('i-1 tag+i word', prev, context[i])
+        add('i-1 word', context[i - 1])
+        add('i-1 suffix', context[i - 1][-3:])
+        add('i-2 word', context[i - 2])
+        add('i+1 word', context[i + 1])
+        add('i+1 suffix', context[i + 1][-3:])
+        add('i+2 word', context[i + 2])
         return features
 
     def _make_tagdict(self, sentences):
-        """
+        '''
         Make a tag dictionary for single-tag words.
         :param sentences: A list of list of (word, tag) tuples.
-        """
+        '''
         counts = defaultdict(lambda: defaultdict(int))
         for sentence in sentences:
             self._sentences.append(sentence)
@@ -637,24 +317,38 @@ def _pc(n, d):
     return (n / d) * 100
 
 
-def _train_and_test(lang="sv"):
-    """
-    Train and test on 'lang' part of universal_treebanks corpus, which includes
-    train and test sets in conll format for 'de', 'es', 'fi', 'fr' and 'sv'.
-    Finds 0.94 accuracy on 'sv' (Swedish) test set.
-    """
-    from nltk.corpus import universal_treebanks as utb
+def _load_data_conll_format(filename):
+    print('Read from file: ', filename)
+    with open(filename, 'rb') as fin:
+        sentences = []
+        sentence = []
+        for line in fin.readlines():
+            line = line.strip()
+            # print line
+            if len(line) == 0:
+                sentences.append(sentence)
+                sentence = []
+                continue
+            tokens = line.split('\t')
+            word = tokens[1]
+            tag = tokens[4]
+            sentence.append((word, tag))
+        return sentences
 
-    tagger = PerceptronTagger(load=False, lang=lang)
-    training = utb.tagged_sents("ch/{0}/{1}-universal-ch-train.conll".format(lang, lang))
-    testing = utb.tagged_sents("ch/{0}/{1}-universal-ch-test.conll".format(lang, lang))
-    safe_print(
-        "(Lang = {0}) training on {1} and testing on {2} sentences".format(lang, len(training), len(testing))
-    )
+
+def _get_pretrain_model():
+    # Train and test on English part of ConLL data (WSJ part of Penn Treebank)
+    # Train: section 2-11
+    # Test : section 23
+    tagger = PerceptronTagger()
+    training = _load_data_conll_format('english_ptb_train.conll')
+    testing = _load_data_conll_format('english_ptb_test.conll')
+    print('Size of training and testing (sentence)', len(training), len(testing))
     # Train and save the model
-    tagger.train(training, save_loc=tagger.save_dir)
-    safe_print("Accuracy : ", tagger.accuracy(testing))
+    tagger.train(training, PICKLE)
+    print('Accuracy : ', tagger.evaluate(testing))
 
 
-if __name__ == "__main__":
-    _train_and_test()
+if __name__ == '__main__':
+    # _get_pretrain_model()
+    pass

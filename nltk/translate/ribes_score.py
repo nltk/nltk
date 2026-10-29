@@ -157,9 +157,9 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
     Below is (H0, R0) example from the Isozaki et al. 2010 paper,
     note the examples are indexed from 1 but the results here are indexed from 0:
 
-        >>> ref = six.text_type('he was interested in world history because he '
+        >>> ref = str('he was interested in world history because he '
         ... 'read the book').split()
-        >>> hyp = six.text_type('he read the book because he was interested in world '
+        >>> hyp = str('he read the book because he was interested in world '
         ... 'history').split()
         >>> word_rank_alignment(ref, hyp)
         [7, 8, 9, 10, 6, 0, 1, 2, 3, 4, 5]

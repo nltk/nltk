@@ -1,20 +1,17 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
 # -*- coding: utf-8 -*-
-import six
 # Natural Language Toolkit: Word List Corpus Reader
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-import os
-from io import StringIO
+from six import string_types
 
-from nltk.corpus.reader.api import *
-from nltk.corpus.reader.stopwords_extended import StopwordsEnglishExtended
-from nltk.corpus.reader.util import *
 from nltk.tokenize import line_tokenize
+
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 
 class WordListCorpusReader(CorpusReader):
@@ -22,113 +19,19 @@ class WordListCorpusReader(CorpusReader):
     List of words, one per line.  Blank lines are ignored.
     """
 
-    def words(self, fileids=None, ignore_lines_startswith="\n", hf=False):
-        if hf:
-            from nltk.huggingface.dataset import load_data
-
-            corpus_id = (
-                self._root.corpus_id
-                if hasattr(self._root, "corpus_id")
-                else os.path.basename(self._root.path.rstrip("/"))
-            )
-            content = load_data(corpus_id, fileid=fileids)
-            return [
-                line
-                for line in content.splitlines()
-                if line and not line.startswith(ignore_lines_startswith)
-            ]
+    def words(self, fileids=None, ignore_lines_startswith='\n'):
         return [
             line
             for line in line_tokenize(self.raw(fileids))
             if not line.startswith(ignore_lines_startswith)
         ]
 
-
-class StopwordsCorpusReader(WordListCorpusReader):
-    """A word list reader that also serves code-defined stop word lists.
-
-    ``stopwords.words("english")`` reads the ``stopwords`` corpus from
-    ``nltk_data`` unchanged. ``english-extended`` is a *virtual* fileid: it is
-    not a file in ``nltk_data``, but is assembled from the ``english`` file plus
-    the additions registered for it, and the U+2019 variants of both. No
-    corpus file is added or modified, so the extension ships with the library
-    and needs no data download.
-
-        >>> from nltk.corpus import stopwords
-        >>> base = stopwords.words("english")
-        >>> extended = stopwords.words("english-extended")
-        >>> set(base).issubset(extended)
-        True
-        >>> "cannot" in base, "cannot" in extended
-        (False, True)
-
-    The word lists themselves, and the criterion used to choose them, live in
-    :mod:`nltk.corpus.reader.stopwords_extended`.
-    """
-
-    #: The code-defined lists this reader serves, as virtual fileids. Listing a
-    #: new :class:`~nltk.corpus.reader.stopwords_extended.StopwordsExtension`
-    #: here is all it takes to serve another ``<lang>-extended``.
-    EXTENSIONS = (StopwordsEnglishExtended,)
-
-    def _extension(self, fileid):
-        """The extension serving *fileid*, or ``None``."""
-        if isinstance(fileid, six.string_types):
-            for extension in self.EXTENSIONS:
-                if extension.fileid == fileid:
-                    return extension
-        return None
-
-    def fileids(self):
-        """The corpus fileids, plus any virtual fileid whose base is present."""
-        available = super(StopwordsCorpusReader, self).fileids()
-        virtual = [e.fileid for e in self.EXTENSIONS if e.base in available]
-        return sorted(available + virtual)
-
-    def words(self, fileids=None, ignore_lines_startswith="\n", hf=False):
-        """As :meth:`WordListCorpusReader.words`, honouring virtual fileids."""
-        extension = self._extension(fileids)
-        if extension is None:
-            return super(StopwordsCorpusReader, self).words(
-                fileids, ignore_lines_startswith=ignore_lines_startswith, hf=hf
-            )
-        return extension.build(
-            super(StopwordsCorpusReader, self).words(
-                extension.base,
-                ignore_lines_startswith=ignore_lines_startswith,
-                hf=hf,
-            )
-        )
-
     def raw(self, fileids=None):
-        """As :meth:`CorpusReader.raw`, honouring virtual fileids.
-
-        A virtual fileid has no file behind it, so its raw form is generated
-        from the word list. Without this, ``raw()`` would fail for a fileid that
-        :meth:`fileids` advertises.
-        """
-        if self._extension(fileids) is not None:
-            return "\n".join(self.words(fileids)) + "\n"
-        return super(StopwordsCorpusReader, self).raw(fileids)
-
-    def open(self, file):
-        """As :meth:`CorpusReader.open`, honouring virtual fileids."""
-        if self._extension(file) is not None:
-            return StringIO(self.raw(file))
-        return super(StopwordsCorpusReader, self).open(file)
-
-    def abspath(self, fileid):
-        """As :meth:`CorpusReader.abspath`; virtual fileids have no path.
-
-        Raising here is deliberate: a code-defined list has no file on disk, and
-        a clear error beats the ``OSError`` about a missing corpus file that a
-        path lookup would otherwise produce.
-        """
-        if self._extension(fileid) is not None:
-            raise ValueError(
-                "{0!r} is defined in code, not by a file in the corpus, so it has no path; use words() or raw() instead".format(fileid)
-            )
-        return super(StopwordsCorpusReader, self).abspath(fileid)
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
 
 
 class SwadeshCorpusReader(WordListCorpusReader):
@@ -151,32 +54,32 @@ class NonbreakingPrefixesCorpusReader(WordListCorpusReader):
     """
 
     available_langs = {
-        "catalan": "ca",
-        "czech": "cs",
-        "german": "de",
-        "greek": "el",
-        "english": "en",
-        "spanish": "es",
-        "finnish": "fi",
-        "french": "fr",
-        "hungarian": "hu",
-        "icelandic": "is",
-        "italian": "it",
-        "latvian": "lv",
-        "dutch": "nl",
-        "polish": "pl",
-        "portuguese": "pt",
-        "romanian": "ro",
-        "russian": "ru",
-        "slovak": "sk",
-        "slovenian": "sl",
-        "swedish": "sv",
-        "tamil": "ta",
+        'catalan': 'ca',
+        'czech': 'cs',
+        'german': 'de',
+        'greek': 'el',
+        'english': 'en',
+        'spanish': 'es',
+        'finnish': 'fi',
+        'french': 'fr',
+        'hungarian': 'hu',
+        'icelandic': 'is',
+        'italian': 'it',
+        'latvian': 'lv',
+        'dutch': 'nl',
+        'polish': 'pl',
+        'portuguese': 'pt',
+        'romanian': 'ro',
+        'russian': 'ru',
+        'slovak': 'sk',
+        'slovenian': 'sl',
+        'swedish': 'sv',
+        'tamil': 'ta',
     }
     # Also, add the lang IDs as the keys.
     available_langs.update({v: v for v in available_langs.values()})
 
-    def words(self, lang=None, fileids=None, ignore_lines_startswith="#"):
+    def words(self, lang=None, fileids=None, ignore_lines_startswith='#'):
         """
         This module returns a list of nonbreaking prefixes for the specified
         language(s).
@@ -194,7 +97,7 @@ class NonbreakingPrefixesCorpusReader(WordListCorpusReader):
         # all languages when fileids==None.
         if lang in self.available_langs:
             lang = self.available_langs[lang]
-            fileids = ["nonbreaking_prefix." + lang]
+            fileids = ['nonbreaking_prefix.' + lang]
         return [
             line
             for line in line_tokenize(self.raw(fileids))
@@ -205,28 +108,28 @@ class NonbreakingPrefixesCorpusReader(WordListCorpusReader):
 class UnicharsCorpusReader(WordListCorpusReader):
     """
     This class is used to read lists of characters from the Perl Unicode
-    Properties (see https://perldoc.perl.org/perluniprops.html).
+    Properties (see http://perldoc.perl.org/perluniprops.html).
     The files in the perluniprop.zip are extracted using the Unicode::Tussle
-    module from https://search.cpan.org/~bdfoy/Unicode-Tussle-1.11/lib/Unicode/Tussle.pm
+    module from http://search.cpan.org/~bdfoy/Unicode-Tussle-1.11/lib/Unicode/Tussle.pm
     """
 
     # These are categories similar to the Perl Unicode Properties
     available_categories = [
-        "Close_Punctuation",
-        "Currency_Symbol",
-        "IsAlnum",
-        "IsAlpha",
-        "IsLower",
-        "IsN",
-        "IsSc",
-        "IsSo",
-        "IsUpper",
-        "Line_Separator",
-        "Number",
-        "Open_Punctuation",
-        "Punctuation",
-        "Separator",
-        "Symbol",
+        'Close_Punctuation',
+        'Currency_Symbol',
+        'IsAlnum',
+        'IsAlpha',
+        'IsLower',
+        'IsN',
+        'IsSc',
+        'IsSo',
+        'IsUpper',
+        'Line_Separator',
+        'Number',
+        'Open_Punctuation',
+        'Punctuation',
+        'Separator',
+        'Symbol',
     ]
 
     def chars(self, category=None, fileids=None):
@@ -245,7 +148,7 @@ class UnicharsCorpusReader(WordListCorpusReader):
         :return: a list of characters given the specific unicode character category
         """
         if category in self.available_categories:
-            fileids = [category + ".txt"]
+            fileids = [category + '.txt']
         return list(self.raw(fileids).strip())
 
 
@@ -254,21 +157,20 @@ class MWAPPDBCorpusReader(WordListCorpusReader):
     This class is used to read the list of word pairs from the subset of lexical
     pairs of The Paraphrase Database (PPDB) XXXL used in the Monolingual Word
     Alignment (MWA) algorithm described in Sultan et al. (2014a, 2014b, 2015):
-
      - http://acl2014.org/acl2014/Q14/pdf/Q14-1017
-     - https://www.aclweb.org/anthology/S14-2039
-     - https://www.aclweb.org/anthology/S15-2027
+     - http://www.aclweb.org/anthology/S14-2039
+     - http://www.aclweb.org/anthology/S15-2027
 
     The original source of the full PPDB corpus can be found on
-    https://www.cis.upenn.edu/~ccb/ppdb/
+    http://www.cis.upenn.edu/~ccb/ppdb/
 
     :return: a list of tuples of similar lexical terms.
     """
 
-    mwa_ppdb_xxxl_file = "ppdb-1.0-xxxl-lexical.extended.synonyms.uniquepairs"
+    mwa_ppdb_xxxl_file = 'ppdb-1.0-xxxl-lexical.extended.synonyms.uniquepairs'
 
     def entries(self, fileids=mwa_ppdb_xxxl_file):
         """
         :return: a tuple of synonym word pairs.
         """
-        return [tuple(line.split("\t")) for line in line_tokenize(self.raw(fileids))]
+        return [tuple(line.split('\t')) for line in line_tokenize(self.raw(fileids))]

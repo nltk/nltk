@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit (NLTK)
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Authors: Steven Bird <stevenbird1@gmail.com>
 #          Edward Loper <edloper@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -14,21 +13,11 @@ for Natural Language Processing.  A free online book is available.
 
 Steven Bird, Ewan Klein, and Edward Loper (2009).
 Natural Language Processing with Python.  O'Reilly Media Inc.
-https://www.nltk.org/book/
-
-isort:skip_file
+http://nltk.org/book
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
+from __future__ import print_function, absolute_import
 
 import os
-import importlib
-import sys
-
-# The terminal-output chokepoint has no nltk imports of its own, so it is bound
-# first: every import-time fallback below (the downloader GUI warning) uses it.
-from nltk.termsec import safe_print, sanitize_terminal
-
 
 # //////////////////////////////////////////////////////
 # Metadata
@@ -38,27 +27,21 @@ from nltk.termsec import safe_print, sanitize_terminal
 # in the file VERSION.
 try:
     # If a VERSION file exists, use it!
-    version_file = os.path.join(os.path.dirname(__file__), "VERSION")
-    from nltk.pathsec import open_package_resource
-
-    # Not an exemption: containment is enforced against the installed package
-    # directory, since VERSION ships beside the code and never in a data root.
-    with open_package_resource(
-        version_file, os.path.dirname(__file__), context="nltk.__version__"
-    ) as infile:
+    version_file = os.path.join(os.path.dirname(__file__), 'VERSION')
+    with open(version_file, 'r') as infile:
         __version__ = infile.read().strip()
 except NameError:
-    __version__ = "unknown (running code interactively?)"
-except OSError as ex:
+    __version__ = 'unknown (running code interactively?)'
+except IOError as ex:
     __version__ = "unknown (%s)" % ex
 
 if __doc__ is not None:  # fix for the ``python -OO``
-    __doc__ += "\n@version: " + __version__
+    __doc__ += '\n@version: ' + __version__
 
 
 # Copyright notice
 __copyright__ = """\
-Copyright (C) 2001-2026 NLTK Project.
+Copyright (C) 2001-2019 NLTK Project.
 
 Distributed and Licensed under the Apache License, Version 2.0,
 which is included by reference.
@@ -68,51 +51,49 @@ __license__ = "Apache License, Version 2.0"
 # Description of the toolkit, keywords, and the project's primary URL.
 __longdescr__ = """\
 The Natural Language Toolkit (NLTK) is a Python package for
-natural language processing.  NLTK requires Python 3.10, 3.11, 3.12 or 3.13."""
+natural language processing.  NLTK requires Python 2.6 or higher."""
 __keywords__ = [
-    "NLP",
-    "CL",
-    "natural language processing",
-    "computational linguistics",
-    "parsing",
-    "tagging",
-    "tokenizing",
-    "syntax",
-    "linguistics",
-    "language",
-    "natural language",
-    "text analytics",
+    'NLP',
+    'CL',
+    'natural language processing',
+    'computational linguistics',
+    'parsing',
+    'tagging',
+    'tokenizing',
+    'syntax',
+    'linguistics',
+    'language',
+    'natural language',
+    'text analytics',
 ]
-__url__ = "https://www.nltk.org/"
+__url__ = "http://nltk.org/"
 
 # Maintainer, contributors, etc.
-__maintainer__ = "NLTK Team"
-__maintainer_email__ = "nltk.team@gmail.com"
+__maintainer__ = "Steven Bird, Edward Loper, Ewan Klein"
+__maintainer_email__ = "stevenbird1@gmail.com"
 __author__ = __maintainer__
 __author_email__ = __maintainer_email__
 
 # "Trove" classifiers for Python Package Index.
 __classifiers__ = [
-    "Development Status :: 5 - Production/Stable",
-    "Intended Audience :: Developers",
-    "Intended Audience :: Education",
-    "Intended Audience :: Information Technology",
-    "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: Apache Software License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Topic :: Scientific/Engineering",
-    "Topic :: Scientific/Engineering :: Artificial Intelligence",
-    "Topic :: Scientific/Engineering :: Human Machine Interfaces",
-    "Topic :: Scientific/Engineering :: Information Analysis",
-    "Topic :: Text Processing",
-    "Topic :: Text Processing :: Filters",
-    "Topic :: Text Processing :: General",
-    "Topic :: Text Processing :: Indexing",
-    "Topic :: Text Processing :: Linguistic",
+    'Development Status :: 5 - Production/Stable',
+    'Intended Audience :: Developers',
+    'Intended Audience :: Education',
+    'Intended Audience :: Information Technology',
+    'Intended Audience :: Science/Research',
+    'License :: OSI Approved :: Apache Software License',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python :: 2.6',
+    'Programming Language :: Python :: 2.7',
+    'Topic :: Scientific/Engineering',
+    'Topic :: Scientific/Engineering :: Artificial Intelligence',
+    'Topic :: Scientific/Engineering :: Human Machine Interfaces',
+    'Topic :: Scientific/Engineering :: Information Analysis',
+    'Topic :: Text Processing',
+    'Topic :: Text Processing :: Filters',
+    'Topic :: Text Processing :: General',
+    'Topic :: Text Processing :: Indexing',
+    'Topic :: Text Processing :: Linguistic',
 ]
 
 from nltk.internals import config_java
@@ -126,16 +107,16 @@ except ImportError:
 # Override missing methods on environments where it cannot be used like GAE.
 import subprocess
 
-if not hasattr(subprocess, "PIPE"):
+if not hasattr(subprocess, 'PIPE'):
 
     def _fake_PIPE(*args, **kwargs):
-        raise NotImplementedError("subprocess.PIPE is not supported.")
+        raise NotImplementedError('subprocess.PIPE is not supported.')
 
     subprocess.PIPE = _fake_PIPE
-if not hasattr(subprocess, "Popen"):
+if not hasattr(subprocess, 'Popen'):
 
     def _fake_Popen(*args, **kwargs):
-        raise NotImplementedError("subprocess.Popen is not supported.")
+        raise NotImplementedError('subprocess.Popen is not supported.')
 
     subprocess.Popen = _fake_Popen
 
@@ -151,6 +132,7 @@ from nltk.featstruct import *
 from nltk.grammar import *
 from nltk.probability import *
 from nltk.text import *
+from nltk.tree import *
 from nltk.util import *
 from nltk.jsontags import *
 
@@ -166,7 +148,6 @@ from nltk.parse import *
 from nltk.tag import *
 from nltk.tokenize import *
 from nltk.translate import *
-from nltk.tree import *
 from nltk.sem import *
 from nltk.stem import *
 
@@ -177,13 +158,14 @@ from nltk.stem import *
 
 from nltk import lazyimport
 
-app = lazyimport.LazyModule("app", locals(), globals())
-chat = lazyimport.LazyModule("chat", locals(), globals())
-corpus = lazyimport.LazyModule("corpus", locals(), globals())
-draw = lazyimport.LazyModule("draw", locals(), globals())
-toolbox = lazyimport.LazyModule("toolbox", locals(), globals())
+app = lazyimport.LazyModule('nltk.app', locals(), globals())
+chat = lazyimport.LazyModule('nltk.chat', locals(), globals())
+corpus = lazyimport.LazyModule('nltk.corpus', locals(), globals())
+draw = lazyimport.LazyModule('nltk.draw', locals(), globals())
+toolbox = lazyimport.LazyModule('nltk.toolbox', locals(), globals())
 
 # Optional loading
+
 try:
     import numpy
 except ImportError:
@@ -193,10 +175,11 @@ else:
 
 from nltk.downloader import download, download_shell
 
-# Check if tkinter exists without importing it to avoid crashes after
-# forks on macOS. Only nltk.app, nltk.draw, and demo modules should
-# have top-level tkinter imports. See #2949 for more details.
-if importlib.util.find_spec("tkinter"):
+try:
+    from six.moves import tkinter
+except ImportError:
+    pass
+else:
     try:
         from nltk.downloader import download_gui
     except RuntimeError as e:
@@ -204,7 +187,7 @@ if importlib.util.find_spec("tkinter"):
 
         warnings.warn(
             "Corpus downloader GUI not loaded "
-            "(RuntimeError during import: %s)" % sanitize_terminal(e)
+            "(RuntimeError during import: %s)" % str(e)
         )
 
 # explicitly import all top-level modules (ensuring
@@ -214,9 +197,9 @@ if importlib.util.find_spec("tkinter"):
 from nltk import ccg, chunk, classify, collocations
 from nltk import data, featstruct, grammar, help, inference, metrics
 from nltk import misc, parse, probability, sem, stem, wsd
-from nltk import tag, tbl, text, tokenize, translate, tree, util
+from nltk import tag, tbl, text, tokenize, translate, tree, treetransforms, util
 
 
 # FIXME:  override any accidentally imported demo, see https://github.com/nltk/nltk/issues/2116
 def demo():
-    safe_print("To run the demo code for a module, type nltk.module.demo()")
+    print("To run the demo code for a module, type nltk.module.demo()")

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Decorator module by Michele Simionato <michelesimionato@libero.it>
 Copyright Michele Simionato, distributed under the terms of the BSD License (see below).
@@ -6,18 +5,9 @@ http://www.phyast.pitt.edu/~micheles/python/documentation.html
 
 Included in NLTK for its support of a nice memoization decorator.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
-from nltk.compat import isidentifier
+from __future__ import print_function
 
-try:
-    from inspect import Parameter as _Parameter
-    from inspect import signature as _signature
-except ImportError:  # Python 2.7
-    from funcsigs import Parameter as _Parameter
-    from funcsigs import signature as _signature
-
-__docformat__ = "restructuredtext en"
+__docformat__ = 'restructuredtext en'
 
 ## The basic trick is to generate the source code for the decorated function
 ## with the right signature and to evaluate it.
@@ -30,204 +20,11 @@ import sys
 
 # Hack to keep NLTK's "tokenize" module from colliding with the "tokenize" in
 # the Python standard library.
-OLD_SYS_PATH = sys.path[:]
-sys.path = [p for p in sys.path if p and "nltk" not in str(p)]
+old_sys_path = sys.path[:]
+sys.path = [p for p in sys.path if p and "nltk" not in p]
 import inspect
-import keyword
-import unicodedata
 
-sys.path = OLD_SYS_PATH
-
-# The globals the generated lambdas call through (``_wrapper_`` in new_wrapper,
-# ``_call_``/``_func_`` in decorator). A parameter of any kind named like one
-# would shadow it inside the lambda, so every sink refuses the whole set.
-_RESERVED_NAMES = frozenset({"_call_", "_func_", "_wrapper_"})
-
-
-def _fenced_parameters(signature):
-    """Parse a signature string into ``(name, kind)`` pairs, refusing anything
-    the wrapper eval must never see (CVE-2026-14727).
-
-    The eval is what makes ``inspect.getfullargspec`` report the true signature
-    on every supported Python (older ones ignore ``__signature__``), so it stays,
-    but only a comma-separated list of plain names, ``*args``/``**kwargs`` names
-    and bare ``*`` or ``/`` markers may reach it: nothing that can carry an
-    annotation, a default, a call, an attribute or other expression syntax.
-    Each name is judged by ``str.isidentifier`` (every legal name, non-ASCII
-    included), must not be a keyword and must already be NFKC-normalised, as
-    the parser would make it; a ``str`` subclass is refused, since its
-    ``__str__`` could inject source at the interpolation. The marker structure
-    is checked as the parser would (one ``/`` before any ``*``, one ``*``, a
-    keyword-only name after a bare ``*``, ``**name`` last, no duplicate), so
-    the eval can only ever compile a well-formed parameter list.
-    """
-
-    def _refuse(why):
-        raise ValueError(
-            "refusing to build a wrapper from a {0} signature: {1!r}".format(why, signature)
-        )
-
-    if type(signature) is not str:
-        _refuse("non-str")
-    if not signature.strip():
-        return []
-    tokens = []
-    for token in signature.split(","):
-        token = token.strip()
-        if token in ("*", "/"):
-            tokens.append((token, None))
-            continue
-        name = token
-        for prefix in ("**", "*"):
-            if name.startswith(prefix):
-                name = name[len(prefix) :]
-                break
-        if not isidentifier(name) or keyword.iskeyword(name):
-            _refuse("non-identifier")
-        # The parser NFKC-normalises identifiers, so a name not already in that
-        # form would become a different name (a reserved global, say) in the eval.
-        if unicodedata.normalize("NFKC", name) != name:
-            _refuse("non-NFKC-normalised")
-        tokens.append((token, name))
-
-    params, seen = [], set()
-    slash_at, star_seen, bare_star_open, var_keyword_seen = None, False, False, False
-    for token, name in tokens:
-        if var_keyword_seen:
-            _refuse("malformed (parameter after **name)")
-        if token == "/":
-            if slash_at is not None or star_seen or not params:
-                _refuse("malformed (misplaced /)")
-            slash_at = len(params)
-            continue
-        if token == "*":
-            if star_seen:
-                _refuse("malformed (second *)")
-            star_seen, bare_star_open = True, True
-            continue
-        if token.startswith("**"):
-            if bare_star_open:
-                _refuse("malformed (bare * without a keyword-only name)")
-            kind, var_keyword_seen = _Parameter.VAR_KEYWORD, True
-        elif token.startswith("*"):
-            if star_seen:
-                _refuse("malformed (second *)")
-            kind, star_seen = _Parameter.VAR_POSITIONAL, True
-        elif star_seen:
-            kind, bare_star_open = _Parameter.KEYWORD_ONLY, False
-        else:
-            kind = _Parameter.POSITIONAL_OR_KEYWORD
-        if name in seen:
-            _refuse("malformed (duplicate name)")
-        seen.add(name)
-        params.append((name, kind))
-    if bare_star_open:
-        _refuse("malformed (bare * without a keyword-only name)")
-    if slash_at is not None:
-        params[:slash_at] = [
-            (name, _Parameter.POSITIONAL_ONLY) for name, _ in params[:slash_at]
-        ]
-    return params
-
-
-def _assert_safe_signature(signature):
-    """Refuse a signature string :func:`_fenced_parameters` cannot fence."""
-    _fenced_parameters(signature)
-
-
-def __legacysignature(signature):
-    """
-    For retrocompatibility reasons, we don't use a standard Signature.
-    Instead, we use the string generated by this method.
-    Basically, from a Signature we create a string and remove the default values.
-    """
-    # Built from the parameter names and kinds, never by parsing the printed
-    # signature: a default such as (1, 2) or an annotation would otherwise be
-    # split on its comma and leave expression text in the wrapper source.
-    parts, star_seen, positional_only = [], False, False
-    for p in signature.parameters.values():
-        if p.kind is _Parameter.POSITIONAL_ONLY:
-            parts.append(p.name)
-            positional_only = True
-            continue
-        if positional_only:
-            parts.append("/")
-            positional_only = False
-        if p.kind is _Parameter.VAR_POSITIONAL:
-            parts.append("*" + p.name)
-            star_seen = True
-        elif p.kind is _Parameter.VAR_KEYWORD:
-            parts.append("**" + p.name)
-        elif p.kind is _Parameter.KEYWORD_ONLY:
-            if not star_seen:
-                parts.append("*")
-                star_seen = True
-            parts.append(p.name)
-        else:
-            parts.append(p.name)
-    if positional_only:
-        parts.append("/")
-    return ", ".join(parts)
-
-
-def _refuse_reserved(signature):
-    """Refuse a parameter of ANY kind named like a wrapper global: inside the
-    generated lambda it would shadow that global, so a caller could hand in the
-    callable the wrapper then invokes. A real check, not an assert (``-O``)."""
-    names = {name for name, _ in _fenced_parameters(signature)}
-    clash = sorted(names & _RESERVED_NAMES)
-    if clash:
-        raise ValueError("{0} is a reserved argument name".format(', '.join(clash)))
-
-
-def _call_arguments_from_signature(signature):
-    """The argument list to forward to the wrapped callable, built ONLY from
-    the fenced ``signature`` string: a positional or positional-only parameter
-    is forwarded by name, a keyword-only one as ``name=name``, ``*args`` and
-    ``**kwargs`` are splatted, and the bare ``*`` and ``/`` markers are dropped."""
-    parts = []
-    for name, kind in _fenced_parameters(signature):
-        if kind is _Parameter.VAR_POSITIONAL:
-            parts.append("*" + name)
-        elif kind is _Parameter.VAR_KEYWORD:
-            parts.append("**" + name)
-        elif kind is _Parameter.KEYWORD_ONLY:
-            parts.append(name + "=" + name)
-        else:
-            parts.append(name)
-    return ", ".join(parts)
-
-
-def _call_arguments(fullsignature, signature):
-    """:func:`_call_arguments_from_signature` for a model that also carries a
-    Signature object, which is cross-checked and never trusted: its parameters
-    must be genuine :class:`_Parameter` objects with plain ``str`` names
-    that match the fenced names one for one, in order, each of the kind the
-    fenced string says. A forged ``__signature__`` whose names are ``str``
-    subclasses (lying ``isidentifier`` or ``__format__``), or whose names or
-    kinds disagree with the fenced string, is refused, so no text of its own
-    ever reaches the eval and the eval only sees a call the parser accepts.
-    """
-    fenced = _fenced_parameters(signature)
-    params = list(fullsignature.parameters.values())
-    if len(params) != len(fenced):
-        raise ValueError(
-            "refusing a signature object that does not match the fenced signature"
-        )
-    for p, (name, kind) in zip(params, fenced):
-        if type(p) is not _Parameter or type(p.name) is not str:
-            raise ValueError(
-                "refusing a non-standard or non-identifier parameter name: {0!r}".format(getattr(p, 'name', p))
-            )
-        if p.name != name:
-            raise ValueError(
-                "refusing parameter {0!r}: the fenced signature names {1!r}".format(p.name, name)
-            )
-        if p.kind is not kind:
-            raise ValueError(
-                "refusing parameter {0!r}: its kind {1!s} disagrees with the fenced signature ({2!s})".format(name, p.kind, kind)
-            )
-    return _call_arguments_from_signature(signature)
+sys.path = old_sys_path
 
 
 def getinfo(func):
@@ -237,7 +34,6 @@ def getinfo(func):
     - argnames (the names of the arguments : list)
     - defaults (the values of the default arguments : tuple)
     - signature (the signature : str)
-    - fullsignature (the full signature : Signature)
     - doc (the docstring : str)
     - module (the module name : str)
     - dict (the function __dict__ : str)
@@ -256,24 +52,24 @@ def getinfo(func):
 
     >>> info["signature"]
     'self, x, y, *args, **kw'
-
-    >>> info["fullsignature"]
-    <Signature (self, x=1, y=2, *args, **kw)>
     """
     assert inspect.ismethod(func) or inspect.isfunction(func)
-    argspec = getattr(inspect, "getfullargspec", inspect.getargspec)(func)
-    regargs, varargs, varkwargs = argspec[:3]
+    if sys.version_info[0] >= 3:
+        argspec = inspect.getfullargspec(func)
+    else:
+        argspec = inspect.getargspec(func)
+    regargs, varargs, varkwargs, defaults = argspec[:4]
     argnames = list(regargs)
     if varargs:
         argnames.append(varargs)
     if varkwargs:
         argnames.append(varkwargs)
-    fullsignature = _signature(func)
-    # Convert Signature to str
-    signature = __legacysignature(fullsignature)
+    signature = inspect.formatargspec(
+        regargs, varargs, varkwargs, defaults, formatvalue=lambda value: ""
+    )[1:-1]
 
     # pypy compatibility
-    if hasattr(func, "__closure__"):
+    if hasattr(func, '__closure__'):
         _closure = func.__closure__
         _globals = func.__globals__
     else:
@@ -284,9 +80,7 @@ def getinfo(func):
         name=func.__name__,
         argnames=argnames,
         signature=signature,
-        fullsignature=fullsignature,
         defaults=func.__defaults__,
-        kwdefaults=getattr(func, "__kwdefaults__", None),
         doc=func.__doc__,
         module=func.__module__,
         dict=func.__dict__,
@@ -295,18 +89,14 @@ def getinfo(func):
     )
 
 
+# akin to functools.update_wrapper
 def update_wrapper(wrapper, model, infodict=None):
-    "akin to functools.update_wrapper"
     infodict = infodict or getinfo(model)
-    wrapper.__name__ = infodict["name"]
-    wrapper.__doc__ = infodict["doc"]
-    wrapper.__module__ = infodict["module"]
-    wrapper.__dict__.update(infodict["dict"])
-    wrapper.__defaults__ = infodict["defaults"]
-    # Carry keyword-only defaults too: the rebuilt lambda strips them from its
-    # signature, so without this a ``def f(*, b=5)`` loses its default (.get keeps
-    # legacy model dicts that predate this key working).
-    wrapper.__kwdefaults__ = infodict.get("kwdefaults")
+    wrapper.__name__ = infodict['name']
+    wrapper.__doc__ = infodict['doc']
+    wrapper.__module__ = infodict['module']
+    wrapper.__dict__.update(infodict['dict'])
+    wrapper.__defaults__ = infodict['defaults']
     wrapper.undecorated = model
     return wrapper
 
@@ -323,19 +113,11 @@ def new_wrapper(wrapper, model):
         infodict = model
     else:  # assume model is a function
         infodict = getinfo(model)
-    signature = infodict["signature"]
-    _assert_safe_signature(signature)
-    _refuse_reserved(signature)
-    # Def params and call args both come from the fenced signature string; a
-    # Signature object, when present, is only cross-checked against it.
-    if infodict.get("fullsignature") is not None:
-        callargs = _call_arguments(infodict["fullsignature"], signature)
-    else:
-        callargs = _call_arguments_from_signature(signature)
-    src = "lambda {0}: _wrapper_({1})".format(signature, callargs)
-    funcopy = eval(
-        src, dict(_wrapper_=wrapper)
-    )  # bare-exec ok: _assert_safe_signature fenced src (CVE-2026-14727)
+    assert (
+        not '_wrapper_' in infodict["argnames"]
+    ), '"_wrapper_" is a reserved argument name!'
+    src = "lambda %(signature)s: _wrapper_(%(signature)s)" % infodict
+    funcopy = eval(src, dict(_wrapper_=wrapper))
     return update_wrapper(funcopy, model, infodict)
 
 
@@ -352,12 +134,12 @@ def decorator_factory(cls):
     method.
     """
     attrs = set(dir(cls))
-    if "__call__" in attrs:
+    if '__call__' in attrs:
         raise TypeError(
-            "You cannot decorate a class with a nontrivial " "__call__ method"
+            'You cannot decorate a class with a nontrivial ' '__call__ method'
         )
-    if "call" not in attrs:
-        raise TypeError("You cannot decorate a class without a " ".call method")
+    if 'call' not in attrs:
+        raise TypeError('You cannot decorate a class without a ' '.call method')
     cls.__call__ = __call__
     return cls
 
@@ -397,16 +179,13 @@ def decorator(caller):
 
     def _decorator(func):  # the real meat is here
         infodict = getinfo(func)
-        signature = infodict["signature"]
-        _assert_safe_signature(signature)
-        _refuse_reserved(signature)
-        # Def params and call args both come from the fenced signature string.
-        callargs = _call_arguments(infodict["fullsignature"], signature)
-        src = "lambda {0}: _call_(_func_, {1})".format(signature, callargs)
+        argnames = infodict['argnames']
+        assert not (
+            '_call_' in argnames or '_func_' in argnames
+        ), 'You cannot use _call_ or _func_ as argument names!'
+        src = "lambda %(signature)s: _call_(_func_, %(signature)s)" % infodict
         # import sys; print >> sys.stderr, src # for debugging purposes
-        dec_func = eval(
-            src, dict(_func_=func, _call_=caller)
-        )  # bare-exec ok: _assert_safe_signature fenced src (CVE-2026-14727)
+        dec_func = eval(src, dict(_func_=func, _call_=caller))
         return update_wrapper(dec_func, func, infodict)
 
     return update_wrapper(_decorator, caller)
@@ -428,9 +207,10 @@ def memoize(func, *args):
     # memoize_dic is created at the first call
     if args in dic:
         return dic[args]
-    result = func(*args)
-    dic[args] = result
-    return result
+    else:
+        result = func(*args)
+        dic[args] = result
+        return result
 
 
 ##########################     LEGALESE    ###############################

@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Interface to Megam Classifier
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -21,21 +20,16 @@ for details.
 
     nltk.classify.MaxentClassifier.train(corpus, 'megam')
 
-The megam page is served from its author's University of Maryland site; the
-address it was long known by, http://hal3.name/megam/, redirects there.
-
-.. _megam: https://users.umiacs.umd.edu/~hal3/megam/
+.. _megam: http://www.umiacs.umd.edu/~hal/megam/index.html
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
-from nltk.compat import isfinite
-import math
-import numbers
+from __future__ import print_function
+
 import subprocess
 
-from nltk.internals import find_binary_absolute
-from nltk.pathsec import TrustError, spawn_trusted
-from nltk.termsec import safe_print
+from six import string_types
+
+from nltk import compat
+from nltk.internals import find_binary
 
 try:
     import numpy
@@ -60,14 +54,12 @@ def config_megam(bin=None):
     :type bin: str
     """
     global _megam_bin
-    # Accept only an absolute binary: a relative ``bin`` resolves against the CWD
-    # and would be executed from there (untrusted search path, CWE-426/CWE-427).
-    _megam_bin = find_binary_absolute(
-        "megam",
+    _megam_bin = find_binary(
+        'megam',
         bin,
-        env_vars=["MEGAM"],
-        binary_names=["megam.opt", "megam", "megam_686", "megam_i686.opt"],
-        url="https://users.umiacs.umd.edu/~hal3/megam/",
+        env_vars=['MEGAM'],
+        binary_names=['megam.opt', 'megam', 'megam_686', 'megam_i686.opt'],
+        url='http://www.umiacs.umd.edu/~hal/megam/index.html',
     )
 
 
@@ -108,19 +100,17 @@ def write_megam_file(train_toks, encoding, stream, bernoulli=True, explicit=True
     """
     # Look up the set of labels.
     labels = encoding.labels()
-    labelnum = {label: i for (i, label) in enumerate(labels)}
+    labelnum = dict((label, i) for (i, label) in enumerate(labels))
 
     # Write the file, which contains one line per instance.
     for featureset, label in train_toks:
         # First, the instance number (or, in the weighted multiclass case, the cost of each label).
-        if hasattr(encoding, "cost"):
-            costs = [
-                _megam_number(encoding.cost(featureset, label, l), "label cost")
-                for l in labels
-            ]
-            stream.write(":".join(str(c) for c in costs))
+        if hasattr(encoding, 'cost'):
+            stream.write(
+                ':'.join(str(encoding.cost(featureset, label, l)) for l in labels)
+            )
         else:
-            stream.write("%d" % labelnum[label])
+            stream.write('%d' % labelnum[label])
 
         # For implicit file formats, just list the features that fire
         # for this instance's actual label.
@@ -131,11 +121,11 @@ def write_megam_file(train_toks, encoding, stream, bernoulli=True, explicit=True
         # any of the possible labels.
         else:
             for l in labels:
-                stream.write(" #")
+                stream.write(' #')
                 _write_megam_features(encoding.encode(featureset, l), stream, bernoulli)
 
         # End of the instance.
-        stream.write("\n")
+        stream.write('\n')
 
 
 def parse_megam_weights(s, features_count, explicit=True):
@@ -145,10 +135,10 @@ def parse_megam_weights(s, features_count, explicit=True):
     vector.  This function does not currently handle bias features.
     """
     if numpy is None:
-        raise ValueError("This function requires that numpy be installed")
-    assert explicit, "non-explicit not supported yet"
-    lines = s.strip().split("\n")
-    weights = numpy.zeros(features_count, "d")
+        raise ValueError('This function requires that numpy be installed')
+    assert explicit, 'non-explicit not supported yet'
+    lines = s.strip().split('\n')
+    weights = numpy.zeros(features_count, 'd')
     for line in lines:
         if line.strip():
             fid, weight = line.split()
@@ -156,75 +146,44 @@ def parse_megam_weights(s, features_count, explicit=True):
     return weights
 
 
-def _megam_int(value, kind="feature id"):
-    # megam stdin is space delimited, one instance per line. A feature id that is
-    # not a bare non-negative integer could carry whitespace, a newline, or a
-    # ':'/'#' separator (from a hostile or buggy encoding) and split into extra
-    # fields or inject a whole new instance line (CWE-93). str() of an Integral is
-    # always separator free, so a type/range check is the guard.
-    if isinstance(value, bool) or not isinstance(value, numbers.Integral) or value < 0:
-        raise ValueError("MEGAM {0} must be a non-negative integer, got {1!r}".format(kind, value))
-    return int(value)
-
-
-def _megam_number(value, kind="feature value"):
-    # A megam feature value / per-label cost must be a finite real number for the
-    # same reason: only a numeric str() is free of the format's delimiters and
-    # cannot inject a line (CWE-93).
-    if (
-        isinstance(value, bool)
-        or not isinstance(value, numbers.Real)
-        or not isfinite(value)
-    ):
-        raise ValueError("MEGAM {0} must be a finite real number, got {1!r}".format(kind, value))
-    return value
-
-
 def _write_megam_features(vector, stream, bernoulli):
     if not vector:
         raise ValueError(
-            "MEGAM classifier requires the use of an " "always-on feature."
+            'MEGAM classifier requires the use of an ' 'always-on feature.'
         )
-    for fid, fval in vector:
+    for (fid, fval) in vector:
         if bernoulli:
             if fval == 1:
-                stream.write(" %s" % _megam_int(fid))
+                stream.write(' %s' % fid)
             elif fval != 0:
                 raise ValueError(
-                    "If bernoulli=True, then all" "features must be binary."
+                    'If bernoulli=True, then all' 'features must be binary.'
                 )
         else:
-            stream.write(" {0} {1}".format(_megam_int(fid), _megam_number(fval)))
+            stream.write(' %s %s' % (fid, fval))
 
 
 def call_megam(args):
     """
     Call the ``megam`` binary with the given arguments.
     """
-    if isinstance(args, six.string_types):
-        raise TypeError("args should be a list of strings")
+    if isinstance(args, string_types):
+        raise TypeError('args should be a list of strings')
     if _megam_bin is None:
         config_megam()
 
-    # Route through the trusted-exec chokepoint: verify the megam binary is on a
-    # path no other local user can swap, refuse a shell, and scrub the loader
-    # environment before exec (CWE-426/427/732).
+    # Call megam via a subprocess
     cmd = [_megam_bin] + args
-    try:
-        p = spawn_trusted(cmd[0], cmd[1:], stdout=subprocess.PIPE)
-    except TrustError as e:
-        six.raise_from(OSError(
-            "Refusing to run megam at {0!r}: it is not on a trusted path. Install megam where only you (or root) can write ({1}).".format(cmd[0], e)
-        ), e)
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     (stdout, stderr) = p.communicate()
 
     # Check the return code.
     if p.returncode != 0:
-        safe_print()
-        safe_print(stderr)
-        raise OSError("megam command failed!")
+        print()
+        print(stderr)
+        raise OSError('megam command failed!')
 
-    if isinstance(stdout, six.string_types):
+    if isinstance(stdout, string_types):
         return stdout
     else:
-        return stdout.decode("utf-8")
+        return stdout.decode('utf-8')

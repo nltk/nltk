@@ -20,6 +20,7 @@ Helpers for safer and/or more explicit pickle usage in NLTK.
   can never be reconstructed from an untrusted file.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 import six
 from nltk.compat import SimpleNamespace
 from nltk.compat import keyword_only
@@ -34,10 +35,7 @@ try:
     from collections.abc import Iterable
 except ImportError:  # Python 2.7
     from collections import Iterable
-try:
-    from typing import Any, BinaryIO
-except ImportError:  # Python 2.7 typing backport lacks some names
-    Any, BinaryIO = (object,) * 2
+from typing import Any, BinaryIO
 
 from nltk.termsec import sanitize_terminal
 

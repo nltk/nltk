@@ -261,7 +261,7 @@ def align_tokens(tokens, sentence):
 
         >>> from nltk.tokenize import TreebankWordTokenizer
         >>> from nltk.tokenize.util import align_tokens
-        >>> s = six.text_type("The plane, bound for St Petersburg, crashed in Egypt's "
+        >>> s = str("The plane, bound for St Petersburg, crashed in Egypt's "
         ... "Sinai desert just 23 minutes after take-off from Sharm el-Sheikh "
         ... "on Saturday.")
         >>> tokens = TreebankWordTokenizer().tokenize(s)

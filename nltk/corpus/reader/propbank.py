@@ -1,21 +1,22 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-# -*- coding: utf-8 -*-
-import six
 # Natural Language Toolkit: PropBank Corpus Reader
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import unicode_literals
+import re
 from functools import total_ordering
+from xml.etree import ElementTree
 
-from nltk import redos
-from nltk.corpus.reader.api import *
-from nltk.corpus.reader.util import *
-from nltk.internals import raise_unorderable_types
+from six import string_types
+
 from nltk.tree import Tree
-from nltk.xmlsec import parse as safe_parse
+from nltk.internals import raise_unorderable_types
+
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 
 class PropbankCorpusReader(CorpusReader):
@@ -36,11 +37,11 @@ class PropbankCorpusReader(CorpusReader):
         self,
         root,
         propfile,
-        framefiles="",
+        framefiles='',
         verbsfile=None,
         parse_fileid_xform=None,
         parse_corpus=None,
-        encoding="utf8",
+        encoding='utf8',
     ):
         """
         :param root: The root directory for this corpus.
@@ -57,10 +58,10 @@ class PropbankCorpusReader(CorpusReader):
             necessary to resolve the tree pointers used by propbank.
         """
         # If framefiles is specified as a regexp, expand it.
-        if isinstance(framefiles, six.string_types):
+        if isinstance(framefiles, string_types):
             framefiles = find_corpus_fileids(root, framefiles)
         framefiles = list(framefiles)
-        # Initialize the corpus reader.
+        # Initialze the corpus reader.
         CorpusReader.__init__(self, root, [propfile, verbsfile] + framefiles, encoding)
 
         # Record our frame fileids & prop file.
@@ -70,14 +71,24 @@ class PropbankCorpusReader(CorpusReader):
         self._parse_fileid_xform = parse_fileid_xform
         self._parse_corpus = parse_corpus
 
+    def raw(self, fileids=None):
+        """
+        :return: the text contents of the given fileids, as a single string.
+        """
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids):
+            fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
+
     def instances(self, baseform=None):
         """
         :return: a corpus view that acts as a list of
-            ``PropBankInstance`` objects, one for each noun in the corpus.
+        ``PropBankInstance`` objects, one for each noun in the corpus.
         """
         kwargs = {}
         if baseform is not None:
-            kwargs["instance_filter"] = lambda inst: inst.baseform == baseform
+            kwargs['instance_filter'] = lambda inst: inst.baseform == baseform
         return StreamBackedCorpusView(
             self.abspath(self._propfile),
             lambda stream: self._read_instance_block(stream, **kwargs),
@@ -87,7 +98,7 @@ class PropbankCorpusReader(CorpusReader):
     def lines(self):
         """
         :return: a corpus view that acts as a list of strings, one for
-            each line in the predicate-argument annotation file.
+        each line in the predicate-argument annotation file.
         """
         return StreamBackedCorpusView(
             self.abspath(self._propfile),
@@ -99,28 +110,27 @@ class PropbankCorpusReader(CorpusReader):
         """
         :return: the xml description for the given roleset.
         """
-        baseform = roleset_id.split(".")[0]
-        framefile = "frames/%s.xml" % baseform
+        baseform = roleset_id.split('.')[0]
+        framefile = 'frames/%s.xml' % baseform
         if framefile not in self._framefiles:
-            raise ValueError("Frameset file for %s not found" % roleset_id)
+            raise ValueError('Frameset file for %s not found' % roleset_id)
 
         # n.b.: The encoding for XML fileids is specified by the file
         # itself; so we ignore self._encoding here.
-        with self.abspath(framefile).open() as fp:
-            etree = safe_parse(fp).getroot()
-        for roleset in etree.findall("predicate/roleset"):
-            if roleset.attrib["id"] == roleset_id:
+        etree = ElementTree.parse(self.abspath(framefile).open()).getroot()
+        for roleset in etree.findall('predicate/roleset'):
+            if roleset.attrib['id'] == roleset_id:
                 return roleset
-        raise ValueError("Roleset {0} not found in {1}".format(roleset_id, framefile))
+        raise ValueError('Roleset %s not found in %s' % (roleset_id, framefile))
 
     def rolesets(self, baseform=None):
         """
         :return: list of xml descriptions for rolesets.
         """
         if baseform is not None:
-            framefile = "frames/%s.xml" % baseform
+            framefile = 'frames/%s.xml' % baseform
             if framefile not in self._framefiles:
-                raise ValueError("Frameset file for %s not found" % baseform)
+                raise ValueError('Frameset file for %s not found' % baseform)
             framefiles = [framefile]
         else:
             framefiles = self._framefiles
@@ -129,15 +139,14 @@ class PropbankCorpusReader(CorpusReader):
         for framefile in framefiles:
             # n.b.: The encoding for XML fileids is specified by the file
             # itself; so we ignore self._encoding here.
-            with self.abspath(framefile).open() as fp:
-                etree = safe_parse(fp).getroot()
-            rsets.append(etree.findall("predicate/roleset"))
+            etree = ElementTree.parse(self.abspath(framefile).open()).getroot()
+            rsets.append(etree.findall('predicate/roleset'))
         return LazyConcatenation(rsets)
 
     def verbs(self):
         """
         :return: a corpus view that acts as a list of all verb lemmas
-            in this corpus (from the verbs.txt file).
+        in this corpus (from the verbs.txt file).
         """
         return StreamBackedCorpusView(
             self.abspath(self._verbsfile),
@@ -166,6 +175,7 @@ class PropbankCorpusReader(CorpusReader):
 ######################################################################
 
 
+@compat.python_2_unicode_compatible
 class PropbankInstance(object):
     def __init__(
         self,
@@ -179,6 +189,7 @@ class PropbankInstance(object):
         arguments,
         parse_corpus=None,
     ):
+
         self.fileid = fileid
         """The name of the file containing the parse tree for this
         instance's sentence."""
@@ -223,27 +234,27 @@ class PropbankInstance(object):
     @property
     def baseform(self):
         """The baseform of the predicate."""
-        return self.roleset.split(".")[0]
+        return self.roleset.split('.')[0]
 
     @property
     def sensenumber(self):
         """The sense number of the predicate."""
-        return self.roleset.split(".")[1]
+        return self.roleset.split('.')[1]
 
     @property
     def predid(self):
         """Identifier of the predicate."""
-        return "rel"
+        return 'rel'
 
     def __repr__(self):
-        return "<PropbankInstance: {}, sent {}, word {}>".format(
+        return '<PropbankInstance: %s, sent %s, word %s>' % (
             self.fileid,
             self.sentnum,
             self.wordnum,
         )
 
     def __str__(self):
-        s = "{} {} {} {} {} {}".format(
+        s = '%s %s %s %s %s %s' % (
             self.fileid,
             self.sentnum,
             self.wordnum,
@@ -251,9 +262,9 @@ class PropbankInstance(object):
             self.roleset,
             self.inflection,
         )
-        items = self.arguments + ((self.predicate, "rel"),)
-        for argloc, argid in sorted(items):
-            s += " {0}-{1}".format(argloc, argid)
+        items = self.arguments + ((self.predicate, 'rel'),)
+        for (argloc, argid) in sorted(items):
+            s += ' %s-%s' % (argloc, argid)
         return s
 
     def _get_tree(self):
@@ -274,38 +285,34 @@ class PropbankInstance(object):
     def parse(s, parse_fileid_xform=None, parse_corpus=None):
         pieces = s.split()
         if len(pieces) < 7:
-            raise ValueError("Badly formatted propbank line: %r" % s)
+            raise ValueError('Badly formatted propbank line: %r' % s)
 
         # Divide the line into its basic pieces.
         (fileid, sentnum, wordnum, tagger, roleset, inflection) = pieces[:6]
-        rel = [p for p in pieces[6:] if p.endswith("-rel")]
-        args = [p for p in pieces[6:] if not p.endswith("-rel")]
+        rel = [p for p in pieces[6:] if p.endswith('-rel')]
+        args = [p for p in pieces[6:] if not p.endswith('-rel')]
         if len(rel) != 1:
-            raise ValueError("Badly formatted propbank line: %r" % s)
+            raise ValueError('Badly formatted propbank line: %r' % s)
 
         # Apply the fileid selector, if any.
         if parse_fileid_xform is not None:
             fileid = parse_fileid_xform(fileid)
 
-        # Convert the numeric fields and parse the inflection, the predicate
-        # location, and the argument pointers. Any malformed field would
-        # otherwise leak a cryptic ValueError (e.g. "invalid literal for int()",
-        # "Bad propbank inflection string", "bad propbank pointer", or an
-        # unpacking error from an argument missing its "-" separator) that aborts
-        # iteration over the whole corpus; fail with the same clear message as
-        # the checks above, so callers can catch a single error for any
-        # malformed line.
-        try:
-            sentnum = int(sentnum)
-            wordnum = int(wordnum)
-            inflection = PropbankInflection.parse(inflection)
-            predicate = PropbankTreePointer.parse(rel[0][:-4])
-            arguments = []
-            for arg in args:
-                argloc, argid = arg.split("-", 1)
-                arguments.append((PropbankTreePointer.parse(argloc), argid))
-        except ValueError:
-            raise ValueError("Badly formatted propbank line: %r" % s)
+        # Convert sentence & word numbers to ints.
+        sentnum = int(sentnum)
+        wordnum = int(wordnum)
+
+        # Parse the inflection
+        inflection = PropbankInflection.parse(inflection)
+
+        # Parse the predicate location.
+        predicate = PropbankTreePointer.parse(rel[0][:-4])
+
+        # Parse the arguments.
+        arguments = []
+        for arg in args:
+            argloc, argid = arg.split('-', 1)
+            arguments.append((PropbankTreePointer.parse(argloc), argid))
 
         # Put it all together.
         return PropbankInstance(
@@ -341,6 +348,7 @@ class PropbankPointer(object):
             raise NotImplementedError()
 
 
+@compat.python_2_unicode_compatible
 class PropbankChainTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
@@ -349,17 +357,18 @@ class PropbankChainTreePointer(PropbankPointer):
            ``PropbankTreePointer`` pointers."""
 
     def __str__(self):
-        return "*".join("%s" % p for p in self.pieces)
+        return '*'.join('%s' % p for p in self.pieces)
 
     def __repr__(self):
-        return "<PropbankChainTreePointer: %s>" % self
+        return '<PropbankChainTreePointer: %s>' % self
 
     def select(self, tree):
         if tree is None:
-            raise ValueError("Parse tree not available")
-        return Tree("*CHAIN*", [p.select(tree) for p in self.pieces])
+            raise ValueError('Parse tree not avaialable')
+        return Tree('*CHAIN*', [p.select(tree) for p in self.pieces])
 
 
+@compat.python_2_unicode_compatible
 class PropbankSplitTreePointer(PropbankPointer):
     def __init__(self, pieces):
         self.pieces = pieces
@@ -367,18 +376,19 @@ class PropbankSplitTreePointer(PropbankPointer):
            all ``PropbankTreePointer`` pointers."""
 
     def __str__(self):
-        return ",".join("%s" % p for p in self.pieces)
+        return ','.join('%s' % p for p in self.pieces)
 
     def __repr__(self):
-        return "<PropbankSplitTreePointer: %s>" % self
+        return '<PropbankSplitTreePointer: %s>' % self
 
     def select(self, tree):
         if tree is None:
-            raise ValueError("Parse tree not available")
-        return Tree("*SPLIT*", [p.select(tree) for p in self.pieces])
+            raise ValueError('Parse tree not avaialable')
+        return Tree('*SPLIT*', [p.select(tree) for p in self.pieces])
 
 
 @total_ordering
+@compat.python_2_unicode_compatible
 class PropbankTreePointer(PropbankPointer):
     """
     wordnum:height*wordnum:height*...
@@ -393,30 +403,30 @@ class PropbankTreePointer(PropbankPointer):
     @staticmethod
     def parse(s):
         # Deal with chains (xx*yy*zz)
-        pieces = s.split("*")
+        pieces = s.split('*')
         if len(pieces) > 1:
             return PropbankChainTreePointer(
                 [PropbankTreePointer.parse(elt) for elt in pieces]
             )
 
         # Deal with split args (xx,yy,zz)
-        pieces = s.split(",")
+        pieces = s.split(',')
         if len(pieces) > 1:
             return PropbankSplitTreePointer(
                 [PropbankTreePointer.parse(elt) for elt in pieces]
             )
 
         # Deal with normal pointers.
-        pieces = s.split(":")
+        pieces = s.split(':')
         if len(pieces) != 2:
-            raise ValueError("bad propbank pointer %r" % s)
+            raise ValueError('bad propbank pointer %r' % s)
         return PropbankTreePointer(int(pieces[0]), int(pieces[1]))
 
     def __str__(self):
-        return "{0}:{1}".format(self.wordnum, self.height)
+        return '%s:%s' % (self.wordnum, self.height)
 
     def __repr__(self):
-        return "PropbankTreePointer(%d, %d)" % (self.wordnum, self.height)
+        return 'PropbankTreePointer(%d, %d)' % (self.wordnum, self.height)
 
     def __eq__(self, other):
         while isinstance(other, (PropbankChainTreePointer, PropbankSplitTreePointer)):
@@ -441,7 +451,7 @@ class PropbankTreePointer(PropbankPointer):
 
     def select(self, tree):
         if tree is None:
-            raise ValueError("Parse tree not available")
+            raise ValueError('Parse tree not avaialable')
         return tree[self.treepos(tree)]
 
     def treepos(self, tree):
@@ -450,12 +460,14 @@ class PropbankTreePointer(PropbankPointer):
         given that it points to the given tree.
         """
         if tree is None:
-            raise ValueError("Parse tree not available")
+            raise ValueError('Parse tree not avaialable')
         stack = [tree]
         treepos = []
 
         wordnum = 0
         while True:
+            # print treepos
+            # print stack[-1]
             # tree node:
             if isinstance(stack[-1], Tree):
                 # Select the next child.
@@ -479,30 +491,31 @@ class PropbankTreePointer(PropbankPointer):
                     stack.pop()
 
 
+@compat.python_2_unicode_compatible
 class PropbankInflection(object):
     # { Inflection Form
-    INFINITIVE = "i"
-    GERUND = "g"
-    PARTICIPLE = "p"
-    FINITE = "v"
+    INFINITIVE = 'i'
+    GERUND = 'g'
+    PARTICIPLE = 'p'
+    FINITE = 'v'
     # { Inflection Tense
-    FUTURE = "f"
-    PAST = "p"
-    PRESENT = "n"
+    FUTURE = 'f'
+    PAST = 'p'
+    PRESENT = 'n'
     # { Inflection Aspect
-    PERFECT = "p"
-    PROGRESSIVE = "o"
-    PERFECT_AND_PROGRESSIVE = "b"
+    PERFECT = 'p'
+    PROGRESSIVE = 'o'
+    PERFECT_AND_PROGRESSIVE = 'b'
     # { Inflection Person
-    THIRD_PERSON = "3"
+    THIRD_PERSON = '3'
     # { Inflection Voice
-    ACTIVE = "a"
-    PASSIVE = "p"
+    ACTIVE = 'a'
+    PASSIVE = 'p'
     # { Inflection
-    NONE = "-"
+    NONE = '-'
     # }
 
-    def __init__(self, form="-", tense="-", aspect="-", person="-", voice="-"):
+    def __init__(self, form='-', tense='-', aspect='-', person='-', voice='-'):
         self.form = form
         self.tense = tense
         self.aspect = aspect
@@ -513,14 +526,14 @@ class PropbankInflection(object):
         return self.form + self.tense + self.aspect + self.person + self.voice
 
     def __repr__(self):
-        return "<PropbankInflection: %s>" % self
+        return '<PropbankInflection: %s>' % self
 
-    _VALIDATE = redos.compile(r"[igpv\-][fpn\-][pob\-][3\-][ap\-]$")
+    _VALIDATE = re.compile(r'[igpv\-][fpn\-][pob\-][3\-][ap\-]$')
 
     @staticmethod
     def parse(s):
-        if not isinstance(s, six.string_types):
-            raise TypeError("expected a string")
+        if not isinstance(s, string_types):
+            raise TypeError('expected a string')
         if len(s) != 5 or not PropbankInflection._VALIDATE.match(s):
-            raise ValueError("Bad propbank inflection string %r" % s)
+            raise ValueError('Bad propbank inflection string %r' % s)
         return PropbankInflection(*s)

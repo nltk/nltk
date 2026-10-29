@@ -1,19 +1,19 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-# -*- coding: utf-8 -*-
-import six
 # Natural Language Toolkit: Dependency Corpus Reader
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Kepa Sarasola <kepa.sarasola@ehu.es>
 #         Iker Manterola <returntothehangar@hotmail.com>
 #
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-from nltk.corpus.reader.api import *
-from nltk.corpus.reader.util import *
+import codecs
+
 from nltk.parse import DependencyGraph
 from nltk.tokenize import *
+
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 
 class DependencyCorpusReader(SyntaxCorpusReader):
@@ -21,14 +21,30 @@ class DependencyCorpusReader(SyntaxCorpusReader):
         self,
         root,
         fileids,
-        encoding="utf8",
+        encoding='utf8',
         word_tokenizer=TabTokenizer(),
-        sent_tokenizer=RegexpTokenizer("\n", gaps=True),
+        sent_tokenizer=RegexpTokenizer('\n', gaps=True),
         para_block_reader=read_blankline_block,
     ):
-        SyntaxCorpusReader.__init__(self, root, fileids, encoding)
+        # FIXME: Why is it inheritting from SyntaxCorpusReader but initializing
+        #       from CorpusReader?
+        CorpusReader.__init__(self, root, fileids, encoding)
 
     #########################################################
+
+    def raw(self, fileids=None):
+        """
+        :return: the given file(s) as a single string.
+        :rtype: str
+        """
+        result = []
+        for fileid, encoding in self.abspaths(fileids, include_encoding=True):
+            if isinstance(fileid, PathPointer):
+                result.append(fileid.open(encoding=encoding).read())
+            else:
+                with codecs.open(fileid, "r", encoding) as fp:
+                    result.append(fp.read())
+        return concat(result)
 
     def words(self, fileids=None):
         return concat(
@@ -73,7 +89,7 @@ class DependencyCorpusReader(SyntaxCorpusReader):
 
 
 class DependencyCorpusView(StreamBackedCorpusView):
-    _DOCSTART = "-DOCSTART- -DOCSTART- O\n"  # dokumentu hasiera definitzen da
+    _DOCSTART = '-DOCSTART- -DOCSTART- O\n'  # dokumentu hasiera definitzen da
 
     def __init__(
         self,
@@ -82,7 +98,7 @@ class DependencyCorpusView(StreamBackedCorpusView):
         group_by_sent,
         dependencies,
         chunk_types=None,
-        encoding="utf8",
+        encoding='utf8',
     ):
         self._tagged = tagged
         self._dependencies = dependencies
@@ -99,13 +115,13 @@ class DependencyCorpusView(StreamBackedCorpusView):
 
         # extract word and tag from any of the formats
         if not self._dependencies:
-            lines = [line.split("\t") for line in sent.split("\n")]
+            lines = [line.split('\t') for line in sent.split('\n')]
             if len(lines[0]) == 3 or len(lines[0]) == 4:
                 sent = [(line[0], line[1]) for line in lines]
             elif len(lines[0]) == 10:
                 sent = [(line[1], line[4]) for line in lines]
             else:
-                raise ValueError("Unexpected number of fields in dependency tree file")
+                raise ValueError('Unexpected number of fields in dependency tree file')
 
             # discard tags if they weren't requested
             if not self._tagged:

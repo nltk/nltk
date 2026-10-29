@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: Twitter API
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Ewan Klein <ewan@inf.ed.ac.uk>
 #         Lorenzo Rubio <lrnzcig@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 This module provides an interface for TweetHandlers, and support for timezone
 handling.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
 
 import time as _time
 from abc import ABCMeta, abstractmethod
-from datetime import datetime, timedelta, timezone, tzinfo
+from datetime import tzinfo, timedelta, datetime
 
-from nltk.termsec import safe_print
+from six import add_metaclass
+
+from nltk.compat import UTC
 
 
 class LocalTimezoneOffsetWithUTC(tzinfo):
@@ -51,7 +51,7 @@ class LocalTimezoneOffsetWithUTC(tzinfo):
 LOCAL = LocalTimezoneOffsetWithUTC()
 
 
-@six.add_metaclass(ABCMeta)
+@add_metaclass(ABCMeta)
 class BasicTweetHandler(object):
     """
     Minimal implementation of `TweetHandler`.
@@ -129,9 +129,9 @@ class TweetHandlerI(BasicTweetHandler):
         Validate date limits.
         """
         if self.upper_date_limit or self.lower_date_limit:
-            date_fmt = "%a %b %d %H:%M:%S +0000 %Y"
-            tweet_date = datetime.strptime(data["created_at"], date_fmt).replace(
-                tzinfo=timezone.utc
+            date_fmt = '%a %b %d %H:%M:%S +0000 %Y'
+            tweet_date = datetime.strptime(data['created_at'], date_fmt).replace(
+                tzinfo=UTC
             )
             if (self.upper_date_limit and tweet_date > self.upper_date_limit) or (
                 self.lower_date_limit and tweet_date < self.lower_date_limit
@@ -143,8 +143,8 @@ class TweetHandlerI(BasicTweetHandler):
                     message = "later"
                     date_limit = self.lower_date_limit
                 if verbose:
-                    safe_print(
-                        "Date limit {} is {} than date of current tweet {}".format(
+                    print(
+                        "Date limit {0} is {1} than date of current tweet {2}".format(
                             date_limit, message, tweet_date
                         )
                     )

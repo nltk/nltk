@@ -1,35 +1,33 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
 # -*- coding: utf-8 -*-
-import six
 # Natural Language Toolkit: Word List Corpus Reader
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 
-from collections import defaultdict, namedtuple
+from __future__ import print_function
+from collections import namedtuple, defaultdict
+import re
+from six import string_types
 
-from nltk import redos
-from nltk.corpus.reader.api import *
-from nltk.corpus.reader.util import *
-from nltk.corpus.reader.wordlist import WordListCorpusReader
+
 from nltk.tokenize import line_tokenize
 
-PanlexLanguage = namedtuple(
-    "PanlexLanguage",
-    [
-        "panlex_uid",  # (1) PanLex UID
-        "iso639",  # (2) ISO 639 language code
-        "iso639_type",  # (3) ISO 639 language type, see README
-        "script",  # (4) normal scripts of expressions
-        "name",  # (5) PanLex default name
-        "langvar_uid",  # (6) UID of the language variety in which the default name is an expression
-    ],
-)
+from nltk.corpus.reader.wordlist import WordListCorpusReader
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
+PanlexLanguage = namedtuple('PanlexLanguage',
+                          ['panlex_uid',  # (1) PanLex UID
+                           'iso639',      # (2) ISO 639 language code
+                           'iso639_type', # (3) ISO 639 language type, see README
+                           'script',      # (4) normal scripts of expressions
+                           'name',        # (5) PanLex default name
+                           'langvar_uid'  # (6) UID of the language variety in which the default name is an expression
+                           ])
 
 class PanlexSwadeshCorpusReader(WordListCorpusReader):
     """
@@ -42,27 +40,27 @@ class PanlexSwadeshCorpusReader(WordListCorpusReader):
     License: CC0 1.0 Universal
     https://creativecommons.org/publicdomain/zero/1.0/legalcode
     """
-
     def __init__(self, *args, **kwargs):
         super(PanlexSwadeshCorpusReader, self).__init__(*args, **kwargs)
         # Find the swadesh size using the fileids' path.
-        self.swadesh_size = redos.match(r"swadesh([0-9].*)\/", self.fileids()[0]).group(
-            1
-        )
-        self._languages = {lang.panlex_uid: lang for lang in self.get_languages()}
+        self.swadesh_size = re.match(r'swadesh([0-9].*)\/', self.fileids()[0]).group(1)
+        self._languages = {lang.panlex_uid:lang for lang in self.get_languages()}
         self._macro_langauges = self.get_macrolanguages()
 
     def license(self):
-        return "CC0 1.0 Universal"
+        print('CC0 1.0 Universal')
+
+    def readme(self):
+        print(self.raw('README'))
 
     def language_codes(self):
         return self._languages.keys()
 
     def get_languages(self):
-        for line in self.raw("langs{0}.txt".format(self.swadesh_size)).split("\n"):
-            if not line.strip():  # Skip empty lines.
+        for line in self.raw('langs{}.txt'.format(self.swadesh_size)).split('\n'):
+            if not line.strip(): # Skip empty lines.
                 continue
-            yield PanlexLanguage(*line.strip().split("\t"))
+            yield PanlexLanguage(*line.strip().split('\t'))
 
     def get_macrolanguages(self):
         macro_langauges = defaultdict(list)
@@ -74,20 +72,16 @@ class PanlexSwadeshCorpusReader(WordListCorpusReader):
         """
         :return: a list of list(str)
         """
-        fileid = "swadesh{0}/{1}.txt".format(self.swadesh_size, lang_code)
-        return [concept.split("\t") for concept in self.words(fileid)]
+        fileid = 'swadesh{}/{}.txt'.format(self.swadesh_size, lang_code)
+        return [concept.split('\t') for concept in self.words(fileid)]
 
     def words_by_iso639(self, iso63_code):
         """
         :return: a list of list(str)
         """
-        fileids = [
-            "swadesh{0}/{1}.txt".format(self.swadesh_size, lang_code)
-            for lang_code in self._macro_langauges[iso63_code]
-        ]
-        return [
-            concept.split("\t") for fileid in fileids for concept in self.words(fileid)
-        ]
+        fileids = ['swadesh{}/{}.txt'.format(self.swadesh_size, lang_code)
+                   for lang_code in self._macro_langauges[iso63_code]]
+        return [concept.split('\t') for fileid in fileids for concept in self.words(fileid)]
 
     def entries(self, fileids=None):
         """

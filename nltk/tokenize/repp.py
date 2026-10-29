@@ -1,30 +1,26 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
 # -*- coding: utf-8 -*-
-import six
 # Natural Language Toolkit: Interface to the Repp Tokenizer
 #
 # Copyright (C) 2001-2015 NLTK Project
 # Authors: Rebecca Dridan and Stephan Oepen
 # Contributors: Liling Tan
 #
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
+
+from __future__ import unicode_literals, print_function
 
 import os
 import re
-import subprocess
 import sys
+import subprocess
 import tempfile
 
-from nltk import pathsec, redos
-from nltk.data import ZipFilePathPointer, make_staging_dir
-from nltk.internals import _tool_location, absolute_tool_dir, find_dir
-from nltk.pathsec import (
-    TrustError,
-    has_line_unsafe_char,
-    spawn_trusted,
-    validate_tool_data_dir,
-)
+from six import text_type
+
+from nltk.data import ZipFilePathPointer
+from nltk.internals import find_dir
+
 from nltk.tokenize.api import TokenizerI
 
 
@@ -39,7 +35,7 @@ class ReppTokenizer(TokenizerI):
     ... 'But rule-based tokenizers are hard to maintain and their rules language specific.' ,
     ... 'We evaluated our method on three languages and obtained error rates of 0.27% (English), 0.35% (Dutch) and 0.76% (Italian) for our best models.'
     ... ]
-    >>> tokenizer = ReppTokenizer('/home/user/repp/') # doctest: +SKIP
+    >>> tokenizer = ReppTokenizer('/home/alvas/repp/') # doctest: +SKIP
     >>> for sent in sents:                             # doctest: +SKIP
     ...     tokenizer.tokenize(sent)                   # doctest: +SKIP
     ...
@@ -48,21 +44,23 @@ class ReppTokenizer(TokenizerI):
     (u'We', u'evaluated', u'our', u'method', u'on', u'three', u'languages', u'and', u'obtained', u'error', u'rates', u'of', u'0.27', u'%', u'(', u'English', u')', u',', u'0.35', u'%', u'(', u'Dutch', u')', u'and', u'0.76', u'%', u'(', u'Italian', u')', u'for', u'our', u'best', u'models', u'.')
 
     >>> for sent in tokenizer.tokenize_sents(sents): # doctest: +SKIP
-    ...     print(sent)                              # doctest: +SKIP
+    ...     print sent                               # doctest: +SKIP
     ...
     (u'Tokenization', u'is', u'widely', u'regarded', u'as', u'a', u'solved', u'problem', u'due', u'to', u'the', u'high', u'accuracy', u'that', u'rulebased', u'tokenizers', u'achieve', u'.')
     (u'But', u'rule-based', u'tokenizers', u'are', u'hard', u'to', u'maintain', u'and', u'their', u'rules', u'language', u'specific', u'.')
     (u'We', u'evaluated', u'our', u'method', u'on', u'three', u'languages', u'and', u'obtained', u'error', u'rates', u'of', u'0.27', u'%', u'(', u'English', u')', u',', u'0.35', u'%', u'(', u'Dutch', u')', u'and', u'0.76', u'%', u'(', u'Italian', u')', u'for', u'our', u'best', u'models', u'.')
     >>> for sent in tokenizer.tokenize_sents(sents, keep_token_positions=True): # doctest: +SKIP
-    ...     print(sent)                                                         # doctest: +SKIP
+    ...     print sent                                                          # doctest: +SKIP
     ...
     [(u'Tokenization', 0, 12), (u'is', 13, 15), (u'widely', 16, 22), (u'regarded', 23, 31), (u'as', 32, 34), (u'a', 35, 36), (u'solved', 37, 43), (u'problem', 44, 51), (u'due', 52, 55), (u'to', 56, 58), (u'the', 59, 62), (u'high', 63, 67), (u'accuracy', 68, 76), (u'that', 77, 81), (u'rulebased', 82, 91), (u'tokenizers', 92, 102), (u'achieve', 103, 110), (u'.', 110, 111)]
     [(u'But', 0, 3), (u'rule-based', 4, 14), (u'tokenizers', 15, 25), (u'are', 26, 29), (u'hard', 30, 34), (u'to', 35, 37), (u'maintain', 38, 46), (u'and', 47, 50), (u'their', 51, 56), (u'rules', 57, 62), (u'language', 63, 71), (u'specific', 72, 80), (u'.', 80, 81)]
     [(u'We', 0, 2), (u'evaluated', 3, 12), (u'our', 13, 16), (u'method', 17, 23), (u'on', 24, 26), (u'three', 27, 32), (u'languages', 33, 42), (u'and', 43, 46), (u'obtained', 47, 55), (u'error', 56, 61), (u'rates', 62, 67), (u'of', 68, 70), (u'0.27', 71, 75), (u'%', 75, 76), (u'(', 77, 78), (u'English', 78, 85), (u')', 85, 86), (u',', 86, 87), (u'0.35', 88, 92), (u'%', 92, 93), (u'(', 94, 95), (u'Dutch', 95, 100), (u')', 100, 101), (u'and', 102, 105), (u'0.76', 106, 110), (u'%', 110, 111), (u'(', 112, 113), (u'Italian', 113, 120), (u')', 120, 121), (u'for', 122, 125), (u'our', 126, 129), (u'best', 130, 134), (u'models', 135, 141), (u'.', 141, 142)]
     """
 
-    def __init__(self, repp_dir, encoding="utf8"):
+    def __init__(self, repp_dir, encoding='utf8'):
         self.repp_dir = self.find_repptokenizer(repp_dir)
+        # Set a directory to store the temporary files.
+        self.working_dir = tempfile.gettempdir()
         # Set an encoding for the input strings.
         self.encoding = encoding
 
@@ -86,43 +84,22 @@ class ReppTokenizer(TokenizerI):
         :return: A list of tuples of tokens
         :rtype: iter(tuple(str))
         """
-        # Stage the scratch input inside an allowed nltk.data root, never the
-        # shared system temp dir (world writable, not a pathsec root; CWE-377/378),
-        # and remove it afterwards so the file does not leak (CWE-459). Mirrors
-        # the make_staging_dir migration already applied to boxer/megam/tadm.
-        staging_dir = make_staging_dir(prefix="repp-")
-        try:
-            with tempfile.NamedTemporaryFile(
-                prefix="repp_input.", dir=staging_dir, mode="w", delete=False
-            ) as input_file:
-                # REPP reads one sentence per line; a control character or Unicode
-                # line/paragraph separator in a sentence injects an extra input
-                # line (or a NUL truncates it), so the token stream desynchronises
-                # from the sentence list (CWE-93).
-                for sent in sentences:
-                    text = str(sent)
-                    # REPP splits its stdout on newlines only, so a literal TAB is
-                    # ordinary in-line whitespace here and stays allowed.
-                    if has_line_unsafe_char(text, allow_tab=True):
-                        raise ValueError(
-                            "REPP input sentences must not contain control "
-                            "characters or line separators (newline, NUL, DEL, ...)."
-                        )
-                    input_file.write(text + "\n")
-                input_file.close()
-                # Generate command to run REPP.
-                cmd = self.generate_repp_command(input_file.name)
-                # Decode the stdout and strips the ending newline.
-                repp_output = self._execute(cmd).decode(self.encoding).strip()
-        finally:
-            pathsec.remove_tree(
-                staging_dir, context="ReppTokenizer.tokenize_sents", ignore_errors=True
-            )
-        for tokenized_sent in self.parse_repp_outputs(repp_output):
-            if not keep_token_positions:
-                # Removes token position information.
-                tokenized_sent, starts, ends = zip(*tokenized_sent)
-            yield tokenized_sent
+        with tempfile.NamedTemporaryFile(
+            prefix='repp_input.', dir=self.working_dir, mode='w', delete=False
+        ) as input_file:
+            # Write sentences to temporary input file.
+            for sent in sentences:
+                input_file.write(text_type(sent) + '\n')
+            input_file.close()
+            # Generate command to run REPP.
+            cmd = self.generate_repp_command(input_file.name)
+            # Decode the stdout and strips the ending newline.
+            repp_output = self._execute(cmd).decode(self.encoding).strip()
+            for tokenized_sent in self.parse_repp_outputs(repp_output):
+                if not keep_token_positions:
+                    # Removes token position information.
+                    tokenized_sent, starts, ends = zip(*tokenized_sent)
+                yield tokenized_sent
 
     def generate_repp_command(self, inputfilename):
         """
@@ -131,29 +108,15 @@ class ReppTokenizer(TokenizerI):
         :param inputfilename: path to the input file
         :type inputfilename: str
         """
-        # repp reads erg/repp.set and the files it names natively: the tree
-        # gets the trust the binary gets and the checked string is what the
-        # command carries (GHSA-fg9w-wfp5-j933).
-        repp_dir = validate_tool_data_dir(self.repp_dir, context="REPP directory")
-        cmd = [repp_dir + "/src/repp"]
-        cmd += ["-c", repp_dir + "/erg/repp.set"]
-        cmd += ["--format", "triple"]
+        cmd = [self.repp_dir + '/src/repp']
+        cmd += ['-c', self.repp_dir + '/erg/repp.set']
+        cmd += ['--format', 'triple']
         cmd += [inputfilename]
         return cmd
 
     @staticmethod
     def _execute(cmd):
-        # Route the REPP binary through the trusted-exec chokepoint: verify it is
-        # on a path no other local user can swap, refuse a shell, and scrub the
-        # loader environment before exec (CWE-426/427/732).
-        try:
-            p = spawn_trusted(
-                cmd[0], cmd[1:], stdout=subprocess.PIPE, stderr=subprocess.PIPE
-            )
-        except TrustError as e:
-            six.raise_from(LookupError(
-                "Refusing to run the REPP tokenizer {0!r}: it is not on a trusted path. Install REPP where only you (or root) can write ({1}).".format(cmd[0], e)
-            ), e)
+        p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         return stdout
 
@@ -169,8 +132,8 @@ class ReppTokenizer(TokenizerI):
         :return: an iterable of the tokenized sentences as tuples of strings
         :rtype: iter(tuple)
         """
-        line_regex = redos.compile(r"^\((\d+), (\d+), (.+)\)$", re.MULTILINE)
-        for section in repp_output.split("\n\n"):
+        line_regex = re.compile('^\((\d+), (\d+), (.+)\)$', re.MULTILINE)
+        for section in repp_output.split('\n\n'):
             words_with_positions = [
                 (token, int(start), int(end))
                 for start, end, token in line_regex.findall(section)
@@ -182,23 +145,11 @@ class ReppTokenizer(TokenizerI):
         """
         A module to find REPP tokenizer binary and its *repp.set* config file.
         """
-        # A plain str (find_dir() requires one) that passes pathsec's shared
-        # name checks: no NUL, control character, '..', URL, UNC or '~'.
-        repp_dirname = _tool_location(repp_dirname, "REPP directory")
-        # Only accept an explicit *absolute* directory as-is. A relative name must
-        # not be resolved against the current working directory: an attacker able
-        # to write there could plant a ``<name>/src/repp`` executable and have it
-        # run -- the command path contains a separator, so subprocess executes it
-        # directly -- overriding a trusted ``REPP_TOKENIZER`` (an untrusted search
-        # path, CWE-426). A relative name is resolved through ``REPP_TOKENIZER``.
-        if os.path.isabs(repp_dirname) and os.path.isdir(repp_dirname):
+        if os.path.exists(repp_dirname):  # If a full path is given.
             _repp_dir = repp_dirname
         else:  # Try to find path to REPP directory in environment variables.
-            _repp_dir = find_dir(repp_dirname, env_vars=("REPP_TOKENIZER",))
-        # whichever source supplied it: absolute, no '..' (spawned as
-        # <dir>/src/repp), and holding the binary and the erg/repp.set config
-        _repp_dir = absolute_tool_dir(_repp_dir, "REPP")
-        for needed in ("src/repp", "erg/repp.set"):
-            if not os.path.isfile(os.path.join(_repp_dir, *needed.split("/"))):
-                raise LookupError("REPP directory {0!r} has no {1}".format(_repp_dir, needed))
+            _repp_dir = find_dir(repp_dirname, env_vars=('REPP_TOKENIZER',))
+        # Checks for the REPP binary and erg/repp.set config file.
+        assert os.path.exists(_repp_dir + '/src/repp')
+        assert os.path.exists(_repp_dir + '/erg/repp.set')
         return _repp_dir

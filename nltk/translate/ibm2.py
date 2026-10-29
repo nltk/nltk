@@ -3,7 +3,7 @@
 #
 # Copyright (C) 2001-2013 NLTK Project
 # Authors: Chin Yee Lee, Hengfeng Li, Ruxin Hou, Calvin Tanujaya Lim
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -14,33 +14,29 @@ An alignment probability is introduced, a(i | j,l,m), which predicts
 a source word position, given its aligned target word's position.
 
 The EM algorithm used in Model 2 is:
-
-:E step: In the training data, collect counts, weighted by prior
+E step - In the training data, collect counts, weighted by prior
          probabilities.
+         (a) count how many times a source language word is translated
+             into a target language word
+         (b) count how many times a particular position in the source
+             sentence is aligned to a particular position in the target
+             sentence
 
-         - (a) count how many times a source language word is translated
-               into a target language word
-         - (b) count how many times a particular position in the source
-               sentence is aligned to a particular position in the target
-               sentence
+M step - Estimate new probabilities based on the counts from the E step
 
-:M step: Estimate new probabilities based on the counts from the E step
 
-Notations
----------
+Notations:
+i: Position in the source sentence
+    Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
+j: Position in the target sentence
+    Valid values are 1, 2, ..., length of target sentence
+l: Number of words in the source sentence, excluding NULL
+m: Number of words in the target sentence
+s: A word in the source language
+t: A word in the target language
 
-:i: Position in the source sentence
-     Valid values are 0 (for NULL), 1, 2, ..., length of source sentence
-:j: Position in the target sentence
-     Valid values are 1, 2, ..., length of target sentence
-:l: Number of words in the source sentence, excluding NULL
-:m: Number of words in the target sentence
-:s: A word in the source language
-:t: A word in the target language
 
-References
-----------
-
+References:
 Philipp Koehn. 2010. Statistical Machine Translation.
 Cambridge University Press, New York.
 
@@ -49,13 +45,16 @@ Robert L. Mercer. 1993. The Mathematics of Statistical Machine
 Translation: Parameter Estimation. Computational Linguistics, 19 (2),
 263-311.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
+
+from __future__ import division
 
 import warnings
 from collections import defaultdict
 
-from nltk.translate import AlignedSent, Alignment, IBMModel, IBMModel1
+from nltk.translate import AlignedSent
+from nltk.translate import Alignment
+from nltk.translate import IBMModel
+from nltk.translate import IBMModel1
 from nltk.translate.ibm_model import Counts
 
 
@@ -65,7 +64,7 @@ class IBMModel2(IBMModel):
 
     >>> bitext = []
     >>> bitext.append(AlignedSent(['klein', 'ist', 'das', 'haus'], ['the', 'house', 'is', 'small']))
-    >>> bitext.append(AlignedSent(['das', 'haus', 'ist', 'ja', 'gro\xdf'], ['the', 'house', 'is', 'big']))
+    >>> bitext.append(AlignedSent(['das', 'haus', 'ist', 'ja', 'groß'], ['the', 'house', 'is', 'big']))
     >>> bitext.append(AlignedSent(['das', 'buch', 'ist', 'ja', 'klein'], ['the', 'book', 'is', 'small']))
     >>> bitext.append(AlignedSent(['das', 'haus'], ['the', 'house']))
     >>> bitext.append(AlignedSent(['das', 'buch'], ['the', 'book']))
@@ -82,8 +81,8 @@ class IBMModel2(IBMModel):
     >>> print(round(ibm2.translation_table['ja'][None], 3))
     0.0
 
-    >>> print(round(ibm2.alignment_table[1][1][2][2], 3))
-    0.939
+    >>> print(ibm2.alignment_table[1][1][2][2])
+    0.938...
     >>> print(round(ibm2.alignment_table[1][2][2][2], 3))
     0.0
     >>> print(round(ibm2.alignment_table[2][2][4][5], 3))
@@ -132,8 +131,8 @@ class IBMModel2(IBMModel):
             self.set_uniform_probabilities(sentence_aligned_corpus)
         else:
             # Set user-defined probabilities
-            self.translation_table = probability_tables["translation_table"]
-            self.alignment_table = probability_tables["alignment_table"]
+            self.translation_table = probability_tables['translation_table']
+            self.alignment_table = probability_tables['alignment_table']
 
         for n in range(0, iterations):
             self.train(sentence_aligned_corpus)
@@ -154,7 +153,7 @@ class IBMModel2(IBMModel):
                         "A source sentence is too long ("
                         + str(l)
                         + " words). Results may be less accurate."
-                    )  # unsafe-print ok: literal text with a numeric vocabulary or length bound
+                    )
 
                 for i in range(0, l + 1):
                     for j in range(1, m + 1):
@@ -164,7 +163,7 @@ class IBMModel2(IBMModel):
         counts = Model2Counts()
         for aligned_sentence in parallel_corpus:
             src_sentence = [None] + aligned_sentence.mots
-            trg_sentence = ["UNUSED"] + aligned_sentence.words  # 1-indexed
+            trg_sentence = ['UNUSED'] + aligned_sentence.words  # 1-indexed
             l = len(aligned_sentence.mots)
             m = len(aligned_sentence.words)
 
@@ -212,7 +211,7 @@ class IBMModel2(IBMModel):
         :return: Probability of t for all s in ``src_sentence``
         :rtype: dict(str): float
         """
-        alignment_prob_for_t = defaultdict(float)
+        alignment_prob_for_t = defaultdict(lambda: 0.0)
         for j in range(1, len(trg_sentence)):
             t = trg_sentence[j]
             for i in range(0, len(src_sentence)):
@@ -307,10 +306,10 @@ class Model2Counts(Counts):
     def __init__(self):
         super(Model2Counts, self).__init__()
         self.alignment = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(float)))
+            lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0.0)))
         )
         self.alignment_for_any_i = defaultdict(
-            lambda: defaultdict(lambda: defaultdict(float))
+            lambda: defaultdict(lambda: defaultdict(lambda: 0.0))
         )
 
     def update_lexical_translation(self, count, s, t):

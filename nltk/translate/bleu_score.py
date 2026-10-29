@@ -1,48 +1,28 @@
 # -*- coding: utf-8 -*-
 # Natural Language Toolkit: BLEU Score
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Authors: Chin Yee Lee, Hengfeng Li, Ruxin Hou, Calvin Tanujaya Lim
 # Contributors: Björn Mattsson, Dmitrijs Milajevs, Liling Tan
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """BLEU score implementation."""
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
+from __future__ import division
+
 import math
 import sys
+import fractions
 import warnings
 from collections import Counter
-from fractions import Fraction as _Fraction
 
 from nltk.util import ngrams
 
-
-class Fraction(_Fraction):
-    """Fraction with _normalize=False support for 3.12"""
-
-    def __new__(cls, numerator=0, denominator=None, _normalize=False):
-        if sys.version_info >= (3, 12):
-            self = super(Fraction, cls).__new__(cls, numerator, denominator)
-        else:
-            self = super(Fraction, cls).__new__(cls, numerator, denominator, _normalize=_normalize)
-        self._normalize = _normalize
-        self._original_numerator = numerator
-        self._original_denominator = denominator
-        return self
-
-    @property
-    def numerator(self):
-        if not self._normalize:
-            return self._original_numerator
-        return super(Fraction, self).numerator
-
-    @property
-    def denominator(self):
-        if not self._normalize:
-            return self._original_denominator
-        return super(Fraction, self).denominator
+try:
+    fractions.Fraction(0, 1000, _normalize=False)
+    from fractions import Fraction
+except TypeError:
+    from nltk.compat import Fraction
 
 
 def sentence_bleu(
@@ -56,7 +36,7 @@ def sentence_bleu(
     Calculate BLEU score (Bilingual Evaluation Understudy) from
     Papineni, Kishore, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002.
     "BLEU: a method for automatic evaluation of machine translation."
-    In Proceedings of ACL. https://www.aclweb.org/anthology/P02-1040.pdf
+    In Proceedings of ACL. http://www.aclweb.org/anthology/P02-1040.pdf
 
     >>> hypothesis1 = ['It', 'is', 'a', 'guide', 'to', 'action', 'which',
     ...               'ensures', 'that', 'the', 'military', 'always',
@@ -86,7 +66,7 @@ def sentence_bleu(
     value 0. This is because the precision for the order of n-grams without
     overlap is 0, and the geometric mean in the final BLEU score computation
     multiplies the 0 with the precision of other n-grams. This results in 0
-    (independently of the precision of the other n-gram orders). The following
+    (independently of the precision of the othe n-gram orders). The following
     example has zero 3-gram and 4-gram overlaps:
 
     >>> round(sentence_bleu([reference1, reference2, reference3], hypothesis2),4) # doctest: +ELLIPSIS
@@ -109,28 +89,18 @@ def sentence_bleu(
     >>> sentence_bleu([reference1, reference2, reference3], hypothesis1, weights) # doctest: +ELLIPSIS
     0.3920...
 
-    Multiple BLEU scores can be computed at once, by supplying a list of weights.
-    E.g. for computing BLEU-2, BLEU-3 *and* BLEU-4 in one computation, use:
-    >>> weights = [
-    ...     (1./2., 1./2.),
-    ...     (1./3., 1./3., 1./3.),
-    ...     (1./4., 1./4., 1./4., 1./4.)
-    ... ]
-    >>> sentence_bleu([reference1, reference2, reference3], hypothesis1, weights) # doctest: +ELLIPSIS
-    [0.7453..., 0.6240..., 0.5045...]
-
     :param references: reference sentences
     :type references: list(list(str))
     :param hypothesis: a hypothesis sentence
     :type hypothesis: list(str)
-    :param weights: weights for unigrams, bigrams, trigrams and so on (one or a list of weights)
-    :type weights: tuple(float) / list(tuple(float))
+    :param weights: weights for unigrams, bigrams, trigrams and so on
+    :type weights: list(float)
     :param smoothing_function:
     :type smoothing_function: SmoothingFunction
     :param auto_reweigh: Option to re-normalize the weights uniformly.
     :type auto_reweigh: bool
-    :return: The sentence-level BLEU score. Returns a list if multiple weights were supplied.
-    :rtype: float / list(float)
+    :return: The sentence-level BLEU score.
+    :rtype: float
     """
     return corpus_bleu(
         [references], [hypothesis], weights, smoothing_function, auto_reweigh
@@ -148,7 +118,7 @@ def corpus_bleu(
     Calculate a single corpus-level BLEU score (aka. system-level BLEU) for all
     the hypotheses and their respective references.
 
-    Instead of averaging the sentence level BLEU scores (i.e. macro-average
+    Instead of averaging the sentence level BLEU scores (i.e. marco-average
     precision), the original BLEU metric (Papineni et al. 2002) accounts for
     the micro-average precision (i.e. summing the numerators and denominators
     for each hypothesis-reference(s) pairs before the division).
@@ -184,29 +154,12 @@ def corpus_bleu(
     >>> (score1 + score2) / 2 # doctest: +ELLIPSIS
     0.6223...
 
-    Custom weights may be supplied to fine-tune the BLEU score further.
-    A tuple of float weights for unigrams, bigrams, trigrams and so on can be given.
-    >>> weights = (0.1, 0.3, 0.5, 0.1)
-    >>> corpus_bleu(list_of_references, hypotheses, weights=weights) # doctest: +ELLIPSIS
-    0.5818...
-
-    This particular weight gave extra value to trigrams.
-    Furthermore, multiple weights can be given, resulting in multiple BLEU scores.
-    >>> weights = [
-    ...     (0.5, 0.5),
-    ...     (0.333, 0.333, 0.334),
-    ...     (0.25, 0.25, 0.25, 0.25),
-    ...     (0.2, 0.2, 0.2, 0.2, 0.2)
-    ... ]
-    >>> corpus_bleu(list_of_references, hypotheses, weights=weights) # doctest: +ELLIPSIS
-    [0.8242..., 0.7067..., 0.5920..., 0.4719...]
-
     :param list_of_references: a corpus of lists of reference sentences, w.r.t. hypotheses
     :type list_of_references: list(list(list(str)))
     :param hypotheses: a list of hypothesis sentences
     :type hypotheses: list(list(str))
-    :param weights: weights for unigrams, bigrams, trigrams and so on (one or a list of weights)
-    :type weights: tuple(float) / list(tuple(float))
+    :param weights: weights for unigrams, bigrams, trigrams and so on
+    :type weights: list(float)
     :param smoothing_function:
     :type smoothing_function: SmoothingFunction
     :param auto_reweigh: Option to re-normalize the weights uniformly.
@@ -224,17 +177,11 @@ def corpus_bleu(
         "The number of hypotheses and their reference(s) should be the " "same "
     )
 
-    try:
-        weights[0][0]
-    except (TypeError, IndexError):
-        weights = [weights]
-    max_weight_length = max(len(weight) for weight in weights)
-
     # Iterate through each hypothesis and their corresponding references.
     for references, hypothesis in zip(list_of_references, hypotheses):
         # For each order of ngram, calculate the numerator and
         # denominator for the corpus-level modified precision.
-        for i in range(1, max_weight_length + 1):
+        for i, _ in enumerate(weights, start=1):
             p_i = modified_precision(references, hypothesis, i)
             p_numerators[i] += p_i.numerator
             p_denominators[i] += p_i.denominator
@@ -248,17 +195,23 @@ def corpus_bleu(
     # Calculate corpus-level brevity penalty.
     bp = brevity_penalty(ref_lengths, hyp_lengths)
 
+    # Uniformly re-weighting based on maximum hypothesis lengths if largest
+    # order of n-grams < 4 and weights is set at default.
+    if auto_reweigh:
+        if hyp_lengths < 4 and weights == (0.25, 0.25, 0.25, 0.25):
+            weights = (1 / hyp_lengths,) * hyp_lengths
+
     # Collects the various precision values for the different ngram orders.
     p_n = [
         Fraction(p_numerators[i], p_denominators[i], _normalize=False)
-        for i in range(1, max_weight_length + 1)
+        for i, _ in enumerate(weights, start=1)
     ]
 
     # Returns 0 if there's no matching n-grams
     # We only need to check for p_numerators[1] == 0, since if there's
     # no unigrams, there won't be any higher order ngrams.
     if p_numerators[1] == 0:
-        return 0 if len(weights) == 1 else [0] * len(weights)
+        return 0
 
     # If there's no smoothing, set use method0 from SmoothinFunction class.
     if not smoothing_function:
@@ -270,19 +223,9 @@ def corpus_bleu(
     p_n = smoothing_function(
         p_n, references=references, hypothesis=hypothesis, hyp_len=hyp_lengths
     )
-
-    bleu_scores = []
-    for weight in weights:
-        # Uniformly re-weighting based on maximum hypothesis lengths if largest
-        # order of n-grams < 4 and weights is set at default.
-        if auto_reweigh:
-            if hyp_lengths < 4 and weight == (0.25, 0.25, 0.25, 0.25):
-                weight = (1 / hyp_lengths,) * hyp_lengths
-
-        s = (w_i * math.log(p_i) for w_i, p_i in zip(weight, p_n) if p_i > 0)
-        s = bp * math.exp(math.fsum(s))
-        bleu_scores.append(s)
-    return bleu_scores[0] if len(weights) == 1 else bleu_scores
+    s = (w_i * math.log(p_i) for w_i, p_i in zip(weights, p_n))
+    s = bp * math.exp(math.fsum(s))
+    return s
 
 
 def modified_precision(references, hypothesis, n):
@@ -427,74 +370,74 @@ def brevity_penalty(closest_ref_len, hyp_len):
     An example from the paper. There are three references with length 12, 15
     and 17. And a concise hypothesis of the length 12. The brevity penalty is 1.
 
-    >>> reference1 = list('aaaaaaaaaaaa')      # i.e. ['a'] * 12
-    >>> reference2 = list('aaaaaaaaaaaaaaa')   # i.e. ['a'] * 15
-    >>> reference3 = list('aaaaaaaaaaaaaaaaa') # i.e. ['a'] * 17
-    >>> hypothesis = list('aaaaaaaaaaaa')      # i.e. ['a'] * 12
-    >>> references = [reference1, reference2, reference3]
-    >>> hyp_len = len(hypothesis)
-    >>> closest_ref_len =  closest_ref_length(references, hyp_len)
-    >>> brevity_penalty(closest_ref_len, hyp_len)
-    1.0
+        >>> reference1 = list('aaaaaaaaaaaa')      # i.e. ['a'] * 12
+        >>> reference2 = list('aaaaaaaaaaaaaaa')   # i.e. ['a'] * 15
+        >>> reference3 = list('aaaaaaaaaaaaaaaaa') # i.e. ['a'] * 17
+        >>> hypothesis = list('aaaaaaaaaaaa')      # i.e. ['a'] * 12
+        >>> references = [reference1, reference2, reference3]
+        >>> hyp_len = len(hypothesis)
+        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+        >>> brevity_penalty(closest_ref_len, hyp_len)
+        1.0
 
     In case a hypothesis translation is shorter than the references, penalty is
     applied.
 
-    >>> references = [['a'] * 28, ['a'] * 28]
-    >>> hypothesis = ['a'] * 12
-    >>> hyp_len = len(hypothesis)
-    >>> closest_ref_len =  closest_ref_length(references, hyp_len)
-    >>> brevity_penalty(closest_ref_len, hyp_len)
-    0.2635971381157267
+        >>> references = [['a'] * 28, ['a'] * 28]
+        >>> hypothesis = ['a'] * 12
+        >>> hyp_len = len(hypothesis)
+        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+        >>> brevity_penalty(closest_ref_len, hyp_len)
+        0.2635971381157267
 
     The length of the closest reference is used to compute the penalty. If the
     length of a hypothesis is 12, and the reference lengths are 13 and 2, the
     penalty is applied because the hypothesis length (12) is less then the
     closest reference length (13).
 
-    >>> references = [['a'] * 13, ['a'] * 2]
-    >>> hypothesis = ['a'] * 12
-    >>> hyp_len = len(hypothesis)
-    >>> closest_ref_len =  closest_ref_length(references, hyp_len)
-    >>> brevity_penalty(closest_ref_len, hyp_len) # doctest: +ELLIPSIS
-    0.9200...
+        >>> references = [['a'] * 13, ['a'] * 2]
+        >>> hypothesis = ['a'] * 12
+        >>> hyp_len = len(hypothesis)
+        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+        >>> brevity_penalty(closest_ref_len, hyp_len) # doctest: +ELLIPSIS
+        0.9200...
 
     The brevity penalty doesn't depend on reference order. More importantly,
     when two reference sentences are at the same distance, the shortest
     reference sentence length is used.
 
-    >>> references = [['a'] * 13, ['a'] * 11]
-    >>> hypothesis = ['a'] * 12
-    >>> hyp_len = len(hypothesis)
-    >>> closest_ref_len =  closest_ref_length(references, hyp_len)
-    >>> bp1 = brevity_penalty(closest_ref_len, hyp_len)
-    >>> hyp_len = len(hypothesis)
-    >>> closest_ref_len =  closest_ref_length(reversed(references), hyp_len)
-    >>> bp2 = brevity_penalty(closest_ref_len, hyp_len)
-    >>> bp1 == bp2 == 1
-    True
+        >>> references = [['a'] * 13, ['a'] * 11]
+        >>> hypothesis = ['a'] * 12
+        >>> hyp_len = len(hypothesis)
+        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+        >>> bp1 = brevity_penalty(closest_ref_len, hyp_len)
+        >>> hyp_len = len(hypothesis)
+        >>> closest_ref_len =  closest_ref_length(reversed(references), hyp_len)
+        >>> bp2 = brevity_penalty(closest_ref_len, hyp_len)
+        >>> bp1 == bp2 == 1
+        True
 
     A test example from mteval-v13a.pl (starting from the line 705):
 
-    >>> references = [['a'] * 11, ['a'] * 8]
-    >>> hypothesis = ['a'] * 7
-    >>> hyp_len = len(hypothesis)
-    >>> closest_ref_len =  closest_ref_length(references, hyp_len)
-    >>> brevity_penalty(closest_ref_len, hyp_len) # doctest: +ELLIPSIS
-    0.8668...
+        >>> references = [['a'] * 11, ['a'] * 8]
+        >>> hypothesis = ['a'] * 7
+        >>> hyp_len = len(hypothesis)
+        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+        >>> brevity_penalty(closest_ref_len, hyp_len) # doctest: +ELLIPSIS
+        0.8668...
 
-    >>> references = [['a'] * 11, ['a'] * 8, ['a'] * 6, ['a'] * 7]
-    >>> hypothesis = ['a'] * 7
-    >>> hyp_len = len(hypothesis)
-    >>> closest_ref_len =  closest_ref_length(references, hyp_len)
-    >>> brevity_penalty(closest_ref_len, hyp_len)
-    1.0
+        >>> references = [['a'] * 11, ['a'] * 8, ['a'] * 6, ['a'] * 7]
+        >>> hypothesis = ['a'] * 7
+        >>> hyp_len = len(hypothesis)
+        >>> closest_ref_len =  closest_ref_length(references, hyp_len)
+        >>> brevity_penalty(closest_ref_len, hyp_len)
+        1.0
 
     :param hyp_len: The length of the hypothesis for a single sentence OR the
-        sum of all the hypotheses' lengths for a corpus
+    sum of all the hypotheses' lengths for a corpus
     :type hyp_len: int
     :param closest_ref_len: The length of the closest reference for a single
-        hypothesis OR the sum of all the closest references for every hypotheses.
+    hypothesis OR the sum of all the closest references for every hypotheses.
     :type closest_ref_len: int
     :return: BLEU's brevity penalty.
     :rtype: float
@@ -508,7 +451,7 @@ def brevity_penalty(closest_ref_len, hyp_len):
         return math.exp(1 - closest_ref_len / hyp_len)
 
 
-class SmoothingFunction(object):
+class SmoothingFunction:
     """
     This is an implementation of the smoothing techniques
     for segment-level BLEU scores that was presented in
@@ -531,23 +474,23 @@ class SmoothingFunction(object):
         ...               'Party', 'commands']
 
         >>> chencherry = SmoothingFunction()
-        >>> print(sentence_bleu([reference1], hypothesis1)) # doctest: +ELLIPSIS
+        >>> print (sentence_bleu([reference1], hypothesis1)) # doctest: +ELLIPSIS
         0.4118...
-        >>> print(sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method0)) # doctest: +ELLIPSIS
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method0)) # doctest: +ELLIPSIS
         0.4118...
-        >>> print(sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method1)) # doctest: +ELLIPSIS
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method1)) # doctest: +ELLIPSIS
         0.4118...
-        >>> print(sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method2)) # doctest: +ELLIPSIS
-        0.4452...
-        >>> print(sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method3)) # doctest: +ELLIPSIS
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method2)) # doctest: +ELLIPSIS
+        0.4489...
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method3)) # doctest: +ELLIPSIS
         0.4118...
-        >>> print(sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method4)) # doctest: +ELLIPSIS
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method4)) # doctest: +ELLIPSIS
         0.4118...
-        >>> print(sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method5)) # doctest: +ELLIPSIS
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method5)) # doctest: +ELLIPSIS
         0.4905...
-        >>> print(sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method6)) # doctest: +ELLIPSIS
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method6)) # doctest: +ELLIPSIS
         0.4135...
-        >>> print(sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method7)) # doctest: +ELLIPSIS
+        >>> print (sentence_bleu([reference1], hypothesis1, smoothing_function=chencherry.method7)) # doctest: +ELLIPSIS
         0.4905...
 
         :param epsilon: the epsilon value use in method 1
@@ -570,16 +513,14 @@ class SmoothingFunction(object):
             if p_i.numerator != 0:
                 p_n_new.append(p_i)
             else:
-                _msg = six.text_type(
+                _msg = str(
                     "\nThe hypothesis contains 0 counts of {}-gram overlaps.\n"
                     "Therefore the BLEU score evaluates to 0, independently of\n"
                     "how many N-gram overlaps of lower order it contains.\n"
                     "Consider using lower n-gram order or use "
                     "SmoothingFunction()"
                 ).format(i + 1)
-                warnings.warn(
-                    _msg
-                )  # unsafe-print ok: literal text with a numeric n-gram order
+                warnings.warn(_msg)
                 # When numerator==0 where denonminator==0 or !=0, the result
                 # for the precision score should be equal to 0 or undefined.
                 # Due to BLEU geometric mean computation in logarithm space,
@@ -593,28 +534,22 @@ class SmoothingFunction(object):
         Smoothing method 1: Add *epsilon* counts to precision with 0 counts.
         """
         return [
-            (
-                (p_i.numerator + self.epsilon) / p_i.denominator
-                if p_i.numerator == 0
-                else p_i
-            )
+            (p_i.numerator + self.epsilon) / p_i.denominator
+            if p_i.numerator == 0
+            else p_i
             for p_i in p_n
         ]
 
     def method2(self, p_n, *args, **kwargs):
         """
         Smoothing method 2: Add 1 to both numerator and denominator from
-        Chin-Yew Lin and Franz Josef Och (2004) ORANGE: a Method for
-        Evaluating Automatic Evaluation Metrics for Machine Translation.
-        In COLING 2004.
+        Chin-Yew Lin and Franz Josef Och (2004) Automatic evaluation of
+        machine translation quality using longest common subsequence and
+        skip-bigram statistics. In ACL04.
         """
         return [
-            (
-                Fraction(p_n[i].numerator + 1, p_n[i].denominator + 1, _normalize=False)
-                if i != 0
-                else p_n[0]
-            )
-            for i in range(len(p_n))
+            Fraction(p_i.numerator + 1, p_i.denominator + 1, _normalize=False)
+            for p_i in p_n
         ]
 
     def method3(self, p_n, *args, **kwargs):
@@ -623,27 +558,23 @@ class SmoothingFunction(object):
         The smoothing is computed by taking 1 / ( 2^k ), instead of 0, for each
         precision score whose matching n-gram count is null.
         k is 1 for the first 'n' value for which the n-gram match count is null/
-
         For example, if the text contains:
-
-        - one 2-gram match
-        - and (consequently) two 1-gram matches
-
+         - one 2-gram match
+         - and (consequently) two 1-gram matches
         the n-gram count for each individual precision score would be:
-
-        - n=1  =>  prec_count = 2     (two unigrams)
-        - n=2  =>  prec_count = 1     (one bigram)
-        - n=3  =>  prec_count = 1/2   (no trigram,  taking 'smoothed' value of 1 / ( 2^k ), with k=1)
-        - n=4  =>  prec_count = 1/4   (no fourgram, taking 'smoothed' value of 1 / ( 2^k ), with k=2)
+         - n=1  =>  prec_count = 2     (two unigrams)
+         - n=2  =>  prec_count = 1     (one bigram)
+         - n=3  =>  prec_count = 1/2   (no trigram,  taking 'smoothed' value of 1 / ( 2^k ), with k=1)
+         - n=4  =>  prec_count = 1/4   (no fourgram, taking 'smoothed' value of 1 / ( 2^k ), with k=2)
         """
         incvnt = 1  # From the mteval-v13a.pl, it's referred to as k.
         for i, p_i in enumerate(p_n):
             if p_i.numerator == 0:
-                p_n[i] = 1 / (2**incvnt * p_i.denominator)
+                p_n[i] = 1 / (2 ** incvnt * p_i.denominator)
                 incvnt += 1
         return p_n
 
-    def method4(self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs):
+    def method4(self, p_n, references, hypothesis, hyp_len, *args, **kwargs):
         """
         Smoothing method 4:
         Shorter translations may have inflated precision values due to having
@@ -651,27 +582,21 @@ class SmoothingFunction(object):
         smaller smoothed counts. Instead of scaling to 1/(2^k), Chen and Cherry
         suggests dividing by 1/ln(len(T)), where T is the length of the translation.
         """
-        incvnt = 1
-        hyp_len = hyp_len if hyp_len else len(hypothesis)
         for i, p_i in enumerate(p_n):
-            if p_i.numerator == 0 and hyp_len > 1:
-                # incvnt = i + 1 * self.k / math.log(
-                #     hyp_len
-                # )  # Note that this K is different from the K from NIST.
-                # p_n[i] = incvnt / p_i.denominator\
-                numerator = 1 / (2**incvnt * self.k / math.log(hyp_len))
-                p_n[i] = numerator / p_i.denominator
-                incvnt += 1
+            if p_i.numerator == 0 and hyp_len != 0:
+                incvnt = i + 1 * self.k / math.log(
+                    hyp_len
+                )  # Note that this K is different from the K from NIST.
+                p_n[i] = 1 / incvnt
         return p_n
 
-    def method5(self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs):
+    def method5(self, p_n, references, hypothesis, hyp_len, *args, **kwargs):
         """
         Smoothing method 5:
         The matched counts for similar values of n should be similar. To a
         calculate the n-gram matched count, it averages the n−1, n and n+1 gram
         matched counts.
         """
-        hyp_len = hyp_len if hyp_len else len(hypothesis)
         m = {}
         # Requires an precision value for an addition ngram order.
         p_n_plus1 = p_n + [modified_precision(references, hypothesis, 5)]
@@ -681,7 +606,7 @@ class SmoothingFunction(object):
             m[i] = p_n[i]
         return p_n
 
-    def method6(self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs):
+    def method6(self, p_n, references, hypothesis, hyp_len, *args, **kwargs):
         """
         Smoothing method 6:
         Interpolates the maximum likelihood estimate of the precision *p_n* with
@@ -690,7 +615,6 @@ class SmoothingFunction(object):
         Gao and He (2013) Training MRF-Based Phrase Translation Models using
         Gradient Ascent. In NAACL.
         """
-        hyp_len = hyp_len if hyp_len else len(hypothesis)
         # This smoothing only works when p_1 and p_2 is non-zero.
         # Raise an error with an appropriate message when the input is too short
         # to use this smoothing technique.
@@ -708,12 +632,11 @@ class SmoothingFunction(object):
                 p_n[i] = (m + self.alpha * pi0) / (l + self.alpha)
         return p_n
 
-    def method7(self, p_n, references, hypothesis, hyp_len=None, *args, **kwargs):
+    def method7(self, p_n, references, hypothesis, hyp_len, *args, **kwargs):
         """
         Smoothing method 7:
-        Interpolates methods 4 and 5.
+        Interpolates methods 5 and 6.
         """
-        hyp_len = hyp_len if hyp_len else len(hypothesis)
         p_n = self.method4(p_n, references, hypothesis, hyp_len)
         p_n = self.method5(p_n, references, hypothesis, hyp_len)
         return p_n

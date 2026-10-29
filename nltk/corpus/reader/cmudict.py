@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Carnegie Mellon Pronouncing Dictionary Corpus Reader
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -45,19 +44,19 @@ V       vee     V IY           W       we      W IY
 Y       yield   Y IY L D       Z       zee     Z IY
 ZH      seizure S IY ZH ER
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
 
-from nltk.corpus.reader.api import *
-from nltk.corpus.reader.util import *
+from nltk import compat
 from nltk.util import Index
+
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 
 class CMUDictCorpusReader(CorpusReader):
     def entries(self):
         """
         :return: the cmudict lexicon as a list of entries
-            containing (word, transcriptions) tuples.
+        containing (word, transcriptions) tuples.
         """
         return concat(
             [
@@ -65,6 +64,15 @@ class CMUDictCorpusReader(CorpusReader):
                 for fileid, enc in self.abspaths(None, True)
             ]
         )
+
+    def raw(self):
+        """
+        :return: the cmudict lexicon as a raw string.
+        """
+        fileids = self._fileids
+        if isinstance(fileids, string_types):
+            fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
 
     def words(self):
         """
@@ -75,7 +83,7 @@ class CMUDictCorpusReader(CorpusReader):
     def dict(self):
         """
         :return: the cmudict lexicon as a dictionary, whose keys are
-            lowercase words and whose values are lists of pronunciations.
+        lowercase words and whose values are lists of pronunciations.
         """
         return dict(Index(self.entries()))
 
@@ -84,13 +92,8 @@ def read_cmudict_block(stream):
     entries = []
     while len(entries) < 100:  # Read 100 at a time.
         line = stream.readline()
-        if line == "":
+        if line == '':
             return entries  # end of file.
         pieces = line.split()
-        # A blank / whitespace-only line carries no entry; skipping it avoids an
-        # IndexError on ``pieces[0]`` that would otherwise abort iteration over
-        # the whole corpus.
-        if not pieces:
-            continue
         entries.append((pieces[0].lower(), pieces[2:]))
     return entries

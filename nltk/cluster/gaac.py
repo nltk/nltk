@@ -1,22 +1,21 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-# -*- coding: utf-8 -*-
-import six
 # Natural Language Toolkit: Group Average Agglomerative Clusterer
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Trevor Cohn <tacohn@cs.mu.oz.au>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
+from __future__ import print_function, unicode_literals, division
 
 try:
     import numpy
 except ImportError:
     pass
 
-from nltk.cluster.util import Dendrogram, VectorSpaceClusterer, cosine_distance
-from nltk.termsec import safe_print
+from nltk.cluster.util import VectorSpaceClusterer, Dendrogram, cosine_distance
+from nltk.compat import python_2_unicode_compatible
 
 
+@python_2_unicode_compatible
 class GAAClusterer(VectorSpaceClusterer):
     """
     The Group Average Agglomerative starts with each of the N vectors as singleton
@@ -52,7 +51,7 @@ class GAAClusterer(VectorSpaceClusterer):
 
         # construct the similarity matrix
         dims = (N, N)
-        dist = numpy.ones(dims, dtype=float) * numpy.inf
+        dist = numpy.ones(dims, dtype=numpy.float) * numpy.inf
         for i in range(N):
             for j in range(i + 1, N):
                 dist[i, j] = cosine_distance(vectors[i], vectors[j])
@@ -60,7 +59,7 @@ class GAAClusterer(VectorSpaceClusterer):
         while cluster_count > max(self._num_clusters, 1):
             i, j = numpy.unravel_index(dist.argmin(), dims)
             if trace:
-                safe_print("merging %d and %d" % (i, j))
+                print("merging %d and %d" % (i, j))
 
             # update similarities for merging i and j
             self._merge_similarities(dist, cluster_len, i, j)
@@ -138,7 +137,7 @@ class GAAClusterer(VectorSpaceClusterer):
         return self._num_clusters
 
     def __repr__(self):
-        return "<GroupAverageAgglomerative Clusterer n=%d>" % self._num_clusters
+        return '<GroupAverageAgglomerative Clusterer n=%d>' % self._num_clusters
 
 
 def demo():
@@ -155,20 +154,20 @@ def demo():
     clusterer = GAAClusterer(4)
     clusters = clusterer.cluster(vectors, True)
 
-    safe_print("Clusterer:", clusterer)
-    safe_print("Clustered:", vectors)
-    safe_print("As:", clusters)
-    safe_print()
+    print('Clusterer:', clusterer)
+    print('Clustered:', vectors)
+    print('As:', clusters)
+    print()
 
     # show the dendrogram
     clusterer.dendrogram().show()
 
     # classify a new vector
     vector = numpy.array([3, 3])
-    safe_print("classify(%s):" % vector, end=" ")
-    safe_print(clusterer.classify(vector))
-    safe_print()
+    print('classify(%s):' % vector, end=' ')
+    print(clusterer.classify(vector))
+    print()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     demo()

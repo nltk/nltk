@@ -1,21 +1,19 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-# -*- coding: utf-8 -*-
-import six
 # Natural Language Toolkit: Chatbot Utilities
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Authors: Steven Bird <stevenbird1@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 # Based on an Eliza implementation by Joe Strout <joe@strout.net>,
 # Jeff Epler <jepler@inetnebr.com> and Jez Higgins <jez@jezuk.co.uk>.
+from __future__ import print_function
 
-import random
 import re
+import random
 
-from nltk import redos
-from nltk.termsec import safe_print
+from six.moves import input
+
 
 reflections = {
     "i am": "you are",
@@ -54,19 +52,14 @@ class Chat(object):
         :rtype: None
         """
 
-        # Each ``x`` is a caller-supplied pattern matched (``pattern.match``
-        # below) against arbitrary, unbounded end-user input, so compile it
-        # through ``redos``: a pattern such as ``(a|a)*z`` would otherwise
-        # backtrack catastrophically on a long message and hang the bot
-        # (CWE-1333). See ``nltk/redos.py``.
-        self._pairs = [(redos.compile(x, re.IGNORECASE), y) for (x, y) in pairs]
+        self._pairs = [(re.compile(x, re.IGNORECASE), y) for (x, y) in pairs]
         self._reflections = reflections
         self._regex = self._compile_reflections()
 
     def _compile_reflections(self):
-        sorted_refl = sorted(self._reflections, key=len, reverse=True)
-        return redos.compile(
-            r"\b({})\b".format("|".join(map(re.escape, sorted_refl))), re.IGNORECASE
+        sorted_refl = sorted(self._reflections.keys(), key=len, reverse=True)
+        return re.compile(
+            r"\b({0})\b".format("|".join(map(re.escape, sorted_refl))), re.IGNORECASE
         )
 
     def _substitute(self, str):
@@ -84,7 +77,7 @@ class Chat(object):
         )
 
     def _wildcards(self, response, match):
-        pos = response.find("%")
+        pos = response.find('%')
         while pos >= 0:
             num = int(response[pos + 1 : pos + 2])
             response = (
@@ -92,7 +85,7 @@ class Chat(object):
                 + self._substitute(match.group(num))
                 + response[pos + 2 :]
             )
-            pos = response.find("%")
+            pos = response.find('%')
         return response
 
     def respond(self, str):
@@ -105,7 +98,7 @@ class Chat(object):
         """
 
         # check each pattern
-        for pattern, response in self._pairs:
+        for (pattern, response) in self._pairs:
             match = pattern.match(str)
 
             # did the pattern match?
@@ -114,10 +107,10 @@ class Chat(object):
                 resp = self._wildcards(resp, match)  # process wildcards
 
                 # fix munged punctuation at the end
-                if resp[-2:] == "?.":
-                    resp = resp[:-2] + "."
-                if resp[-2:] == "??":
-                    resp = resp[:-2] + "?"
+                if resp[-2:] == '?.':
+                    resp = resp[:-2] + '.'
+                if resp[-2:] == '??':
+                    resp = resp[:-2] + '?'
                 return resp
 
     # Hold a conversation with a chatbot
@@ -128,8 +121,8 @@ class Chat(object):
             try:
                 user_input = input(">")
             except EOFError:
-                safe_print(user_input)
+                print(user_input)
             if user_input:
                 while user_input[-1] in "!.":
                     user_input = user_input[:-1]
-                safe_print(self.respond(user_input))
+                print(self.respond(user_input))

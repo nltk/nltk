@@ -1,9 +1,8 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Verbnet Corpus Reader
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
@@ -12,18 +11,15 @@ An NLTK interface to the VerbNet verb lexicon
 For details about VerbNet see:
 https://verbs.colorado.edu/~mpalmer/projects/verbnet.html
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
+from __future__ import unicode_literals
 
+import re
 import textwrap
 from collections import defaultdict
 
-from nltk import redos
-from nltk.corpus.reader.xmldocs import XMLCorpusReader
+from six import string_types
 
-#: Bound recursion over nested VNSUBCLASS elements so a deeply nested class file
-#: raises ValueError instead of an uncaught RecursionError (CWE-674).
-MAX_XML_DEPTH = 500
+from nltk.corpus.reader.xmldocs import XMLCorpusReader
 
 
 class VerbnetCorpusReader(XMLCorpusReader):
@@ -40,25 +36,8 @@ class VerbnetCorpusReader(XMLCorpusReader):
     https://verbs.colorado.edu/~mpalmer/projects/verbnet.html
     """
 
-    #: Supported VerbNet versions.
-    SUPPORTED_VERSIONS = ("2.1", "3.2", "3.3")
-
     # No unicode encoding param, since the data files are all XML.
-    def __init__(self, root, fileids, wrap_etree=False, version="2.1"):
-        """
-        :param root: The root directory for the corpus.
-        :param fileids: A list or regexp specifying the fileids in the corpus.
-        :param wrap_etree: If true, wrap the ElementTree in an ElementWrapper.
-        :param version: The VerbNet version string (default ``"2.1"``).
-            NLTK ships VerbNet 2.1 via ``nltk.download('verbnet')``.
-            Use ``"3.2"`` or ``"3.3"`` when pointing *root* at a local
-            copy of VerbNet 3.2 or 3.3.
-        """
-        if version not in self.SUPPORTED_VERSIONS:
-            raise ValueError(
-                "VerbNet version {0!r} is not supported. Supported versions: {1}".format(version, self.SUPPORTED_VERSIONS)
-            )
-        self._version = version
+    def __init__(self, root, fileids, wrap_etree=False):
         XMLCorpusReader.__init__(self, root, fileids, wrap_etree)
 
         self._lemma_to_class = defaultdict(list)
@@ -81,23 +60,14 @@ class VerbnetCorpusReader(XMLCorpusReader):
         # runs 2-30 times faster.
         self._quick_index()
 
-    @property
-    def version(self):
-        """The VerbNet version string for this corpus instance."""
-        return self._version
-
-    _LONGID_RE = redos.compile(r"([A-Za-z_]+)-([\d.-]+)$")
+    _LONGID_RE = re.compile(r'([^\-\.]*)-([\d+.\-]+)$')
     """Regular expression that matches (and decomposes) longids"""
 
-    _SHORTID_RE = redos.compile(r"[\d.\-]+$")
+    _SHORTID_RE = re.compile(r'[\d+.\-]+$')
     """Regular expression that matches shortids"""
 
-    # A repeated `<MEMBER` with no `>` re-scanned to end of file at every anchor,
-    # O(n**2) (CWE-407); keeping `<` out of the tail stops each scan at the next
-    # tag, O(n). The longest tail in verbnet and verbnet3 is 78 chars.
-    _INDEX_RE = redos.compile(
-        r'<MEMBER name="\??([^"]+)" wn="([^"]*)"[^<>]{1,1024}>|'
-        r'<VNSUBCLASS ID="([^"]+)"/?>'
+    _INDEX_RE = re.compile(
+        r'<MEMBER name="\??([^"]+)" wn="([^"]*)"[^>]+>|' r'<VNSUBCLASS ID="([^"]+)"/?>'
     )
     """Regular expression used by ``_index()`` to quickly scan the corpus
        for basic information."""
@@ -111,9 +81,9 @@ class VerbnetCorpusReader(XMLCorpusReader):
             return sorted(self._lemma_to_class.keys())
         else:
             # [xx] should this include subclass members?
-            if isinstance(vnclass, six.string_types):
+            if isinstance(vnclass, string_types):
                 vnclass = self.vnclass(vnclass)
-            return [member.get("name") for member in vnclass.findall("MEMBERS/MEMBER")]
+            return [member.get('name') for member in vnclass.findall('MEMBERS/MEMBER')]
 
     def wordnetids(self, vnclass=None):
         """
@@ -124,13 +94,13 @@ class VerbnetCorpusReader(XMLCorpusReader):
             return sorted(self._wordnet_to_class.keys())
         else:
             # [xx] should this include subclass members?
-            if isinstance(vnclass, six.string_types):
+            if isinstance(vnclass, string_types):
                 vnclass = self.vnclass(vnclass)
             return sum(
-                (
-                    member.get("wn", "").split()
-                    for member in vnclass.findall("MEMBERS/MEMBER")
-                ),
+                [
+                    member.get('wn', '').split()
+                    for member in vnclass.findall('MEMBERS/MEMBER')
+                ],
                 [],
             )
 
@@ -156,8 +126,8 @@ class VerbnetCorpusReader(XMLCorpusReader):
         elif classid is not None:
             xmltree = self.vnclass(classid)
             return [
-                subclass.get("ID")
-                for subclass in xmltree.findall("SUBCLASSES/VNSUBCLASS")
+                subclass.get('ID')
+                for subclass in xmltree.findall('SUBCLASSES/VNSUBCLASS')
             ]
         else:
             return sorted(self._class_to_fileid.keys())
@@ -183,17 +153,17 @@ class VerbnetCorpusReader(XMLCorpusReader):
         if classid in self._class_to_fileid:
             fileid = self._class_to_fileid[self.longid(classid)]
             tree = self.xml(fileid)
-            if classid == tree.get("ID"):
+            if classid == tree.get('ID'):
                 return tree
             else:
-                for subclass in tree.findall(".//VNSUBCLASS"):
-                    if classid == subclass.get("ID"):
+                for subclass in tree.findall('.//VNSUBCLASS'):
+                    if classid == subclass.get('ID'):
                         return subclass
                 else:
                     assert False  # we saw it during _index()!
 
         else:
-            raise ValueError("Unknown identifier {0}".format(fileid_or_classid))
+            raise ValueError('Unknown identifier {}'.format(fileid_or_classid))
 
     def fileids(self, vnclass_ids=None):
         """
@@ -203,7 +173,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         """
         if vnclass_ids is None:
             return self._fileids
-        elif isinstance(vnclass_ids, six.string_types):
+        elif isinstance(vnclass_ids, string_types):
             return [self._class_to_fileid[self.longid(vnclass_ids)]]
         else:
             return [
@@ -224,17 +194,17 @@ class VerbnetCorpusReader(XMLCorpusReader):
             containing the xml contents of a VerbNet class.
         :return: frames - a list of frame dictionaries
         """
-        if isinstance(vnclass, six.string_types):
+        if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
         frames = []
-        vnframes = vnclass.findall("FRAMES/FRAME")
+        vnframes = vnclass.findall('FRAMES/FRAME')
         for vnframe in vnframes:
             frames.append(
                 {
-                    "example": self._get_example_within_frame(vnframe),
-                    "description": self._get_description_within_frame(vnframe),
-                    "syntax": self._get_syntactic_list_within_frame(vnframe),
-                    "semantics": self._get_semantics_within_frame(vnframe),
+                    'example': self._get_example_within_frame(vnframe),
+                    'description': self._get_description_within_frame(vnframe),
+                    'syntax': self._get_syntactic_list_within_frame(vnframe),
+                    'semantics': self._get_semantics_within_frame(vnframe),
                 }
             )
         return frames
@@ -249,11 +219,11 @@ class VerbnetCorpusReader(XMLCorpusReader):
             containing the xml contents of a VerbNet class.
         :return: list of subclasses
         """
-        if isinstance(vnclass, six.string_types):
+        if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
 
         subclasses = [
-            subclass.get("ID") for subclass in vnclass.findall("SUBCLASSES/VNSUBCLASS")
+            subclass.get('ID') for subclass in vnclass.findall('SUBCLASSES/VNSUBCLASS')
         ]
         return subclasses
 
@@ -268,17 +238,17 @@ class VerbnetCorpusReader(XMLCorpusReader):
             containing the xml contents of a VerbNet class.
         :return: themroles: A list of thematic roles in the VerbNet class
         """
-        if isinstance(vnclass, six.string_types):
+        if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
 
         themroles = []
-        for trole in vnclass.findall("THEMROLES/THEMROLE"):
+        for trole in vnclass.findall('THEMROLES/THEMROLE'):
             themroles.append(
                 {
-                    "type": trole.get("type"),
-                    "modifiers": [
-                        {"value": restr.get("Value"), "type": restr.get("type")}
-                        for restr in trole.findall("SELRESTRS/SELRESTR")
+                    'type': trole.get('type'),
+                    'modifiers': [
+                        {'value': restr.get('Value'), 'type': restr.get('type')}
+                        for restr in trole.findall('SELRESTRS/SELRESTR')
                     ],
                 }
             )
@@ -292,30 +262,24 @@ class VerbnetCorpusReader(XMLCorpusReader):
         """
         Initialize the indexes ``_lemma_to_class``,
         ``_wordnet_to_class``, and ``_class_to_fileid`` by scanning
-        through the corpus fileids.  This is fast if ElementTree
-        uses the C implementation (<0.1 secs), but quite slow (>10 secs)
-        if only the python implementation is available.
+        through the corpus fileids.  This is fast with cElementTree
+        (<0.1 secs), but quite slow (>10 secs) with the python
+        implementation of ElementTree.
         """
         for fileid in self._fileids:
             self._index_helper(self.xml(fileid), fileid)
 
-    def _index_helper(self, xmltree, fileid, _depth=0, max_depth=None):
+    def _index_helper(self, xmltree, fileid):
         """Helper for ``_index()``"""
-        if max_depth is None:
-            max_depth = MAX_XML_DEPTH
-        if _depth > max_depth:
-            raise ValueError(
-                "VNSUBCLASS nesting exceeds MAX_XML_DEPTH ({0}); the input may be adversarially deep.".format(max_depth)
-            )
-        vnclass = xmltree.get("ID")
+        vnclass = xmltree.get('ID')
         self._class_to_fileid[vnclass] = fileid
         self._shortid_to_longid[self.shortid(vnclass)] = vnclass
-        for member in xmltree.findall("MEMBERS/MEMBER"):
-            self._lemma_to_class[member.get("name")].append(vnclass)
-            for wn in member.get("wn", "").split():
+        for member in xmltree.findall('MEMBERS/MEMBER'):
+            self._lemma_to_class[member.get('name')].append(vnclass)
+            for wn in member.get('wn', '').split():
                 self._wordnet_to_class[wn].append(vnclass)
-        for subclass in xmltree.findall("SUBCLASSES/VNSUBCLASS"):
-            self._index_helper(subclass, fileid, _depth + 1, max_depth)
+        for subclass in xmltree.findall('SUBCLASSES/VNSUBCLASS'):
+            self._index_helper(subclass, fileid)
 
     def _quick_index(self):
         """
@@ -324,8 +288,8 @@ class VerbnetCorpusReader(XMLCorpusReader):
         through the corpus fileids.  This doesn't do proper xml parsing,
         but is good enough to find everything in the standard VerbNet
         corpus -- and it runs about 30 times faster than xml parsing
-        (with the python ElementTree; only 2-3 times faster
-        if ElementTree uses the C implementation).
+        (with the python ElementTree; only 2-3 times faster with
+        cElementTree).
         """
         # nb: if we got rid of wordnet_to_class, this would run 2-3
         # times faster.
@@ -333,19 +297,18 @@ class VerbnetCorpusReader(XMLCorpusReader):
             vnclass = fileid[:-4]  # strip the '.xml'
             self._class_to_fileid[vnclass] = fileid
             self._shortid_to_longid[self.shortid(vnclass)] = vnclass
-            with self.open(fileid) as fp:
-                for m in self._INDEX_RE.finditer(fp.read()):
-                    groups = m.groups()
-                    if groups[0] is not None:
-                        self._lemma_to_class[groups[0]].append(vnclass)
-                        for wn in groups[1].split():
-                            self._wordnet_to_class[wn].append(vnclass)
-                    elif groups[2] is not None:
-                        self._class_to_fileid[groups[2]] = fileid
-                        vnclass = groups[2]  # for <MEMBER> elts.
-                        self._shortid_to_longid[self.shortid(vnclass)] = vnclass
-                    else:
-                        assert False, "unexpected match condition"
+            for m in self._INDEX_RE.finditer(self.open(fileid).read()):
+                groups = m.groups()
+                if groups[0] is not None:
+                    self._lemma_to_class[groups[0]].append(vnclass)
+                    for wn in groups[1].split():
+                        self._wordnet_to_class[wn].append(vnclass)
+                elif groups[2] is not None:
+                    self._class_to_fileid[groups[2]] = fileid
+                    vnclass = groups[2]  # for <MEMBER> elts.
+                    self._shortid_to_longid[self.shortid(vnclass)] = vnclass
+                else:
+                    assert False, 'unexpected match condition'
 
     ######################################################################
     # { Identifier conversion
@@ -360,11 +323,11 @@ class VerbnetCorpusReader(XMLCorpusReader):
         if self._LONGID_RE.match(shortid):
             return shortid  # it's already a longid.
         elif not self._SHORTID_RE.match(shortid):
-            raise ValueError("vnclass identifier %r not found" % shortid)
+            raise ValueError('vnclass identifier %r not found' % shortid)
         try:
             return self._shortid_to_longid[shortid]
-        except KeyError as e:
-            six.raise_from(ValueError("vnclass identifier %r not found" % shortid), e)
+        except KeyError:
+            raise ValueError('vnclass identifier %r not found' % shortid)
 
     def shortid(self, longid):
         """Returns shortid of a VerbNet class
@@ -378,7 +341,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
         if m:
             return m.group(2)
         else:
-            raise ValueError("vnclass identifier %r not found" % longid)
+            raise ValueError('vnclass identifier %r not found' % longid)
 
     ######################################################################
     # { Frame access utility functions
@@ -397,17 +360,13 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :return: semantics: semantics dictionary
         """
         semantics_within_single_frame = []
-        for pred in vnframe.findall("SEMANTICS/PRED"):
+        for pred in vnframe.findall('SEMANTICS/PRED'):
             arguments = [
-                {"type": arg.get("type"), "value": arg.get("value")}
-                for arg in pred.findall("ARGS/ARG")
+                {'type': arg.get('type'), 'value': arg.get('value')}
+                for arg in pred.findall('ARGS/ARG')
             ]
             semantics_within_single_frame.append(
-                {
-                    "predicate_value": pred.get("value"),
-                    "arguments": arguments,
-                    "negated": pred.get("bool") == "!",
-                }
+                {'predicate_value': pred.get('value'), 'arguments': arguments}
             )
         return semantics_within_single_frame
 
@@ -420,7 +379,7 @@ class VerbnetCorpusReader(XMLCorpusReader):
             a VerbNet frame.
         :return: example_text: The example sentence for this particular frame
         """
-        example_element = vnframe.find("EXAMPLES/EXAMPLE")
+        example_element = vnframe.find('EXAMPLES/EXAMPLE')
         if example_element is not None:
             example_text = example_element.text
         else:
@@ -437,10 +396,10 @@ class VerbnetCorpusReader(XMLCorpusReader):
             a VerbNet frame.
         :return: description: a description dictionary with members - primary and secondary
         """
-        description_element = vnframe.find("DESCRIPTION")
+        description_element = vnframe.find('DESCRIPTION')
         return {
-            "primary": description_element.attrib["primary"],
-            "secondary": description_element.get("secondary", ""),
+            'primary': description_element.attrib['primary'],
+            'secondary': description_element.get('secondary', ''),
         }
 
     def _get_syntactic_list_within_frame(self, vnframe):
@@ -456,20 +415,20 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :return: syntax_within_single_frame
         """
         syntax_within_single_frame = []
-        for elt in vnframe.find("SYNTAX"):
+        for elt in vnframe.find('SYNTAX'):
             pos_tag = elt.tag
             modifiers = dict()
-            modifiers["value"] = elt.get("value") if "value" in elt.attrib else ""
-            modifiers["selrestrs"] = [
-                {"value": restr.get("Value"), "type": restr.get("type")}
-                for restr in elt.findall("SELRESTRS/SELRESTR")
+            modifiers['value'] = elt.get('value') if 'value' in elt.attrib else ""
+            modifiers['selrestrs'] = [
+                {'value': restr.get('Value'), 'type': restr.get('type')}
+                for restr in elt.findall('SELRESTRS/SELRESTR')
             ]
-            modifiers["synrestrs"] = [
-                {"value": restr.get("Value"), "type": restr.get("type")}
-                for restr in elt.findall("SYNRESTRS/SYNRESTR")
+            modifiers['synrestrs'] = [
+                {'value': restr.get('Value'), 'type': restr.get('type')}
+                for restr in elt.findall('SYNRESTRS/SYNRESTR')
             ]
             syntax_within_single_frame.append(
-                {"pos_tag": pos_tag, "modifiers": modifiers}
+                {'pos_tag': pos_tag, 'modifiers': modifiers}
             )
         return syntax_within_single_frame
 
@@ -484,21 +443,21 @@ class VerbnetCorpusReader(XMLCorpusReader):
         the given VerbNet class.
 
         :param vnclass: A VerbNet class identifier; or an ElementTree
-            containing the xml contents of a VerbNet class.
+        containing the xml contents of a VerbNet class.
         """
-        if isinstance(vnclass, six.string_types):
+        if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
 
-        s = vnclass.get("ID") + "\n"
-        s += self.pprint_subclasses(vnclass, indent="  ") + "\n"
-        s += self.pprint_members(vnclass, indent="  ") + "\n"
-        s += "  Thematic roles:\n"
-        s += self.pprint_themroles(vnclass, indent="    ") + "\n"
-        s += "  Frames:\n"
-        s += self.pprint_frames(vnclass, indent="    ")
+        s = vnclass.get('ID') + '\n'
+        s += self.pprint_subclasses(vnclass, indent='  ') + '\n'
+        s += self.pprint_members(vnclass, indent='  ') + '\n'
+        s += '  Thematic roles:\n'
+        s += self.pprint_themroles(vnclass, indent='    ') + '\n'
+        s += '  Frames:\n'
+        s += self.pprint_frames(vnclass, indent='    ')
         return s
 
-    def pprint_subclasses(self, vnclass, indent=""):
+    def pprint_subclasses(self, vnclass, indent=''):
         """Returns pretty printed version of subclasses of VerbNet class
 
         Return a string containing a pretty-printed representation of
@@ -507,18 +466,18 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :param vnclass: A VerbNet class identifier; or an ElementTree
             containing the xml contents of a VerbNet class.
         """
-        if isinstance(vnclass, six.string_types):
+        if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
 
         subclasses = self.subclasses(vnclass)
         if not subclasses:
-            subclasses = ["(none)"]
-        s = "Subclasses: " + " ".join(subclasses)
+            subclasses = ['(none)']
+        s = 'Subclasses: ' + ' '.join(subclasses)
         return textwrap.fill(
-            s, 70, initial_indent=indent, subsequent_indent=indent + "  "
+            s, 70, initial_indent=indent, subsequent_indent=indent + '  '
         )
 
-    def pprint_members(self, vnclass, indent=""):
+    def pprint_members(self, vnclass, indent=''):
         """Returns pretty printed version of members in a VerbNet class
 
         Return a string containing a pretty-printed representation of
@@ -527,18 +486,18 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :param vnclass: A VerbNet class identifier; or an ElementTree
             containing the xml contents of a VerbNet class.
         """
-        if isinstance(vnclass, six.string_types):
+        if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
 
         members = self.lemmas(vnclass)
         if not members:
-            members = ["(none)"]
-        s = "Members: " + " ".join(members)
+            members = ['(none)']
+        s = 'Members: ' + ' '.join(members)
         return textwrap.fill(
-            s, 70, initial_indent=indent, subsequent_indent=indent + "  "
+            s, 70, initial_indent=indent, subsequent_indent=indent + '  '
         )
 
-    def pprint_themroles(self, vnclass, indent=""):
+    def pprint_themroles(self, vnclass, indent=''):
         """Returns pretty printed version of thematic roles in a VerbNet class
 
         Return a string containing a pretty-printed representation of
@@ -547,22 +506,22 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :param vnclass: A VerbNet class identifier; or an ElementTree
             containing the xml contents of a VerbNet class.
         """
-        if isinstance(vnclass, six.string_types):
+        if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
 
         pieces = []
         for themrole in self.themroles(vnclass):
-            piece = indent + "* " + themrole.get("type")
+            piece = indent + '* ' + themrole.get('type')
             modifiers = [
-                modifier["value"] + modifier["type"]
-                for modifier in themrole["modifiers"]
+                modifier['value'] + modifier['type']
+                for modifier in themrole['modifiers']
             ]
             if modifiers:
-                piece += "[{}]".format(" ".join(modifiers))
+                piece += '[{}]'.format(' '.join(modifiers))
             pieces.append(piece)
-        return "\n".join(pieces)
+        return '\n'.join(pieces)
 
-    def pprint_frames(self, vnclass, indent=""):
+    def pprint_frames(self, vnclass, indent=''):
         """Returns pretty version of all frames in a VerbNet class
 
         Return a string containing a pretty-printed representation of
@@ -571,14 +530,14 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :param vnclass: A VerbNet class identifier; or an ElementTree
             containing the xml contents of a VerbNet class.
         """
-        if isinstance(vnclass, six.string_types):
+        if isinstance(vnclass, string_types):
             vnclass = self.vnclass(vnclass)
         pieces = []
         for vnframe in self.frames(vnclass):
             pieces.append(self._pprint_single_frame(vnframe, indent))
-        return "\n".join(pieces)
+        return '\n'.join(pieces)
 
-    def _pprint_single_frame(self, vnframe, indent=""):
+    def _pprint_single_frame(self, vnframe, indent=''):
         """Returns pretty printed version of a single frame in a VerbNet class
 
         Returns a string containing a pretty-printed representation of
@@ -587,16 +546,16 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :param vnframe: An ElementTree containing the xml contents of
             a VerbNet frame.
         """
-        frame_string = self._pprint_description_within_frame(vnframe, indent) + "\n"
-        frame_string += self._pprint_example_within_frame(vnframe, indent + " ") + "\n"
+        frame_string = self._pprint_description_within_frame(vnframe, indent) + '\n'
+        frame_string += self._pprint_example_within_frame(vnframe, indent + ' ') + '\n'
         frame_string += (
-            self._pprint_syntax_within_frame(vnframe, indent + "  Syntax: ") + "\n"
+            self._pprint_syntax_within_frame(vnframe, indent + '  Syntax: ') + '\n'
         )
-        frame_string += indent + "  Semantics:\n"
-        frame_string += self._pprint_semantics_within_frame(vnframe, indent + "    ")
+        frame_string += indent + '  Semantics:\n'
+        frame_string += self._pprint_semantics_within_frame(vnframe, indent + '    ')
         return frame_string
 
-    def _pprint_example_within_frame(self, vnframe, indent=""):
+    def _pprint_example_within_frame(self, vnframe, indent=''):
         """Returns pretty printed version of example within frame in a VerbNet class
 
         Return a string containing a pretty-printed representation of
@@ -605,10 +564,10 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :param vnframe: An ElementTree containing the xml contents of
             a Verbnet frame.
         """
-        if vnframe["example"]:
-            return indent + " Example: " + vnframe["example"]
+        if vnframe['example']:
+            return indent + ' Example: ' + vnframe['example']
 
-    def _pprint_description_within_frame(self, vnframe, indent=""):
+    def _pprint_description_within_frame(self, vnframe, indent=''):
         """Returns pretty printed version of a VerbNet frame description
 
         Return a string containing a pretty-printed representation of
@@ -617,12 +576,12 @@ class VerbnetCorpusReader(XMLCorpusReader):
         :param vnframe: An ElementTree containing the xml contents of
             a VerbNet frame.
         """
-        description = indent + vnframe["description"]["primary"]
-        if vnframe["description"]["secondary"]:
-            description += " ({})".format(vnframe["description"]["secondary"])
+        description = indent + vnframe['description']['primary']
+        if vnframe['description']['secondary']:
+            description += ' ({})'.format(vnframe['description']['secondary'])
         return description
 
-    def _pprint_syntax_within_frame(self, vnframe, indent=""):
+    def _pprint_syntax_within_frame(self, vnframe, indent=''):
         """Returns pretty printed version of syntax within a frame in a VerbNet class
 
         Return a string containing a pretty-printed representation of
@@ -632,25 +591,25 @@ class VerbnetCorpusReader(XMLCorpusReader):
             a VerbNet frame.
         """
         pieces = []
-        for element in vnframe["syntax"]:
-            piece = element["pos_tag"]
+        for element in vnframe['syntax']:
+            piece = element['pos_tag']
             modifier_list = []
-            if "value" in element["modifiers"] and element["modifiers"]["value"]:
-                modifier_list.append(element["modifiers"]["value"])
+            if 'value' in element['modifiers'] and element['modifiers']['value']:
+                modifier_list.append(element['modifiers']['value'])
             modifier_list += [
-                "{}{}".format(restr["value"], restr["type"])
+                '{}{}'.format(restr['value'], restr['type'])
                 for restr in (
-                    element["modifiers"]["selrestrs"]
-                    + element["modifiers"]["synrestrs"]
+                    element['modifiers']['selrestrs']
+                    + element['modifiers']['synrestrs']
                 )
             ]
             if modifier_list:
-                piece += "[{}]".format(" ".join(modifier_list))
+                piece += '[{}]'.format(' '.join(modifier_list))
             pieces.append(piece)
 
-        return indent + " ".join(pieces)
+        return indent + ' '.join(pieces)
 
-    def _pprint_semantics_within_frame(self, vnframe, indent=""):
+    def _pprint_semantics_within_frame(self, vnframe, indent=''):
         """Returns a pretty printed version of semantics within frame in a VerbNet class
 
         Return a string containing a pretty-printed representation of
@@ -660,9 +619,9 @@ class VerbnetCorpusReader(XMLCorpusReader):
             a VerbNet frame.
         """
         pieces = []
-        for predicate in vnframe["semantics"]:
-            arguments = [argument["value"] for argument in predicate["arguments"]]
+        for predicate in vnframe['semantics']:
+            arguments = [argument['value'] for argument in predicate['arguments']]
             pieces.append(
-                "{0}{1}({2})".format('\xac' if predicate['negated'] else '', predicate['predicate_value'], ', '.join(arguments))
+                '{}({})'.format(predicate['predicate_value'], ', '.join(arguments))
             )
-        return "\n".join("{0}* {1}".format(indent, piece) for piece in pieces)
+        return '\n'.join('{}* {}'.format(indent, piece) for piece in pieces)

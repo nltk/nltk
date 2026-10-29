@@ -1,24 +1,21 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-# -*- coding: utf-8 -*-
-import six
 # Natural Language Toolkit: API for alignment and translation objects
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Will Zhang <wilzzha@gmail.com>
 #         Guan Gui <ggui@student.unimelb.edu.au>
 #         Steven Bird <stevenbird1@gmail.com>
 #         Tah Wei Hoon <hoon.tw@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
+from __future__ import print_function, unicode_literals
 import subprocess
 from collections import namedtuple
 
-from nltk.internals import find_binary_absolute
-from nltk.pathsec import TrustError, spawn_trusted
-from nltk.termsec import sanitize_terminal
+from nltk.compat import python_2_unicode_compatible
 
 
+@python_2_unicode_compatible
 class AlignedSent(object):
     """
     Return an aligned sentence object, which encapsulates two sentences
@@ -57,6 +54,7 @@ class AlignedSent(object):
         if alignment is None:
             self.alignment = Alignment([])
         else:
+            assert type(alignment) is Alignment
             self.alignment = alignment
 
     @property
@@ -82,75 +80,48 @@ class AlignedSent(object):
 
         :rtype: str
         """
-        # repr() of each word, not a bare '%s': a word carrying a quote, a line
-        # break or a terminal control sequence is shown escaped (CWE-150).
-        words = "[%s]" % (", ".join(repr(w) for w in self._words))
-        mots = "[%s]" % (", ".join(repr(w) for w in self._mots))
+        words = "[%s]" % (", ".join("'%s'" % w for w in self._words))
+        mots = "[%s]" % (", ".join("'%s'" % w for w in self._mots))
 
-        return "AlignedSent({0}, {1}, {2!r})".format(words, mots, self._alignment)
+        return "AlignedSent(%s, %s, %r)" % (words, mots, self._alignment)
 
     def _to_dot(self):
         """
         Dot representation of the aligned sentence
         """
-
-        # Neutralise words interpolated into Graphviz double-quoted node ids and
-        # labels so a word carrying a quote or newline cannot break out and
-        # corrupt the graph (CWE-116; graphviz has no code execution).
-        def _dot_escape(text):
-            # Judge and escape the real characters (a str subclass, or what
-            # another object renders to, could lie); a NUL ends a C string, so
-            # Graphviz would drop the rest of the label: refused, not rendered.
-            text = str.__str__(text if isinstance(text, six.string_types) else str(text))
-            if "\x00" in text:
-                raise ValueError("AlignedSent labels cannot contain NUL: %r" % text)
-            return (
-                text.replace("\\", "\\\\")
-                .replace('"', '\\"')
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-            )
-
-        words = [_dot_escape(w) for w in self._words]
-        mots = [_dot_escape(w) for w in self._mots]
-
-        s = "graph align {\n"
-        s += "node[shape=plaintext]\n"
+        s = 'graph align {\n'
+        s += 'node[shape=plaintext]\n'
 
         # Declare node
-        s += "".join(['"{0}_source" [label="{1}"] \n'.format(w, w) for w in words])
-        s += "".join(['"{0}_target" [label="{1}"] \n'.format(w, w) for w in mots])
+        for w in self._words:
+            s += '"%s_source" [label="%s"] \n' % (w, w)
 
-        # Alignment; a pair whose target is None is an unaligned source word,
-        # which _check_alignment admits and which draws no edge. Only the first
-        # two fields index the words: a pair may carry more (sure/possible).
-        s += "".join(
-            [
-                '"{0}_source" -- "{1}_target" \n'.format(words[pair[0]], mots[pair[1]])
-                for pair in self._alignment
-                if pair[1] is not None
-            ]
-        )
+        for w in self._mots:
+            s += '"%s_target" [label="%s"] \n' % (w, w)
+
+        # Alignment
+        for u, v in self._alignment:
+            s += '"%s_source" -- "%s_target" \n' % (self._words[u], self._mots[v])
 
         # Connect the source words
-        for i in range(len(words) - 1):
-            s += '"{}_source" -- "{}_source" [style=invis]\n'.format(
-                words[i],
-                words[i + 1],
+        for i in range(len(self._words) - 1):
+            s += '"%s_source" -- "%s_source" [style=invis]\n' % (
+                self._words[i],
+                self._words[i + 1],
             )
 
         # Connect the target words
-        for i in range(len(mots) - 1):
-            s += '"{}_target" -- "{}_target" [style=invis]\n'.format(
-                mots[i],
-                mots[i + 1],
+        for i in range(len(self._mots) - 1):
+            s += '"%s_target" -- "%s_target" [style=invis]\n' % (
+                self._mots[i],
+                self._mots[i + 1],
             )
 
         # Put it in the same rank
-        s += "{rank = same; %s}\n" % (" ".join('"%s_source"' % w for w in words))
-        s += "{rank = same; %s}\n" % (" ".join('"%s_target"' % w for w in mots))
+        s += '{rank = same; %s}\n' % (' '.join('"%s_source"' % w for w in self._words))
+        s += '{rank = same; %s}\n' % (' '.join('"%s_target"' % w for w in self._mots))
 
-        s += "}"
+        s += '}'
 
         return s
 
@@ -158,33 +129,20 @@ class AlignedSent(object):
         """
         Ipython magic : show SVG representation of this ``AlignedSent``.
         """
-        dot_string = self._to_dot().encode("utf8")
-        output_format = "svg"
+        dot_string = self._to_dot().encode('utf8')
+        output_format = 'svg'
         try:
-            # Resolve to an absolute path with no '..' component; a CWD-relative
-            # match is refused, so a planted ./dot cannot be run in place of the
-            # real Graphviz binary (CWE-426 / CWE-427).
-            dot_binary = find_binary_absolute("dot")
-        except LookupError as e:
-            six.raise_from(Exception("Cannot find the dot binary from Graphviz package"), e)
-        try:
-            # Route through the trusted-exec chokepoint: verify the dot binary is
-            # on a path no other local user can swap, refuse a shell, and scrub the
-            # loader environment before exec (CWE-426/427/732).
-            process = spawn_trusted(
-                dot_binary,
-                ["-T{0}".format(output_format)],
+            process = subprocess.Popen(
+                ['dot', '-T%s' % output_format],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
             )
-        except (OSError, TrustError) as e:
-            six.raise_from(Exception(
-                "Refusing to run the Graphviz dot binary {0!r}: it is not on a trusted path (install it where only you or root can write), or it could not be executed ({1}).".format(dot_binary, e)
-            ), e)
+        except OSError:
+            raise Exception('Cannot find the dot binary from Graphviz package')
         out, err = process.communicate(dot_string)
 
-        return out.decode("utf8")
+        return out.decode('utf8')
 
     def __str__(self):
         """
@@ -192,9 +150,9 @@ class AlignedSent(object):
 
         :rtype: str
         """
-        source = sanitize_terminal(" ".join(self._words)[:20], single_line=True)
-        target = sanitize_terminal(" ".join(self._mots)[:20], single_line=True)
-        return "<AlignedSent: '{0}...' -> '{1}...'>".format(source, target)
+        source = " ".join(self._words)[:20] + "..."
+        target = " ".join(self._mots)[:20] + "..."
+        return "<AlignedSent: '%s' -> '%s'>" % (source, target)
 
     def invert(self):
         """
@@ -205,6 +163,7 @@ class AlignedSent(object):
         return AlignedSent(self._mots, self._words, self._alignment.invert())
 
 
+@python_2_unicode_compatible
 class Alignment(frozenset):
     """
     A storage class for representing alignment between two sequences, s1, s2.
@@ -255,29 +214,17 @@ class Alignment(frozenset):
 
     def __getitem__(self, key):
         """
-        Look up the alignments that map from a given (left) index.
-        Returns an empty list for an index that has no alignments.
-
-        Only integer indices are supported. Slicing and other non-integer
-        keys are rejected with ``TypeError`` rather than silently returning
-        ``[]`` -- the sparse index has no contiguous range to slice, so a
-        mistaken lookup should fail loudly instead of masking the bug.
+        Look up the alignments that map from a given index or slice.
         """
-        if not isinstance(key, int):
-            raise TypeError(
-                "Alignment indices must be integers, not %s" % type(key).__name__
-            )
-        if self._index is None:
+        if not self._index:
             self._build_index()
-        return self._index.get(key, [])
+        return self._index.__getitem__(key)
 
     def invert(self):
         """
         Return an Alignment object, being the inverted mapping.
         """
-        # A pair whose target is None (an unaligned source word) has no
-        # inverse: it is dropped rather than becoming a None source index.
-        return Alignment(((p[1], p[0]) + p[2:]) for p in self if p[1] is not None)
+        return Alignment(((p[1], p[0]) + p[2:]) for p in self)
 
     def range(self, positions=None):
         """
@@ -285,64 +232,34 @@ class Alignment(frozenset):
         If no positions are specified, compute the range of the entire mapping.
         """
         image = set()
-        if self._index is None:
+        if not self._index:
             self._build_index()
         if not positions:
-            positions = self._index.keys()
-        # An unaligned word (target None) maps to nothing, so it adds nothing to
-        # the image; only the first two fields of a pair are positions.
+            positions = list(range(len(self._index)))
         for p in positions:
-            image.update(
-                pair[1] for pair in self._index.get(p, []) if pair[1] is not None
-            )
+            image.update(f for _, f in self._index[p])
         return sorted(image)
 
     def __repr__(self):
         """
         Produce a Giza-formatted string representing the alignment.
-
-        An unaligned pair ``(i, None)`` sorts before the aligned pairs of ``i``.
         """
-        return "Alignment(%r)" % sorted(self, key=_pair_key)
+        return "Alignment(%r)" % sorted(self)
 
     def __str__(self):
         """
         Produce a Giza-formatted string representing the alignment.
-
-        NULL-target pairs are omitted because non-mappings are implicit.
         """
-        return " ".join(
-            "%d-%d" % pair[:2]
-            for pair in sorted(pair for pair in self if pair[1] is not None)
-        )
+        return " ".join("%d-%d" % p[:2] for p in sorted(self))
 
     def _build_index(self):
         """
-        Build a sparse index mapping each left index ``i`` to the list of
-        alignments originating from word ``i``.
-
-        The index is keyed only by the left indices that actually occur, so its
-        size is bounded by the number of pairs rather than by the largest left
-        index (which is attacker-controlled in giza-format input). A dense
-        ``[[] for _ in range(self._len + 1)]`` list would instead let a single
-        tiny pair with a huge left index (e.g. ``"0-0 100000000-1"``) allocate
-        ~100M empty lists -- gigabytes of memory -- an unbounded-allocation DoS
-        (CWE-770; CVE-2026-12837).
+        Build a list self._index such that self._index[i] is a list
+        of the alignments originating from word i.
         """
-        self._index = {}
+        self._index = [[] for _ in range(self._len + 1)]
         for p in self:
-            self._index.setdefault(p[0], []).append(p)
-
-
-def _pair_key(pair):
-    """
-    Sort key for alignment pairs that tolerates a ``None`` target: ``(i, None)``
-    orders before ``(i, j)``; for integer pairs the order is the tuple order.
-    """
-    target = pair[1]
-    return (pair[0], target is not None, 0 if target is None else target) + tuple(
-        pair[2:]
-    )
+            self._index[p[0]].append(p)
 
 
 def _giza2pair(pair_string):
@@ -368,20 +285,15 @@ def _check_alignment(num_words, num_mots, alignment):
     :raise IndexError: if alignment falls outside the sentence
     """
 
-    # An explicit check, not an assert: python -O strips asserts, and an
-    # alignment that is not an Alignment or points outside the sentence must
-    # be refused there too, before it indexes the word lists.
-    if type(alignment) is not Alignment:
-        raise TypeError(
-            "alignment must be an Alignment, not %s" % type(alignment).__name__
-        )
+    assert type(alignment) is Alignment
+
     if not all(0 <= pair[0] < num_words for pair in alignment):
         raise IndexError("Alignment is outside boundary of words")
     if not all(pair[1] is None or 0 <= pair[1] < num_mots for pair in alignment):
         raise IndexError("Alignment is outside boundary of mots")
 
 
-PhraseTableEntry = namedtuple("PhraseTableEntry", ["trg_phrase", "log_prob"])
+PhraseTableEntry = namedtuple('PhraseTableEntry', ['trg_phrase', 'log_prob'])
 
 
 class PhraseTable(object):

@@ -1,36 +1,34 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-# -*- coding: utf-8 -*-
-import six
-from nltk.compat import PermissionError
 # Natural Language Toolkit: Corpus Reader Utilities
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Steven Bird <stevenbird1@gmail.com>
 #         Edward Loper <edloper@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
-import bisect
 import os
-import pickle
+import bisect
 import re
 import tempfile
 from functools import reduce
-from xml.etree import ElementTree
 
-from nltk import redos
-from nltk.data import (
-    FileSystemPathPointer,
-    PathPointer,
-    SeekableUnicodeStreamReader,
-    ZipFilePathPointer,
-)
-from nltk.internals import slice_bounds
-from nltk.pathsec import open as _secure_open
-from nltk.pathsec import validate_path
-from nltk.termsec import sanitize_terminal
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle
+
+try:  # Use the c version of ElementTree, which is faster, if possible.
+    from xml.etree import cElementTree as ElementTree
+except ImportError:
+    from xml.etree import ElementTree
+
+from six import string_types, text_type
+
 from nltk.tokenize import wordpunct_tokenize
-from nltk.util import AbstractLazySequence, LazyConcatenation, LazySubsequence
+from nltk.internals import slice_bounds
+from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
+from nltk.data import SeekableUnicodeStreamReader
+from nltk.util import AbstractLazySequence, LazySubsequence, LazyConcatenation, py25
 
 ######################################################################
 # { Corpus View
@@ -130,7 +128,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
        block; and tokens is a list of the tokens in the block.
     """
 
-    def __init__(self, fileid, block_reader=None, startpos=0, encoding="utf8"):
+    def __init__(self, fileid, block_reader=None, startpos=0, encoding='utf8'):
         """
         Create a new corpus view, based on the file ``fileid``, and
         read with ``block_reader``.  See the class documentation
@@ -175,18 +173,14 @@ class StreamBackedCorpusView(AbstractLazySequence):
            reader, which under rare circumstances may need to know
            the current block number."""
 
-        # Find the length of the file. A bare stat follows a symlink and leaks
-        # the existence/size of an out-of-root path (CWE-59), so a fileid that
-        # fails containment is not stat'ed; its refusal surfaces at _open().
+        # Find the length of the file.
         try:
-            try:
-                validate_path(self._fileid, context="StreamBackedCorpusView")
-            except (PermissionError, ValueError):
-                self._eofpos = None
+            if isinstance(self._fileid, PathPointer):
+                self._eofpos = self._fileid.file_size()
             else:
-                self._eofpos = self._file_size()
+                self._eofpos = os.stat(self._fileid).st_size
         except Exception as exc:
-            six.raise_from(ValueError("Unable to open or access {0!r} -- {1}".format(fileid, exc)), exc)
+            raise ValueError('Unable to open or access %r -- %s' % (fileid, exc))
 
         # Maintain a cache of the most recently read block, to
         # increase efficiency of random access.
@@ -209,7 +203,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
         :param stream: an input stream
         :type stream: stream
         """
-        raise NotImplementedError("Abstract Method")
+        raise NotImplementedError('Abstract Method')
 
     def _open(self):
         """
@@ -221,20 +215,10 @@ class StreamBackedCorpusView(AbstractLazySequence):
             self._stream = self._fileid.open(self._encoding)
         elif self._encoding:
             self._stream = SeekableUnicodeStreamReader(
-                _secure_open(self._fileid, "br"), self._encoding
+                open(self._fileid, 'rb'), self._encoding
             )
         else:
-            self._stream = _secure_open(self._fileid, "br")
-        # A fileid refused at construction was never stat'ed; the secure open
-        # above has now vouched for it, so its size can be taken.
-        if self._eofpos is None:
-            self._eofpos = self._file_size()
-
-    def _file_size(self):
-        """The size in bytes of the file behind this view's fileid."""
-        if isinstance(self._fileid, PathPointer):
-            return self._fileid.file_size()
-        return os.stat(self._fileid).st_size
+            self._stream = open(self._fileid, 'rb')
 
     def close(self):
         """
@@ -248,12 +232,6 @@ class StreamBackedCorpusView(AbstractLazySequence):
         if self._stream is not None:
             self._stream.close()
         self._stream = None
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, type, value, traceback):
-        self.close()
 
     def __len__(self):
         if self._len is None:
@@ -277,7 +255,7 @@ class StreamBackedCorpusView(AbstractLazySequence):
             if i < 0:
                 i += len(self)
             if i < 0:
-                raise IndexError("index out of range")
+                raise IndexError('index out of range')
             # Check if it's in the cache.
             offset = self._cache[0]
             if offset <= i < self._cache[1]:
@@ -285,8 +263,8 @@ class StreamBackedCorpusView(AbstractLazySequence):
             # Use iterate_from to extract it.
             try:
                 return next(self.iterate_from(i))
-            except StopIteration as e:
-                six.raise_from(IndexError("index out of range"), e)
+            except StopIteration:
+                raise IndexError('index out of range')
 
     # If we wanted to be thread-safe, then this method would need to
     # do some locking.
@@ -327,16 +305,14 @@ class StreamBackedCorpusView(AbstractLazySequence):
             self._current_blocknum = block_index
             tokens = self.read_block(self._stream)
             assert isinstance(tokens, (tuple, list, AbstractLazySequence)), (
-                "block reader %s() should return list or tuple."
+                'block reader %s() should return list or tuple.'
                 % self.read_block.__name__
             )
             num_toks = len(tokens)
             new_filepos = self._stream.tell()
-            assert (
-                new_filepos > filepos
-            ), "block reader %s() should consume at least 1 byte (filepos=%d)" % (
-                self.read_block.__name__,
-                filepos,
+            assert new_filepos > filepos, (
+                'block reader %s() should consume at least 1 byte (filepos=%d)'
+                % (self.read_block.__name__, filepos)
             )
 
             # Update our cache.
@@ -354,10 +330,10 @@ class StreamBackedCorpusView(AbstractLazySequence):
                     # Check for consistency:
                     assert (
                         new_filepos == self._filepos[block_index]
-                    ), "inconsistent block reader (num chars read)"
+                    ), 'inconsistent block reader (num chars read)'
                     assert (
                         toknum + num_toks == self._toknum[block_index]
-                    ), "inconsistent block reader (num tokens returned)"
+                    ), 'inconsistent block reader (num tokens returned)'
 
             # If we reached the end of the file, then update self._len
             if new_filepos == self._eofpos:
@@ -443,8 +419,8 @@ class ConcatenatedCorpusView(AbstractLazySequence):
                 self._open_piece = piece
 
             # Get everything we can from this piece.
-            for _yf_item in piece.iterate_from(max(0, start_tok - offset)):
-                yield _yf_item
+            for tok in piece.iterate_from(max(0, start_tok - offset)):
+                yield tok
 
             # Update the offset table.
             if piecenum + 1 == len(self._offsets):
@@ -464,13 +440,13 @@ def concat(docs):
     if len(docs) == 1:
         return docs[0]
     if len(docs) == 0:
-        raise ValueError("concat() expects at least one object!")
+        raise ValueError('concat() expects at least one object!')
 
-    types = {d.__class__ for d in docs}
+    types = set(d.__class__ for d in docs)
 
     # If they're all strings, use string concatenation.
-    if all(isinstance(doc, six.string_types) for doc in docs):
-        return "".join(docs)
+    if all(isinstance(doc, string_types) for doc in docs):
+        return ''.join(docs)
 
     # If they're all corpus views, then use ConcatenatedCorpusView.
     for typ in types:
@@ -497,13 +473,100 @@ def concat(docs):
             return reduce((lambda a, b: a + b), docs, ())
 
         if ElementTree.iselement(typ):
-            xmltree = ElementTree.Element("documents")
+            xmltree = ElementTree.Element('documents')
             for doc in docs:
                 xmltree.append(doc)
             return xmltree
 
     # No method found!
     raise ValueError("Don't know how to concatenate types: %r" % types)
+
+
+######################################################################
+# { Corpus View for Pickled Sequences
+######################################################################
+
+
+class PickleCorpusView(StreamBackedCorpusView):
+    """
+    A stream backed corpus view for corpus files that consist of
+    sequences of serialized Python objects (serialized using
+    ``pickle.dump``).  One use case for this class is to store the
+    result of running feature detection on a corpus to disk.  This can
+    be useful when performing feature detection is expensive (so we
+    don't want to repeat it); but the corpus is too large to store in
+    memory.  The following example illustrates this technique:
+
+        >>> from nltk.corpus.reader.util import PickleCorpusView
+        >>> from nltk.util import LazyMap
+        >>> feature_corpus = LazyMap(detect_features, corpus) # doctest: +SKIP
+        >>> PickleCorpusView.write(feature_corpus, some_fileid)  # doctest: +SKIP
+        >>> pcv = PickleCorpusView(some_fileid) # doctest: +SKIP
+    """
+
+    BLOCK_SIZE = 100
+    PROTOCOL = -1
+
+    def __init__(self, fileid, delete_on_gc=False):
+        """
+        Create a new corpus view that reads the pickle corpus
+        ``fileid``.
+
+        :param delete_on_gc: If true, then ``fileid`` will be deleted
+            whenever this object gets garbage-collected.
+        """
+        self._delete_on_gc = delete_on_gc
+        StreamBackedCorpusView.__init__(self, fileid)
+
+    def read_block(self, stream):
+        result = []
+        for i in range(self.BLOCK_SIZE):
+            try:
+                result.append(pickle.load(stream))
+            except EOFError:
+                break
+        return result
+
+    def __del__(self):
+        """
+        If ``delete_on_gc`` was set to true when this
+        ``PickleCorpusView`` was created, then delete the corpus view's
+        fileid.  (This method is called whenever a
+        ``PickledCorpusView`` is garbage-collected.
+        """
+        if getattr(self, '_delete_on_gc'):
+            if os.path.exists(self._fileid):
+                try:
+                    os.remove(self._fileid)
+                except (OSError, IOError):
+                    pass
+        self.__dict__.clear()  # make the garbage collector's job easier
+
+    @classmethod
+    def write(cls, sequence, output_file):
+        if isinstance(output_file, string_types):
+            output_file = open(output_file, 'wb')
+        for item in sequence:
+            pickle.dump(item, output_file, cls.PROTOCOL)
+
+    @classmethod
+    def cache_to_tempfile(cls, sequence, delete_on_gc=True):
+        """
+        Write the given sequence to a temporary file as a pickle
+        corpus; and then return a ``PickleCorpusView`` view for that
+        temporary corpus file.
+
+        :param delete_on_gc: If true, then the temporary file will be
+            deleted whenever this object gets garbage-collected.
+        """
+        try:
+            fd, output_file_name = tempfile.mkstemp('.pcv', 'nltk-')
+            output_file = os.fdopen(fd, 'wb')
+            cls.write(sequence, output_file)
+            output_file.close()
+            return PickleCorpusView(output_file_name, delete_on_gc)
+        except (OSError, IOError) as e:
+            raise ValueError('Error while creating temp file: %s' % e)
 
 
 ######################################################################
@@ -531,12 +594,12 @@ def read_line_block(stream):
         line = stream.readline()
         if not line:
             return toks
-        toks.append(line.rstrip("\n"))
+        toks.append(line.rstrip('\n'))
     return toks
 
 
 def read_blankline_block(stream):
-    s = ""
+    s = ''
     while True:
         line = stream.readline()
         # End of file:
@@ -555,10 +618,10 @@ def read_blankline_block(stream):
 
 
 def read_alignedsent_block(stream):
-    s = ""
+    s = ''
     while True:
         line = stream.readline()
-        if line[0] == "=" or line[0] == "\n" or line[:2] == "\r\n":
+        if line[0] == '=' or line[0] == '\n' or line[:2] == '\r\n':
             continue
         # End of file:
         if not line:
@@ -569,7 +632,7 @@ def read_alignedsent_block(stream):
         # Other line:
         else:
             s += line
-            if redos.match(r"^\d+-\d+", line) is not None:
+            if re.match('^\d+-\d+', line) is not None:
                 return [s]
 
 
@@ -580,17 +643,12 @@ def read_regexp_block(stream, start_re, end_re=None):
     tokens end with lines that match ``end_re``; otherwise, tokens end
     whenever the next line matching ``start_re`` or EOF is found.
     """
-    # start_re / end_re are caller-supplied and matched per line (a line can be
-    # adversarially long), so compile through redos to bound compile AND match.
-    start_rx = redos.compile(start_re)
-    end_rx = redos.compile(end_re) if end_re is not None else None
-
     # Scan until we find a line matching the start regexp.
     while True:
         line = stream.readline()
         if not line:
             return []  # end of file.
-        if start_rx.match(line):
+        if re.match(start_re, line):
             break
 
     # Scan until we find another line matching the regexp, or EOF.
@@ -600,15 +658,15 @@ def read_regexp_block(stream, start_re, end_re=None):
         line = stream.readline()
         # End of file:
         if not line:
-            return ["".join(lines)]
+            return [''.join(lines)]
         # End of token:
-        if end_rx is not None and end_rx.match(line):
-            return ["".join(lines)]
+        if end_re is not None and re.match(end_re, line):
+            return [''.join(lines)]
         # Start of new token: backup to just before it starts, and
         # return the token we've already collected.
-        if end_rx is None and start_rx.match(line):
+        if end_re is None and re.match(start_re, line):
             stream.seek(oldpos)
-            return ["".join(lines)]
+            return [''.join(lines)]
         # Anything else is part of the token.
         lines.append(line)
 
@@ -634,29 +692,20 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
     """
     start = stream.tell()
     block = stream.read(block_size)
-    encoding = getattr(stream, "encoding", None)
-    assert encoding is not None or isinstance(block, six.string_types)
-    if encoding not in (None, "utf-8"):
+    encoding = getattr(stream, 'encoding', None)
+    assert encoding is not None or isinstance(block, text_type)
+    if encoding not in (None, 'utf-8'):
         import warnings
 
         warnings.warn(
-            "Parsing may fail, depending on the properties "
-            "of the %s encoding!" % sanitize_terminal(encoding)
+            'Parsing may fail, depending on the properties '
+            'of the %s encoding!' % encoding
         )
         # (e.g., the utf-16 encoding does not work because it insists
         # on adding BOMs to the beginning of encoded strings.)
 
     if comment_char:
-        _comment_src = "(?m)^%s.*$" % re.escape(comment_char)
-        COMMENT = redos.compile(_comment_src)  # comment_char: bound compile + match
-    # When a single s-expression spans more than one block, we grow ``block``
-    # and re-parse it. Growing by a *fixed* amount re-parses (and, with a
-    # comment_char, re-substitutes) the whole growing buffer on every step,
-    # which is O(n^2) on one oversized s-expression (CWE-407). Doubling the read
-    # size instead makes the number of re-parses O(log n) and the total work a
-    # geometric sum O(n), with no change to the parsed result (the stream is
-    # seeked back to the parsed offset regardless of any over-read).
-    read_size = block_size
+        COMMENT = re.compile('(?m)^%s.*$' % re.escape(comment_char))
     while True:
         try:
             # If we're stripping comments, then make sure our block ends
@@ -665,11 +714,11 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
             # would make our offset wrong.)
             if comment_char:
                 block += stream.readline()
-                block = COMMENT.sub(_sub_space, block)
+                block = re.sub(COMMENT, _sub_space, block)
             # Read the block.
             tokens, offset = _parse_sexpr_block(block)
             # Skip whitespace
-            offset = redos.compile(r"\s*").search(block, offset).end()
+            offset = re.compile(r'\s*').search(block, offset).end()
 
             # Move to the end position.
             if encoding is None:
@@ -680,9 +729,8 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
             # Return the list of tokens we processed
             return tokens
         except ValueError as e:
-            if e.args[0] == "Block too small":
-                read_size *= 2  # exponential growth -> O(log n) re-parses, O(n) total
-                next_block = stream.read(read_size)
+            if e.args[0] == 'Block too small':
+                next_block = stream.read(block_size)
                 if next_block:
                     block += next_block
                     continue
@@ -696,7 +744,7 @@ def read_sexpr_block(stream, block_size=16384, comment_char=None):
 def _sub_space(m):
     """Helper function: given a regexp match, return a string of
     spaces that's the same length as the matched string."""
-    return " " * (m.end() - m.start())
+    return ' ' * (m.end() - m.start())
 
 
 def _parse_sexpr_block(block):
@@ -704,27 +752,27 @@ def _parse_sexpr_block(block):
     start = end = 0
 
     while end < len(block):
-        m = redos.compile(r"\S").search(block, end)
+        m = re.compile(r'\S').search(block, end)
         if not m:
             return tokens, end
 
         start = m.start()
 
         # Case 1: sexpr is not parenthesized.
-        if m.group() != "(":
-            m2 = redos.compile(r"[\s(]").search(block, start)
+        if m.group() != '(':
+            m2 = re.compile(r'[\s(]').search(block, start)
             if m2:
                 end = m2.start()
             else:
                 if tokens:
                     return tokens, end
-                raise ValueError("Block too small")
+                raise ValueError('Block too small')
 
         # Case 2: parenthesized sexpr.
         else:
             nesting = 0
-            for m in redos.compile(r"[()]").finditer(block, start):
-                if m.group() == "(":
+            for m in re.compile(r'[()]').finditer(block, start):
+                if m.group() == '(':
                     nesting += 1
                 else:
                     nesting -= 1
@@ -734,7 +782,7 @@ def _parse_sexpr_block(block):
             else:
                 if tokens:
                     return tokens, end
-                raise ValueError("Block too small")
+                raise ValueError('Block too small')
 
         tokens.append(block[start:end])
 
@@ -748,20 +796,8 @@ def _parse_sexpr_block(block):
 
 def find_corpus_fileids(root, regexp):
     if not isinstance(root, PathPointer):
-        raise TypeError("find_corpus_fileids: expected a PathPointer")
-
-    # Defense in depth (CWE-73, GHSA-3gq4-3j92-5w49): validate the root against
-    # the NLTK data sandbox before scanning it.  A few readers call
-    # find_corpus_fileids() before their super().__init__() runs the root check,
-    # so without this an out-of-sandbox FileSystemPathPointer root would still be
-    # enumerated (an os.walk directory listing) before construction is refused.
-    from nltk import pathsec
-
-    if pathsec.ENFORCE:
-        pathsec.validate_path(root, context="find_corpus_fileids")
-
-    regexp += "$"
-    regexp_rx = redos.compile(regexp)  # caller fileid regexp: bound compile + match
+        raise TypeError('find_corpus_fileids: expected a PathPointer')
+    regexp += '$'
 
     # Find fileids in a zipfile: scan the zipfile's namelist.  Filter
     # out entries that end in '/' -- they're directories.
@@ -769,64 +805,37 @@ def find_corpus_fileids(root, regexp):
         fileids = [
             name[len(root.entry) :]
             for name in root.zipfile.namelist()
-            if not name.endswith("/")
+            if not name.endswith('/')
         ]
-        items = [name for name in fileids if regexp_rx.match(name)]
+        items = [name for name in fileids if re.match(regexp, name)]
         return sorted(items)
 
-    # Find fileids in a directory: use os.walk to search subdirectories,
-    # but do not descend into symlinked directories that resolve outside
-    # the corpus root.
+    # Find fileids in a directory: use os.walk to search all (proper
+    # or symlinked) subdirectories, and match paths against the regexp.
     elif isinstance(root, FileSystemPathPointer):
         items = []
-        resolved_root = os.path.realpath(root.path)
-
-        for dirname, subdirs, fileids in os.walk(root.path):
-            dirname_real = os.path.realpath(dirname)
-            try:
-                if os.path.commonpath([resolved_root, dirname_real]) != resolved_root:
-                    subdirs[:] = []
-                    continue
-            except ValueError:
-                subdirs[:] = []
-                continue
-
-            pruned_subdirs = []
-            for subdir in subdirs:
-                full_subdir = os.path.join(dirname, subdir)
-                subdir_real = os.path.realpath(full_subdir)
-                try:
-                    inside_root = (
-                        os.path.commonpath([resolved_root, subdir_real])
-                        == resolved_root
-                    )
-                except ValueError:
-                    inside_root = False
-
-                if inside_root and subdir != ".svn":
-                    pruned_subdirs.append(subdir)
-
-            subdirs[:] = pruned_subdirs
-
-            prefix = "".join("%s/" % p for p in _path_from(root.path, dirname))
+        # workaround for py25 which doesn't support followlinks
+        kwargs = {}
+        if not py25():
+            kwargs = {'followlinks': True}
+        for dirname, subdirs, fileids in os.walk(root.path, **kwargs):
+            prefix = ''.join('%s/' % p for p in _path_from(root.path, dirname))
             items += [
                 prefix + fileid
                 for fileid in fileids
-                if regexp_rx.match(prefix + fileid)
+                if re.match(regexp, prefix + fileid)
             ]
+            # Don't visit svn directories:
+            if '.svn' in subdirs:
+                subdirs.remove('.svn')
         return sorted(items)
-
-    # HuggingFace PathPointer: delegate to its fileids() method (duck typing,
-    # avoids a circular import of nltk.huggingface.dataset here).
-    elif hasattr(root, "fileids"):
-        return [fid for fid in root.fileids() if regexp_rx.match(fid)]
 
     else:
         raise AssertionError("Don't know how to handle %r" % root)
 
 
 def _path_from(parent, child):
-    if os.path.split(parent)[1] == "":
+    if os.path.split(parent)[1] == '':
         parent = os.path.split(parent)[0]
     path = []
     while parent != child:
@@ -843,15 +852,15 @@ def _path_from(parent, child):
 
 def tagged_treebank_para_block_reader(stream):
     # Read the next paragraph.
-    para = ""
+    para = ''
     while True:
         line = stream.readline()
         # End of paragraph:
-        if redos.match(r"======+\s*$", line):
+        if re.match('======+\s*$', line):
             if para.strip():
                 return [para]
         # End of file:
-        elif line == "":
+        elif line == '':
             if para.strip():
                 return [para]
             else:

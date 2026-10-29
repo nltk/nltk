@@ -1,30 +1,17 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
-# -*- coding: utf-8 -*-
-import six
-from nltk.compat import TimeoutError, perf_counter
 # Natural Language Toolkit: Shift-Reduce Parser
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Edward Loper <edloper@gmail.com>
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
-
-import time
+from __future__ import print_function, unicode_literals
 
 from nltk.grammar import Nonterminal
-from nltk.parse.api import ParserI
-from nltk.termsec import safe_print
 from nltk.tree import Tree
+from nltk.compat import unicode_repr
 
-#: Default wall-clock limit, in seconds, for a single :meth:`ShiftReduceParser.parse`
-#: call. A cyclic unary production (e.g. ``NP -> NP``) makes the inner reduce loop
-#: rewrite the stack top forever, consuming CPU and memory without limit
-#: (CWE-835/CWE-674); when the limit is exceeded, ``parse`` raises ``TimeoutError``.
-#: Legitimate shift-reduce parsing is linear and finishes far inside this bound;
-#: set ``max_time=None`` on the parser to disable it.
-DEFAULT_MAX_TIME = 5.0
-
+from nltk.parse.api import ParserI
 
 ##//////////////////////////////////////////////////////
 ##  Shift/Reduce Parser
@@ -71,7 +58,7 @@ class ShiftReduceParser(ParserI):
     :see: ``nltk.grammar``
     """
 
-    def __init__(self, grammar, trace=0, max_time=DEFAULT_MAX_TIME):
+    def __init__(self, grammar, trace=0):
         """
         Create a new ``ShiftReduceParser``, that uses ``grammar`` to
         parse texts.
@@ -83,16 +70,9 @@ class ShiftReduceParser(ParserI):
             parsing a text.  ``0`` will generate no tracing output;
             and higher numbers will produce more verbose tracing
             output.
-        :type max_time: float or None
-        :param max_time: Wall-clock limit, in seconds, for a single
-            ``parse()`` call.  A cyclic unary production would otherwise
-            make the reduce loop run forever (CWE-835/CWE-674); when the
-            limit is exceeded, ``parse()`` raises ``TimeoutError``.
-            Defaults to ``DEFAULT_MAX_TIME``; ``None`` disables the bound.
         """
         self._grammar = grammar
         self._trace = trace
-        self._max_time = max_time
         self._check_grammar()
 
     def grammar(self):
@@ -108,26 +88,15 @@ class ShiftReduceParser(ParserI):
 
         # Trace output.
         if self._trace:
-            safe_print("Parsing %r" % " ".join(tokens))
+            print('Parsing %r' % " ".join(tokens))
             self._trace_stack(stack, remaining_text)
-
-        # Bound total wall-clock time: a cyclic unary production (e.g. NP -> NP)
-        # makes the inner reduce loop rewrite the stack top forever (CWE-835).
-        # The whole parse runs in this one generator resume (before the yield
-        # below), so a local deadline is sufficient. ``max_time=None`` disables it.
-        deadline = (
-            None if self._max_time is None else perf_counter() + self._max_time
-        )
 
         # iterate through the text, pushing the token onto
         # the stack, then reducing the stack.
         while len(remaining_text) > 0:
             self._shift(stack, remaining_text)
             while self._reduce(stack, remaining_text):
-                if deadline is not None and perf_counter() > deadline:
-                    raise TimeoutError(
-                        "ShiftReduceParser exceeded its {0}s time limit; the grammar may contain a cyclic unary production. Pass max_time=None to disable the limit.".format(self._max_time)
-                    )
+                pass
 
         # Did we reduce everything?
         if len(stack) == 1:
@@ -218,6 +187,7 @@ class ShiftReduceParser(ParserI):
 
             # check if the RHS of a production matches the top of the stack
             if self._match_rhs(production.rhs(), stack[-rhslen:]):
+
                 # combine the tree to reflect the reduction
                 tree = Tree(production.lhs().symbol(), stack[-rhslen:])
                 stack[-rhslen:] = [tree]
@@ -243,10 +213,10 @@ class ShiftReduceParser(ParserI):
         """
         # 1: just show shifts.
         # 2: show shifts & reduces
-        # 3: display which tokens & productions are shifted/reduced
+        # 3: display which tokens & productions are shifed/reduced
         self._trace = trace
 
-    def _trace_stack(self, stack, remaining_text, marker=" "):
+    def _trace_stack(self, stack, remaining_text, marker=' '):
         """
         Print trace output displaying the given stack and text.
 
@@ -255,14 +225,14 @@ class ShiftReduceParser(ParserI):
             stack.  This is used with trace level 2 to print 'S'
             before shifted stacks and 'R' before reduced stacks.
         """
-        s = "  " + marker + " [ "
+        s = '  ' + marker + ' [ '
         for elt in stack:
             if isinstance(elt, Tree):
-                s += repr(Nonterminal(elt.label())) + " "
+                s += unicode_repr(Nonterminal(elt.label())) + ' '
             else:
-                s += repr(elt) + " "
-        s += "* " + " ".join(remaining_text) + "]"
-        safe_print(s)
+                s += unicode_repr(elt) + ' '
+        s += '* ' + ' '.join(remaining_text) + ']'
+        print(s)
 
     def _trace_shift(self, stack, remaining_text):
         """
@@ -271,9 +241,9 @@ class ShiftReduceParser(ParserI):
         :rtype: None
         """
         if self._trace > 2:
-            safe_print("Shift %r:" % stack[-1])
+            print('Shift %r:' % stack[-1])
         if self._trace == 2:
-            self._trace_stack(stack, remaining_text, "S")
+            self._trace_stack(stack, remaining_text, 'S')
         elif self._trace > 0:
             self._trace_stack(stack, remaining_text)
 
@@ -286,9 +256,9 @@ class ShiftReduceParser(ParserI):
         """
         if self._trace > 2:
             rhs = " ".join(production.rhs())
-            safe_print("Reduce {0!r} <- {1}".format(production.lhs(), rhs))
+            print('Reduce %r <- %s' % (production.lhs(), rhs))
         if self._trace == 2:
-            self._trace_stack(stack, remaining_text, "R")
+            self._trace_stack(stack, remaining_text, 'R')
         elif self._trace > 1:
             self._trace_stack(stack, remaining_text)
 
@@ -309,7 +279,7 @@ class ShiftReduceParser(ParserI):
                 rhs1 = productions[i].rhs()
                 rhs2 = productions[j].rhs()
                 if rhs1[: len(rhs2)] == rhs2:
-                    safe_print("Warning: %r will never be used" % productions[i])
+                    print('Warning: %r will never be used' % productions[i])
 
 
 ##//////////////////////////////////////////////////////
@@ -484,7 +454,7 @@ def demo():
     A demonstration of the shift-reduce parser.
     """
 
-    from nltk import CFG, parse
+    from nltk import parse, CFG
 
     grammar = CFG.fromstring(
         """
@@ -500,12 +470,12 @@ def demo():
     """
     )
 
-    sent = "I saw a man in the park".split()
+    sent = 'I saw a man in the park'.split()
 
     parser = parse.ShiftReduceParser(grammar, trace=2)
     for p in parser.parse(sent):
-        safe_print(p)
+        print(p)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     demo()

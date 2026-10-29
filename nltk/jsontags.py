@@ -15,8 +15,9 @@ NLTK uses simple '!' tags to mark the types of objects, but the fully-qualified
 using it.
 """
 from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 import six
-from nltk.compat import keyword_only, isfinite
+from nltk.compat import keyword_only
 
 import json
 import math
@@ -107,7 +108,7 @@ def _reject_non_finite_walk(obj, context="NLTK JSON"):
     while stack:
         cur = stack.pop()
         if isinstance(cur, float):
-            if not isfinite(cur):
+            if not math.isfinite(cur):
                 raise ValueError(
                     "{0}: non-finite JSON number (NaN/Infinity) is not allowed".format(context)
                 )

@@ -1,23 +1,20 @@
-# -*- coding: utf-8 -*-
 # Natural Language Toolkit: Toolbox Reader
 #
-# Copyright (C) 2001-2026 NLTK Project
+# Copyright (C) 2001-2019 NLTK Project
 # Author: Greg Aumann <greg_aumann@sil.org>
 #         Stuart Robinson <Stuart.Robinson@mpi.nl>
 #         Steven Bird <stevenbird1@gmail.com>
-# URL: <https://www.nltk.org/>
+# URL: <http://nltk.org/>
 # For license information, see LICENSE.TXT
 
 """
 Module for reading, writing and manipulating
 Toolbox databases and settings fileids.
 """
-from __future__ import absolute_import, division, print_function, unicode_literals
-import six
 
-from nltk.corpus.reader.api import *
-from nltk.corpus.reader.util import *
 from nltk.toolbox import ToolboxData
+from nltk.corpus.reader.util import *
+from nltk.corpus.reader.api import *
 
 
 class ToolboxCorpusReader(CorpusReader):
@@ -34,8 +31,8 @@ class ToolboxCorpusReader(CorpusReader):
         fileids,
         strip=True,
         unwrap=True,
-        encoding="utf8",
-        errors="strict",
+        encoding='utf8',
+        errors='strict',
         unicode_fields=None,
     ):
         return concat(
@@ -51,11 +48,11 @@ class ToolboxCorpusReader(CorpusReader):
 
     # should probably be done lazily:
     def entries(self, fileids, **kwargs):
-        if "key" in kwargs:
-            key = kwargs["key"]
-            del kwargs["key"]
+        if 'key' in kwargs:
+            key = kwargs['key']
+            del kwargs['key']
         else:
-            key = "lx"  # the default key in MDF
+            key = 'lx'  # the default key in MDF
         entries = []
         for marker, contents in self.fields(fileids, **kwargs):
             if marker == key:
@@ -67,13 +64,20 @@ class ToolboxCorpusReader(CorpusReader):
                     pass
         return entries
 
-    def words(self, fileids, key="lx"):
+    def words(self, fileids, key='lx'):
         return [contents for marker, contents in self.fields(fileids) if marker == key]
+
+    def raw(self, fileids):
+        if fileids is None:
+            fileids = self._fileids
+        elif isinstance(fileids, string_types):
+            fileids = [fileids]
+        return concat([self.open(f).read() for f in fileids])
 
 
 def demo():
     pass
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     demo()
