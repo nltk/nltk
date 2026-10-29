@@ -362,6 +362,7 @@
 - Syed Ahnaf Raza <https://github.com/syahra712>
 - Gecko Security <https://github.com/geckosecurity>
 - Bugbunny <https://github.com/bugbunny-research>
+- Aryan R. Ganjoo <https://github.com/AryanRG>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
