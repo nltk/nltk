@@ -204,7 +204,9 @@ class WordnNetDemo(unittest.TestCase):
             u'preobrat',
             u'preobrat_v_mišljenju'
             ]
-        self.assertEqual(S('about-face.n.02').lemma_names(lang='slv'), expected)
+        # the Open Multilingual Wordnet data lists these in a different order
+        # than it did in 2019; the test is about the names, as upstream asserts
+        self.assertEqual(sorted(S('about-face.n.02').lemma_names(lang='slv')), sorted(expected))
 
     def test_iterable_type_for_all_lemma_names(self):
         # Duck-test for iterables.
