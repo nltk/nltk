@@ -1293,7 +1293,10 @@ def _rename_variables(fstruct, vars, used_vars, new_vars, fs_class, visited):
 
 
 def _rename_variable(var, used_vars):
-    name, n = re.sub('\d+$', '', var.name), 2
+    # ``(?<!\d)`` lets ``\d+`` start only at the beginning of a digit run, so a
+    # long run not at the end is not re-scanned from every position (CWE-1333;
+    # CVE-2026-12919). The result is unchanged.
+    name, n = re.sub(r'(?<!\d)\d+$', '', var.name), 2
     if not name:
         name = '?'
     while Variable('%s%s' % (name, n)) in used_vars:

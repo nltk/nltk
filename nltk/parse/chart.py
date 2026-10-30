@@ -436,6 +436,26 @@ class LeafEdge(EdgeI):
 ########################################################################
 
 
+#: Upper bound on the parse-tree nodes one tree extraction may build
+#: (CWE-770; CVE-2026-12886). Raise it to enumerate a more ambiguous forest.
+MAX_PARSE_TREES = 1000000
+
+
+class _ParseTreeBudget(object):
+    __slots__ = ("left",)
+
+    def __init__(self, limit):
+        self.left = limit
+
+    def charge(self):
+        if self.left <= 0:
+            raise ValueError(
+                "Refusing to build more than %d parse-tree nodes (CVE-2026-12886)"
+                % MAX_PARSE_TREES
+            )
+        self.left -= 1
+
+
 class Chart(object):
     """
     A blackboard for hypotheses about the syntactic constituents of a
@@ -703,7 +723,7 @@ class Chart(object):
         """
         return iter(self._trees(edge, complete, memo={}, tree_class=tree_class))
 
-    def _trees(self, edge, complete, memo, tree_class):
+    def _trees(self, edge, complete, memo, tree_class, budget=None):
         """
         A helper function for ``trees``.
 
@@ -711,6 +731,12 @@ class Chart(object):
             generated for each edge, so that when we see an edge more
             than once, we can reuse the same trees.
         """
+        # A shared node budget: an ambiguous grammar makes the number of
+        # parses exponential in the sentence length and the trees are built
+        # eagerly, so a tiny grammar plus a short sentence could exhaust
+        # memory (CWE-770; CVE-2026-12886).
+        if budget is None:
+            budget = _ParseTreeBudget(MAX_PARSE_TREES)
         # If we've seen this edge before, then reuse our old answer.
         if edge in memo:
             return memo[edge]
@@ -739,10 +765,11 @@ class Chart(object):
             # Get the set of child choices for each child pointer.
             # child_choices[i] is the set of choices for the tree's
             # ith child.
-            child_choices = [self._trees(cp, complete, memo, tree_class) for cp in cpl]
+            child_choices = [self._trees(cp, complete, memo, tree_class, budget) for cp in cpl]
 
             # For each combination of children, add a tree.
             for children in itertools.product(*child_choices):
+                budget.charge()
                 trees.append(tree_class(lhs, children))
 
         # If the edge is incomplete, then extend it with "partial trees":

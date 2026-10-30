@@ -1010,12 +1010,37 @@ class AnaphoraResolutionException(Exception):
     pass
 
 
-def resolve_anaphora(expression, trail=[]):
+#: Upper bound on the (pronoun, discourse-referent) examinations one
+#: ``resolve_anaphora`` call may make. Each pronoun scans every referent on
+#: the trail, so N referents and N pronouns cost O(N**2) time and retained
+#: memory and a small crafted DRS pins the CPU (CWE-770; CVE-2026-12873).
+MAX_ANAPHORA_OPERATIONS = 1000000
+
+
+class _AnaphoraBudget(object):
+    __slots__ = ("left",)
+
+    def __init__(self, limit):
+        self.left = limit
+
+    def charge(self):
+        if self.left <= 0:
+            raise AnaphoraResolutionException(
+                "Refusing to resolve: more than %d pronoun/referent pairs "
+                "examined (CVE-2026-12873)" % MAX_ANAPHORA_OPERATIONS
+            )
+        self.left -= 1
+
+
+def resolve_anaphora(expression, trail=[], budget=None):
+    if budget is None:
+        budget = _AnaphoraBudget(MAX_ANAPHORA_OPERATIONS)
     if isinstance(expression, ApplicationExpression):
         if expression.is_pronoun_function():
             possible_antecedents = PossibleAntecedents()
             for ancestor in trail:
                 for ref in ancestor.get_refs():
+                    budget.charge()
                     refex = expression.make_VariableExpression(ref)
 
                     # ==========================================================
@@ -1032,14 +1057,14 @@ def resolve_anaphora(expression, trail=[]):
                 resolution = possible_antecedents
             return expression.make_EqualityExpression(expression.argument, resolution)
         else:
-            r_function = resolve_anaphora(expression.function, trail + [expression])
-            r_argument = resolve_anaphora(expression.argument, trail + [expression])
+            r_function = resolve_anaphora(expression.function, trail + [expression], budget)
+            r_argument = resolve_anaphora(expression.argument, trail + [expression], budget)
             return expression.__class__(r_function, r_argument)
 
     elif isinstance(expression, DRS):
         r_conds = []
         for cond in expression.conds:
-            r_cond = resolve_anaphora(cond, trail + [expression])
+            r_cond = resolve_anaphora(cond, trail + [expression], budget)
 
             # if the condition is of the form '(x = [])' then raise exception
             if isinstance(r_cond, EqualityExpression):
@@ -1057,7 +1082,7 @@ def resolve_anaphora(expression, trail=[]):
 
             r_conds.append(r_cond)
         if expression.consequent:
-            consequent = resolve_anaphora(expression.consequent, trail + [expression])
+            consequent = resolve_anaphora(expression.consequent, trail + [expression], budget)
         else:
             consequent = None
         return expression.__class__(expression.refs, r_conds, consequent)
@@ -1067,29 +1092,29 @@ def resolve_anaphora(expression, trail=[]):
 
     elif isinstance(expression, NegatedExpression):
         return expression.__class__(
-            resolve_anaphora(expression.term, trail + [expression])
+            resolve_anaphora(expression.term, trail + [expression], budget)
         )
 
     elif isinstance(expression, DrtConcatenation):
         if expression.consequent:
-            consequent = resolve_anaphora(expression.consequent, trail + [expression])
+            consequent = resolve_anaphora(expression.consequent, trail + [expression], budget)
         else:
             consequent = None
         return expression.__class__(
-            resolve_anaphora(expression.first, trail + [expression]),
-            resolve_anaphora(expression.second, trail + [expression]),
+            resolve_anaphora(expression.first, trail + [expression], budget),
+            resolve_anaphora(expression.second, trail + [expression], budget),
             consequent,
         )
 
     elif isinstance(expression, BinaryExpression):
         return expression.__class__(
-            resolve_anaphora(expression.first, trail + [expression]),
-            resolve_anaphora(expression.second, trail + [expression]),
+            resolve_anaphora(expression.first, trail + [expression], budget),
+            resolve_anaphora(expression.second, trail + [expression], budget),
         )
 
     elif isinstance(expression, LambdaExpression):
         return expression.__class__(
-            expression.variable, resolve_anaphora(expression.term, trail + [expression])
+            expression.variable, resolve_anaphora(expression.term, trail + [expression], budget)
         )
 
 

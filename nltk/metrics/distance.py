@@ -58,6 +58,22 @@ def _edit_dist_step(lev, i, j, s1, s2, substitution_cost=1, transpositions=False
     lev[i][j] = min(a, b, c, d)
 
 
+#: Longest input either string of the O(n*m) edit distances or the O(n**2)
+#: Jaro similarity accepts: longer untrusted strings are a CPU and memory
+#: DoS (CWE-407, CWE-400; residual to CVE-2026-12926). Raise it for long,
+#: trusted comparisons.
+MAX_DISTANCE_INPUT_LEN = 2000
+
+
+def _check_distance_input_len(s1, s2, name):
+    if len(s1) > MAX_DISTANCE_INPUT_LEN or len(s2) > MAX_DISTANCE_INPUT_LEN:
+        raise ValueError(
+            "%s: refusing inputs longer than %d (got %d and %d); raise "
+            "nltk.metrics.distance.MAX_DISTANCE_INPUT_LEN for trusted data"
+            % (name, MAX_DISTANCE_INPUT_LEN, len(s1), len(s2))
+        )
+
+
 def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     """
     Calculate the Levenshtein edit-distance between two strings.
@@ -83,6 +99,7 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     :type transpositions: bool
     :rtype int
     """
+    _check_distance_input_len(s1, s2, 'edit_distance')
     # set up a 2-D array
     len1 = len(s1)
     len2 = len(s2)
@@ -150,6 +167,7 @@ def edit_distance_align(s1, s2, substitution_cost=1):
     :type substitution_cost: int
     :rtype List[Tuple(int, int)]
     """
+    _check_distance_input_len(s1, s2, 'edit_distance_align')
     # set up a 2-D array
     len1 = len(s1)
     len2 = len(s2)
@@ -301,8 +319,11 @@ def jaro_similarity(s1, s2):
     # Initialize the counts for matches and transpositions.
     matches = 0  # no.of matched characters in s1 and s2
     transpositions = 0  # no. of transpositions between s1 and s2
+    _check_distance_input_len(s1, s2, 'jaro_similarity')
     flagged_1 = []  # positions in s1 which are matches to some character in s2
-    flagged_2 = []  # positions in s2 which are matches to some character in s1
+    # a set: the membership test below ran inside the O(n**2) double loop and
+    # made it O(n**3) on near-matching strings (CWE-770; CVE-2026-12926)
+    flagged_2 = set()
 
     # Iterate through sequences, check for matches and compute transpositions.
     for i in range(len_s1):  # Iterate through each character.
@@ -312,10 +333,9 @@ def jaro_similarity(s1, s2):
             if s1[i] == s2[j] and j not in flagged_2:
                 matches += 1
                 flagged_1.append(i)
-                flagged_2.append(j)
+                flagged_2.add(j)
                 break
-    flagged_2.sort()
-    for i, j in zip(flagged_1, flagged_2):
+    for i, j in zip(flagged_1, sorted(flagged_2)):
         if s1[i] != s2[j]:
             transpositions += 1
 
