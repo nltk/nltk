@@ -428,13 +428,16 @@ jobs:
           fi
 
   test-next:
-    name: Python 3.16 alpha on ubuntu-latest (pure-Python dependencies)
-    # actions/setup-python publishes no 3.16 build yet, so uv (pinned) installs
-    # the current pre-release from python-build-standalone, whose checksum uv's
-    # own manifest carries. numpy, scipy, scikit-learn, pandas and matplotlib
-    # publish no 3.16 wheels yet, so this cell runs the suite the way tox's
-    # -nodeps environments do: the tests that need them skip. Informational
-    # until 3.16 reaches beta: a pre-release change must not block a merge.
+    name: Python 3.16 alpha on ubuntu-latest
+    # actions/setup-python publishes no 3.16 build yet, so a pinned uv installs
+    # the current pre-release from python-build-standalone (its checksum is in
+    # uv's own manifest) and its venv goes first on PATH, so the steps below
+    # are the matrix's own. numpy, scipy, scikit-learn, pandas and matplotlib
+    # have no 3.16 wheels yet; requirements-ci.txt leaves them out on 3.16, so
+    # this cell runs the suite the way tox's -nodeps environments do: the tests
+    # that need them skip, and a module that imports one is skipped for
+    # doctests instead of failing collection. Informational until 3.16 reaches
+    # beta: a pre-release change must not block a merge.
     needs: [pre-commit, setup-matrix]
     runs-on: ubuntu-latest
     continue-on-error: true
@@ -446,16 +449,30 @@ jobs:
         with:
           python-version: "3.15"
 
-      - name: Install Python 3.16 with uv
+      - name: Install Python 3.16 with uv and put its venv first on PATH
+        shell: bash
         run: |
           pip install uv==0.13.6
           uv python install 3.16
-          uv venv --python 3.16 .venv316
+          uv venv --seed --python 3.16 .venv316
+          echo "$GITHUB_WORKSPACE/.venv316/bin" >> "$GITHUB_PATH"
           .venv316/bin/python -VV
 
-      - name: Install the pure-Python dependencies
+      - name: Install dependencies
         run: |
-          uv pip install --python .venv316/bin/python pytest pytest-mock "pytest-xdist[psutil]" regex defusedxml pyyaml click tqdm pyparsing markdown-it-py mdit-plain mdit-py-plugins twython
+          python -VV
+          pip install --upgrade pip
+          pip install --upgrade --requirement requirements-ci.txt
+
+      - name: Install Graphviz (the real dot for the trusted-spawn tests)
+        shell: bash
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq graphviz
+          ls -la "$(command -v dot)"
+          dot -V
+
+      - name: Give the runner's JDK back its private write bits
+        run: sudo chmod -R go-w /usr/lib/jvm
 
       - name: Set NLTK_DATA environment variable
         shell: bash
@@ -472,12 +489,34 @@ jobs:
         if: steps.nltk-data-cache-next.outputs.cache-hit != 'true'
         shell: bash
         run: |
-          .venv316/bin/python -c "import os; import nltk; from pathlib import Path; path = Path(os.environ['NLTK_DATA']); path.mkdir(parents=True, exist_ok=True); nltk.download('all', download_dir=path)"
+          python -c "import os; import nltk; from pathlib import Path; path = Path(os.environ['NLTK_DATA']); path.mkdir(parents=True, exist_ok=True); nltk.download('all', download_dir=path)"
+
+      - name: Ensure third-party directory exists
+        run: mkdir -p "${{ env.THIRD_PARTY_DIR }}"
+
+      - name: Cache third-party tools
+        uses: actions/cache@v6
+        id: third-party-cache-next
+        with:
+          path: ${{ env.THIRD_PARTY_DIR }}
+          key: third_${{ runner.os }}_${{ hashFiles('tools/github_actions/third-party.sh') }}_v1
+
+      - name: Download third-party data on cache miss
+        if: steps.third-party-cache-next.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          chmod +x ./tools/github_actions/third-party.sh
+          ./tools/github_actions/third-party.sh
+
+      - name: Trust the third-party tools tree
+        shell: bash
+        run: chmod -R go-w "${{ env.THIRD_PARTY_DIR }}"
 
       - name: Run pytest
         shell: bash
         env:
           PYTHONSAFEPATH: "1"
+          NLTK_CI_REQUIRE_GRAPHVIZ: "1"
           FULL_MATRIX: ${{ needs.setup-matrix.outputs.full }}
         run: |
           # The advisory probes run only on a full run, as in the matrix above.
@@ -485,7 +524,8 @@ jobs:
           if [ "$FULL_MATRIX" != "true" ]; then
             probes+=("--ignore=nltk/test/unit/test_advisory_probes.py")
           fi
-          .venv316/bin/pytest --numprocesses auto "${probes[@]}" -rsx --doctest-modules nltk
+          python -VV
+          pytest --numprocesses auto "${probes[@]}" -rsx --doctest-modules --doctest-ignore-import-errors nltk
 
   docker-cross-account:
     name: Docker root build, appuser runtime (#3928)
