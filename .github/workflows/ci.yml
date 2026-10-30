@@ -427,6 +427,66 @@ jobs:
             pytest --numprocesses auto "${probes[@]}" -rsx --doctest-modules nltk
           fi
 
+  test-next:
+    name: Python 3.16 alpha on ubuntu-latest (pure-Python dependencies)
+    # actions/setup-python publishes no 3.16 build yet, so uv (pinned) installs
+    # the current pre-release from python-build-standalone, whose checksum uv's
+    # own manifest carries. numpy, scipy, scikit-learn, pandas and matplotlib
+    # publish no 3.16 wheels yet, so this cell runs the suite the way tox's
+    # -nodeps environments do: the tests that need them skip. Informational
+    # until 3.16 reaches beta: a pre-release change must not block a merge.
+    needs: [pre-commit, setup-matrix]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up the bootstrap Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.15"
+
+      - name: Install Python 3.16 with uv
+        run: |
+          pip install uv==0.13.6
+          uv python install 3.16
+          uv venv --python 3.16 .venv316
+          .venv316/bin/python -VV
+
+      - name: Install the pure-Python dependencies
+        run: |
+          uv pip install --python .venv316/bin/python pytest pytest-mock "pytest-xdist[psutil]" regex defusedxml pyyaml click tqdm pyparsing markdown-it-py mdit-plain mdit-py-plugins twython
+
+      - name: Set NLTK_DATA environment variable
+        shell: bash
+        run: echo "NLTK_DATA=${{ github.workspace }}/nltk_data" >> $GITHUB_ENV
+
+      - name: Cache nltk data
+        uses: actions/cache@v6
+        id: nltk-data-cache-next
+        with:
+          path: ${{ github.workspace }}/nltk_data
+          key: nltk_data_${{ runner.os }}_v2
+
+      - name: Download nltk data on cache miss
+        if: steps.nltk-data-cache-next.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          .venv316/bin/python -c "import os; import nltk; from pathlib import Path; path = Path(os.environ['NLTK_DATA']); path.mkdir(parents=True, exist_ok=True); nltk.download('all', download_dir=path)"
+
+      - name: Run pytest
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+          FULL_MATRIX: ${{ needs.setup-matrix.outputs.full }}
+        run: |
+          # The advisory probes run only on a full run, as in the matrix above.
+          probes=()
+          if [ "$FULL_MATRIX" != "true" ]; then
+            probes+=("--ignore=nltk/test/unit/test_advisory_probes.py")
+          fi
+          .venv316/bin/pytest --numprocesses auto "${probes[@]}" -rsx --doctest-modules nltk
+
   docker-cross-account:
     name: Docker root build, appuser runtime (#3928)
     # The reporter's shape run for real: a python:3.11-slim image built from
