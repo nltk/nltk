@@ -258,7 +258,10 @@ def decode_string_literal(literal):
     if "r" in prefix:
         return body
     if "b" in prefix:
-        return codecs.escape_decode(body.encode("latin-1"))[0] if not PY2 else codecs.escape_decode(body.encode("latin-1"))[0]
+        return codecs.escape_decode(body.encode("latin-1"))[0]
+    if PY2 and "u" not in prefix:
+        # what eval gave on 2.7: a native byte string with the escapes resolved
+        return codecs.escape_decode(body.encode("utf-8"))[0]
     return codecs.decode(body, "unicode_escape")
 
 
@@ -464,13 +467,22 @@ def _fenced_expat_parse(data):
     parser.ordered_attributes = True
     parser.buffer_text = True
 
+    def fixtext(text):
+        # ElementTree on 2.7 returns ASCII-only content as a native str
+        if PY2 and isinstance(text, text_type):
+            try:
+                return text.encode("ascii")
+            except UnicodeEncodeError:
+                return text
+        return text
+
     def fix(name):
-        return "{" + name if "}" in name else name
+        return fixtext("{" + name if "}" in name else name)
 
     def start(name, attrs):
         attrib = {}
         for i in range(0, len(attrs), 2):
-            attrib[fix(attrs[i])] = attrs[i + 1]
+            attrib[fix(attrs[i])] = fixtext(attrs[i + 1])
         builder.start(fix(name), attrib)
 
     def forbid_entity(name, is_parameter, value, base, sysid, pubid, notation):
@@ -484,7 +496,7 @@ def _fenced_expat_parse(data):
 
     parser.StartElementHandler = start
     parser.EndElementHandler = lambda name: builder.end(fix(name))
-    parser.CharacterDataHandler = builder.data
+    parser.CharacterDataHandler = lambda data: builder.data(fixtext(data))
     parser.EntityDeclHandler = forbid_entity
     parser.UnparsedEntityDeclHandler = forbid_unparsed
     parser.ExternalEntityRefHandler = forbid_external
