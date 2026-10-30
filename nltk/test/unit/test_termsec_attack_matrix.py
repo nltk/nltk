@@ -623,7 +623,11 @@ class TestNumericBombs:
     def test_decimal_coerced_linearly(self):
         from decimal import Decimal
 
-        out = sanitize_csv_field(Decimal("9" * 10_000))
+        # built from the digit tuple: on a Python without the C _decimal
+        # module the pure-Python fallback parses a string through int(), and
+        # the interpreter's 4300-digit limit would refuse the fixture before
+        # the function under test ever saw it
+        out = sanitize_csv_field(Decimal((0, (9,) * 10_000, 0)))
         assert isinstance(out, str) and len(out) == 10_000
         assert not _has_live_control(out)
 
