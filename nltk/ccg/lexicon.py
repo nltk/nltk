@@ -28,10 +28,10 @@ PRIM_RE = re.compile(r'''([A-Za-z]+)(\[[A-Za-z,]+\])?''')
 
 # Separates the next primitive category from the remainder of the
 # string
-NEXTPRIM_RE = re.compile(r'''([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)''')
+NEXTPRIM_RE = re.compile(r'''([A-Za-z]+(?:\[[A-Za-z,]+\])?)''')
 
 # Separates the next application operator from the remainder
-APP_RE = re.compile(r'''([\\/])([.,]?)([.,]?)(.*)''')
+APP_RE = re.compile(r'''([\\/])([.,]?)([.,]?)''')
 
 # Parses the definition of the right-hand side (rhs) of either a word or a family
 LEX_RE = re.compile(r'''([\S_]+)\s*(::|[-=]+>)\s*(.+)''', re.UNICODE)
@@ -135,34 +135,42 @@ class CCGLexicon(object):
 # -----------
 
 
-def matchBrackets(string):
+def matchBrackets(string, pos=0):
     """
     Separate the contents matching the first set of brackets from the rest of
-    the input.
+    the input. Works by position so a long line is not copied at every step
+    (GHSA-89p3-fcch-88ph).
+
+    Returns ``(inside, end)`` where *inside* holds the bracketed text and
+    *end* is the index just past the closing bracket.
     """
-    rest = string[1:]
-    inside = "("
+    depth = 0
+    i = pos
+    n = len(string)
+    while i < n:
+        c = string[i]
+        if c == '(':
+            depth += 1
+        elif c == ')':
+            depth -= 1
+            if depth == 0:
+                return (string[pos : i + 1], i + 1)
+        i += 1
+    raise AssertionError('Unmatched bracket in string \'' + string[pos:] + '\'')
 
-    while rest != "" and not rest.startswith(')'):
-        if rest.startswith('('):
-            (part, rest) = matchBrackets(rest)
-            inside = inside + part
-        else:
-            inside = inside + rest[0]
-            rest = rest[1:]
-    if rest.startswith(')'):
-        return (inside + ')', rest[1:])
-    raise AssertionError('Unmatched bracket in string \'' + string + '\'')
 
-
-def nextCategory(string):
+def nextCategory(string, pos=0):
     """
     Separate the string for the next portion of the category from the rest
-    of the string
+    of the string, by position (GHSA-89p3-fcch-88ph). Returns the category
+    text and the index where the remainder starts.
     """
-    if string.startswith('('):
-        return matchBrackets(string)
-    return NEXTPRIM_RE.match(string).groups()
+    if string.startswith('(', pos):
+        return matchBrackets(string, pos)
+    m = NEXTPRIM_RE.match(string, pos)
+    if m is None:
+        raise AssertionError('Unexpected category syntax in \'' + string[pos:] + '\'')
+    return (m.group(1), m.end(1))
 
 
 def parseApplication(app):
@@ -211,30 +219,32 @@ def parsePrimitiveCategory(chunks, primitives, families, var):
     )
 
 
-def augParseCategory(line, primitives, families, var=None):
+def augParseCategory(line, primitives, families, var=None, pos=0, end=None):
     """
     Parse a string representing a category, and returns a tuple with
-    (possibly) the CCG variable for the category
+    (possibly) the CCG variable for the category. The text between *pos*
+    and *end* is read in place rather than copied at each step
+    (GHSA-89p3-fcch-88ph).
     """
-    (cat_string, rest) = nextCategory(line)
-
+    if end is None:
+        end = len(line)
+    (cat_string, pos) = nextCategory(line, pos)
     if cat_string.startswith('('):
-        (res, var) = augParseCategory(cat_string[1:-1], primitives, families, var)
-
+        (res, var) = augParseCategory(cat_string, primitives, families, var, 1, len(cat_string) - 1)
     else:
-        #        print rePrim.match(str).groups()
         (res, var) = parsePrimitiveCategory(
             PRIM_RE.match(cat_string).groups(), primitives, families, var
         )
 
-    while rest != "":
-        app = APP_RE.match(rest).groups()
-        direction = parseApplication(app[0:3])
-        rest = app[3]
-
-        (cat_string, rest) = nextCategory(rest)
+    while pos < end:
+        m = APP_RE.match(line, pos)
+        if m is None:
+            raise AssertionError('Unexpected application syntax in \'' + line[pos:end] + '\'')
+        direction = parseApplication(m.groups()[0:3])
+        pos = m.end(3)
+        (cat_string, pos) = nextCategory(line, pos)
         if cat_string.startswith('('):
-            (arg, var) = augParseCategory(cat_string[1:-1], primitives, families, var)
+            (arg, var) = augParseCategory(cat_string, primitives, families, var, 1, len(cat_string) - 1)
         else:
             (arg, var) = parsePrimitiveCategory(
                 PRIM_RE.match(cat_string).groups(), primitives, families, var

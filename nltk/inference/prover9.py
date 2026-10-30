@@ -12,6 +12,7 @@ A theorem prover that makes use of the external 'Prover9' package.
 from __future__ import print_function
 
 import os
+import re
 import subprocess
 
 import nltk
@@ -146,12 +147,12 @@ class Prover9Parent(object):
         if assumptions:
             s += 'formulas(assumptions).\n'
             for p9_assumption in convert_to_prover9(assumptions):
-                s += '    %s.\n' % p9_assumption
+                s += '    %s.\n' % _assert_prover9_safe(p9_assumption)
             s += 'end_of_list.\n\n'
 
         if goal:
             s += 'formulas(goals).\n'
-            s += '    %s.\n' % convert_to_prover9(goal)
+            s += '    %s.\n' % _assert_prover9_safe(convert_to_prover9(goal))
             s += 'end_of_list.\n\n'
 
         return s
@@ -218,6 +219,27 @@ class Prover9Parent(object):
                 print('stderr:\n', stderr, '\n')
 
         return (stdout.decode("utf-8"), p.returncode)
+
+
+# A converted formula is one Prover9 term: a control character, a bare period,
+# a '%' comment or '#' label character, or a leading list keyword would break
+# out of the enclosing formulas(...) list (CVE-2026-14709, CWE-74).
+_PROVER9_INJECTION_RE = re.compile(r"[.#%\x00-\x08\x0a-\x1f\x7f]")
+_PROVER9_LIST_KEYWORD_RE = re.compile(r"^\s*(?:end_of_list|formulas|clauses)\b")
+
+
+def _assert_prover9_safe(formula):
+    """Return *formula* when it cannot inject Prover9 list directives.
+
+    Expression.fromstring only yields identifier atoms, so this refuses only
+    a maliciously hand-built Expression (CVE-2026-14709).
+    """
+    if _PROVER9_INJECTION_RE.search(formula) or _PROVER9_LIST_KEYWORD_RE.match(formula):
+        raise ValueError(
+            "refusing to build Prover9 input from a formula that could inject "
+            "list directives: %r" % (formula,)
+        )
+    return formula
 
 
 def convert_to_prover9(input):

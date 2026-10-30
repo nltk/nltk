@@ -84,7 +84,14 @@ class GenericStanfordParser(ParserI):
 
         # Adding logging jar files to classpath
         stanford_dir = os.path.split(stanford_jar)[0]
-        self._classpath = tuple([model_jar] + find_jars_within_path(stanford_dir))
+        # The parser and its supporting jars come first and the data-only model
+        # jar last, so a class planted in a model jar cannot shadow the parser's
+        # (CVE-2026-14582).
+        self._classpath = tuple(
+            [stanford_jar]
+            + [j for j in find_jars_within_path(stanford_dir) if j not in (stanford_jar, model_jar)]
+            + [model_jar]
+        )
 
         self.model_path = model_path
         self._encoding = encoding
