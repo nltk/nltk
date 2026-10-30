@@ -25,6 +25,8 @@ from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.parse.util import taggedsents_to_conll
 
+from nltk import _security
+
 
 def malt_regex_tagger():
     from nltk.tag import RegexpTagger
@@ -276,6 +278,8 @@ class MaltParser(ParserI):
     @staticmethod
     def _execute(cmd, verbose=False):
         output = None if verbose else subprocess.PIPE
+        # the binary must sit where only this account or root can write (CWE-426)
+        cmd[0] = _security.trusted_executable(cmd[0], 'MaltParser java')
         p = subprocess.Popen(cmd, stdout=output, stderr=output)
         return p.wait()
 

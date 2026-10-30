@@ -29,6 +29,8 @@ from nltk.sem.logic import (
 )
 from nltk.inference.api import BaseProverCommand, Prover
 
+from nltk import _security
+
 #
 # Following is not yet used. Return code for 2 actually realized as 512.
 #
@@ -201,7 +203,7 @@ class Prover9Parent(object):
             print('Input:\n', input_str, '\n')
 
         # Call prover9 via a subprocess
-        cmd = [binary] + args
+        cmd = [_security.trusted_executable(binary, 'prover9 binary')] + args
         try:
             input_str = input_str.encode("utf8")
         except AttributeError:

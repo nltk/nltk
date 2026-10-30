@@ -57,6 +57,8 @@ from nltk.sem.drt import (
 
 from nltk.compat import python_2_unicode_compatible
 
+from nltk import _security
+
 
 class Boxer(object):
     """
@@ -267,15 +269,20 @@ class Boxer(object):
             print('Command:', binary + ' ' + ' '.join(args))
 
         # Call via a subprocess
+        # No shell: the input used to be interpolated into an ``echo ... |``
+        # command line, so a crafted sentence ran as shell (CWE-78). It is
+        # written to the process's stdin instead, and the binary is checked.
+        cmd = [_security.trusted_executable(binary, 'C&C/Boxer binary')] + args
         if input_str is None:
-            cmd = [binary] + args
             p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = p.communicate()
         else:
-            cmd = 'echo "{0}" | {1} {2}'.format(input_str, binary, ' '.join(args))
             p = subprocess.Popen(
-                cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True
+                cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE
             )
-        stdout, stderr = p.communicate()
+            if not isinstance(input_str, bytes):
+                input_str = input_str.encode('utf-8')
+            stdout, stderr = p.communicate(input=input_str + b'\n')
 
         if verbose:
             print('Return code:', p.returncode)

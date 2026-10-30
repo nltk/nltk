@@ -49,6 +49,8 @@ from six import text_type
 from nltk.tag.api import TaggerI
 from nltk.compat import python_2_unicode_compatible
 
+from nltk import _security
+
 _senna_url = 'http://ml.nec-labs.com/senna/'
 
 
@@ -145,6 +147,8 @@ class Senna(TaggerI):
             _input = _input.encode(encoding)
 
         # Run the tagger and get the output
+        # the binary must sit where only this account or root can write (CWE-426)
+        _senna_cmd[0] = _security.trusted_executable(_senna_cmd[0], 'senna binary')
         p = Popen(_senna_cmd, stdin=PIPE, stdout=PIPE, stderr=PIPE)
         (stdout, stderr) = p.communicate(input=_input)
         senna_output = stdout

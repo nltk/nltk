@@ -38,6 +38,8 @@ from six import PY2, binary_type, string_types, text_type
 from six.moves.urllib.parse import urlsplit
 
 __all__ = [
+    "trusted_executable",
+    "find_on_path",
     "sanitize_csv_field",
     "check_json_depth",
     "token_hex",
@@ -401,3 +403,28 @@ def check_json_depth(text, limit=MAX_JSON_DEPTH):
         elif ch in "]}":
             depth -= 1
     return text
+
+
+def find_on_path(name):
+    """The first regular file named *name* in the PATH directories, or None;
+    a bare program name is never handed to a spawn unresolved."""
+    if os.path.isabs(name):
+        return name
+    for directory in os.environ.get("PATH", "").split(os.pathsep):
+        if not directory:
+            continue
+        candidate = os.path.join(directory, name)
+        if os.path.isfile(candidate):
+            return candidate
+    return None
+
+
+def trusted_executable(path, what="executable"):
+    """Return *path* when :func:`untrusted_executable_reason` accepts it,
+    else raise :class:`LookupError` naming the reason (CWE-426)."""
+    if path is None:
+        raise LookupError("%s not found" % what)
+    reason = untrusted_executable_reason(path)
+    if reason is not None:
+        raise LookupError("refusing to run %s %r: %s" % (what, path, reason))
+    return path
