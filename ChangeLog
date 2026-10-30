@@ -1,6 +1,7 @@
 Version 3.10.5 (unreleased)
 
 * `nltk.data.load()` refuses the pickle packages retired for CVE-2024-39705 (`punkt`, `averaged_perceptron_tagger`, `averaged_perceptron_tagger_ru`, `maxent_ne_chunker`, `maxent_treebank_pos_tagger`) instead of silently handing back their tab replacements: a load that reaches for one of their pickles, under any spelling of the name and in any format, raises `ValueError` before anything is read, naming the replacement to download and the call that loads it (for example `nltk.download('punkt_tab')`, then `nltk.tokenize.PunktTokenizer('english')`) (PR #3955)
+* Support Python 3.15: classifier, docs, tox and the CI matrix (3.15 and 3.15t) (PR #4003)
 
 Version 3.10.4 2026-10-20
 
