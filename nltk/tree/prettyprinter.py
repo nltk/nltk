@@ -17,7 +17,6 @@ Graph Algorithms and Applications, 10(2) 141--157 (2006)149.
 https://jgaa.info/accepted/2006/EschbachGuentherBecker2006.10.2.pdf
 """
 
-
 try:
     from html import escape
 except ImportError:
@@ -731,8 +730,7 @@ def test():
         read_leaf=int,
     )
     sentence = (
-        "Ze had met haar moeder kunnen gaan winkelen ,"
-        " zwemmen of terrassen .".split()
+        "Ze had met haar moeder kunnen gaan winkelen , zwemmen of terrassen .".split()
     )
     print_tree("Discontinuous tree", tree, sentence, nodedist=2)
 

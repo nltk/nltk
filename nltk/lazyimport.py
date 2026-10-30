@@ -14,6 +14,7 @@ Copyright (c) 1999-2005, Marc-Andre Lemburg; mailto:mal@lemburg.com
 See the documentation for further information on copyrights,
 or contact the author. All Rights Reserved.
 """
+
 from nltk.termsec import safe_print
 
 ### Constants
@@ -111,8 +112,7 @@ class LazyModule:
             raise AttributeError(name)
         if _debug:
             safe_print(
-                "LazyModule: "
-                "Module load triggered by attribute %r read access" % name
+                f"LazyModule: Module load triggered by attribute {name!r} read access"
             )
         module = self.__lazymodule_import()
         return getattr(module, name)
@@ -128,8 +128,7 @@ class LazyModule:
             return
         if _debug:
             safe_print(
-                "LazyModule: "
-                "Module load triggered by attribute %r write access" % name
+                f"LazyModule: Module load triggered by attribute {name!r} write access"
             )
         module = self.__lazymodule_import()
         setattr(module, name, value)

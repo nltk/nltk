@@ -9,6 +9,7 @@
 Regression tests for `json2csv()` and `json2csv_entities()` in Twitter
 package.
 """
+
 from pathlib import Path
 
 import pytest

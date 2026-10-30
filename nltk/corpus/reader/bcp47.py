@@ -71,11 +71,11 @@ class BCP47CorpusReader(CorpusReader):
         up = "[A-Z]"
         alnum = "[a-zA-Z0-9]"
         self.format = {
-            "language": redos.compile(f"{low*3}?"),
-            "extlang": redos.compile(f"{low*3}"),
-            "script": redos.compile(f"{up}{low*3}"),
-            "region": redos.compile(f"({up*2})|({dig*3})"),
-            "variant": redos.compile(f"{alnum*4}{(alnum+'?')*4}"),
+            "language": redos.compile(f"{low * 3}?"),
+            "extlang": redos.compile(f"{low * 3}"),
+            "script": redos.compile(f"{up}{low * 3}"),
+            "region": redos.compile(f"({up * 2})|({dig * 3})"),
+            "variant": redos.compile(f"{alnum * 4}{(alnum + '?') * 4}"),
             "singleton": redos.compile(f"{low}"),
         }
 
@@ -181,7 +181,7 @@ class BCP47CorpusReader(CorpusReader):
                     else:
                         ext = f"<Unknown subdivision: {ext}>"
                 else:  # other extension subtags are not supported yet
-                    ext = f"{subtag}{''.join(['-'+ext for ext in subtags])}".lower()
+                    ext = f"{subtag}{''.join(['-' + ext for ext in subtags])}".lower()
                     if not self.format["singleton"].fullmatch(subtag):
                         ext = f"<Invalid extension: {ext}>"
                         warn(sanitize_terminal(ext))

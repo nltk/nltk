@@ -1106,8 +1106,10 @@ def test_perceptron_save_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
     _disarm_perceptron_write(monkeypatch, perceptron)
     _assert_teeth(
         lambda: _drive_save_to_json(str(victim)),
-        lambda: victim.exists()
-        and any(p.name.endswith(".weights.json") for p in victim.iterdir()),
+        lambda: (
+            victim.exists()
+            and any(p.name.endswith(".weights.json") for p in victim.iterdir())
+        ),
         what="save_to_json containment",
     )
 
@@ -1292,8 +1294,9 @@ def test_find_terminates_on_a_newline_resource_name(restricted_sandbox, resource
     caller-supplied ``PerceptronTagger(loc=...)`` of one newline burned 76s and
     2.7 GB before raising (CWE-407). Guarded by absolute time, not a ratio.
     """
-    with timing.budget(5.0, f"find({resource_name!r})"), pytest.raises(
-        (LookupError, ValueError)
+    with (
+        timing.budget(5.0, f"find({resource_name!r})"),
+        pytest.raises((LookupError, ValueError)),
     ):
         nltk.data.find(resource_name, paths=[restricted_sandbox])
 

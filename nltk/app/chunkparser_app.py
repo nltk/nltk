@@ -1055,9 +1055,11 @@ class RegexpChunkApp:
                         "\t%s\t%s" % item
                         for item in sorted(
                             list(self.tagset.items()),
-                            key=lambda t_w: redos.match(r"\w+", t_w[0])
-                            and (0, t_w[0])
-                            or (1, t_w[0]),
+                            key=lambda t_w: (
+                                redos.match(r"\w+", t_w[0])
+                                and (0, t_w[0])
+                                or (1, t_w[0])
+                            ),
                         )
                     ),
                 )

@@ -1300,7 +1300,7 @@ def _reject_unsafe_open(
             return
         if not stat.S_ISREG(st.st_mode):
             raise PermissionError(
-                f"Security Violation [{context}]: path {raw!r} is not a " "regular file"
+                f"Security Violation [{context}]: path {raw!r} is not a regular file"
             )
         # The same hardlink refusal the POSIX branch applies through fstat:
         # st_nlink is reported on Windows too, so an in-root alias of an

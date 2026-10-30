@@ -186,14 +186,12 @@ def safe_json_loads(
     size = len(raw)
     if size > max_bytes:
         raise ValueError(
-            f"{context}: JSON document is {size} bytes, over the "
-            f"{max_bytes}-byte limit"
+            f"{context}: JSON document is {size} bytes, over the {max_bytes}-byte limit"
         )
     depth = _scan_json_depth(raw, max_depth)
     if depth > max_depth:
         raise ValueError(
-            f"{context}: JSON nesting depth exceeds the maximum allowed "
-            f"({max_depth})"
+            f"{context}: JSON nesting depth exceeds the maximum allowed ({max_depth})"
         )
     # Parse with the DEFAULT (C accelerator) scanner: it handles nesting up to
     # JSON_MAX_DEPTH cheaply on every interpreter. Supplying parse_constant /
@@ -353,8 +351,7 @@ def safe_yaml_loads(
     size = len(raw)
     if size > max_bytes:
         raise ValueError(
-            f"{context}: YAML document is {size} bytes, over the "
-            f"{max_bytes}-byte limit"
+            f"{context}: YAML document is {size} bytes, over the {max_bytes}-byte limit"
         )
     loader_cls = _bounded_yaml_loader()
     loader = loader_cls(data, context=context, max_depth=max_depth, max_nodes=max_nodes)

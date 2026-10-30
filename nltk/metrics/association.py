@@ -68,7 +68,7 @@ class NgramAssocMeasures(metaclass=ABCMeta):
     def _contingency(*marginals):
         """Calculates values of a contingency table from marginal values."""
         raise NotImplementedError(
-            "The contingency table is not available" "in the general ngram case"
+            "The contingency table is not availablein the general ngram case"
         )
 
     @staticmethod
@@ -76,7 +76,7 @@ class NgramAssocMeasures(metaclass=ABCMeta):
     def _marginals(*contingency):
         """Calculates values of contingency table marginals from its values."""
         raise NotImplementedError(
-            "The contingency table is not available" "in the general ngram case"
+            "The contingency table is not availablein the general ngram case"
         )
 
     @classmethod

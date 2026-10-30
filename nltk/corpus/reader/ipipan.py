@@ -237,7 +237,7 @@ class IPIPANCorpusReader(CorpusReader):
             raise ValueError("Unexpected arguments: %s" % kwargs.keys())
         if not one_tag and not disamb_only:
             raise ValueError(
-                "You cannot specify both one_tag=False and " "disamb_only=False"
+                "You cannot specify both one_tag=False and disamb_only=False"
             )
         if not tags and (simplify_tags or not one_tag or not disamb_only):
             raise ValueError(

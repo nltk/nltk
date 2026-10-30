@@ -352,7 +352,7 @@ class BaseModelBuilderCommand(BaseTheoremToolCommand, ModelBuilderCommand):
         :return: str
         """
         if self._result is None:
-            raise LookupError("You have to call build_model() first to " "get a model!")
+            raise LookupError("You have to call build_model() first to get a model!")
         else:
             return self._decorate_model(self._model, format)
 
@@ -486,7 +486,7 @@ class ModelBuilderCommandDecorator(TheoremToolCommandDecorator, ModelBuilderComm
         :return: str
         """
         if self._result is None:
-            raise LookupError("You have to call build_model() first to " "get a model!")
+            raise LookupError("You have to call build_model() first to get a model!")
         else:
             return self._decorate_model(self._model, format)
 

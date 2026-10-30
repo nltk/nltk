@@ -2242,7 +2242,6 @@ def _open(resource_url):
 
 
 class LazyLoader:
-
     def __init__(self, _path):
         self._path = _path
 

@@ -107,8 +107,7 @@ class Tree(list):
             )
         elif isinstance(children, str):
             raise TypeError(
-                "%s() argument 2 should be a list, not a "
-                "string" % type(self).__name__
+                f"{type(self).__name__}() argument 2 should be a list, not a string"
             )
         else:
             list.__init__(self, children)
@@ -182,7 +181,7 @@ class Tree(list):
             return list.__setitem__(self, index, value)
         elif isinstance(index, (list, tuple)):
             if len(index) == 0:
-                raise IndexError("The tree position () may not be " "assigned to.")
+                raise IndexError("The tree position () may not be assigned to.")
             elif len(index) == 1:
                 self[index[0]] = value
             else:

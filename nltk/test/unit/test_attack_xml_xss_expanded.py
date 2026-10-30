@@ -152,8 +152,7 @@ EXPANSION_REJECTED = {
 # but must issue no outbound request. They are checked against a live socket.
 EXTERNAL_DTD_NO_FETCH = {
     "external-dtd-system": (
-        '<?xml version="1.0"?>'
-        '<!DOCTYPE r SYSTEM "http://{host}:{port}/x.dtd"><r>x</r>'
+        '<?xml version="1.0"?><!DOCTYPE r SYSTEM "http://{host}:{port}/x.dtd"><r>x</r>'
     ),
     "external-dtd-public": (
         '<?xml version="1.0"?>'
@@ -246,8 +245,7 @@ def test_file_entity_does_not_disclose_a_real_sentinel(backend, tmp_path):
     secret.write_text(SENTINEL, encoding="utf-8")
     uri = secret.as_uri()
     payload = (
-        '<?xml version="1.0"?>'
-        f'<!DOCTYPE r [<!ENTITY xxe SYSTEM "{uri}">]><r>&xxe;</r>'
+        f'<?xml version="1.0"?><!DOCTYPE r [<!ENTITY xxe SYSTEM "{uri}">]><r>&xxe;</r>'
     )
     error = _raises_guard(backend.fromstring, payload)
     assert SENTINEL not in str(error)

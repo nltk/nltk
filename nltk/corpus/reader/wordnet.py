@@ -1697,7 +1697,7 @@ class WordNetCorpusReader(CorpusReader):
         line_offset = data_file_line[:8]
         if (
             line_offset.isalnum()
-            and line_offset == f"{'0'*(8-len(str(offset)))}{str(offset)}"
+            and line_offset == f"{'0' * (8 - len(str(offset)))}{str(offset)}"
         ):
             synset = self._synset_from_pos_and_line(pos, data_file_line)
             assert synset._offset == offset
@@ -2068,7 +2068,7 @@ class WordNetCorpusReader(CorpusReader):
         else:
             reader = self._omw_reader
             if lang in self.langs():
-                file = f"{os.path.join(self.provenances[lang],file)}"
+                file = f"{os.path.join(self.provenances[lang], file)}"
         try:
             with reader.open(file) as fp:
                 return fp.read()

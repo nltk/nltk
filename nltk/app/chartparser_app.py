@@ -36,7 +36,6 @@ edge you wish to apply a rule to.
 # At some point, we should rewrite this tool to use the new canvas
 # widget system.
 
-
 import os.path
 from tkinter import (
     Button,
