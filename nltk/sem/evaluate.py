@@ -186,10 +186,16 @@ class Valuation(dict):
 ##########################################
 # REs used by the _read_valuation function
 ##########################################
-_VAL_SPLIT_RE = re.compile(r'\s*=+>\s*')
-_ELEMENT_SPLIT_RE = re.compile(r'\s*,\s*')
+# The ``(?<!=)`` makes the greedy ``=+`` run fail fast: without it a line
+# holding a long run of ``=`` not closed by ``>`` is re-scanned from every
+# position, quadratic in the run length (CWE-1333; CVE-2026-12890). The
+# leading ``\s*`` of each pattern was likewise retried from every position of
+# an internal whitespace run (CWE-407): it is now taken only where no
+# whitespace precedes it. The split results are unchanged.
+_VAL_SPLIT_RE = re.compile(r'(?<!\s)\s*(?<!=)=+>\s*')
+_ELEMENT_SPLIT_RE = re.compile(r'(?<!\s)\s*,\s*')
 _TUPLES_RE = re.compile(
-    r"""\s*
+    r"""(?<!\s)\s*
                                 (\([^)]+\))  # tuple-expression
                                 \s*""",
     re.VERBOSE,
@@ -386,6 +392,25 @@ class Assignment(dict):
         return self
 
 
+
+def _max_binder_depth(parsed):
+    """The deepest nesting of quantifiers and lambdas in *parsed*: each one
+    makes ``Model.satisfy`` iterate the whole domain once more, so the
+    nesting depth bounds the blow-up (CWE-770; CVE-2026-12840)."""
+    if isinstance(
+        parsed,
+        (AllExpression, ExistsExpression, LambdaExpression),
+    ):
+        return 1 + _max_binder_depth(parsed.term)
+    if isinstance(parsed, ApplicationExpression):
+        return max(_max_binder_depth(parsed.function), _max_binder_depth(parsed.argument))
+    if isinstance(parsed, (AndExpression, OrExpression, ImpExpression, IffExpression, EqualityExpression)):
+        return max(_max_binder_depth(parsed.first), _max_binder_depth(parsed.second))
+    if isinstance(parsed, NegatedExpression):
+        return _max_binder_depth(parsed.term)
+    return 0
+
+
 @python_2_unicode_compatible
 class Model(object):
     """
@@ -443,6 +468,29 @@ class Model(object):
                 print("'%s' is undefined under M, %s" % (expr, g))
             return 'Undefined'
 
+    #: Upper bound on |domain| ** (deepest quantifier/lambda nesting) that
+    #: ``satisfy`` may explore: each nested binder iterates the whole domain,
+    #: so the nesting depth of an untrusted formula is what blows up
+    #: (CWE-770; CVE-2026-12840). A formula past the bound is refused up
+    #: front instead of exhausting memory and CPU.
+    MAX_SATISFY_OPERATIONS = 1000000
+
+    def _check_satisfy_cost(self, parsed):
+        """Refuse *parsed* when |domain| ** (max binder depth) exceeds
+        ``MAX_SATISFY_OPERATIONS`` (CWE-770; CVE-2026-12840)."""
+        size = len(self.domain)
+        depth = _max_binder_depth(parsed)
+        if size > 1 and depth > 0:
+            cost = 1
+            for _ in range(depth):
+                cost *= size
+                if cost > self.MAX_SATISFY_OPERATIONS:
+                    raise ValueError(
+                        "Refusing to evaluate: the formula nests %d quantifiers "
+                        "or lambdas over a domain of %d, beyond the bound of %d "
+                        "domain-value combinations" % (depth, size, self.MAX_SATISFY_OPERATIONS)
+                    )
+
     def satisfy(self, parsed, g, trace=None):
         """
         Recursive interpretation function for a formula of first-order logic.
@@ -459,6 +507,15 @@ class Model(object):
         :param g: an assignment to individual variables.
         """
 
+        if trace is not None or g is not None and getattr(g, "_cost_checked", None) is None:
+            # Checked once per top-level call: the recursion below keeps the
+            # same assignment object, which carries the mark (CVE-2026-12840).
+            self._check_satisfy_cost(parsed)
+            if g is not None:
+                try:
+                    g._cost_checked = True
+                except AttributeError:
+                    pass
         if isinstance(parsed, ApplicationExpression):
             function, arguments = parsed.uncurry()
             if isinstance(function, AbstractVariableExpression):
