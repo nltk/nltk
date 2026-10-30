@@ -18,6 +18,8 @@ from nltk.internals import raise_unorderable_types
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
+from nltk import _security
+
 
 class PropbankCorpusReader(CorpusReader):
     """
@@ -117,7 +119,7 @@ class PropbankCorpusReader(CorpusReader):
 
         # n.b.: The encoding for XML fileids is specified by the file
         # itself; so we ignore self._encoding here.
-        etree = ElementTree.parse(self.abspath(framefile).open()).getroot()
+        etree = _security.safe_xml_parse(self.abspath(framefile).open()).getroot()
         for roleset in etree.findall('predicate/roleset'):
             if roleset.attrib['id'] == roleset_id:
                 return roleset
@@ -139,7 +141,7 @@ class PropbankCorpusReader(CorpusReader):
         for framefile in framefiles:
             # n.b.: The encoding for XML fileids is specified by the file
             # itself; so we ignore self._encoding here.
-            etree = ElementTree.parse(self.abspath(framefile).open()).getroot()
+            etree = _security.safe_xml_parse(self.abspath(framefile).open()).getroot()
             rsets.append(etree.findall('predicate/roleset'))
         return LazyConcatenation(rsets)
 

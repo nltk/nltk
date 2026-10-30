@@ -284,7 +284,7 @@ class Package(object):
     @staticmethod
     def fromxml(xml):
         if isinstance(xml, string_types):
-            xml = ElementTree.parse(xml)
+            xml = _security.safe_xml_parse(xml)
         for key in xml.attrib:
             xml.attrib[key] = text_type(xml.attrib[key])
         return Package(**xml.attrib)
@@ -325,7 +325,7 @@ class Collection(object):
     @staticmethod
     def fromxml(xml):
         if isinstance(xml, string_types):
-            xml = ElementTree.parse(xml)
+            xml = _security.safe_xml_parse(xml)
         for key in xml.attrib:
             xml.attrib[key] = text_type(xml.attrib[key])
         children = [child.get('ref') for child in xml.findall('item')]
@@ -981,7 +981,7 @@ class Downloader(object):
 
         # Download the index file.
         self._index = nltk.internals.ElementWrapper(
-            ElementTree.parse(urlopen(_security.check_url_scheme(self._url, 'index URL'))).getroot()
+            _security.safe_xml_parse(urlopen(_security.check_url_scheme(self._url, 'index URL'))).getroot()
         )
         self._index_timestamp = time.time()
 
@@ -2457,7 +2457,7 @@ def _find_collections(root):
         for filename in files:
             if filename.endswith('.xml'):
                 xmlfile = os.path.join(dirname, filename)
-                yield ElementTree.parse(xmlfile).getroot()
+                yield _security.safe_xml_parse(xmlfile).getroot()
 
 
 def _find_packages(root):
@@ -2485,7 +2485,7 @@ def _find_packages(root):
                 except Exception as e:
                     raise ValueError('Error reading file %r!\n%s' % (zipfilename, e))
                 try:
-                    pkg_xml = ElementTree.parse(xmlfilename).getroot()
+                    pkg_xml = _security.safe_xml_parse(xmlfilename).getroot()
                 except Exception as e:
                     raise ValueError('Error reading file %r!\n%s' % (xmlfilename, e))
 

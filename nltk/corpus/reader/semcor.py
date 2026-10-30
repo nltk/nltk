@@ -16,6 +16,8 @@ from nltk.corpus.reader.api import *
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView
 from nltk.tree import Tree
 
+from nltk import _security
+
 
 class SemcorCorpusReader(XMLCorpusReader):
     """
@@ -125,7 +127,7 @@ class SemcorCorpusReader(XMLCorpusReader):
         assert unit in ('token', 'word', 'chunk')
         result = []
 
-        xmldoc = ElementTree.parse(fileid).getroot()
+        xmldoc = _security.safe_xml_parse(fileid).getroot()
         for xmlsent in xmldoc.findall('.//s'):
             sent = []
             for xmlword in _all_xmlwords_in(xmlsent):

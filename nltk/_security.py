@@ -38,6 +38,8 @@ from six import PY2, binary_type, string_types, text_type
 from six.moves.urllib.parse import urlsplit
 
 __all__ = [
+    "safe_xml_parse",
+    "safe_xml_fromstring",
     "trusted_executable",
     "find_on_path",
     "sanitize_csv_field",
@@ -428,3 +430,110 @@ def trusted_executable(path, what="executable"):
     if reason is not None:
         raise LookupError("refusing to run %s %r: %s" % (what, path, reason))
     return path
+
+
+# ----------------------------------------------------------------------
+# XML (CWE-776, CWE-611, CWE-674)
+# ----------------------------------------------------------------------
+
+#: Ceilings on a parsed document: elements, and the depth of the tree.
+MAX_XML_ELEMENTS = 20000000
+MAX_XML_DEPTH = 1000
+
+try:  # the vendor library when installed; the expat fence below otherwise
+    import defusedxml.ElementTree as _defused_etree
+except ImportError:  # pragma: no cover
+    _defused_etree = None
+
+from xml.etree import ElementTree as _ElementTree
+from xml.parsers import expat as _expat
+
+
+class XMLForbidden(ValueError):
+    """Raised for an entity declaration or an external reference."""
+
+
+def _fenced_expat_parse(data):
+    """Build an ElementTree from *data* with an expat parser whose entity
+    and external-reference handlers refuse: a document can then neither
+    expand (billion laughs, CWE-776) nor fetch (XXE, CWE-611). Names are
+    produced in ElementTree's ``{uri}local`` form."""
+    builder = _ElementTree.TreeBuilder()
+    parser = _expat.ParserCreate(None, "}")
+    parser.ordered_attributes = True
+    parser.buffer_text = True
+
+    def fix(name):
+        return "{" + name if "}" in name else name
+
+    def start(name, attrs):
+        attrib = {}
+        for i in range(0, len(attrs), 2):
+            attrib[fix(attrs[i])] = attrs[i + 1]
+        builder.start(fix(name), attrib)
+
+    def forbid_entity(name, is_parameter, value, base, sysid, pubid, notation):
+        raise XMLForbidden("entity declarations are not allowed (%r)" % (name,))
+
+    def forbid_external(context, base, sysid, pubid):
+        raise XMLForbidden("external entity references are not allowed")
+
+    def forbid_unparsed(name, base, sysid, pubid, notation):
+        raise XMLForbidden("unparsed entity declarations are not allowed")
+
+    parser.StartElementHandler = start
+    parser.EndElementHandler = lambda name: builder.end(fix(name))
+    parser.CharacterDataHandler = builder.data
+    parser.EntityDeclHandler = forbid_entity
+    parser.UnparsedEntityDeclHandler = forbid_unparsed
+    parser.ExternalEntityRefHandler = forbid_external
+    try:
+        parser.Parse(data, True)
+    except _expat.ExpatError as exc:
+        raise _ElementTree.ParseError(str(exc))
+    return builder.close()
+
+
+def _check_tree(root):
+    """Refuse a tree deeper than ``MAX_XML_DEPTH`` or larger than
+    ``MAX_XML_ELEMENTS`` (CWE-674, CWE-400)."""
+    count = 0
+    stack = [(root, 1)]
+    while stack:
+        node, depth = stack.pop()
+        count += 1
+        if depth > MAX_XML_DEPTH:
+            raise XMLForbidden("XML nested deeper than %d elements" % MAX_XML_DEPTH)
+        if count > MAX_XML_ELEMENTS:
+            raise XMLForbidden("XML holds more than %d elements" % MAX_XML_ELEMENTS)
+        for child in list(node):
+            stack.append((child, depth + 1))
+    return root
+
+
+def _read_source(source):
+    if hasattr(source, "read"):
+        return read_bounded(source, what="XML document")
+    with io.open(source, "rb") as fh:
+        return read_bounded(fh, what="XML document")
+
+
+def safe_xml_parse(source):
+    """``ElementTree.parse`` that refuses entities and external references
+    and bounds the tree it builds. *source* is a path or a binary stream."""
+    if _defused_etree is not None:
+        tree = _defused_etree.parse(source, forbid_dtd=False, forbid_entities=True, forbid_external=True)
+        _check_tree(tree.getroot())
+        return tree
+    root = _fenced_expat_parse(_read_source(source))
+    return _ElementTree.ElementTree(_check_tree(root))
+
+
+def safe_xml_fromstring(text):
+    """``ElementTree.fromstring`` with the same refusals and bounds."""
+    if _defused_etree is not None:
+        root = _defused_etree.fromstring(text, forbid_dtd=False, forbid_entities=True, forbid_external=True)
+        return _check_tree(root)
+    if isinstance(text, text_type):
+        text = text.encode("utf-8")
+    return _check_tree(_fenced_expat_parse(text))

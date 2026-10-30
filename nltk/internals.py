@@ -953,14 +953,14 @@ class ElementWrapper(object):
         Initialize a new Element wrapper for ``etree``.
 
         If ``etree`` is a string, then it will be converted to an
-        Element object using ``ElementTree.fromstring()`` first:
+        Element object using ``_security.safe_xml_fromstring()`` first:
 
             >>> ElementWrapper("<test></test>")
             <Element "<?xml version='1.0' encoding='utf8'?>\n<test />">
 
         """
         if isinstance(etree, string_types):
-            etree = ElementTree.fromstring(etree)
+            etree = _security.safe_xml_fromstring(etree)
         self.__dict__['_etree'] = etree
 
     def unwrap(self):
