@@ -446,10 +446,8 @@ def test_hardlink_write_probe_has_teeth():
     probe = probes.PROBES["GHSA-f794-5jv7-7672"]
     real = pathsec._hardened_open
     try:
-        pathsec._hardened_open = (
-            lambda raw, mode, context, required_root, **kw: builtins.open(
-                raw, mode, **kw
-            )
+        pathsec._hardened_open = lambda raw, mode, context, required_root, **kw: (
+            builtins.open(raw, mode, **kw)
         )
         assert probe()[0] == probes.VULNERABLE
     finally:
@@ -529,9 +527,9 @@ class TestProbeDiscoveryIsolation:
     def test_discovery_scans_only_the_package_directory(self):
         discovered = {m.name for m in pkgutil.iter_modules(probes.__path__)}
         on_disk = {p.stem for p in pathlib.Path(probes.__path__[0]).glob("*.py")}
-        assert (
-            discovered <= on_disk
-        ), "discovery listed a module outside the package dir"
+        assert discovered <= on_disk, (
+            "discovery listed a module outside the package dir"
+        )
 
     def test_all_imports_are_qualified_under_the_package(self, monkeypatch):
         issued = []
@@ -546,9 +544,9 @@ class TestProbeDiscoveryIsolation:
 
         prefix = probes.__name__ + "."
         unqualified = [n for n in issued if not n.startswith(prefix)]
-        assert (
-            not unqualified
-        ), f"imports not under the package namespace: {unqualified}"
+        assert not unqualified, (
+            f"imports not under the package namespace: {unqualified}"
+        )
 
 
 class TestReadSource:

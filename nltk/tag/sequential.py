@@ -17,6 +17,7 @@ determine a tag for the specified token, then its backoff tagger is
 consulted instead.  Any SequentialBackoffTagger may serve as a
 backoff tagger for any other SequentialBackoffTagger.
 """
+
 import ast
 from abc import abstractmethod
 from typing import List, Optional, Tuple
@@ -626,9 +627,7 @@ class ClassifierBasedTagger(SequentialBackoffTagger, FeaturesetTaggerI):
         super().__init__(backoff)
 
         if (train and classifier) or (not train and not classifier):
-            raise ValueError(
-                "Must specify either training data or " "trained classifier."
-            )
+            raise ValueError("Must specify either training data or trained classifier.")
 
         if feature_detector is not None:
             self._feature_detector = feature_detector

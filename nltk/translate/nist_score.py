@@ -83,9 +83,9 @@ def corpus_nist(list_of_references, hypotheses, n=5):
     :type n: int
     """
     # Before proceeding to compute NIST, perform sanity checks.
-    assert len(list_of_references) == len(
-        hypotheses
-    ), "The number of hypotheses and their reference(s) should be the same"
+    assert len(list_of_references) == len(hypotheses), (
+        "The number of hypotheses and their reference(s) should be the same"
+    )
 
     # Collect the ngram coounts from the reference sentences.
     ngram_freq = Counter()

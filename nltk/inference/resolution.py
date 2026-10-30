@@ -664,11 +664,11 @@ class BindingDict:
                 self.d[binding.variable] = binding2
             else:
                 raise BindingException(
-                    "Variable %s already bound to another " "value" % (variable)
+                    "Variable %s already bound to another value" % (variable)
                 )
         else:
             raise BindingException(
-                "Variable %s already bound to another " "value" % (variable)
+                "Variable %s already bound to another value" % (variable)
             )
 
     def __getitem__(self, variable):

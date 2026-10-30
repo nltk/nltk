@@ -450,7 +450,7 @@ class DependencyGraph:
             self.top_relation_label = top_relation_label
         else:
             warnings.warn(
-                "The graph doesn't contain a node " "that depends on the root element."
+                "The graph doesn't contain a node that depends on the root element."
             )
 
     def _word(self, node, filter=True):
@@ -513,7 +513,7 @@ class DependencyGraph:
         def _triples(node, _depth):
             if _depth > max_depth:
                 raise ValueError(
-                    f"DependencyGraph.triples() exceeded " f"MAX_DEPTH={max_depth}."
+                    f"DependencyGraph.triples() exceeded MAX_DEPTH={max_depth}."
                 )
             head = (node["word"], node["ctag"])
             for i in sorted(chain.from_iterable(node["deps"].values())):
@@ -748,8 +748,9 @@ def dot2img(dot_string, t="svg"):
         ) from e
     except Exception as e:
         raise Exception(
-            "Cannot create image representation by running dot from string: {}"
-            "".format(dot_string)
+            "Cannot create image representation by running dot from string: {}".format(
+                dot_string
+            )
         ) from e
 
 

@@ -253,7 +253,7 @@ class LogicParser:
                     i += 1
                     if len(data) == i:
                         raise LogicalExpressionException(
-                            None, "End of input reached.  " "Expected: [%s]" % end
+                            None, "End of input reached.  Expected: [%s]" % end
                         )
                 if incl_quotes:
                     token += data[i]
@@ -2020,7 +2020,7 @@ class LogicalExpressionException(Exception):
 class UnexpectedTokenException(LogicalExpressionException):
     def __init__(self, index, unexpected=None, expected=None, message=None):
         if unexpected and expected:
-            msg = "Unexpected token: '%s'.  " "Expected token '%s'." % (
+            msg = "Unexpected token: '%s'.  Expected token '%s'." % (
                 unexpected,
                 expected,
             )

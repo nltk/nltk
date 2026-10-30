@@ -599,18 +599,24 @@ def test_bom_teeth(pathsec_sandbox, monkeypatch):
 def _boundary_files():
     smuggle = "\\lx smuggled\n"
     return {
-        "utf-8-sig": lambda pad: codecs.BOM_UTF8
-        + ("\\lx a\n\\ge " + "x" * pad + "\n").encode()
-        + codecs.BOM_UTF8
-        + smuggle.encode(),
-        "utf-16": lambda pad: codecs.BOM_UTF16_LE
-        + ("\\lx a\n\\ge " + "x" * pad + "\n").encode("utf-16-le")
-        + codecs.BOM_UTF16_LE
-        + smuggle.encode("utf-16-le"),
-        "utf-32": lambda pad: codecs.BOM_UTF32_LE
-        + ("\\lx a\n\\ge " + "x" * pad + "\n").encode("utf-32-le")
-        + codecs.BOM_UTF32_LE
-        + smuggle.encode("utf-32-le"),
+        "utf-8-sig": lambda pad: (
+            codecs.BOM_UTF8
+            + ("\\lx a\n\\ge " + "x" * pad + "\n").encode()
+            + codecs.BOM_UTF8
+            + smuggle.encode()
+        ),
+        "utf-16": lambda pad: (
+            codecs.BOM_UTF16_LE
+            + ("\\lx a\n\\ge " + "x" * pad + "\n").encode("utf-16-le")
+            + codecs.BOM_UTF16_LE
+            + smuggle.encode("utf-16-le")
+        ),
+        "utf-32": lambda pad: (
+            codecs.BOM_UTF32_LE
+            + ("\\lx a\n\\ge " + "x" * pad + "\n").encode("utf-32-le")
+            + codecs.BOM_UTF32_LE
+            + smuggle.encode("utf-32-le")
+        ),
         "iso2022_jp": lambda pad: (
             "\\lx a\n\\ge " + "x" * pad + "\u3042\u3044\u3046" * 3 + "\n\\lx b\n"
         ).encode("iso2022_jp"),

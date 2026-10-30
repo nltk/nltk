@@ -61,7 +61,6 @@ Note: Some of the files (e.g. "ipod.txt", "Canon PowerShot SD500.txt") do not
     consideration.
 """
 
-
 from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *

@@ -270,7 +270,7 @@ class FeatStruct(SubstituteBindingsI):
         otherwise, raise ``TypeError``.
         """
         if not self._frozen:
-            raise TypeError("FeatStructs must be frozen before they " "can be hashed.")
+            raise TypeError("FeatStructs must be frozen before they can be hashed.")
         try:
             return self._hash
         except AttributeError:

@@ -10,6 +10,7 @@
 According to Chen & Goodman 1995 these should work with both Backoff and
 Interpolation.
 """
+
 from operator import methodcaller
 
 from nltk.lm.api import Smoothing

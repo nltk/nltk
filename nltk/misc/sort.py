@@ -10,6 +10,7 @@ This module provides a variety of list sorting algorithms, to
 illustrate the many different algorithms (recipes) for solving a
 problem, and how to analyze algorithms experimentally.
 """
+
 from nltk.termsec import safe_print
 
 # These algorithms are taken from:
@@ -169,7 +170,7 @@ def demo():
         count_quick = quick(a)
 
         safe_print(
-            ("size=%5d:  selection=%8d,  bubble=%8d,  " "merge=%6d,  quick=%6d")
+            ("size=%5d:  selection=%8d,  bubble=%8d,  merge=%6d,  quick=%6d")
             % (size, count_selection, count_bubble, count_merge, count_quick)
         )
 

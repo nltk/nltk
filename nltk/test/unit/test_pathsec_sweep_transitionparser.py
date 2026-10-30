@@ -156,6 +156,6 @@ def test_parse_permits_inside_model(pathsec_sandbox):
     gold = DependencyGraph(GOLD)
     with pytest.raises(Exception) as excinfo:
         parser.parse([gold], str(inside_model))
-    assert not isinstance(
-        excinfo.value, PermissionError
-    ), "in-sandbox model read was wrongly refused by pathsec"
+    assert not isinstance(excinfo.value, PermissionError), (
+        "in-sandbox model read was wrongly refused by pathsec"
+    )

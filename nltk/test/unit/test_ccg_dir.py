@@ -5,7 +5,6 @@ from nltk.ccg.api import Direction, FunctionalCategory, PrimitiveCategory
 
 
 class TestCCGDirection(unittest.TestCase):
-
     # --- Parser and Unification Tests (PR #3556) ---
 
     def test_parse_variable_direction(self):

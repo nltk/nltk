@@ -376,9 +376,9 @@ def test_no_allowlisted_class_carries_a_compiled_regex():
     for obj in samples:
         state = getattr(obj, "__dict__", {}) or {}
         for value in state.values():
-            assert not isinstance(
-                value, pattern_types
-            ), f"{type(obj).__name__} carries a compiled regex; ReDoS surface exists"
+            assert not isinstance(value, pattern_types), (
+                f"{type(obj).__name__} carries a compiled regex; ReDoS surface exists"
+            )
 
 
 def test_hostile_build_state_on_allowlisted_class_is_bounded():

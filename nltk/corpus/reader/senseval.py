@@ -22,7 +22,6 @@ Each instance of the ambiguous words "hard", "interest", "line", and "serve"
 is tagged with a sense identifier, and supplied with context.
 """
 
-
 from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
@@ -47,7 +46,7 @@ class SensevalInstance:
         self.context = context
 
     def __repr__(self):
-        return "SensevalInstance(word=%r, position=%r, " "context=%r, senses=%r)" % (
+        return "SensevalInstance(word=%r, position=%r, context=%r, senses=%r)" % (
             self.word,
             self.position,
             self.context,

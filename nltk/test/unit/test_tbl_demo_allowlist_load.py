@@ -137,9 +137,9 @@ def test_allowlist_contains_no_exec_primitive():
     for module, name in allow:
         if (module, name) in _SAFE_DENIED_GLOBALS:
             continue
-        assert (
-            module.split(".")[0] not in banned_modules
-        ), f"tbl allowlist names a dangerous module: {module}.{name}"
+        assert module.split(".")[0] not in banned_modules, (
+            f"tbl allowlist names a dangerous module: {module}.{name}"
+        )
 
 
 # ---------------------------------------------------------------------------

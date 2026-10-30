@@ -150,7 +150,7 @@ class BracketParseCorpusReader(SyntaxCorpusReader):
                     try:
                         v = Tree(self._normalize(t + ")" * n))
                         sys.stderr.write(
-                            "  Recovered by adding %d close " "paren(s)\n" % n
+                            "  Recovered by adding %d close paren(s)\n" % n
                         )
                         return v
                     except ValueError:
