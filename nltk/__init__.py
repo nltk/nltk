@@ -65,7 +65,7 @@ __license__ = "Apache License, Version 2.0"
 # Description of the toolkit, keywords, and the project's primary URL.
 __longdescr__ = """\
 The Natural Language Toolkit (NLTK) is a Python package for
-natural language processing.  NLTK requires Python 3.11, 3.12, 3.13 or 3.14."""
+natural language processing.  NLTK requires Python 3.11, 3.12, 3.13, 3.14 or 3.15."""
 __keywords__ = [
     "NLP",
     "CL",
