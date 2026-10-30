@@ -23,6 +23,7 @@ import sys
 old_sys_path = sys.path[:]
 sys.path = [p for p in sys.path if p and "nltk" not in p]
 import inspect
+import re
 
 sys.path = old_sys_path
 
@@ -101,6 +102,24 @@ def update_wrapper(wrapper, model, infodict=None):
     return wrapper
 
 
+_SAFE_SIGNATURE_RE = re.compile(
+    r"^\s*(?:\*{0,2}[A-Za-z_][A-Za-z0-9_]*\s*(?:,\s*\*{0,2}[A-Za-z_][A-Za-z0-9_]*\s*)*)?$"
+)
+_RESERVED_NAMES = frozenset(["_call_", "_func_", "_wrapper_"])
+
+
+def _assert_safe_signature(signature):
+    """Refuse a signature string the wrapper eval must never see: only a
+    comma-separated list of plain parameter names (``*args``/``**kwargs``
+    included) may reach it, nothing that carries a default, a call, an
+    attribute or any other expression (CVE-2026-14727)."""
+    if not _SAFE_SIGNATURE_RE.match(signature):
+        raise ValueError("refusing to build a wrapper from the signature %r" % (signature,))
+    names = set(part.strip().lstrip("*") for part in signature.split(",") if part.strip())
+    if names & _RESERVED_NAMES:
+        raise ValueError("a parameter is named like a wrapper internal: %r" % (signature,))
+
+
 def new_wrapper(wrapper, model):
     """
     An improvement over functools.update_wrapper. The wrapper is a generic
@@ -116,8 +135,9 @@ def new_wrapper(wrapper, model):
     assert (
         not '_wrapper_' in infodict["argnames"]
     ), '"_wrapper_" is a reserved argument name!'
+    _assert_safe_signature(infodict["signature"])
     src = "lambda %(signature)s: _wrapper_(%(signature)s)" % infodict
-    funcopy = eval(src, dict(_wrapper_=wrapper))
+    funcopy = eval(src, dict(_wrapper_=wrapper))  # fenced by _assert_safe_signature
     return update_wrapper(funcopy, model, infodict)
 
 
@@ -183,9 +203,10 @@ def decorator(caller):
         assert not (
             '_call_' in argnames or '_func_' in argnames
         ), 'You cannot use _call_ or _func_ as argument names!'
+        _assert_safe_signature(infodict["signature"])
         src = "lambda %(signature)s: _call_(_func_, %(signature)s)" % infodict
         # import sys; print >> sys.stderr, src # for debugging purposes
-        dec_func = eval(src, dict(_func_=func, _call_=caller))
+        dec_func = eval(src, dict(_func_=func, _call_=caller))  # fenced above
         return update_wrapper(dec_func, func, infodict)
 
     return update_wrapper(_decorator, caller)
