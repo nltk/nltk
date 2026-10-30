@@ -49,7 +49,7 @@ loads it, before anything is read:
     ['Er kam um 5 Uhr.', 'Dann ging er.']
 
 It is important to note that there should be no space following the
-colon (':') in the URL; 'nltk: grammars/sample_grammars/toy.cfg' will
+colon (':') in the URL; 'nltk: tokenizers/punkt/english.pickle' will
 not work!
 
 The ``nltk:`` protocol is used by default if no protocol is specified.
