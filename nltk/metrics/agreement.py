@@ -76,9 +76,19 @@ from operator import itemgetter
 
 from nltk.internals import deprecated
 from nltk.metrics.distance import binary_distance
+from nltk.pathsec import open as pathsec_open
 from nltk.probability import ConditionalFreqDist, FreqDist
+from nltk.termsec import safe_print, sanitize_terminal
 
 log = logging.getLogger(__name__)
+
+#: Most distinct labels an ``AnnotationTask`` accepts. ``Disagreement``/``alpha``/
+#: ``weighted_kappa`` run a double loop over the distinct label set K, so a
+#: task with one unique label per item is O(|K|**2) (CWE-407); |K| is
+#: attacker-controlled. A real study has a tiny fixed label set, so this is a
+#: distinct-count bound (like ``NgramCounter.MAX_NGRAMS``), not a data-length
+#: cap -- large low-cardinality data stays linear.
+MAX_AGREEMENT_LABELS = 10_000
 
 
 class AnnotationTask:
@@ -94,7 +104,7 @@ class AnnotationTask:
     is the MASI metric, which requires Python sets.
     """
 
-    def __init__(self, data=None, distance=binary_distance):
+    def __init__(self, data=None, distance=binary_distance, missing_values=None):
         """Initialize an annotation task.
 
         The data argument can be None (to create an empty annotation task) or a sequence of 3-tuples,
@@ -104,12 +114,26 @@ class AnnotationTask:
         The distance argument is a function taking two arguments (labels) and producing a numerical distance.
         The distance from a label to itself should be zero:
         ``distance(l,l) = 0``
+
+        Missing data (a coder not annotating an item) is represented by simply
+        omitting that ``(coder, item, label)`` triple: Krippendorff's ``alpha``
+        drops items annotated by fewer than two coders. As a convenience,
+        ``missing_values`` may be a collection of label values that stand for
+        "not annotated" (e.g. ``[None]`` or ``["", None]``); triples whose label
+        is one of them are dropped on load, so a placeholder is not counted as a
+        real category. Membership is tested with ``==``/hashing, so the values
+        must be hashable, like any label. Note the other coefficients
+        (``kappa``, ``pi``, ``S``, ``weighted_kappa``) assume every coder rated
+        every item; ``missing_values`` is meaningful only for ``alpha``.
         """
         self.distance = distance
         self.I = set()
         self.K = set()
         self.C = set()
         self.data = []
+        self.missing_values = (
+            frozenset(missing_values) if missing_values else frozenset()
+        )
         if data is not None:
             self.load_array(data)
 
@@ -129,10 +153,21 @@ class AnnotationTask:
             (coder,item,label)
         """
         for coder, item, labels in array:
+            # A missing-value placeholder means this coder did not annotate this
+            # item; drop the triple rather than treat the placeholder as a real
+            # label (issues #2865, #2732).
+            if labels in self.missing_values:
+                continue
             self.C.add(coder)
             self.K.add(labels)
             self.I.add(item)
             self.data.append({"coder": coder, "labels": labels, "item": item})
+        if len(self.K) > MAX_AGREEMENT_LABELS:
+            raise ValueError(
+                f"AnnotationTask has more than {MAX_AGREEMENT_LABELS} distinct "
+                "labels: agreement coefficients are quadratic in the label set "
+                "(CWE-407). A real study has a small fixed label set."
+            )
 
     def agr(self, cA, cB, i, data=None):
         """Agreement between two coders on a given item"""
@@ -147,7 +182,13 @@ class AnnotationTask:
             k2 = next(x for x in data if x["coder"] == cA and x["item"] == i)
 
         ret = 1.0 - float(self.distance(k1["labels"], k2["labels"]))
-        log.debug("Observed agreement between %s and %s on %s: %f", cA, cB, i, ret)
+        log.debug(
+            "Observed agreement between %s and %s on %s: %f",
+            sanitize_terminal(cA),
+            sanitize_terminal(cB),
+            sanitize_terminal(i),
+            ret,
+        )
         log.debug(
             'Distance between "%r" and "%r": %f', k1["labels"], k2["labels"], 1.0 - ret
         )
@@ -175,7 +216,13 @@ class AnnotationTask:
             raise ValueError(
                 f"You must pass either i or c, not both! (k={k!r},i={i!r},c={c!r})"
             )
-        log.debug("Count on N[%s,%s,%s]: %d", k, i, c, ret)
+        log.debug(
+            "Count on N[%s,%s,%s]: %d",
+            sanitize_terminal(k),
+            sanitize_terminal(i),
+            sanitize_terminal(c),
+            ret,
+        )
         return ret
 
     def _grouped_data(self, field, data=None):
@@ -190,7 +237,12 @@ class AnnotationTask:
         ret = sum(self.agr(cA, cB, item, item_data) for item, item_data in data) / len(
             self.I
         )
-        log.debug("Observed agreement between %s and %s: %f", cA, cB, ret)
+        log.debug(
+            "Observed agreement between %s and %s: %f",
+            sanitize_terminal(cA),
+            sanitize_terminal(cB),
+            ret,
+        )
         return ret
 
     def _pairwise_average(self, function):
@@ -241,7 +293,12 @@ class AnnotationTask:
             total += self.distance(next(itemdata)["labels"], next(itemdata)["labels"])
 
         ret = total / (len(self.I) * max_distance)
-        log.debug("Observed disagreement between %s and %s: %f", cA, cB, ret)
+        log.debug(
+            "Observed disagreement between %s and %s: %f",
+            sanitize_terminal(cA),
+            sanitize_terminal(cB),
+            ret,
+        )
         return ret
 
     def Do_Kw(self, max_distance=1.0):
@@ -284,7 +341,12 @@ class AnnotationTask:
         """ """
         Ae = self.Ae_kappa(cA, cB)
         ret = self._chance_corrected_agreement(self.Ao(cA, cB), Ae)
-        log.debug("Expected agreement between %s and %s: %f", cA, cB, Ae)
+        log.debug(
+            "Expected agreement between %s and %s: %f",
+            sanitize_terminal(cA),
+            sanitize_terminal(cB),
+            Ae,
+        )
         return ret
 
     def kappa(self):
@@ -355,7 +417,12 @@ class AnnotationTask:
             for l in self.K:
                 total += label_freqs[cA][j] * label_freqs[cB][l] * self.distance(j, l)
         De = total / (max_distance * pow(len(self.I), 2))
-        log.debug("Expected disagreement between %s and %s: %f", cA, cB, De)
+        log.debug(
+            "Expected disagreement between %s and %s: %f",
+            sanitize_terminal(cA),
+            sanitize_terminal(cB),
+            De,
+        )
         Do = self.Do_Kw_pairwise(cA, cB)
         ret = 1.0 - (Do / De)
         return ret
@@ -457,7 +524,7 @@ if __name__ == "__main__":
 
     # read in data from the specified file
     data = []
-    with open(options.file) as infile:
+    with pathsec_open(options.file, context="agreement.__main__") as infile:
         for l in infile:
             toks = l.split(options.columnsep)
             coder, object_, labels = (
@@ -482,6 +549,6 @@ if __name__ == "__main__":
     if options.thorough:
         pass
     else:
-        print(getattr(task, options.agreement)())
+        safe_print(getattr(task, options.agreement)())
 
     logging.shutdown()

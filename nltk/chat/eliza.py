@@ -13,6 +13,7 @@
 # computer says back, e.g. "I am" --> "you are"
 
 from nltk.chat.util import Chat, reflections
+from nltk.termsec import safe_print
 
 # a table of response pairs, where each pair consists of a
 # regular expression, and a list of possible responses,
@@ -320,11 +321,11 @@ eliza_chatbot = Chat(pairs, reflections)
 
 
 def eliza_chat():
-    print("Therapist\n---------")
-    print("Talk to the program by typing in plain English, using normal upper-")
-    print('and lower-case letters and punctuation.  Enter "quit" when done.')
-    print("=" * 72)
-    print("Hello.  How are you feeling today?")
+    safe_print("Therapist\n---------")
+    safe_print("Talk to the program by typing in plain English, using normal upper-")
+    safe_print('and lower-case letters and punctuation.  Enter "quit" when done.')
+    safe_print("=" * 72)
+    safe_print("Hello.  How are you feeling today?")
 
     eliza_chatbot.converse()
 

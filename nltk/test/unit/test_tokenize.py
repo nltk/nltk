@@ -9,6 +9,7 @@ from typing import List, Tuple
 
 import pytest
 
+from nltk.test.unit import timing
 from nltk.tokenize import (
     LegalitySyllableTokenizer,
     StanfordSegmenter,
@@ -21,6 +22,8 @@ from nltk.tokenize import (
 )
 from nltk.tokenize.simple import CharTokenizer
 from nltk.tokenize.treebank import TreebankWordDetokenizer
+
+from . import _mp_ctx
 
 
 def load_stanford_segmenter():
@@ -37,6 +40,13 @@ check_stanford_segmenter = pytest.mark.skipif(
     not load_stanford_segmenter(),
     reason="NLTK was unable to find stanford-segmenter.jar.",
 )
+
+
+def _tweet_tokenizer_redos_worker():
+    tokenizer = TweetTokenizer()
+    for payload in ("a." * 8000, "a.a-" * 8000, "http://a(" * 8000):
+        tokenizer.tokenize(payload)
+    os._exit(0)
 
 
 class TestTokenize:
@@ -61,6 +71,20 @@ class TestTokenize:
             "français",
         ]
         assert tokens == expected
+
+    def test_tweet_tokenizer_ellipsis_newline(self):
+        """
+        Ellipsis tokens must not span newlines (#1954).
+        """
+        tokenizer = TweetTokenizer()
+        assert tokenizer.tokenize("hello...\n...world") == [
+            "hello",
+            "...",
+            "...",
+            "world",
+        ]
+        # spaces between ellipsis dots are still allowed
+        assert tokenizer.tokenize("a.. .b") == ["a", ".. .", "b"]
 
     @pytest.mark.parametrize(
         "test_input, expecteds",
@@ -356,6 +380,45 @@ class TestTokenize:
         result = tokenizer.tokenize(test2)
         assert result == expected
 
+    def test_tweet_tokenizer_redos(self):
+        """
+        The URL/email regexes used to backtrack catastrophically on long
+        dotted strings, so a tiny input could hang the tokenizer for many
+        seconds. Run pathological inputs in a separate process with a hard
+        timeout so a regression fails fast instead of hanging the suite.
+        """
+        ctx = _mp_ctx()
+        run = timing.run_in_process(
+            _tweet_tokenizer_redos_worker, (), budget=60, context=ctx, cpu_bound=True
+        )
+        if not run.within_budget:
+            raise AssertionError(
+                "TweetTokenizer did not finish in time, possible ReDoS"
+            )
+        assert run.exitcode == 0, f"worker failed (exit code {run.exitcode})"
+
+    def test_tweet_tokenizer_reduce_len_preserves_non_latin(self):
+        """
+        With ``reduce_len=False`` (the default), the tokenizer must not shorten
+        runs of repeated non-Latin letters. Regression test for
+        https://github.com/nltk/nltk/issues/3157, where a run of Cyrillic
+        characters was collapsed even though Latin ones were left untouched.
+        """
+        keep = TweetTokenizer(reduce_len=False)
+        # A Latin run is preserved (control) ...
+        assert keep.tokenize("Loooool") == ["Loooool"]
+        # ... and a Cyrillic run must be preserved identically.
+        assert keep.tokenize("Лооооол") == ["Лооооол"]
+
+        # reduce_len=True must still collapse long runs in any script.
+        shorten = TweetTokenizer(reduce_len=True)
+        assert shorten.tokenize("Loooool") == ["Loool"]
+        assert shorten.tokenize("Лооооол") == ["Лооол"]
+
+        # Long runs of a single punctuation character are still shortened even
+        # when reduce_len=False, so the tokenizer stays safe against ReDoS.
+        assert keep.tokenize("!!!!!!!!") == ["!", "!", "!"]
+
     def test_emoji_tokenizer(self):
         """
         Test a string that contains Emoji ZWJ Sequences and skin tone modifier
@@ -420,6 +483,12 @@ class TestTokenize:
         expected = ["<3", "🇨🇦", "🤝", "🇵🇱", "<3"]
         result = tokenizer.tokenize(test6)
         assert result == expected
+
+    def test_tweet_tokenizer_zwj_does_not_capture_whitespace(self):
+        """Whitespace next to a ZWJ remains a token boundary."""
+        tokenizer = TweetTokenizer()
+        assert tokenizer.tokenize("a\t\u200db") == ["a", "\u200db"]
+        assert tokenizer.tokenize("a\u200d\tb") == ["a\u200d", "b"]
 
     def test_pad_asterisk(self):
         """
@@ -800,6 +869,27 @@ class TestTokenize:
         expected = ["'", "v", "'", "'re", "'"]
         assert word_tokenize(sentence) == expected
 
+    def test_word_tokenize_opening_single_quote_padding(self):
+        sentence = "'Hard' to tell"
+        expected = ["'", "Hard", "'", "to", "tell"]
+        assert word_tokenize(sentence) == expected
+
+        sentence = "He said 'hello' to me"
+        expected = ["He", "said", "'", "hello", "'", "to", "me"]
+        assert word_tokenize(sentence) == expected
+
+        sentence = "It's more'n enough."
+        expected = ["It", "'s", "more", "'n", "enough", "."]
+        assert word_tokenize(sentence) == expected
+
+        sentence = "It's o'clock already"
+        expected = ["It", "'s", "o'clock", "already"]
+        assert word_tokenize(sentence) == expected
+
+        sentence = "O'Connor went home"
+        expected = ["O'Connor", "went", "home"]
+        assert word_tokenize(sentence) == expected
+
     def test_punkt_pair_iter(self):
         test_cases = [
             ("12", [("1", "2"), ("2", None)]),
@@ -927,6 +1017,47 @@ class TestTokenize:
     )
     def test_sent_tokenize(self, sentences: str, expected: list[str]):
         assert sent_tokenize(sentences) == expected
+
+    def test_sent_tokenize_curly_quotes_and_guillemets_issue_2333(self):
+        # Regression test for https://github.com/nltk/nltk/issues/2333.
+        #
+        # A sentence-final Unicode curly closing quote or guillemet that
+        # directly abuts the period, with no intervening whitespace, used to
+        # hide the sentence boundary from Punkt entirely: the period matched
+        # neither the "non-word char" branch nor the "whitespace" branch of
+        # the period-context regex, so period_context_re() never even
+        # yielded a match at that position. NLTKWordTokenizer's
+        # STARTING_QUOTES / ENDING_QUOTES (see
+        # test_word_tokenize_opening_single_quote_padding above) already
+        # special-cased this character set; PunktLanguageVars did not.
+        assert sent_tokenize("“First sentence.” Next one.") == [
+            "“First sentence.”",
+            "Next one.",
+        ]
+        assert sent_tokenize("He said “this is great.” Then left.") == [
+            "He said “this is great.”",
+            "Then left.",
+        ]
+        assert sent_tokenize("She asked, “Are you coming?” He nodded.") == [
+            "She asked, “Are you coming?”",
+            "He nodded.",
+        ]
+        assert sent_tokenize("Il a dit «bonjour.» Puis il est parti.") == [
+            "Il a dit «bonjour.»",
+            "Puis il est parti.",
+        ]
+
+        # Regression guards: straight quotes and plain text (no quotes at
+        # all) must tokenize exactly as before, unaffected by the new
+        # boundary-realignment / non-word-char classes.
+        assert sent_tokenize('He said "hi." Then left.') == [
+            'He said "hi."',
+            "Then left.",
+        ]
+        assert sent_tokenize("This is one sentence. This is another.") == [
+            "This is one sentence.",
+            "This is another.",
+        ]
 
     def test_string_tokenizer(self) -> None:
         sentence = "Hello there"
@@ -1192,3 +1323,44 @@ class TestTreebankWordDetokenizer:
         original_tokens = ["``", "Hello", ",", "''", "he", "said", "."]
         result = self.detok.detokenize(original_tokens)
         assert '"' in result
+
+    def test_issue_3210_mid_string_period(self):
+        """Standalone period tokens mid-string must not keep a leading space (#3210)."""
+        tokens = [
+            "Lorem",
+            "ipsum",
+            "dolor",
+            "sit",
+            "amet",
+            ".",
+            "consectetur",
+            "adipiscing",
+            "elit",
+            ".",
+        ]
+        assert (
+            self.detok.detokenize(tokens)
+            == "Lorem ipsum dolor sit amet. consectetur adipiscing elit."
+        )
+
+    def test_issue_3210_multiple_sentence_periods(self):
+        """Every sentence-final period is joined, not only the last one (#3210)."""
+        tokens = [
+            "I",
+            "called",
+            "Dr.",
+            "Jones",
+            ".",
+            "I",
+            "called",
+            "Dr.",
+            "Jones",
+            ".",
+        ]
+        assert (
+            self.detok.detokenize(tokens) == "I called Dr. Jones. I called Dr. Jones."
+        )
+
+    def test_issue_3210_ellipsis_preserved(self):
+        """The mid-string period fix must not disturb ellipsis tokens (#3210)."""
+        assert self.detok.detokenize(["wait", "...", "what"]) == "wait...what"

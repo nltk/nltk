@@ -293,7 +293,7 @@ class IBMModel5(IBMModel):
                 "A target sentence is too long ("
                 + str(max_m)
                 + " words). Results may be less accurate."
-            )
+            )  # unsafe-print ok: literal text with a numeric vocabulary or length bound
 
         for max_v in range(1, max_m + 1):
             for dv in range(1, max_m + 1):

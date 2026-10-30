@@ -40,6 +40,14 @@ def _corpus_available(path):
     )
 
 
+# Corpora loaded from a custom location (outside nltk_data) must be registered on
+# nltk.data.path to be readable under the pathsec sandbox (ENFORCE); this is the
+# supported way to authorize a custom corpus root.  Register the ones present.
+for _custom_root in (_VN32_ROOT, _VN33_ROOT):
+    if _corpus_available(_custom_root) and _custom_root not in nltk.data.path:
+        nltk.data.path.append(_custom_root)
+
+
 # ---------------------------------------------------------
 # Regex unit tests (no corpus required)
 # ---------------------------------------------------------

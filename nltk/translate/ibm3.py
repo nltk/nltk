@@ -204,7 +204,7 @@ class IBMModel3(IBMModel):
                         "A target sentence is too long ("
                         + str(m)
                         + " words). Results may be less accurate."
-                    )
+                    )  # unsafe-print ok: literal text with a numeric vocabulary or length bound
                 for j in range(1, m + 1):
                     for i in range(0, l + 1):
                         self.distortion_table[j][i][l][m] = initial_prob

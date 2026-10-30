@@ -9,17 +9,19 @@ The defaulted ``max_len`` is now capped by ``MAX_EVERYGRAMS_DEFAULT_LEN``; a
 longer sequence with the default raises ``ValueError`` asking for an explicit
 ``max_len``. An explicitly supplied ``max_len`` is never capped.
 
-The "must not allocate" test runs in a spawned process with a hard timeout, and
+The "must not allocate" test runs in a separate process with a hard timeout, and
 the worker reports its outcome through its exit code (no queue/thread, so it is
 robust on free-threaded builds), so a regression cannot OOM/hang the suite.
 """
 
-import multiprocessing
 import os
 
 import pytest
 
+from nltk.test.unit import timing
 from nltk.util import MAX_EVERYGRAMS_DEFAULT_LEN, everygrams
+
+from . import _mp_ctx
 
 
 def test_max_everygrams_default_len_is_a_finite_positive_int():
@@ -102,18 +104,16 @@ def _everygrams_worker():
 
 def test_oversized_default_does_not_allocate():
     """everygrams(long_seq) with the default max_len must be refused, not run."""
-    ctx = multiprocessing.get_context("spawn")
-    proc = ctx.Process(target=_everygrams_worker)
-    proc.start()
-    proc.join(_TIMEOUT)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    ctx = _mp_ctx()
+    run = timing.run_in_process(
+        _everygrams_worker, (), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         raise AssertionError(
             "everygrams() did not return quickly -> unbounded O(n**3) allocation (DoS)"
         )
-    assert proc.exitcode == _EXIT_REFUSED, (
+    assert run.exitcode == _EXIT_REFUSED, (
         "everygrams() with the default max_len over a long sequence was not "
-        f"refused before allocating (worker exit code {proc.exitcode}); "
+        f"refused before allocating (worker exit code {run.exitcode}); "
         "expected a fast ValueError"
     )

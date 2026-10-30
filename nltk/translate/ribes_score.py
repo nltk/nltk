@@ -8,7 +8,7 @@
 """RIBES score implementation"""
 
 import math
-from itertools import islice
+from itertools import combinations, islice
 
 from nltk.util import choose, ngrams
 
@@ -102,7 +102,7 @@ def corpus_ribes(list_of_references, hypotheses, alpha=0.25, beta=0.10):
     >>> list_of_references = [[ref1a, ref1b, ref1c], [ref2a]]
     >>> hypotheses = [hyp1, hyp2]
     >>> round(corpus_ribes(list_of_references, hypotheses),4)
-    0.3597
+    0.633
 
     :param references: a corpus of lists of reference sentences, w.r.t. hypotheses
     :type references: list(list(list(str)))
@@ -157,6 +157,16 @@ def position_of_ngram(ngram, sentence):
             return i
 
 
+#: Maximum reference/hypothesis length accepted by :func:`word_rank_alignment`.
+#: The alignment search is super-linear in sentence length; the earlier
+#: memoisation fix bounds its *memory*, but when an attacker controls BOTH
+#: sequences with low-cardinality tokens the per-position window loop still runs
+#: to ``len(reference)`` (it never hits the one-to-one early break), so time
+#: stays O(n^2)-O(n^3) (CWE-407). Real MT sentences are far shorter than this
+#: cap; raise it for genuinely long sequences.
+MAX_ALIGNMENT_LEN = 2000
+
+
 def word_rank_alignment(reference, hypothesis, character_based=False):
     """
     This is the word rank alignment algorithm described in the paper to produce
@@ -192,6 +202,13 @@ def word_rank_alignment(reference, hypothesis, character_based=False):
     :param hypothesis: a hypothesis sentence
     :type hypothesis: list(str)
     """
+    if max(len(reference), len(hypothesis)) > MAX_ALIGNMENT_LEN:
+        raise ValueError(
+            f"word_rank_alignment: sequence length exceeds MAX_ALIGNMENT_LEN "
+            f"({MAX_ALIGNMENT_LEN}); the alignment search is super-linear in "
+            "sentence length (CWE-407). Raise "
+            "nltk.translate.ribes_score.MAX_ALIGNMENT_LEN for longer sequences."
+        )
     worder = []
     hyp_len = len(hypothesis)
     # Count how many times an n-gram occurs as a (possibly overlapping)
@@ -327,9 +344,12 @@ def kendall_tau(worder, normalize=True):
 
         tau = 2 * num_increasing_pairs / num_possible_pairs -1
 
-    Note that the no. of increasing pairs can be discontinuous in the *worder*
-    list and each each increasing sequence can be tabulated as choose(len(seq), 2)
-    no. of increasing pairs, e.g.
+    An increasing pair is any pair of positions i < j in the *worder* list with
+    worder[i] < worder[j], as in the official RIBES script. The two ranks do not
+    need to be adjacent in the list or consecutive integers. In the example
+    below there are 6 increasing pairs within [7, 8, 9, 10], 15 within
+    [0, 1, 2, 3, 4, 5] and none across the two runs, so 21 of the
+    choose(11, 2) = 55 pairs are increasing:
 
         >>> worder = [7, 8, 9, 10, 6, 0, 1, 2, 3, 4, 5]
         >>> number_possible_pairs = choose(len(worder), 2)
@@ -337,6 +357,15 @@ def kendall_tau(worder, normalize=True):
         -0.236
         >>> round(kendall_tau(worder),3)
         0.382
+
+    In the (H1, R1) example from the paper, 'Bob hit John yesterday' against
+    'John hit Bob yesterday', the ranks are [2, 1, 0, 3] and the pairs (2, 3),
+    (1, 3) and (0, 3) are increasing, so 3 of the 6 pairs are increasing:
+
+        >>> kendall_tau([2, 1, 0, 3], normalize=False)
+        0.0
+        >>> kendall_tau([2, 1, 0, 3])
+        0.5
 
     :param worder: The worder list output from word_rank_alignment
     :type worder: list(int)
@@ -352,10 +381,11 @@ def kendall_tau(worder, normalize=True):
     if worder_len < 2:
         tau = -1
     else:
-        # Extract the groups of increasing/monotonic sequences.
-        increasing_sequences = find_increasing_sequences(worder)
-        # Calculate no. of increasing_pairs in *worder* list.
-        num_increasing_pairs = sum(choose(len(seq), 2) for seq in increasing_sequences)
+        # Count the pairs of positions i < j with worder[i] < worder[j]. Every
+        # such pair counts, not only pairs inside a run of consecutive ranks.
+        num_increasing_pairs = sum(
+            1 for earlier, later in combinations(worder, 2) if earlier < later
+        )
         # Calculate no. of possible pairs.
         num_possible_pairs = choose(worder_len, 2)
         # Kendall's Tau computation.

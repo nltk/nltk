@@ -178,12 +178,32 @@ wrappers pass are equivalent and also permitted:
 >>> _validate_java_options(["-mx2g"])
 >>> _validate_java_options(["-ms128m"])
 >>> _validate_java_options(["-ss4m"])
->>> _validate_java_options(["-XX:+UseG1GC"])
 >>> _validate_java_options(["-verbose:gc"])
 >>> _validate_java_options(["-server"])
 >>> _validate_java_options(["-client"])
->>> _validate_java_options(["-Dsome.property=value"])
->>> _validate_java_options(["-Xmx1g", "-Dsome.key=val", "-server"])
+>>> _validate_java_options(["-Xmx1g", "-server"])
+
+The filter is an allowlist, so ``-XX:`` and ``-D`` flags are refused even though
+they look innocuous: ``-XX:`` can name a file the JVM executes on error and
+``-D`` can redirect class loading or disarm the security manager. Pass a genuinely
+needed one through ``java(trusted_raw_options=...)``:
+
+>>> _validate_java_options(["-XX:+UseG1GC"])  # doctest: +ELLIPSIS
+Traceback (most recent call last):
+    ...
+ValueError: java_options contains a disallowed JVM/launcher flag: '-XX:+UseG1GC'...
+
+>>> _validate_java_options(["-Dsome.property=value"])  # doctest: +ELLIPSIS
+Traceback (most recent call last):
+    ...
+ValueError: java_options contains a disallowed JVM/launcher flag: '-Dsome.property=value'...
+
+A single bad flag rejects the whole list, even mixed with permitted ones:
+
+>>> _validate_java_options(["-Xmx1g", "-Dsome.key=val", "-server"])  # doctest: +ELLIPSIS
+Traceback (most recent call last):
+    ...
+ValueError: java_options contains a disallowed JVM/launcher flag: '-Dsome.key=val'...
 
 Agent-loading and JDWP flags are blocked:
 

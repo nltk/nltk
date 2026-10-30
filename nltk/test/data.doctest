@@ -30,6 +30,24 @@ Instead, all the unsafe pickle packages are now replaced by classes:
     >>> tokenizer.tokenize('Hello.  This is a test.  It works!')
     ['Hello.', 'This is a test.', 'It works!']
 
+The retired pickle packages (``punkt``, ``averaged_perceptron_tagger``,
+``averaged_perceptron_tagger_ru``, ``maxent_ne_chunker`` and
+``maxent_treebank_pos_tagger``, CVE-2024-39705) are never loaded. Asking
+for one of their pickles, under any spelling of its name and in any
+format, raises a ValueError that names the replacement and the call that
+loads it, before anything is read:
+
+    >>> nltk.data.load('tokenizers/punkt/english.pickle')  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    ValueError: Refusing to load 'tokenizers/punkt/english.pickle': 'tokenizers/punkt' is a retired pickle package ... nltk.download('punkt_tab'), then nltk.tokenize.PunktTokenizer('english')...
+    >>> nltk.data.load('nltk:Tokenizers/PUNKT/PY3/German.pickle', format='raw')  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    ValueError: Refusing to load 'Tokenizers/PUNKT/PY3/German.pickle': 'tokenizers/punkt' is a retired pickle package ... nltk.download('punkt_tab'), then nltk.tokenize.PunktTokenizer('german')...
+    >>> PunktTokenizer('german').tokenize('Er kam um 5 Uhr. Dann ging er.')
+    ['Er kam um 5 Uhr.', 'Dann ging er.']
+
 It is important to note that there should be no space following the
 colon (':') in the URL; 'nltk: tokenizers/punkt/english.pickle' will
 not work!
@@ -236,9 +254,9 @@ the cache, then the cached copy will be returned.  This behavior can
 be seen by the trace output generated when verbose=True:
 
     >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg', verbose=True)
-    <<Loading nltk:grammars/book_grammars/feat0.fcfg>>
+    <<Loading resource>>
     >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg', verbose=True)
-    <<Using cached copy of nltk:grammars/book_grammars/feat0.fcfg>>
+    <<Using cached copy of resource (format=fcfg)>>
 
 If you wish to load a resource from its source, bypassing the cache,
 use the ``cache=False`` argument to `nltk.data.load()`.  This can be
@@ -246,7 +264,7 @@ useful, for example, if the resource is loaded from a local file, and
 you are actively editing that file:
 
     >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg',cache=False,verbose=True)
-    <<Loading nltk:grammars/book_grammars/feat0.fcfg>>
+    <<Loading resource>>
 
 The cache *no longer* uses weak references.  A resource will not be
 automatically expunged from the cache when no more objects are using
@@ -257,7 +275,7 @@ However, the object remains cached:
     >>> del feat0
     >>> feat0 = nltk.data.load('grammars/book_grammars/feat0.fcfg',
     ...                        verbose=True)
-    <<Using cached copy of nltk:grammars/book_grammars/feat0.fcfg>>
+    <<Using cached copy of resource (format=fcfg)>>
 
 You can clear the entire contents of the cache, using
 `nltk.data.clear_cache()`:
@@ -349,19 +367,23 @@ This is mainly intended for internal use. The test simply tests that reading
 and writing work as intended and does not test how much improvement buffering
 provides.
 
-    >>> from io import StringIO
-    >>> test = nltk.data.BufferedGzipFile('testbuf.gz', 'wb', size=2**10)
+A file name is opened through ``nltk.pathsec``, so it must lie inside a data
+root; a staging directory is one:
+
+    >>> import os
+    >>> from nltk.data import make_staging_dir
+    >>> testbuf = os.path.join(make_staging_dir(prefix='data_howto_', cleanup=True), 'testbuf.gz')
+    >>> test = nltk.data.BufferedGzipFile(testbuf, 'wb', size=2**10)
     >>> ans = []
     >>> for i in range(10000):
     ...     ans.append(str(i).encode('ascii'))
     ...     test.write(str(i).encode('ascii'))
     >>> test.close()
-    >>> test = nltk.data.BufferedGzipFile('testbuf.gz', 'rb')
+    >>> test = nltk.data.BufferedGzipFile(testbuf, 'rb')
     >>> test.read() == b''.join(ans)
     True
     >>> test.close()
-    >>> import os
-    >>> os.unlink('testbuf.gz')
+    >>> os.unlink(testbuf)
 
 JSON Encoding and Decoding
 --------------------------

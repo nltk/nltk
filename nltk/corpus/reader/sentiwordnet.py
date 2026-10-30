@@ -35,8 +35,8 @@ http://sentiwordnet.isti.cnr.it/
     0.125
 """
 
-import re
 
+from nltk import redos
 from nltk.corpus.reader import CorpusReader
 
 
@@ -54,9 +54,9 @@ class SentiWordNetCorpusReader(CorpusReader):
 
     def _parse_src_file(self):
         lines = self.open(self._fileids[0]).read().splitlines()
-        lines = filter((lambda x: not re.search(r"^\s*#", x)), lines)
+        lines = filter((lambda x: not redos.search(r"^\s*#", x)), lines)
         for i, line in enumerate(lines):
-            fields = [field.strip() for field in re.split(r"\t+", line)]
+            fields = [field.strip() for field in redos.split(r"\t+", line)]
             try:
                 pos, offset, pos_score, neg_score, synset_terms, gloss = fields
             except BaseException as e:

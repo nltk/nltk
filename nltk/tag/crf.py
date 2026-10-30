@@ -10,10 +10,11 @@
 A module for POS tagging using CRFSuite
 """
 
-import re
 import unicodedata
 import warnings
 
+from nltk import redos
+from nltk.pathsec import MAX_TOOL_MODEL_BYTES, validate_tool_path
 from nltk.tag.api import TaggerI
 
 try:
@@ -113,7 +114,7 @@ class CRFTagger(TaggerI):
         self._verbose = verbose
         # Avoid mutable default; copy so caller mutations don't leak in.
         self._training_options = {} if training_opt is None else dict(training_opt)
-        self._pattern = re.compile(r"\d")
+        self._pattern = redos.compile(r"\d")
         # Avoid the module-level ``re.search`` dispatch in the feature loop.
         self._pattern_search = self._pattern.search
         # Token-keyed cache; default features are token-local. A custom
@@ -121,6 +122,27 @@ class CRFTagger(TaggerI):
         self._feature_cache = {}
 
     def set_model_file(self, model_file):
+        """Load a trained model from ``model_file``.
+
+        ``model_file`` is caller-supplied and pycrfsuite opens it natively, so
+        the path is validated against the NLTK data sandbox first: an
+        outside-root model is refused rather than handed to the native loader
+        (GHSA-8mgp-746c-j5xp). ``pathsec.open`` cannot be used here because the
+        C extension does its own open, so the guard opens the file itself
+        (O_NOFOLLOW, regular, single-linked) and the string it returns is what
+        the loader gets: pycrfsuite calls ``__fspath__`` again, and a PathLike
+        may answer differently each time. A swap after the check is the
+        remaining race.
+        """
+        # crfsuite (C) opens and parses the whole model itself; beyond
+        # containment, refuse a model another local user could plant/swap
+        # (require_private) or an oversized memory bomb (max_bytes).
+        model_file = validate_tool_path(
+            model_file,
+            context="CRFTagger.set_model_file",
+            max_bytes=MAX_TOOL_MODEL_BYTES,
+            require_private=True,
+        )
         self._model_file = model_file
         self._tagger.open(self._model_file)
 
@@ -275,11 +297,20 @@ class CRFTagger(TaggerI):
 
         :param train_data: list of annotated sentences.
         :type train_data: list(list(tuple(str,str)))
-        :param model_file: path where the trained model will be written.
+        :param model_file: path where the trained model will be written. It must
+            be inside an allowed NLTK data root (see ``nltk.data.path``); use
+            ``nltk.data.make_staging_dir()`` for a private in-sandbox location.
         :type model_file: str
         """
         if pycrfsuite is None:
             raise ImportError("CRFTagger requires python-crfsuite to be installed.")
+
+        # Caller-supplied destination that pycrfsuite writes natively: refuse an
+        # outside-root or hardlinked target up front (for_write) and hand the
+        # trainer the checked string, not an object that may resolve elsewhere.
+        model_file = validate_tool_path(
+            model_file, context="CRFTagger.train", must_exist=False, for_write=True
+        )
 
         trainer = pycrfsuite.Trainer(verbose=self._verbose)
         trainer.set_params(self._training_options)

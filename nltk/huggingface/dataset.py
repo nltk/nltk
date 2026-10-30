@@ -71,6 +71,8 @@ Optional keys (required by certain content types):
 
 import io
 
+from nltk.termsec import safe_print
+
 # ---------------------------------------------------------------------------
 # Registry
 # ---------------------------------------------------------------------------
@@ -294,7 +296,7 @@ def download(corpus_id, token=None, quiet=False):
         }
         if not quiet:
             total = sum(len(d) for d in result.values())
-            print(
+            safe_print(
                 f"[nltk_hf] '{corpus_id}' downloaded from {info['repo']} "
                 f"({len(configs)} configs, {total:,} rows)"
             )
@@ -303,7 +305,7 @@ def download(corpus_id, token=None, quiet=False):
     else:  # flat or single
         ds = load_dataset(info["repo"], split=info["split"], **kwargs)
         if not quiet:
-            print(
+            safe_print(
                 f"[nltk_hf] '{corpus_id}' downloaded from {info['repo']} "
                 f"({len(ds):,} rows)"
             )

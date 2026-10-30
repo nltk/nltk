@@ -20,6 +20,7 @@ import sys
 import textwrap
 from pprint import pformat
 
+from nltk import redos
 from nltk.decorators import decorator  # this used in code that is commented out
 from nltk.sem.logic import (
     AbstractVariableExpression,
@@ -39,6 +40,7 @@ from nltk.sem.logic import (
     Variable,
     is_indvar,
 )
+from nltk.termsec import safe_print
 
 
 class Error(Exception):
@@ -53,9 +55,9 @@ def trace(f, *args, **kw):
     argspec = inspect.getfullargspec(f)
     d = dict(zip(argspec[0], args))
     if d.pop("trace", None):
-        print()
+        safe_print()
         for item in d.items():
-            print("%s => %s" % item)
+            safe_print("%s => %s" % item)
     return f(*args, **kw)
 
 
@@ -184,12 +186,23 @@ class Valuation(dict):
 # in the run length and lets a single valuation string pin a CPU core
 # (CWE-1333; CVE-2026-12890). The lookbehind only lets ``=+`` start at the
 # beginning of a run, so interior positions fail in O(1); the split result is
-# unchanged.
-_VAL_SPLIT_RE = re.compile(r"\s*(?<!=)=+>\s*")
-_ELEMENT_SPLIT_RE = re.compile(r"\s*,\s*")
-_TUPLES_RE = re.compile(
-    r"""\s*
-                                (\([^)]+\))  # tuple-expression
+# unchanged. The leading ``\s*`` of each pattern was likewise retried by
+# split/findall from every position of an internal whitespace run (``strip``
+# only trims the ends), O(n**2) (CWE-407): it is now an optional run taken only
+# when no whitespace precedes it, which no split or tuple ever started inside.
+#: Max length in characters of one parenthesised tuple expression in a
+#: valuation set; mirrors the {1,1024} run in _TUPLES_RE below. The longest
+#: shipped tuple (valuation1.val, the doctests and the demos) is 8 chars.
+MAX_TUPLE_LENGTH = 1024
+
+_VAL_SPLIT_RE = redos.compile(r"(?:(?<!\s)\s*)?(?<!=)=+>\s*")
+_ELEMENT_SPLIT_RE = redos.compile(r"(?:(?<!\s)\s*)?,\s*")
+_TUPLES_RE = redos.compile(
+    r"""(?:(?<!\s)\s*)?
+                                (\([^()]{1,1024}\))  # tuple-expression; bounded run
+                                                     # that excludes its `(` anchor:
+                                                     # unclosed parens were quadratic
+                                                     # with `[^)]` (CWE-407)
                                 \s*""",
     re.VERBOSE,
 )
@@ -217,6 +230,14 @@ def _read_valuation_line(s):
     if value.startswith("{"):
         value = value[1:-1]
         tuple_strings = _TUPLES_RE.findall(value)
+        # Every "(" must open a matched tuple: an oversized or unclosed one finds
+        # no match above, and reading the set as scalars would silently
+        # reinterpret the relation, so refuse it. str.count is one O(n) pass.
+        if value.count("(") != len(tuple_strings):
+            raise ValueError(
+                f"tuple expression is unclosed or longer than MAX_TUPLE_LENGTH "
+                f"({MAX_TUPLE_LENGTH} chars): {value[:40]!r}..."
+            )
         # are the set elements tuples?
         if tuple_strings:
             set_elements = []
@@ -251,7 +272,7 @@ def read_valuation(s, encoding=None):
         try:
             statements.append(_read_valuation_line(line))
         except ValueError as e:
-            raise ValueError(f"Unable to parse line {linenum}: {line}") from e
+            raise ValueError(f"Unable to parse line {linenum}: {line}\n{e}") from e
     return Valuation(statements)
 
 
@@ -482,13 +503,13 @@ class Model:
             parsed = Expression.fromstring(expr)
             value = self.satisfy(parsed, g, trace=trace)
             if trace:
-                print()
-                print(f"'{expr}' evaluates to {value} under M, {g}")
+                safe_print()
+                safe_print(f"'{expr}' evaluates to {value} under M, {g}")
             return value
         except Undefined:
             if trace:
-                print()
-                print(f"'{expr}' is undefined under M, {g}")
+                safe_print()
+                safe_print(f"'{expr}' is undefined under M, {g}")
             return "Undefined"
 
     def satisfy(self, parsed, g, trace=None):
@@ -654,8 +675,8 @@ class Model:
 
         if var in parsed.free():
             if trace:
-                print()
-                print(
+                safe_print()
+                safe_print(
                     (spacer * nesting)
                     + f"Open formula is '{parsed}' with assignment {g}"
                 )
@@ -669,18 +690,22 @@ class Model:
                 value = self.satisfy(parsed, new_g, lowtrace)
 
                 if trace:
-                    print(indent + "(trying assignment %s)" % new_g)
+                    safe_print(indent + "(trying assignment %s)" % new_g)
 
                 # parsed == False under g[u/var]?
                 if not value:
                     if trace:
-                        print(indent + f"value of '{parsed}' under {new_g} is False")
+                        safe_print(
+                            indent + f"value of '{parsed}' under {new_g} is False"
+                        )
 
                 # so g[u/var] is a satisfying assignment
                 else:
                     candidates.append(u)
                     if trace:
-                        print(indent + f"value of '{parsed}' under {new_g} is {value}")
+                        safe_print(
+                            indent + f"value of '{parsed}' under {new_g} is {value}"
+                        )
 
             result = {c for c in candidates}
         # var isn't free in parsed
@@ -708,14 +733,14 @@ def propdemo(trace=None):
     m1 = Model(dom1, val1)
     g1 = Assignment(dom1)
 
-    print()
-    print("*" * mult)
-    print("Propositional Formulas Demo")
-    print("*" * mult)
-    print("(Propositional constants treated as nullary predicates)")
-    print()
-    print("Model m1:\n", m1)
-    print("*" * mult)
+    safe_print()
+    safe_print("*" * mult)
+    safe_print("Propositional Formulas Demo")
+    safe_print("*" * mult)
+    safe_print("(Propositional constants treated as nullary predicates)")
+    safe_print()
+    safe_print("Model m1:\n", m1)
+    safe_print("*" * mult)
     sentences = [
         "(P & Q)",
         "(P & R)",
@@ -738,10 +763,10 @@ def propdemo(trace=None):
 
     for sent in sentences:
         if trace:
-            print()
+            safe_print()
             m1.evaluate(sent, g1, trace)
         else:
-            print(f"The value of '{sent}' is: {m1.evaluate(sent, g1)}")
+            safe_print(f"The value of '{sent}' is: {m1.evaluate(sent, g1)}")
 
 
 # Demo 2: FOL Model
@@ -768,25 +793,25 @@ def folmodel(quiet=False, trace=None):
     g2 = Assignment(dom2, [("x", "b1"), ("y", "g2")])
 
     if not quiet:
-        print()
-        print("*" * mult)
-        print("Models Demo")
-        print("*" * mult)
-        print("Model m2:\n", "-" * 14, "\n", m2)
-        print("Variable assignment = ", g2)
+        safe_print()
+        safe_print("*" * mult)
+        safe_print("Models Demo")
+        safe_print("*" * mult)
+        safe_print("Model m2:\n", "-" * 14, "\n", m2)
+        safe_print("Variable assignment = ", g2)
 
         exprs = ["adam", "boy", "love", "walks", "x", "y", "z"]
         parsed_exprs = [Expression.fromstring(e) for e in exprs]
 
-        print()
+        safe_print()
         for parsed in parsed_exprs:
             try:
-                print(
+                safe_print(
                     "The interpretation of '%s' in m2 is %s"
                     % (parsed, m2.i(parsed, g2))
                 )
             except Undefined:
-                print("The interpretation of '%s' in m2 is Undefined" % parsed)
+                safe_print("The interpretation of '%s' in m2 is Undefined" % parsed)
 
         applications = [
             ("boy", ("adam")),
@@ -799,9 +824,9 @@ def folmodel(quiet=False, trace=None):
             try:
                 funval = m2.i(Expression.fromstring(fun), g2)
                 argsval = tuple(m2.i(Expression.fromstring(arg), g2) for arg in args)
-                print(f"{fun}({args}) evaluates to {argsval in funval}")
+                safe_print(f"{fun}({args}) evaluates to {argsval in funval}")
             except Undefined:
-                print(f"{fun}({args}) evaluates to Undefined")
+                safe_print(f"{fun}({args}) evaluates to Undefined")
 
 
 # Demo 3: FOL
@@ -814,10 +839,10 @@ def foldemo(trace=None):
     """
     folmodel(quiet=True)
 
-    print()
-    print("*" * mult)
-    print("FOL Formulas Demo")
-    print("*" * mult)
+    safe_print()
+    safe_print("*" * mult)
+    safe_print("FOL Formulas Demo")
+    safe_print("*" * mult)
 
     formulas = [
         "love (adam, betty)",
@@ -845,7 +870,7 @@ def foldemo(trace=None):
         if trace:
             m2.evaluate(fmla, g2, trace)
         else:
-            print(f"The value of '{fmla}' is: {m2.evaluate(fmla, g2)}")
+            safe_print(f"The value of '{fmla}' is: {m2.evaluate(fmla, g2)}")
 
 
 # Demo 3: Satisfaction
@@ -855,10 +880,10 @@ def foldemo(trace=None):
 def satdemo(trace=None):
     """Satisfiers of an open formula in a first order model."""
 
-    print()
-    print("*" * mult)
-    print("Satisfiers Demo")
-    print("*" * mult)
+    safe_print()
+    safe_print("*" * mult)
+    safe_print("Satisfiers Demo")
+    safe_print("*" * mult)
 
     folmodel(quiet=True)
 
@@ -885,17 +910,17 @@ def satdemo(trace=None):
     ]
 
     if trace:
-        print(m2)
+        safe_print(m2)
 
     for fmla in formulas:
-        print(fmla)
+        safe_print(fmla)
         Expression.fromstring(fmla)
 
     parsed = [Expression.fromstring(fmla) for fmla in formulas]
 
     for p in parsed:
         g2.purge()
-        print(
+        safe_print(
             "The satisfiers of '{}' are: {}".format(p, m2.satisfiers(p, "x", g2, trace))
         )
 

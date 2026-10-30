@@ -7,6 +7,7 @@
 # For license information, see LICENSE.TXT
 import inspect
 import locale
+import math
 import os
 import pydoc
 import re
@@ -27,9 +28,47 @@ from urllib.request import (
     install_opener,
 )
 
+from nltk import redos
 from nltk.collections import *
 from nltk.internals import deprecated, raise_unorderable_types, slice_bounds
 from nltk.pathsec import open as _secure_open
+from nltk.termsec import safe_print, sanitize_terminal
+
+# Maximum recursion depth for graph traversal functions.
+# 500 is well above the longest legitimate WordNet chain (~20 edges)
+# and matches the existing MAX_TREE_DEPTH constant in tree.py.
+MAX_RECURSION_DEPTH = 500
+
+
+def _refuse_deep_walk(level):
+    """Raise ValueError when a depth-first walk goes deeper than MAX_RECURSION_DEPTH."""
+    if level > MAX_RECURSION_DEPTH:
+        raise ValueError(
+            "Relation walk exceeds maximum allowed recursion depth "
+            f"MAX_RECURSION_DEPTH ({MAX_RECURSION_DEPTH}); the relation may be "
+            "adversarially deep. Pass a smaller depth to truncate the walk, or "
+            "raise MAX_RECURSION_DEPTH in sys.modules['nltk.util'] to allow it."
+        )
+
+
+def _warn_truncated(node, children):
+    """At the bound of a truncating walk: True, with a RuntimeWarning, when
+    ``node`` has children the walk will not visit; False when nothing lies
+    below it. Only the warning and the cut mark depend on this answer, the
+    walk never descends from the bound whatever the relation says."""
+    try:
+        next(iter(children(node)))
+    except (TypeError, StopIteration):
+        return False
+    warnings.warn(
+        "Relation walk truncated at MAX_RECURSION_DEPTH "
+        f"({MAX_RECURSION_DEPTH}) levels; pass truncate=False to refuse such a "
+        "walk, or raise MAX_RECURSION_DEPTH in sys.modules['nltk.util'].",
+        RuntimeWarning,
+        stacklevel=3,
+    )  # unsafe-print ok: fixed text and the int bound, no node text
+    return True
+
 
 ######################################################################
 # Short usage message
@@ -43,7 +82,7 @@ def usage(obj):
     if not isinstance(obj, type):
         obj = obj.__class__
 
-    print(f"{obj.__name__} supports the following operations:")
+    safe_print(f"{obj.__name__} supports the following operations:")
     for name, method in sorted(pydoc.allmethods(obj).items()):
         if name.startswith("_"):
             continue
@@ -66,7 +105,7 @@ def usage(obj):
         elif args and args[0] == "self":
             name = f"self.{name}"
             args.pop(0)
-        print(
+        safe_print(
             textwrap.fill(
                 f"{name}({', '.join(args)})",
                 initial_indent="  - ",
@@ -124,7 +163,7 @@ def print_string(s, width=70):
     :param width: the display width
     :type width: int
     """
-    print("\n".join(textwrap.wrap(s, width=width)))
+    safe_print("\n".join(textwrap.wrap(s, width=width)))
 
 
 def tokenwrap(tokens, separator=" ", width=70):
@@ -209,7 +248,11 @@ def re_show(regexp, string, left="{", right="}"):
     :type right: str
     :rtype: str
     """
-    print(re.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip()))
+    # regexp and string are both caller-supplied, so a catastrophically
+    # backtracking pattern hangs the process (CWE-1333). redos.compile bounds it.
+    safe_print(
+        redos.compile(regexp, re.M).sub(left + r"\g<0>" + right, string.rstrip())
+    )
 
 
 ##########################################################################
@@ -328,9 +371,9 @@ def edge_closure(tree, children=iter, maxdepth=-1, verbose=False):
                     else:
                         if verbose:
                             warnings.warn(
-                                f"Discarded redundant search for {child} at depth {depth + 1}",
+                                f"Discarded redundant search for {sanitize_terminal(child)} at depth {depth + 1}",
                                 stacklevel=2,
-                            )
+                            )  # unsafe-print ok: node text sanitised; depth is an int
                     edge = (node, child)
                     if edge not in edges:
                         yield edge
@@ -460,37 +503,47 @@ def acyclic_breadth_first(tree, children=iter, maxdepth=-1, verbose=False):
                     elif verbose:
                         warnings.warn(
                             "Discarded redundant search for {} at depth {}".format(
-                                child, depth + 1
+                                sanitize_terminal(child), depth + 1
                             ),
                             stacklevel=2,
-                        )
+                        )  # unsafe-print ok: node text sanitised; depth is an int
             except TypeError:
                 pass
 
 
+# ==========================================================================
+
+
 def acyclic_depth_first(
-    tree, children=iter, depth=-1, cut_mark=None, traversed=None, verbose=False
+    tree,
+    children=iter,
+    depth=-1,
+    cut_mark=None,
+    traversed=None,
+    verbose=False,
+    truncate=False,
+    _level=0,
 ):
     """
     :param tree: the tree root
     :param children: a function taking as argument a tree node
-    :param depth: the maximum depth of the search
+    :param depth: the maximum depth of the search; -1 (default) for unbounded.
+        A walk that would go deeper than MAX_RECURSION_DEPTH raises ValueError.
+    :param truncate: cut the walk at MAX_RECURSION_DEPTH instead of refusing
+        it, with a RuntimeWarning (and cut_mark, where the walk takes one)
     :param cut_mark: the mark to add when cycles are truncated
     :param traversed: the set of traversed nodes
     :param verbose: to print warnings when cycles are discarded
     :return: the tree in depth-first order
-
-    Traverse the nodes of a tree in depth-first order,
-    discarding eventual cycles within any branch,
-    adding cut_mark (when specified) if cycles were truncated.
-    The first argument should be the tree root;
-    children should be a function taking as argument a tree node
-    and returning an iterator of the node's children.
-
+    Traverse the nodes of a tree in depth-first order, discarding
+    eventual cycles within any branch, adding cut_mark (when specified)
+    if cycles were truncated.
+    The first argument should be the tree root; children should be a
+    function taking as argument a tree node and returning an iterator
+    of the node's children.
     Catches all cycles:
-
     >>> import nltk
-    >>> from nltk.util import acyclic_depth_first as acyclic_tree
+    >>> from nltk.util import acyclic_depth_first as acyclic_tree  # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     >>> wn=nltk.corpus.wordnet
     >>> from pprint import pprint
     >>> pprint(acyclic_tree(wn.synset('dog.n.01'), lambda s:sorted(s.hypernyms()),cut_mark='...'))
@@ -508,30 +561,44 @@ def acyclic_depth_first(
                [Synset('object.n.01'),
                 [Synset('physical_entity.n.01'),
                  [Synset('entity.n.01')]]]]]]]]]]]]],
-     [Synset('domestic_animal.n.01'), "Cycle(Synset('animal.n.01'),-3,...)"]]
+     [Synset('domestic_animal.n.01'), "Cycle(Synset('animal.n.01'),...,...)"]]
     """
+    # Refuse a walk deeper than the bound, or with truncate keep the node at
+    # the bound and never descend from it (GHSA-8846-p9w9-5frf).
+    if _level == 0 and depth < -1:
+        raise ValueError("depth must be >= -1 (use -1 for unbounded)")
+    _refuse_deep_walk(_level)
+    at_bound = truncate and depth != 0 and _level >= MAX_RECURSION_DEPTH
     if traversed is None:
         traversed = {tree}
     out_tree = [tree]
-    if depth != 0:
+    if at_bound:
+        if _warn_truncated(tree, children) and cut_mark:
+            out_tree += [cut_mark]
+    elif depth != 0:
         try:
             for child in children(tree):
                 if child not in traversed:
-                    # Recurse with a common "traversed" set for all children:
                     traversed.add(child)
                     out_tree += [
                         acyclic_depth_first(
-                            child, children, depth - 1, cut_mark, traversed
+                            child,
+                            children,
+                            depth - 1,
+                            cut_mark,
+                            traversed,
+                            truncate=truncate,
+                            _level=_level + 1,
                         )
                     ]
                 else:
                     if verbose:
                         warnings.warn(
                             "Discarded redundant search for {} at depth {}".format(
-                                child, depth - 1
+                                sanitize_terminal(child), depth - 1
                             ),
                             stacklevel=3,
-                        )
+                        )  # unsafe-print ok: node text sanitised; depth is an int
                     if cut_mark:
                         out_tree += [f"Cycle({child},{depth - 1},{cut_mark})"]
         except TypeError:
@@ -542,32 +609,37 @@ def acyclic_depth_first(
 
 
 def acyclic_branches_depth_first(
-    tree, children=iter, depth=-1, cut_mark=None, traversed=None, verbose=False
+    tree,
+    children=iter,
+    depth=-1,
+    cut_mark=None,
+    traversed=None,
+    verbose=False,
+    truncate=False,
+    _level=0,
 ):
     """
     :param tree: the tree root
     :param children: a function taking as argument a tree node
-    :param depth: the maximum depth of the search
+    :param depth: the maximum depth of the search; -1 (default) for unbounded.
+        A walk that would go deeper than MAX_RECURSION_DEPTH raises ValueError.
+    :param truncate: cut the walk at MAX_RECURSION_DEPTH instead of refusing
+        it, with a RuntimeWarning (and cut_mark, where the walk takes one)
     :param cut_mark: the mark to add when cycles are truncated
     :param traversed: the set of traversed nodes
     :param verbose: to print warnings when cycles are discarded
     :return: the tree in depth-first order
-
-        Adapted from acyclic_depth_first() above, to
-    traverse the nodes of a tree in depth-first order,
-    discarding eventual cycles within the same branch,
-    but keep duplicate paths in different branches.
+    Adapted from acyclic_depth_first() above, to traverse the nodes
+    of a tree in depth-first order, discarding eventual cycles within
+    the same branch, but keep duplicate paths in different branches.
     Add cut_mark (when defined) if cycles were truncated.
-
-    The first argument should be the tree root;
-    children should be a function taking as argument a tree node
-    and returning an iterator of the node's children.
-
-    Catches only only cycles within the same branch,
-    but keeping cycles from different branches:
-
+    The first argument should be the tree root; children should be a
+    function taking as argument a tree node and returning an iterator
+    of the node's children.
+    Catches only only cycles within the same branch, but keeping cycles
+    from different branches:
     >>> import nltk
-    >>> from nltk.util import acyclic_branches_depth_first as tree
+    >>> from nltk.util import acyclic_branches_depth_first as tree  # doctest: +ELLIPSIS +NORMALIZE_WHITESPACE
     >>> wn=nltk.corpus.wordnet
     >>> from pprint import pprint
     >>> pprint(tree(wn.synset('certified.a.01'), lambda s:sorted(s.also_sees()), cut_mark='...', depth=4))
@@ -591,14 +663,22 @@ def acyclic_branches_depth_first(
       [Synset('official.a.01'), "Cycle(Synset('authorized.a.01'),1,...)"]],
      [Synset('documented.a.01')]]
     """
+    # Refuse a walk deeper than the bound, or with truncate keep the node at
+    # the bound and never descend from it (GHSA-8846-p9w9-5frf).
+    if _level == 0 and depth < -1:
+        raise ValueError("depth must be >= -1 (use -1 for unbounded)")
+    _refuse_deep_walk(_level)
+    at_bound = truncate and depth != 0 and _level >= MAX_RECURSION_DEPTH
     if traversed is None:
         traversed = {tree}
     out_tree = [tree]
-    if depth != 0:
+    if at_bound:
+        if _warn_truncated(tree, children) and cut_mark:
+            out_tree += [cut_mark]
+    elif depth != 0:
         try:
             for child in children(tree):
                 if child not in traversed:
-                    # Recurse with a different "traversed" set for each child:
                     out_tree += [
                         acyclic_branches_depth_first(
                             child,
@@ -606,16 +686,18 @@ def acyclic_branches_depth_first(
                             depth - 1,
                             cut_mark,
                             traversed.union({child}),
+                            truncate=truncate,
+                            _level=_level + 1,
                         )
                     ]
                 else:
                     if verbose:
                         warnings.warn(
                             "Discarded redundant search for {} at depth {}".format(
-                                child, depth - 1
+                                sanitize_terminal(child), depth - 1
                             ),
                             stacklevel=3,
-                        )
+                        )  # unsafe-print ok: node text sanitised; depth is an int
                     if cut_mark:
                         out_tree += [f"Cycle({child},{depth - 1},{cut_mark})"]
         except TypeError:
@@ -625,15 +707,63 @@ def acyclic_branches_depth_first(
     return out_tree
 
 
-def acyclic_dic2tree(node, dic):
+def acyclic_dic2tree(
+    node, dic, depth=-1, traversed=None, verbose=False, truncate=False, _level=0
+):
     """
     :param node: the root node
     :param dic: the dictionary of children
+    :param depth: the maximum depth of the search; -1 (default) for unbounded.
+        A walk that would go deeper than MAX_RECURSION_DEPTH raises ValueError.
+    :param truncate: cut the walk at MAX_RECURSION_DEPTH instead of refusing
+        it, with a RuntimeWarning (and cut_mark, where the walk takes one)
+    :param traversed: the set of traversed nodes
+    :param verbose: to print warnings when cycles are discarded
+    :return: the tree in depth-first order
+    Convert acyclic dictionary 'dic', where the keys are nodes, and the values
+    are lists of children, to output tree suitable for pprint(), starting at
+    root 'node', with subtrees as nested lists. Discards eventual cycles.
+    """
+    # Refuse a walk deeper than the bound, or with truncate keep the node at
+    # the bound and never descend from it (GHSA-8846-p9w9-5frf).
+    if _level == 0 and depth < -1:
+        raise ValueError("depth must be >= -1 (use -1 for unbounded)")
+    _refuse_deep_walk(_level)
+    at_bound = truncate and depth != 0 and _level >= MAX_RECURSION_DEPTH
+    if traversed is None:
+        traversed = {node}
+    out_tree = [node]
+    if at_bound:
+        _warn_truncated(node, dic.__getitem__)
+    elif depth != 0:
+        try:
+            for child in dic[node]:
+                if child not in traversed:
+                    out_tree += [
+                        acyclic_dic2tree(
+                            child,
+                            dic,
+                            depth - 1,
+                            traversed.union({child}),
+                            verbose,
+                            truncate=truncate,
+                            _level=_level + 1,
+                        )
+                    ]
+                else:
+                    if verbose:
+                        warnings.warn(
+                            "Discarded redundant search for {} at depth {}".format(
+                                sanitize_terminal(child), depth - 1
+                            ),
+                            stacklevel=3,
+                        )  # unsafe-print ok: node text sanitised; depth is an int
+        except TypeError:
+            pass
+    return out_tree
 
-    Convert acyclic dictionary 'dic', where the keys are nodes, and the
-    values are lists of children, to output tree suitable for pprint(),
-    starting at root 'node', with subtrees as nested lists."""
-    return [node] + [acyclic_dic2tree(child, dic) for child in dic[node]]
+
+# ==========================================================================
 
 
 def unweighted_minimum_spanning_dict(tree, children=iter):
@@ -681,10 +811,11 @@ def unweighted_minimum_spanning_dict(tree, children=iter):
     return mstdic
 
 
-def unweighted_minimum_spanning_tree(tree, children=iter):
+def unweighted_minimum_spanning_tree(tree, children=iter, truncate=False):
     """
     :param tree: the tree root
     :param children: a function taking as argument a tree node
+    :param truncate: cut the tree at MAX_RECURSION_DEPTH instead of refusing it
 
        Output a Minimum Spanning Tree (MST) of an unweighted graph,
     by traversing the nodes of a tree in breadth-first order,
@@ -705,7 +836,9 @@ def unweighted_minimum_spanning_tree(tree, children=iter):
       [Synset('dependent.a.01')],
       [Synset('restricted.a.01'), [Synset('classified.a.02')]]]]
     """
-    return acyclic_dic2tree(tree, unweighted_minimum_spanning_dict(tree, children))
+    return acyclic_dic2tree(
+        tree, unweighted_minimum_spanning_dict(tree, children), truncate=truncate
+    )
 
 
 ##########################################################################
@@ -1046,6 +1179,8 @@ def trigrams(sequence, **kwargs):
 #: only affects the default; an explicitly supplied ``max_len`` is never capped.
 MAX_EVERYGRAMS_DEFAULT_LEN = 256
 
+MAX_SKIPGRAMS_COMBINATIONS_PER_WINDOW = 1_000_000
+
 
 def everygrams(
     sequence, min_len=1, max_len=-1, pad_left=False, pad_right=False, **kwargs
@@ -1145,6 +1280,33 @@ def skipgrams(sequence, n, k, **kwargs):
     :type  k: int
     :rtype: iter(tuple)
     """
+    if n < 1:
+        raise ValueError("n must be greater than or equal to 1")
+    if k < 0:
+        raise ValueError("k must be greater than or equal to 0")
+
+    # Fast-path / safety check for n == 1 (no skip-tail combinations needed)
+    if n == 1:
+        if "pad_left" in kwargs or "pad_right" in kwargs:
+            sequence = pad_sequence(sequence, n, **kwargs)
+        for ngram in ngrams(sequence, 1 + k, pad_right=True, right_pad_symbol=object()):
+            if ngram[0] is not object():
+                yield (ngram[0],)
+        return
+
+    # Pre-check bounds before math.comb to prevent big-integer performance spikes on huge inputs
+    if (
+        n > MAX_SKIPGRAMS_COMBINATIONS_PER_WINDOW
+        or k > MAX_SKIPGRAMS_COMBINATIONS_PER_WINDOW
+    ):
+        raise ValueError(f"Skipgram parameters n={n} and k={k} are excessively large.")
+
+    if (n + k - 1) >= (n - 1):
+        if math.comb(n + k - 1, n - 1) > MAX_SKIPGRAMS_COMBINATIONS_PER_WINDOW:
+            raise ValueError(
+                f"Skipgram parameters n={n} and k={k} exceed the maximum allowed "
+                f"combinations per window ({MAX_SKIPGRAMS_COMBINATIONS_PER_WINDOW})."
+            )
 
     # Pads the sequence as desired by **kwargs.
     if "pad_left" in kwargs or "pad_right" in kwargs:
@@ -1286,7 +1448,12 @@ def set_proxy(proxy, user=None, password=""):
 ######################################################################
 
 
-def elementtree_indent(elem, level=0):
+#: Bound recursion over nested XML so a deeply nested element raises ValueError
+#: instead of an uncaught RecursionError (CWE-674).
+MAX_XML_INDENT_DEPTH = 500
+
+
+def elementtree_indent(elem, level=0, max_depth=None):
     """
     Recursive function to indent an ElementTree._ElementInterface
     used for pretty printing. Run indent on elem and then output
@@ -1299,13 +1466,19 @@ def elementtree_indent(elem, level=0):
     :rtype:   ElementTree._ElementInterface
     :return:  Contents of elem indented to reflect its structure
     """
-
+    if max_depth is None:
+        max_depth = MAX_XML_INDENT_DEPTH
+    if level > max_depth:
+        raise ValueError(
+            f"XML nesting depth exceeds MAX_XML_INDENT_DEPTH ({max_depth}); "
+            "the input may be adversarially deep."
+        )
     i = "\n" + level * "  "
     if len(elem):
         if not elem.text or not elem.text.strip():
             elem.text = i + "  "
         for elem in elem:
-            elementtree_indent(elem, level + 1)
+            elementtree_indent(elem, level + 1, max_depth)
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
     else:
@@ -1334,8 +1507,8 @@ def choose(n, k):
 
     :param n: The number of things.
     :type n: int
-    :param r: The number of times a thing is taken.
-    :type r: int
+    :param k: The number of times a thing is taken.
+    :type k: int
     """
     if 0 <= k <= n:
         ntok, ktok = 1, 1

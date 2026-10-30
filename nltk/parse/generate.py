@@ -12,6 +12,7 @@ import itertools
 import sys
 
 from nltk.grammar import Nonterminal
+from nltk.termsec import safe_print
 
 #: Upper bound on the number of derivation-expansion steps a single
 #: ``generate`` call may perform. A recursive grammar can derive an exponential
@@ -84,6 +85,12 @@ def _generate_all(grammar, items, depth, budget):
         try:
             for frag1 in _generate_one(grammar, items[0], depth, budget):
                 for frag2 in _generate_all(grammar, items[1:], depth, budget):
+                    # Spend per emitted sentence, not just per expansion: an
+                    # ambiguous/recursive grammar can yield a combinatorial number
+                    # of sentences (the cartesian product below) while making few
+                    # ``_generate_one`` calls, so ``list(generate(g))`` without an
+                    # ``n`` limit would otherwise run unbounded (CWE-400).
+                    budget.spend()
                     yield frag1 + frag2
         except RecursionError as error:
             # Helpful error message while still showing the recursion stack.
@@ -121,11 +128,11 @@ demo_grammar = """
 def demo(N=23):
     from nltk.grammar import CFG
 
-    print("Generating the first %d sentences for demo grammar:" % (N,))
-    print(demo_grammar)
+    safe_print("Generating the first %d sentences for demo grammar:" % (N,))
+    safe_print(demo_grammar)
     grammar = CFG.fromstring(demo_grammar)
     for n, sent in enumerate(generate(grammar, n=N), 1):
-        print("%3d. %s" % (n, " ".join(sent)))
+        safe_print("%3d. %s" % (n, " ".join(sent)))
 
 
 if __name__ == "__main__":

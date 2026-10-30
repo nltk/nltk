@@ -7,7 +7,17 @@ import nltk.parse.malt as malt
 from nltk.parse.malt import MaltParser
 
 
-def _minimal_malt_parser(tmp_path):
+def _minimal_malt_parser(tmp_path, monkeypatch):
+    # Place the (dummy) maltparser jar inside a trusted nltk_data root so the
+    # JAR-execution sandbox permits it. These tests then exercise the REAL,
+    # sandboxed command path (a legitimate in-nltk_data jar), not an escape hatch.
+    data_root = tmp_path / "nltk_data"
+    jar_dir = data_root / "maltparser"
+    jar_dir.mkdir(parents=True)
+    malt_jar = jar_dir / "maltparser-1.9.2.jar"
+    malt_jar.write_bytes(b"")
+    monkeypatch.setattr("nltk.data.path", [str(data_root)])
+
     model_dir = tmp_path / "model"
     model_dir.mkdir()
     model_file = model_dir / "model.mco"
@@ -20,7 +30,7 @@ def _minimal_malt_parser(tmp_path):
     parser._trained = True
     parser.model = str(model_file)
     parser.working_dir = str(working_dir)
-    parser.malt_jars = ["dummy-malt.jar"]
+    parser.malt_jars = [str(malt_jar)]
     parser.additional_java_args = []
     return parser, model_dir
 
@@ -33,10 +43,10 @@ def _write_minimal_parse(cmd):
     )
 
 
-def test_malt_parse_uses_subprocess_cwd_without_changing_process_cwd(
+def test_malt_parse_passes_model_dir_via_w_without_changing_process_cwd(
     monkeypatch, tmp_path
 ):
-    parser, model_dir = _minimal_malt_parser(tmp_path)
+    parser, model_dir = _minimal_malt_parser(tmp_path, monkeypatch)
     service_dir = tmp_path / "service"
     service_dir.mkdir()
     monkeypatch.chdir(service_dir)
@@ -48,8 +58,8 @@ def test_malt_parse_uses_subprocess_cwd_without_changing_process_cwd(
 
     captured = {}
 
-    def fake_execute(cmd, verbose=False, cwd=None):
-        captured["cwd"] = cwd
+    def fake_execute(cmd, verbose=False):
+        captured["cmd"] = cmd
         captured["process_cwd"] = os.getcwd()
         captured["input_file"] = Path(cmd[cmd.index("-i") + 1])
         captured["output_file"] = Path(cmd[cmd.index("-o") + 1])
@@ -61,7 +71,9 @@ def test_malt_parse_uses_subprocess_cwd_without_changing_process_cwd(
     graphs = list(parser.parse_tagged_sents([[("hello", "NN")]]))
 
     assert len(graphs) == 1
-    assert captured["cwd"] == str(model_dir)
+    # The model directory is handed to MaltParser via its -w argument, NOT by
+    # changing the JVM's working directory; the process cwd stays untouched.
+    assert captured["cmd"][captured["cmd"].index("-w") + 1] == str(model_dir)
     assert captured["process_cwd"] == str(service_dir)
     assert os.getcwd() == str(service_dir)
     assert not captured["input_file"].exists()
@@ -71,15 +83,15 @@ def test_malt_parse_uses_subprocess_cwd_without_changing_process_cwd(
 def test_malt_parse_cleans_temp_files_and_preserves_cwd_on_execute_exception(
     monkeypatch, tmp_path
 ):
-    parser, model_dir = _minimal_malt_parser(tmp_path)
+    parser, model_dir = _minimal_malt_parser(tmp_path, monkeypatch)
     service_dir = tmp_path / "service"
     service_dir.mkdir()
     monkeypatch.chdir(service_dir)
 
     captured = {}
 
-    def fake_execute(cmd, verbose=False, cwd=None):
-        captured["cwd"] = cwd
+    def fake_execute(cmd, verbose=False):
+        captured["cmd"] = cmd
         captured["process_cwd"] = os.getcwd()
         captured["input_file"] = Path(cmd[cmd.index("-i") + 1])
         captured["output_file"] = Path(cmd[cmd.index("-o") + 1])
@@ -92,7 +104,7 @@ def test_malt_parse_cleans_temp_files_and_preserves_cwd_on_execute_exception(
     with pytest.raises(RuntimeError, match="forced parser failure"):
         list(parser.parse_tagged_sents([[("hello", "NN")]]))
 
-    assert captured["cwd"] == str(model_dir)
+    assert captured["cmd"][captured["cmd"].index("-w") + 1] == str(model_dir)
     assert captured["process_cwd"] == str(service_dir)
     assert os.getcwd() == str(service_dir)
     assert not captured["input_file"].exists()

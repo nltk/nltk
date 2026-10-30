@@ -386,9 +386,20 @@ examples illustrate the use of the wordlist corpora:
     ['A', 'a', 'aa', 'aal', 'aalii', 'aam', 'Aani', 'aardvark', 'aardwolf', ...]
 
     >>> stopwords.fileids() # doctest: +SKIP
-    ['arabic', 'azerbaijani', 'bengali', 'danish', 'dutch', 'english', 'finnish', 'french', ...]
+    ['arabic', 'azerbaijani', 'bengali', 'danish', 'dutch', 'english', 'english-extended', 'finnish', ...]
     >>> sorted(stopwords.words('portuguese'))
     ['a', 'ao', 'aos', 'aquela', 'aquelas', 'aquele', 'aqueles', ...]
+
+``english-extended`` is not a file in the corpus: it is the ``english`` list
+plus a set of function words defined in code (see
+``nltk.corpus.reader.wordlist.StopwordsCorpusReader``), so it is always
+available and never changes the ``english`` list itself:
+
+    >>> base, extended = stopwords.words('english'), stopwords.words('english-extended')
+    >>> set(base).issubset(extended)
+    True
+    >>> ('cannot' in base, 'cannot' in extended)
+    (False, True)
     >>> names.fileids()
     ['female.txt', 'male.txt']
     >>> names.words('male.txt')

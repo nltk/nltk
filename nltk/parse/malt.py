@@ -9,15 +9,26 @@
 
 import inspect
 import os
-import subprocess
 import sys
 import tempfile
 
-from nltk.data import ZipFilePathPointer
-from nltk.internals import find_dir, find_file, find_jars_within_path
+from nltk import pathsec
+from nltk.data import ZipFilePathPointer, make_staging_dir
+from nltk.internals import (
+    find_dir,
+    find_file,
+    find_jars_within_path,
+    java,
+)
 from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.parse.util import taggedsents_to_conll
+from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import (
+    validate_model_resource,
+    validate_path,
+    validate_tool_path,
+)
 
 
 def malt_regex_tagger():
@@ -156,10 +167,45 @@ class MaltParser(ParserI):
         # Initialize model.
         self.model = find_malt_model(model_filename)
         self._trained = self.model != "malt_temp.mco"
-        # Set the working_dir parameters i.e. `-w` from MaltParser's option.
-        self.working_dir = tempfile.gettempdir()
+        # `-w` is allocated lazily inside a data root; see the working_dir property.
+        self._working_dir = None
         # Initialize POS tagger.
         self.tagger = tagger if tagger is not None else malt_regex_tagger()
+
+    @property
+    def working_dir(self):
+        """MaltParser's ``-w`` directory, holding the temporary CoNLL files and,
+        for an untrained parser, the ``malt_temp.mco`` model that ``train()``
+        writes.
+
+        Allocated lazily by ``nltk.data.make_staging_dir`` INSIDE an allowed data
+        root, with an unpredictable name and mode 0700. The previous default was
+        the shared ``tempfile.gettempdir()``, which is world-writable on Linux and
+        gives a predictable, squattable path for both the CoNLL files and the model.
+        """
+        if self._working_dir is None:
+            # cleanup=True: the old shared tempdir was reaped by the OS, a dir
+            # under a data root is not, and the .mco it holds is temporary.
+            self._working_dir = make_staging_dir(prefix="nltk_malt_", cleanup=True)
+        return self._working_dir
+
+    @working_dir.setter
+    def working_dir(self, value):
+        # None restores the unset state, so the property allocates again on next
+        # access rather than raising.
+        if value is None:
+            self._working_dir = None
+            return
+        # A caller may still choose the directory, but only inside the sandbox.
+        # An empty value would reach MaltParser as `-w ""`, i.e. the CWD.
+        text = os.fspath(value)
+        if not text.strip():
+            raise ValueError(
+                "MaltParser.working_dir may not be empty; it would resolve to the "
+                "current working directory."
+            )
+        validate_path(text, context="MaltParser.working_dir")
+        self._working_dir = text
 
     def parse_tagged_sents(self, sentences, verbose=False, top_relation_label="null"):
         """
@@ -189,24 +235,19 @@ class MaltParser(ParserI):
                 input_file_name = input_file.name
                 output_file_name = output_file.name
 
-                model_dir = os.path.split(self.model)[0]
-                model_cwd = os.path.abspath(model_dir) if model_dir else None
-                if model_cwd and not os.path.isdir(model_cwd):
-                    model_cwd = None
-
                 # Convert list of sentences to CONLL format.
                 for line in taggedsents_to_conll(sentences):
                     input_file.write(str(line))
                 input_file.close()
 
-                # Generate command to run maltparser.
+                # Generate command to run maltparser. The model's directory is
+                # passed to MaltParser via its ``-w`` argument (inside
+                # generate_malt_command), so no JVM working-directory is needed.
                 cmd = self.generate_malt_command(
                     input_file_name, output_file_name, mode="parse"
                 )
 
-                # MaltParser needs to run from the model directory; use
-                # subprocess cwd so other threads do not see a process-wide chdir.
-                ret = self._execute(cmd, verbose, cwd=model_cwd)  # Run command.
+                ret = self._execute(cmd, verbose)  # Run command.
 
                 if ret != 0:
                     raise Exception(
@@ -215,7 +256,9 @@ class MaltParser(ParserI):
                     )
 
                 # Must return iter(iter(Tree))
-                with open(output_file_name) as infile:
+                with pathsec_open(
+                    output_file_name, context="MaltParser.parse_tagged_sents"
+                ) as infile:
                     for tree_str in infile.read().split("\n\n"):
                         yield (
                             iter(
@@ -231,7 +274,9 @@ class MaltParser(ParserI):
             for filename in (input_file_name, output_file_name):
                 if filename:
                     try:
-                        os.remove(filename)
+                        pathsec.unlink(
+                            filename, context="MaltParser.parse_tagged_sents"
+                        )
                     except OSError:
                         pass
 
@@ -259,33 +304,77 @@ class MaltParser(ParserI):
         :type inputfilename: str
         :param outputfilename: path to the output file
         :type outputfilename: str
+
+        Both filenames are bounded to the NLTK data roots. ``-i`` is read by the
+        JVM and ``-o`` is *written* by it, so an unbounded value here is an
+        arbitrary file read and an arbitrary file write respectively. The
+        internal callers pass temporary files inside :attr:`working_dir`, which
+        is itself allocated inside a data root.
         """
 
-        cmd = ["java"]
-        cmd += self.additional_java_args  # Adds additional java arguments
-        cmd += [
-            "-cp",
-            os.pathsep.join(self.malt_jars),
-        ]  # Adds classpaths for jars
-        cmd += ["org.maltparser.Malt"]  # Adds the main function.
+        # Build only MaltParser's own arguments (main class + program args). The
+        # JVM binary, classpath sandbox, JVM-option allowlist and env sanitisation
+        # are all applied by nltk.internals.java() in _execute; this wrapper no
+        # longer rolls its own subprocess, so those protections cannot drift.
+        cmd = ["org.maltparser.Malt"]
 
-        # Adds the model file.
-        if os.path.exists(self.model):  # when parsing
-            cmd += ["-c", os.path.split(self.model)[-1]]
-        else:  # when learning
-            cmd += ["-c", self.model]
+        # MaltParser reads/writes the .mco model in its working directory. Pass that
+        # directory as the ``-w`` program argument rather than chdir-ing the JVM
+        # process: no cwd is handed to java(), so there is no working-directory
+        # class-injection surface (an empty/CWD -cp element, CWE-88).
+        # Rejects an empty / option-like / URL / traversing model name, and bounds
+        # it to the sandbox when it is a real path. Use the value it returns:
+        # __fspath__ may answer differently on every call, so re-reading
+        # self.model here would let the JVM open a file the guard never saw.
+        model = validate_model_resource(self.model, context="MaltParser model")
+        model_dir, model_name = os.path.split(model)
+        if model_dir:
+            # A model carrying a directory is a real path the JVM opens itself. In
+            # learn mode it WRITES the .mco, so refuse a hardlink/symlink that would
+            # redirect the write outside the roots (GHSA-fg9w-wfp5-j933).
+            validate_tool_path(
+                model,
+                context="MaltParser model",
+                for_write=(mode == "learn"),
+                must_exist=(mode != "learn"),
+            )
+            workingdir = os.path.abspath(model_dir)
+        else:
+            # A bare model name lives in the private dir that train() wrote it to.
+            workingdir = self.working_dir
+        cmd += ["-w", workingdir, "-c", model_name]
 
-        cmd += ["-i", inputfilename]
+        # -i is read by the JVM and -o is written by it; train_from_file() and
+        # generate_malt_command() are both public, so neither may leave the roots.
+        cmd += ["-i", validate_tool_path(inputfilename, context="MaltParser input")]
         if mode == "parse":
-            cmd += ["-o", outputfilename]
+            cmd += [
+                "-o",
+                validate_tool_path(
+                    outputfilename,
+                    context="MaltParser output",
+                    for_write=True,
+                    must_exist=False,
+                ),
+            ]
         cmd += ["-m", mode]  # mode use to generate parses.
         return cmd
 
-    @staticmethod
-    def _execute(cmd, verbose=False, cwd=None):
-        output = None if verbose else subprocess.PIPE
-        p = subprocess.Popen(cmd, stdout=output, stderr=output, cwd=cwd)
-        return p.wait()
+    def _execute(self, cmd, verbose=False):
+        # Route MaltParser's JVM through the single hardened entry point so the
+        # classpath sandbox, JVM-option allowlist and env sanitisation all apply.
+        stdout = None if verbose else "pipe"
+        try:
+            java(
+                cmd,
+                classpath=self.malt_jars,
+                options=self.additional_java_args,
+                stdout=stdout,
+                stderr=stdout,
+            )
+            return 0
+        except OSError:
+            return 1  # non-zero exit; the caller raises its descriptive error
 
     def train(self, depgraphs, verbose=False):
         """
@@ -295,16 +384,18 @@ class MaltParser(ParserI):
         :type depgraphs: DependencyGraph
         """
 
-        # Write the conll_str to malt_train.conll file in /tmp/
+        # Render every graph first: to_conll refuses a field that would inject
+        # a row or column, and a refused graph must leave no file behind.
+        input_str = "\n".join(dg.to_conll(10) for dg in depgraphs)
+        # Write the conll_str to a malt_train.conll file in the working dir
         with tempfile.NamedTemporaryFile(
             prefix="malt_train.conll.", dir=self.working_dir, mode="w", delete=False
         ) as input_file:
-            input_str = "\n".join(dg.to_conll(10) for dg in depgraphs)
             input_file.write(str(input_str))
         # Trains the model with the malt_train.conll
         self.train_from_file(input_file.name, verbose=verbose)
         # Removes the malt_train.conll once training finishes.
-        os.remove(input_file.name)
+        pathsec.unlink(input_file.name, context="MaltParser.train")
 
     def train_from_file(self, conll_file, verbose=False):
         """

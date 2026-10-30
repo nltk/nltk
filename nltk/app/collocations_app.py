@@ -40,6 +40,7 @@ from nltk.corpus import (
     treebank,
 )
 from nltk.probability import FreqDist
+from nltk.termsec import safe_print
 from nltk.util import in_idle
 
 CORPUS_LOADED_EVENT = "<<CL_EVENT>>"
@@ -419,7 +420,7 @@ class CollocationsModel:
                 self.model.collocations = list(map(itemgetter(0), scored))
                 self.model.queue.put(CORPUS_LOADED_EVENT)
             except Exception as e:
-                print(e)
+                safe_print(e)
                 self.model.queue.put(ERROR_LOADING_CORPUS_EVENT)
 
 

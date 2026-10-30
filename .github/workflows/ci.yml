@@ -1,6 +1,16 @@
 name: ci-workflow
 
-on: [push, pull_request, workflow_dispatch]
+on:
+  push:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled]
+  workflow_dispatch:
+  merge_group:
+
+# Automatically cancel in-progress jobs when new commits are pushed to the same PR
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -18,6 +28,28 @@ env:
   MALT_PARSER: ${{ github.workspace }}/third/maltparser
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    outputs:
+      code: ${{ steps.filter.outputs.code }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            code:
+              - '**/*.py'
+              - 'requirements*.txt'
+              - 'setup.py'
+              - 'setup.cfg'
+              - 'MANIFEST.in'
+              - '.github/workflows/**'
+              - 'tools/github_actions/**'
+
   pre-commit:
     name: pre-commit
     runs-on: ubuntu-latest
@@ -25,7 +57,7 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.13"  # or your chosen version
 
@@ -37,6 +69,8 @@ jobs:
 
   minimal_download_test:
     name: Minimal NLTK Download Test
+    needs: [changes]
+    if: needs.changes.outputs.code == 'true'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -45,7 +79,7 @@ jobs:
       - uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: "3.14"
 
@@ -66,23 +100,53 @@ jobs:
         run: |
           python -c "import os, nltk; d = os.environ['NLTK_DATA']; import pathlib; pathlib.Path(d).mkdir(parents=True, exist_ok=True); nltk.download('wordnet', download_dir=d)"
 
+  setup-matrix:
+    runs-on: ubuntu-latest
+    needs: [changes]
+    if: needs.changes.outputs.code == 'true'
+    outputs:
+      python_versions: ${{ steps.set-matrix.outputs.python_versions }}
+      # true on develop, in a merge group, or with the full-matrix label: the
+      # advisory probes run only then (they take minutes per cell)
+      full: ${{ steps.set-matrix.outputs.full }}
+    steps:
+      - id: set-matrix
+        shell: bash
+        run: |
+          if [[ "${{ github.event_name }}" == "merge_group" ]] || [[ "${{ contains(github.event.pull_request.labels.*.name, 'full-matrix') }}" == "true" ]] || [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+            echo 'python_versions=["3.11", "3.12", "3.13", "3.14", "3.14t"]' >> $GITHUB_OUTPUT
+            echo 'full=true' >> $GITHUB_OUTPUT
+          else
+            echo 'python_versions=["3.14", "3.14t"]' >> $GITHUB_OUTPUT
+            echo 'full=false' >> $GITHUB_OUTPUT
+          fi
+
   test:
     name: Python ${{ matrix.python-version }} on ${{ matrix.os }}
-    needs: [pre-commit, minimal_download_test]
+    # Gate on pre-commit only. Depending on minimal_download_test blocked the
+    # whole matrix whenever its macos-latest leg could not acquire a hosted
+    # runner (it sits queued ~26m then errors), so the full suite never ran.
+    # minimal_download_test still runs and reports on its own.
+    needs: [pre-commit, setup-matrix]
     strategy:
       matrix:
-        python-version: ['3.10', '3.11', '3.12', '3.13', '3.14', '3.14t']
+        python-version: ${{ fromJSON(needs.setup-matrix.outputs.python_versions) }}
         os: [ubuntu-latest, macos-latest, windows-latest]
         exclude:
           - os: windows-latest
             python-version: '3.14t'  # scikit-learn issue on Py3.14t on Windows
+          - os: macos-latest
+            python-version: '3.14t'  # free-threaded macOS hosted runner is not
+                                      # acquirable (job hangs ~26m then errors:
+                                      # "not acquired by Runner of type hosted");
+                                      # 3.14t is still covered on ubuntu-latest
       fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v7
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -94,6 +158,47 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install --upgrade --requirement requirements-ci.txt
+
+      - name: Install Graphviz (the real dot for the trusted-spawn tests)
+        # Windows takes it from the third-party tools cache below instead
+        if: runner.os != 'Windows'
+        shell: bash
+        run: |
+          # the real dot, never a stub: apt and brew install it as a link whose text
+          # climbs with '..', which the tests assert renders by that name; brew's prefix
+          # is g+w for admin, so its chain is made private as an operator would, link kept
+          if [ "${{ runner.os }}" = "Linux" ]; then
+            sudo apt-get update -qq && sudo apt-get install -y -qq graphviz
+            ls -la "$(command -v dot)"
+            dot -V
+          elif [ "${{ runner.os }}" = "macOS" ]; then
+            brew install graphviz
+            prefix="$(brew --prefix)"
+            chmod g-w,o-w "$prefix" "$prefix/bin" "$prefix/Cellar" "$prefix/Cellar/graphviz" "$prefix"/Cellar/graphviz/* "$prefix"/Cellar/graphviz/*/bin
+            ls -la "$prefix/bin/dot" "$prefix"/Cellar/graphviz/*/bin/dot
+            dot -V
+          fi
+
+      - name: Give the runner's JDK back its private write bits (Linux)
+        # The Ubuntu image runs `chmod -R 777 /usr/lib/jvm`, so every JVM there
+        # is world-writable and nltk refuses to launch it (CWE-427); restore the
+        # root-only write bits so the real-JVM tests run against a trusted JDK.
+        if: runner.os == 'Linux'
+        run: sudo chmod -R go-w /usr/lib/jvm
+
+      - name: Data installed by root must serve the runner through extraction (Linux, #3928)
+        # Root installs the packages (docker build, sudo python -m nltk.downloader)
+        # with the reporter's unchanged command: a root install extracts on its
+        # own, the archive stays private to root (0600), the runner reads files.
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo "$(which python)" -m nltk.downloader -d /usr/local/share/nltk_data wordnet stopwords
+          ls -la /usr/local/share/nltk_data/corpora
+          test ! -r /usr/local/share/nltk_data/corpora/wordnet.zip
+          test -r /usr/local/share/nltk_data/corpora/wordnet/data.noun
+          NLTK_DATA=/usr/local/share/nltk_data python -c "from nltk.stem import WordNetLemmatizer; assert WordNetLemmatizer().lemmatize('bearings') == 'bearing'; from nltk.corpus import stopwords; assert 'the' in stopwords.words('english'); import nltk; assert nltk.download('wordnet', quiet=True); print('root-installed data serves', __import__('getpass').getuser(), 'through the extracted files')"
 
       - name: Ensure minimal NLTK data for cache
         shell: bash
@@ -146,15 +251,252 @@ jobs:
           chmod +x ./tools/github_actions/third-party.sh
           ./tools/github_actions/third-party.sh
 
+      - name: Put the third-party Graphviz on PATH (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          bin="$(cygpath -u "$THIRD_PARTY_DIR")/graphviz/bin"
+          "$bin/dot.exe" -c
+          "$bin/dot.exe" -V
+          cygpath -w "$bin" >> "$GITHUB_PATH"
+
       - name: List contents of third-party dir after download/cache
         shell: bash
         run: ls -lR "${{ env.THIRD_PARTY_DIR }}" || echo "third-party dir not found"
+
+      - name: Trust the third-party tools tree (Linux)
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          # The trusted-exec chokepoint refuses tools on paths others can write; a
+          # tree unzipped on a cache miss keeps the archive's group-write bits (a
+          # cache restore does not), so normalise it rather than weaken the guard.
+          chmod -R go-w "${{ env.THIRD_PARTY_DIR }}"
 
       - name: Print NLTK data search paths
         shell: bash
         run: python -c "import nltk; print('NLTK data search paths:', nltk.data.path)"
 
+      - name: Run ReDoS security regression tests
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          # Security regression suite for the ReDoS / catastrophic-backtracking
+          # backstop on caller-supplied patterns (GHSA-w3v8-gmh9-3wv7 umbrella:
+          # RegexpTokenizer, RegexpTagger, tgrep, chunk rules; plus the shared
+          # tight timeout with GHSA-rrv8-h7p8-rx55's Text.findall). Run as its
+          # own fast, early step -- with no third-party data needed -- so a
+          # change to the main pytest invocation below can never silently drop
+          # these checks. The suite is also collected by "Run pytest".
+          pytest -rsx nltk/test/unit/test_redos.py
+
+      - name: Run parser/grammar DoS security regression tests
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          # Security regression suite for the unbounded-work parser/grammar DoS
+          # cluster (GHSA-ff5c-cp5c-9wjf umbrella: RecursiveDescentParser
+          # CVE-2026-12876, ShiftReduceParser, NonprojectiveDependencyParser,
+          # ViterbiParser, CFG chomsky_normal_form unit-cycle, generate()). A
+          # living audit -- it also asserts the already-bounded parsers
+          # (ChartParser, ProjectiveDependencyParser) stay bounded. Own fast,
+          # early step so a change to the main pytest invocation cannot silently
+          # drop it; also collected by "Run pytest".
+          pytest -rsx nltk/test/unit/test_recursivedescent_dos.py nltk/test/unit/test_parser_dos.py nltk/test/unit/test_recursion_dos.py
+
+      - name: Run algorithmic-complexity DoS security regression tests
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          # Security regression suite for the algorithmic-complexity DoS cluster
+          # (GHSA-ww6m-cw3f-q94g umbrella: PorterStemmer; GHSA-vp2x XMLCorpusView,
+          # GHSA-8mpw TEICorpusView -- all directions -- and read_sexpr_block;
+          # plus the repo-wide sweep: TweetTokenizer/RIBES/Syllable/TextTiling/
+          # CHILDES single-input sinks and the metrics.distance / aline /
+          # gale_church two-string O(n*m) sinks. CWE-407/CWE-400). Own fast,
+          # early step so a change to the main pytest invocation can't silently
+          # drop it; also collected by "Run pytest".
+          pytest -rsx nltk/test/unit/test_quadratic_dos.py nltk/test/unit/test_distance.py
+
+      - name: Run path-traversal / file-I/O security regression tests
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          # Security regression suite for the path-traversal / file-I/O sandbox
+          # cluster (GHSA-8mgp-746c-j5xp umbrella: CVE-2026-54293 / GHSA-p4gq and
+          # CVE-2026-12243 / GHSA-q5h6 encoded-traversal in nltk.data; GHSA-f794
+          # pathsec symlink/hardlink TOCTOU -- read and the newly-closed write
+          # side; the perceptron shared-temp squat. CWE-22/59/377). Own fast,
+          # early step so a change to the main pytest invocation can't silently
+          # drop it; also collected by "Run pytest".
+          pytest -rsx nltk/test/unit/test_path_traversal_security.py
+
+      - name: Run advisory-verification probes
+        # Only on a full run (develop, merge group, full-matrix label): the
+        # probes replay every advisory's attack and cost minutes per cell.
+        if: needs.setup-matrix.outputs.full == 'true'
+        shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+        run: |
+          # One probe per published advisory (nltk/test/unit/security_probes/),
+          # each running the attack it describes, plus negative controls that
+          # prove the probes flip to VULNERABLE when a guard is removed. Offline;
+          # the GitHub coverage check is the separate advisory-coverage job.
+          pytest -rsx nltk/test/unit/test_advisory_probes.py
+
       - name: Run pytest
         shell: bash
+        env:
+          PYTHONSAFEPATH: "1"
+          # dot must be installed: the real Graphviz tests fail, never skip
+          NLTK_CI_REQUIRE_GRAPHVIZ: "1"
+          FULL_MATRIX: ${{ needs.setup-matrix.outputs.full }}
         run: |
-          pytest --numprocesses auto -rsx --doctest-modules nltk
+          # The advisory probes run in their own step above on a full run and
+          # are left out of a reduced run entirely, so the parallel run here
+          # skips the file whenever that step did not run.
+          probes=()
+          if [ "$FULL_MATRIX" != "true" ]; then
+            probes+=("--ignore=nltk/test/unit/test_advisory_probes.py")
+          fi
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            # Windows spawn re-bootstraps pytest per subprocess; skip the plugin
+            # autoload scan (seconds per spawn) only here and load needed plugins
+            # explicitly. Set on this command alone so other OSes keep autoload.
+            PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -p xdist -p pytest_mock --numprocesses auto "${probes[@]}" -rsx --doctest-modules nltk
+          elif [ "${{ matrix.os }}" = "macos-latest" ]; then
+            # Files with wall-clock deadlines (proc.join backstops, "< N s" asserts,
+            # the 40 s CoreNLP start) were starved by the parallel workers here, so
+            # they run on their own afterwards; every other test runs as before.
+            quiet=(
+              nltk/test/unit/test_alpino.py
+              nltk/test/unit/test_ccg_lexicon_security.py
+              nltk/test/unit/test_chart_parser.py
+              nltk/test/unit/test_chunk_redos_security.py
+              nltk/test/unit/test_cistem.py
+              nltk/test/unit/test_confusionmatrix.py
+              nltk/test/unit/test_corenlp.py
+              nltk/test/unit/test_corenlp_options_security.py
+              nltk/test/unit/test_distance.py
+              nltk/test/unit/test_everygrams_alloc.py
+              nltk/test/unit/test_featstruct_redos.py
+              nltk/test/unit/test_generate.py
+              nltk/test/unit/test_inference_security.py
+              nltk/test/unit/test_logic.py
+              nltk/test/unit/test_markdown.py
+              nltk/test/unit/test_pathsec_sweep_tag.py
+              nltk/test/unit/test_quadratic_dos.py
+              nltk/test/unit/test_redos_chokepoint_safety.py
+              nltk/test/unit/test_reviews_security.py
+              nltk/test/unit/test_segmentation.py
+              nltk/test/unit/test_sem_evaluate.py
+              nltk/test/unit/test_senseval_security.py
+              nltk/test/unit/test_text.py
+              nltk/test/unit/test_texttiling_security.py
+              nltk/test/unit/test_treetransforms.py
+              nltk/test/unit/test_valuation_redos.py
+              nltk/test/unit/test_xmldocs_security.py
+              nltk/test/unit/translate/test_alignment.py
+              nltk/test/unit/translate/test_gdfa.py
+              nltk/test/unit/translate/test_lepor.py
+              nltk/test/unit/translate/test_meteor.py
+              nltk/test/unit/translate/test_phrase_based_security.py
+            )
+            ignores=()
+            for f in "${quiet[@]}"; do
+              [ -f "$f" ] || { echo "quiet-stage file missing: $f"; exit 1; }
+              ignores+=("--ignore=$f")
+            done
+            rc=0
+            pytest --numprocesses auto "${ignores[@]}" "${probes[@]}" -rsx --doctest-modules nltk || rc=1
+            pytest -rsx "${quiet[@]}" || rc=1
+            exit $rc
+          else
+            pytest --numprocesses auto "${probes[@]}" -rsx --doctest-modules nltk
+          fi
+
+  docker-cross-account:
+    name: Docker root build, appuser runtime (#3928)
+    # The reporter's shape run for real: a python:3.11-slim image built from
+    # this checkout downloads the data as root and runs as an unprivileged
+    # user that must be served the extracted files, never the private archive.
+    needs: [changes]
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+      - name: Build the image from this checkout and run it as appuser
+        run: |
+          set -euo pipefail
+          docker build -t nltk-3928 -f .github/docker/cross-account.Dockerfile .
+          docker run --rm nltk-3928
+
+  advisory-coverage:
+    name: Advisory coverage (GitHub)
+    # The only job that pulls the live advisory list, so the only one that hits
+    # the network -- the offline probes never do. It runs on every PR (fork
+    # ones included), because that is exactly where a missing probe should be
+    # caught. Safe to do so: it fetches published advisories UNAUTHENTICATED
+    # (they are public), takes an empty `permissions` so even the default
+    # GITHUB_TOKEN is neutered, and reads only advisory ids -- there is no
+    # secret to exfiltrate and no privilege beyond the test matrix, which
+    # already runs the PR's code. It fails only on a real coverage gap and
+    # skips if the fetch cannot be made. `permissions: {}` is intentional and
+    # sufficient: checking out a public repo needs no token scope.
+    needs: [changes]
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        # The coverage test only reads probe *keys* and never calls a probe, so
+        # it needs the package importable, not the full optional stack.
+        run: pip install -e . pytest pytest-mock
+
+      - name: Check every published advisory has a probe
+        env:
+          NLTK_ADVISORY_CI: "1"
+        run: |
+          # No token: the public advisories API is read unauthenticated. The
+          # test skips if the fetch is unavailable, fails only on a coverage gap.
+          pytest -rsx nltk/test/unit/test_advisory_coverage_ci.py
+
+  dist-hygiene:
+    name: Distribution hygiene
+    # Build the sdist and wheel as release.yml does and refuse anything that is
+    # not the tracked tree: bytecode, untracked or hidden files, a home directory
+    # or a credential shape. The 3.10.3 sdist on PyPI shipped 293 stale pycs.
+    needs: [changes]
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+
+      - name: Install build dependencies
+        run: pip install build
+
+      - name: Build package
+        run: python -m build
+
+      - name: Check the built distributions against the tracked tree
+        run: python tools/check_sdist_hygiene.py dist/*

@@ -72,9 +72,11 @@ import re
 from collections import deque
 from functools import total_ordering
 
+from nltk import redos
 from nltk.featstruct import SLASH, TYPE, FeatDict, FeatStruct, FeatStructReader
 from nltk.internals import raise_unorderable_types
 from nltk.probability import ImmutableProbabilisticMixIn
+from nltk.termsec import safe_print
 from nltk.util import invert_graph, transitive_closure
 
 #################################################################
@@ -772,8 +774,20 @@ class CFG:
             else:
                 result.append(rule)
 
+        # Track which unit productions (lhs -> rhs[0]) have already been
+        # expanded. A unit-production cycle (e.g. ``A -> B``, ``B -> A``)
+        # regenerates the same unit rules forever, so without this guard the
+        # queue never drains and the loop hangs while ``result``/``unitary``
+        # grow without bound (CWE-835/CWE-400). Expanding each distinct unit
+        # rule at most once computes the same unit closure -- duplicates a cycle
+        # would add carry no new productions.
+        seen = set()
         while unitary:
             rule = unitary.popleft()
+            key = (rule.lhs(), rule.rhs()[0])
+            if key in seen:
+                continue
+            seen.add(key)
             for item in grammar.productions(lhs=rule.rhs()[0]):
                 new_rule = Production(rule.lhs(), item.rhs())
                 if len(new_rule) != 1 or new_rule.is_lexical():
@@ -1101,7 +1115,7 @@ class DependencyGrammar:
             try:
                 productions += _read_dependency_production(line)
             except ValueError as e:
-                raise ValueError(f"Unable to parse line {linenum}: {line}") from e
+                raise ValueError(f"Unable to parse line {linenum}: {line}\n{e}") from e
         if len(productions) == 0:
             raise ValueError("No productions found!")
         return cls(productions)
@@ -1353,10 +1367,10 @@ def _read_fcfg_production(input, fstruct_reader):
 
 # Parsing generic grammars
 
-_ARROW_RE = re.compile(r"\s* -> \s*", re.VERBOSE)
-_PROBABILITY_RE = re.compile(r"( \[ [\d\.]+ \] ) \s*", re.VERBOSE)
-_TERMINAL_RE = re.compile(r'( "[^"]*" | \'[^\']*\' ) \s*', re.VERBOSE)
-_DISJUNCTION_RE = re.compile(r"\| \s*", re.VERBOSE)
+_ARROW_RE = redos.compile(r"\s* -> \s*", re.VERBOSE)
+_PROBABILITY_RE = redos.compile(r"( \[ [\d\.]+ \] ) \s*", re.VERBOSE)
+_TERMINAL_RE = redos.compile(r'( "[^"]*" | \'[^\']*\' ) \s*', re.VERBOSE)
+_DISJUNCTION_RE = redos.compile(r"\| \s*", re.VERBOSE)
 
 
 def _read_production(line, nonterm_parser, probabilistic=False):
@@ -1479,7 +1493,7 @@ def read_grammar(input, nonterm_parser, probabilistic=False, encoding=None):
     return (start, productions)
 
 
-_STANDARD_NONTERM_RE = re.compile(r"( [\w/][\w/^<>-]* ) \s*", re.VERBOSE)
+_STANDARD_NONTERM_RE = redos.compile(r"( [\w/][\w/^<>-]* ) \s*", re.VERBOSE)
 
 
 def standard_nonterm_parser(string, pos):
@@ -1493,26 +1507,43 @@ def standard_nonterm_parser(string, pos):
 # Reading Dependency Grammars
 #################################################################
 
-_READ_DG_RE = re.compile(
+# A quoted token is at most 512 chars and an arrow at most 8: the validator and
+# the splitter carry the same bounds, so an oversized token is refused up front
+# rather than silently dropped. The longest shipped terminal is 9 chars.
+_READ_DG_RE = redos.compile(
     r"""^\s*                # leading whitespace
-                              ('[^']+')\s*        # single-quoted lhs
-                              (?:[-=]+>)\s*        # arrow
+                              ('[^']{1,512}')\s*  # single-quoted lhs
+                              (?:[-=]{1,8}>)\s*   # arrow
                               (?:(                 # rhs:
-                                   "[^"]+"         # doubled-quoted terminal
-                                 | '[^']+'         # single-quoted terminal
+                                   "[^"]{1,512}"   # doubled-quoted terminal
+                                 | '[^']{1,512}'   # single-quoted terminal
                                  | \|              # disjunction
                                  )
                                  \s*)              # trailing space
                                  *$""",  # zero or more copies
     re.VERBOSE,
 )
-_SPLIT_DG_RE = re.compile(r"""('[^']'|[-=]+>|"[^"]+"|'[^']+'|\|)""")
+# Bound each alternation run: an alternation defeats the regex terminator prefilter,
+# so an unbounded run under .split is O(n**2) on a crafted grammar line (CWE-407);
+# arrows are ->/-->/==> and quoted tokens are short.
+_SPLIT_DG_RE = redos.compile(r"""('[^']'|[-=]{1,8}>|"[^"]{1,512}"|'[^']{1,512}'|\|)""")
 
 
 def _read_dependency_production(s):
     if not _READ_DG_RE.match(s):
-        raise ValueError("Bad production string")
+        raise ValueError(
+            "Bad production string (a quoted token is limited to 512 chars and "
+            f"an arrow to 8): {s[:40]!r}..."
+        )
     pieces = _SPLIT_DG_RE.split(s)
+    # Between two captured tokens only whitespace may remain: anything else is
+    # a token the splitter could not capture, so refuse rather than build a
+    # production with the token missing.
+    if any(p.strip() for p in pieces[::2]):
+        raise ValueError(
+            "Bad production string: a token the splitter cannot capture (over "
+            f"512 chars, or an arrow over 8): {s[:40]!r}..."
+        )
     pieces = [p for i, p in enumerate(pieces) if i % 2 == 1]
     lhside = pieces[0].strip("'\"")
     rhsides = [[]]
@@ -1541,11 +1572,11 @@ def cfg_demo():
     N, V, P, Det = nonterminals("N, V, P, Det")
     VP_slash_NP = VP / NP
 
-    print("Some nonterminals:", [S, NP, VP, PP, N, V, P, Det, VP / NP])
-    print("    S.symbol() =>", repr(S.symbol()))
-    print()
+    safe_print("Some nonterminals:", [S, NP, VP, PP, N, V, P, Det, VP / NP])
+    safe_print("    S.symbol() =>", repr(S.symbol()))
+    safe_print()
 
-    print(Production(S, [NP]))
+    safe_print(Production(S, [NP]))
 
     # Create some Grammar Productions
     grammar = CFG.fromstring(
@@ -1561,12 +1592,12 @@ def cfg_demo():
     """
     )
 
-    print("A Grammar:", repr(grammar))
-    print("    grammar.start()       =>", repr(grammar.start()))
-    print("    grammar.productions() =>", end=" ")
+    safe_print("A Grammar:", repr(grammar))
+    safe_print("    grammar.start()       =>", repr(grammar.start()))
+    safe_print("    grammar.productions() =>", end=" ")
     # Use string.replace(...) is to line-wrap the output.
-    print(repr(grammar.productions()).replace(",", ",\n" + " " * 25))
-    print()
+    safe_print(repr(grammar.productions()).replace(",", ",\n" + " " * 25))
+    safe_print()
 
 
 def pcfg_demo():
@@ -1622,22 +1653,22 @@ def pcfg_demo():
     pcfg_prods = toy_pcfg1.productions()
 
     pcfg_prod = pcfg_prods[2]
-    print("A PCFG production:", repr(pcfg_prod))
-    print("    pcfg_prod.lhs()  =>", repr(pcfg_prod.lhs()))
-    print("    pcfg_prod.rhs()  =>", repr(pcfg_prod.rhs()))
-    print("    pcfg_prod.prob() =>", repr(pcfg_prod.prob()))
-    print()
+    safe_print("A PCFG production:", repr(pcfg_prod))
+    safe_print("    pcfg_prod.lhs()  =>", repr(pcfg_prod.lhs()))
+    safe_print("    pcfg_prod.rhs()  =>", repr(pcfg_prod.rhs()))
+    safe_print("    pcfg_prod.prob() =>", repr(pcfg_prod.prob()))
+    safe_print()
 
     grammar = toy_pcfg2
-    print("A PCFG grammar:", repr(grammar))
-    print("    grammar.start()       =>", repr(grammar.start()))
-    print("    grammar.productions() =>", end=" ")
+    safe_print("A PCFG grammar:", repr(grammar))
+    safe_print("    grammar.start()       =>", repr(grammar.start()))
+    safe_print("    grammar.productions() =>", end=" ")
     # Use .replace(...) is to line-wrap the output.
-    print(repr(grammar.productions()).replace(",", ",\n" + " " * 26))
-    print()
+    safe_print(repr(grammar.productions()).replace(",", ",\n" + " " * 26))
+    safe_print()
 
     # extract productions from three trees and induce the PCFG
-    print("Induce PCFG grammar from treebank data:")
+    safe_print("Induce PCFG grammar from treebank data:")
 
     productions = []
     item = treebank._fileids[0]
@@ -1650,10 +1681,10 @@ def pcfg_demo():
 
     S = Nonterminal("S")
     grammar = induce_pcfg(S, productions)
-    print(grammar)
-    print()
+    safe_print(grammar)
+    safe_print()
 
-    print("Parse sentence using induced grammar:")
+    safe_print("Parse sentence using induced grammar:")
 
     parser = pchart.InsideChartParser(grammar)
     parser.trace(3)
@@ -1662,17 +1693,17 @@ def pcfg_demo():
     # sent = treebank.tokenized('wsj_0001.mrg')[0]
 
     sent = treebank.parsed_sents(item)[0].leaves()
-    print(sent)
+    safe_print(sent)
     for parse in parser.parse(sent):
-        print(parse)
+        safe_print(parse)
 
 
 def fcfg_demo():
     import nltk.data
 
     g = nltk.data.load("grammars/book_grammars/feat0.fcfg")
-    print(g)
-    print()
+    safe_print(g)
+    safe_print()
 
 
 def dg_demo():
@@ -1687,7 +1718,7 @@ def dg_demo():
     'cats' -> 'the'
     """
     )
-    print(grammar)
+    safe_print(grammar)
 
 
 def sdg_demo():
@@ -1715,7 +1746,7 @@ def sdg_demo():
     """
     )
     tree = dg.tree()
-    print(tree.pprint())
+    safe_print(tree.pprint())
 
 
 def demo():

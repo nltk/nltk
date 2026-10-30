@@ -23,6 +23,7 @@ from os import path
 
 from nltk.corpus.reader import CorpusReader
 from nltk.data import ZipFilePathPointer
+from nltk.pathsec import open as pathsec_open
 from nltk.probability import FreqDist
 
 
@@ -75,7 +76,15 @@ class CrubadanCorpusReader(CorpusReader):
         if self._LANG_MAPPER_FILE not in self.fileids():
             raise RuntimeError("Could not find language mapper file: " + mapper_file)
 
-        with open(mapper_file, encoding="utf-8") as raw:
+        # Open through the pathsec sentinel: containment check plus, on read, the
+        # O_NOFOLLOW / hardlink guards, so a symlink or hardlink inside the corpus
+        # root cannot leak an outside-root file (CWE-59, GHSA-p4rw / GHSA-j5pw).
+        with pathsec_open(
+            mapper_file,
+            encoding="utf-8",
+            context="CrubadanCorpusReader",
+            required_root=self.root,
+        ) as raw:
             strip_raw = raw.read().strip()
 
             self._lang_mapping_data = [row.split("\t") for row in strip_raw.split("\n")]
@@ -93,8 +102,17 @@ class CrubadanCorpusReader(CorpusReader):
         if not path.isfile(ngram_file):
             raise RuntimeError("No N-gram file found for requested language.")
 
+        # ``crubadan_code`` is the untrusted column-0 value from table.txt, so the
+        # joined path is attacker-influenced; open it through pathsec (containment
+        # + O_NOFOLLOW / hardlink guards) so it cannot escape the corpus root
+        # (path traversal / symlink / hardlink escape, GHSA-j5pw).
         counts = FreqDist()
-        with open(ngram_file, encoding="utf-8") as f:
+        with pathsec_open(
+            ngram_file,
+            encoding="utf-8",
+            context="CrubadanCorpusReader",
+            required_root=self.root,
+        ) as f:
             for line in f:
                 data = line.split(" ")
 

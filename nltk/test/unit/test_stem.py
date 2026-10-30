@@ -58,6 +58,12 @@ class SnowballTest(unittest.TestCase):
         # The word 'algue' was raising an IndexError
         assert stemmer.stem("algue") == "algu"
 
+        # Unaccented '-ucion' (a common misspelling of '-ución') was left
+        # unstemmed, unlike the accented 'ución', the plural 'uciones' and the
+        # parallel '-acion', all of which the algorithm already handles.
+        assert stemmer.stem("constitucion") == "constitu"
+        assert stemmer.stem("resolucion") == "resolu"
+
     def test_short_strings_bug(self):
         stemmer = SnowballStemmer("english")
         assert stemmer.stem("y's") == "y"

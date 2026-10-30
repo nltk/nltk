@@ -12,11 +12,12 @@ top of the typed lambda calculus.
 """
 
 import operator
-import re
 from collections import defaultdict
 from functools import reduce, total_ordering
 
+from nltk import redos
 from nltk.internals import Counter
+from nltk.termsec import safe_print
 from nltk.util import Trie
 
 APP = "APP"
@@ -66,7 +67,7 @@ class Tokens:
     TOKENS = BINOPS + EQ_LIST + NEQ_LIST + QUANTS + LAMBDA_LIST + PUNCT + NOT_LIST
 
     # Special
-    SYMBOLS = [x for x in TOKENS if re.match(r"^[-\\.(),!&^|>=<]*$", x)]
+    SYMBOLS = [x for x in TOKENS if redos.match(r"^[-\\.(),!&^|>=<]*$", x)]
 
 
 def boolean_ops():
@@ -75,7 +76,7 @@ def boolean_ops():
     """
     names = ["negation", "conjunction", "disjunction", "implication", "equivalence"]
     for pair in zip(names, [Tokens.NOT, Tokens.AND, Tokens.OR, Tokens.IMP, Tokens.IFF]):
-        print("%-15s\t%s" % pair)
+        safe_print("%-15s\t%s" % pair)
 
 
 def equality_preds():
@@ -84,7 +85,7 @@ def equality_preds():
     """
     names = ["equality", "inequality"]
     for pair in zip(names, [Tokens.EQ, Tokens.NEQ]):
-        print("%-15s\t%s" % pair)
+        safe_print("%-15s\t%s" % pair)
 
 
 def binding_ops():
@@ -93,7 +94,7 @@ def binding_ops():
     """
     names = ["existential", "universal", "lambda"]
     for pair in zip(names, [Tokens.EXISTS, Tokens.ALL, Tokens.LAMBDA, Tokens.IOTA]):
-        print("%-15s\t%s" % pair)
+        safe_print("%-15s\t%s" % pair)
 
 
 class LogicParser:
@@ -499,10 +500,24 @@ class LogicParser:
         """Attempt to make a boolean expression.  If the next token is a boolean
         operator, then a BooleanExpression will be returned.  Otherwise, the
         parameter will be returned."""
+        # Each boolean operator deepens the AST by one, but this loop builds the
+        # whole left-nested chain without recursing through
+        # ``process_next_expression`` -- so a flat chain like ``a & a & ...``
+        # bypasses the ``_parse_depth`` guard and builds an AST deep enough that
+        # later traversal (str/simplify/variables) raises RecursionError
+        # (CWE-674). Bound the running total (current nesting + chain length).
+        chain = 0
         while self.inRange(0):
             tok = self.token(0)
             factory = self.get_BooleanExpression_factory(tok)
             if factory and self.has_priority(tok, context):
+                chain += 1
+                if self._parse_depth + chain > self.MAX_PARSE_DEPTH:
+                    raise LogicalExpressionException(
+                        self._currentIndex + 1,
+                        f"Expression nesting exceeds the maximum depth "
+                        f"({self.MAX_PARSE_DEPTH}).",
+                    )
                 self.token()  # swallow the operator
                 expression = self.make_BooleanExpression(
                     factory, expression, self.process_next_expression(tok)
@@ -849,10 +864,27 @@ EVENT_TYPE = EventType()
 ANY_TYPE = AnyType()
 
 
-def read_type(type_string):
+def read_type(type_string, _depth=0, max_depth=None):
+    """Parse a type string into a ``Type``.
+
+    Recursion is bounded by ``MAX_PARSE_DEPTH`` so that adversarially
+    nested type strings raise ``LogicalExpressionException`` instead of an
+    uncaught ``RecursionError`` (CWE-674).
+
+    :param str type_string: the type string to parse
+    :param int _depth: current recursion depth (internal)
+    :param int max_depth: maximum nesting depth; defaults to ``MAX_PARSE_DEPTH``
+    :rtype: Type
+    """
+    if max_depth is None:
+        max_depth = LogicParser.MAX_PARSE_DEPTH
+    if _depth > max_depth:
+        raise LogicalExpressionException(
+            None,
+            f"Type nesting exceeds the maximum depth ({max_depth}).",
+        )
     assert isinstance(type_string, str)
     type_string = type_string.replace(" ", "")  # remove spaces
-
     if type_string[0] == "<":
         assert type_string[-1] == ">"
         paren_count = 0
@@ -866,7 +898,8 @@ def read_type(type_string):
                 if paren_count == 1:
                     break
         return ComplexType(
-            read_type(type_string[1:i]), read_type(type_string[i + 1 : -1])
+            read_type(type_string[1:i], _depth + 1, max_depth),
+            read_type(type_string[i + 1 : -1], _depth + 1, max_depth),
         )
     elif type_string[0] == "%s" % ENTITY_TYPE:
         return ENTITY_TYPE
@@ -1177,7 +1210,9 @@ class Expression(SubstituteBindingsI):
         :return: set of ``Variable`` objects
         """
         return self.free() | {
-            p for p in self.predicates() | self.constants() if re.match("^[?@]", p.name)
+            p
+            for p in self.predicates() | self.constants()
+            if redos.match("^[?@]", p.name)
         }
 
     def free(self):
@@ -2016,7 +2051,7 @@ def is_indvar(expr):
     :return: bool True if expr is of the correct form
     """
     assert isinstance(expr, str), "%s is not a string" % expr
-    return re.match(r"^[a-df-z]\d*$", expr) is not None
+    return redos.match(r"^[a-df-z]\d*$", expr) is not None
 
 
 def is_funcvar(expr):
@@ -2028,7 +2063,7 @@ def is_funcvar(expr):
     :return: bool True if expr is of the correct form
     """
     assert isinstance(expr, str), "%s is not a string" % expr
-    return re.match(r"^[A-Z]\d*$", expr) is not None
+    return redos.match(r"^[A-Z]\d*$", expr) is not None
 
 
 def is_eventvar(expr):
@@ -2040,44 +2075,48 @@ def is_eventvar(expr):
     :return: bool True if expr is of the correct form
     """
     assert isinstance(expr, str), "%s is not a string" % expr
-    return re.match(r"^e\d*$", expr) is not None
+    return redos.match(r"^e\d*$", expr) is not None
 
 
 def demo():
     lexpr = Expression.fromstring
-    print("=" * 20 + "Test reader" + "=" * 20)
-    print(lexpr(r"john"))
-    print(lexpr(r"man(x)"))
-    print(lexpr(r"-man(x)"))
-    print(lexpr(r"(man(x) & tall(x) & walks(x))"))
-    print(lexpr(r"exists x.(man(x) & tall(x) & walks(x))"))
-    print(lexpr(r"\x.man(x)"))
-    print(lexpr(r"\x.man(x)(john)"))
-    print(lexpr(r"\x y.sees(x,y)"))
-    print(lexpr(r"\x y.sees(x,y)(a,b)"))
-    print(lexpr(r"(\x.exists y.walks(x,y))(x)"))
-    print(lexpr(r"exists x.x = y"))
-    print(lexpr(r"exists x.(x = y)"))
-    print(lexpr("P(x) & x=y & P(y)"))
-    print(lexpr(r"\P Q.exists x.(P(x) & Q(x))"))
-    print(lexpr(r"man(x) <-> tall(x)"))
+    safe_print("=" * 20 + "Test reader" + "=" * 20)
+    safe_print(lexpr(r"john"))
+    safe_print(lexpr(r"man(x)"))
+    safe_print(lexpr(r"-man(x)"))
+    safe_print(lexpr(r"(man(x) & tall(x) & walks(x))"))
+    safe_print(lexpr(r"exists x.(man(x) & tall(x) & walks(x))"))
+    safe_print(lexpr(r"\x.man(x)"))
+    safe_print(lexpr(r"\x.man(x)(john)"))
+    safe_print(lexpr(r"\x y.sees(x,y)"))
+    safe_print(lexpr(r"\x y.sees(x,y)(a,b)"))
+    safe_print(lexpr(r"(\x.exists y.walks(x,y))(x)"))
+    safe_print(lexpr(r"exists x.x = y"))
+    safe_print(lexpr(r"exists x.(x = y)"))
+    safe_print(lexpr("P(x) & x=y & P(y)"))
+    safe_print(lexpr(r"\P Q.exists x.(P(x) & Q(x))"))
+    safe_print(lexpr(r"man(x) <-> tall(x)"))
 
-    print("=" * 20 + "Test simplify" + "=" * 20)
-    print(lexpr(r"\x.\y.sees(x,y)(john)(mary)").simplify())
-    print(lexpr(r"\x.\y.sees(x,y)(john, mary)").simplify())
-    print(lexpr(r"all x.(man(x) & (\x.exists y.walks(x,y))(x))").simplify())
-    print(lexpr(r"(\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x))(\x.bark(x))").simplify())
+    safe_print("=" * 20 + "Test simplify" + "=" * 20)
+    safe_print(lexpr(r"\x.\y.sees(x,y)(john)(mary)").simplify())
+    safe_print(lexpr(r"\x.\y.sees(x,y)(john, mary)").simplify())
+    safe_print(lexpr(r"all x.(man(x) & (\x.exists y.walks(x,y))(x))").simplify())
+    safe_print(
+        lexpr(r"(\P.\Q.exists x.(P(x) & Q(x)))(\x.dog(x))(\x.bark(x))").simplify()
+    )
 
-    print("=" * 20 + "Test alpha conversion and binder expression equality" + "=" * 20)
+    safe_print(
+        "=" * 20 + "Test alpha conversion and binder expression equality" + "=" * 20
+    )
     e1 = lexpr("exists x.P(x)")
-    print(e1)
+    safe_print(e1)
     e2 = e1.alpha_convert(Variable("z"))
-    print(e2)
-    print(e1 == e2)
+    safe_print(e2)
+    safe_print(e1 == e2)
 
 
 def demo_errors():
-    print("=" * 20 + "Test reader errors" + "=" * 20)
+    safe_print("=" * 20 + "Test reader errors" + "=" * 20)
     demoException("(P(x) & Q(x)")
     demoException("((P(x) &) & Q(x))")
     demoException("P(x) -> ")
@@ -2097,11 +2136,11 @@ def demoException(s):
     try:
         Expression.fromstring(s)
     except LogicalExpressionException as e:
-        print(f"{e.__class__.__name__}: {e}")
+        safe_print(f"{e.__class__.__name__}: {e}")
 
 
 def printtype(ex):
-    print(f"{ex.str()} : {ex.type}")
+    safe_print(f"{ex.str()} : {ex.type}")
 
 
 if __name__ == "__main__":

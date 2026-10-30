@@ -7,15 +7,13 @@
 # For license information, see LICENSE.TXT
 
 import math
-import re
-
-import regex
 
 try:
     import numpy
 except ImportError:
     pass
 
+from nltk import redos
 from nltk.tokenize.api import TokenizerI
 
 BLOCK_COMPARISON = "block_comparison"
@@ -83,10 +81,22 @@ class TextTilingTokenizer(TokenizerI):
         self.__dict__.update(locals())
         del self.__dict__["self"]
 
+    #: Maximum input length (characters) accepted by :meth:`tokenize`. The
+    #: block-comparison / vocabulary-introduction step is quadratic in the number
+    #: of pseudosentences, so a very large document is a CPU DoS (CWE-407). This
+    #: cap is generous (a ~150k-word document); raise it to segment larger texts.
+    MAX_TEXT_LEN = 1_000_000
+
     def tokenize(self, text):
         """Return a tokenized copy of *text*, where each "token" represents
         a separate topic."""
 
+        if len(text) > self.MAX_TEXT_LEN:
+            raise ValueError(
+                f"TextTilingTokenizer: input length exceeds MAX_TEXT_LEN "
+                f"({self.MAX_TEXT_LEN}); block comparison is quadratic in the "
+                "document size (CWE-407). Raise MAX_TEXT_LEN or segment the text."
+            )
         lowercase_text = text.lower()
         paragraph_breaks = self._mark_paragraph_breaks(text)
         text_length = len(lowercase_text)
@@ -95,7 +105,7 @@ class TextTilingTokenizer(TokenizerI):
 
         # Remove punctuation
         nopunct_text = "".join(
-            c for c in lowercase_text if re.match(r"[a-z\-' \n\t]", c)
+            c for c in lowercase_text if redos.match(r"[a-z\-' \n\t]", c)
         )
         nopunct_par_breaks = self._mark_paragraph_breaks(nopunct_text)
 
@@ -285,12 +295,12 @@ class TextTilingTokenizer(TokenizerI):
         """Identifies indented text or line breaks as the beginning of
         paragraphs"""
         MIN_PARAGRAPH = 100
-        # Possessive quantifiers (regex module) prevent catastrophic backtracking
-        # (ReDoS, CWE-1333): with the plain greedy `re` pattern, finditer rescans
-        # a long horizontal-whitespace run with no blank line quadratically. The
-        # whitespace class does not overlap "\n", so making each run possessive is
-        # match-for-match identical while making the scan linear.
-        pattern = regex.compile(r"[ \t\r\f\v]*+\n[ \t\r\f\v]*+\n[ \t\r\f\v]*+")
+        # Possessive runs stop backtracking within one attempt; the leading run is
+        # taken only when no run character precedes it, so finditer no longer
+        # retries it at every position of a space run (O(n**2), CWE-407). Same spans.
+        pattern = redos.compile(
+            r"(?:(?<![ \t\r\f\v])[ \t\r\f\v]*+)?\n[ \t\r\f\v]*+\n[ \t\r\f\v]*+"
+        )
         matches = pattern.finditer(text)
 
         last_break = 0
@@ -308,7 +318,7 @@ class TextTilingTokenizer(TokenizerI):
         "Divides the text into pseudosentences of fixed size"
         w = self.w
         wrdindex_list = []
-        matches = re.finditer(r"\w+", text)
+        matches = redos.finditer(r"\w+", text)
         for match in matches:
             wrdindex_list.append((match.group(), match.start()))
         return [
@@ -485,6 +495,26 @@ class TokenSequence:
         del self.__dict__["self"]
 
 
+_SMOOTH_WINDOWS = ("flat", "hanning", "hamming", "bartlett", "blackman")
+
+
+def _window_name(window):
+    """The requested window as a plain ``str`` from :data:`_SMOOTH_WINDOWS`.
+
+    A ``str`` subclass can lie to ``in`` and ``==`` through ``__eq__`` and
+    ``__hash__`` while its real characters name something else, so the
+    allowlist judges the characters ``str.__str__`` materialises, which no
+    subclass can override, and the caller only ever resolves that plain name.
+    """
+    if isinstance(window, str):
+        name = str.__str__(window)
+        if type(name) is str and name in _SMOOTH_WINDOWS:
+            return name
+    raise ValueError(
+        "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
+    )
+
+
 # Pasted from the SciPy cookbook: https://www.scipy.org/Cookbook/SignalSmooth
 def smooth(x, window_len=11, window="flat"):
     """smooth the data using a window with requested size.
@@ -524,18 +554,22 @@ def smooth(x, window_len=11, window="flat"):
     if window_len < 3:
         return x
 
-    if window not in ["flat", "hanning", "hamming", "bartlett", "blackman"]:
-        raise ValueError(
-            "Window is on of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'"
-        )
+    name = _window_name(window)
 
     s = numpy.r_[2 * x[0] - x[window_len:1:-1], x, 2 * x[-1] - x[-1:-window_len:-1]]
 
     # print(len(s))
-    if window == "flat":  # moving average
+    if name == "flat":  # moving average
         w = numpy.ones(window_len, "d")
     else:
-        w = eval("numpy." + window + "(window_len)")
+        # A fixed table keyed by the materialised plain name: no eval, no string
+        # interpolation and no attribute lookup on a caller-supplied object.
+        w = {
+            "hanning": numpy.hanning,
+            "hamming": numpy.hamming,
+            "bartlett": numpy.bartlett,
+            "blackman": numpy.blackman,
+        }[name](window_len)
 
     y = numpy.convolve(w / w.sum(), s, mode="same")
 

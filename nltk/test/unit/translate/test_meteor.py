@@ -1,8 +1,10 @@
-import multiprocessing
 import queue
 import unittest
 
+from nltk.test.unit import timing
 from nltk.translate.meteor_score import meteor_score, single_meteor_score
+
+from .. import _mp_ctx
 
 
 class TestMETEOR(unittest.TestCase):
@@ -93,18 +95,16 @@ def _meteor_worker(result_q):
 def test_meteor_on_disjoint_text_is_linear_time():
     """A low-overlap pair must score in (near-)linear time, not quadratic.
 
-    Runs in a spawned process with a hard timeout and reports status back via a
+    Runs in a separate process with a hard timeout and reports status back via a
     queue, so a regression to the quadratic version is terminated (no lingering
     CPU) and any worker exception is surfaced to the assertion.
     """
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
-    proc = ctx.Process(target=_meteor_worker, args=(result_q,))
-    proc.start()
-    proc.join(_TIMEOUT)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(
+        _meteor_worker, (result_q,), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         raise AssertionError(
             "METEOR scoring did not finish in time -> quadratic-time DoS (CWE-770)"
         )

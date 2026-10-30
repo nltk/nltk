@@ -11,17 +11,21 @@ regex cannot keep burning CPU for the rest of the suite, and any exception in
 the worker is propagated back to the assertions instead of being swallowed.
 """
 
-import multiprocessing
 import queue
 
 from nltk.corpus.reader.reviews import FEATURES, ReviewsCorpusReader
+from nltk.test.unit import timing
 
-# A long, bracket-less word run: ~250 KB. Linear with the bounded regex
-# (milliseconds); ~quadratic and ~50 s with the old unbounded one.
-_CRAFTED_LINE = "word " * 50_000
-# Generous vs. the linear cost (which is ~ms after process startup), but far
-# below the quadratic regression cost, so a regression fails fast and cleanly.
-_TIMEOUT = 15
+from . import _mp_ctx
+
+# A long, bracket-less word run: ~1 MB. Linear with the bounded regex
+# (milliseconds); ~quadratic and many minutes with the old unbounded one. Sized
+# so the quadratic cost stays far above _TIMEOUT even as _TIMEOUT is generous.
+_CRAFTED_LINE = "word " * 200_000
+# Generous vs. the linear cost (~ms after process startup), so a loaded CI host
+# slow to spawn a process and import nltk does not trip it, yet far below the
+# quadratic regression cost at this size, so a regression still fails fast.
+_TIMEOUT = 60
 
 
 def _features_worker(result_q):
@@ -42,19 +46,17 @@ def _reader_worker(result_q, root, fileid):
 
 
 def _run_in_process(target, args=()):
-    """Run ``target(result_q, *args)`` in a spawned process with a timeout.
+    """Run ``target(result_q, *args)`` in a separate process with a timeout.
 
     Returns ``(finished, status, payload)``. If the worker overruns ``_TIMEOUT``
     it is terminated (no lingering CPU) and ``finished`` is ``False``.
     """
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
-    proc = ctx.Process(target=target, args=(result_q, *args))
-    proc.start()
-    proc.join(_TIMEOUT)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(
+        target, (result_q, *args), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         return False, None, None
     try:
         status, payload = result_q.get_nowait()

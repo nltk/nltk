@@ -5,15 +5,14 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import re
 from functools import total_ordering
 
-from defusedxml.ElementTree import parse as safe_parse
-
+from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
 from nltk.internals import raise_unorderable_types
 from nltk.tree import Tree
+from nltk.xmlsec import parse as safe_parse
 
 
 class PropbankCorpusReader(CorpusReader):
@@ -513,7 +512,7 @@ class PropbankInflection:
     def __repr__(self):
         return "<PropbankInflection: %s>" % self
 
-    _VALIDATE = re.compile(r"[igpv\-][fpn\-][pob\-][3\-][ap\-]$")
+    _VALIDATE = redos.compile(r"[igpv\-][fpn\-][pob\-][3\-][ap\-]$")
 
     @staticmethod
     def parse(s):

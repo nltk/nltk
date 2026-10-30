@@ -8,6 +8,7 @@
 # For license information, see LICENSE.TXT
 
 from nltk.probability import FreqDist
+from nltk.termsec import safe_print
 
 
 class ConfusionMatrix:
@@ -71,15 +72,23 @@ class ConfusionMatrix:
         # so caching them keeps that lookup O(1); recomputing a total by
         # scanning the sparse map on each call would make the sort O(V * nnz),
         # i.e. quadratic again for a large all-distinct input.
+        # Column totals (count per test index) are accumulated alongside the row
+        # totals so ``precision`` -- a full-column sum -- is O(1) instead of an
+        # O(V) scan; ``evaluate`` calls it once per label, so the scan made the
+        # report O(V**2) on an all-distinct matrix even though the constructor
+        # itself is O(n) (CWE-770; residual to CVE-2026-12839).
         confusion = {}
         row_totals = {}
+        col_totals = {}
         max_conf = 0  # Maximum confusion
         for w, g in zip(reference, test):
             i = indices[w]
-            pair = (i, indices[g])
+            j = indices[g]
+            pair = (i, j)
             count = confusion.get(pair, 0) + 1
             confusion[pair] = count
             row_totals[i] = row_totals.get(i, 0) + 1
+            col_totals[j] = col_totals.get(j, 0) + 1
             if count > max_conf:
                 max_conf = count
 
@@ -93,6 +102,9 @@ class ConfusionMatrix:
         #: Cached per-reference-row totals, keyed by reference index, so
         #: ``sort_by_count`` lookups are O(1) (see ``_row_total``).
         self._row_totals = row_totals
+        #: Cached per-test-column totals, keyed by test index, so ``precision``
+        #: is O(1) (see ``_col_total``).
+        self._col_totals = col_totals
         #: The greatest count in ``self._confusion`` (used for printing).
         self._max_conf = max_conf
         #: The total number of values in the confusion matrix.
@@ -109,6 +121,13 @@ class ConfusionMatrix:
         all-distinct input).
         """
         return self._row_totals.get(i, 0)
+
+    def _col_total(self, j):
+        """Total count in column ``j`` (predictions of test value ``j``).
+
+        Cached like ``_row_total`` so ``precision`` is O(1) (see __init__).
+        """
+        return self._col_totals.get(j, 0)
 
     def __getitem__(self, li_lj_tuple):
         """
@@ -245,8 +264,9 @@ class ConfusionMatrix:
         """
         # Number of times `value` was correct, and also predicted
         TP = self[value, value]
-        # Number of times `value` was correct
-        TP_FN = sum(self[value, pred_value] for pred_value in self._values)
+        # Number of times `value` was correct == total of value's row (cached
+        # O(1); the per-label scan made evaluate() O(V**2), see __init__).
+        TP_FN = self._row_total(self._indices[value])
         if TP_FN == 0:
             return 0.0
         return TP / TP_FN
@@ -267,8 +287,9 @@ class ConfusionMatrix:
         """
         # Number of times `value` was correct, and also predicted
         TP = self[value, value]
-        # Number of times `value` was predicted
-        TP_FP = sum(self[real_value, value] for real_value in self._values)
+        # Number of times `value` was predicted == total of value's column
+        # (cached O(1); the per-label scan made evaluate() O(V**2), see __init__).
+        TP_FP = self._col_total(self._indices[value])
         if TP_FP == 0:
             return 0.0
         return TP / TP_FP
@@ -367,13 +388,13 @@ class ConfusionMatrix:
 def demo():
     reference = "DET NN VB DET JJ NN NN IN DET NN".split()
     test = "DET VB VB DET NN NN NN IN DET NN".split()
-    print("Reference =", reference)
-    print("Test    =", test)
-    print("Confusion matrix:")
-    print(ConfusionMatrix(reference, test))
-    print(ConfusionMatrix(reference, test).pretty_format(sort_by_count=True))
+    safe_print("Reference =", reference)
+    safe_print("Test    =", test)
+    safe_print("Confusion matrix:")
+    safe_print(ConfusionMatrix(reference, test))
+    safe_print(ConfusionMatrix(reference, test).pretty_format(sort_by_count=True))
 
-    print(ConfusionMatrix(reference, test).recall("VB"))
+    safe_print(ConfusionMatrix(reference, test).recall("VB"))
 
 
 if __name__ == "__main__":

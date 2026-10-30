@@ -6,16 +6,18 @@ index was ``[[] for _ in range(self._len + 1)]``. The index is now sparse (a dic
 keyed by the left indices that occur). These tests confirm the index is sparse and
 that the public indexing / range behaviour is preserved.
 
-The allocation test runs in a spawned process with a hard timeout so a regression
+The allocation test runs in a separate process with a hard timeout so a regression
 to the dense allocation cannot OOM or hang the rest of the suite.
 """
 
-import multiprocessing
 import queue
 
 import pytest
 
+from nltk.test.unit import timing
 from nltk.translate.api import Alignment
+
+from .. import _mp_ctx
 
 
 def test_index_is_sparse_not_dense():
@@ -65,14 +67,12 @@ def _alloc_worker(result_q):
 
 
 def _run_in_process(target):
-    ctx = multiprocessing.get_context("spawn")
+    ctx = _mp_ctx()
     result_q = ctx.Queue()
-    proc = ctx.Process(target=target, args=(result_q,))
-    proc.start()
-    proc.join(_TIMEOUT)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    run = timing.run_in_process(
+        target, (result_q,), budget=_TIMEOUT, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         return False, None, None
     try:
         status, payload = result_q.get_nowait()
@@ -87,3 +87,20 @@ def test_huge_left_index_does_not_allocate():
     assert finished, "Alignment allocated a dense index for a huge left index (DoS)"
     assert status == "ok", f"worker raised: {value}"
     assert value == 2, f"index must be sparse (2 keys), got {value}"
+
+
+@pytest.mark.parametrize(
+    ("pairs", "expected"),
+    [
+        ([(2, None), (0, 1), (1, 0)], "0-1 1-0"),
+        ([(0, None), (1, None)], ""),
+        ([(0, None), (0, 1)], "0-1"),
+        ([(0, None, True), (1, 0, False)], "1-0"),
+        ([(2, 1), (0, 3)], "0-3 2-1"),
+        ([], ""),
+    ],
+)
+def test_alignment_string_omits_null_targets(pairs, expected):
+    alignment = Alignment(pairs)
+    assert str(alignment) == expected
+    assert alignment == frozenset(pairs)

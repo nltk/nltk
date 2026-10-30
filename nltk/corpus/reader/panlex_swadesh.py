@@ -7,9 +7,9 @@
 # For license information, see LICENSE.TXT
 
 
-import re
 from collections import defaultdict, namedtuple
 
+from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.wordlist import WordListCorpusReader
@@ -43,7 +43,9 @@ class PanlexSwadeshCorpusReader(WordListCorpusReader):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Find the swadesh size using the fileids' path.
-        self.swadesh_size = re.match(r"swadesh([0-9].*)\/", self.fileids()[0]).group(1)
+        self.swadesh_size = redos.match(r"swadesh([0-9].*)\/", self.fileids()[0]).group(
+            1
+        )
         self._languages = {lang.panlex_uid: lang for lang in self.get_languages()}
         self._macro_langauges = self.get_macrolanguages()
 

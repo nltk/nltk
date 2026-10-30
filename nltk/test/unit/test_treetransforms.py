@@ -10,11 +10,13 @@ rebuilds each parent's child list in a single left-to-right sweep (O(n)),
 producing identical output for any tree in Chomsky Normal Form.
 """
 
-import multiprocessing
 import os
 
+from nltk.test.unit import timing
 from nltk.tree import Tree
 from nltk.tree.transforms import chomsky_normal_form, un_chomsky_normal_form
+
+from . import _mp_ctx
 
 _TREES = [
     "(S (NP (D the) (N cat)) (VP (V sat)))",
@@ -65,6 +67,15 @@ def test_chomsky_normal_form_with_nonstring_terminal():
 def _un_chomsky_worker(n):
     """Un-binarise a large right-branching CNF tree; exit 0 ok, 3 on error."""
     try:
+        # This benchmark deliberately builds a tree far deeper than the default
+        # MAX_TREE_DEPTH guard, which rejects adversarially deep input. Opt into
+        # a deeper cap via its documented escape hatch; the change is confined to
+        # this spawned worker process and does not affect other tests. The
+        # un-binarise pass itself is iterative, so no recursion-limit bump is
+        # needed.
+        import nltk.tree.tree as _tree_mod
+
+        _tree_mod.MAX_TREE_DEPTH = n + 10
         payload = "(S (A a) " + "(S| (A a) " * n + "(A a)" + ")" * (n + 1)
         Tree.fromstring(payload).un_chomsky_normal_form()
         os._exit(0)
@@ -75,21 +86,19 @@ def _un_chomsky_worker(n):
 def test_un_chomsky_is_linear_not_quadratic():
     """A large CNF tree must un-binarise quickly (linear), not tie up a core.
 
-    Run in a spawned process with a hard deadline: the single-sweep pass returns
+    Run in a separate process with a hard deadline: the single-sweep pass returns
     in milliseconds, while the previous O(n^2) version needs over a minute at
     this size, so a regression is terminated instead of burning CPU for the rest
     of the suite.
     """
     n = 20_000
     deadline = 30
-    ctx = multiprocessing.get_context("spawn")
-    proc = ctx.Process(target=_un_chomsky_worker, args=(n,))
-    proc.start()
-    proc.join(deadline)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    ctx = _mp_ctx()
+    run = timing.run_in_process(
+        _un_chomsky_worker, (n,), budget=deadline, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         raise AssertionError(
             "un_chomsky_normal_form did not finish in time: quadratic blow-up regressed"
         )
-    assert proc.exitcode == 0, f"worker failed (exit {proc.exitcode})"
+    assert run.exitcode == 0, f"worker failed (exit {run.exitcode})"

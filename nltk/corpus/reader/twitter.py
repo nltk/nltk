@@ -10,11 +10,11 @@ A reader for corpora that consist of Tweets. It is assumed that the Tweets
 have been serialised into line-delimited JSON.
 """
 
-import json
 import os
 
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import StreamBackedCorpusView, ZipFilePathPointer, concat
+from nltk.jsontags import safe_json_loads
 from nltk.tokenize import TweetTokenizer
 
 
@@ -131,6 +131,8 @@ class TwitterCorpusReader(CorpusReader):
             line = stream.readline()
             if not line:
                 return tweets
-            tweet = json.loads(line)
+            # Tweet JSON is genuinely untrusted third-party data; bound its size
+            # and nesting depth so a hostile line cannot crash the interpreter.
+            tweet = safe_json_loads(line, context="TwitterCorpusReader._read_tweets")
             tweets.append(tweet)
         return tweets

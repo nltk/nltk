@@ -16,6 +16,14 @@ from typing import List
 
 import nltk
 
+#: Work budget for ``alignment``: the total number of candidate reference
+#: positions it may inspect. A token repeated R times yields R candidates
+#: inspected R times, so a same-token sentence is O(len**2) (CWE-770) even though
+#: the earlier fix made per-token *lookup* O(1). Bounding the summed candidate
+#: count (not the raw length) caps that quadratic while leaving genuinely linear
+#: large inputs -- many *distinct* tokens -- untouched. 4M ~= 0.1s of matching.
+MAX_LEPOR_ALIGN_WORK = 4_000_000
+
 
 def length_penalty(reference: list[str], hypothesis: list[str]) -> float:
     """
@@ -73,10 +81,20 @@ def alignment(ref_tokens: list[str], hyp_tokens: list[str]):
     for ref_index, ref_token in enumerate(ref_tokens):
         ref_positions[ref_token].append(ref_index)
 
+    # Bound the summed candidate count: this is exactly the quadratic term a
+    # highly-repeated token drives (CWE-770). Distinct-token inputs stay linear.
+    align_work = 0
+
     for hyp_index, hyp_token in enumerate(hyp_tokens):
         # Every reference position of this token, in ascending order (same as
         # the previous ``[i for i, t in enumerate(ref_tokens) if t == token]``).
         ref_indexes = ref_positions.get(hyp_token, [])
+        align_work += len(ref_indexes)
+        if align_work > MAX_LEPOR_ALIGN_WORK:
+            raise ValueError(
+                f"LEPOR alignment work exceeded {MAX_LEPOR_ALIGN_WORK} candidate "
+                "positions: quadratic in repeated tokens (CWE-770)."
+            )
         # If no match.
         if len(ref_indexes) == 0:
             alignments.append(-1)

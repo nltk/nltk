@@ -28,8 +28,8 @@ Additional adjustments were made to improve the algorithm:
 increases the word ambiguities and changes the original root.
 
 """
-import re
 
+from nltk import redos
 from nltk.stem.api import StemmerI
 
 
@@ -124,9 +124,9 @@ class ISRIStemmer(StemmerI):
             6: ["\u0627", "\u0645"],
         }
 
-        self.re_short_vowels = re.compile(r"[\u064B-\u0652]")
-        self.re_hamza = re.compile(r"[\u0621\u0624\u0626]")
-        self.re_initial_hamza = re.compile(r"^[\u0622\u0623\u0625]")
+        self.re_short_vowels = redos.compile(r"[\u064B-\u0652]")
+        self.re_hamza = redos.compile(r"[\u0621\u0624\u0626]")
+        self.re_initial_hamza = redos.compile(r"^[\u0622\u0623\u0625]")
 
         self.stop_words = [
             "\u064a\u0643\u0648\u0646",

@@ -14,12 +14,14 @@ points reach this helper, so a crafted Alpino file could pin a CPU core. Each
 ordinary corpora are read identically.
 """
 
-import multiprocessing
 import os
 import sys
 import traceback
 
 from nltk.corpus.reader.bracket_parse import AlpinoCorpusReader
+from nltk.test.unit import timing
+
+from . import _mp_ctx
 
 _SAMPLE = (
     '<alpino_ds version="1.3">\n'
@@ -116,7 +118,7 @@ def _words_worker(root):
 def test_alpino_normalize_is_linear_not_quadratic(tmp_path):
     """A single long, malformed ``<node ...`` line must not blow up quadratically.
 
-    Run in a spawned process with a hard deadline: the linear normalizer returns
+    Run in a separate process with a hard deadline: the linear normalizer returns
     in milliseconds, while the previous chained-lazy regex is O(n^2) and needs
     well over a minute at this size, so a regression is terminated and fails the
     test instead of pinning a core for the rest of the suite.
@@ -129,14 +131,12 @@ def test_alpino_normalize_is_linear_not_quadratic(tmp_path):
     )
     (tmp_path / "alpino.xml").write_text(body, encoding="ISO-8859-1")
 
-    ctx = multiprocessing.get_context("spawn")
-    proc = ctx.Process(target=_words_worker, args=(str(tmp_path),))
-    proc.start()
-    proc.join(30)
-    if proc.is_alive():
-        proc.terminate()
-        proc.join()
+    ctx = _mp_ctx()
+    run = timing.run_in_process(
+        _words_worker, (str(tmp_path),), budget=30, context=ctx, cpu_bound=True
+    )
+    if not run.within_budget:
         raise AssertionError(
             "AlpinoCorpusReader.words() did not finish in time: ReDoS regressed"
         )
-    assert proc.exitcode == 0, f"worker failed (exit {proc.exitcode})"
+    assert run.exitcode == 0, f"worker failed (exit {run.exitcode})"

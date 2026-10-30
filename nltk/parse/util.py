@@ -17,6 +17,8 @@ from nltk.grammar import CFG, PCFG, FeatureGrammar
 from nltk.parse.chart import Chart, ChartParser
 from nltk.parse.featurechart import FeatureChart, FeatureChartParser
 from nltk.parse.pchart import InsideChartParser
+from nltk.pathsec import has_line_unsafe_char
+from nltk.termsec import safe_print
 
 
 def load_parser(
@@ -97,6 +99,16 @@ def taggedsent_to_conll(sentence):
     :return: a generator yielding a single sentence in CONLL format.
     """
     for i, (word, tag) in enumerate(sentence, start=1):
+        # A tab, line break, control character or NUL in a field would add a
+        # column or a row to the CoNLL file handed to the parser (MaltParser),
+        # or be re-split by a reader; the shared line-safety rule refuses them.
+        for field in (word, tag):
+            if has_line_unsafe_char(field):
+                raise ValueError(
+                    "CoNLL word/tag fields cannot contain tab, newline or NUL "
+                    "characters, nor any other line break or control "
+                    "character: %r" % (field,)
+                )
         input_str = [str(i), word, "_", tag, tag, "_", "0", "a", "_", "_"]
         input_str = "\t".join(input_str) + "\n"
         yield input_str
@@ -170,16 +182,16 @@ class TestGrammar:
         according to the grammar, then the value of ``trees`` will be None.
         """
         for test in self.suite:
-            print(test["doc"] + ":", end=" ")
+            safe_print(test["doc"] + ":", end=" ")
             for key in ["accept", "reject"]:
                 for sent in test[key]:
                     tokens = sent.split()
                     trees = list(self.cp.parse(tokens))
                     if show_trees and trees:
-                        print()
-                        print(sent)
+                        safe_print()
+                        safe_print(sent)
                         for tree in trees:
-                            print(tree)
+                            safe_print(tree)
                     if key == "accept":
                         if trees == []:
                             raise ValueError("Sentence '%s' failed to parse'" % sent)
@@ -191,7 +203,7 @@ class TestGrammar:
                         else:
                             rejected = True
             if accepted and rejected:
-                print("All tests passed!")
+                safe_print("All tests passed!")
 
 
 def extract_test_sentences(string, comment_chars="#%;", encoding=None):

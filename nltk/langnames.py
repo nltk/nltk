@@ -35,12 +35,13 @@ are also available:
 
 """
 
-import re
 from warnings import warn
 
+from nltk import redos
 from nltk.corpus import bcp47
+from nltk.termsec import sanitize_terminal
 
-codepattern = re.compile("[a-z][a-z][a-z]?")
+codepattern = redos.compile("[a-z][a-z][a-z]?")
 
 
 def langname(tag, typ="full", strict=False):
@@ -87,7 +88,7 @@ def langname(tag, typ="full", strict=False):
     failed = f"Could not find language name for tag {tag!r}"
     if strict:
         raise LookupError(failed)
-    warn(failed, stacklevel=2)
+    warn(sanitize_terminal(failed), stacklevel=2)
 
 
 def langcode(name, typ=2, strict=False):

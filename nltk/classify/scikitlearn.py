@@ -33,6 +33,7 @@ best 1000 features:
 
 from nltk.classify.api import ClassifierI
 from nltk.probability import DictionaryProbDist
+from nltk.termsec import safe_print
 
 try:
     from sklearn.feature_extraction import DictVectorizer
@@ -128,7 +129,7 @@ if __name__ == "__main__":
 
     # Bernoulli Naive Bayes is designed for binary classification. We set the
     # binarize option to False since we know we're passing boolean features.
-    print("scikit-learn Naive Bayes:")
+    safe_print("scikit-learn Naive Bayes:")
     names_demo(
         SklearnClassifier(BernoulliNB(binarize=False)).train,
         features=names_demo_features,
@@ -136,7 +137,7 @@ if __name__ == "__main__":
 
     # The C parameter on logistic regression (MaxEnt) controls regularization.
     # The higher it's set, the less regularized the classifier is.
-    print("\n\nscikit-learn logistic regression:")
+    safe_print("\n\nscikit-learn logistic regression:")
     names_demo(
         SklearnClassifier(LogisticRegression(C=1000)).train,
         features=names_demo_features,

@@ -8,7 +8,6 @@
 import copy
 from abc import abstractmethod
 from math import sqrt
-from sys import stdout
 
 try:
     import numpy
@@ -16,6 +15,7 @@ except ImportError:
     pass
 
 from nltk.cluster.api import ClusterI
+from nltk.termsec import safe_print
 
 
 class VectorSpaceClusterer(ClusterI):
@@ -252,7 +252,10 @@ class Dendrogram:
             return f"{lhalf * left}{centre}{right * rhalf}"
 
         def display(str):
-            stdout.write(str)
+            # leaf labels come from the clustered data, so they are untrusted;
+            # the chokepoint also honours a redirected sys.stdout, which the
+            # import-time "from sys import stdout" binding never did
+            safe_print(str, end="")
 
         # for each merge, top down
         queue = [(root._value, root)]

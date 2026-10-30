@@ -31,6 +31,7 @@ python chart.py
 """
 
 import itertools
+import time
 
 from nltk.ccg.combinator import *
 from nltk.ccg.combinator import (
@@ -48,6 +49,7 @@ from nltk.ccg.lexicon import Token, fromstring
 from nltk.ccg.logic import *
 from nltk.parse import ParserI
 from nltk.parse.chart import (
+    DEFAULT_MAX_TIME,
     MAX_PARSE_TREES,
     AbstractChartRule,
     Chart,
@@ -55,6 +57,7 @@ from nltk.parse.chart import (
     _ParseTreeBudget,
 )
 from nltk.sem.logic import *
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 
 
@@ -270,10 +273,15 @@ class CCGChartParser(ParserI):
     Based largely on the ChartParser class from NLTK.
     """
 
-    def __init__(self, lexicon, rules, trace=0):
+    def __init__(self, lexicon, rules, trace=0, max_time=DEFAULT_MAX_TIME):
         self._lexicon = lexicon
         self._rules = rules
         self._trace = trace
+        #: Wall-clock limit for a single ``parse``. CCG recognition terminates
+        #: (finite category space) but an ordinary composable lexicon plus a few
+        #: dozen tokens is ~O(n**4), pinning a core for seconds (CWE-407).
+        #: ``max_time=None`` disables the bound.
+        self._max_time = max_time
 
     def lexicon(self):
         return self._lexicon
@@ -284,6 +292,10 @@ class CCGChartParser(ParserI):
         chart = CCGChart(list(tokens))
         lex = self._lexicon
 
+        deadline = (
+            None if self._max_time is None else time.perf_counter() + self._max_time
+        )
+
         # Initialize leaf edges.
         for index in range(chart.num_leaves()):
             for token in lex.categories(chart.leaf(index)):
@@ -293,6 +305,12 @@ class CCGChartParser(ParserI):
         # Select a span for the new edges
         for span in range(2, chart.num_leaves() + 1):
             for start in range(0, chart.num_leaves() - span + 1):
+                if deadline is not None and time.perf_counter() > deadline:
+                    raise TimeoutError(
+                        f"CCGChartParser exceeded its {self._max_time}s time "
+                        "limit; the lexicon may be too composable for this many "
+                        "tokens. Pass max_time=None to disable the limit."
+                    )
                 # Try all possible pairs of edges that could generate
                 # an edge for that span
                 for part in range(1, span):
@@ -405,8 +423,8 @@ def printCCGDerivation(tree):
         lleaflen = (nextlen - len(leaf)) // 2
         rleaflen = lleaflen + (nextlen - len(leaf)) % 2
         leafstr += " " * lleaflen + leaf + " " * rleaflen
-    print(leafstr.rstrip())
-    print(catstr.rstrip())
+    safe_print(leafstr.rstrip())
+    safe_print(catstr.rstrip())
 
     # Display the derivation steps
     printCCGTree(0, tree)
@@ -439,13 +457,13 @@ def printCCGTree(lwidth, tree):
 
     # Pad to the left with spaces, followed by a sequence of '-'
     # and the derivation rule.
-    print(lwidth * " " + (rwidth - lwidth) * "-" + "%s" % op)
+    safe_print(lwidth * " " + (rwidth - lwidth) * "-" + "%s" % op)
     # Print the resulting category on a new line.
     str_res = "%s" % (token.categ())
     if token.semantics() is not None:
         str_res += " {" + str(token.semantics()) + "}"
     respadlen = (rwidth - lwidth - len(str_res)) // 2 + lwidth
-    print(respadlen * " " + str_res)
+    safe_print(respadlen * " " + str_res)
     return rwidth
 
 

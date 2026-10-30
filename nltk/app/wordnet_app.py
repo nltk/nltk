@@ -52,7 +52,6 @@ import hmac
 import html
 import io
 import os
-import pickle
 import secrets
 import sys
 import threading
@@ -67,7 +66,8 @@ from urllib.parse import parse_qs, unquote_plus
 
 from nltk.corpus import wordnet as wn
 from nltk.corpus.reader.wordnet import Lemma, Synset
-from nltk.picklesec import RestrictedUnpickler
+from nltk.picklesec import RestrictedUnpickler, pickle_dumps
+from nltk.termsec import safe_print
 
 firstClient = True
 
@@ -107,7 +107,7 @@ class MyServerHandler(BaseHTTPRequestHandler):
                 page = "Server must be killed with SIGTERM."
                 type = "text/plain"
             elif self._shutdown_authorized():
-                print("Server shutting down!")
+                safe_print("Server shutting down!")
                 os._exit(0)
             else:
                 # Refuse a token-less / cross-site shutdown request (CWE-352).
@@ -135,11 +135,13 @@ class MyServerHandler(BaseHTTPRequestHandler):
             if usp == "NLTK Wordnet Browser Database Info.html":
                 word = "* Database Info *"
                 if os.path.isfile(usp):
-                    with open(usp) as infile:
+                    with open(
+                        usp
+                    ) as infile:  # sandboxed-open ok: fixed db-info filename (exact-string gated)
                         page = infile.read()
                 else:
                     page = (
-                        (html_header % word) + "<p>The database info file:"
+                        (html_header % html.escape(word)) + "<p>The database info file:"
                         "<p><b>"
                         + usp
                         + "</b>"
@@ -173,7 +175,12 @@ class MyServerHandler(BaseHTTPRequestHandler):
             # TODO add a variation of this that takes a non ecoded word or MWE.
             type = "text/html"
             sp = sp[len("lookup_") :]
-            page, word = page_from_href(sp)
+            try:
+                page, word = page_from_href(sp)
+            except ValueError:
+                type = "text/plain"
+                page = "Could not parse lookup reference."
+                word = "* Error *"
         elif sp == "start_page":
             # if this is the first request we should display help
             # information, and possibly set a default word.
@@ -189,7 +196,15 @@ class MyServerHandler(BaseHTTPRequestHandler):
 
     def send_head(self, type=None):
         self.send_response(200)
+        # Pin the charset so a browser cannot sniff an HTML response as UTF-7, which
+        # would let a payload such as "+ADw-script+AD4-" (which html.escape passes
+        # through untouched, as it has none of <>"'&) decode to "<script>" in the
+        # browser. Also send X-Content-Type-Options: nosniff so a text/plain body
+        # cannot be MIME-sniffed into active HTML (CWE-79 / CWE-116).
+        if type and type.startswith("text/") and "charset=" not in type.lower():
+            type = type + "; charset=UTF-8"
         self.send_header("Content-type", type)
+        self.send_header("X-Content-Type-Options", "nosniff")
         self.end_headers()
 
     def log_message(self, format, *args):
@@ -249,9 +264,17 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
     # Setup logging.
     if logfilename:
         try:
-            logfile = open(logfilename, "a", 1)  # 1 means 'line buffering'
+            logfile = open(
+                logfilename, "a", buffering=1
+            )  # sandboxed-open ok: operator log path
         except OSError as e:
-            sys.stderr.write("Couldn't open %s for writing: %s", logfilename, e)
+            # logfilename and e are caller-influenced (a crafted path can carry
+            # terminal escapes), so route through safe_print; the old 3-arg
+            # sys.stderr.write also raised TypeError before it could report.
+            safe_print(
+                f"Couldn't open {logfilename} for writing: {e}",
+                file=sys.stderr,
+            )
             sys.exit(1)
     else:
         logfile = None
@@ -479,7 +502,7 @@ html_header = """
 <meta name='generator' content=
 'HTML Tidy for Windows (vers 14 February 2006), see www.w3.org'>
 <meta http-equiv='Content-Type' content=
-'text/html; charset=us-ascii'>
+'text/html; charset=UTF-8'>
 <title>NLTK Wordnet Browser display of: %s</title></head>
 <body bgcolor='#F5F5F5' text='#000000'>
 """
@@ -544,7 +567,9 @@ def pg(word, body):
     :return: a HTML page for the word-body combination
     :rtype: str
     """
-    return (html_header % word) + body + html_trailer
+    # word is reflected into the <title>; escape it so it cannot inject markup
+    # into the page head (CWE-79).
+    return (html_header % html.escape(word)) + body + html_trailer
 
 
 def _ul(txt):
@@ -600,16 +625,18 @@ def _collect_one_synset(word, synset, synset_relations):
     def format_lemma(w):
         w = w.replace("_", " ")
         if w.lower() == word:
-            return _bold(w)
+            return _bold(html.escape(w))
         else:
             ref = Reference(w)
-            return make_lookup_link(ref, w)
+            return make_lookup_link(ref, html.escape(w))
 
     s += ", ".join(format_lemma(l.name()) for l in synset.lemmas())
 
+    # Corpus-derived text served as HTML; escape it so a crafted WordNet gloss
+    # cannot inject markup into the browser (CWE-79).
     gl = " ({}) <i>{}</i> ".format(
-        synset.definition(),
-        "; ".join('"%s"' % e for e in synset.examples()),
+        html.escape(synset.definition()),
+        "; ".join('"%s"' % html.escape(e) for e in synset.examples()),
     )
     return s + gl + _synset_relations(word, synset, synset_relations) + "</li>\n"
 
@@ -645,7 +672,9 @@ def _synset_relations(word, synset, synset_relations):
 
     def relation_html(r):
         if isinstance(r, Synset):
-            return make_lookup_link(Reference(r.lemma_names()[0]), r.lemma_names()[0])
+            return make_lookup_link(
+                Reference(r.lemma_names()[0]), html.escape(r.lemma_names()[0])
+            )
         elif isinstance(r, Lemma):
             return relation_html(r.synset())
         elif isinstance(r, tuple):
@@ -674,7 +703,12 @@ def _synset_relations(word, synset, synset_relations):
 
         return synset_html
 
-    html = (
+    # Do not name this local ``html``: that would shadow the module-level
+    # ``import html`` and, because the nested ``relation_html`` closes over the
+    # name, its ``html.escape(...)`` would resolve to this still-unassigned
+    # enclosing local (it runs while this value is being built) and raise
+    # NameError, so the escaping sink would never run (CWE-79).
+    relations_html = (
         "<ul>"
         + "\n".join(
             "<li>%s</li>" % make_synset_html(*rel_data)
@@ -684,7 +718,7 @@ def _synset_relations(word, synset, synset_relations):
         + "</ul>"
     )
 
-    return html
+    return relations_html
 
 
 class Reference:
@@ -692,7 +726,7 @@ class Reference:
     A reference to a page that may be generated by page_word
     """
 
-    def __init__(self, word, synset_relations=dict()):
+    def __init__(self, word, synset_relations=None):
         """
         Build a reference to a new page.
 
@@ -704,7 +738,7 @@ class Reference:
         relations for.
         """
         self.word = word
-        self.synset_relations = synset_relations
+        self.synset_relations = {} if synset_relations is None else synset_relations
 
     def encode(self):
         """
@@ -713,16 +747,38 @@ class Reference:
         # This uses a tuple rather than an object since the python
         # pickle representation is much smaller and there is no need
         # to represent the complete object.
-        string = pickle.dumps((self.word, self.synset_relations), -1)
+        string = pickle_dumps((self.word, self.synset_relations), -1)
         return base64.urlsafe_b64encode(string).decode()
 
     @staticmethod
     def decode(string):
         """
         Decode a reference encoded with Reference.encode
+
+        :raises ValueError: if the input isn't valid base64/pickle data, or
+            if the decoded data isn't shaped like a genuine Reference
+            (word: str, synset_relations: dict[str, set]).
+            RestrictedUnpickler only blocks class/function reconstruction;
+            it does not guarantee the *type* or *shape* of what it returns,
+            so that must still be checked before use. Any failure while
+            decoding, unpickling, or unpacking the payload is normalized to
+            ValueError so callers only need to guard against one exception
+            type.
         """
-        string = base64.urlsafe_b64decode(string.encode())
-        word, synset_relations = RestrictedUnpickler(io.BytesIO(string)).load()
+        try:
+            raw = base64.urlsafe_b64decode(string.encode())
+            word, synset_relations = RestrictedUnpickler(io.BytesIO(raw)).load()
+        except Exception as e:
+            raise ValueError("Malformed wordnet_app reference") from e
+        if not isinstance(word, str) or not isinstance(synset_relations, dict):
+            raise ValueError("Malformed wordnet_app reference")
+        # Must be plain, mutable sets: toggle_synset_relation() calls .add()
+        # and .remove() on these values, which frozenset doesn't support.
+        if not all(
+            isinstance(key, str) and isinstance(value, set)
+            for key, value in synset_relations.items()
+        ):
+            raise ValueError("Malformed wordnet_app reference")
         return Reference(word, synset_relations)
 
     def toggle_synset_relation(self, synset, relation):
@@ -753,7 +809,10 @@ class Reference:
 
 
 def make_lookup_link(ref, label):
-    return f'<a href="lookup_{ref.encode()}">{label}</a>'
+    # Escape the corpus-derived href param (attribute context); callers pass an
+    # already-escaped or trusted label for the link text (CWE-79).
+    href = html.escape(str(ref.encode()), quote=True)
+    return f'<a href="lookup_{href}">{label}</a>'
 
 
 def page_from_word(word):
@@ -867,7 +926,7 @@ def get_static_web_help_page():
             URL: <https://www.nltk.org/>
             For license information, see LICENSE.TXT -->
      <head>
-          <meta http-equiv='Content-Type' content='text/html; charset=us-ascii'>
+          <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
           <title>NLTK Wordnet Browser display of: * Help *</title>
      </head>
 <body bgcolor='#F5F5F5' text='#000000'>
@@ -970,7 +1029,7 @@ def get_static_upper_page(with_shutdown):
         URL: <https://www.nltk.org/>
         For license information, see LICENSE.TXT -->
     <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+                <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>Untitled Document</title>
     </head>
     <body>
@@ -1001,7 +1060,7 @@ def usage():
     """
     Display the command line help message.
     """
-    print(__doc__)
+    safe_print(__doc__)
 
 
 def app():

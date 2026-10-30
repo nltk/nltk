@@ -77,7 +77,7 @@ Other distance measures:
     >>> print(jaccard_distance(s1, s2))
     0.6
     >>> print(masi_distance(s1, s2))
-    0.868
+    0.8666666666666667
 
 ----------------------
 Miscellaneous Measures

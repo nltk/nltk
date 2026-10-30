@@ -36,15 +36,25 @@ defines three chart parsers:
 """
 
 import itertools
-import re
+import time
 import warnings
 from functools import total_ordering
 
+from nltk import redos
 from nltk.grammar import PCFG, is_nonterminal, is_terminal
 from nltk.internals import raise_unorderable_types
 from nltk.parse.api import ParserI
+from nltk.termsec import safe_print
 from nltk.tree import Tree
 from nltk.util import OrderedDict
+
+#: Default wall-clock limit, in seconds, for a single ``chart_parse``. Bottom-up
+#: recognition over a FEATURE grammar whose features accumulate with structure
+#: is super-polynomial (~O(n**4)) with no natural bound, so an accumulating FCFG
+#: plus ~50-100 tokens pins a core (CWE-407). Plain CFG recognition is polynomial
+#: and unaffected; the bound is harmless defense-in-depth there. ``max_time=None``
+#: disables it.
+DEFAULT_MAX_TIME = 5.0
 
 ########################################################################
 ##  Edges
@@ -1060,7 +1070,7 @@ class AbstractChartRule(ChartRuleI):
     # Default: return a name based on the class name.
     def __str__(self):
         # Add spaces between InitialCapsWords.
-        return re.sub("([a-z])([A-Z])", r"\1 \2", self.__class__.__name__)
+        return redos.sub("([a-z])([A-Z])", r"\1 \2", self.__class__.__name__)
 
 
 # ////////////////////////////////////////////////////////////
@@ -1417,6 +1427,7 @@ class ChartParser(ParserI):
         trace_chart_width=50,
         use_agenda=True,
         chart_class=Chart,
+        max_time=DEFAULT_MAX_TIME,
     ):
         """
         Create a new chart parser, that uses ``grammar`` to parse
@@ -1441,11 +1452,18 @@ class ChartParser(ParserI):
             if possible.
         :param chart_class: The class that should be used to create
             the parse charts.
+        :type max_time: float or None
+        :param max_time: Wall-clock limit, in seconds, for a single
+            ``chart_parse``.  A crafted feature grammar can make bottom-up
+            recognition super-polynomial (CWE-407); when the limit is exceeded
+            ``chart_parse`` raises ``TimeoutError``.  Defaults to
+            ``DEFAULT_MAX_TIME``; ``None`` disables the bound.
         """
         self._grammar = grammar
         self._strategy = strategy
         self._trace = trace
         self._trace_chart_width = trace_chart_width
+        self._max_time = max_time
         # If the strategy only consists of axioms (NUM_EDGES==0) and
         # inference rules (NUM_EDGES==1), we can use an agenda-based algorithm:
         self._use_agenda = use_agenda
@@ -1470,9 +1488,9 @@ class ChartParser(ParserI):
         print_rule_header = trace > 1
         for edge in new_edges:
             if print_rule_header:
-                print("%s:" % rule)
+                safe_print("%s:" % rule)
                 print_rule_header = False
-            print(chart.pretty_format_edge(edge, edge_width))
+            safe_print(chart.pretty_format_edge(edge, edge_width))
 
     def chart_parse(self, tokens, trace=None):
         """
@@ -1495,7 +1513,22 @@ class ChartParser(ParserI):
         # Width, for printing trace edges.
         trace_edge_width = self._trace_chart_width // (chart.num_leaves() + 1)
         if trace:
-            print(chart.pretty_format_leaves(trace_edge_width))
+            safe_print(chart.pretty_format_leaves(trace_edge_width))
+
+        # Bottom-up recognition over an accumulating feature grammar is
+        # super-polynomial with no natural bound (CWE-407); a wall-clock deadline
+        # inside the recognition loops caps it. ``max_time=None`` disables it.
+        deadline = (
+            None if self._max_time is None else time.perf_counter() + self._max_time
+        )
+
+        def _check_deadline():
+            if deadline is not None and time.perf_counter() > deadline:
+                raise TimeoutError(
+                    f"ChartParser exceeded its {self._max_time}s time limit; the "
+                    "grammar may be too ambiguous for this many tokens. Pass "
+                    "max_time=None to disable the limit."
+                )
 
         if self._use_agenda:
             # Use an agenda-based algorithm.
@@ -1509,6 +1542,7 @@ class ChartParser(ParserI):
             # but chart.edges() functions as a queue.
             agenda.reverse()
             while agenda:
+                _check_deadline()
                 edge = agenda.pop()
                 for rule in inference_rules:
                     new_edges = list(rule.apply(chart, grammar, edge))
@@ -1520,6 +1554,7 @@ class ChartParser(ParserI):
             # Do not use an agenda-based algorithm.
             edges_added = True
             while edges_added:
+                _check_deadline()
                 edges_added = False
                 for rule in self._strategy:
                     new_edges = list(rule.apply_everywhere(chart, grammar))
@@ -1645,9 +1680,9 @@ class SteppingChartParser(ChartParser):
 
             for e in self._parse():
                 if self._trace > 1:
-                    print(self._current_chartrule)
+                    safe_print(self._current_chartrule)
                 if self._trace > 0:
-                    print(self._chart.pretty_format_edge(e, w))
+                    safe_print(self._chart.pretty_format_edge(e, w))
                 yield e
                 if self._restart:
                     break
@@ -1799,32 +1834,32 @@ def demo(
     # The grammar for ChartParser and SteppingChartParser:
     grammar = demo_grammar()
     if print_grammar:
-        print("* Grammar")
-        print(grammar)
+        safe_print("* Grammar")
+        safe_print(grammar)
 
     # Tokenize the sample sentence.
-    print("* Sentence:")
-    print(sent)
+    safe_print("* Sentence:")
+    safe_print(sent)
     tokens = sent.split()
-    print(tokens)
-    print()
+    safe_print(tokens)
+    safe_print()
 
     # Ask the user which parser to test,
     # if the parser wasn't provided as an argument
     if choice is None:
-        print("  1: Top-down chart parser")
-        print("  2: Bottom-up chart parser")
-        print("  3: Bottom-up left-corner chart parser")
-        print("  4: Left-corner chart parser with bottom-up filter")
-        print("  5: Stepping chart parser (alternating top-down & bottom-up)")
-        print("  6: All parsers")
-        print("\nWhich parser (1-6)? ", end=" ")
+        safe_print("  1: Top-down chart parser")
+        safe_print("  2: Bottom-up chart parser")
+        safe_print("  3: Bottom-up left-corner chart parser")
+        safe_print("  4: Left-corner chart parser with bottom-up filter")
+        safe_print("  5: Stepping chart parser (alternating top-down & bottom-up)")
+        safe_print("  6: All parsers")
+        safe_print("\nWhich parser (1-6)? ", end=" ")
         choice = sys.stdin.readline().strip()
-        print()
+        safe_print()
 
     choice = str(choice)
     if choice not in "123456":
-        print("Bad parser number")
+        safe_print("Bad parser number")
         return
 
     # Keep track of how long each parser takes.
@@ -1844,63 +1879,63 @@ def demo(
 
     # Run the requested chart parser(s), except the stepping parser.
     for strategy in choices:
-        print("* Strategy: " + strategies[strategy][0])
-        print()
+        safe_print("* Strategy: " + strategies[strategy][0])
+        safe_print()
         cp = ChartParser(grammar, strategies[strategy][1], trace=trace)
         t = time.time()
         chart = cp.chart_parse(tokens)
         parses = list(chart.parses(grammar.start()))
 
         times[strategies[strategy][0]] = time.time() - t
-        print("Nr edges in chart:", len(chart.edges()))
+        safe_print("Nr edges in chart:", len(chart.edges()))
         if numparses:
             assert len(parses) == numparses, "Not all parses found"
         if print_trees:
             for tree in parses:
-                print(tree)
+                safe_print(tree)
         else:
-            print("Nr trees:", len(parses))
-        print()
+            safe_print("Nr trees:", len(parses))
+        safe_print()
 
     # Run the stepping parser, if requested.
     if choice in "56":
-        print("* Strategy: Stepping (top-down vs bottom-up)")
-        print()
+        safe_print("* Strategy: Stepping (top-down vs bottom-up)")
+        safe_print()
         t = time.time()
         cp = SteppingChartParser(grammar, trace=trace)
         cp.initialize(tokens)
         for i in range(5):
-            print("*** SWITCH TO TOP DOWN")
+            safe_print("*** SWITCH TO TOP DOWN")
             cp.set_strategy(TD_STRATEGY)
             for j, e in enumerate(cp.step()):
                 if j > 20 or e is None:
                     break
-            print("*** SWITCH TO BOTTOM UP")
+            safe_print("*** SWITCH TO BOTTOM UP")
             cp.set_strategy(BU_STRATEGY)
             for j, e in enumerate(cp.step()):
                 if j > 20 or e is None:
                     break
         times["Stepping"] = time.time() - t
-        print("Nr edges in chart:", len(cp.chart().edges()))
+        safe_print("Nr edges in chart:", len(cp.chart().edges()))
         if numparses:
             assert len(list(cp.parses())) == numparses, "Not all parses found"
         if print_trees:
             for tree in cp.parses():
-                print(tree)
+                safe_print(tree)
         else:
-            print("Nr trees:", len(list(cp.parses())))
-        print()
+            safe_print("Nr trees:", len(list(cp.parses())))
+        safe_print()
 
     # Print the times of all parsers:
     if not (print_times and times):
         return
-    print("* Parsing times")
-    print()
+    safe_print("* Parsing times")
+    safe_print()
     maxlen = max(len(key) for key in times)
     format = "%" + repr(maxlen) + "s parser: %6.3fsec"
     times_items = times.items()
     for parser, t in sorted(times_items, key=lambda a: a[1]):
-        print(format % (parser, t))
+        safe_print(format % (parser, t))
 
 
 if __name__ == "__main__":

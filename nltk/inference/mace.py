@@ -14,9 +14,10 @@ import os
 import tempfile
 
 from nltk.inference.api import BaseModelBuilderCommand, ModelBuilder
-from nltk.inference.prover9 import Prover9CommandParent, Prover9Parent
+from nltk.inference.prover9 import Prover9CommandParent, Prover9Parent, _safe_seconds
 from nltk.sem import Expression, Valuation
 from nltk.sem.logic import is_indvar
+from nltk.termsec import safe_print
 
 
 class MaceCommand(Prover9CommandParent, BaseModelBuilderCommand):
@@ -258,19 +259,20 @@ class Mace(Prover9Parent, ModelBuilder):
         :return: A tuple (stdout, returncode)
         :see: ``config_prover9``
         """
+        end_size = _safe_seconds(self._end_size, name="end_size")
         if self._mace4_bin is None:
             self._mace4_bin = self._find_binary("mace4", verbose)
 
         updated_input_str = ""
-        if self._end_size > 0:
-            updated_input_str += "assign(end_size, %d).\n\n" % self._end_size
+        if end_size > 0:
+            updated_input_str += "assign(end_size, %d).\n\n" % end_size
         updated_input_str += input_str
 
         return self._call(updated_input_str, self._mace4_bin, args, verbose)
 
 
 def spacer(num=30):
-    print("-" * num)
+    safe_print("-" * num)
 
 
 def decode_result(found):
@@ -295,8 +297,8 @@ def test_model_found(arguments):
         m = MaceCommand(g, assumptions=alist, max_models=50)
         found = m.build_model()
         for a in alist:
-            print("   %s" % a)
-        print(f"|- {g}: {decode_result(found)}\n")
+            safe_print("   %s" % a)
+        safe_print(f"|- {g}: {decode_result(found)}\n")
 
 
 def test_build_model(arguments):
@@ -319,17 +321,17 @@ def test_build_model(arguments):
     m = MaceCommand(g, assumptions=alist)
     m.build_model()
     spacer()
-    print("Assumptions and Goal")
+    safe_print("Assumptions and Goal")
     spacer()
     for a in alist:
-        print("   %s" % a)
-    print(f"|- {g}: {decode_result(m.build_model())}\n")
+        safe_print("   %s" % a)
+    safe_print(f"|- {g}: {decode_result(m.build_model())}\n")
     spacer()
     # print(m.model('standard'))
     # print(m.model('cooked'))
-    print("Valuation")
+    safe_print("Valuation")
     spacer()
-    print(m.valuation, "\n")
+    safe_print(m.valuation, "\n")
 
 
 def test_transform_output(argument_pair):
@@ -341,27 +343,27 @@ def test_transform_output(argument_pair):
     m = MaceCommand(g, assumptions=alist)
     m.build_model()
     for a in alist:
-        print("   %s" % a)
-    print(f"|- {g}: {m.build_model()}\n")
+        safe_print("   %s" % a)
+    safe_print(f"|- {g}: {m.build_model()}\n")
     for format in ["standard", "portable", "xml", "cooked"]:
         spacer()
-        print("Using '%s' format" % format)
+        safe_print("Using '%s' format" % format)
         spacer()
-        print(m.model(format=format))
+        safe_print(m.model(format=format))
 
 
 def test_make_relation_set():
-    print(
+    safe_print(
         MaceCommand._make_relation_set(num_entities=3, values=[1, 0, 1])
         == {("c",), ("a",)}
     )
-    print(
+    safe_print(
         MaceCommand._make_relation_set(
             num_entities=3, values=[0, 0, 0, 0, 0, 0, 1, 0, 0]
         )
         == {("c", "a")}
     )
-    print(
+    safe_print(
         MaceCommand._make_relation_set(num_entities=2, values=[0, 0, 1, 0, 0, 0, 1, 0])
         == {("a", "b", "a"), ("b", "b", "a")}
     )

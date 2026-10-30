@@ -83,13 +83,17 @@ else
     echo "Skipping PROVER9 download on $(uname -s)"
 fi
 
-# Download MEGAM to $THIRD_PARTY_DIR/megam
+# Download MEGAM to $THIRD_PARTY_DIR/megam. hal3.name only redirects to the
+# author's University of Maryland host, which some runners cannot reach via
+# the redirector, so fetch there directly and check the sha256 (CWE-494).
 if [[ "$(uname -s)" == "Linux" ]]; then
     megam_file_name="megam_i686.opt.gz"
+    megam_sha256="ed2b00f425afb649b796beb25a016311b9a6586d176bcb4de31cb6468bf3a31d"
     [[ ${megam_file_name} =~ (.+)\.gz ]]
     megam_folder_name=${BASH_REMATCH[1]}
     if [[ ! -d "${megam_folder_name}" ]]; then
-        curl -L "http://hal3.name/megam/$megam_file_name" -o "${megam_file_name}"
+        curl -fL --retry 5 --retry-all-errors "https://users.umiacs.umd.edu/~hal3/megam/$megam_file_name" -o "${megam_file_name}"
+        echo "${megam_sha256}  ${megam_file_name}" | sha256sum -c
         gunzip -vf "${megam_file_name}"
         mkdir -p "megam"
         mv "${megam_folder_name}" "megam/${megam_folder_name}"
@@ -97,6 +101,25 @@ if [[ "$(uname -s)" == "Linux" ]]; then
     fi
 else
     echo "Skipping MEGAM download on $(uname -s)"
+fi
+
+# Download Graphviz to $THIRD_PARTY_DIR/graphviz (Windows only: apt and brew
+# install it on Linux and macOS). The portable zip comes from Graphviz's own
+# release storage and is checked against its published sha256, so no package
+# feed is in the loop (Chocolatey's answered 504 in 28 CI cells of 102 runs).
+if [[ "$(uname -s)" == MINGW* || "$(uname -s)" == MSYS* ]]; then
+    graphviz_version="16.1.0"
+    graphviz_sha256="733e49626c492242eb8dca30ea627b6ead20710e207998c7933b4909d92d6abc"
+    graphviz_file_name="windows_10_cmake_Release_Graphviz-${graphviz_version}-win64.zip"
+    if [[ ! -d "graphviz" ]]; then
+        curl -fL --retry 5 --retry-all-errors "https://gitlab.com/api/v4/projects/4207231/packages/generic/graphviz-releases/${graphviz_version}/${graphviz_file_name}" -o "${graphviz_file_name}"
+        echo "${graphviz_sha256}  ${graphviz_file_name}" | sha256sum -c
+        unzip -q "${graphviz_file_name}"
+        rm "${graphviz_file_name}"
+        mv "Graphviz-${graphviz_version}-win64" 'graphviz'
+    fi
+else
+    echo "Skipping Graphviz download on $(uname -s)"
 fi
 
 # TADM requires `libtaopetsc.so` from PETSc v2.3.3, and likely has more

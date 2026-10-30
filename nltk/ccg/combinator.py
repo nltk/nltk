@@ -289,16 +289,16 @@ class UndirectedTypeRaise(UndirectedBinaryCombinator):
         # X Y\X =>(<T) Y/(Y\X) Y\X =>(>) Y
         # which is equivalent to
         # X Y\X =>(<) Y
-        if not (arg.is_function() and arg.res().is_function()):
+        if not (
+            function.is_primitive() and arg.is_function() and arg.res().is_function()
+        ):
             return False
 
+        # Type-raising matches only the innermost application.
         arg = innermostFunction(arg)
 
-        # left, arg_categ are undefined!
-        subs = left.can_unify(arg_categ.arg())
-        if subs is not None:
-            return True
-        return False
+        subs = function.can_unify(arg.arg())
+        return subs is not None
 
     def combine(self, function, arg):
         if not (

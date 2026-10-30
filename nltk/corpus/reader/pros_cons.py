@@ -25,8 +25,8 @@ Related papers:
     Opinions on the Web". Proceedings of the 14th international World Wide Web
     conference (WWW-2005), May 10-14, 2005, in Chiba, Japan.
 """
-import re
 
+from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
 
@@ -121,7 +121,7 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
             line = stream.readline()
             if not line:
                 continue
-            sent = re.match(r"^(?!\n)\s*<(Pros|Cons)>(.*)</(?:Pros|Cons)>", line)
+            sent = redos.match(r"^(?!\n)\s*<(Pros|Cons)>(.*)</(?:Pros|Cons)>", line)
             if sent:
                 sents.append(self._word_tokenizer.tokenize(sent.group(2).strip()))
         return sents

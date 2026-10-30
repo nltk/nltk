@@ -56,7 +56,7 @@ Test unify()
     >>> print(Clause([P(A), Q(x), R(x,y)]).unify(Clause([-P(x), Q(y)])))
     [{Q(y), Q(A), R(A,y)}]
     >>> print(Clause([P(A), -Q(y)]).unify(Clause([-P(x), Q(B)])))
-    [{}]
+    [{Q(B), -Q(y)}, {-P(x), P(A)}]
     >>> print(Clause([P(x), Q(x)]).unify(Clause([-P(A), -Q(B)])))
     [{-Q(B), Q(A)}, {-P(A), P(B)}]
     >>> print(Clause([P(x,x), Q(x), R(x)]).unify(Clause([-P(A,z), -Q(B)])))

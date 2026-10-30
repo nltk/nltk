@@ -106,6 +106,7 @@ The algorithm for this tokenizer is described in::
 # FIXME: Problem with ending string with e.g. '!!!' -> '!! !'
 
 import math
+import os
 import re
 import string
 from collections import defaultdict
@@ -113,11 +114,35 @@ from collections.abc import Iterator
 from re import Match
 from typing import Any, Dict, List, Optional, Tuple, Union
 
+from nltk import pathsec, redos
+from nltk.pathsec import open as pathsec_open
+from nltk.pathsec import validate_path
 from nltk.picklesec import allowlisted_pickle_load
 from nltk.probability import FreqDist
+from nltk.tabdata import TabEncoder
+from nltk.termsec import safe_print
 from nltk.tokenize.api import TokenizerI
 
-_PUNKT_ALLOWED_MODULES = ("nltk.tokenize.punkt", "nltk.tokenize")
+# Exact ``(module, qualname)`` allowlist -- no namespace prefix. A prefix allow
+# such as the previous ``("nltk.tokenize.punkt", "nltk.tokenize")`` exposes every
+# attribute of every module in the namespace (dunders like ``__builtins__``,
+# re-exports, and ``ReppTokenizer._execute``), so Punkt loading is pinned to the
+# exact classes a Punkt model reconstructs -- the Punkt classes plus a
+# ``collections.defaultdict`` parameter table with an ``int`` default factory.
+# Anything else fails closed (GHSA-x99w / GHSA-4489).
+_PUNKT_ALLOWED_GLOBALS = (
+    ("nltk.tokenize.punkt", "PunktSentenceTokenizer"),
+    ("nltk.tokenize.punkt", "PunktParameters"),
+    ("nltk.tokenize.punkt", "PunktLanguageVars"),
+    ("nltk.tokenize.punkt", "PunktToken"),
+    ("nltk.tokenize.punkt", "PunktTrainer"),
+    ("nltk.tokenize.punkt", "PunktBaseClass"),
+    ("nltk.tokenize.punkt", "PunktTokenizer"),
+    # A PunktTrainer pickle stores frequency tables as FreqDist (a dict subclass).
+    ("nltk.probability", "FreqDist"),
+    ("collections", "defaultdict"),
+    ("builtins", "int"),
+)
 
 
 def punkt_pickle_load(file):
@@ -127,11 +152,12 @@ def punkt_pickle_load(file):
     Old NLTK Punkt models were distributed as pickle files containing
     ``PunktParameters``, ``PunktLanguageVars``, and related classes.
     This helper loads them through :class:`~nltk.picklesec.AllowlistUnpickler`
-    restricted to the ``nltk.tokenize.punkt`` and ``nltk.tokenize`` modules,
-    so arbitrary code gadgets (``os.system``, ``subprocess``, etc.) are blocked
+    restricted to the exact Punkt classes (plus the ``collections``/``builtins``
+    primitives a Punkt model needs), so arbitrary code gadgets (``os.system``,
+    ``subprocess``, ``ReppTokenizer._execute``, ``numpy.load``, ...) are blocked
     while legitimate Punkt objects reconstruct normally.
     """
-    return allowlisted_pickle_load(file, allowed_modules=_PUNKT_ALLOWED_MODULES)
+    return allowlisted_pickle_load(file, allowed_globals=_PUNKT_ALLOWED_GLOBALS)
 
 
 ######################################################################
@@ -234,7 +260,15 @@ class PunktLanguageVars:
     """sentence internal punctuation, which indicates an abbreviation if
     preceded by a period-final token."""
 
-    re_boundary_realignment = re.compile(r'["\')\]}]+?(?:\s+|(?=--)|$)', re.MULTILINE)
+    # Treat the Unicode curly quotes (u'\u2018' u'\u2019' u'\u201c' u'\u201d')
+    # and guillemets (u'\xab' u'\xbb') as closing punctuation like the ASCII
+    # quotes, so a sentence-final curly/guillemet quote is realigned onto the
+    # sentence it follows. NLTKWordTokenizer (nltk/tokenize/destructive.py)
+    # already handles this same set (STARTING_QUOTES / ENDING_QUOTES, gh-1682).
+    re_boundary_realignment = redos.compile(
+        r'["\')\]}\u2018\u2019\u201c\u201d\xab\xbb]+?(?:\s+|(?=--)|$)',
+        re.MULTILINE,
+    )
     """Used to realign punctuation that should be included in a sentence
     although it follows the period (or ?, !)."""
 
@@ -243,8 +277,11 @@ class PunktLanguageVars:
 
     @property
     def _re_non_word_chars(self):
-        return r"(?:[)\";}\]\*:@\'\({\[%s])" % re.escape(
-            "".join(set(self.sent_end_chars) - {"."})
+        # Including the curly quotes/guillemets here makes a period that
+        # directly abuts one still register as a sentence boundary.
+        return (
+            r"(?:[)\";}\]\*:@\'\({\[\u2018\u2019\u201c\u201d\xab\xbb%s])"
+            % re.escape("".join(set(self.sent_end_chars) - {"."}))
         )
 
     """Characters that cannot appear within words"""
@@ -273,7 +310,7 @@ class PunktLanguageVars:
         try:
             return self._re_word_tokenizer
         except AttributeError:
-            self._re_word_tokenizer = re.compile(
+            self._re_word_tokenizer = redos.compile(
                 self._word_tokenize_fmt
                 % {
                     "NonWord": self._re_non_word_chars,
@@ -305,7 +342,7 @@ class PunktLanguageVars:
         try:
             return self._re_period_context
         except AttributeError:
-            self._re_period_context = re.compile(
+            self._re_period_context = redos.compile(
                 self._period_context_fmt
                 % {
                     "NonWord": self._re_non_word_chars,
@@ -316,7 +353,7 @@ class PunktLanguageVars:
             return self._re_period_context
 
 
-_re_non_punct = re.compile(r"[^\W\d]", re.UNICODE)
+_re_non_punct = redos.compile(r"[^\W\d]", re.UNICODE)
 """Matches token types that are not merely punctuation. (Types for
 numeric tokens are changed to ##number## and hence contain alpha.)"""
 
@@ -432,10 +469,10 @@ class PunktToken:
     # { Regular expressions for properties
     # ////////////////////////////////////////////////////////////
     # Note: [A-Za-z] is approximated by [^\W\d] in the general case.
-    _RE_ELLIPSIS = re.compile(r"\.\.+$")
-    _RE_NUMERIC = re.compile(r"^-?[\.,]?\d[\d,\.-]*\.?$")
-    _RE_INITIAL = re.compile(r"[^\W\d]\.$", re.UNICODE)
-    _RE_ALPHA = re.compile(r"[^\W\d]+$", re.UNICODE)
+    _RE_ELLIPSIS = redos.compile(r"\.\.+$")
+    _RE_NUMERIC = redos.compile(r"^-?[\.,]?\d[\d,\.-]*\.?$")
+    _RE_INITIAL = redos.compile(r"[^\W\d]\.$", re.UNICODE)
+    _RE_ALPHA = redos.compile(r"[^\W\d]+$", re.UNICODE)
 
     # ////////////////////////////////////////////////////////////
     # { Derived properties
@@ -790,12 +827,12 @@ class PunktTrainer(PunktBaseClass):
                 if is_add:
                     self._params.abbrev_types.add(abbr)
                     if verbose:
-                        print(f"  Abbreviation: [{score:6.4f}] {abbr}")
+                        safe_print(f"  Abbreviation: [{score:6.4f}] {abbr}")
             else:
                 if not is_add:
                     self._params.abbrev_types.remove(abbr)
                     if verbose:
-                        print(f"  Removed abbreviation: [{score:6.4f}] {abbr}")
+                        safe_print(f"  Removed abbreviation: [{score:6.4f}] {abbr}")
 
         # Make a preliminary pass through the document, marking likely
         # sentence breaks, abbreviations, and ellipsis tokens.
@@ -818,7 +855,7 @@ class PunktTrainer(PunktBaseClass):
             if self._is_rare_abbrev_type(aug_tok1, aug_tok2):
                 self._params.abbrev_types.add(aug_tok1.type_no_period)
                 if verbose:
-                    print("  Rare Abbrev: %s" % aug_tok1.type)
+                    safe_print("  Rare Abbrev: %s" % aug_tok1.type)
 
             # Does second token have a high likelihood of starting a sentence?
             if self._is_potential_sent_starter(aug_tok2, aug_tok1):
@@ -842,13 +879,13 @@ class PunktTrainer(PunktBaseClass):
         for typ, log_likelihood in self._find_sent_starters():
             self._params.sent_starters.add(typ)
             if verbose:
-                print(f"  Sent Starter: [{log_likelihood:6.4f}] {typ!r}")
+                safe_print(f"  Sent Starter: [{log_likelihood:6.4f}] {typ!r}")
 
         self._params.clear_collocations()
         for (typ1, typ2), log_likelihood in self._find_collocations():
             self._params.collocations.add((typ1, typ2))
             if verbose:
-                print(f"  Collocation: [{log_likelihood:6.4f}] {typ1!r}+{typ2!r}")
+                safe_print(f"  Collocation: [{log_likelihood:6.4f}] {typ1!r}+{typ2!r}")
 
         self._finalized = True
 
@@ -1391,18 +1428,18 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
 
             >>> pst = PunktSentenceTokenizer()
             >>> text = "Very bad acting!!! I promise."
-            >>> list(pst._lang_vars.period_context_re().finditer(text)) # doctest: +NORMALIZE_WHITESPACE
-            [<re.Match object; span=(15, 16), match='!'>,
-            <re.Match object; span=(16, 17), match='!'>,
-            <re.Match object; span=(17, 18), match='!'>]
+            >>> list(pst._lang_vars.period_context_re().finditer(text)) # doctest: +NORMALIZE_WHITESPACE +ELLIPSIS
+            [<...Match object; span=(15, 16), match='!'>,
+            <...Match object; span=(16, 17), match='!'>,
+            <...Match object; span=(17, 18), match='!'>]
 
         So, we need to find the word before the match from right to left, and then manually remove
         the overlaps. That is what this method does::
 
             >>> pst = PunktSentenceTokenizer()
             >>> text = "Very bad acting!!! I promise."
-            >>> list(pst._match_potential_end_contexts(text))
-            [(<re.Match object; span=(17, 18), match='!'>, 'acting!!! I')]
+            >>> list(pst._match_potential_end_contexts(text)) # doctest: +ELLIPSIS
+            [(<...Match object; span=(17, 18), match='!'>, 'acting!!! I')]
 
         :param text: String of one or more sentences
         :type text: str
@@ -1564,7 +1601,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
         pos = 0
 
         # A regular expression that finds pieces of whitespace:
-        white_space_regexp = re.compile(r"\s*")
+        white_space_regexp = redos.compile(r"\s*")
 
         sentence = ""
         for aug_tok in tokens:
@@ -1581,7 +1618,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             # If so, then use the version with whitespace.
             if text[pos : pos + len(tok)] != tok:
                 pat = r"\s*".join(re.escape(c) for c in tok)
-                m = re.compile(pat).match(text, pos)
+                m = redos.compile(pat).match(text, pos)
                 if m:
                     tok = m.group()
 
@@ -1606,9 +1643,18 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
             yield sentence
 
     # [XX] TESTING
-    def dump(self, tokens: Iterator[PunktToken]) -> None:
-        print("writing to /tmp/punkt.new...")
-        with open("/tmp/punkt.new", "w") as outfile:
+    def dump(self, tokens: Iterator[PunktToken]) -> str:
+        from nltk.data import make_staging_dir
+
+        # Debug scaffold: write through pathsec to a fresh private (0700) dir under
+        # a data root, not a guessable /tmp path, and return it (CWE-377/378).
+        outfilename = os.path.join(
+            make_staging_dir(prefix="nltk_punkt_dump_"), "punkt.new"
+        )
+        safe_print(f"writing to {outfilename}...")
+        with pathsec_open(
+            outfilename, "w", context="PunktSentenceTokenizer.dump"
+        ) as outfile:
             for aug_tok in tokens:
                 if aug_tok.parastart:
                     outfile.write("\n\n")
@@ -1618,6 +1664,7 @@ class PunktSentenceTokenizer(PunktBaseClass, TokenizerI):
                     outfile.write(" ")
 
                 outfile.write(str(aug_tok))
+        return outfilename
 
     # ////////////////////////////////////////////////////////////
     # { Customization Variables
@@ -1761,56 +1808,149 @@ class PunktTokenizer(PunktSentenceTokenizer):
 
     def __init__(self, lang="english"):
         PunktSentenceTokenizer.__init__(self)
+        self._save_dir = None
         self.load_lang(lang)
 
     def load_lang(self, lang="english"):
+        """Load the ``punkt_tab`` model for *lang*, a model name such as
+        ``english``: ``ValueError`` for a name that is not one model directory,
+        ``LookupError`` naming the download when the model is not installed."""
         from nltk.data import find
 
+        lang = _punkt_language(lang)
         lang_dir = find(f"tokenizers/punkt_tab/{lang}/")
         self._params = load_punkt_params(lang_dir)
         self._lang = lang
+        # A new language needs a new save dir; drop any memoized one so save_dir
+        # is recreated with the correct language prefix rather than reusing the
+        # previous language's directory.
+        self._save_dir = None
 
-    def save_params(self):
-        save_punkt_params(self._params, dir=f"/tmp/{self._lang}")
+    @property
+    def save_dir(self) -> str:
+        """This tokenizer's private directory for saved parameters.
+
+        Created lazily on first use under a data root, with an unpredictable name
+        and mode 0700, so (unlike the old guessable ``/tmp/<lang>``) another local
+        user cannot pre-create or symlink it to redirect or read the write
+        (CWE-377/378). Reused across calls, so the saved parameters share one
+        known, private, in-sandbox location.
+        """
+        from nltk.data import make_staging_dir
+
+        if self._save_dir is None:
+            self._save_dir = make_staging_dir(prefix=f"nltk_punkt_{self._lang}_")
+        return self._save_dir
+
+    def save_params(self) -> str:
+        """Write this tokenizer's parameters to :attr:`save_dir`; return it."""
+        return save_punkt_params(self._params, dir=self.save_dir)
+
+
+def _punkt_language(lang):
+    """*lang* as an exact str when it can name one ``punkt_tab`` model
+    directory: a single path segment of letters, digits, ``-`` and ``_``, in
+    composed (NFC) form and, on Windows, not a device name. Anything else is
+    refused before ``find()`` sees it: ``english/../german`` would load another
+    model, and a long ``a/a/...`` name costs ``find()`` quadratic time."""
+    import unicodedata
+
+    from nltk.pathsec import _is_windows_device_name
+
+    if not isinstance(lang, str):
+        raise TypeError(f"A Punkt language name is a str, not {type(lang).__name__!r}")
+    # str.__str__ ignores a subclass's overrides: the name checked is the name used.
+    lang = str.__str__(lang)
+    if (
+        not lang
+        or not all(char.isalnum() or char in "-_" for char in lang)
+        or unicodedata.normalize("NFC", lang) != lang
+        or _is_windows_device_name(lang)
+    ):
+        raise ValueError(f"Invalid Punkt language name: {lang!r}")
+    return lang
+
+
+def _open_model_file(lang_dir, file_name):
+    """Open *file_name* of the model in *lang_dir* as text. A file that is
+    not there means the model is not fully installed: a ``LookupError`` that
+    names the download, as for a model that is missing altogether."""
+    try:
+        # .join() reaches the file whether the model is a directory or a zip.
+        model_file = lang_dir.join(file_name)
+    except PermissionError:
+        raise
+    except OSError as missing:
+        raise LookupError(
+            f"The Punkt model in {str(lang_dir)!r} has no {file_name!r}; "
+            "reinstall it with nltk.download('punkt_tab')"
+        ) from missing
+    return model_file.open(encoding="utf-8")
 
 
 def load_punkt_params(lang_dir):
-    from nltk.data import open_datafile
     from nltk.tabdata import PunktDecoder
 
     # Make a new Parameters object:
     params = PunktParameters()
 
     pdec = PunktDecoder()
-    # Use .join() to reach the files regardless of zip/real FS.
-    with open_datafile(lang_dir, "collocations.tab") as f:
+    with _open_model_file(lang_dir, "collocations.tab") as f:
         params.collocations = set(pdec.tab2tups(f))
-    with open_datafile(lang_dir, "sent_starters.txt") as f:
+    with _open_model_file(lang_dir, "sent_starters.txt") as f:
         params.sent_starters = pdec.txt2set(f)
-    with open_datafile(lang_dir, "abbrev_types.txt") as f:
+    with _open_model_file(lang_dir, "abbrev_types.txt") as f:
         params.abbrev_types = pdec.txt2set(f)
-    with open_datafile(lang_dir, "ortho_context.tab") as f:
+    with _open_model_file(lang_dir, "ortho_context.tab") as f:
         params.ortho_context = pdec.tab2intdict(f)
     return params
 
 
-def save_punkt_params(params, dir="/tmp/punkt_tab"):
-    from os import mkdir
-    from os.path import isdir
+def save_punkt_params(params, dir: str | None = None) -> str:
+    """Write Punkt parameters as tab files; return the directory.
 
-    from nltk.tabdata import TabEncoder
+    The old default was the shared, guessable ``/tmp/punkt_tab``, a
+    destination another local user could pre-create or symlink (CWE-377/378),
+    and one pathsec refuses anyway. Default instead to a fresh private (mode
+    0700), unpredictably-named directory under a data root, so the write lands
+    inside the sandbox on every platform. A caller-supplied ``dir`` is validated
+    against the NLTK data sandbox before the directory is created or any file is
+    written; each file is then written through the pathsec sandbox, which also
+    closes the symlink-swap TOCTOU on write (GHSA-8mgp-746c-j5xp, CWE-22/CWE-59).
 
-    if not isdir(dir):
-        mkdir(dir)
+    :param dir: destination directory; defaults to a fresh private one.
+    :type dir: str or None
+    :return: the directory the parameter files were written to.
+    :rtype: str
+    """
     tenc = TabEncoder()
-    with open(f"{dir}/collocations.tab", "w") as f:
+    if dir is None:
+        from nltk.data import make_staging_dir
+
+        dir = make_staging_dir(prefix="nltk_punkt_params_")
+    # created 0700 if missing and refused unless private, like the default
+    # staging dir: another account must not be able to swap a tab file
+    pathsec.ensure_private_dir(dir, context="save_punkt_params")
+    # newline="" writes LF, not the platform default, so the tab files match the
+    # installed punkt_tab format and reload cleanly on Windows (a default text
+    # write there emits CRLF, leaving a stray \r on every reloaded token).
+    with pathsec_open(
+        f"{dir}/collocations.tab", "w", context="save_punkt_params", newline=""
+    ) as f:
         f.write(f"{tenc.tups2tab(params.collocations)}")
-    with open(f"{dir}/sent_starters.txt", "w") as f:
+    with pathsec_open(
+        f"{dir}/sent_starters.txt", "w", context="save_punkt_params", newline=""
+    ) as f:
         f.write(f"{tenc.set2txt(params.sent_starters)}")
-    with open(f"{dir}/abbrev_types.txt", "w") as f:
+    with pathsec_open(
+        f"{dir}/abbrev_types.txt", "w", context="save_punkt_params", newline=""
+    ) as f:
         f.write(f"{tenc.set2txt(params.abbrev_types)}")
-    with open(f"{dir}/ortho_context.tab", "w") as f:
+    with pathsec_open(
+        f"{dir}/ortho_context.tab", "w", context="save_punkt_params", newline=""
+    ) as f:
         f.write(f"{tenc.ivdict2tab(params.ortho_context)}")
+    return dir
 
 
 # def punkt_tokenizer(lang="english"):
@@ -1839,11 +1979,13 @@ def format_debug_decision(d):
 def demo(text, tok_cls=PunktSentenceTokenizer, train_cls=PunktTrainer):
     """Builds a punkt model and applies it to the same text"""
     cleanup = (
-        lambda s: re.compile(r"(?:\r|^\s+)", re.MULTILINE).sub("", s).replace("\n", " ")
+        lambda s: redos.compile(r"(?:\r|^\s+)", re.MULTILINE)
+        .sub("", s)
+        .replace("\n", " ")
     )
     trainer = train_cls()
     trainer.INCLUDE_ALL_COLLOCS = True
     trainer.train(text)
     sbd = tok_cls(trainer.get_params())
     for sentence in sbd.sentences_from_text(text):
-        print(cleanup(sentence))
+        safe_print(cleanup(sentence))

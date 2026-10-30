@@ -57,6 +57,7 @@ from nltk.sem.drt import AnaphoraResolutionException, resolve_anaphora
 from nltk.sem.glue import DrtGlue
 from nltk.sem.logic import Expression
 from nltk.tag import RegexpTagger
+from nltk.termsec import safe_print
 
 
 class ReadingCommand(metaclass=ABCMeta):
@@ -207,7 +208,7 @@ class DiscourseTester:
         Display the list of sentences in the current discourse.
         """
         for id in sorted(self._sentences):
-            print(f"{id}: {self._sentences[id]}")
+            safe_print(f"{id}: {self._sentences[id]}")
 
     def add_sentence(self, sentence, informchk=False, consistchk=False):
         """
@@ -229,11 +230,11 @@ class DiscourseTester:
                 for sent_reading in self._get_readings(sentence):
                     tp = Prover9Command(goal=sent_reading, assumptions=assumptions)
                     if tp.prove():
-                        print(
+                        safe_print(
                             "Sentence '%s' under reading '%s':"
                             % (sentence, str(sent_reading))
                         )
-                        print("Not informative relative to thread '%s'" % tid)
+                        safe_print("Not informative relative to thread '%s'" % tid)
 
         self._input.append(sentence)
         self._sentences = {"s%s" % i: sent for i, sent in enumerate(self._input)}
@@ -255,7 +256,7 @@ class DiscourseTester:
         try:
             self._input.remove(sentence)
         except ValueError:
-            print(
+            safe_print(
                 "Retraction failed. The sentence '%s' is not part of the current discourse:"
                 % sentence
             )
@@ -264,7 +265,7 @@ class DiscourseTester:
         self._sentences = {"s%s" % i: sent for i, sent in enumerate(self._input)}
         self.readings(verbose=False)
         if verbose:
-            print("Current sentences are ")
+            safe_print("Current sentences are ")
             self.sentences()
 
     def grammar(self):
@@ -321,17 +322,17 @@ class DiscourseTester:
         Print out the readings for  the discourse (or a single sentence).
         """
         if sentence is not None:
-            print("The sentence '%s' has these readings:" % sentence)
+            safe_print("The sentence '%s' has these readings:" % sentence)
             for r in [str(reading) for reading in (self._get_readings(sentence))]:
-                print("    %s" % r)
+                safe_print("    %s" % r)
         else:
             for sid in sorted(self._readings):
-                print()
-                print("%s readings:" % sid)
-                print()  #'-' * 30
+                safe_print()
+                safe_print("%s readings:" % sid)
+                safe_print()  #'-' * 30
                 for rid in sorted(self._readings[sid]):
                     lf = self._readings[sid][rid]
-                    print(f"{rid}: {lf.normalize()}")
+                    safe_print(f"{rid}: {lf.normalize()}")
 
     def _show_threads(self, filter=False, show_thread_readings=False):
         """
@@ -353,7 +354,7 @@ class DiscourseTester:
             else:
                 thread_reading = ""
 
-            print("%s:" % tid, self._threads[tid], thread_reading)
+            safe_print("%s:" % tid, self._threads[tid], thread_reading)
 
     def readings(
         self,
@@ -431,16 +432,16 @@ class DiscourseTester:
             results.append((tid, modelfound))
             if show:
                 spacer(80)
-                print("Model for Discourse Thread %s" % tid)
+                safe_print("Model for Discourse Thread %s" % tid)
                 spacer(80)
                 if verbose:
                     for a in assumptions:
-                        print(a)
+                        safe_print(a)
                     spacer(80)
                 if modelfound:
-                    print(mb.model(format="cooked"))
+                    safe_print(mb.model(format="cooked"))
                 else:
-                    print("No model found!\n")
+                    safe_print("No model found!\n")
         return results
 
     def models(self, thread_id=None, show=True, verbose=False):
@@ -461,15 +462,15 @@ class DiscourseTester:
             idlist = [rid for rid in threads[tid]]
 
             if not modelfound:
-                print(f"Inconsistent discourse: {tid} {idlist}:")
+                safe_print(f"Inconsistent discourse: {tid} {idlist}:")
                 for rid, reading in self.expand_threads(tid):
-                    print(f"    {rid}: {reading.normalize()}")
-                print()
+                    safe_print(f"    {rid}: {reading.normalize()}")
+                safe_print()
             else:
-                print(f"Consistent discourse: {tid} {idlist}:")
+                safe_print(f"Consistent discourse: {tid} {idlist}:")
                 for rid, reading in self.expand_threads(tid):
-                    print(f"    {rid}: {reading.normalize()}")
-                print()
+                    safe_print(f"    {rid}: {reading.normalize()}")
+                safe_print()
 
     def add_background(self, background, verbose=False):
         """
@@ -484,7 +485,7 @@ class DiscourseTester:
         for count, e in enumerate(background):
             assert isinstance(e, Expression)
             if verbose:
-                print("Adding assumption %s to background" % count)
+                safe_print("Adding assumption %s to background" % count)
             self._background.append(e)
 
         # update the state
@@ -496,7 +497,7 @@ class DiscourseTester:
         Show the current background assumptions.
         """
         for e in self._background:
-            print(str(e))
+            safe_print(str(e))
 
     ###############################
     # Misc
@@ -559,36 +560,36 @@ def discourse_demo(reading_command=None):
         ["A boxer walks", "Every boxer chases a girl"], reading_command
     )
     dt.models()
-    print()
+    safe_print()
     # dt.grammar()
-    print()
+    safe_print()
     dt.sentences()
-    print()
+    safe_print()
     dt.readings()
-    print()
+    safe_print()
     dt.readings(threaded=True)
-    print()
+    safe_print()
     dt.models("d1")
     dt.add_sentence("John is a boxer")
-    print()
+    safe_print()
     dt.sentences()
-    print()
+    safe_print()
     dt.readings(threaded=True)
-    print()
+    safe_print()
     dt = DiscourseTester(
         ["A student dances", "Every student is a person"], reading_command
     )
-    print()
+    safe_print()
     dt.add_sentence("No person dances", consistchk=True)
-    print()
+    safe_print()
     dt.readings()
-    print()
+    safe_print()
     dt.retract_sentence("No person dances", verbose=True)
-    print()
+    safe_print()
     dt.models()
-    print()
+    safe_print()
     dt.readings("A person dances")
-    print()
+    safe_print()
     dt.add_sentence("A person dances", informchk=True)
     dt = DiscourseTester(
         ["Vincent is a boxer", "Fido is a boxer", "Vincent is married", "Fido barks"],
@@ -600,12 +601,12 @@ def discourse_demo(reading_command=None):
     background_file = os.path.join("grammars", "book_grammars", "background.fol")
     background = nltk.data.load(background_file)
 
-    print()
+    safe_print()
     dt.add_background(background, verbose=False)
     dt.background()
-    print()
+    safe_print()
     dt.readings(filter=True)
-    print()
+    safe_print()
     dt.models()
 
 
@@ -615,18 +616,18 @@ def drt_discourse_demo(reading_command=None):
     """
     dt = DiscourseTester(["every dog chases a boy", "he runs"], reading_command)
     dt.models()
-    print()
+    safe_print()
     dt.sentences()
-    print()
+    safe_print()
     dt.readings()
-    print()
+    safe_print()
     dt.readings(show_thread_readings=True)
-    print()
+    safe_print()
     dt.readings(filter=True, show_thread_readings=True)
 
 
 def spacer(num=30):
-    print("-" * num)
+    safe_print("-" * num)
 
 
 def demo():

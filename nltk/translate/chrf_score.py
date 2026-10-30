@@ -7,9 +7,9 @@
 # For license information, see LICENSE.TXT
 
 """ChrF score implementation"""
-import re
 from collections import Counter, defaultdict
 
+from nltk import redos
 from nltk.util import ngrams
 
 
@@ -104,7 +104,7 @@ def _preprocess(sent, ignore_whitespace):
         sent = " ".join(sent)
 
     if ignore_whitespace:
-        sent = re.sub(r"\s+", "", sent)
+        sent = redos.sub(r"\s+", "", sent)
     return sent
 
 

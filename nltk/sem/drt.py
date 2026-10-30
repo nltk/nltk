@@ -37,6 +37,7 @@ from nltk.sem.logic import (
     is_indvar,
     unique_variable,
 )
+from nltk.termsec import safe_print
 from nltk.util import in_idle
 
 
@@ -282,7 +283,7 @@ class DrtExpression:
         return "\n".join(self._pretty())
 
     def pretty_print(self):
-        print(self.pretty_format())
+        safe_print(self.pretty_format())
 
     def draw(self):
         DrsDrawer(self).draw()
@@ -1448,36 +1449,38 @@ class DrsDrawer:
 
 
 def demo():
-    print("=" * 20 + "TEST PARSE" + "=" * 20)
+    safe_print("=" * 20 + "TEST PARSE" + "=" * 20)
     dexpr = DrtExpression.fromstring
-    print(dexpr(r"([x,y],[sees(x,y)])"))
-    print(dexpr(r"([x],[man(x), walks(x)])"))
-    print(dexpr(r"\x.\y.([],[sees(x,y)])"))
-    print(dexpr(r"\x.([],[walks(x)])(john)"))
-    print(dexpr(r"(([x],[walks(x)]) + ([y],[runs(y)]))"))
-    print(dexpr(r"(([],[walks(x)]) -> ([],[runs(x)]))"))
-    print(dexpr(r"([x],[PRO(x), sees(John,x)])"))
-    print(dexpr(r"([x],[man(x), -([],[walks(x)])])"))
-    print(dexpr(r"([],[(([x],[man(x)]) -> ([],[walks(x)]))])"))
+    safe_print(dexpr(r"([x,y],[sees(x,y)])"))
+    safe_print(dexpr(r"([x],[man(x), walks(x)])"))
+    safe_print(dexpr(r"\x.\y.([],[sees(x,y)])"))
+    safe_print(dexpr(r"\x.([],[walks(x)])(john)"))
+    safe_print(dexpr(r"(([x],[walks(x)]) + ([y],[runs(y)]))"))
+    safe_print(dexpr(r"(([],[walks(x)]) -> ([],[runs(x)]))"))
+    safe_print(dexpr(r"([x],[PRO(x), sees(John,x)])"))
+    safe_print(dexpr(r"([x],[man(x), -([],[walks(x)])])"))
+    safe_print(dexpr(r"([],[(([x],[man(x)]) -> ([],[walks(x)]))])"))
 
-    print("=" * 20 + "Test fol()" + "=" * 20)
-    print(dexpr(r"([x,y],[sees(x,y)])").fol())
+    safe_print("=" * 20 + "Test fol()" + "=" * 20)
+    safe_print(dexpr(r"([x,y],[sees(x,y)])").fol())
 
-    print("=" * 20 + "Test alpha conversion and lambda expression equality" + "=" * 20)
+    safe_print(
+        "=" * 20 + "Test alpha conversion and lambda expression equality" + "=" * 20
+    )
     e1 = dexpr(r"\x.([],[P(x)])")
-    print(e1)
+    safe_print(e1)
     e2 = e1.alpha_convert(Variable("z"))
-    print(e2)
-    print(e1 == e2)
+    safe_print(e2)
+    safe_print(e1 == e2)
 
-    print("=" * 20 + "Test resolve_anaphora()" + "=" * 20)
-    print(resolve_anaphora(dexpr(r"([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])")))
-    print(
+    safe_print("=" * 20 + "Test resolve_anaphora()" + "=" * 20)
+    safe_print(resolve_anaphora(dexpr(r"([x,y,z],[dog(x), cat(y), walks(z), PRO(z)])")))
+    safe_print(
         resolve_anaphora(dexpr(r"([],[(([x],[dog(x)]) -> ([y],[walks(y), PRO(y)]))])"))
     )
-    print(resolve_anaphora(dexpr(r"(([x,y],[]) + ([],[PRO(x)]))")))
+    safe_print(resolve_anaphora(dexpr(r"(([x,y],[]) + ([],[PRO(x)]))")))
 
-    print("=" * 20 + "Test pretty_print()" + "=" * 20)
+    safe_print("=" * 20 + "Test pretty_print()" + "=" * 20)
     dexpr(r"([],[])").pretty_print()
     dexpr(
         r"([],[([x],[big(x), dog(x)]) -> ([],[bark(x)]) -([x],[walk(x)])])"
