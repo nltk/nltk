@@ -27,7 +27,7 @@ from nltk.util import slice_bounds
 from nltk.compat import python_2_unicode_compatible, unicode_repr
 from nltk.internals import raise_unorderable_types
 
-from nltk import _security
+from nltk import pathsec
 
 # TODO: add LabelledTree (can be used for dependency trees)
 
@@ -806,7 +806,7 @@ class Tree(list):
             try:
                 subprocess.call(
                     [
-                        _security.trusted_executable(
+                        pathsec.resolve_trusted_executable(
                             find_binary(
                                 'gs',
                                 binary_names=['gswin32c.exe', 'gswin64c.exe'],

@@ -66,16 +66,23 @@ import copy
 from six.moves.urllib.parse import unquote_plus
 from six import string_types, text_type
 
-from nltk import _security
+import binascii
 
 # A per-process secret the shutdown link must carry: a page on any other
 # site cannot stop the server by linking to it (CWE-306, CWE-352).
-_SHUTDOWN_TOKEN = _security.token_hex(16)
+_SHUTDOWN_TOKEN = binascii.hexlify(os.urandom(16)).decode("ascii")
 
 
 def _escape(text):
     """Escape request-derived text for HTML (CWE-79)."""
-    return _security.html_escape(text_type(text))
+    return (
+        text_type(text)
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+        .replace("'", "&#x27;")
+    )
 
 from nltk import compat
 from nltk.corpus import wordnet as wn

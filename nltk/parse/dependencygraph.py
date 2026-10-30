@@ -26,7 +26,7 @@ from six import string_types
 from nltk.tree import Tree
 from nltk.compat import python_2_unicode_compatible
 
-from nltk import _security
+from nltk import pathsec
 
 
 #################################################################
@@ -208,7 +208,7 @@ class DependencyGraph(object):
 
         try:
             process = subprocess.Popen(
-                [_security.trusted_executable(_security.find_on_path('dot'), 'dot'), '-Tsvg'],
+                [pathsec.resolve_trusted_executable(pathsec.find_on_path('dot'), 'dot'), '-Tsvg'],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,

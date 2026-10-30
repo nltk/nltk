@@ -13,7 +13,7 @@ from six import string_types
 
 from nltk.internals import find_binary
 
-from nltk import _security
+from nltk import pathsec
 
 try:
     import numpy
@@ -86,7 +86,7 @@ def call_tadm(args):
         config_tadm()
 
     # Call tadm via a subprocess
-    cmd = [_security.trusted_executable(_tadm_bin, 'tadm binary')] + args
+    cmd = [pathsec.resolve_trusted_executable(_tadm_bin, 'tadm binary')] + args
     p = subprocess.Popen(cmd, stdout=sys.stdout)
     (stdout, stderr) = p.communicate()
 

@@ -25,7 +25,7 @@ from nltk.parse.api import ParserI
 from nltk.parse.dependencygraph import DependencyGraph
 from nltk.parse.util import taggedsents_to_conll
 
-from nltk import _security
+from nltk import pathsec
 
 
 def malt_regex_tagger():
@@ -159,7 +159,7 @@ class MaltParser(ParserI):
         if self._trained:
             # the JVM opens the model natively; in learn mode it writes it
             # (CWE-59, CWE-73)
-            self.model = _security.check_tool_path(
+            self.model = pathsec.validate_tool_path(
                 self.model, for_write=not os.path.exists(self.model), what='MaltParser model'
             )
         # Set the working_dir parameters i.e. `-w` from MaltParser's option.
@@ -285,7 +285,7 @@ class MaltParser(ParserI):
     def _execute(cmd, verbose=False):
         output = None if verbose else subprocess.PIPE
         # the binary must sit where only this account or root can write (CWE-426)
-        cmd[0] = _security.trusted_executable(cmd[0], 'MaltParser java')
+        cmd[0] = pathsec.resolve_trusted_executable(cmd[0], 'MaltParser java')
         p = subprocess.Popen(cmd, stdout=output, stderr=output)
         return p.wait()
 

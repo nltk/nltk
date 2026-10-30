@@ -19,7 +19,7 @@ from nltk.compat import python_2_unicode_compatible
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
-from nltk import _security
+from nltk import xmlsec
 
 
 class NombankCorpusReader(CorpusReader):
@@ -124,7 +124,7 @@ class NombankCorpusReader(CorpusReader):
 
         # n.b.: The encoding for XML fileids is specified by the file
         # itself; so we ignore self._encoding here.
-        etree = _security.safe_xml_parse(self.abspath(framefile).open()).getroot()
+        etree = xmlsec.parse(self.abspath(framefile).open()).getroot()
         for roleset in etree.findall('predicate/roleset'):
             if roleset.attrib['id'] == roleset_id:
                 return roleset
@@ -146,7 +146,7 @@ class NombankCorpusReader(CorpusReader):
         for framefile in framefiles:
             # n.b.: The encoding for XML fileids is specified by the file
             # itself; so we ignore self._encoding here.
-            etree = _security.safe_xml_parse(self.abspath(framefile).open()).getroot()
+            etree = xmlsec.parse(self.abspath(framefile).open()).getroot()
             rsets.append(etree.findall('predicate/roleset'))
         return LazyConcatenation(rsets)
 

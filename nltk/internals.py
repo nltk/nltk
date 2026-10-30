@@ -29,11 +29,65 @@ from six import string_types
 
 from nltk import compat
 
-from nltk import _security
+from nltk import pathsec, xmlsec
 
 ##########################################################################
 # Java Via Command-Line
 ##########################################################################
+
+
+# Exactly the flag shapes NLTK's Java wrappers and the Stanford documentation
+# use. A denylist cannot keep up with -jar, @argfile or -XX:OnError=<cmd>;
+# everything else is refused (CVE-2026-12841, CWE-88).
+_JAVA_OPTION_RE = re.compile(
+    r"^(?:-(?:Xmx|Xms|Xss|mx|ms|ss)\d+[kKmMgG]?|-verbose(?::[a-z]+)?|-server|-client"
+    r"|-ea|-da|--add-modules=[A-Za-z0-9_.,]+|-Dfile\.encoding=[A-Za-z0-9_-]+"
+    r"|-Duser\.(?:language|country|timezone)=[A-Za-z0-9_/+-]+)$"
+)
+
+
+def _validate_java_options(options):
+    """Return *options* when every flag matches the allowlist (CWE-88)."""
+    for flag in options:
+        if not isinstance(flag, string_types) or not _JAVA_OPTION_RE.match(flag):
+            raise ValueError(
+                "java option %r is not in the allowlist of JVM flags NLTK passes"
+                % (flag,)
+            )
+    return list(options)
+
+
+_ESCAPE_RE = re.compile(
+    r"\\(x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8}|[0-7]{1,3}|N\{[^}]*\}|.)",
+    re.DOTALL,
+)
+
+
+def _decode_string_literal(literal):
+    """Decode a quoted Python string literal without ``eval`` (CWE-94).
+
+    Accepts the forms the readers write (optional ``u``/``b``/``r`` prefix,
+    single or double quotes) and resolves the usual escapes; an unprefixed
+    literal is a native ``str`` on 2.7, as ``eval`` produced it.
+    """
+    import codecs
+
+    text = literal
+    prefix = ""
+    while text and text[0] in "uUbBrR":
+        prefix += text[0].lower()
+        text = text[1:]
+    if len(text) < 2 or text[0] not in "'\"" or text[-1] != text[0]:
+        raise ValueError("not a quoted string literal: %r" % literal)
+    body = text[1:-1]
+    if "r" in prefix:
+        return body
+    if "b" in prefix:
+        return codecs.escape_decode(body.encode("latin-1"))[0]
+    if not compat.PY3 and "u" not in prefix:
+        return codecs.escape_decode(body.encode("utf-8"))[0]
+    return codecs.decode(body, "unicode_escape")
+
 
 _java_bin = None
 _java_options = []
@@ -70,7 +124,7 @@ def config_java(bin=None, options=None, verbose=False):
         # Only the heap, stack, verbosity and module flags NLTK's wrappers use
         # may reach the launcher: -jar, @argfile or -XX:OnError=<cmd> would
         # turn an option string into code execution (CVE-2026-12841, CWE-88).
-        _java_options = _security.check_java_options(options)
+        _java_options = _validate_java_options(options)
 
 
 def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=True):
@@ -142,7 +196,7 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
     # The binary and every directory above it must be writable by this
     # account or root alone; a java planted in the working directory or a
     # world-writable tree is refused (CVE-2023-40590 class, CWE-426).
-    reason = _security.untrusted_executable_reason(_java_bin)
+    reason = pathsec.untrusted_executable_reason(_java_bin)
     if reason is not None:
         raise LookupError(
             'refusing to run the java binary %r: %s' % (_java_bin, reason)
@@ -262,7 +316,7 @@ def read_str(s, start_position):
     # escape sequences raise ValueError.
     try:
         return (
-            _security.decode_string_literal(s[start_position : match.end()]),
+            _decode_string_literal(s[start_position : match.end()]),
             match.end(),
         )
     except (ValueError, UnicodeDecodeError) as e:
@@ -953,14 +1007,14 @@ class ElementWrapper(object):
         Initialize a new Element wrapper for ``etree``.
 
         If ``etree`` is a string, then it will be converted to an
-        Element object using ``_security.safe_xml_fromstring()`` first:
+        Element object using ``xmlsec.fromstring()`` first:
 
             >>> ElementWrapper("<test></test>")
             <Element "<?xml version='1.0' encoding='utf8'?>\n<test />">
 
         """
         if isinstance(etree, string_types):
-            etree = _security.safe_xml_fromstring(etree)
+            etree = xmlsec.fromstring(etree)
         self.__dict__['_etree'] = etree
 
     def unwrap(self):

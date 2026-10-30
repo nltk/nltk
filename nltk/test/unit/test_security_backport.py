@@ -18,7 +18,8 @@ import zipfile
 
 import pytest
 
-from nltk import _security as S
+from nltk import csvsec, jsontags, pathsec, picklesec, xmlsec
+from nltk.internals import _decode_string_literal, _validate_java_options
 
 
 # ----------------------------------------------------------------------
@@ -38,42 +39,42 @@ def tmpdir_path():
 class TestRestrictedPickle(object):
     def test_containers_load(self):
         data = pickle.dumps({"a": set([1, 2]), "b": (1.5, "x"), "c": [None, True]}, protocol=2)
-        assert S.restricted_pickle_loads(data) == {"a": set([1, 2]), "b": (1.5, "x"), "c": [None, True]}
+        assert picklesec.restricted_pickle_loads(data) == {"a": set([1, 2]), "b": (1.5, "x"), "c": [None, True]}
 
     def test_global_outside_the_allowlist_is_refused(self):
         # the pickle opcode that names a global: nothing outside NLTK's
         # resource classes may be looked up (CWE-502)
         with pytest.raises(pickle.UnpicklingError):
-            S.restricted_pickle_loads(b"cposix\nsystem\np0\n.")
+            picklesec.restricted_pickle_loads(b"cposix\nsystem\np0\n.")
         with pytest.raises(pickle.UnpicklingError):
-            S.restricted_pickle_loads(b"c__builtin__\neval\np0\n.")
+            picklesec.restricted_pickle_loads(b"c__builtin__\neval\np0\n.")
 
     def test_nltk_class_loads(self):
         from nltk.probability import FreqDist
 
         fd = FreqDist("abracadabra")
-        assert S.restricted_pickle_loads(pickle.dumps(fd, protocol=2)) == fd
+        assert picklesec.restricted_pickle_loads(pickle.dumps(fd, protocol=2)) == fd
 
 
 class TestPathContainment(object):
     def test_inside_root_passes(self, tmpdir_path):
         inner = os.path.join(tmpdir_path, "a", "b")
         os.makedirs(inner)
-        assert S.contained_path(tmpdir_path, inner) == inner
+        assert pathsec.validate_path(inner, required_root=tmpdir_path) == inner
 
     @pytest.mark.parametrize("rel", ["../x", "a/../../y", "/etc/passwd"])
     def test_escapes_are_refused(self, tmpdir_path, rel):
         bad = rel if os.path.isabs(rel) else os.path.join(tmpdir_path, rel)
-        with pytest.raises(S.SecurityError):
-            S.contained_path(tmpdir_path, bad)
+        with pytest.raises(pathsec.SecurityError):
+            pathsec.validate_path(bad, required_root=tmpdir_path)
 
     def test_symlink_out_of_root_is_refused(self, tmpdir_path):
         outside = tempfile.mkdtemp(prefix="nltk-sec-out-")
         try:
             link = os.path.join(tmpdir_path, "link")
             os.symlink(outside, link)
-            with pytest.raises(S.SecurityError):
-                S.contained_path(tmpdir_path, os.path.join(link, "x"))
+            with pytest.raises(pathsec.SecurityError):
+                pathsec.validate_path(os.path.join(link, "x"), required_root=tmpdir_path)
         finally:
             shutil.rmtree(outside, ignore_errors=True)
 
@@ -82,9 +83,9 @@ class TestDataFind(object):
     def test_traversal_out_of_a_data_root_is_refused(self):
         from nltk import data
 
-        with pytest.raises((S.SecurityError, LookupError)):
+        with pytest.raises((pathsec.SecurityError, LookupError)):
             data.find("../../../../etc/passwd")
-        with pytest.raises((S.SecurityError, LookupError)):
+        with pytest.raises((pathsec.SecurityError, LookupError)):
             data.find("corpora/../../../../../etc/passwd")
 
     def test_pointer_join_cannot_escape(self, tmpdir_path):
@@ -93,7 +94,7 @@ class TestDataFind(object):
         open(os.path.join(tmpdir_path, "f.txt"), "w").close()
         ptr = FileSystemPathPointer(tmpdir_path)
         assert ptr.join("f.txt").path.endswith("f.txt")
-        with pytest.raises(S.SecurityError):
+        with pytest.raises(pathsec.SecurityError):
             ptr.join("../f.txt")
 
     def test_yaml_resource_is_safe_loaded(self, tmpdir_path):
@@ -113,18 +114,18 @@ class TestDataFind(object):
     def test_remote_resource_scheme_is_http_only(self):
         from nltk import data
 
-        with pytest.raises(S.SecurityError):
-            data._open("file+ftp://host/x") if False else S.check_url_scheme("ftp://host/x")
+        with pytest.raises(pathsec.SecurityError):
+            data._open("ftp://host/x")
 
 
 class TestZipMembers(object):
     @pytest.mark.parametrize("name", ["../evil", "/abs", "C:\\x", "pkg/ok/../../evil", "a\x00b", "other/f.txt"])
     def test_bad_members_are_refused(self, tmpdir_path, name):
-        with pytest.raises(S.SecurityError):
-            S.check_zip_member(name, tmpdir_path, "pkg")
+        with pytest.raises(pathsec.SecurityError):
+            pathsec.validate_zip_member(name, tmpdir_path, "pkg")
 
     def test_owned_member_passes(self, tmpdir_path):
-        target = S.check_zip_member("pkg/a/b.txt", tmpdir_path, "pkg")
+        target = pathsec.validate_zip_member("pkg/a/b.txt", tmpdir_path, "pkg")
         assert target.endswith(os.path.join("pkg", "a", "b.txt"))
 
     def test_downloader_refuses_the_whole_archive(self, tmpdir_path):
@@ -153,13 +154,13 @@ class TestZipMembers(object):
 
 
 class TestUrlScheme(object):
-    def test_http_passes(self):
-        assert S.check_url_scheme("https://example.org/x") == "https://example.org/x"
-
     @pytest.mark.parametrize("url", ["file:///etc/passwd", "ftp://h/x", "data:text/plain,x", "javascript:1"])
     def test_other_schemes_are_refused(self, url):
-        with pytest.raises(S.SecurityError):
-            S.check_url_scheme(url)
+        with pytest.raises(pathsec.SecurityError):
+            pathsec.urlopen(url)
+
+    def test_http_is_the_allowed_scheme(self):
+        assert pathsec._ALLOWED_SCHEMES == ("http", "https")
 
 
 class TestLiteralsAndOptions(object):
@@ -172,18 +173,18 @@ class TestLiteralsAndOptions(object):
 
     def test_non_literal_is_refused(self):
         with pytest.raises(ValueError):
-            S.decode_string_literal("__import__('os')")
+            _decode_string_literal("__import__('os')")
 
     def test_java_options_allowlist(self):
-        assert S.check_java_options(["-Xmx512m", "-server"]) == ["-Xmx512m", "-server"]
+        assert _validate_java_options(["-Xmx512m", "-server"]) == ["-Xmx512m", "-server"]
         for bad in (["-jar", "x.jar"], ["@args"], ["-XX:OnError=ls"], ["-Xmx1g; ls"]):
             with pytest.raises(ValueError):
-                S.check_java_options(bad)
+                _validate_java_options(bad)
 
     def test_config_java_applies_the_allowlist(self):
         from nltk import internals
 
-        if S.find_on_path("java") is None and not os.environ.get("JAVA_HOME"):
+        if pathsec.find_on_path("java") is None and not os.environ.get("JAVA_HOME"):
             pytest.skip("no JVM on this machine")
         internals.config_java(options="-Xmx512m -server")
         assert internals._java_options == ["-Xmx512m", "-server"]
@@ -191,13 +192,13 @@ class TestLiteralsAndOptions(object):
             internals.config_java(options=["-jar", "x.jar"])
 
     def test_relative_binary_is_untrusted(self):
-        assert S.untrusted_executable_reason("bin/ls") is not None
+        assert pathsec.untrusted_executable_reason("bin/ls") is not None
 
     def test_system_binary_is_trusted(self):
-        path = S.find_on_path("ls")
+        path = pathsec.find_on_path("ls")
         if path is None:
             pytest.skip("no ls on PATH")
-        assert S.untrusted_executable_reason(path) is None
+        assert pathsec.untrusted_executable_reason(path) is None
 
 
 class TestWordnetApp(object):
@@ -406,47 +407,47 @@ class TestEvalSites(object):
 
 class TestCsvAndJson(object):
     def test_formula_leads_are_neutralised(self):
-        assert S.sanitize_csv_field("=cmd()") == "'=cmd()"
-        assert S.sanitize_csv_field("+1-2") == "'+1-2"
-        assert S.sanitize_csv_field("-3.5") == "-3.5"
-        assert S.sanitize_csv_field("plain") == "plain"
-        assert S.sanitize_csv_field(7) == 7
+        assert csvsec.sanitize_csv_field("=cmd()") == "'=cmd()"
+        assert csvsec.sanitize_csv_field("+1-2") == "'+1-2"
+        assert csvsec.sanitize_csv_field("-3.5") == "-3.5"
+        assert csvsec.sanitize_csv_field("plain") == "plain"
+        assert csvsec.sanitize_csv_field(7) == 7
 
     def test_json_depth_bound(self):
-        assert S.check_json_depth('{"a": [1, {"b": "]"}]}')
-        with pytest.raises(S.SecurityError):
-            S.check_json_depth("[" * 200 + "]" * 200)
+        assert jsontags.safe_json_loads('{"a": [1, {"b": "]"}]}') == {"a": [1, {"b": "]"}]}
+        with pytest.raises(ValueError):
+            jsontags.safe_json_loads("[" * 200 + "]" * 200)
 
 
 class TestXml(object):
     def test_plain_document_parses(self):
-        root = S.safe_xml_fromstring(b"<a xmlns='urn:x'><b x='1'>t&amp;u</b><c/></a>")
+        root = xmlsec.fromstring(b"<a xmlns='urn:x'><b x='1'>t&amp;u</b><c/></a>")
         assert root.tag == "{urn:x}a" and root[0].attrib == {"x": "1"} and root[0].text == "t&u"
 
     def test_entity_declaration_is_refused(self):
         bomb = b"<?xml version='1.0'?><!DOCTYPE a [<!ENTITY e 'xxxx'>]><a>&e;</a>"
-        with pytest.raises(S.XMLForbidden):
-            S.safe_xml_fromstring(bomb)
+        with pytest.raises(xmlsec.EntitiesForbidden):
+            xmlsec.fromstring(bomb)
 
     def test_deep_tree_is_refused(self):
-        with pytest.raises(S.XMLForbidden):
-            S.safe_xml_fromstring(b"<a>" * 1500 + b"</a>" * 1500)
+        with pytest.raises(xmlsec.StructureForbidden):
+            xmlsec.fromstring(b"<a>" * 1500 + b"</a>" * 1500)
 
     def test_parse_from_path_and_stream(self, tmpdir_path):
         path = os.path.join(tmpdir_path, "f.xml")
         with open(path, "wb") as fh:
             fh.write(b"<r><s>1</s></r>")
-        assert S.safe_xml_parse(path).getroot()[0].text == "1"
+        assert xmlsec.parse(path).getroot()[0].text == "1"
         with io.open(path, "rb") as fh:
-            assert S.safe_xml_parse(fh).getroot().tag == "r"
+            assert xmlsec.parse(fh).getroot().tag == "r"
 
 
 class TestToolPaths(object):
     def test_plain_and_relative_paths_pass(self, tmpdir_path):
         target = os.path.join(tmpdir_path, "m.model")
         open(target, "w").close()
-        assert S.check_tool_path(target) == target
-        assert os.path.isabs(S.check_tool_path("rel.model"))
+        assert pathsec.validate_tool_path(target) == target
+        assert os.path.isabs(pathsec.validate_tool_path("rel.model"))
 
     def test_links_traversal_and_hardlinks_are_refused(self, tmpdir_path):
         target = os.path.join(tmpdir_path, "m.model")
@@ -455,9 +456,9 @@ class TestToolPaths(object):
         os.symlink(target, link)
         hard = os.path.join(tmpdir_path, "h.model")
         os.link(target, hard)
-        with pytest.raises(S.SecurityError):
-            S.check_tool_path(link)
-        with pytest.raises(S.SecurityError):
-            S.check_tool_path(os.path.join(tmpdir_path, "..", "x"))
-        with pytest.raises(S.SecurityError):
-            S.check_tool_path(hard, for_write=True)
+        with pytest.raises(pathsec.SecurityError):
+            pathsec.validate_tool_path(link)
+        with pytest.raises(pathsec.SecurityError):
+            pathsec.validate_tool_path(os.path.join(tmpdir_path, "..", "x"))
+        with pytest.raises(pathsec.SecurityError):
+            pathsec.validate_tool_path(hard, for_write=True)

@@ -48,7 +48,9 @@ from six import add_metaclass
 from six import string_types, text_type
 from six.moves.urllib.request import urlopen, url2pathname
 
-from nltk import _security
+from io import BytesIO
+
+from nltk import pathsec
 
 try:
     import cPickle as pickle
@@ -356,7 +358,7 @@ class FileSystemPathPointer(PathPointer, text_type):
         _path = os.path.join(self._path, fileid)
         # The fileid comes from caller input (a corpus reader argument): it
         # may not step out of this pointer's directory (CWE-22, CWE-59).
-        _security.contained_path(self._path, _path, 'fileid %r' % fileid)
+        pathsec.validate_path(_path, 'fileid %r' % fileid, required_root=self._path)
         return FileSystemPathPointer(_path)
 
     def __repr__(self):
@@ -591,6 +593,27 @@ _resource_cache = {}
    need to be loaded more than once."""
 
 
+#: Largest pickled resource one load reads (CWE-400).
+MAX_RESOURCE_BYTES = 1024 * 1024 * 1024
+
+
+def _read_bounded(fileobj, limit, what):
+    data = fileobj.read(limit + 1)
+    if len(data) > limit:
+        raise ValueError("%s exceeds %d bytes" % (what, limit))
+    return data
+
+
+def restricted_pickle_load(string):
+    """
+    Prevents any class or function outside NLTK's resource classes from
+    loading (CWE-502); the same name and contract as in the 3.10 line.
+    """
+    from nltk.picklesec import RestrictedUnpickler
+
+    return RestrictedUnpickler(BytesIO(string)).load()
+
+
 def find(resource_name, paths=None):
     """
     Find the given resource by searching through the directories and
@@ -657,7 +680,7 @@ def find(resource_name, paths=None):
                     # A ``..`` component or a link must not lead out of the
                     # data root the name was resolved against (CWE-22, CWE-59).
                     if path_:
-                        _security.contained_path(path_, p, 'resource %r' % resource_name)
+                        pathsec.validate_path(p, 'resource %r' % resource_name, required_root=path_)
                     if p.endswith('.gz'):
                         return GzipFileSystemPathPointer(p)
                     else:
@@ -666,7 +689,7 @@ def find(resource_name, paths=None):
                 p = os.path.join(path_, url2pathname(zipfile))
                 if os.path.exists(p):
                     if path_:
-                        _security.contained_path(path_, p, 'resource %r' % resource_name)
+                        pathsec.validate_path(p, 'resource %r' % resource_name, required_root=path_)
                     try:
                         return ZipFilePathPointer(p, zipentry)
                     except IOError:
@@ -884,15 +907,14 @@ def load(
         # Only NLTK's own resource classes may be rebuilt from a pickle; a
         # planted pickle cannot name os.system or any other callable
         # (CWE-502). The body is bounded before it is decoded (CWE-400).
-        resource_val = _security.restricted_pickle_loads(
-            _security.read_bounded(opened_resource, what='pickle resource')
+        resource_val = restricted_pickle_load(
+            _read_bounded(opened_resource, MAX_RESOURCE_BYTES, 'pickle resource')
         )
     elif format == 'json':
-        import json
-        from nltk.jsontags import json_tags
+        from nltk.jsontags import json_tags, safe_json_load
 
-        resource_val = json.loads(
-            _security.read_bounded(opened_resource, what='json resource').decode('utf-8')
+        resource_val = safe_json_load(
+            opened_resource, context='nltk.data.load(%s)' % resource_url
         )
         tag = None
         if len(resource_val) != 1:
@@ -900,11 +922,11 @@ def load(
         if tag not in json_tags:
             raise ValueError('Unknown json tag.')
     elif format == 'yaml':
-        import yaml
+        from nltk.jsontags import safe_yaml_load
 
-        # safe_load builds plain data only: no python/object tags (CWE-502).
-        resource_val = yaml.safe_load(
-            _security.read_bounded(opened_resource, what='yaml resource')
+        # the safe loader builds plain data only: no python/object tags (CWE-502)
+        resource_val = safe_yaml_load(
+            opened_resource, context='nltk.data.load(%s)' % resource_url
         )
     else:
         # The resource is a text format.
@@ -1016,7 +1038,7 @@ def _open(resource_url):
         # urllib might not use mode='rb', so handle this one ourselves:
         return find(path_, ['']).open()
     else:
-        return urlopen(_security.check_url_scheme(resource_url, 'resource URL'))
+        return pathsec.urlopen(resource_url)
 
 
 ######################################################################

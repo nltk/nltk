@@ -21,7 +21,7 @@ from nltk.tbl import error_list, Template
 from nltk.tag.brill import Word, Pos
 from nltk.tag import BrillTaggerTrainer, RegexpTagger, UnigramTagger
 
-from nltk import _security
+from nltk import pathsec, picklesec
 
 
 def demo():
@@ -251,7 +251,7 @@ def postag(
             baseline_tagger = UnigramTagger(
                 baseline_data, backoff=baseline_backoff_tagger
             )
-            with open(_security.check_tool_path(cache_baseline_tagger, for_write=True), 'wb') as print_rules:
+            with open(pathsec.validate_tool_path(cache_baseline_tagger, for_write=True), 'wb') as print_rules:
                 pickle.dump(baseline_tagger, print_rules)
             print(
                 "Trained baseline tagger, pickled it to {0}".format(
@@ -259,7 +259,7 @@ def postag(
                 )
             )
         with open(cache_baseline_tagger, "rb") as print_rules:
-            baseline_tagger = _security.restricted_pickle_load(print_rules)
+            baseline_tagger = picklesec.restricted_pickle_load(print_rules)
             print("Reloaded pickled tagger from {0}".format(cache_baseline_tagger))
     else:
         baseline_tagger = UnigramTagger(baseline_data, backoff=baseline_backoff_tagger)
@@ -308,7 +308,7 @@ def postag(
             brill_tagger.print_template_statistics(teststats)
         if learning_curve_output:
             _demo_plot(
-                _security.check_tool_path(learning_curve_output, for_write=True),
+                pathsec.validate_tool_path(learning_curve_output, for_write=True),
                 teststats, trainstats, take=learning_curve_take
             )
             print("Wrote plot of learning curve to {0}".format(learning_curve_output))
@@ -330,11 +330,11 @@ def postag(
     # serializing the tagger to a pickle file and reloading (just to see it works)
     if serialize_output is not None:
         taggedtest = brill_tagger.tag_sents(testing_data)
-        with open(_security.check_tool_path(serialize_output, for_write=True), 'wb') as print_rules:
+        with open(pathsec.validate_tool_path(serialize_output, for_write=True), 'wb') as print_rules:
             pickle.dump(brill_tagger, print_rules)
         print("Wrote pickled tagger to {0}".format(serialize_output))
         with open(serialize_output, "rb") as print_rules:
-            brill_tagger_reloaded = _security.restricted_pickle_load(print_rules)
+            brill_tagger_reloaded = picklesec.restricted_pickle_load(print_rules)
         print("Reloaded pickled tagger from {0}".format(serialize_output))
         taggedtest_reloaded = brill_tagger.tag_sents(testing_data)
         if taggedtest == taggedtest_reloaded:

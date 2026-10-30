@@ -14,7 +14,7 @@ from collections import namedtuple
 
 from nltk.compat import python_2_unicode_compatible
 
-from nltk import _security
+from nltk import pathsec
 
 
 @python_2_unicode_compatible
@@ -135,7 +135,7 @@ class AlignedSent(object):
         output_format = 'svg'
         try:
             process = subprocess.Popen(
-                [_security.trusted_executable(_security.find_on_path('dot'), 'dot'), '-T%s' % output_format],
+                [pathsec.resolve_trusted_executable(pathsec.find_on_path('dot'), 'dot'), '-T%s' % output_format],
                 stdin=subprocess.PIPE,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,

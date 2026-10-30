@@ -188,7 +188,7 @@ from six import string_types, text_type
 from six.moves import input
 from six.moves.urllib.request import urlopen
 
-from nltk import _security
+from nltk import pathsec, xmlsec
 from six.moves.urllib.error import HTTPError, URLError
 
 import nltk
@@ -284,7 +284,7 @@ class Package(object):
     @staticmethod
     def fromxml(xml):
         if isinstance(xml, string_types):
-            xml = _security.safe_xml_parse(xml)
+            xml = xmlsec.parse(xml)
         for key in xml.attrib:
             xml.attrib[key] = text_type(xml.attrib[key])
         return Package(**xml.attrib)
@@ -325,7 +325,7 @@ class Collection(object):
     @staticmethod
     def fromxml(xml):
         if isinstance(xml, string_types):
-            xml = _security.safe_xml_parse(xml)
+            xml = xmlsec.parse(xml)
         for key in xml.attrib:
             xml.attrib[key] = text_type(xml.attrib[key])
         children = [child.get('ref') for child in xml.findall('item')]
@@ -719,7 +719,7 @@ class Downloader(object):
         try:
             # Only http(s) may be fetched: an index or redirect naming a file:
             # or ftp: URL would otherwise read local files (CWE-918).
-            infile = urlopen(_security.check_url_scheme(info.url, 'package URL'))
+            infile = pathsec.urlopen(info.url)
             with open(tmp_filepath, 'wb') as outfile:
                 # print info.size
                 num_blocks = max(1, info.size / (1024 * 16))
@@ -744,7 +744,7 @@ class Downloader(object):
             if md5_hexdigest(tmp_filepath) != info.checksum:
                 raise IOError('checksum mismatch: the archive is not the indexed one')
             os.rename(tmp_filepath, filepath)
-        except (IOError, OSError, _security.SecurityError) as e:
+        except (IOError, OSError, pathsec.SecurityError) as e:
             if os.path.exists(tmp_filepath):
                 os.remove(tmp_filepath)
             yield ErrorMessage(
@@ -981,7 +981,7 @@ class Downloader(object):
 
         # Download the index file.
         self._index = nltk.internals.ElementWrapper(
-            _security.safe_xml_parse(urlopen(_security.check_url_scheme(self._url, 'index URL'))).getroot()
+            xmlsec.parse(pathsec.urlopen(self._url)).getroot()
         )
         self._index_timestamp = time.time()
 
@@ -2300,17 +2300,17 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None):
     try:
         total = 0
         for member in zf.infolist():
-            _security.check_zip_member(member.filename, root, expected_root)
+            pathsec.validate_zip_member(member.filename, root, expected_root)
             total += member.file_size
             if total > MAX_UNZIPPED_BYTES:
-                raise _security.SecurityError(
+                raise pathsec.SecurityError(
                     'the archive declares more than %d unzipped bytes' % MAX_UNZIPPED_BYTES
                 )
-    except _security.SecurityError as e:
+    except pathsec.SecurityError as e:
         yield ErrorMessage(filename, 'Refusing to unzip %s: %s' % (filename, e))
         return
     for member in zf.infolist():
-        target = _security.check_zip_member(member.filename, root, expected_root)
+        target = pathsec.validate_zip_member(member.filename, root, expected_root)
         if member.filename.endswith('/'):
             if not os.path.isdir(target):
                 os.makedirs(target)
@@ -2469,7 +2469,7 @@ def _find_collections(root):
         for filename in files:
             if filename.endswith('.xml'):
                 xmlfile = os.path.join(dirname, filename)
-                yield _security.safe_xml_parse(xmlfile).getroot()
+                yield xmlsec.parse(xmlfile).getroot()
 
 
 def _find_packages(root):
@@ -2497,7 +2497,7 @@ def _find_packages(root):
                 except Exception as e:
                     raise ValueError('Error reading file %r!\n%s' % (zipfilename, e))
                 try:
-                    pkg_xml = _security.safe_xml_parse(xmlfilename).getroot()
+                    pkg_xml = xmlsec.parse(xmlfilename).getroot()
                 except Exception as e:
                     raise ValueError('Error reading file %r!\n%s' % (xmlfilename, e))
 

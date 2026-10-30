@@ -22,7 +22,7 @@ from nltk.util import flatten, LazyMap, LazyConcatenation
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, ElementTree
 
-from nltk import _security
+from nltk import xmlsec
 
 # to resolve the namespace issue
 NS = 'http://www.talkbank.org/ns/talkbank'
@@ -221,7 +221,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
 
     def _get_corpus(self, fileid):
         results = dict()
-        xmldoc = _security.safe_xml_parse(fileid).getroot()
+        xmldoc = xmlsec.parse(fileid).getroot()
         for key, value in xmldoc.items():
             results[key] = value
         return results
@@ -241,7 +241,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         def dictOfDicts():
             return defaultdict(dictOfDicts)
 
-        xmldoc = _security.safe_xml_parse(fileid).getroot()
+        xmldoc = xmlsec.parse(fileid).getroot()
         # getting participants' data
         pat = dictOfDicts()
         for participant in xmldoc.findall(
@@ -267,7 +267,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
         return LazyMap(get_age, self.abspaths(fileids))
 
     def _get_age(self, fileid, speaker, month):
-        xmldoc = _security.safe_xml_parse(fileid).getroot()
+        xmldoc = xmlsec.parse(fileid).getroot()
         for pat in xmldoc.findall('.//{%s}Participants/{%s}participant' % (NS, NS)):
             try:
                 if pat.get('id') == speaker:
@@ -359,7 +359,7 @@ class CHILDESCorpusReader(XMLCorpusReader):
             isinstance(speaker, string_types) and speaker != 'ALL'
         ):  # ensure we have a list of speakers
             speaker = [speaker]
-        xmldoc = _security.safe_xml_parse(fileid).getroot()
+        xmldoc = xmlsec.parse(fileid).getroot()
         # processing each xml doc
         results = []
         for xmlsent in xmldoc.findall('.//{%s}u' % NS):

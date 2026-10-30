@@ -57,7 +57,7 @@ from nltk.sem.drt import (
 
 from nltk.compat import python_2_unicode_compatible
 
-from nltk import _security
+from nltk import pathsec
 
 
 class Boxer(object):
@@ -272,7 +272,7 @@ class Boxer(object):
         # No shell: the input used to be interpolated into an ``echo ... |``
         # command line, so a crafted sentence ran as shell (CWE-78). It is
         # written to the process's stdin instead, and the binary is checked.
-        cmd = [_security.trusted_executable(binary, 'C&C/Boxer binary')] + args
+        cmd = [pathsec.resolve_trusted_executable(binary, 'C&C/Boxer binary')] + args
         if input_str is None:
             p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = p.communicate()

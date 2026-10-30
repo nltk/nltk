@@ -34,7 +34,7 @@ from nltk.tokenize import *
 from nltk.corpus.reader.util import *
 from nltk.corpus.reader.api import *
 
-from nltk import _security
+from nltk import xmlsec
 
 
 @compat.python_2_unicode_compatible
@@ -129,7 +129,7 @@ class SensevalCorpusView(StreamBackedCorpusView):
             if line.lstrip().startswith('</instance'):
                 xml_block = '\n'.join(instance_lines)
                 xml_block = _fixXML(xml_block)
-                inst = _security.safe_xml_fromstring(xml_block)
+                inst = xmlsec.fromstring(xml_block)
                 return [self._parse_instance(inst, lexelt)]
 
     def _parse_instance(self, instance, lexelt):

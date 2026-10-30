@@ -23,7 +23,7 @@ from nltk.internals import find_dir
 
 from nltk.tokenize.api import TokenizerI
 
-from nltk import _security
+from nltk import pathsec
 
 
 class ReppTokenizer(TokenizerI):
@@ -119,7 +119,7 @@ class ReppTokenizer(TokenizerI):
     @staticmethod
     def _execute(cmd):
         # the binary must sit where only this account or root can write (CWE-426)
-        cmd[0] = _security.trusted_executable(cmd[0], 'repp')
+        cmd[0] = pathsec.resolve_trusted_executable(cmd[0], 'repp')
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = p.communicate()
         return stdout

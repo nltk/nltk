@@ -29,7 +29,7 @@ from nltk.internals import ElementWrapper
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import *
 
-from nltk import _security
+from nltk import xmlsec
 
 
 class XMLCorpusReader(CorpusReader):
@@ -52,7 +52,7 @@ class XMLCorpusReader(CorpusReader):
         if not isinstance(fileid, string_types):
             raise TypeError('Expected a single file identifier string')
         # Read the XML in using ElementTree.
-        elt = _security.safe_xml_parse(self.abspath(fileid).open()).getroot()
+        elt = xmlsec.parse(self.abspath(fileid).open()).getroot()
         # If requested, wrap it.
         if self._wrap_etree:
             elt = ElementWrapper(elt)
@@ -406,7 +406,7 @@ class XMLCorpusView(StreamBackedCorpusView):
 
         return [
             elt_handler(
-                _security.safe_xml_fromstring(elt.encode('ascii', 'xmlcharrefreplace')),
+                xmlsec.fromstring(elt.encode('ascii', 'xmlcharrefreplace')),
                 context,
             )
             for (elt, context) in elts

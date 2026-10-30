@@ -26,7 +26,7 @@ except ImportError:
 
 from nltk.parse import ParserI, DependencyGraph, DependencyEvaluator
 
-from nltk import _security
+from nltk import pathsec, picklesec
 
 
 class Configuration(object):
@@ -541,7 +541,7 @@ class TransitionParser(ParserI):
 
             model.fit(x_train, y_train)
             # Save the model to file name (as pickle)
-            with open(_security.check_tool_path(modelfile, for_write=True, what='model file'), 'wb') as model_out:
+            with open(pathsec.validate_tool_path(modelfile, for_write=True, context='model file'), 'wb') as model_out:
                 pickle.dump(model, model_out)
         finally:
             remove(input_file.name)
@@ -556,8 +556,8 @@ class TransitionParser(ParserI):
         """
         result = []
         # First load the model
-        with open(_security.check_tool_path(modelFile, what='model file'), 'rb') as model_in:
-            model = _security.restricted_pickle_load(model_in)
+        with open(pathsec.validate_tool_path(modelFile, context='model file'), 'rb') as model_in:
+            model = picklesec.restricted_pickle_load(model_in)
         operation = Transition(self._algorithm)
 
         for depgraph in depgraphs:

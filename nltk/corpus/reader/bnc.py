@@ -10,7 +10,7 @@
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView, ElementTree
 
-from nltk import _security
+from nltk import xmlsec
 
 
 class BNCCorpusReader(XMLCorpusReader):
@@ -115,7 +115,7 @@ class BNCCorpusReader(XMLCorpusReader):
         """
         result = []
 
-        xmldoc = _security.safe_xml_parse(fileid).getroot()
+        xmldoc = xmlsec.parse(fileid).getroot()
         for xmlsent in xmldoc.findall('.//s'):
             sent = []
             for xmlword in _all_xmlwords_in(xmlsent):

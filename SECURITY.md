@@ -10,6 +10,15 @@ security fix of the 3.10 line.
 Release 3.4.6 applies the vulnerability classes fixed in the 3.10 line to
 this code, in place, with one regression test per class
 (`nltk/test/unit/test_security_backport.py`, run on Python 2.7 and 3).
+The helpers are laid out as in the 3.10 line, under the same names, so a
+reader of either tree finds the same function at the same sink:
+`nltk/pathsec.py` (`validate_path`, `validate_tool_path`,
+`resolve_trusted_executable`, `untrusted_executable_reason`, `urlopen`,
+`validate_zip_member`), `nltk/picklesec.py` (`RestrictedUnpickler`),
+`nltk/xmlsec.py` (`parse`, `fromstring`), `nltk/csvsec.py`
+(`sanitize_csv_field`) and the bounded loaders in `nltk/jsontags.py`
+(`safe_json_load`, `safe_yaml_load`). Each holds only what this line's
+fixes use; `termsec` and `redos` are not carried over (see below).
 
 ## What is fixed
 

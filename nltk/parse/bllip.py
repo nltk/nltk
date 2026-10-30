@@ -19,7 +19,7 @@ bllipparser module. BllipParser objects can be constructed with the
 a BLLIP Parser unified model directory -- a basic model can be obtained
 from NLTK's downloader. More unified parsing models can be obtained with
 
-from nltk import _security
+from nltk import pathsec
 BLLIP Parser's ModelFetcher (run ``python -m bllipparser.ModelFetcher``
 or see docs for ``bllipparser.ModelFetcher.download_and_install_model``).
 
@@ -163,11 +163,11 @@ class BllipParser(ParserI):
 
         self.rrp = RerankingParser()
         # the extension opens these caller paths natively (CWE-59, CWE-73)
-        parser_model = _security.check_tool_path(parser_model, what='BLLIP parser model')
+        parser_model = pathsec.validate_tool_path(parser_model, context='BLLIP parser model')
         if reranker_features:
-            reranker_features = _security.check_tool_path(reranker_features, what='BLLIP reranker features')
+            reranker_features = pathsec.validate_tool_path(reranker_features, context='BLLIP reranker features')
         if reranker_weights:
-            reranker_weights = _security.check_tool_path(reranker_weights, what='BLLIP reranker weights')
+            reranker_weights = pathsec.validate_tool_path(reranker_weights, context='BLLIP reranker weights')
         self.rrp.load_parser_model(parser_model, **parser_options)
         if reranker_features and reranker_weights:
             self.rrp.load_reranker_model(

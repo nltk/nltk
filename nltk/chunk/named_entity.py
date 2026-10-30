@@ -29,7 +29,6 @@ from nltk.data import find
 from nltk.chunk.api import ChunkParserI
 from nltk.chunk.util import ChunkScore
 
-from nltk import _security
 
 
 class NEChunkParserTagger(ClassifierBasedTagger):

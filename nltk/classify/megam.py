@@ -31,7 +31,7 @@ from six import string_types
 from nltk import compat
 from nltk.internals import find_binary
 
-from nltk import _security
+from nltk import pathsec
 
 try:
     import numpy
@@ -175,7 +175,7 @@ def call_megam(args):
         config_megam()
 
     # Call megam via a subprocess
-    cmd = [_security.trusted_executable(_megam_bin, 'megam binary')] + args
+    cmd = [pathsec.resolve_trusted_executable(_megam_bin, 'megam binary')] + args
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     (stdout, stderr) = p.communicate()
 

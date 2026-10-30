@@ -20,7 +20,7 @@ from six import text_type
 from nltk.internals import find_binary, find_file
 from nltk.tag.api import TaggerI
 
-from nltk import _security
+from nltk import pathsec
 
 _hunpos_url = 'http://code.google.com/p/hunpos/'
 
@@ -96,7 +96,7 @@ class HunposTagger(TaggerI):
         )
         self._encoding = encoding
         self._hunpos = Popen(
-            [_security.trusted_executable(self._hunpos_bin, 'hunpos binary'), self._hunpos_model],
+            [pathsec.resolve_trusted_executable(self._hunpos_bin, 'hunpos binary'), self._hunpos_model],
             shell=False,
             stdin=PIPE,
             stdout=PIPE,
