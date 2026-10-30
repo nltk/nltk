@@ -45,9 +45,7 @@ class TestIndian(unittest.TestCase):
 
     def test_tagged_words(self):
         tagged_words = indian.tagged_words()[:3]
-        self.assertEqual(
-            tagged_words, [("মহিষের", "NN"), ("সন্তান", "NN"), (":", "SYM")]
-        )
+        self.assertEqual(tagged_words, [("মহিষের", "NN"), ("সন্তান", "NN"), (":", "SYM")])
 
 
 class TestCess(unittest.TestCase):

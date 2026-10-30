@@ -11,6 +11,7 @@
 Interface for tagging each token in a sentence with supplementary
 information, such as its part of speech.
 """
+
 from abc import ABCMeta, abstractmethod
 from functools import lru_cache
 from itertools import chain

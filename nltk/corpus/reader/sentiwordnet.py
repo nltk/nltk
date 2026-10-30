@@ -35,7 +35,6 @@ http://sentiwordnet.isti.cnr.it/
     0.125
 """
 
-
 from nltk import redos
 from nltk.corpus.reader import CorpusReader
 

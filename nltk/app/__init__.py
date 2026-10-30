@@ -19,7 +19,6 @@ srparser:     Shift-Reduce Parser
 wordnet:      WordNet Browser
 """
 
-
 # Import Tkinter-based modules if Tkinter is installed
 try:
     import tkinter

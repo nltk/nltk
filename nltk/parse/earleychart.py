@@ -350,7 +350,7 @@ class IncrementalChartParser(ChartParser):
                 self._inference_rules.append(rule)
             else:
                 raise ValueError(
-                    "Incremental inference rules must have " "NUM_EDGES == 0 or 1"
+                    "Incremental inference rules must have NUM_EDGES == 0 or 1"
                 )
 
     def chart_parse(self, tokens, trace=None):

@@ -7,6 +7,7 @@
 """
 Helper functions for CCG semantics computation
 """
+
 import copy
 
 from nltk import redos
@@ -112,9 +113,9 @@ def compute_type_raised_semantics(semantics):
 def compute_composition_semantics(function, argument):
     if function is None or argument is None:
         return None
-    assert isinstance(
-        argument, LambdaExpression
-    ), f"`{argument}` must be a lambda expression"
+    assert isinstance(argument, LambdaExpression), (
+        f"`{argument}` must be a lambda expression"
+    )
 
     # Extract the type pattern directly from the argument
     v = unique_variable(pattern=argument.variable)
@@ -134,9 +135,9 @@ def compute_substitution_semantics(function, argument):
     assert isinstance(function, LambdaExpression) and isinstance(
         function.term, LambdaExpression
     ), f"`{function}` must be a lambda expression with 2 arguments"
-    assert isinstance(
-        argument, LambdaExpression
-    ), f"`{argument}` must be a lambda expression"
+    assert isinstance(argument, LambdaExpression), (
+        f"`{argument}` must be a lambda expression"
+    )
 
     # Copilot Fix: Extract the type pattern directly from the function
     x_var = unique_variable(pattern=function.variable)

@@ -128,6 +128,6 @@ def test_wrapper_guards_decode_with_isinstance(modname):
 
     src = inspect.getsource(importlib.import_module(modname))
     if ".decode(" in src:
-        assert (
-            "isinstance(" in src and "bytes" in src
-        ), f"{modname} calls .decode() without an isinstance(..., bytes) guard"
+        assert "isinstance(" in src and "bytes" in src, (
+            f"{modname} calls .decode() without an isinstance(..., bytes) guard"
+        )

@@ -404,7 +404,7 @@ class PorterStemmer(StemmerI):
                 (
                     "",
                     "e",
-                    lambda stem: (self._measure(stem) == 1 and self._ends_cvc(stem)),
+                    lambda stem: self._measure(stem) == 1 and self._ends_cvc(stem),
                 ),
             ],
         )

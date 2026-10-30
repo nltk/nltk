@@ -94,6 +94,5 @@ def test_exponential_grammar_is_refused_not_run():
             "chart tree extraction did not finish -> unbounded exponential DoS"
         )
     assert run.exitcode == _EXIT_REFUSED, (
-        "an exponential parse forest was not refused "
-        f"(worker exit code {run.exitcode})"
+        f"an exponential parse forest was not refused (worker exit code {run.exitcode})"
     )

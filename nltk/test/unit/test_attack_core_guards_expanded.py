@@ -70,10 +70,13 @@ class TestDownloaderCeilings:
         download_dir = str(tmp_path / "dl")
         os.makedirs(os.path.join(download_dir, "corpora"))
         reader = _Counting(endless=True)
-        with unittest.mock.patch(
-            "nltk.downloader.urlopen", return_value=reader
-        ) as opened, unittest.mock.patch.object(
-            Downloader, "status", return_value=Downloader.NOT_INSTALLED
+        with (
+            unittest.mock.patch(
+                "nltk.downloader.urlopen", return_value=reader
+            ) as opened,
+            unittest.mock.patch.object(
+                Downloader, "status", return_value=Downloader.NOT_INSTALLED
+            ),
         ):
             messages = list(
                 Downloader(download_dir=download_dir)._download_package(
@@ -101,10 +104,11 @@ class TestDownloaderCeilings:
         download_dir = str(tmp_path / "dl")
         os.makedirs(os.path.join(download_dir, "corpora"))
         reader = _Counting(endless=True)
-        with unittest.mock.patch(
-            "nltk.downloader.urlopen", return_value=reader
-        ), unittest.mock.patch.object(
-            Downloader, "status", return_value=Downloader.NOT_INSTALLED
+        with (
+            unittest.mock.patch("nltk.downloader.urlopen", return_value=reader),
+            unittest.mock.patch.object(
+                Downloader, "status", return_value=Downloader.NOT_INSTALLED
+            ),
         ):
             messages = list(
                 Downloader(download_dir=download_dir)._download_package(
@@ -202,8 +206,9 @@ class TestSignatureFence:
     def test_everything_that_is_not_a_name_list_is_refused(self, sig):
         from nltk.decorators import _assert_safe_signature
 
-        with timing.budget(1.0), pytest.raises(
-            ValueError, match="non-identifier signature"
+        with (
+            timing.budget(1.0),
+            pytest.raises(ValueError, match="non-identifier signature"),
         ):
             _assert_safe_signature(sig)
 

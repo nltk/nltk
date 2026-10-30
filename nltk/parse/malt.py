@@ -224,14 +224,20 @@ class MaltParser(ParserI):
         input_file_name = None
         output_file_name = None
         try:
-            with tempfile.NamedTemporaryFile(
-                prefix="malt_input.conll.", dir=self.working_dir, mode="w", delete=False
-            ) as input_file, tempfile.NamedTemporaryFile(
-                prefix="malt_output.conll.",
-                dir=self.working_dir,
-                mode="w",
-                delete=False,
-            ) as output_file:
+            with (
+                tempfile.NamedTemporaryFile(
+                    prefix="malt_input.conll.",
+                    dir=self.working_dir,
+                    mode="w",
+                    delete=False,
+                ) as input_file,
+                tempfile.NamedTemporaryFile(
+                    prefix="malt_output.conll.",
+                    dir=self.working_dir,
+                    mode="w",
+                    delete=False,
+                ) as output_file,
+            ):
                 input_file_name = input_file.name
                 output_file_name = output_file.name
 

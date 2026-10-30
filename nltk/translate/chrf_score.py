@@ -7,6 +7,7 @@
 # For license information, see LICENSE.TXT
 
 """ChrF score implementation"""
+
 from collections import Counter, defaultdict
 
 from nltk import redos
@@ -188,9 +189,9 @@ def corpus_chrf(
     :rtype: float
     """
 
-    assert len(references) == len(
-        hypotheses
-    ), "The number of hypotheses and their references should be the same"
+    assert len(references) == len(hypotheses), (
+        "The number of hypotheses and their references should be the same"
+    )
     num_sents = len(hypotheses)
 
     # Keep f-scores for each n-gram order separate

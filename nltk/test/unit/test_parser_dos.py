@@ -190,9 +190,7 @@ class TestFeatureChartRecognitionDoS:
     # no natural bound: n>=100 tokens hang inside chart_parse (CWE-407). A
     # wall-clock deadline in the recognition loop caps it; top-down/Earley
     # feature parsers key on TYPE and stay O(n) edges (benign).
-    ACC = (
-        "% start S\nS[f=?x] -> N[f=?x]\n" "N[f=[g=?x]] -> N[f=?x] 'a'\nN[f=z] -> 'a'\n"
-    )
+    ACC = "% start S\nS[f=?x] -> N[f=?x]\nN[f=[g=?x]] -> N[f=?x] 'a'\nN[f=z] -> 'a'\n"
 
     def _grammar(self, src):
         from nltk.grammar import FeatureGrammar

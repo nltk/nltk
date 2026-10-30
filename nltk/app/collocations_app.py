@@ -125,7 +125,7 @@ class CollocationsView:
             self.var,
             self.model.DEFAULT_CORPUS,
             command=self.corpus_selected,
-            *self.model.non_default_corpora()
+            *self.model.non_default_corpora(),
         )
         om["borderwidth"] = 0
         om["highlightthickness"] = 1

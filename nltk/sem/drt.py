@@ -605,9 +605,9 @@ class DrtProposition(DrtExpression, Expression):
 
     def replace(self, variable, expression, replace_bound=False, alpha_convert=True):
         if self.variable == variable:
-            assert isinstance(
-                expression, DrtAbstractVariableExpression
-            ), "Can only replace a proposition label with a variable"
+            assert isinstance(expression, DrtAbstractVariableExpression), (
+                "Can only replace a proposition label with a variable"
+            )
             return DrtProposition(
                 expression.variable,
                 self.drs.replace(variable, expression, replace_bound, alpha_convert),
@@ -1096,8 +1096,7 @@ def resolve_anaphora(expression, trail=[], budget=None):
                 if isinstance(r_cond.second, PossibleAntecedents):
                     if not r_cond.second:
                         raise AnaphoraResolutionException(
-                            "Variable '%s' does not "
-                            "resolve to anything." % r_cond.first
+                            "Variable '%s' does not resolve to anything." % r_cond.first
                         )
 
             r_conds.append(r_cond)
@@ -1156,7 +1155,6 @@ class DrsDrawer:
         """
         master = None
         if not canvas:
-
             # Only import tkinter if the user has indicated that they
             # want to draw a UI. See issue #2949 for more info.
             from tkinter import Canvas, Tk

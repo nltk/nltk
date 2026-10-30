@@ -442,7 +442,7 @@ class ConllCorpusReader(CorpusReader):
         for columntype in columntypes:
             if columntype not in self._colmap:
                 raise ValueError(
-                    "This corpus does not contain a %s " "column." % columntype
+                    "This corpus does not contain a %s column." % columntype
                 )
 
     @staticmethod

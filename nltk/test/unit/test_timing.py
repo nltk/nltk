@@ -1235,9 +1235,9 @@ def test_run_subprocess_judges_a_child_interpreter():
         budget=5.0,
         cpu_bound=True,
     )
-    assert (
-        completed is not None and completed.returncode == 0 and run.within_budget
-    ), run
+    assert completed is not None and completed.returncode == 0 and run.within_budget, (
+        run
+    )
     completed, run = timing.run_subprocess(
         [sys.executable, "-c", "import time; time.sleep(30)"],
         budget=0.2,

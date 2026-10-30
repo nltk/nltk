@@ -840,9 +840,9 @@ def test_userinfo_before_internal_host_is_refused(
     monkeypatch.setattr(pathsec, "_resolve_hostname", lambda h: [])
     # The host urllib parses is the internal one, so the address check refuses it.
     parsed = urllib.parse.urlparse(url).hostname
-    assert parsed == host.strip(
-        "[]"
-    ), f"{url} parsed host {parsed!r}, expected {host!r}"
+    assert parsed == host.strip("[]"), (
+        f"{url} parsed host {parsed!r}, expected {host!r}"
+    )
     assert _verdict(url) == "blocked", f"{url} bypassed the address check"
     assert no_real_egress == [], f"{url} produced egress"
 

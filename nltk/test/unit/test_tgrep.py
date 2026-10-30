@@ -11,7 +11,6 @@
 Unit tests for nltk.tgrep.
 """
 
-
 import unittest
 
 import pytest
@@ -238,7 +237,7 @@ class TestSequenceFunctions(unittest.TestCase):
         pattern.
         """
         tree = ParentedTree.fromstring(
-            "(S (NP (DT the) (JJ big) (NN dog)) " "(VP bit) (NP (DT a) (NN cat)))"
+            "(S (NP (DT the) (JJ big) (NN dog)) (VP bit) (NP (DT a) (NN cat)))"
         )
         self.assertEqual(list(tgrep.tgrep_positions("NN", [tree])), [[(0, 2), (2, 1)]])
         self.assertEqual(
@@ -266,7 +265,7 @@ class TestSequenceFunctions(unittest.TestCase):
         way.
         """
         tree = ParentedTree.fromstring(
-            "(S (NP (DT the) (JJ big) (NN dog)) " "(VP bit) (NP (DT a) (NN cat)))"
+            "(S (NP (DT the) (JJ big) (NN dog)) (VP bit) (NP (DT a) (NN cat)))"
         )
         self.assertEqual(
             list(tgrep.tgrep_positions(b"NN", [tree])),
@@ -400,7 +399,7 @@ class TestSequenceFunctions(unittest.TestCase):
             [[(), (0,), (0, 0), (0, 0, 0), (0, 1), (0, 1, 0), (1,), (1, 0, 0)]],
         )
         tree = ParentedTree.fromstring(
-            "(S (A (B (C (D (E (T x))))))" " (A (B (C (D (E (T x))) (N x)))))"
+            "(S (A (B (C (D (E (T x)))))) (A (B (C (D (E (T x))) (N x)))))"
         )
         self.assertEqual(
             list(tgrep.tgrep_positions("* <<: T", [tree])),
@@ -487,7 +486,7 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(list(tgrep.tgrep_positions("* >-2 S", [tree])), [[(1,)]])
         self.assertEqual(list(tgrep.tgrep_positions("* >-3 S", [tree])), [[(0,)]])
         tree = ParentedTree.fromstring(
-            "(S (D (A x) (B x) (C x)) (E (B x) (C x) (A x)) " "(F (C x) (A x) (B x)))"
+            "(S (D (A x) (B x) (C x)) (E (B x) (C x) (A x)) (F (C x) (A x) (B x)))"
         )
         self.assertEqual(list(tgrep.tgrep_positions("* <, A", [tree])), [[(0,)]])
         self.assertEqual(list(tgrep.tgrep_positions("* <1 A", [tree])), [[(0,)]])
@@ -551,7 +550,7 @@ class TestSequenceFunctions(unittest.TestCase):
         self.assertEqual(list(tgrep.tgrep_positions("NP << PP . VP", [tree])), [[(2,)]])
 
         tree = ParentedTree.fromstring(
-            "(S (NP (AP x)) (NP (PP x)) " "(NP (DET x) (NN x)) (VP x))"
+            "(S (NP (AP x)) (NP (PP x)) (NP (DET x) (NN x)) (VP x))"
         )
         # This matches an NP that dominates a PP or is immediately
         # followed by a VP:
@@ -573,7 +572,7 @@ class TestSequenceFunctions(unittest.TestCase):
         )
 
         tree = ParentedTree.fromstring(
-            "(S (NP (AP (PP x) (VP x))) " "(NP (AP (PP x) (NP x))) (NP x))"
+            "(S (NP (AP (PP x) (VP x))) (NP (AP (PP x) (NP x))) (NP x))"
         )
         # This matches an NP that dominates a PP which itself is
         # immediately followed by a VP. Note the use of parentheses to
@@ -594,7 +593,7 @@ class TestSequenceFunctions(unittest.TestCase):
         )
 
         tree = ParentedTree.fromstring(
-            "(S (S (C x) (A (B x))) (S (C x) (A x)) " "(S (D x) (A (B x))))"
+            "(S (S (C x) (A (B x))) (S (C x) (A x)) (S (D x) (A (B x))))"
         )
         # The following pattern matches an S which has a child A and
         # another child that is a C and that the A has a child B:
@@ -775,7 +774,7 @@ class TestSequenceFunctions(unittest.TestCase):
         cause a parse failure.
         """
         tree = ParentedTree.fromstring(
-            "(S (NP (DT the) (JJ big) (NN dog)) " "(VP bit) (NP (DT a) (NN cat)))"
+            "(S (NP (DT the) (JJ big) (NN dog)) (VP bit) (NP (DT a) (NN cat)))"
         )
         self.assertEqual(list(tgrep.tgrep_positions("NN", [tree])), [[(0, 2), (2, 1)]])
         self.assertEqual(list(tgrep.tgrep_positions("NN;", [tree])), [[(0, 2), (2, 1)]])

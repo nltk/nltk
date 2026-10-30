@@ -677,13 +677,15 @@ _STANFORD_SECURITY_REFUSED = [
     ),
     pytest.param(lambda s: _LyingStr(s.planted), id="lying-str-outside"),
     pytest.param(
-        lambda s: s.monkeypatch.setenv("STANFORD_MODELS", SYSTEM_FILE_DIR)
-        or SYSTEM_FILE_NAME,
+        lambda s: (
+            s.monkeypatch.setenv("STANFORD_MODELS", SYSTEM_FILE_DIR) or SYSTEM_FILE_NAME
+        ),
         id="env-search-path-outside-root-bare-name",
     ),
     pytest.param(
-        lambda s: s.monkeypatch.setenv("STANFORD_MODELS", s.outside)
-        or "planted.tagger",
+        lambda s: (
+            s.monkeypatch.setenv("STANFORD_MODELS", s.outside) or "planted.tagger"
+        ),
         id="env-search-path-outside-root-planted",
     ),
 ]

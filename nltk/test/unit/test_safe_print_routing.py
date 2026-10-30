@@ -75,9 +75,9 @@ class TestNoDirectPrintRemains:
             for node in ast.walk(tree):
                 if isinstance(node, ast.Name) and node.id == "print":
                     offenders.append(f"{path.relative_to(_LIB_ROOT)}:{node.lineno}")
-        assert (
-            not offenders
-        ), "direct print bypasses the safe_print chokepoint: " + ", ".join(offenders)
+        assert not offenders, (
+            "direct print bypasses the safe_print chokepoint: " + ", ".join(offenders)
+        )
 
     def test_scan_has_teeth(self, tmp_path):
         # the detector must flag a real print call, and must ignore strings

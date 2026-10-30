@@ -11,7 +11,6 @@ Corpus reader for corpora whose documents are xml files.
 (note -- not named 'xml' to avoid conflicting w/ standard xml package)
 """
 
-
 from nltk import redos
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import *

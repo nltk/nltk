@@ -59,7 +59,6 @@ For example, to read a list of the words in the Brown Corpus, use
 
 """
 
-
 from nltk import redos
 from nltk.corpus.reader import *
 from nltk.corpus.util import LazyCorpusLoader

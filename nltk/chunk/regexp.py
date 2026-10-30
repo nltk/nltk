@@ -105,7 +105,7 @@ class ChunkString:
         elif isinstance(tok, Tree):
             return tok.label()
         else:
-            raise ValueError("chunk structures must contain tagged " "tokens or trees")
+            raise ValueError("chunk structures must contain tagged tokens or trees")
 
     def _verify(self, s, verify_tags):
         """
@@ -125,9 +125,7 @@ class ChunkString:
         """
         # Check overall form
         if not ChunkString._VALID.match(s):
-            raise ValueError(
-                "Transformation generated invalid " "chunkstring:\n  %s" % s
-            )
+            raise ValueError("Transformation generated invalid chunkstring:\n  %s" % s)
 
         # Check that parens are balanced.  If the string is long, we
         # have to do this in pieces, to avoid a maximum recursion
@@ -137,7 +135,7 @@ class ChunkString:
             substr = brackets[i * 5000 : i * 5000 + 5000]
             if not ChunkString._BALANCED_BRACKETS.match(substr):
                 raise ValueError(
-                    "Transformation generated invalid " "chunkstring:\n  %s" % s
+                    "Transformation generated invalid chunkstring:\n  %s" % s
                 )
 
         if verify_tags <= 0:
@@ -147,7 +145,7 @@ class ChunkString:
         tags2 = [self._tag(piece) for piece in self._pieces]
         if tags1 != tags2:
             raise ValueError(
-                "Transformation generated invalid " "chunkstring: tag changed"
+                "Transformation generated invalid chunkstring: tag changed"
             )
 
     def to_chunkstruct(self, chunk_label="CHUNK"):
@@ -1230,9 +1228,7 @@ class RegexpParser(ChunkParserI):
             self._read_grammar(grammar, root_label, trace)
         else:
             # Make sur the grammar looks like it has the right type:
-            type_err = (
-                "Expected string or list of RegexpChunkParsers " "for the grammar."
-            )
+            type_err = "Expected string or list of RegexpChunkParsers for the grammar."
             try:
                 grammar = list(grammar)
             except BaseException as e:

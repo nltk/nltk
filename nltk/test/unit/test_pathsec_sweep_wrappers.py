@@ -1497,9 +1497,9 @@ def test_every_segmenter_entry_point_refuses_hostile_models(
     handed = sink["cmd"][sink["cmd"].index("-loadClassifier") + 1]
     resolved = _resolve(handed)
     assert isinstance(handed, str), f"{entry} put a {type(handed).__name__} in argv"
-    assert os.path.realpath(str(resolved)).startswith(
-        os.path.realpath(str(root))
-    ), f"{entry} handed the JVM a path outside the roots: {resolved}"
+    assert os.path.realpath(str(resolved)).startswith(os.path.realpath(str(root))), (
+        f"{entry} handed the JVM a path outside the roots: {resolved}"
+    )
 
 
 @pytest.mark.parametrize("entry", sorted(_segmenter_entry_points()))

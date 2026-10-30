@@ -79,7 +79,7 @@ class CategorizedSentencesCorpusReader(CategorizedCorpusReader, CorpusReader):
         word_tokenizer=WhitespaceTokenizer(),
         sent_tokenizer=None,
         encoding="utf8",
-        **kwargs
+        **kwargs,
     ):
         """
         :param root: The root directory for the corpus.

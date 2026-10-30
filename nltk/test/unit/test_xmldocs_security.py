@@ -97,9 +97,9 @@ def test_valid_xml_re_matches_well_formed_fragments():
     """The terminator-pinned alternatives must still accept valid XML: pinning the
     comment / CDATA / doctype ends must not start refusing well-formed fragments."""
     for frag in ("<!--hi-->", "<![CDATA[x]]>", "<!DOCTYPE html>", "<a>x</a>"):
-        assert XMLCorpusView._VALID_XML_RE.match(
-            frag
-        ), f"valid fragment refused: {frag!r}"
+        assert XMLCorpusView._VALID_XML_RE.match(frag), (
+            f"valid fragment refused: {frag!r}"
+        )
 
 
 def test_valid_xml_re_does_not_hang():
@@ -171,9 +171,9 @@ def test_pre_fix_spanning_comment_trips_the_guard():
     caught = (status == "error" and "TimeoutError" in value) or (
         op_elapsed is not None and op_elapsed >= _MATCH_CEILING
     )
-    assert (
-        caught
-    ), f"guard missed the exponential pre-fix pattern: {status} {op_elapsed}"
+    assert caught, (
+        f"guard missed the exponential pre-fix pattern: {status} {op_elapsed}"
+    )
 
 
 # The pre-fix regex (#3646) in full: every alternative, not only the comment one.

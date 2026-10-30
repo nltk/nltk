@@ -211,9 +211,9 @@ class TestAveragedPerceptronEscapes:
         except (PermissionError, ValueError, OSError):
             assert model.weights == {}
         else:
-            assert (
-                model.weights == _weights()
-            ), "case-folded path resolved to a different file than the in-root one"
+            assert model.weights == _weights(), (
+                "case-folded path resolved to a different file than the in-root one"
+            )
 
     def test_bytes_and_pathlike_forms_are_validated_too(self, sandbox):
         _refused(AveragedPerceptron(_weights()).save, str(sandbox / "b.json").encode())
@@ -1073,9 +1073,9 @@ class TestNoOtherCodeWidensTheSandbox:
                         and getattr(node.func.value.value, "attr", None) == "data"
                     ):
                         offenders.append((relative, parent.name))
-        assert (
-            set(offenders) <= self.ALLOWED
-        ), "new nltk.data.path widening: %s" % sorted(set(offenders) - self.ALLOWED)
+        assert set(offenders) <= self.ALLOWED, (
+            "new nltk.data.path widening: %s" % sorted(set(offenders) - self.ALLOWED)
+        )
 
 
 # Two branches merged here, so several sinks now carry TWO independent guards.

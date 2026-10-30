@@ -30,9 +30,9 @@ def test_safe_path_blocks_cwd_import():
         f"decoy in CWD was importable under -P.\n"
         f"stdout: {res.stdout!r}\nstderr: {res.stderr!r}"
     )
-    assert (
-        "ModuleNotFoundError" in res.stderr
-    ), f"expected ModuleNotFoundError, got:\nstderr: {res.stderr!r}"
+    assert "ModuleNotFoundError" in res.stderr, (
+        f"expected ModuleNotFoundError, got:\nstderr: {res.stderr!r}"
+    )
     assert "cwd_decoy" in res.stderr
 
 

@@ -3251,9 +3251,12 @@ warnings(True) to display corpus consistency warnings when loading data
                     for lbl in l.label:
                         if "start" in lbl:
                             thespan = (lbl.start, lbl.end + 1, lbl.name)
-                            if l.name not in (
-                                "Sent",
-                                "Other",
+                            if (
+                                l.name
+                                not in (
+                                    "Sent",
+                                    "Other",
+                                )
                             ):  # 'Sent' and 'Other' layers sometimes contain accidental duplicate spans
                                 assert thespan not in overt, (info.ID, l.name, thespan)
                             overt.append(thespan)

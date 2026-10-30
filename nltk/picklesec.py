@@ -660,8 +660,7 @@ def _validate_allowlist_entry(module: str, name: str) -> None:
         )
     if name.startswith("__") and name.endswith("__"):
         raise pickle.UnpicklingError(
-            f"allowlist entry '{module}.{name}' has a dunder name, which is "
-            "forbidden"
+            f"allowlist entry '{module}.{name}' has a dunder name, which is forbidden"
         )
     if (module, name) in _SAFE_DENIED_GLOBALS:
         return  # an audited safe primitive keeps its exemption
