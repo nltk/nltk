@@ -1,3 +1,7 @@
+Version 3.10.5 (unreleased)
+
+* Support Python 3.15: classifier, docs, tox and the CI matrix (3.15 and 3.15t); CI also exercises Python 3.16.0a1 on Linux with the pure-Python dependencies (PR #4003)
+
 Version 3.10.4 2026-10-20
 
 This release routes every file path, archive, download, URL fetch and external program through one sandbox that keeps reads and writes inside the trusted data directories, refuses path traversal, symlink escapes and decompression bombs, blocks requests to internal network addresses, and runs Java and other third-party tools only from trusted absolute locations with validated options and input. Pickled models now load through a restricted unpickler, XML and JSON parsing are hardened, and regular expressions, recursion and slow algorithms in the tokenizers, parsers, stemmers and corpus readers are bounded against denial-of-service input. Text that NLTK writes to the terminal, to CSV files, to the WordNet browser and to third-party tool input is sanitized against injection.
