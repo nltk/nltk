@@ -5,8 +5,9 @@ markdown-it-py
 matplotlib ; python_version < '3.16'
 mdit-plain
 mdit-py-plugins
-numpy ; python_version < '3.16'
+numpy
 pandas ; python_version < '3.16'
+pyparsing
 pytest
 pytest-mock
 pytest-xdist[psutil]
