@@ -131,3 +131,35 @@ def test_wrapper_guards_decode_with_isinstance(modname):
         assert (
             "isinstance(" in src and "bytes" in src
         ), f"{modname} calls .decode() without an isinstance(..., bytes) guard"
+
+
+def test_java_decodes_the_child_as_utf8_on_every_platform(monkeypatch, tmp_path):
+    """The tools write UTF-8; text mode must not decode it with the locale. On
+    Windows the console code page turned Arabic into mojibake and dropped the
+    Chinese segmenter's whole stdout (an undefined byte killed the reader)."""
+    import nltk.pathsec
+    from nltk import internals
+
+    seen = {}
+
+    class _Child:
+        returncode = 0
+
+        def communicate(self):
+            return ("علم 中文\n", "")
+
+    def fake_spawn(target, args=(), **popen_kw):
+        seen.update(popen_kw)
+        return _Child()
+
+    java_bin = tmp_path / "java"
+    java_bin.write_text("")
+    monkeypatch.setattr(internals, "_java_bin", str(java_bin))
+    monkeypatch.setattr(nltk.pathsec, "spawn_trusted", fake_spawn)
+
+    out, err = internals.java(["Main"], stdout="pipe", stderr="pipe")
+
+    assert out == "علم 中文\n" and err == ""
+    assert seen["universal_newlines"] is True
+    assert seen["encoding"] == "utf-8"
+    assert seen["errors"] == "replace"
