@@ -1075,7 +1075,7 @@ class TestNoOtherCodeWidensTheSandbox:
                         offenders.append((relative, parent.name))
         assert (
             set(offenders) <= self.ALLOWED
-        ), "new nltk.data.path widening: %s" % sorted(set(offenders) - self.ALLOWED)
+        ), f"new nltk.data.path widening: {sorted(set(offenders) - self.ALLOWED)}"
 
 
 # Two branches merged here, so several sinks now carry TWO independent guards.

@@ -68,6 +68,7 @@ The operation of replacing the left hand side (*lhs*) of a production
 with the right hand side (*rhs*) in a tree (*tree*) is known as
 "expanding" *lhs* to *rhs* in *tree*.
 """
+
 import re
 from collections import deque
 from functools import total_ordering
@@ -284,9 +285,7 @@ class Production:
         :type rhs: sequence(Nonterminal and terminal)
         """
         if isinstance(rhs, str):
-            raise TypeError(
-                "production right hand side should be a list, " "not a string"
-            )
+            raise TypeError("production right hand side should be a list, not a string")
         self._lhs = lhs
         self._rhs = tuple(rhs)
 
@@ -470,8 +469,7 @@ class CFG:
         """
         if not is_nonterminal(start):
             raise TypeError(
-                "start should be a Nonterminal object,"
-                " not a %s" % type(start).__name__
+                f"start should be a Nonterminal object, not a {type(start).__name__}"
             )
 
         self._start = start
@@ -576,7 +574,7 @@ class CFG:
         """
         if rhs and empty:
             raise ValueError(
-                "You cannot select empty and non-empty " "productions at the same time."
+                "You cannot select empty and non-empty productions at the same time."
             )
 
         # no constraints so return everything
@@ -666,7 +664,7 @@ class CFG:
         if missing:
             missing = ", ".join(f"{w!r}" for w in missing)
             raise ValueError(
-                "Grammar does not cover some of the " "input words: %r." % missing
+                f"Grammar does not cover some of the input words: {missing!r}."
             )
 
     def _calculate_grammar_forms(self):
@@ -749,7 +747,7 @@ class CFG:
             return self
         if self.productions(empty=True):
             raise ValueError(
-                "Grammar has Empty rules. " "Cannot deal with them at the moment"
+                "Grammar has Empty rules. Cannot deal with them at the moment"
             )
 
         step1 = CFG.eliminate_start(self)
@@ -984,9 +982,7 @@ class FeatureGrammar(CFG):
                 features, FeatStructNonterminal, logic_parser=logic_parser
             )
         elif logic_parser is not None:
-            raise Exception(
-                "'logic_parser' and 'fstruct_reader' must " "not both be set"
-            )
+            raise Exception("'logic_parser' and 'fstruct_reader' must not both be set")
 
         start, productions = read_grammar(
             input, fstruct_reader.read_partial, encoding=encoding
@@ -1006,7 +1002,7 @@ class FeatureGrammar(CFG):
         """
         if rhs and empty:
             raise ValueError(
-                "You cannot select empty and non-empty " "productions at the same time."
+                "You cannot select empty and non-empty productions at the same time."
             )
 
         # no constraints so return everything

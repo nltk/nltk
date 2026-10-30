@@ -82,13 +82,9 @@ class PorterTest(unittest.TestCase):
         stemmer = PorterStemmer(mode=stemmer_mode)
         for word, true_stem in zip(self._vocabulary(), expected_stems):
             our_stem = stemmer.stem(word)
-            assert (
-                our_stem == true_stem
-            ), "{} should stem to {} in {} mode but got {}".format(
-                word,
-                true_stem,
-                stemmer_mode,
-                our_stem,
+            assert our_stem == true_stem, (
+                f"{word} should stem to {true_stem} in {stemmer_mode} mode "
+                f"but got {our_stem}"
             )
 
     def test_vocabulary_martin_mode(self):
