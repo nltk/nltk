@@ -60,10 +60,22 @@ import threading
 import time
 import getopt
 import base64
-import pickle
+import json
 import copy
 
 from six.moves.urllib.parse import unquote_plus
+from six import string_types, text_type
+
+from nltk import _security
+
+# A per-process secret the shutdown link must carry: a page on any other
+# site cannot stop the server by linking to it (CWE-306, CWE-352).
+_SHUTDOWN_TOKEN = _security.token_hex(16)
+
+
+def _escape(text):
+    """Escape request-derived text for HTML (CWE-79)."""
+    return _security.html_escape(text_type(text))
 
 from nltk import compat
 from nltk.corpus import wordnet as wn
@@ -96,7 +108,12 @@ class MyServerHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         global firstClient
         sp = self.path[1:]
-        if unquote_plus(sp) == 'SHUTDOWN THE SERVER':
+        if unquote_plus(sp).startswith('SHUTDOWN THE SERVER'):
+            # Only the page this process served carries the token (CWE-306).
+            if unquote_plus(sp) != 'SHUTDOWN THE SERVER?token=' + _SHUTDOWN_TOKEN:
+                self.send_response(403)
+                self.end_headers()
+                return
             if server_mode:
                 page = "Server must be killed with SIGTERM."
                 type = "text/plain"
@@ -123,9 +140,9 @@ class MyServerHandler(BaseHTTPRequestHandler):
                         page = infile.read()
                 else:
                     page = (
-                        (html_header % word) + '<p>The database info file:'
+                        (html_header % _escape(word)) + '<p>The database info file:'
                         '<p><b>'
-                        + usp
+                        + _escape(usp)
                         + '</b>'
                         + '<p>was not found. Run this:'
                         + '<p><b>python dbinfo_html.py</b>'
@@ -150,7 +167,11 @@ class MyServerHandler(BaseHTTPRequestHandler):
             # TODO add a variation of this that takes a non ecoded word or MWE.
             type = 'text/html'
             sp = sp[len("lookup_") :]
-            page, word = page_from_href(sp)
+            try:
+                page, word = page_from_href(sp)
+            except (ValueError, TypeError):
+                type = 'text/plain'
+                page, word = "Could not decode the reference.", ''
         elif sp == "start_page":
             # if this is the first request we should display help
             # information, and possibly set a default word.
@@ -244,7 +265,9 @@ def wnb(port=8000, runBrowser=True, logfilename=None):
         browser_thread = startBrowser(url, server_ready)
 
     # Start the server.
-    server = HTTPServer(('', port), MyServerHandler)
+    # Loopback only: the helper serves the local browser, not the network
+    # (CWE-284).
+    server = HTTPServer(('127.0.0.1', port), MyServerHandler)
     if logfile:
         logfile.write('NLTK Wordnet browser server running serving: %s\n' % url)
     if runBrowser:
@@ -519,7 +542,7 @@ def pg(word, body):
     :return: a HTML page for the word-body combination
     :rtype: str
     '''
-    return (html_header % word) + body + html_trailer
+    return (html_header % _escape(word)) + body + html_trailer
 
 
 def _ul(txt):
@@ -692,7 +715,15 @@ class Reference(object):
         # This uses a tuple rather than an object since the python
         # pickle representation is much smaller and there is no need
         # to represent the complete object.
-        string = pickle.dumps((self.word, self.synset_relations), -1)
+        # JSON, not pickle: a crafted link could otherwise carry a pickle that
+        # names arbitrary callables (CWE-502). Sets become sorted lists.
+        payload = {
+            "word": self.word,
+            "relations": {
+                key: sorted(values) for key, values in self.synset_relations.items()
+            },
+        }
+        string = json.dumps(payload, sort_keys=True).encode("utf-8")
         return base64.urlsafe_b64encode(string).decode()
 
     @staticmethod
@@ -701,7 +732,23 @@ class Reference(object):
         Decode a reference encoded with Reference.encode
         """
         string = base64.urlsafe_b64decode(string.encode())
-        word, synset_relations = pickle.loads(string)
+        if len(string) > 65536:
+            raise ValueError("reference too long")
+        try:
+            payload = json.loads(string.decode("utf-8"))
+            word = payload["word"]
+            relations = payload["relations"]
+        except (UnicodeDecodeError, ValueError, KeyError, TypeError):
+            raise ValueError("malformed reference")
+        if not isinstance(word, string_types) or not isinstance(relations, dict):
+            raise ValueError("malformed reference")
+        synset_relations = {}
+        for key, values in relations.items():
+            if not isinstance(key, string_types) or not isinstance(values, list):
+                raise ValueError("malformed reference")
+            synset_relations[key] = set(
+                v for v in values if isinstance(v, string_types)
+            )
         return Reference(word, synset_relations)
 
     def toggle_synset_relation(self, synset, relation):
@@ -801,7 +848,7 @@ def page_from_reference(href):
                 except KeyError:
                     pass
     if not body:
-        body = "The word or words '%s' where not found in the dictonary." % word
+        body = "The word or words '%s' where not found in the dictonary." % _escape(word)
     return body, word
 
 
@@ -829,7 +876,7 @@ def get_static_page_by_path(path):
     elif path == "wx_help.html":
         return get_static_wx_help_page()
     else:
-        return "Internal error: Path for static page '%s' is unknown" % path
+        return "Internal error: Path for static page '%s' is unknown" % _escape(path)
 
 
 def get_static_web_help_page():
@@ -964,7 +1011,9 @@ def get_static_upper_page(with_shutdown):
 </html>
 """
     if with_shutdown:
-        shutdown_link = "<a href=\"SHUTDOWN THE SERVER\">Shutdown</a>"
+        shutdown_link = (
+            "<a href=\"SHUTDOWN THE SERVER?token=%s\">Shutdown</a>" % _SHUTDOWN_TOKEN
+        )
     else:
         shutdown_link = ""
 

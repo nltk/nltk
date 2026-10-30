@@ -38,6 +38,8 @@ from six import PY2, binary_type, string_types, text_type
 from six.moves.urllib.parse import urlsplit
 
 __all__ = [
+    "token_hex",
+    "html_escape",
     "RestrictedUnpickler",
     "restricted_pickle_load",
     "restricted_pickle_loads",
@@ -314,3 +316,24 @@ def untrusted_executable_reason(path):
         if parent == probe:
             return None
         probe = parent
+
+
+# ----------------------------------------------------------------------
+# Web helpers (CWE-79, CWE-306)
+# ----------------------------------------------------------------------
+
+
+def token_hex(nbytes=16):
+    """A random hex token from the OS entropy source."""
+    return codecs.encode(os.urandom(nbytes), "hex").decode("ascii")
+
+
+def html_escape(text):
+    """Escape ``&``, ``<``, ``>``, double and single quotes for HTML."""
+    return (
+        text.replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;")
+        .replace('"', "&quot;")
+        .replace("'", "&#x27;")
+    )
