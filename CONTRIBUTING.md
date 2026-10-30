@@ -247,7 +247,7 @@ The [`.github/workflows/ci.yml`](https://github.com/nltk/nltk/blob/develop/.gith
    - verifies that `nltk.download()` works on all platforms (ubuntu, macos, windows).
 
  - The `test` job
-   - tests against supported Python versions (`3.10`, `3.11`, `3.12`, `3.13`, `3.14`).
+   - tests against supported Python versions (`3.10`, `3.11`, `3.12`, `3.13`, `3.14`, `3.15`).
    - tests on `ubuntu-latest`, `macos-latest`, and `windows-latest`.
    - performs these steps:
      - Downloads the `nltk` source code.
@@ -282,7 +282,7 @@ tox -e py313  # for Python 3.13
 
 ## Supported Python Versions
 
-NLTK supports Python `3.10`, `3.11`, `3.12`, `3.13`, and `3.14`.
+NLTK supports Python `3.10`, `3.11`, `3.12`, `3.13`, `3.14`, and `3.15`.
 See `python_requires` in [setup.py](https://github.com/nltk/nltk/blob/develop/setup.py).
 
 
