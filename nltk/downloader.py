@@ -2258,6 +2258,12 @@ def _md5_hexdigest(fp):
 # change this to periodically yield progress messages?
 # [xx] get rid of topdir parameter -- we should be checking
 # this when we build the index, anyway.
+#: Largest unzipped size one package archive may declare: a crafted archive
+#: that inflates to far more than any real package is refused before a byte
+#: is written (CWE-400). The largest real package unzips to under 1 GB.
+MAX_UNZIPPED_BYTES = 8 * 1024 * 1024 * 1024
+
+
 def unzip(filename, root, verbose=True):
     """
     Extract the contents of the zip file ``filename`` into the
@@ -2292,8 +2298,14 @@ def _unzip_iter(filename, root, verbose=True, expected_root=None):
 
     root = os.path.abspath(root)
     try:
+        total = 0
         for member in zf.infolist():
             _security.check_zip_member(member.filename, root, expected_root)
+            total += member.file_size
+            if total > MAX_UNZIPPED_BYTES:
+                raise _security.SecurityError(
+                    'the archive declares more than %d unzipped bytes' % MAX_UNZIPPED_BYTES
+                )
     except _security.SecurityError as e:
         yield ErrorMessage(filename, 'Refusing to unzip %s: %s' % (filename, e))
         return
