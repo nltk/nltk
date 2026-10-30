@@ -26,10 +26,23 @@ jobs:
           python -m pip install six singledispatch "pytest==4.6.11" mock nose "pyyaml==5.4.1" "numpy<1.17"
       - name: Compile every module
         run: python -m compileall -q nltk
+      - name: Cache the NLTK data packages
+        uses: actions/cache@v4
+        with:
+          path: nltk_data
+          key: nltk-data-all-py27-line-v1
+      - name: Install the NLTK data packages through this branch's downloader
+        run: |
+          export NLTK_DATA="$GITHUB_WORKSPACE/nltk_data"
+          python -c "import os, nltk; d = os.environ['NLTK_DATA']; os.path.isdir(d) or os.makedirs(d); nltk.download('all', download_dir=d, quiet=True)"
       - name: Security regression tests
         run: python -m pytest -q -p no:cacheprovider nltk/test/unit/test_security_backport.py
+        env:
+          NLTK_DATA: ${{ github.workspace }}/nltk_data
       - name: Unit suite
         run: python -m pytest -q -p no:cacheprovider --continue-on-collection-errors --deselect nltk/test/unit/test_corenlp.py nltk/test/unit
+        env:
+          NLTK_DATA: ${{ github.workspace }}/nltk_data
 
   python37:
     name: Python 3.7
@@ -41,10 +54,23 @@ jobs:
           python-version: "3.7"
       - name: Install the test dependencies
         run: python -m pip install six pytest mock nose "pyyaml<6" "numpy<1.22"
+      - name: Cache the NLTK data packages
+        uses: actions/cache@v4
+        with:
+          path: nltk_data
+          key: nltk-data-all-py27-line-v1
+      - name: Install the NLTK data packages through this branch's downloader
+        run: |
+          export NLTK_DATA="$GITHUB_WORKSPACE/nltk_data"
+          python -c "import os, nltk; d = os.environ['NLTK_DATA']; os.path.isdir(d) or os.makedirs(d); nltk.download('all', download_dir=d, quiet=True)"
       - name: Security regression tests
         run: python -m pytest -q -p no:cacheprovider nltk/test/unit/test_security_backport.py
+        env:
+          NLTK_DATA: ${{ github.workspace }}/nltk_data
       - name: Unit suite
         run: python -m pytest -q -p no:cacheprovider --continue-on-collection-errors --deselect nltk/test/unit/test_corenlp.py nltk/test/unit
+        env:
+          NLTK_DATA: ${{ github.workspace }}/nltk_data
 
   hygiene:
     name: Tree hygiene

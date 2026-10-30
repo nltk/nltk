@@ -175,13 +175,20 @@ class TestLiteralsAndOptions(object):
             S.decode_string_literal("__import__('os')")
 
     def test_java_options_allowlist(self):
-        from nltk import internals
-
-        internals.config_java(options="-Xmx512m -server")
-        assert internals._java_options == ["-Xmx512m", "-server"]
+        assert S.check_java_options(["-Xmx512m", "-server"]) == ["-Xmx512m", "-server"]
         for bad in (["-jar", "x.jar"], ["@args"], ["-XX:OnError=ls"], ["-Xmx1g; ls"]):
             with pytest.raises(ValueError):
                 S.check_java_options(bad)
+
+    def test_config_java_applies_the_allowlist(self):
+        from nltk import internals
+
+        if S.find_on_path("java") is None and not os.environ.get("JAVA_HOME"):
+            pytest.skip("no JVM on this machine")
+        internals.config_java(options="-Xmx512m -server")
+        assert internals._java_options == ["-Xmx512m", "-server"]
+        with pytest.raises(ValueError):
+            internals.config_java(options=["-jar", "x.jar"])
 
     def test_relative_binary_is_untrusted(self):
         assert S.untrusted_executable_reason("bin/ls") is not None
