@@ -1,6 +1,6 @@
 Version 3.10.5 (unreleased)
 
-* Support Python 3.15: classifier, docs, tox and the CI matrix (3.15 and 3.15t); CI also exercises Python 3.16.0a1 on Linux with the pure-Python dependencies (PR #4003)
+* Support Python 3.15: classifier, docs, tox and the CI matrix (3.15 and 3.15t). A CI cell for Python 3.16 is prepared, commented out until 3.16 nears release (PR #4003)
 
 Version 3.10.4 2026-10-20
 
