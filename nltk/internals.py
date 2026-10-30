@@ -167,7 +167,7 @@ if 0:
     # Write:
     # java('weka.classifiers.bayes.NaiveBayes',
     #     ['-d', '/tmp/names.model', '-t', '/tmp/train.arff'],
-    #     classpath='/Users/edloper/Desktop/weka/weka.jar')
+    #     classpath='/Users/user/Desktop/weka/weka.jar')
     # Read:
     (a, b) = java(
         [
@@ -179,7 +179,7 @@ if 0:
             '-p',
             '0',
         ],  # , '-distribution'],
-        classpath='/Users/edloper/Desktop/weka/weka.jar',
+        classpath='/Users/user/Desktop/weka/weka.jar',
     )
 
 

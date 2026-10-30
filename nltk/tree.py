@@ -782,6 +782,7 @@ class Tree(list):
         import os
         import base64
         import subprocess
+        import shutil
         import tempfile
         from nltk.draw.tree import tree_to_treesegment
         from nltk.draw.util import CanvasFrame
