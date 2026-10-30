@@ -46,7 +46,7 @@ class SensevalInstance:
         self.context = context
 
     def __repr__(self):
-        return "SensevalInstance(word=%r, position=%r, context=%r, senses=%r)" % (
+        return "SensevalInstance(word={!r}, position={!r}, context={!r}, senses={!r})".format(
             self.word,
             self.position,
             self.context,

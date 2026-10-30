@@ -128,9 +128,7 @@ class NgramCounter:
         for sent in ngram_text:
             for ngram in sent:
                 if not isinstance(ngram, tuple):
-                    raise TypeError(
-                        "Ngram <{}> isn't a tuple, but {}".format(ngram, type(ngram))
-                    )
+                    raise TypeError(f"Ngram <{ngram}> isn't a tuple, but {type(ngram)}")
 
                 ngram_order = len(ngram)
                 if ngram_order == 1:

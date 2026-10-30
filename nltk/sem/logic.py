@@ -2020,7 +2020,7 @@ class LogicalExpressionException(Exception):
 class UnexpectedTokenException(LogicalExpressionException):
     def __init__(self, index, unexpected=None, expected=None, message=None):
         if unexpected and expected:
-            msg = "Unexpected token: '%s'.  Expected token '%s'." % (
+            msg = "Unexpected token: '{}'.  Expected token '{}'.".format(
                 unexpected,
                 expected,
             )

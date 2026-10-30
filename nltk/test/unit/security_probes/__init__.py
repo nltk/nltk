@@ -35,7 +35,7 @@ def run():
         except Exception as exc:
             status, evidence = (
                 "ERROR",
-                "{}: {}".format(type(exc).__name__, str(exc)[:70]),
+                f"{type(exc).__name__}: {str(exc)[:70]}",
             )
         counts[status] = counts.get(status, 0) + 1
         print("%-22s %-10s %s" % (ghsa, status, evidence[:70]))
