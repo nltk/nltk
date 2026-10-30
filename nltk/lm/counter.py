@@ -19,6 +19,13 @@ from nltk import compat
 from nltk.probability import ConditionalFreqDist, FreqDist
 
 
+#: Upper bound on the distinct ngrams one ``NgramCounter`` may store. The
+#: counter keeps every distinct ngram of every order, so an untrusted corpus
+#: of distinct tokens grows memory without limit (CWE-770; CVE-2026-12928).
+#: Generous for NLTK's documented corpora; raise it for a larger one.
+MAX_NGRAMS = 10000000
+
+
 @compat.python_2_unicode_compatible
 class NgramCounter(object):
     """Class for counting ngrams.
@@ -127,11 +134,32 @@ class NgramCounter(object):
 
                 ngram_order = len(ngram)
                 if ngram_order == 1:
+                    if ngram[0] not in self.unigrams:
+                        self._note_new_ngram()
                     self.unigrams[ngram[0]] += 1
                     continue
 
                 context, word = ngram[:-1], ngram[-1]
-                self[ngram_order][context][word] += 1
+
+                counts = self[ngram_order][context]
+
+                if word not in counts:
+
+                    self._note_new_ngram()
+
+                counts[word] += 1
+
+    def _note_new_ngram(self):
+        """Account for one newly stored distinct ngram; refuse past the bound
+        (CWE-770; CVE-2026-12928). Checked before storing, so a refused ngram
+        never inflates the count."""
+        distinct = getattr(self, "_distinct", 0)
+        if distinct >= MAX_NGRAMS:
+            raise ValueError(
+                "Refusing to count further: NgramCounter exceeded the limit of "
+                "%d distinct ngrams (nltk.lm.counter.MAX_NGRAMS)" % MAX_NGRAMS
+            )
+        self._distinct = distinct + 1
 
     def N(self):
         """Returns grand total number of ngrams stored.

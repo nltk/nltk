@@ -216,9 +216,9 @@ class Alignment(frozenset):
         """
         Look up the alignments that map from a given index or slice.
         """
-        if not self._index:
+        if self._index is None:
             self._build_index()
-        return self._index.__getitem__(key)
+        return self._index.get(key, [])
 
     def invert(self):
         """
@@ -232,12 +232,12 @@ class Alignment(frozenset):
         If no positions are specified, compute the range of the entire mapping.
         """
         image = set()
-        if not self._index:
+        if self._index is None:
             self._build_index()
         if not positions:
-            positions = list(range(len(self._index)))
+            positions = list(range(self._len + 1))
         for p in positions:
-            image.update(f for _, f in self._index[p])
+            image.update(f for _, f in self._index.get(p, []))
         return sorted(image)
 
     def __repr__(self):
@@ -257,9 +257,12 @@ class Alignment(frozenset):
         Build a list self._index such that self._index[i] is a list
         of the alignments originating from word i.
         """
-        self._index = [[] for _ in range(self._len + 1)]
+        # A dict: a dense list sized by the largest left index let one pair
+        # such as "0-0 100000000-1" allocate ~100M empty lists (CWE-770;
+        # CVE-2026-12837). The index is sized by the pairs instead.
+        self._index = {}
         for p in self:
-            self._index[p[0]].append(p)
+            self._index.setdefault(p[0], []).append(p)
 
 
 def _giza2pair(pair_string):

@@ -60,15 +60,32 @@ def _match_enums(enum_hypothesis_list, enum_reference_list):
              enumerated unmatched reference tuples
     :rtype: list of 2D tuples, list of 2D tuples,  list of 2D tuples
     """
+    # Index each reference word by its positions (ascending); popping the
+    # highest still-unused one mirrors the original reverse scan while the
+    # matching stays O(len_hyp + len_ref) instead of the nested
+    # O(len_hyp * len_ref) scan that ran in full for low-overlap text
+    # (CWE-770; CVE-2026-12929).
     word_match = []
+    ref_positions = {}
+    for j, (_, ref_word) in enumerate(enum_reference_list):
+        ref_positions.setdefault(ref_word, []).append(j)
+    matched_hyp = set()
+    matched_ref = set()
     for i in range(len(enum_hypothesis_list))[::-1]:
-        for j in range(len(enum_reference_list))[::-1]:
-            if enum_hypothesis_list[i][1] == enum_reference_list[j][1]:
-                word_match.append((enum_hypothesis_list[i][0],enum_reference_list[j][0]))
-                (enum_hypothesis_list.pop(i)[1],enum_reference_list.pop(j)[1])
-                break
+        positions = ref_positions.get(enum_hypothesis_list[i][1])
+        if positions:
+            j = positions.pop()
+            word_match.append((enum_hypothesis_list[i][0], enum_reference_list[j][0]))
+            matched_hyp.add(i)
+            matched_ref.add(j)
+    enum_hypothesis_list = [
+        item for i, item in enumerate(enum_hypothesis_list) if i not in matched_hyp
+    ]
+    enum_reference_list = [
+        item for j, item in enumerate(enum_reference_list) if j not in matched_ref
+    ]
     return word_match, enum_hypothesis_list, enum_reference_list
-                              
+
 def _enum_stem_match(enum_hypothesis_list, enum_reference_list, stemmer = PorterStemmer()):
     """
     Stems each word and matches them in hypothesis and reference 
@@ -140,19 +157,41 @@ def _enum_wordnetsyn_match(enum_hypothesis_list, enum_reference_list, wordnet = 
     :rtype:  list of tuples, list of tuples, list of tuples
 
     """
+    # Reference words indexed by surface form, so each hypothesis word looks
+    # up only its own synonyms instead of scanning the leftover reference
+    # list in full (CWE-770; CVE-2026-12929). The highest available position
+    # among the synonyms mirrors the original reverse scan.
     word_match = []
+    ref_positions = {}
+    for j, (_, ref_word) in enumerate(enum_reference_list):
+        ref_positions.setdefault(ref_word, []).append(j)
+    matched_hyp = set()
+    matched_ref = set()
     for i in range(len(enum_hypothesis_list))[::-1]:
-        hypothesis_syns = set(chain(*[[lemma.name() for lemma in synset.lemmas() 
-                                        if lemma.name().find('_')<0] 
-                                       for synset in \
-                                           wordnet.synsets(
-                                               enum_hypothesis_list[i][1])]
-                                               )).union({enum_hypothesis_list[i][1]})
-        for j in range(len(enum_reference_list))[::-1]:
-            if enum_reference_list[j][1] in hypothesis_syns:
-                word_match.append((enum_hypothesis_list[i][0],enum_reference_list[j][0]))
-                enum_hypothesis_list.pop(i),enum_reference_list.pop(j)
-                break
+        hypothesis_syns = set(
+            chain(
+                *[
+                    [lemma.name() for lemma in synset.lemmas() if lemma.name().find('_') < 0]
+                    for synset in wordnet.synsets(enum_hypothesis_list[i][1])
+                ]
+            )
+        ).union({enum_hypothesis_list[i][1]})
+        best = -1
+        for syn in hypothesis_syns:
+            positions = ref_positions.get(syn)
+            if positions and positions[-1] > best:
+                best = positions[-1]
+        if best >= 0:
+            ref_positions[enum_reference_list[best][1]].pop()
+            word_match.append((enum_hypothesis_list[i][0], enum_reference_list[best][0]))
+            matched_hyp.add(i)
+            matched_ref.add(best)
+    enum_hypothesis_list = [
+        item for i, item in enumerate(enum_hypothesis_list) if i not in matched_hyp
+    ]
+    enum_reference_list = [
+        item for j, item in enumerate(enum_reference_list) if j not in matched_ref
+    ]
     return word_match, enum_hypothesis_list, enum_reference_list
 
 def wordnetsyn_match(hypothesis, reference, wordnet = wordnet):

@@ -3002,6 +3002,10 @@ class HungarianStemmer(_LanguageSpecificStemmer):
         """
         word = word.lower()
 
+        # An empty string indexed past its end (CVE-2026-14597)
+        if not word:
+            return word
+
         if word in self.stopwords:
             return word
 

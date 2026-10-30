@@ -111,28 +111,28 @@ class Cistem(StemmerI):
 
         word = Cistem.strip_ge.sub(r"\1", word)
         word = Cistem.replace_to(word)
-
-        while len(word) > 3:
-            if len(word) > 5:
-                (word, success) = Cistem.strip_emr.subn("", word)
-                if success != 0:
+        # The same end-anchored strips as segment(), popped off a list in
+        # O(1) per step rather than rebuilt through regex substitution, which
+        # was quadratic in the word length (CWE-770; CVE-2026-12868).
+        chars = list(word)
+        while len(chars) > 3:
+            if len(chars) > 5:
+                if chars[-1] in "mr" and chars[-2] == "e":  # e[mr]$
+                    del chars[-2:]
                     continue
-
-                (word, success) = Cistem.strip_nd.subn("", word)
-                if success != 0:
+                if chars[-1] == "d" and chars[-2] == "n":  # nd$
+                    del chars[-2:]
                     continue
-
             if not upper or self._case_insensitive:
-                (word, success) = Cistem.strip_t.subn("", word)
-                if success != 0:
+                if chars[-1] == "t":  # t$
+                    del chars[-1:]
                     continue
-
-            (word, success) = Cistem.strip_esn.subn("", word)
-            if success != 0:
+            if chars[-1] in "esn":  # [esn]$
+                del chars[-1:]
                 continue
             else:
                 break
-
+        word = "".join(chars)
         word = Cistem.replace_back(word)
 
         return word
@@ -172,49 +172,47 @@ class Cistem(StemmerI):
         >>> stemmer.segment(s3)
         ('ausgefeil', 'tere')
         """
-
-        rest_length = 0
-
         if len(word) == 0:
             return ("", "")
 
         upper = word[0].isupper()
         word = word.lower()
-
         original = word[:]
-
         word = Cistem.replace_to(word)
 
-        while len(word) > 3:
-            if len(word) > 5:
-                (word, success) = Cistem.strip_emr.subn("", word)
-                if success != 0:
+        # Each suffix pattern (e[mr]$, nd$, t$, [esn]$) strips one or two
+        # characters at the end. Rebuilding the whole string through the
+        # compiled patterns' subn on every removal was O(n) per step over O(n)
+        # steps, so one long word pinned a CPU core (CWE-770; CVE-2026-12868).
+        # Characters are popped off a list in O(1) per step instead.
+        rest_length = 0
+        chars = list(word)
+        while len(chars) > 3:
+            if len(chars) > 5:
+                if chars[-1] in "mr" and chars[-2] == "e":  # e[mr]$
+                    del chars[-2:]
                     rest_length += 2
                     continue
-
-                (word, success) = Cistem.strip_nd.subn("", word)
-                if success != 0:
+                if chars[-1] == "d" and chars[-2] == "n":  # nd$
+                    del chars[-2:]
                     rest_length += 2
                     continue
-
             if not upper or self._case_insensitive:
-                (word, success) = Cistem.strip_t.subn("", word)
-                if success != 0:
+                if chars[-1] == "t":  # t$
+                    del chars[-1:]
                     rest_length += 1
                     continue
-
-            (word, success) = Cistem.strip_esn.subn("", word)
-            if success != 0:
+            if chars[-1] in "esn":  # [esn]$
+                del chars[-1:]
                 rest_length += 1
                 continue
             else:
                 break
-
+        word = "".join(chars)
         word = Cistem.replace_back(word)
 
         if rest_length:
             rest = original[-rest_length:]
         else:
             rest = ""
-
         return (word, rest)

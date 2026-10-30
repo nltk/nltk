@@ -108,6 +108,8 @@ The following is a short tutorial on the available transformations.
 """
 from __future__ import print_function
 
+from collections import deque
+
 from nltk.tree import Tree
 
 
@@ -148,7 +150,9 @@ def chomsky_normal_form(
             # chomsky normal form factorization
             if len(node) > 2:
                 childNodes = [child.label() for child in node]
-                nodeCopy = node.copy()
+                # a deque: popping from the front kept the right-factoring loop
+                # quadratic in the number of children (CWE-407; GHSA-r53h-rw34-8h97)
+                nodeCopy = deque(node)
                 node[0:] = []  # delete the children
 
                 curNode = node
@@ -164,7 +168,7 @@ def chomsky_normal_form(
                             parentString,
                         )  # create new head
                         newNode = Tree(newHead, [])
-                        curNode[0:] = [nodeCopy.pop(0), newNode]
+                        curNode[0:] = [nodeCopy.popleft(), newNode]
                     else:
                         newHead = "%s%s<%s>%s" % (
                             originalNode,
