@@ -92,7 +92,7 @@ before each commit. The hooks are configured in
 and include:
 
 - [pre-commit-hooks](https://github.com/pre-commit/pre-commit-hooks) -- trailing whitespace, end-of-file fixer, YAML check
-- [pyupgrade](https://github.com/asottile/pyupgrade) -- upgrade syntax to Python 3.10+
+- [pyupgrade](https://github.com/asottile/pyupgrade) -- upgrade syntax to Python 3.11+
 - [black](https://github.com/psf/black) -- code formatting
 - [isort](https://github.com/pycqa/isort) -- import sorting
 - [ruff](https://github.com/astral-sh/ruff-pre-commit) -- fast Python linter with auto-fix
@@ -247,7 +247,7 @@ The [`.github/workflows/ci.yml`](https://github.com/nltk/nltk/blob/develop/.gith
    - verifies that `nltk.download()` works on all platforms (ubuntu, macos, windows).
 
  - The `test` job
-   - tests against supported Python versions (`3.10`, `3.11`, `3.12`, `3.13`, `3.14`, `3.15`).
+   - tests against supported Python versions (`3.11`, `3.12`, `3.13`, `3.14`, `3.15`).
    - tests on `ubuntu-latest`, `macos-latest`, and `windows-latest`.
    - performs these steps:
      - Downloads the `nltk` source code.
@@ -282,7 +282,7 @@ tox -e py313  # for Python 3.13
 
 ## Supported Python Versions
 
-NLTK supports Python `3.10`, `3.11`, `3.12`, `3.13`, `3.14`, and `3.15`.
+NLTK supports Python `3.11`, `3.12`, `3.13`, `3.14`, and `3.15`.
 See `python_requires` in [setup.py](https://github.com/nltk/nltk/blob/develop/setup.py).
 
 

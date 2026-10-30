@@ -3,13 +3,7 @@ import subprocess
 import sys
 import tempfile
 
-import pytest
 
-
-@pytest.mark.skipif(
-    sys.version_info < (3, 11),
-    reason="PYTHONSAFEPATH / -P exist only on Python 3.11+.",
-)
 def test_safe_path_blocks_cwd_import():
     """
     A module placed in the current working directory must NOT be importable

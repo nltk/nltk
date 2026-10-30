@@ -109,7 +109,6 @@ setup(
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
@@ -126,7 +125,7 @@ setup(
         "Topic :: Text Processing :: Linguistic",
     ],
     package_data={"nltk": ["test/*.doctest", "VERSION"]},
-    python_requires=">=3.10",
+    python_requires=">=3.11",
     install_requires=[
         "defusedxml",
         "click",
