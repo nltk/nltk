@@ -386,16 +386,25 @@ def demo(scorer=None, compare_scorer=None):
 # bigram_measures = BigramAssocMeasures()
 # trigram_measures = TrigramAssocMeasures()
 
+def _named_measure(name):
+    """A public BigramAssocMeasures method by name, never evaluated (CWE-94)."""
+    from nltk.metrics import BigramAssocMeasures
+
+    if name.startswith('_') or not hasattr(BigramAssocMeasures, name):
+        raise ValueError('unknown association measure: %r' % (name,))
+    return getattr(BigramAssocMeasures, name)
+
+
 if __name__ == '__main__':
     import sys
     from nltk.metrics import BigramAssocMeasures
 
     try:
-        scorer = eval('BigramAssocMeasures.' + sys.argv[1])
+        scorer = _named_measure(sys.argv[1])
     except IndexError:
         scorer = None
     try:
-        compare_scorer = eval('BigramAssocMeasures.' + sys.argv[2])
+        compare_scorer = _named_measure(sys.argv[2])
     except IndexError:
         compare_scorer = None
 

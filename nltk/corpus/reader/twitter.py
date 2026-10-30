@@ -20,6 +20,8 @@ from nltk.tokenize import TweetTokenizer
 from nltk.corpus.reader.util import StreamBackedCorpusView, concat, ZipFilePathPointer
 from nltk.corpus.reader.api import CorpusReader
 
+from nltk import _security
+
 
 class TwitterCorpusReader(CorpusReader):
     """
@@ -148,6 +150,6 @@ class TwitterCorpusReader(CorpusReader):
             line = stream.readline()
             if not line:
                 return tweets
-            tweet = json.loads(line)
+            tweet = json.loads(_security.check_json_depth(line))
             tweets.append(tweet)
         return tweets

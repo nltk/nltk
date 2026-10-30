@@ -21,6 +21,8 @@ from nltk.tbl import error_list, Template
 from nltk.tag.brill import Word, Pos
 from nltk.tag import BrillTaggerTrainer, RegexpTagger, UnigramTagger
 
+from nltk import _security
+
 
 def demo():
     """
@@ -249,15 +251,15 @@ def postag(
             baseline_tagger = UnigramTagger(
                 baseline_data, backoff=baseline_backoff_tagger
             )
-            with open(cache_baseline_tagger, 'w') as print_rules:
+            with open(cache_baseline_tagger, 'wb') as print_rules:
                 pickle.dump(baseline_tagger, print_rules)
             print(
                 "Trained baseline tagger, pickled it to {0}".format(
                     cache_baseline_tagger
                 )
             )
-        with open(cache_baseline_tagger, "r") as print_rules:
-            baseline_tagger = pickle.load(print_rules)
+        with open(cache_baseline_tagger, "rb") as print_rules:
+            baseline_tagger = _security.restricted_pickle_load(print_rules)
             print("Reloaded pickled tagger from {0}".format(cache_baseline_tagger))
     else:
         baseline_tagger = UnigramTagger(baseline_data, backoff=baseline_backoff_tagger)
@@ -327,11 +329,11 @@ def postag(
     # serializing the tagger to a pickle file and reloading (just to see it works)
     if serialize_output is not None:
         taggedtest = brill_tagger.tag_sents(testing_data)
-        with open(serialize_output, 'w') as print_rules:
+        with open(serialize_output, 'wb') as print_rules:
             pickle.dump(brill_tagger, print_rules)
         print("Wrote pickled tagger to {0}".format(serialize_output))
-        with open(serialize_output, "r") as print_rules:
-            brill_tagger_reloaded = pickle.load(print_rules)
+        with open(serialize_output, "rb") as print_rules:
+            brill_tagger_reloaded = _security.restricted_pickle_load(print_rules)
         print("Reloaded pickled tagger from {0}".format(serialize_output))
         taggedtest_reloaded = brill_tagger.tag_sents(testing_data)
         if taggedtest == taggedtest_reloaded:

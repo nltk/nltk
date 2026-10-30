@@ -452,7 +452,11 @@ def smooth(x, window_len=11, window='flat'):
     if window == 'flat':  # moving average
         w = numpy.ones(window_len, 'd')
     else:
-        w = eval('numpy.' + window + '(window_len)')
+        # the window name selects a numpy function from an allowlist; it is
+        # never evaluated as code (CWE-94)
+        if window not in ('hanning', 'hamming', 'bartlett', 'blackman'):
+            raise ValueError("Window is one of 'flat', 'hanning', 'hamming', 'bartlett', 'blackman'")
+        w = getattr(numpy, window)(window_len)
 
     y = numpy.convolve(w / w.sum(), s, mode='same')
 

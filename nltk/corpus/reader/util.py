@@ -30,6 +30,8 @@ from nltk.data import PathPointer, FileSystemPathPointer, ZipFilePathPointer
 from nltk.data import SeekableUnicodeStreamReader
 from nltk.util import AbstractLazySequence, LazySubsequence, LazyConcatenation, py25
 
+from nltk import _security
+
 ######################################################################
 # { Corpus View
 ######################################################################
@@ -522,7 +524,7 @@ class PickleCorpusView(StreamBackedCorpusView):
         result = []
         for i in range(self.BLOCK_SIZE):
             try:
-                result.append(pickle.load(stream))
+                result.append(_security.restricted_pickle_load(stream))
             except EOFError:
                 break
         return result

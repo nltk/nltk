@@ -38,6 +38,8 @@ from six import PY2, binary_type, string_types, text_type
 from six.moves.urllib.parse import urlsplit
 
 __all__ = [
+    "sanitize_csv_field",
+    "check_json_depth",
     "token_hex",
     "html_escape",
     "RestrictedUnpickler",
@@ -337,3 +339,65 @@ def html_escape(text):
         .replace('"', "&quot;")
         .replace("'", "&#x27;")
     )
+
+
+# ----------------------------------------------------------------------
+# CSV and JSON (CWE-1236, CWE-674)
+# ----------------------------------------------------------------------
+
+_CSV_FORMULA_LEADS = ("=", "+", "-", "@", "|", "%", "\t", "\r")
+_PLAIN_NUMBER_RE = re.compile(r"^[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?$")
+
+
+def sanitize_csv_field(value):
+    """Neutralise a spreadsheet formula lead at the start of a CSV cell.
+
+    A cell whose first non-blank character is one of ``= + - @ | %`` (or a
+    tab or carriage return) is evaluated as a formula by spreadsheets
+    (CWE-1236); the industry neutralisation prefixes an apostrophe. Numbers
+    and plain numeric strings pass unchanged; other values are returned as
+    they were.
+    """
+    if value is None or isinstance(value, (int, float, bool)):
+        return value
+    if isinstance(value, binary_type) and not isinstance(value, text_type):
+        try:
+            text = value.decode("utf-8")
+        except UnicodeDecodeError:
+            return value
+    else:
+        text = value if isinstance(value, text_type) else text_type(value)
+    stripped = text.lstrip(" ")
+    if stripped.startswith(_CSV_FORMULA_LEADS) and not _PLAIN_NUMBER_RE.match(stripped):
+        return "'" + text
+    return value
+
+
+MAX_JSON_DEPTH = 100
+
+
+def check_json_depth(text, limit=MAX_JSON_DEPTH):
+    """Refuse a JSON text nested deeper than *limit*: the recursive decoder
+    would otherwise overflow the stack on a crafted line (CWE-674)."""
+    if isinstance(text, binary_type) and not isinstance(text, text_type):
+        text = text.decode("utf-8", "replace")
+    depth = 0
+    in_string = False
+    escaped = False
+    for ch in text:
+        if in_string:
+            if escaped:
+                escaped = False
+            elif ch == "\\":
+                escaped = True
+            elif ch == '"':
+                in_string = False
+        elif ch == '"':
+            in_string = True
+        elif ch in "[{":
+            depth += 1
+            if depth > limit:
+                raise SecurityError("JSON nested deeper than %d levels" % limit)
+        elif ch in "]}":
+            depth -= 1
+    return text

@@ -28,6 +28,8 @@ from nltk.corpus import CategorizedPlaintextCorpusReader
 from nltk.data import load
 from nltk.tokenize.casual import EMOTICON_RE
 
+from nltk import _security
+
 # ////////////////////////////////////////////////////////////
 # { Regular expressions
 # ////////////////////////////////////////////////////////////
@@ -394,13 +396,13 @@ def json2csv_preprocess(
     with codecs.open(json_file, encoding=encoding) as fp:
         (writer, outf) = outf_writer_compat(outfile, encoding, errors, gzip_compress)
         # write the list of fields as header
-        writer.writerow(fields)
+        writer.writerow([_security.sanitize_csv_field(c) for c in fields])
 
         if remove_duplicates == True:
             tweets_cache = []
         i = 0
         for line in fp:
-            tweet = json.loads(line)
+            tweet = json.loads(_security.check_json_depth(line))
             row = extract_fields(tweet, fields)
             try:
                 text = row[fields.index('text')]
@@ -431,7 +433,7 @@ def json2csv_preprocess(
                         tweets_cache.append(row[fields.index('text')])
             except ValueError:
                 pass
-            writer.writerow(row)
+            writer.writerow([_security.sanitize_csv_field(c) for c in row])
             i += 1
             if limit and i >= limit:
                 break

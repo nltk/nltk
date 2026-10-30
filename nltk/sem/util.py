@@ -272,7 +272,12 @@ def demo():
     if options.grammar:
         gramfile = options.grammar
     if options.model:
-        exec("import %s as model" % options.model)
+        import importlib
+        import re as _re
+
+        if not _re.match(r'^[A-Za-z_][A-Za-z0-9_.]*$', options.model):
+            raise ValueError('not a module name: %r' % (options.model,))
+        model = importlib.import_module(options.model)  # never exec (CWE-94)
 
     if sents is None:
         sents = read_sents(sentsfile)
