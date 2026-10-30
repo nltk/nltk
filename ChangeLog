@@ -1,3 +1,11 @@
+Version 3.4.6 2026-10-29
+* Security maintenance release for the Python 2.7 line: the vulnerability
+  classes fixed in the 3.10 line, applied in place to this code (see
+  SECURITY.md for the list and the limits). No new features.
+* Python 2.7 itself is end of life; this release closes NLTK's own holes on
+  it and cannot close the interpreter's. Use NLTK 3.10.4 or newer on a
+  current Python wherever possible.
+
 Version 3.4.5 2019-08-20
 * Fixed security bug in downloader: Zip slip vulnerability - for the unlikely
   situation where a user configures their downloader to use a compromised server

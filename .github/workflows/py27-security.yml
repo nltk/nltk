@@ -1,0 +1,63 @@
+name: Python 2.7 maintenance line
+
+on:
+  push:
+    branches: [py27-security, "3.4.*"]
+  pull_request:
+    branches: [py27-security, "3.4.*"]
+
+permissions: {}
+
+concurrency:
+  group: py27-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python27:
+    name: Python 2.7.18 (container)
+    runs-on: ubuntu-latest
+    container:
+      image: python:2.7.18-slim
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install the test dependencies
+        run: |
+          python -m pip install --upgrade "pip<21"
+          python -m pip install six singledispatch "pytest==4.6.11" mock nose "pyyaml==5.4.1" "numpy<1.17"
+      - name: Compile every module
+        run: python -m compileall -q nltk
+      - name: Security regression tests
+        run: python -m pytest -q -p no:cacheprovider nltk/test/unit/test_security_backport.py
+      - name: Unit suite
+        run: python -m pytest -q -p no:cacheprovider --continue-on-collection-errors --deselect nltk/test/unit/test_corenlp.py nltk/test/unit
+
+  python37:
+    name: Python 3.7
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.7"
+      - name: Install the test dependencies
+        run: python -m pip install six pytest mock nose "pyyaml<6" "numpy<1.22"
+      - name: Security regression tests
+        run: python -m pytest -q -p no:cacheprovider nltk/test/unit/test_security_backport.py
+      - name: Unit suite
+        run: python -m pytest -q -p no:cacheprovider --continue-on-collection-errors --deselect nltk/test/unit/test_corenlp.py nltk/test/unit
+
+  hygiene:
+    name: Tree hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: No developer paths or credential-shaped tokens in the tree
+        run: python tools/check_no_machine_leaks.py
+      - name: Build and audit the distribution
+        run: |
+          python -m pip install build
+          python -m build
+          python tools/check_sdist_hygiene.py dist/*
