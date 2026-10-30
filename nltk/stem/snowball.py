@@ -23,7 +23,6 @@ There is also a demo function: `snowball.demo()`.
 
 """
 
-
 from nltk import redos
 from nltk.corpus import stopwords
 from nltk.stem import porter

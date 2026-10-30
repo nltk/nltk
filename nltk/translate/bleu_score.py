@@ -7,6 +7,7 @@
 # For license information, see LICENSE.TXT
 
 """BLEU score implementation."""
+
 import math
 import sys
 import warnings
@@ -217,9 +218,9 @@ def corpus_bleu(
     p_denominators = Counter()  # Key = ngram order, and value = no. of ngram in ref.
     hyp_lengths, ref_lengths = 0, 0
 
-    assert len(list_of_references) == len(hypotheses), (
-        "The number of hypotheses and their reference(s) should be the " "same "
-    )
+    assert len(list_of_references) == len(
+        hypotheses
+    ), "The number of hypotheses and their reference(s) should be the same "
 
     try:
         weights[0][0]

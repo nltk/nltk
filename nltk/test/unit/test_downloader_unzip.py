@@ -212,12 +212,15 @@ class TestSecureUnzip:
 
         poisoned_names = ["pkg/good.txt", "pkg/evil\x00.txt"]
 
-        with patch(
-            "nltk.downloader.zipfile.ZipFile.namelist",
-            return_value=poisoned_names,
-        ), patch(
-            "nltk.downloader.zipfile.ZipFile.extract",
-        ) as mock_extract:
+        with (
+            patch(
+                "nltk.downloader.zipfile.ZipFile.namelist",
+                return_value=poisoned_names,
+            ),
+            patch(
+                "nltk.downloader.zipfile.ZipFile.extract",
+            ) as mock_extract,
+        ):
             messages = _run_unzip_iter(zip_path, extract_root, verbose=False)
 
         _assert_blocked(messages, "Null byte", "blocked")

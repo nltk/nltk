@@ -338,9 +338,9 @@ def corpus_lepor(
     if len(references) == 0 or len(hypothesis) == 0:
         raise ValueError("There is an Empty list. Exit.")
 
-    assert len(references) == len(hypothesis), (
-        "The number of hypothesis and their reference(s) should be the " "same "
-    )
+    assert len(references) == len(
+        hypothesis
+    ), "The number of hypothesis and their reference(s) should be the same "
 
     lepor_scores = list()
 

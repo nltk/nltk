@@ -613,8 +613,9 @@ class TestIndex:
         monkeypatch.setattr(downloader, "INDEX_DEADLINE", 1.0)
         body = make_index([]) + b" " * 300  # about 20 s at this drip
         server.drip("/index.xml", body, delay=0.05)
-        with timing.budget(6, "the index load"), pytest.raises(
-            ValueError, match="time budget"
+        with (
+            timing.budget(6, "the index load"),
+            pytest.raises(ValueError, match="time budget"),
         ):
             self._load(server.url("/index.xml"), dl)
 

@@ -518,7 +518,7 @@ class HiddenMarkovModelTagger(TaggerI):
             if cum_p <= p <= cum_p + add_p:
                 return sample
             cum_p += add_p
-        raise Exception("Invalid probability distribution - " "does not sum to one")
+        raise Exception("Invalid probability distribution - does not sum to one")
 
     def entropy(self, unlabeled_sequence):
         """

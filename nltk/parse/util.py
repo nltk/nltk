@@ -57,7 +57,7 @@ def load_parser(
     """
     grammar = load(grammar_url, **load_args)
     if not isinstance(grammar, CFG):
-        raise ValueError("The grammar must be a CFG, " "or a subclass thereof.")
+        raise ValueError("The grammar must be a CFG, or a subclass thereof.")
     if isinstance(grammar, PCFG):
         if parser is None:
             parser = InsideChartParser

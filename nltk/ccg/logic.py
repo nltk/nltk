@@ -7,6 +7,7 @@
 """
 Helper functions for CCG semantics computation
 """
+
 import copy
 
 from nltk import redos

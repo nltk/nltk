@@ -290,17 +290,20 @@ class XML_Tool:
             # (CWE-22/59), and "xb" is O_CREAT|O_EXCL so it cannot clobber a plant.
             from nltk.pathsec import open as pathsec_open
 
-            with pathsec_open(
-                self.read_file,
-                "rb",
-                context="NKJPCorpusReader",
-                required_root=self._root,
-            ) as fr, pathsec_open(
-                self.write_file,
-                "xb",
-                context="NKJPCorpusReader",
-                required_root=os.path.dirname(self.write_file),
-            ) as fw:
+            with (
+                pathsec_open(
+                    self.read_file,
+                    "rb",
+                    context="NKJPCorpusReader",
+                    required_root=self._root,
+                ) as fr,
+                pathsec_open(
+                    self.write_file,
+                    "xb",
+                    context="NKJPCorpusReader",
+                    required_root=os.path.dirname(self.write_file),
+                ) as fw,
+            ):
                 self._owns_scratch = True
                 # Decode/encode UTF-8 explicitly to match the NKJP TEI examples, stay
                 # locale-independent, and keep the XML bytes exact.

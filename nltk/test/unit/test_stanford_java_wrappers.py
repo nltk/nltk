@@ -19,14 +19,12 @@ def _launched(captured_cmd, trusted_java_stub):
 def test_java_call_options_do_not_mutate_global_java_options(
     tmp_path, trusted_java_stub
 ):
-    with mock.patch.dict(os.environ, {"NLTK_ALLOW_UNSAFE_JARS": "1"}), mock.patch(
-        "nltk.data.path", [str(tmp_path)]
-    ), mock.patch.object(
-        nltk.internals, "_java_bin", trusted_java_stub
-    ), mock.patch.object(
-        nltk.internals, "_java_options", ["-Xmx111m"]
+    with (
+        mock.patch.dict(os.environ, {"NLTK_ALLOW_UNSAFE_JARS": "1"}),
+        mock.patch("nltk.data.path", [str(tmp_path)]),
+        mock.patch.object(nltk.internals, "_java_bin", trusted_java_stub),
+        mock.patch.object(nltk.internals, "_java_options", ["-Xmx111m"]),
     ):
-
         captured_cmd = []
 
         def fake_popen(cmd, *args, **kwargs):
@@ -124,10 +122,11 @@ def test_java_classpath_sandbox_integration(tmp_path, trusted_java_stub):
     data_dir.mkdir()
     safe_jar = data_dir / "safe.jar"
     safe_jar.touch()
-    with mock.patch("nltk.data.path", [str(data_dir)]), mock.patch.object(
-        nltk.internals, "_java_bin", trusted_java_stub
-    ), mock.patch.object(nltk.internals, "_java_options", []):
-
+    with (
+        mock.patch("nltk.data.path", [str(data_dir)]),
+        mock.patch.object(nltk.internals, "_java_bin", trusted_java_stub),
+        mock.patch.object(nltk.internals, "_java_options", []),
+    ):
         captured_cmd = []
 
         def fake_popen(cmd, *args, **kwargs):
@@ -145,14 +144,11 @@ def test_java_classpath_sandbox_integration(tmp_path, trusted_java_stub):
 
 
 def test_java_classpath_with_relative_path_and_escape_hatch(trusted_java_stub):
-    with mock.patch.dict(
-        os.environ, {"NLTK_ALLOW_UNSAFE_JARS": "1"}
-    ), mock.patch.object(
-        nltk.internals, "_java_bin", trusted_java_stub
-    ), mock.patch.object(
-        nltk.internals, "_java_options", []
+    with (
+        mock.patch.dict(os.environ, {"NLTK_ALLOW_UNSAFE_JARS": "1"}),
+        mock.patch.object(nltk.internals, "_java_bin", trusted_java_stub),
+        mock.patch.object(nltk.internals, "_java_options", []),
     ):
-
         captured_cmd = []
 
         def fake_popen(cmd, *args, **kwargs):

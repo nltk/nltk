@@ -446,10 +446,8 @@ def test_hardlink_write_probe_has_teeth():
     probe = probes.PROBES["GHSA-f794-5jv7-7672"]
     real = pathsec._hardened_open
     try:
-        pathsec._hardened_open = (
-            lambda raw, mode, context, required_root, **kw: builtins.open(
-                raw, mode, **kw
-            )
+        pathsec._hardened_open = lambda raw, mode, context, required_root, **kw: (
+            builtins.open(raw, mode, **kw)
         )
         assert probe()[0] == probes.VULNERABLE
     finally:

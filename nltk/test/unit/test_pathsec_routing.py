@@ -433,20 +433,20 @@ def test_downloader_derives_its_names_from_the_canonical_download_dir(tmp_path):
         checksum = hashlib.md5(b"x").hexdigest()
 
     canonical = os.path.realpath(str(real))
-    with unittest.mock.patch(
-        "nltk.downloader.urlopen"
-    ) as urlopen_mock, unittest.mock.patch(
-        "nltk.downloader.pathsec_open"
-    ) as pathsec_open_mock, unittest.mock.patch(
-        "nltk.downloader.sha256_hexdigest", return_value=DummyInfo.sha256_checksum
-    ), unittest.mock.patch(
-        "nltk.downloader.md5_hexdigest", return_value=DummyInfo.checksum
-    ), unittest.mock.patch(
-        "nltk.downloader.os.path.getsize", return_value=1
-    ), unittest.mock.patch(
-        "nltk.downloader.pathsec.replace"
-    ) as replace_mock, unittest.mock.patch.object(
-        Downloader, "status", return_value=Downloader.NOT_INSTALLED
+    with (
+        unittest.mock.patch("nltk.downloader.urlopen") as urlopen_mock,
+        unittest.mock.patch("nltk.downloader.pathsec_open") as pathsec_open_mock,
+        unittest.mock.patch(
+            "nltk.downloader.sha256_hexdigest", return_value=DummyInfo.sha256_checksum
+        ),
+        unittest.mock.patch(
+            "nltk.downloader.md5_hexdigest", return_value=DummyInfo.checksum
+        ),
+        unittest.mock.patch("nltk.downloader.os.path.getsize", return_value=1),
+        unittest.mock.patch("nltk.downloader.pathsec.replace") as replace_mock,
+        unittest.mock.patch.object(
+            Downloader, "status", return_value=Downloader.NOT_INSTALLED
+        ),
     ):
         infile = unittest.mock.Mock()
         infile.read.side_effect = [b"x", b""]

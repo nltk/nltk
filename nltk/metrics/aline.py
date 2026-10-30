@@ -36,6 +36,7 @@ Example usage
 [1] G. Kondrak. Algorithms for Language Reconstruction. PhD dissertation,
 University of Toronto.
 """
+
 from nltk.termsec import safe_print
 
 try:

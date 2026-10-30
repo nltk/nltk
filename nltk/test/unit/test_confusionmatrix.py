@@ -84,4 +84,4 @@ def test_all_distinct_input_does_not_allocate_dense_matrix():
     assert status == "ok", f"worker raised: {peak}"
     assert (
         peak < _MAX_BYTES
-    ), f"allocated {peak/1e6:.0f} MB for {_N} distinct labels (DoS)"
+    ), f"allocated {peak / 1e6:.0f} MB for {_N} distinct labels (DoS)"
