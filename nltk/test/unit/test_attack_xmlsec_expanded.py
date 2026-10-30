@@ -591,13 +591,19 @@ class TestEntitiesStillRefused:
 # 6. Encoding parity between the screen and the parser
 # ===========================================================================
 class TestEncodingParity:
-    def test_an_unsupported_multibyte_encoding_fails_the_same_way(self, backend):
+    def test_a_multibyte_encoding_is_handled_the_same_way(self, backend):
+        # pyexpat refused multi-byte encodings ("multi-byte encodings are not
+        # supported") through Python 3.15 and reads them from 3.16; whichever
+        # the interpreter does, the screen must do exactly the same
         doc = b'<?xml version="1.0" encoding="gb2312"?><a/>'
-        with pytest.raises(ValueError) as ours:
-            backend.fromstring(doc)
-        with pytest.raises(ValueError) as stock:
-            StockET.fromstring(doc)
-        assert str(ours.value) == str(stock.value)
+
+        def outcome(parse):
+            try:
+                return ("parsed", parse(doc).tag)
+            except ValueError as exc:
+                return ("refused", str(exc))
+
+        assert outcome(backend.fromstring) == outcome(StockET.fromstring)
 
     def test_a_lone_surrogate_fails_the_same_way(self, backend):
         doc = "<a>" + chr(0xDC80) + "</a>"
