@@ -29,6 +29,8 @@ from six import string_types
 
 from nltk import compat
 
+from nltk import _security
+
 ##########################################################################
 # Java Via Command-Line
 ##########################################################################
@@ -65,7 +67,10 @@ def config_java(bin=None, options=None, verbose=False):
     if options is not None:
         if isinstance(options, string_types):
             options = options.split()
-        _java_options = list(options)
+        # Only the heap, stack, verbosity and module flags NLTK's wrappers use
+        # may reach the launcher: -jar, @argfile or -XX:OnError=<cmd> would
+        # turn an option string into code execution (CVE-2026-12841, CWE-88).
+        _java_options = _security.check_java_options(options)
 
 
 def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=True):
@@ -133,6 +138,15 @@ def java(cmd, classpath=None, stdin=None, stdout=None, stderr=None, blocking=Tru
     cmd = list(cmd)
     cmd = ['-cp', classpath] + cmd
     cmd = [_java_bin] + _java_options + cmd
+
+    # The binary and every directory above it must be writable by this
+    # account or root alone; a java planted in the working directory or a
+    # world-writable tree is refused (CVE-2023-40590 class, CWE-426).
+    reason = _security.untrusted_executable_reason(_java_bin)
+    if reason is not None:
+        raise LookupError(
+            'refusing to run the java binary %r: %s' % (_java_bin, reason)
+        )
 
     # Call java via a subprocess
     p = subprocess.Popen(cmd, stdin=stdin, stdout=stdout, stderr=stderr)
@@ -243,11 +257,15 @@ def read_str(s, start_position):
         else:
             break
 
-    # Process it, using eval.  Strings with invalid escape sequences
-    # might raise ValueEerror.
+    # Decode the literal; it is never evaluated, so a crafted "string" in a
+    # grammar or feature-structure file cannot run code (CWE-94).  Invalid
+    # escape sequences raise ValueError.
     try:
-        return eval(s[start_position : match.end()]), match.end()
-    except ValueError as e:
+        return (
+            _security.decode_string_literal(s[start_position : match.end()]),
+            match.end(),
+        )
+    except (ValueError, UnicodeDecodeError) as e:
         raise ReadError('invalid string (%s)' % e)
 
 
@@ -544,7 +562,10 @@ def find_file_iter(
             yielded = True
             yield path_to_file
         # Check the bare alternatives
-        if os.path.isfile(alternative):
+        # A bare name that happens to exist in the current directory is a
+        # planted file, not a configured tool: only an absolute path counts
+        # (CVE-2023-40590 class, CWE-426).
+        if os.path.isabs(alternative) and os.path.isfile(alternative):
             if verbose:
                 print('[Found %s: %s]' % (filename, alternative))
             yielded = True
