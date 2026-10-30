@@ -14,6 +14,7 @@ class TestEmptyCondFreq(unittest.TestCase):
         self.assertEqual(empty.conditions(), [])
 
     def test_plot(self):
+        pytest.importorskip("matplotlib")
         empty = ConditionalFreqDist()
         self.assertEqual(empty.conditions(), [])
         empty.plot(conditions=["BUG"])  # nonexistent keys shouldn't be added
