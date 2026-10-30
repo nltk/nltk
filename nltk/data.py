@@ -48,6 +48,8 @@ from six import add_metaclass
 from six import string_types, text_type
 from six.moves.urllib.request import urlopen, url2pathname
 
+from nltk import _security
+
 try:
     import cPickle as pickle
 except ImportError:
@@ -352,6 +354,9 @@ class FileSystemPathPointer(PathPointer, text_type):
 
     def join(self, fileid):
         _path = os.path.join(self._path, fileid)
+        # The fileid comes from caller input (a corpus reader argument): it
+        # may not step out of this pointer's directory (CWE-22, CWE-59).
+        _security.contained_path(self._path, _path, 'fileid %r' % fileid)
         return FileSystemPathPointer(_path)
 
     def __repr__(self):
@@ -649,6 +654,10 @@ def find(resource_name, paths=None):
             if zipfile is None:
                 p = os.path.join(path_, url2pathname(resource_name))
                 if os.path.exists(p):
+                    # A ``..`` component or a link must not lead out of the
+                    # data root the name was resolved against (CWE-22, CWE-59).
+                    if path_:
+                        _security.contained_path(path_, p, 'resource %r' % resource_name)
                     if p.endswith('.gz'):
                         return GzipFileSystemPathPointer(p)
                     else:
@@ -656,6 +665,8 @@ def find(resource_name, paths=None):
             else:
                 p = os.path.join(path_, url2pathname(zipfile))
                 if os.path.exists(p):
+                    if path_:
+                        _security.contained_path(path_, p, 'resource %r' % resource_name)
                     try:
                         return ZipFilePathPointer(p, zipentry)
                     except IOError:
@@ -870,12 +881,19 @@ def load(
     if format == 'raw':
         resource_val = opened_resource.read()
     elif format == 'pickle':
-        resource_val = pickle.load(opened_resource)
+        # Only NLTK's own resource classes may be rebuilt from a pickle; a
+        # planted pickle cannot name os.system or any other callable
+        # (CWE-502). The body is bounded before it is decoded (CWE-400).
+        resource_val = _security.restricted_pickle_loads(
+            _security.read_bounded(opened_resource, what='pickle resource')
+        )
     elif format == 'json':
         import json
         from nltk.jsontags import json_tags
 
-        resource_val = json.load(opened_resource)
+        resource_val = json.loads(
+            _security.read_bounded(opened_resource, what='json resource').decode('utf-8')
+        )
         tag = None
         if len(resource_val) != 1:
             tag = next(resource_val.keys())
@@ -884,7 +902,10 @@ def load(
     elif format == 'yaml':
         import yaml
 
-        resource_val = yaml.load(opened_resource)
+        # safe_load builds plain data only: no python/object tags (CWE-502).
+        resource_val = yaml.safe_load(
+            _security.read_bounded(opened_resource, what='yaml resource')
+        )
     else:
         # The resource is a text format.
         binary_data = opened_resource.read()
@@ -995,7 +1016,7 @@ def _open(resource_url):
         # urllib might not use mode='rb', so handle this one ourselves:
         return find(path_, ['']).open()
     else:
-        return urlopen(resource_url)
+        return urlopen(_security.check_url_scheme(resource_url, 'resource URL'))
 
 
 ######################################################################

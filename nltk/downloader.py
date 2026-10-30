@@ -187,6 +187,8 @@ except ImportError:
 from six import string_types, text_type
 from six.moves import input
 from six.moves.urllib.request import urlopen
+
+from nltk import _security
 from six.moves.urllib.error import HTTPError, URLError
 
 import nltk
@@ -713,20 +715,38 @@ class Downloader(object):
         # is not found.
         yield StartDownloadMessage(info)
         yield ProgressMessage(5)
+        tmp_filepath = filepath + '.part'
         try:
-            infile = urlopen(info.url)
-            with open(filepath, 'wb') as outfile:
+            # Only http(s) may be fetched: an index or redirect naming a file:
+            # or ftp: URL would otherwise read local files (CWE-918).
+            infile = urlopen(_security.check_url_scheme(info.url, 'package URL'))
+            with open(tmp_filepath, 'wb') as outfile:
                 # print info.size
                 num_blocks = max(1, info.size / (1024 * 16))
+                written = 0
                 for block in itertools.count():
                     s = infile.read(1024 * 16)  # 16k blocks.
                     outfile.write(s)
+                    written += len(s)
+                    if written > int(info.size):
+                        raise IOError('the body runs past the declared %s bytes' % info.size)
                     if not s:
                         break
                     if block % 2 == 0:  # how often?
                         yield ProgressMessage(min(80, 5 + 75 * (block / num_blocks)))
             infile.close()
-        except IOError as e:
+            # Integrity before commit: the size and the checksum the index
+            # declares are verified on the temporary file, and only a matching
+            # archive takes the package's name; a tampered or truncated body
+            # is removed and never unzipped (CVE-2026-12261, CWE-494).
+            if os.path.getsize(tmp_filepath) != int(info.size):
+                raise IOError('size mismatch: expected %s bytes' % info.size)
+            if md5_hexdigest(tmp_filepath) != info.checksum:
+                raise IOError('checksum mismatch: the archive is not the indexed one')
+            os.rename(tmp_filepath, filepath)
+        except (IOError, OSError, _security.SecurityError) as e:
+            if os.path.exists(tmp_filepath):
+                os.remove(tmp_filepath)
             yield ErrorMessage(
                 info,
                 'Error downloading %r from <%s>:' '\n  %s' % (info.id, info.url, e),
@@ -742,7 +762,9 @@ class Downloader(object):
             # been unzipped (presumably a previous version).
             if info.unzip or os.path.exists(os.path.join(zipdir, info.id)):
                 yield StartUnzipMessage(info)
-                for msg in _unzip_iter(filepath, zipdir, verbose=False):
+                for msg in _unzip_iter(
+                    filepath, zipdir, verbose=False, expected_root=info.id
+                ):
                     # Somewhat of a hack, but we need a proper package reference
                     msg.package = info
                     yield msg
@@ -959,7 +981,7 @@ class Downloader(object):
 
         # Download the index file.
         self._index = nltk.internals.ElementWrapper(
-            ElementTree.parse(urlopen(self._url)).getroot()
+            ElementTree.parse(urlopen(_security.check_url_scheme(self._url, 'index URL'))).getroot()
         )
         self._index_timestamp = time.time()
 
@@ -2246,7 +2268,15 @@ def unzip(filename, root, verbose=True):
             raise Exception(message)
 
 
-def _unzip_iter(filename, root, verbose=True):
+def _unzip_iter(filename, root, verbose=True, expected_root=None):
+    """Extract *filename* into *root* after validating every member name.
+
+    All members are checked before anything is written: a member that is
+    absolute, steps upward with ``..``, carries a NUL byte, would write
+    through a planted symbolic link, or (when *expected_root* is given) does
+    not sit under the owning package's directory refuses the whole archive
+    (Zip-Slip, CWE-22; cross-package overwrite, CVE-2026-12261).
+    """
     if verbose:
         sys.stdout.write('Unzipping %s' % os.path.split(filename)[1])
         sys.stdout.flush()
@@ -2260,7 +2290,24 @@ def _unzip_iter(filename, root, verbose=True):
         yield ErrorMessage(filename, e)
         return
 
-    zf.extractall(root)
+    root = os.path.abspath(root)
+    try:
+        for member in zf.infolist():
+            _security.check_zip_member(member.filename, root, expected_root)
+    except _security.SecurityError as e:
+        yield ErrorMessage(filename, 'Refusing to unzip %s: %s' % (filename, e))
+        return
+    for member in zf.infolist():
+        target = _security.check_zip_member(member.filename, root, expected_root)
+        if member.filename.endswith('/'):
+            if not os.path.isdir(target):
+                os.makedirs(target)
+            continue
+        parent = os.path.dirname(target)
+        if not os.path.isdir(parent):
+            os.makedirs(parent)
+        with zf.open(member) as source, open(target, 'wb') as sink:
+            shutil.copyfileobj(source, sink)
 
     if verbose:
         print()
