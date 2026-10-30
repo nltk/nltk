@@ -2,18 +2,17 @@ click
 defusedxml
 gensim>=4.0.0 ; python_version < '3.14'
 markdown-it-py
-matplotlib ; python_version < '3.16'
+matplotlib
 mdit-plain
 mdit-py-plugins
 numpy
-pandas ; python_version < '3.16'
-pyparsing
+pandas
 pytest
 pytest-mock
 pytest-xdist[psutil]
 pyyaml
 regex
-scikit-learn ; python_version < '3.16'
-scipy ; python_version < '3.16'
+scikit-learn
+scipy
 tqdm
 twython
