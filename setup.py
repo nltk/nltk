@@ -102,6 +102,6 @@ natural language processing.  NLTK requires Python 2.7, 3.5, 3.6, or 3.7.""",
         'singledispatch; python_version < "3.4"'
     ],
     extras_require=extras_require,
-    packages=find_packages(),
+    packages=find_packages(exclude=('nltk.test.unit', 'nltk.test.unit.*')),
     zip_safe=False,  # since normal files will be present too?
 )
