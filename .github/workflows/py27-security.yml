@@ -23,7 +23,7 @@ jobs:
       - name: Install the test dependencies
         run: |
           python -m pip install --upgrade "pip<21"
-          python -m pip install six singledispatch "pytest==4.6.11" mock nose "pyyaml==5.4.1" "numpy<1.17"
+          python -m pip install six singledispatch "pytest==4.6.11" mock nose "pyyaml==5.4.1" "numpy<1.17" "pyparsing<3"
       - name: Compile every module
         run: python -m compileall -q nltk
       - name: Cache the NLTK data packages
@@ -53,7 +53,7 @@ jobs:
         with:
           python-version: "3.7"
       - name: Install the test dependencies
-        run: python -m pip install six pytest mock nose "pyyaml<6" "numpy<1.22"
+        run: python -m pip install six pytest mock nose "pyyaml<6" "numpy<1.22" "pyparsing<3"
       - name: Cache the NLTK data packages
         uses: actions/cache@v4
         with:
