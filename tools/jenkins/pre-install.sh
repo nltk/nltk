@@ -17,8 +17,8 @@ PATH=$PATH:/s # Heh? Not sure why does this exist in CI?? Leaving it here first.
 PATH=$PATH:/usr/local/bin
 
 JAVA_HOME=/opt/jdk/jdk8.latest/bin
-BLAS=/home/jenkins/lib/
-LAPACK=/home/jenkins/lib/
+BLAS=/home/jenkins/lib/  # machine-leak ok: the Jenkins CI account home, not a developer machine
+LAPACK=/home/jenkins/lib/  # machine-leak ok: the Jenkins CI account home, not a developer machine
 
 # Checking Java and Python version.
 java -version
@@ -32,6 +32,6 @@ chmod u+x use-python
 export PYTHON_VERSION=${PYV}
 . ./use-python
 
-mkdir -p /home/jenkins/lib
-[ -f /home/jenkins/lib/libblas.so ] || ln -sf /usr/lib64/libblas.so.3 /home/jenkins/lib/libblas.so
-[ -f /home/jenkins/lib/liblapack.so ] || ln -sf /usr/lib64/liblapack.so.3 /home/jenkins/lib/liblapack.so
+mkdir -p /home/jenkins/lib  # machine-leak ok: the Jenkins CI account home, not a developer machine
+[ -f /home/jenkins/lib/libblas.so ] || ln -sf /usr/lib64/libblas.so.3 /home/jenkins/lib/libblas.so  # machine-leak ok: the Jenkins CI account home, not a developer machine
+[ -f /home/jenkins/lib/liblapack.so ] || ln -sf /usr/lib64/liblapack.so.3 /home/jenkins/lib/liblapack.so  # machine-leak ok: the Jenkins CI account home, not a developer machine

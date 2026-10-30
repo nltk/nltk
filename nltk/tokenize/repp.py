@@ -37,7 +37,7 @@ class ReppTokenizer(TokenizerI):
     ... 'But rule-based tokenizers are hard to maintain and their rules language specific.' ,
     ... 'We evaluated our method on three languages and obtained error rates of 0.27% (English), 0.35% (Dutch) and 0.76% (Italian) for our best models.'
     ... ]
-    >>> tokenizer = ReppTokenizer('/home/alvas/repp/') # doctest: +SKIP
+    >>> tokenizer = ReppTokenizer('/home/user/repp/') # doctest: +SKIP
     >>> for sent in sents:                             # doctest: +SKIP
     ...     tokenizer.tokenize(sent)                   # doctest: +SKIP
     ...

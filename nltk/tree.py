@@ -793,9 +793,13 @@ class Tree(list):
         x, y, w, h = widget.bbox()
         # print_to_file uses scrollregion to set the width and height of the pdf.
         _canvas_frame.canvas()['scrollregion'] = (0, 0, w, h)
-        with tempfile.NamedTemporaryFile() as file:
-            in_path = '{0:}.ps'.format(file.name)
-            out_path = '{0:}.png'.format(file.name)
+        # A private directory of our own: sibling names derived from a shared
+        # temp file were predictable and another local user could pre-create or
+        # link them (CWE-377). Removed whole in the finally below.
+        tmpdir = tempfile.mkdtemp(prefix='nltk-tree-')
+        try:
+            in_path = os.path.join(tmpdir, 'tree.ps')
+            out_path = os.path.join(tmpdir, 'tree.png')
             _canvas_frame.print_to_file(in_path)
             _canvas_frame.destroy_widget(widget)
             try:
@@ -825,9 +829,9 @@ class Tree(list):
                 
             with open(out_path, 'rb') as sr:
                 res = sr.read()
-            os.remove(in_path)
-            os.remove(out_path)
             return base64.b64encode(res).decode()
+        finally:
+            shutil.rmtree(tmpdir, ignore_errors=True)
 
     def __str__(self):
         return self.pformat()
