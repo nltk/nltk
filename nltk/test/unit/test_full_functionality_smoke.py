@@ -516,26 +516,27 @@ def test_chat80_restricted_shelf_blocks_a_pickle_gadget(restricted_sandbox):
         shelf.close()
 
 
-def test_chat80_val_load_preexisting_valuation_limitation(tmp_path, monkeypatch):
-    """DOCUMENTS a pre-existing (non-hardening) limitation so a future reader
-    does not mistake it for a guard regression.
+def test_chat80_val_dump_val_load_round_trip(tmp_path, monkeypatch):
+    """``val_load`` reads back the Valuation ``val_dump`` wrote.
 
-    ``val_dump`` stores a derived relation symbol whose value is a ``list`` of
-    tuples, but ``Valuation.__init__`` only accepts ``str`` / ``bool`` / ``set``,
-    so ``val_load`` raises ``ValueError`` while rebuilding the Valuation. This is
-    reproduced by the plain stdlib unpickler too, so it is not caused by the
-    picklesec / pathsec hardening. If chat80 is ever fixed to round-trip, update
-    this test.
+    ``val_dump`` stores relation symbols whose values are the sorted lists of
+    ``Concept.extension``; ``val_load`` used to hand them to the ``Valuation``
+    constructor, which accepts only ``str`` / ``bool`` / ``set``, and raised
+    ``ValueError``. It now rebuilds them the way ``make_valuation`` does.
     """
-    from nltk.sem import chat80
+    from nltk.sem import Valuation, chat80
 
     _authorize_tmp_root(tmp_path, monkeypatch)
-    db = str(tmp_path / "borders_val2")
-    _skip_without_data(lambda: chat80.val_dump([chat80.borders], db))
-    # val_load now opens the store directly (no stale ".db" access gate) and
-    # reaches the Valuation rebuild, the step that raises.
-    with pytest.raises(ValueError, match="Unrecognized value for symbol"):
-        chat80.val_load(db)
+    db = str(tmp_path / "city_val")
+    _skip_without_data(lambda: chat80.val_dump([chat80.city], db))
+    loaded = chat80.val_load(db)
+    dumped = chat80.make_valuation(
+        chat80.process_bundle([chat80.city]).values(), read=True
+    )
+    assert type(loaded) is Valuation
+    assert loaded == dumped
+    assert "calcutta" in loaded["city"]
+    assert ("calcutta", "india") in loaded["country_of"]
 
 
 # --- Metrics / translate ----------------------------------------------------

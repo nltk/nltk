@@ -11,12 +11,11 @@ Corpus reader for corpora whose documents are xml files.
 (note -- not named 'xml' to avoid conflicting w/ standard xml package)
 """
 
-import codecs
 
 from nltk import redos
 from nltk.corpus.reader.api import CorpusReader
 from nltk.corpus.reader.util import *
-from nltk.data import SeekableUnicodeStreamReader
+from nltk.data import SeekableUnicodeStreamReader, encoding_from_bom, text_encoding
 from nltk.internals import ElementWrapper
 from nltk.pathsec import open as pathsec_open
 from nltk.termsec import safe_print
@@ -29,6 +28,32 @@ from nltk.tokenize import WordPunctTokenizer
 # downloader's remote index.
 from nltk.xmlsec import fromstring as safe_fromstring
 from nltk.xmlsec import parse as safe_parse
+
+#: Max XML element nesting depth accepted by XMLCorpusView.read_block, whose walk
+#: carries a root-to-node context per tag (CWE-400/407); real corpora are shallow.
+#: It bounds the view's own walk; nltk.xmlsec's MAX_DEPTH then bounds each element.
+MAX_XML_DEPTH = 500
+
+#: Max length in characters of the "/"-joined root-to-node path handed to the
+#: tagspec per tag: a wide path (long names under a deep prefix) costs its length
+#: at every sibling, O(n**2). The widest real path is 115 chars; 4096 is 35x that.
+MAX_XML_PATH_LENGTH = 4096
+
+
+def _joined_path(context):
+    """The "/"-joined ``context`` and the lengths of its k-element heads."""
+    lens = [0]
+    for name in context:
+        lens.append(lens[-1] + len(name) + (1 if len(lens) > 1 else 0))
+    return "/".join(context), lens
+
+
+def _check_path_length(path):
+    if len(path) > MAX_XML_PATH_LENGTH:
+        raise ValueError(
+            f"XML element path exceeds MAX_XML_PATH_LENGTH ({MAX_XML_PATH_LENGTH} "
+            "chars); the input may be adversarially wide."
+        )
 
 
 class XMLCorpusReader(CorpusReader):
@@ -181,22 +206,16 @@ class XMLCorpusView(StreamBackedCorpusView):
                 required_root=getattr(self, "_root", None),
             ) as infile:
                 s = infile.readline()
-        if s.startswith(codecs.BOM_UTF16_BE):
-            return "utf-16-be"
-        if s.startswith(codecs.BOM_UTF16_LE):
-            return "utf-16-le"
-        if s.startswith(codecs.BOM_UTF32_BE):
-            return "utf-32-be"
-        if s.startswith(codecs.BOM_UTF32_LE):
-            return "utf-32-le"
-        if s.startswith(codecs.BOM_UTF8):
-            return "utf-8"
+        encoding = encoding_from_bom(s)
+        if encoding is not None:
+            return encoding
         m = redos.match(rb'\s*<\?xml\b.*\bencoding="([^"]+)"', s)
+        if m is None:
+            m = redos.match(rb"\s*<\?xml\b.*\bencoding='([^']+)'", s)
         if m:
-            return m.group(1).decode()
-        m = redos.match(rb"\s*<\?xml\b.*\bencoding='([^']+)'", s)
-        if m:
-            return m.group(1).decode()
+            # The declaration is the document's own text: only a text encoding
+            # may decode it (a bytes-to-bytes codec would inflate the file).
+            return text_encoding(m.group(1).decode())
         # No encoding found -- what should the default be?
         return "utf-8"
 
@@ -358,6 +377,9 @@ class XMLCorpusView(StreamBackedCorpusView):
         # Use a stack of strings to keep track of our context:
         context = list(self._tag_context.get(stream.tell()))
         assert context is not None  # check this -- could it ever happen?
+        # The "/"-joined context, extended or cut per tag rather than re-joined;
+        # path_lens[k] is its length with k elements, so a pop is one slice.
+        path, path_lens = _joined_path(context)
 
         elts = []
 
@@ -380,17 +402,23 @@ class XMLCorpusView(StreamBackedCorpusView):
             # Process each <tag> in the xml fragment.
             for piece in self._XML_PIECE.finditer(xml_fragment):
                 if self._DEBUG:
-                    safe_print(
-                        "{:>25} {}".format("/".join(context)[-20:], piece.group())
-                    )
+                    safe_print(f"{path[-20:]:>25} {piece.group()}")
 
                 if piece.group("START_TAG"):
                     name = self._XML_TAG_NAME.match(piece.group()).group(1)
                     # Keep context up-to-date.
                     context.append(name)
+                    if len(context) > MAX_XML_DEPTH:
+                        raise ValueError(
+                            f"XML nesting depth exceeds MAX_XML_DEPTH "
+                            f"({MAX_XML_DEPTH}); the input may be adversarially deep."
+                        )
+                    path = name if len(context) == 1 else f"{path}/{name}"
+                    path_lens.append(len(path))
+                    _check_path_length(path)
                     # Is this one of the elts we're looking for?
                     if elt_start is None:
-                        if tagspec.match("/".join(context)):
+                        if tagspec.match(path):
                             elt_start = piece.start()
                             elt_depth = len(context)
 
@@ -404,17 +432,21 @@ class XMLCorpusView(StreamBackedCorpusView):
                     # Is this the end of an element?
                     if elt_start is not None and elt_depth == len(context):
                         elt_text += xml_fragment[elt_start : piece.end()]
-                        elts.append((elt_text, "/".join(context)))
+                        elts.append((elt_text, path))
                         elt_start = elt_depth = None
                         elt_text = ""
                     # Keep context up-to-date
                     context.pop()
+                    path_lens.pop()
+                    path = path[: path_lens[-1]]
 
                 elif piece.group("EMPTY_ELT_TAG"):
                     name = self._XML_TAG_NAME.match(piece.group()).group(1)
                     if elt_start is None:
-                        if tagspec.match("/".join(context) + "/" + name):
-                            elts.append((piece.group(), "/".join(context) + "/" + name))
+                        elt_path = f"{path}/{name}"
+                        _check_path_length(elt_path)
+                        if tagspec.match(elt_path):
+                            elts.append((piece.group(), elt_path))
 
             if elt_start is not None:
                 # If we haven't found any elements yet, then keep
@@ -437,6 +469,8 @@ class XMLCorpusView(StreamBackedCorpusView):
                     else:
                         stream.seek(-(len(xml_fragment) - elt_start), 1)
                     context = context[: elt_depth - 1]
+                    path_lens = path_lens[:elt_depth]
+                    path = path[: path_lens[-1]]
                     elt_start = elt_depth = None
                     elt_text = ""
 

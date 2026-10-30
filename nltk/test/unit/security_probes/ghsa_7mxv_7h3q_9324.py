@@ -7,7 +7,7 @@ import shutil
 import stat
 import tempfile
 
-from ._base import FIXED, STATIC, VULNERABLE, probe
+from ._base import FIXED, STATIC, VULNERABLE, probe, write_private
 
 
 @probe("GHSA-7mxv-7h3q-9324")
@@ -48,10 +48,11 @@ def _java_untrusted_binary_and_loader_env():
         os.chmod(writable, 0o777)
         if not (os.stat(writable).st_mode & stat.S_IWOTH):
             return STATIC, "filesystem stripped the world-write bit; no untrusted dir"
-        plant = os.path.join(writable, "java")
-        with open(plant, "w", encoding="utf-8") as fh:
-            fh.write("#!/bin/sh\necho planted\n")
-        os.chmod(plant, os.stat(plant).st_mode | stat.S_IEXEC)
+        plant = write_private(
+            path=os.path.join(writable, "java"),
+            data="#!/bin/sh\necho planted\n",
+            mode=0o700,
+        )
 
         # (a) Real sink: config_java stores the absolute plant, java() must refuse.
         # cmd[0] must be a bare main-class token (a leading "-"/"@" is refused

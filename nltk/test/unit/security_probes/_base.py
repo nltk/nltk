@@ -23,6 +23,9 @@ import shutil
 import socket  # noqa: F401
 import tempfile
 
+# re-exported for the probes
+from nltk.test.unit.fixture_files import makedirs_private, write_private
+
 FIXED = "FIXED"
 VULNERABLE = "VULNERABLE"
 STATIC = "STATIC"

@@ -2,10 +2,9 @@
 
 import os
 import shutil
-import stat
 import tempfile
 
-from ._base import FIXED, STATIC, VULNERABLE, probe
+from ._base import FIXED, STATIC, VULNERABLE, probe, write_private
 
 
 @probe("GHSA-6hwm-xvph-95vm")
@@ -20,10 +19,9 @@ def _graphviz_search_path():
     from nltk.internals import find_binary
 
     box = tempfile.mkdtemp()
-    plant = os.path.join(box, "dot")
-    with open(plant, "w", encoding="utf-8") as fh:
-        fh.write("#!/bin/sh\necho PWNED\n")
-    os.chmod(plant, os.stat(plant).st_mode | stat.S_IEXEC)
+    plant = write_private(
+        path=os.path.join(box, "dot"), data="#!/bin/sh\necho PWNED\n", mode=0o700
+    )
     old = os.getcwd()
     try:
         os.chdir(box)

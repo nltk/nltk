@@ -6,10 +6,16 @@ import os
 import pathlib
 import shlex
 import shutil
-import stat
 import tempfile
 
-from ._base import FIXED, VULNERABLE, probe, register_data_root
+from ._base import (
+    FIXED,
+    VULNERABLE,
+    makedirs_private,
+    probe,
+    register_data_root,
+    write_private,
+)
 
 _TOOL_ENV = (
     "PROVER9",
@@ -51,14 +57,18 @@ def _plant(directory, relpath, marker=None):
     there when it runs, so a launch is visible even if the caller discards
     the decoy's output or errors on it afterwards."""
     path = os.path.join(directory, relpath)
-    os.makedirs(os.path.dirname(path), exist_ok=True)
+    makedirs_private(path=os.path.dirname(path))
     record = ""
     if marker is not None:
         record = f"printf '%s\\n' {shlex.quote(path)} >> {shlex.quote(marker)}\n"
-    with open(path, "w", encoding="utf-8") as fh:
-        fh.write("#!/bin/sh\n" + record + "echo PWNED\n")
-    os.chmod(path, os.stat(path).st_mode | stat.S_IEXEC)
-    return path
+    # replaces an earlier plant at this path, which O_EXCL would refuse
+    try:
+        os.remove(path)
+    except FileNotFoundError:
+        pass
+    return write_private(
+        path=path, data="#!/bin/sh\n" + record + "echo PWNED\n", mode=0o700
+    )
 
 
 def _relative_forms(name, box):
@@ -139,11 +149,8 @@ def _entry_points(legit):
 
     def plant_repp(directory):
         _plant(directory, os.path.join("src", "repp"))
-        os.makedirs(os.path.join(directory, "erg"), exist_ok=True)
-        with open(
-            os.path.join(directory, "erg", "repp.set"), "w", encoding="utf-8"
-        ) as fh:
-            fh.write("")
+        makedirs_private(path=os.path.join(directory, "erg"))
+        write_private(path=os.path.join(directory, "erg", "repp.set"), data="")
 
     def prover9(location):
         tool = Prover9()
@@ -405,7 +412,7 @@ def _relative_binary_location():
     box = tempfile.mkdtemp(prefix=".nltk_cc5r_box_", dir=home)
     legit = tempfile.mkdtemp(prefix=".nltk_cc5r_legit_", dir=home)
     empty = os.path.join(legit, "empty")
-    os.makedirs(empty)
+    makedirs_private(path=empty)
     scrubbed = _scrubbed_path(empty)
     marker = os.path.join(legit, "ran")  # written only by the phase-6 decoys
     tools = _entry_points(legit)
@@ -413,8 +420,7 @@ def _relative_binary_location():
         plant(box)
         plant(os.path.join(box, "sub"))
         plant(legit)
-    with open(os.path.join(legit, "en_wsj.model"), "w", encoding="utf-8") as fh:
-        fh.write("stub\n")
+    write_private(path=os.path.join(legit, "en_wsj.model"), data="stub\n")
     saved_env = {var: os.environ.get(var) for var in _TOOL_ENV + ("PATH",)}
     saved_bins = (megam._megam_bin, tadm._tadm_bin, internals._java_bin)
     undo_root = register_data_root(legit)

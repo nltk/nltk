@@ -62,6 +62,8 @@ class LegalitySyllableTokenizer(TokenizerI):
         [['This'], ['is'], ['a'], ['won', 'der', 'ful'], ['sen', 'ten', 'ce'], ['.']]
     """
 
+    MAX_TOKEN_LEN = 4096
+
     def __init__(
         self, tokenized_source_text, vowels="aeiouy", legal_frequency_threshold=0.001
     ):
@@ -121,22 +123,39 @@ class LegalitySyllableTokenizer(TokenizerI):
         :return syllable_list: Single word or token broken up into syllables.
         :rtype: list(str)
         """
+        # A real word is short; refuse oversized tokens as defence in depth
+        # (mirrors SyllableTokenizer.MAX_TOKEN_LEN) even though the loop below
+        # is linear (CWE-407).
+        if len(token) > self.MAX_TOKEN_LEN:
+            raise ValueError(
+                f"LegalitySyllableTokenizer: token length exceeds MAX_TOKEN_LEN "
+                f"({self.MAX_TOKEN_LEN}); refusing to syllabify an oversized token "
+                "(CWE-407). Raise MAX_TOKEN_LEN for longer tokens."
+            )
         syllables = []
         syllable, current_onset = "", ""
         vowel, onset = False, False
+        # An onset longer than the longest legal one can never be legal, so stop
+        # growing and reversing current_onset past that length: the loop is then
+        # O(n * max_onset) instead of O(n**2) on a long vowel run (CWE-407).
+        max_onset = max(map(len, self.legal_onsets), default=0)
         for char in token[::-1]:
             char_lower = char.lower()
             if not vowel:
                 syllable += char
                 vowel = bool(char_lower in self.vowels)
             else:
-                if char_lower + current_onset[::-1] in self.legal_onsets:
+                if (
+                    len(current_onset) < max_onset
+                    and char_lower + current_onset[::-1] in self.legal_onsets
+                ):
                     syllable += char
                     current_onset += char_lower
                     onset = True
                 elif char_lower in self.vowels and not onset:
                     syllable += char
-                    current_onset += char_lower
+                    if len(current_onset) < max_onset:
+                        current_onset += char_lower
                 else:
                     syllables.append(syllable)
                     syllable = char

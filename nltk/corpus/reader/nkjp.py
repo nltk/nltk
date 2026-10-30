@@ -8,7 +8,7 @@
 import functools
 import os
 
-from nltk import redos
+from nltk import pathsec, redos
 from nltk.corpus.reader.util import concat
 from nltk.corpus.reader.xmldocs import XMLCorpusReader, XMLCorpusView
 
@@ -308,7 +308,12 @@ class XML_Tool:
                 while len(line):
                     line = fr.readline()
                     text = line.decode("utf-8")
-                    x = redos.split(r"nkjp:[^ ]* ", text)  # in all files
+                    # `nkjp:`*N with no space was O(n**2) (CWE-407); the tempered
+                    # `(?!nkjp:)` stops a scan at the next anchor, O(n) not
+                    # O(n*bound). A real token never holds a second `nkjp:`.
+                    x = redos.split(
+                        r"nkjp:(?:(?!nkjp:)[^ ]){0,256} ", text
+                    )  # in all files
                     ret = " ".join(x)
                     x = redos.split("<nkjp:paren>", ret)  # in ann_segmentation.xml
                     ret = " ".join(x)
@@ -333,13 +338,11 @@ class XML_Tool:
         if not self._owns_scratch:
             return
         try:
-            os.remove(self.write_file)
-        except FileNotFoundError:
-            self._owns_scratch = False
+            # by name, never through a link; a missing name is fine
+            pathsec.unlink(self.write_file, context="NKJPCorpusReader")
         except OSError:
-            pass
-        else:
-            self._owns_scratch = False
+            return
+        self._owns_scratch = False
 
 
 class NKJPCorpus_Segmentation_View(XMLCorpusView):

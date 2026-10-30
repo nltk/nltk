@@ -15,7 +15,7 @@ platform NLTK's tools run on, in any letter case, is in it."""
 import os
 import pathlib
 import shutil
-import tempfile
+import subprocess
 import unittest.mock
 
 import pytest
@@ -23,6 +23,7 @@ import pytest
 import nltk.data
 from nltk import internals, pathsec
 from nltk.test.unit import timing
+from nltk.test.unit.conftest import make_home_dir
 
 NUL = chr(0)
 
@@ -253,33 +254,46 @@ _MINIMAL_PARENT_KEYS = frozenset(
 
 
 @pytest.fixture
-def jvm_source_root(monkeypatch):
-    """A private root under $HOME holding PrintEnv.java, registered as the one
-    trusted data root; the JVM binary is resolved from the real environment
-    before that environment is replaced by the minimal one."""
+def jvm_class_root(monkeypatch):
+    """A private root under $HOME holding PrintEnv.class, compiled by the javac
+    beside the resolved JVM and registered as the one trusted data root so the
+    classpath screen accepts it; the JVM binary is resolved from the real
+    environment before that environment is replaced by the minimal one. A class
+    on the classpath is the only launch shape java() accepts: a .java source
+    path as cmd[0] is the JEP 330 execution channel it refuses (CWE-94)."""
     monkeypatch.setattr(internals, "_java_bin", None)
     monkeypatch.setattr(internals, "_java_options", [])
     try:
         internals.config_java()
     except LookupError:
         pytest.skip("no Java binary found on this machine")
-    root = os.path.realpath(
-        tempfile.mkdtemp(prefix=".nltk_jvm_env_", dir=pathlib.Path.home())
-    )
+    javac = shutil.which("javac", path=os.path.dirname(internals._java_bin))
+    if javac is None:
+        pytest.fail(f"no javac beside {internals._java_bin!r}: a JDK is required")
+    root = os.path.realpath(make_home_dir(".nltk_jvm_env_"))
     src = os.path.join(root, "PrintEnv.java")
     with open(src, "w", encoding="utf-8") as fh:
         fh.write(_PRINT_ENV_JAVA)
+    compiled = subprocess.run(
+        [javac, "-d", root, src],
+        capture_output=True,
+        text=True,
+        timeout=120,
+        check=False,
+    )
+    assert compiled.returncode == 0, compiled.stderr
+    assert os.path.isfile(os.path.join(root, "PrintEnv.class"))
     monkeypatch.setattr(pathsec, "ENFORCE", True)
     monkeypatch.setattr(nltk.data, "path", [root])
     monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
     monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None, raising=False)
     try:
-        yield src
+        yield root
     finally:
         shutil.rmtree(root, ignore_errors=True)
 
 
-def test_real_jvm_child_sees_only_the_scrubbed_environment(jvm_source_root):
+def test_real_jvm_child_sees_only_the_scrubbed_environment(jvm_class_root):
     minimal = {k: v for k, v in os.environ.items() if k.upper() in _MINIMAL_PARENT_KEYS}
     hostile = {**_JVM_INJECTING, **_LOADER}
     hostile.update({name.lower(): value for name, value in list(hostile.items())[:6]})
@@ -289,12 +303,12 @@ def test_real_jvm_child_sees_only_the_scrubbed_environment(jvm_source_root):
     with unittest.mock.patch.dict(
         os.environ, {**minimal, **hostile, **markers}, clear=True
     ):
-        # source-file mode: the launcher compiles PrintEnv.java in memory, so
-        # no class file is planted anywhere and no separate compiler is spawned
+        # the compiled class on the trusted classpath, named by its main class
+        # token, is the shape java() launches (source-file mode is refused)
         with timing.budget(120.0, "the JVM call"):
             out, _err = internals.java(
-                [jvm_source_root],
-                classpath=None,
+                ["PrintEnv"],
+                classpath=jvm_class_root,
                 options=[],
                 stdout="pipe",
                 stderr="pipe",

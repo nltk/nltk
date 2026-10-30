@@ -134,7 +134,10 @@ setup(
         "tqdm",
     ],
     extras_require=extras_require,
-    packages=find_packages(),
+    # The unit tests (nltk.test.unit, 270+ files, the attack harnesses and the
+    # advisory probes among them) are for the repository and CI; the wheel
+    # ships the library and the doctests only. The sdist still carries them.
+    packages=find_packages(exclude=["nltk.test.unit", "nltk.test.unit.*"]),
     zip_safe=False,  # since normal files will be present too?
     entry_points=console_scripts,
 )

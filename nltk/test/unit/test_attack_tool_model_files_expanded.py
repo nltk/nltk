@@ -53,7 +53,6 @@ import shutil
 import socket
 import stat
 import sys
-import tempfile
 from types import SimpleNamespace
 
 import pytest
@@ -61,6 +60,7 @@ import pytest
 import nltk.data
 from nltk import internals, pathsec
 from nltk.pathsec import MAX_TOOL_MODEL_BYTES
+from nltk.test.unit.conftest import make_home_dir
 
 POSIX_ONLY = pytest.mark.skipif(
     os.name != "posix", reason="symlink / hardlink / FIFO / mode semantics are POSIX"
@@ -139,10 +139,8 @@ def atk(monkeypatch):
     """One fresh trusted root and one dir OUTSIDE every root, both under $HOME
     (a private system temp dir is itself a root on macOS/Windows)."""
     home = str(pathlib.Path.home())
-    root = os.path.realpath(tempfile.mkdtemp(prefix=".nltk_atk_model_root_", dir=home))
-    outside = os.path.realpath(
-        tempfile.mkdtemp(prefix=".nltk_atk_model_out_", dir=home)
-    )
+    root = os.path.realpath(make_home_dir(".nltk_atk_model_root_"))
+    outside = os.path.realpath(make_home_dir(".nltk_atk_model_out_"))
     monkeypatch.setattr(pathsec, "ENFORCE", True)
     monkeypatch.setattr(nltk.data, "path", [root])
     monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
@@ -1512,9 +1510,6 @@ def _configure_real_tool(monkeypatch):
     scratch cache: the ``staging_tempdir()`` the wrapper allocates under that
     path is released on teardown instead of being handed to a later test that
     sandboxes a single throwaway root and expects its scratch file inside it."""
-    jdk = "/Users/alvas/nltk_tools/jdk/jdk-21.0.12.1+1/Contents/Home"
-    if not os.environ.get("JAVA_HOME") and os.path.isdir(jdk):
-        monkeypatch.setenv("JAVA_HOME", jdk)
     monkeypatch.setattr(internals, "_java_bin", None)
     monkeypatch.setattr(nltk.data, "_STAGING_TEMPDIR", None, raising=False)
 

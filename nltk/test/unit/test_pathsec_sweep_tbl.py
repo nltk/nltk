@@ -27,6 +27,7 @@ import os
 import pytest
 
 import nltk.pathsec as pathsec
+from nltk.test.unit.conftest import make_home_dir
 
 # A tiny synthetic tagged corpus so tbl.demo.postag() never needs the treebank
 # corpus (postag skips corpus loading when tagged_data is supplied).
@@ -151,9 +152,7 @@ def corpus_backed_sandbox(monkeypatch, tmp_path_factory):
     except LookupError:
         pytest.skip("treebank corpus unavailable")
 
-    outside = _pathlib.Path(
-        _tempfile.mkdtemp(prefix=".nltk_tbl_outside_", dir=str(_pathlib.Path.home()))
-    )
+    outside = _pathlib.Path(make_home_dir(".nltk_tbl_outside_"))
     monkeypatch.setattr(pathsec, "ENFORCE", True)
     monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
     monkeypatch.setattr(pathsec, "_LAST_DATA_PATHS", None, raising=False)
