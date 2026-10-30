@@ -156,6 +156,12 @@ class MaltParser(ParserI):
         # Initialize model.
         self.model = find_malt_model(model_filename)
         self._trained = self.model != 'malt_temp.mco'
+        if self._trained:
+            # the JVM opens the model natively; in learn mode it writes it
+            # (CWE-59, CWE-73)
+            self.model = _security.check_tool_path(
+                self.model, for_write=not os.path.exists(self.model), what='MaltParser model'
+            )
         # Set the working_dir parameters i.e. `-w` from MaltParser's option.
         self.working_dir = tempfile.gettempdir()
         # Initialize POS tagger.

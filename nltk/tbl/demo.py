@@ -251,7 +251,7 @@ def postag(
             baseline_tagger = UnigramTagger(
                 baseline_data, backoff=baseline_backoff_tagger
             )
-            with open(cache_baseline_tagger, 'wb') as print_rules:
+            with open(_security.check_tool_path(cache_baseline_tagger, for_write=True), 'wb') as print_rules:
                 pickle.dump(baseline_tagger, print_rules)
             print(
                 "Trained baseline tagger, pickled it to {0}".format(
@@ -308,7 +308,8 @@ def postag(
             brill_tagger.print_template_statistics(teststats)
         if learning_curve_output:
             _demo_plot(
-                learning_curve_output, teststats, trainstats, take=learning_curve_take
+                _security.check_tool_path(learning_curve_output, for_write=True),
+                teststats, trainstats, take=learning_curve_take
             )
             print("Wrote plot of learning curve to {0}".format(learning_curve_output))
     else:
@@ -329,7 +330,7 @@ def postag(
     # serializing the tagger to a pickle file and reloading (just to see it works)
     if serialize_output is not None:
         taggedtest = brill_tagger.tag_sents(testing_data)
-        with open(serialize_output, 'wb') as print_rules:
+        with open(_security.check_tool_path(serialize_output, for_write=True), 'wb') as print_rules:
             pickle.dump(brill_tagger, print_rules)
         print("Wrote pickled tagger to {0}".format(serialize_output))
         with open(serialize_output, "rb") as print_rules:

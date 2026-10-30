@@ -12,6 +12,7 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import os, re, pickle
+import tempfile
 from xml.etree import ElementTree as ET
 
 from nltk.tag import ClassifierBasedTagger, pos_tag
@@ -27,6 +28,8 @@ from nltk.data import find
 
 from nltk.chunk.api import ChunkParserI
 from nltk.chunk.util import ChunkScore
+
+from nltk import _security
 
 
 class NEChunkParserTagger(ClassifierBasedTagger):
@@ -337,7 +340,11 @@ def build_model(fmt='binary'):
             cmp_chunks(correct, guess)
     print(chunkscore)
 
-    outfilename = '/tmp/ne_chunker_{0}.pickle'.format(fmt)
+    # a fixed name in the shared temp directory could be pre-created or
+    # linked by another local user (CWE-377): write into a private one
+    outfilename = os.path.join(
+        tempfile.mkdtemp(prefix='nltk-ne-chunker-'), 'ne_chunker_{0}.pickle'.format(fmt)
+    )
     print('Saving chunker to {0}...'.format(outfilename))
 
     with open(outfilename, 'wb') as outfile:

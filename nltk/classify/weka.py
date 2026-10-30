@@ -24,6 +24,8 @@ from nltk.internals import java, config_java
 
 from nltk.classify.api import ClassifierI
 
+from nltk import _security
+
 _weka_classpath = None
 _weka_search = [
     '.',
@@ -88,7 +90,8 @@ def _check_weka_version(jar):
 class WekaClassifier(ClassifierI):
     def __init__(self, formatter, model_filename):
         self._formatter = formatter
-        self._model = model_filename
+        # weka reads the model natively via -l: no link may redirect it (CWE-59)
+        self._model = _security.check_tool_path(model_filename, what='Weka model')
 
     def prob_classify_many(self, featuresets):
         return self._classify_many(featuresets, ['-p', '0', '-distribution'])
@@ -231,6 +234,10 @@ class WekaClassifier(ClassifierI):
                 raise ValueError('Unknown classifier %s' % classifier)
 
             # Train the weka model.
+            # weka writes the model natively via -d (CWE-59, CWE-73)
+            model_filename = _security.check_tool_path(
+                model_filename, for_write=True, what='Weka model'
+            )
             cmd = [javaclass, '-d', model_filename, '-t', train_filename]
             cmd += list(options)
             if quiet:

@@ -38,6 +38,7 @@ from six import PY2, binary_type, string_types, text_type
 from six.moves.urllib.parse import urlsplit
 
 __all__ = [
+    "check_tool_path",
     "safe_xml_parse",
     "safe_xml_fromstring",
     "trusted_executable",
@@ -537,3 +538,68 @@ def safe_xml_fromstring(text):
     if isinstance(text, text_type):
         text = text.encode("utf-8")
     return _check_tree(_fenced_expat_parse(text))
+
+
+# ----------------------------------------------------------------------
+# Paths handed to external tools (CWE-59, CWE-73)
+# ----------------------------------------------------------------------
+
+
+def check_tool_path(path, for_write=False, what="tool path"):
+    """Return the absolute *path* a wrapper may hand to an external tool.
+
+    The tool opens the path natively, outside any check this library can
+    make later, so it is bounded here: no ``..`` component; the final name
+    must not be a symbolic link; every symbolic link on the way must belong
+    to this account or root (a system layout such as ``/var`` on macOS is
+    fine, a link planted by another account in a shared directory is not);
+    and a write target that exists must be a regular file with a single
+    name, so a planted link or hardlink cannot redirect the write
+    (CWE-59, CWE-73). Returns the absolute path as a string.
+    """
+    text = fspath(path) if not isinstance(path, string_types) else path
+    if isinstance(text, binary_type) and not isinstance(text, text_type):
+        text = fsdecode_native(text)
+    if "\x00" in text:
+        raise SecurityError("%s holds a NUL byte: %r" % (what, text))
+    if has_parent_reference(text):
+        raise SecurityError("%s steps upward with '..': %r" % (what, text))
+    absolute = os.path.abspath(text)
+    if os.path.islink(absolute):
+        raise SecurityError("%s is a symbolic link: %r" % (what, text))
+    if os.name == "posix":
+        uid = os.geteuid()
+        probe = absolute
+        while True:
+            parent = os.path.dirname(probe)
+            if parent == probe:
+                break
+            if os.path.islink(parent):
+                owner = os.lstat(parent).st_uid
+                if owner not in (0, uid):
+                    raise SecurityError(
+                        "%s passes through a link owned by another account: %r"
+                        % (what, parent)
+                    )
+            probe = parent
+    if for_write and os.path.lexists(absolute):
+        st = os.lstat(absolute)
+        if not stat.S_ISREG(st.st_mode):
+            raise SecurityError("%s is not a regular file: %r" % (what, text))
+        if getattr(st, "st_nlink", 1) > 1:
+            raise SecurityError("%s has more than one name (hardlinked): %r" % (what, text))
+    return absolute
+
+
+def fspath(path):
+    """``os.fspath`` for both interpreters (text, bytes or a path object)."""
+    if isinstance(path, (text_type, binary_type)):
+        return path
+    getter = getattr(type(path), "__fspath__", None)
+    if getter is None:
+        raise TypeError("expected a path, not %s" % type(path).__name__)
+    return getter(path)
+
+
+def fsdecode_native(value):
+    return value.decode(sys.getfilesystemencoding() or "utf-8")
