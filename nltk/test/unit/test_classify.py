@@ -5,6 +5,7 @@ Unit tests for nltk.classify. See also: nltk/test/classify.doctest
 import pytest
 
 from nltk import classify
+from nltk.classify.maxent import GISEncoding
 
 TRAIN = [
     (dict(a=1, b=1, c=1), "y"),
@@ -48,3 +49,16 @@ def test_megam():
 
 def test_tadm():
     assert_classifier_correct("TADM")
+
+
+@pytest.mark.parametrize("algorithm", ["GIS", "IIS"])
+def test_unattested_feature(algorithm):
+    # The encoding knows a feature ("c") that never occurs in the training
+    # data, so its weight starts at -inf.
+    encoding = GISEncoding.train([(dict(a=1, c=1), "x"), (dict(b=1), "y")])
+    train = [(dict(a=1), "x"), (dict(b=1), "y")]
+    classifier = classify.MaxentClassifier.train(
+        train, algorithm, encoding=encoding, trace=0, max_iter=5
+    )
+    assert classifier.classify(dict(a=1)) == "x"
+    assert classifier.classify(dict(b=1)) == "y"
