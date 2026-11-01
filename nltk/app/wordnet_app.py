@@ -908,8 +908,6 @@ def get_static_page_by_path(path):
         return get_static_upper_page(True)
     elif path == "web_help.html":
         return get_static_web_help_page()
-    elif path == "wx_help.html":
-        return get_static_wx_help_page()
     raise FileNotFoundError()
 
 
