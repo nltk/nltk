@@ -17,18 +17,18 @@ so a future move to a symlink-honouring extractor would surface here.
 import gzip
 import os
 import shutil
-import tempfile
 import zipfile
 
 import pytest
 
 import nltk.data
 from nltk import pathsec
+from nltk.test.unit.conftest import make_home_dir
 
 
 @pytest.fixture
 def sandbox(monkeypatch):
-    base = tempfile.mkdtemp(prefix=".nltk_arc_", dir=os.path.expanduser("~"))
+    base = make_home_dir(".nltk_arc_")
     root = os.path.join(base, "nltk_data")
     outside = os.path.join(base, "outside")
     os.makedirs(root)

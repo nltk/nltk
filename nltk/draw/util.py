@@ -33,6 +33,7 @@ structures.  For more information, see the CLIG
 homepage (http://www.ags.uni-sb.de/~konrad/clig.html).
 
 """
+
 from abc import ABCMeta, abstractmethod
 from tkinter import (
     RAISED,

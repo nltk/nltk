@@ -87,3 +87,20 @@ def test_huge_left_index_does_not_allocate():
     assert finished, "Alignment allocated a dense index for a huge left index (DoS)"
     assert status == "ok", f"worker raised: {value}"
     assert value == 2, f"index must be sparse (2 keys), got {value}"
+
+
+@pytest.mark.parametrize(
+    ("pairs", "expected"),
+    [
+        ([(2, None), (0, 1), (1, 0)], "0-1 1-0"),
+        ([(0, None), (1, None)], ""),
+        ([(0, None), (0, 1)], "0-1"),
+        ([(0, None, True), (1, 0, False)], "1-0"),
+        ([(2, 1), (0, 3)], "0-3 2-1"),
+        ([], ""),
+    ],
+)
+def test_alignment_string_omits_null_targets(pairs, expected):
+    alignment = Alignment(pairs)
+    assert str(alignment) == expected
+    assert alignment == frozenset(pairs)

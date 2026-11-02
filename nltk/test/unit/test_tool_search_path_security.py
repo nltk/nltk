@@ -23,12 +23,12 @@ import shutil
 import stat
 import subprocess
 import sys
-import tempfile
 from pathlib import Path
 
 import pytest
 
 from nltk import internals, pathsec
+from nltk.test.unit.conftest import make_home_dir
 from nltk.test.unit.security_probes._base import register_data_root
 
 TOOL_ENV = {
@@ -268,7 +268,7 @@ def install(box, tmp_path, monkeypatch):
 def home_install(monkeypatch):
     """A trusted install under $HOME, registered as a data root: hunpos validates
     its model as private and in-sandbox, which a shared temp dir is not."""
-    root = Path(tempfile.mkdtemp(prefix=".nltk_cc5r_install_", dir=Path.home()))
+    root = Path(make_home_dir(".nltk_cc5r_install_"))
     for name in TOOL_ENV:
         _exec_file(root, name)
     (root / "en_wsj.model").write_text("stub\n", encoding="utf-8")
@@ -284,7 +284,7 @@ def home_install(monkeypatch):
 def private_dir():
     """A directory under $HOME for a binary the trusted spawn must accept: a
     private chain on every CI runner, which a shared /tmp (mode 1777) is not."""
-    root = Path(tempfile.mkdtemp(prefix=".nltk_cc5r_private_", dir=Path.home()))
+    root = Path(make_home_dir(".nltk_cc5r_private_"))
     try:
         yield root
     finally:
@@ -820,8 +820,8 @@ def test_spawn_layer_relative_target_per_platform(monkeypatch):
     Either way, with an install configured no relative form reaches the spawn."""
     from nltk.inference.prover9 import Prover9
 
-    home_box = Path(tempfile.mkdtemp(prefix=".nltk_cc5r_", dir=Path.home()))
-    trusted = Path(tempfile.mkdtemp(prefix=".nltk_cc5r_trusted_", dir=Path.home()))
+    home_box = Path(make_home_dir(".nltk_cc5r_"))
+    trusted = Path(make_home_dir(".nltk_cc5r_trusted_"))
     try:
         planted = _exec_file(home_box, "prover9")
         _exec_file(trusted, "prover9", marker="LEGIT")
@@ -1246,7 +1246,7 @@ class TestJavaSpawn:
 
     @pytest.mark.skipif(os.name != "posix", reason="POSIX ownership check")
     def test_java_in_a_group_writable_directory_is_refused(self, monkeypatch):
-        root = Path(tempfile.mkdtemp(prefix=".nltk_java_gw_", dir=Path.home()))
+        root = Path(make_home_dir(".nltk_java_gw_"))
         try:
             stub = _exec_file(root, "java")
             os.chmod(root, 0o775)
@@ -1458,12 +1458,14 @@ class TestTrustedJavaStubFixture:
         self, trusted_java_stub, monkeypatch
     ):
         # executed for real: what the stub sees is what a JVM would see
+        # argv is "Main <report>": cmd[0] must be a main-class token, so the
+        # report path travels as the program argument the stub reads from $2
         report = Path(trusted_java_stub).parent / "env.txt"
         Path(trusted_java_stub).write_text(
             "#!/bin/sh\n"
             '{ echo "LD_PRELOAD=[$LD_PRELOAD]"; echo "DYLD=[$DYLD_INSERT_LIBRARIES]"; '
             'echo "JTO=[$JAVA_TOOL_OPTIONS]"; echo "CLASSPATH=[$CLASSPATH]"; '
-            'echo "LANG=[$LANG]"; echo "KEEP=[$NLTK_KEEP]"; } > "$1"\n',
+            'echo "LANG=[$LANG]"; echo "KEEP=[$NLTK_KEEP]"; } > "$2"\n',
             encoding="utf-8",
         )
         planted = {
@@ -1478,7 +1480,7 @@ class TestTrustedJavaStubFixture:
             monkeypatch.setenv(var, value)
         monkeypatch.setattr(internals, "_java_bin", trusted_java_stub)
         monkeypatch.setattr(internals, "_java_options", [])
-        internals.java([str(report)])
+        internals.java(["Main", str(report)])
         reported = report.read_text(encoding="utf-8")
         for line in ("LD_PRELOAD=[]", "DYLD=[]", "JTO=[]", "CLASSPATH=[]"):
             assert line in reported, reported

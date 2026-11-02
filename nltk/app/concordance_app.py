@@ -108,8 +108,8 @@ _CORPORA = {
         tagset="universal"
     ),
     "Portuguese: MAC-MORPHO Corpus (Brazil)": lambda: mac_morpho.tagged_sents(),
-    "Portuguese: MAC-MORPHO Corpus (Brazil, simplified)": lambda: mac_morpho.tagged_sents(
-        tagset="universal"
+    "Portuguese: MAC-MORPHO Corpus (Brazil, simplified)": lambda: (
+        mac_morpho.tagged_sents(tagset="universal")
     ),
     "Spanish: CESS-ESP Corpus (simplified)": lambda: cess_esp.tagged_sents(
         tagset="universal"
@@ -284,7 +284,7 @@ class ConcordanceSearchView:
             self.var,
             self.model.DEFAULT_CORPUS,
             command=self.corpus_selected,
-            *self.model.non_default_corpora()
+            *self.model.non_default_corpora(),
         )
         om["borderwidth"] = 0
         om["highlightthickness"] = 1

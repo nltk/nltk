@@ -113,7 +113,9 @@ def test_maxent_save_sink_routes_through_pathsec():
 
     mx_src = inspect.getsource(maxent.save_maxent_params)
     assert "pathsec_open(" in mx_src
-    assert "validate_path(" in mx_src
+    # the output directory is created and judged by pathsec (containment,
+    # 0700 when missing, private with private-or-sticky ancestors)
+    assert "pathsec.ensure_private_dir(" in mx_src
     assert '"/tmp' not in mx_src and "'/tmp" not in mx_src
 
 

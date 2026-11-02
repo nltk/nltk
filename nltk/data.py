@@ -36,13 +36,13 @@ import atexit
 import codecs
 import errno
 import functools
+import locale
 import os
 import pickle
 import re
 import shutil
 import stat
 import sys
-import tempfile
 import textwrap
 import urllib.request
 import warnings
@@ -53,7 +53,7 @@ from io import BytesIO, TextIOWrapper
 from urllib.parse import unquote
 from urllib.request import url2pathname
 
-from nltk import redos
+from nltk import pathsec, redos
 from nltk.pathsec import ZipFile
 from nltk.pathsec import open as _secure_open
 from nltk.pathsec import open_package_resource as _open_package_resource
@@ -261,7 +261,7 @@ except ImportError:
 
 from nltk import grammar, sem
 from nltk.internals import deprecated
-from nltk.termsec import safe_print
+from nltk.termsec import safe_print, sanitize_terminal
 
 textwrap_indent = functools.partial(textwrap.indent, prefix="  ")
 
@@ -342,7 +342,7 @@ def staging_tempdir():
         _STAGING_TEMPDIR = None
     if _STAGING_TEMPDIR is None:
         staged = make_staging_dir(prefix="nltk_scratch_")
-        atexit.register(shutil.rmtree, staged, ignore_errors=True)
+        atexit.register(_remove_staging_dir, staged)
         _STAGING_TEMPDIR = staged
     return _STAGING_TEMPDIR
 
@@ -379,26 +379,30 @@ def _staging_dir_is_still_safe(path):
     return True
 
 
-def make_staging_dir(prefix="nltk_", cleanup=False):
+def make_staging_dir(prefix="nltk_", cleanup=False, dir=None):
     """Create a fresh private directory for NLTK's own output, inside a data root.
 
     NLTK's save helpers default here so their output lands within the security
     sandbox (every ``nltk.data.path`` entry is an allowed root) on all platforms,
     including Linux where the shared ``/tmp`` is deliberately not a root. The
-    directory is created with ``tempfile.mkdtemp`` (mode 0700, unpredictable name)
-    under the first ``nltk.data.path`` entry that can be written to.
+    directory is created by :func:`nltk.pathsec.make_private_dir` (mode 0700,
+    unpredictable name) under the first ``nltk.data.path`` entry that can be
+    written to, which must itself be private.
 
     :param prefix: filename prefix for the created directory. It is a *name*
         fragment, not a path: callers build it from values such as a tagger's
-        language code, and ``tempfile.mkdtemp`` simply concatenates it onto
-        *dir*, so a ``..`` inside it would place the directory outside the data
-        root (CWE-22). Path separators and NUL are therefore refused.
+        language code, and it is simply concatenated onto the directory, so a
+        ``..`` inside it would place the directory outside the data root
+        (CWE-22). Path separators and NUL are therefore refused.
     :type prefix: str
     :param cleanup: remove the directory when the interpreter exits. Use it for
         scratch output nobody will look for again; leave it False for a saved
         model, where deleting the user's artifact would be surprising. Without
         it every call leaks a directory under the data root, since the name is
         unpredictable and no caller can find it again to clean up.
+    :param dir: create the directory under this private directory inside a
+        data root instead of the first writable root, for output that will be
+        renamed into place beside it.
     :return: the absolute path of the created directory.
 
     See also :func:`staging_tempdir`, which is this function memoised: one
@@ -411,18 +415,14 @@ def make_staging_dir(prefix="nltk_", cleanup=False):
     :raises PermissionError: if no ``nltk.data.path`` entry is a writable allowed
         root, in which case the caller should pass an explicit destination.
     """
-    prefix = str(prefix)
-    if (
-        "\x00" in prefix
-        or "/" in prefix
-        or "\\" in prefix
-        or os.sep in prefix
-        or (os.altsep and os.altsep in prefix)
-    ):
-        raise ValueError(
-            f"Invalid staging-dir prefix {prefix!r}: a prefix is a filename "
-            "fragment, not a path (no separators or NUL)"
+    prefix = pathsec.validate_name_fragment(str(prefix), what="staging-dir prefix")
+    if dir is not None:
+        staged = pathsec.make_private_dir(
+            dir, prefix, context="nltk.data.make_staging_dir"
         )
+        if cleanup:
+            atexit.register(_remove_staging_dir, staged)
+        return staged
     for root in path:
         base = os.path.expanduser(str(root.path if hasattr(root, "path") else root))
         try:
@@ -434,16 +434,13 @@ def make_staging_dir(prefix="nltk_", cleanup=False):
             # the sandbox does.
             _validate_path(base, context="nltk.data.make_staging_dir")
             os.makedirs(base, exist_ok=True)
-            staged = tempfile.mkdtemp(prefix=prefix, dir=base)
-            try:
-                # Defence in depth: confirm what was actually created is inside
-                # the root just validated, not merely that the base was.
-                _validate_path(staged, context="nltk.data.make_staging_dir")
-            except BaseException:
-                os.rmdir(staged)
-                raise
+            # the root itself must be private: a staging directory another
+            # account can reach is where a planted name would wait for a rename
+            staged = pathsec.make_private_dir(
+                base, prefix, context="nltk.data.make_staging_dir"
+            )
             if cleanup:
-                atexit.register(shutil.rmtree, staged, ignore_errors=True)
+                atexit.register(_remove_staging_dir, staged)
             return staged
         except (OSError, ValueError, PermissionError):
             continue
@@ -452,6 +449,14 @@ def make_staging_dir(prefix="nltk_", cleanup=False):
         f"{len(path)} nltk.data.path entries); pass an explicit destination "
         "directory."
     )
+
+
+def _remove_staging_dir(staged):
+    """atexit hook: remove a staging directory through pathsec, quietly."""
+    try:
+        pathsec.remove_tree(staged, context="nltk.data.make_staging_dir")
+    except (OSError, ValueError, PermissionError):
+        pass
 
 
 def stage_package_resource(path, package_root, *, prefix, cleanup=True):
@@ -513,6 +518,18 @@ class _BoundedGzipFile(GzipFile):
         gz._nltk_owned_fileobj = fileobj
         return gz
 
+    @classmethod
+    def _nltk_open_name(cls, filename, mode, compresslevel, context):
+        """Open the gzip file *filename* through pathsec and own the handle."""
+        handle = _open_gzip_name(filename, mode, context)
+        try:
+            gz = cls(filename, mode, compresslevel, handle)
+        except BaseException:
+            handle.close()
+            raise
+        gz._nltk_owned_fileobj = handle
+        return gz
+
     def _nltk_compress_size(self):
         if not hasattr(self, "_nltk_cached_compress_size"):
             name = self.name
@@ -557,6 +574,20 @@ class _BoundedGzipFile(GzipFile):
                 owned.close()
 
 
+def _open_gzip_name(filename, mode, context):
+    """Open the gzip file *filename* the way ``GzipFile`` would, through pathsec.
+
+    Given a name, ``GzipFile`` opens it with the builtin ``open()``, outside the
+    data-root containment and the symlink and hardlink refusal of
+    :func:`nltk.pathsec.open`. This opens it in the binary mode ``GzipFile``
+    would use (``rb`` by default) but through pathsec, for ``GzipFile`` to wrap.
+    """
+    if mode and ("t" in mode or "U" in mode):
+        raise ValueError(f"Invalid mode: {mode!r}")
+    raw_mode = "rb" if not mode else mode if "b" in mode else mode + "b"
+    return _secure_open(filename, raw_mode, context=context)
+
+
 def gzip_open_unicode(
     filename,
     mode="rb",
@@ -567,7 +598,9 @@ def gzip_open_unicode(
     newline=None,
 ):
     if fileobj is None:
-        fileobj = _BoundedGzipFile(filename, mode, compresslevel, fileobj)
+        fileobj = _BoundedGzipFile._nltk_open_name(
+            filename, mode, compresslevel, context="nltk.data.gzip_open_unicode"
+        )
     return TextIOWrapper(fileobj, encoding, errors, newline)
 
 
@@ -766,9 +799,7 @@ def _refuse_file_not_ours(stream, path):
         st = os.fstat(stream.fileno())
     except (OSError, ValueError, AttributeError):
         return stream
-    if stat.S_ISREG(st.st_mode) and (
-        st.st_uid not in (os.geteuid(), 0) or st.st_mode & (stat.S_IWGRP | stat.S_IWOTH)
-    ):
+    if stat.S_ISREG(st.st_mode) and not pathsec._private_stat(st):
         stream.close()
         raise PermissionError(
             "NLTK will not read %r: it is writable by, or owned by, another "
@@ -930,7 +961,16 @@ class BufferedGzipFile(_BoundedGzipFile):
         self, filename=None, mode=None, compresslevel=9, fileobj=None, **kwargs
     ):
         """Return a buffered gzip file object."""
-        GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
+        if fileobj is not None:
+            GzipFile.__init__(self, filename, mode, compresslevel, fileobj)
+            return
+        handle = _open_gzip_name(filename, mode, "nltk.data.BufferedGzipFile")
+        try:
+            GzipFile.__init__(self, filename, mode, compresslevel, handle)
+        except BaseException:
+            handle.close()
+            raise
+        self._nltk_owned_fileobj = handle
 
     def write(self, data):
         # This is identical to GzipFile.write but does not return
@@ -1426,9 +1466,7 @@ def find(resource_name, paths=None):
             st = os.stat(path)
         except OSError:
             return False
-        if st.st_uid not in (os.geteuid(), 0):
-            return True
-        return bool(st.st_mode & (stat.S_IWGRP | stat.S_IWOTH))
+        return not pathsec._private_stat(st)
 
     # Check each item in our path
     for path_ in paths:
@@ -1723,12 +1761,187 @@ def restricted_pickle_load(string):
     return RestrictedUnpickler(BytesIO(string)).load()
 
 
+#: The pickle packages retired for CVE-2024-39705 (unpickling one can run
+#: arbitrary code), each with the tab package that replaced it.
+_RETIRED_PICKLES = {
+    "tokenizers/punkt": "punkt_tab",
+    "taggers/averaged_perceptron_tagger": "averaged_perceptron_tagger_eng",
+    "taggers/averaged_perceptron_tagger_ru": "averaged_perceptron_tagger_rus",
+    "chunkers/maxent_ne_chunker": "maxent_ne_chunker_tab",
+    "taggers/maxent_treebank_pos_tagger": "maxent_treebank_pos_tagger_tab",
+}
+
+#: A pickle under a package named like one of these (a retired package, or a
+#: tab package beside it, which holds none) is never loaded.
+_PICKLE_ERA_PREFIXES = (
+    "tokenizers/punkt",
+    "chunkers/maxent_ne_chunker",
+    "taggers/maxent_treebank_pos_tagger",
+    "taggers/averaged_perceptron_tagger",
+)
+
+
+def _tab_call(package, stem):
+    """The call that loads the tab replacement of the retired *package*, for
+    its pickle named *stem* (the model the pickle held)."""
+    if package == "tokenizers/punkt":
+        lang = stem if stem.isascii() and stem.isalpha() else "english"
+        return f"nltk.tokenize.PunktTokenizer({lang!r})"
+    if package == "chunkers/maxent_ne_chunker":
+        binary = stem.rsplit("_", 1)[-1] == "binary"
+        return "nltk.chunk.ne_chunker(%s)" % ("'binary'" if binary else "")
+    if package == "taggers/maxent_treebank_pos_tagger":
+        return "nltk.classify.maxent.maxent_pos_tagger()"
+    if package == "taggers/averaged_perceptron_tagger_ru":
+        return "nltk.tag.PerceptronTagger(lang='rus')"
+    return "nltk.tag.PerceptronTagger()"
+
+
+def _folded_parts(name):
+    """The components of *name* as the most lenient filesystem matches them:
+    case folded (macOS, Windows), without the trailing dots and spaces Windows
+    drops, and an archive's ``.zip`` taken as the package it holds."""
+    parts = []
+    for part in name.replace("\\", "/").split("/"):
+        part = part.casefold().rstrip(". ")
+        if part.endswith(".zip"):
+            part = part[: -len(".zip")]
+        if part:
+            parts.append(part)
+    return parts
+
+
+def _resource_names_of(real, real_roots):
+    """The absolute path *real* as a resource name under each of the resolved
+    data roots *real_roots* that holds it, or *real* itself when none does,
+    so that a data root's own location never decides whether a load is
+    refused."""
+    names = []
+    for root in real_roots:
+        try:
+            rel = os.path.relpath(real, root)
+        except ValueError:  # another drive
+            continue
+        if rel != os.pardir and not rel.startswith(os.pardir + os.sep):
+            names.append(rel)
+    return names or [real]
+
+
+def _is_pickle_name(parts):
+    return bool(parts) and parts[-1].endswith((".pickle", ".pickle.gz"))
+
+
+def _retired_pickle(protocol, path_, format):
+    """``(package, stem)`` when a load of *path_* in *format* reaches for a
+    pickle in a retired package, ``("", "")`` for a pickle in a tab package
+    beside one, else None. A resource name is judged as written and decoded
+    once, the way ``find()`` decodes it; a ``file:`` path as the local path
+    ``_open()`` reads. A load that would unpickle is judged again as the file
+    it resolves to under each data root, so a link or a Windows short name is
+    followed. A pair of components anywhere in a name can name the package,
+    so an archive member and a data root that is an archive are judged too."""
+    forms = (url2pathname,) if protocol == "file" else (str, unquote, url2pathname)
+    names = set()
+    for form in forms:
+        try:
+            names.add(form(path_))
+        except (TypeError, ValueError, OSError):
+            continue
+    unpickles = format == "pickle" or any(
+        _is_pickle_name(_folded_parts(name)) for name in names
+    )
+    if not unpickles or protocol not in ("nltk", "file"):
+        return _judge(names, format)
+    roots = [root for root in path if isinstance(root, str)]
+    real_roots = []
+    resolved = set()
+    for root in roots:
+        try:
+            real_roots.append(os.path.realpath(root))
+        except (TypeError, ValueError, OSError):
+            continue
+    for base in [""] if protocol == "file" else roots:
+        for name in names:
+            candidate = os.path.join(base, name)
+            try:
+                if os.path.lexists(candidate):
+                    resolved.add(os.path.realpath(candidate))
+            except (TypeError, ValueError, OSError):
+                continue
+    if protocol == "file":
+        names = {rel for name in names for rel in _resource_names_of(name, real_roots)}
+    for real in resolved:
+        names.update(_resource_names_of(real, real_roots))
+    return _judge(names, format)
+
+
+def _judge(names, format):
+    """The verdict of :func:`_retired_pickle` on the candidate *names*."""
+    found = None
+    for name in names:
+        parts = _folded_parts(name)
+        is_pickle = _is_pickle_name(parts)
+        if not (is_pickle or format == "pickle"):
+            continue
+        stem = parts[-1].split(".", 1)[0] if is_pickle else ""
+        for subdir, package in zip(parts, parts[1:]):
+            key = f"{subdir}/{package}"
+            if key in _RETIRED_PICKLES:
+                # a spelling that names the pickle's model is preferred
+                if not (found and found[0] and found[1]):
+                    found = (key, stem)
+            elif key.startswith(_PICKLE_ERA_PREFIXES) and found is None:
+                found = ("", "")
+    return found
+
+
+def _refuse_retired_pickle(protocol, path_, format):
+    """Raise ValueError when a load reaches for a retired pickle, under any
+    spelling of its name, before the cache, the format or any file is
+    consulted. The error names the tab package that replaced it, the call
+    that loads that package, and the installed copies that can be deleted."""
+    hit = _retired_pickle(protocol, path_, format)
+    if hit is None:
+        return
+    shown = sanitize_terminal(repr(path_))
+    package, stem = hit
+    if not package:
+        raise ValueError(
+            f"Refusing to load {shown}: it is a pickle in a resource tree whose "
+            "pickles were retired (CVE-2024-39705), so NLTK never loads it; the "
+            "tab packages that replaced them hold no pickles."
+        )
+    tab = _RETIRED_PICKLES[package]
+    installed = []
+    for root in path:
+        if isinstance(root, str):
+            base = os.path.join(root, *package.split("/"))
+            for where in (base, base + ".zip"):
+                if where not in installed and os.path.lexists(where):
+                    installed.append(where)
+    remove = ""
+    if installed:
+        listed = ", ".join(sanitize_terminal(repr(p)) for p in installed)
+        remove = f" The retired package is no longer read and can be deleted: {listed}."
+    raise ValueError(
+        f"Refusing to load {shown}: {package!r} is a retired pickle package "
+        "(CVE-2024-39705: unpickling it can run arbitrary code), so NLTK never "
+        f"loads it. Use its replacement: nltk.download({tab!r}), then "
+        f"{_tab_call(package, stem)}.{remove}"
+    )
+
+
 def switch_punkt(lang="english"):
     """
-    Return a pickle-free Punkt tokenizer instead of loading a pickle.
+    Return the pickle-free Punkt tokenizer (punkt_tab). A load of the
+    retired pickle is refused (CVE-2024-39705):
 
     >>> import nltk
-    >>> tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+    >>> nltk.data.load('tokenizers/punkt/english.pickle')  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    ValueError: Refusing to load 'tokenizers/punkt/english.pickle': 'tokenizers/punkt' is a retired pickle package ... nltk.download('punkt_tab'), then nltk.tokenize.PunktTokenizer('english')...
+    >>> tokenizer = nltk.data.switch_punkt('english')
     >>> print(tokenizer.tokenize("Hello! How are you?"))
     ['Hello!', 'How are you?']
     """
@@ -1739,12 +1952,17 @@ def switch_punkt(lang="english"):
 
 def switch_chunker(fmt="multiclass"):
     """
-    Return a pickle-free Named Entity Chunker instead of loading a pickle.
+    Return the pickle-free Named Entity Chunker (maxent_ne_chunker_tab). A
+    load of the retired pickle is refused (CVE-2024-39705):
 
     >>> import nltk
     >>> from nltk.corpus import treebank
     >>> from pprint import pprint
-    >>> chunker = nltk.data.load('chunkers/maxent_ne_chunker/PY3/english_ace_multiclass.pickle')
+    >>> nltk.data.load('chunkers/maxent_ne_chunker/PY3/english_ace_multiclass.pickle')  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    ValueError: Refusing to load 'chunkers/maxent_ne_chunker/PY3/english_ace_multiclass.pickle': 'chunkers/maxent_ne_chunker' is a retired pickle package ... nltk.download('maxent_ne_chunker_tab'), then nltk.chunk.ne_chunker()...
+    >>> chunker = nltk.data.switch_chunker('multiclass')
     >>> pprint(chunker.parse(treebank.tagged_sents()[2][8:14])) # doctest: +NORMALIZE_WHITESPACE
     Tree('S', [('chairman', 'NN'), ('of', 'IN'), Tree('ORGANIZATION', [('Consolidated', 'NNP'), ('Gold', 'NNP'), ('Fields', 'NNP')]), ('PLC', 'NNP')])
 
@@ -1756,11 +1974,16 @@ def switch_chunker(fmt="multiclass"):
 
 def switch_t_tagger():
     """
-    Return a pickle-free Treebank Pos Tagger instead of loading a pickle.
+    Return the pickle-free Treebank Pos Tagger (maxent_treebank_pos_tagger_tab).
+    A load of the retired pickle is refused (CVE-2024-39705):
 
     >>> import nltk
     >>> from nltk.tokenize import word_tokenize
-    >>> tagger = nltk.data.load('taggers/maxent_treebank_pos_tagger/PY3/english.pickle')
+    >>> nltk.data.load('taggers/maxent_treebank_pos_tagger/PY3/english.pickle')  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    ValueError: Refusing to load 'taggers/maxent_treebank_pos_tagger/PY3/english.pickle': 'taggers/maxent_treebank_pos_tagger' is a retired pickle package ... nltk.download('maxent_treebank_pos_tagger_tab'), then nltk.classify.maxent.maxent_pos_tagger()...
+    >>> tagger = nltk.data.switch_t_tagger()
     >>> print(tagger.tag(word_tokenize("Hello, how are you?")))
     [('Hello', 'NNP'), (',', ','), ('how', 'WRB'), ('are', 'VBP'), ('you', 'PRP'), ('?', '.')]
 
@@ -1772,11 +1995,16 @@ def switch_t_tagger():
 
 def switch_p_tagger(lang):
     """
-    Return a pickle-free Averaged Perceptron Tagger instead of loading a pickle.
+    Return the pickle-free Averaged Perceptron Tagger (averaged_perceptron_tagger_eng,
+    or _rus for "ru"). A load of the retired pickle is refused (CVE-2024-39705):
 
     >>> import nltk
     >>> from nltk.tokenize import word_tokenize
-    >>> tagger = nltk.data.load('taggers/averaged_perceptron_tagger/averaged_perceptron_tagger.pickle')
+    >>> nltk.data.load('taggers/averaged_perceptron_tagger/averaged_perceptron_tagger.pickle')  # doctest: +ELLIPSIS
+    Traceback (most recent call last):
+      ...
+    ValueError: Refusing to load 'taggers/averaged_perceptron_tagger/averaged_perceptron_tagger.pickle': 'taggers/averaged_perceptron_tagger' is a retired pickle package ... nltk.download('averaged_perceptron_tagger_eng'), then nltk.tag.PerceptronTagger()...
+    >>> tagger = nltk.data.switch_p_tagger('eng')
     >>> print(tagger.tag(word_tokenize("Hello, how are you?")))
     [('Hello', 'NNP'), (',', ','), ('how', 'WRB'), ('are', 'VBP'), ('you', 'PRP'), ('?', '.')]
 
@@ -1824,6 +2052,13 @@ def load(
     work, it tries with ISO-8859-1 (Latin-1), unless the ``encoding``
     is specified.
 
+    The pickle packages retired for CVE-2024-39705 (``punkt``,
+    ``averaged_perceptron_tagger``, ``averaged_perceptron_tagger_ru``,
+    ``maxent_ne_chunker`` and ``maxent_treebank_pos_tagger``) are never
+    loaded: a load that reaches for a pickle in one, however the name is
+    spelled and in any format, raises ``ValueError`` before anything is read,
+    naming the tab package that replaced it and the call that loads that.
+
     :type resource_url: str
     :param resource_url: A URL specifying where the resource should be
         loaded from.  The default protocol is "nltk:", which searches
@@ -1846,6 +2081,10 @@ def load(
     :param encoding: the encoding of the input; only used for text formats.
     """
     resource_url = normalize_resource_url(resource_url)
+
+    # A retired pickle is refused under any spelling of its name, before the
+    # cache, the format or any file is consulted (CVE-2024-39705).
+    _refuse_retired_pickle(*split_resource_url(resource_url), format)
 
     # Determine the format of the resource.
     if format == "auto":
@@ -1871,21 +2110,6 @@ def load(
             if verbose:
                 safe_print(f"<<Using cached copy of resource (format={format})>>")
             return resource_val
-
-    protocol, path_ = split_resource_url(resource_url)
-
-    if path_[-7:] == ".pickle":
-        if verbose:
-            safe_print("<<Loading pickle-free alternative>>")
-        fil = os.path.split(path_[:-7])[-1]
-        if path_.startswith("tokenizers/punkt"):
-            return switch_punkt(fil)
-        elif path_.startswith("chunkers/maxent_ne_chunker"):
-            return switch_chunker(fil.split("_")[-1])
-        elif path_.startswith("taggers/maxent_treebank_pos_tagger"):
-            return switch_t_tagger()
-        elif path_.startswith("taggers/averaged_perceptron_tagger"):
-            return switch_p_tagger(fil.split("_")[-1])
 
     # Let the user know what's going on.
     if verbose:
@@ -1913,9 +2137,14 @@ def load(
         if tag not in json_tags:
             raise ValueError("Unknown json tag.")
     elif format == "yaml":
-        import yaml
+        from nltk.jsontags import safe_yaml_load
 
-        resource_val = yaml.safe_load(opened_resource)
+        # Bound size, depth and node count before PyYAML's recursive safe
+        # loader: a deep or large YAML resource otherwise raises an uncaught
+        # RecursionError or runs for minutes (safe_yaml_load refuses it).
+        resource_val = safe_yaml_load(
+            opened_resource, context=f"nltk.data.load({resource_url})"
+        )
     else:
         # The resource is a text format.
         binary_data = opened_resource.read()
@@ -2048,7 +2277,6 @@ def _open(resource_url):
 
 
 class LazyLoader:
-
     def __init__(self, _path):
         self._path = _path
 
@@ -2133,6 +2361,51 @@ class OpenOnDemandZipFile(ZipFile):
 ######################################################################
 
 
+#: Byte order marks and the encoding each one announces, longest first.
+BOMS = (
+    (codecs.BOM_UTF32_LE, "utf-32-le"),
+    (codecs.BOM_UTF32_BE, "utf-32-be"),
+    (codecs.BOM_UTF16_LE, "utf-16-le"),
+    (codecs.BOM_UTF16_BE, "utf-16-be"),
+    (codecs.BOM_UTF8, "utf-8"),
+)
+
+
+def encoding_from_bom(head):
+    """The encoding the byte order mark at the start of ``head`` announces,
+    or None when it starts with none. UTF-32 is tried before UTF-16, whose
+    little endian mark is a prefix of the UTF-32 one."""
+    for bom, encoding in BOMS:
+        if head.startswith(bom):
+            return encoding
+    return None
+
+
+def text_encoding(encoding):
+    """Return ``encoding``, or the encoding ``open()`` decodes with when it is
+    None, once it is known to name a text encoding.
+
+    A codec from bytes to bytes (``zlib_codec``, ``bz2_codec``, ``base64_codec``)
+    or from str to str (``rot_13``) is no text encoding. ``open()`` and
+    ``str.encode()`` refuse one; ``codecs.getdecoder`` and the incremental
+    coders do not, so a reader built on them would decode a file with it,
+    expanding or rewriting its bytes before a line is split (81 bytes of
+    ``bz2_codec`` input decode to 50 MB). Every :class:`PathPointer` decodes
+    through :class:`SeekableUnicodeStreamReader`, which applies this test
+    first, by the rule ``open()`` applies.
+
+    :raises LookupError: if ``encoding`` names no codec, or no text encoding
+    """
+    if encoding is None:
+        return locale.getpreferredencoding(False)
+    if not codecs.lookup(encoding)._is_text_encoding:
+        raise LookupError(
+            f"{encoding!r} is not a text encoding; NLTK reads and writes text "
+            "with text encodings only"
+        )
+    return encoding
+
+
 class SeekableUnicodeStreamReader:
     """
     A stream reader that automatically encodes the source byte stream
@@ -2159,7 +2432,7 @@ class SeekableUnicodeStreamReader:
         self.stream = stream
         """The underlying stream."""
 
-        self.encoding = encoding
+        self.encoding = text_encoding(encoding)
         """The name of the encoding that should be used to encode the
            underlying stream."""
 
@@ -2168,9 +2441,15 @@ class SeekableUnicodeStreamReader:
            the underlying stream.  Can be 'strict', 'ignore', or
            'replace'."""
 
-        self.decode = codecs.getdecoder(encoding)
+        self.decode = codecs.getdecoder(self.encoding)
         """The function that is used to decode byte strings into
            unicode strings."""
+
+        self._decoder = self._new_decoder()
+        """The incremental decoder the sequential reads go through. It
+           carries the shift state of a stateful codec (``iso2022_jp``,
+           ``utf-7``) and the byte order a ``utf-16`` BOM named from one
+           block to the next, which a stateless decode of each block lost."""
 
         self.bytebuffer = b""
         """A buffer to use bytes that have been read but have not yet
@@ -2200,9 +2479,38 @@ class SeekableUnicodeStreamReader:
            together with ``_rewind_checkpoint``, to backtrack to the
            beginning of ``linebuffer`` (which is required by ``tell()``)."""
 
+        self._rewind_state = None
+        """The decoder state at ``_rewind_checkpoint`` (None for the
+           initial state), so that backtracking from the checkpoint
+           decodes a stateful codec as the sequential read did."""
+
+        self._buffer_state = None
+        """The decoder state at the first byte of ``bytebuffer`` (None for
+           the initial state): the state at every position this reader
+           hands out, which a decoder started there must be in."""
+
+        self._seek_states = {}
+        """The decoder state at each position ``tell()`` handed out that
+           a decoder started there would not be in by itself: a position
+           inside a shifted run of a stateful codec. ``seek()`` looks the
+           position up. A stateless codec never adds an entry."""
+
         self._bom = self._check_bom()
         """The length of the byte order marker at the beginning of
            the stream (or None for no byte order marker)."""
+        if self._bom:
+            # The BOM is skipped on every read, so the decoder has to carry the
+            # byte order it named: ``utf-16`` without its BOM is decoded in the
+            # native order, which turns a big endian file into other characters.
+            self.decode = codecs.getdecoder(self.encoding)
+            self._decoder = self._new_decoder()
+
+        self._initial_state = self._new_decoder().getstate()
+        self._base_state = self._state_after_own_bom()
+        """The decoder state after a BOM the codec reads for itself (None
+           when there is none): what the byte order it learned, or the BOM
+           it has already seen, must be at every position past it, since
+           a seek there starts a decoder that never saw the BOM."""
 
     # /////////////////////////////////////////////////////////////////
     # Read methods
@@ -2234,6 +2542,12 @@ class SeekableUnicodeStreamReader:
             self._rewind_numchars += len(line)
         else:
             self.stream.readline()
+            # a raw skip: nothing read so far carries over to the new position
+            self.bytebuffer = b""
+            self._buffer_state = self._state_at(self.stream.tell())
+            self._decoder.reset()
+            if self._buffer_state is not None:
+                self._decoder.setstate(self._buffer_state)
 
     def readline(self, size=None):
         """
@@ -2268,6 +2582,7 @@ class SeekableUnicodeStreamReader:
 
         while True:
             startpos = self.stream.tell() - len(self.bytebuffer)
+            startstate = self._state_at_checkpoint()
             new_chars = self._read(readsize)
 
             # If we're at a '\r', then read one extra character, since
@@ -2291,6 +2606,7 @@ class SeekableUnicodeStreamReader:
                     self.linebuffer = lines[1:]
                     self._rewind_numchars = len(new_chars) - (len(chars) - len(line))
                     self._rewind_checkpoint = startpos
+                    self._rewind_state = startstate
                     break
                 elif len(lines) == 1:
                     line0withend = lines[0]
@@ -2400,8 +2716,13 @@ class SeekableUnicodeStreamReader:
         self.stream.seek(offset, whence)
         self.linebuffer = None
         self.bytebuffer = b""
+        self._decoder.reset()
         self._rewind_numchars = None
         self._rewind_checkpoint = self.stream.tell()
+        self._rewind_state = self._state_at(self._rewind_checkpoint)
+        self._buffer_state = self._rewind_state
+        if self._rewind_state is not None:
+            self._decoder.setstate(self._rewind_state)
 
     def char_seek_forward(self, offset):
         """
@@ -2411,17 +2732,19 @@ class SeekableUnicodeStreamReader:
             raise ValueError("Negative offsets are not supported")
         # Clear all buffers.
         self.seek(self.tell())
-        # Perform the seek operation.
-        self._char_seek_forward(offset)
+        # Perform the seek operation; reading goes on in the state reached.
+        self._decoder.setstate(self._char_seek_forward(offset))
 
-    def _char_seek_forward(self, offset, est_bytes=None):
+    def _char_seek_forward(self, offset, est_bytes=None, state=None):
         """
         Move the file position forward by ``offset`` characters,
-        ignoring all buffers.
+        ignoring all buffers, and return the decoder state reached.
 
         :param est_bytes: A hint, giving an estimate of the number of
             bytes that will be needed to move forward by ``offset`` chars.
             Defaults to ``offset``.
+        :param state: The decoder state at the current position (None
+            for the state a seek there would start in).
         """
         if offset < 0:
             # the backtracking loop below never reaches a negative count and
@@ -2429,6 +2752,12 @@ class SeekableUnicodeStreamReader:
             raise ValueError("Negative offsets are not supported")
         if est_bytes is None:
             est_bytes = offset
+        if self._bom and self.stream.tell() == 0:
+            # The decoder carries the byte order the BOM named and would read
+            # the BOM itself as U+FEFF, one character no caller counted.
+            self.stream.read(self._bom)
+        if state is None:
+            state = self._state_at(self.stream.tell())
         bytes = b""
 
         while True:
@@ -2437,13 +2766,7 @@ class SeekableUnicodeStreamReader:
             bytes += newbytes
 
             # Decode the bytes to characters.
-            chars, bytes_decoded = self._incr_decode(bytes)
-
-            # If we got the right number of characters, then seek
-            # backwards over any truncated characters, and return.
-            if len(chars) == offset:
-                self.stream.seek(-len(bytes) + bytes_decoded, 1)
-                return
+            chars, bytes_decoded, reached = self._decode_from(state, bytes)
 
             # If we went too far, then we can back-up until we get it
             # right, using the bytes we've already read.
@@ -2451,9 +2774,23 @@ class SeekableUnicodeStreamReader:
                 while len(chars) > offset:
                     # Assume at least one byte/char.
                     est_bytes += offset - len(chars)
-                    chars, bytes_decoded = self._incr_decode(bytes[:est_bytes])
+                    chars, bytes_decoded, reached = self._decode_from(
+                        state, bytes[:est_bytes]
+                    )
+
+            # Right number of characters: stop before any trailing bytes that
+            # produced none (an escape sequence of a stateful codec) and
+            # before any truncated character, then return the state there.
+            if len(chars) == offset:
+                while bytes_decoded > 0:
+                    fewer, consumed, before = self._decode_from(
+                        state, bytes[: bytes_decoded - 1]
+                    )
+                    if len(fewer) != offset:
+                        break
+                    bytes_decoded, reached = consumed, before
                 self.stream.seek(-len(bytes) + bytes_decoded, 1)
-                return
+                return reached
 
             # Otherwise, we haven't read enough bytes yet; loop again.
             est_bytes += offset - len(chars)
@@ -2467,7 +2804,9 @@ class SeekableUnicodeStreamReader:
         """
         # If nothing's buffered, then just return our current filepos:
         if self.linebuffer is None:
-            return self.stream.tell() - len(self.bytebuffer)
+            position = self.stream.tell() - len(self.bytebuffer)
+            self._remember_state(position, self._buffer_state)
+            return position
 
         # Otherwise, we'll need to backtrack the filepos until we
         # reach the beginning of the buffer.
@@ -2483,13 +2822,16 @@ class SeekableUnicodeStreamReader:
         )
 
         self.stream.seek(self._rewind_checkpoint)
-        self._char_seek_forward(self._rewind_numchars, est_bytes)
+        reached = self._char_seek_forward(
+            self._rewind_numchars, est_bytes, self._rewind_state
+        )
         filepos = self.stream.tell()
+        self._remember_state(filepos, reached)
 
         # Sanity check
         if self.DEBUG:
             self.stream.seek(filepos)
-            check1 = self._incr_decode(self.stream.read(50))[0]
+            check1 = self._decode_from(reached, self.stream.read(50))[0]
             check2 = "".join(self.linebuffer)
             assert check1.startswith(check2) or check2.startswith(check1)
 
@@ -2518,29 +2860,107 @@ class SeekableUnicodeStreamReader:
             self.stream.read(self._bom)
 
         # Read the requested number of bytes.
+        start_state, buffered = self._buffer_state, self.bytebuffer
         if size is None:
             new_bytes = self.stream.read()
         else:
             new_bytes = self.stream.read(size)
-        bytes = self.bytebuffer + new_bytes
 
-        # Decode the bytes into unicode characters
-        chars, bytes_decoded = self._incr_decode(bytes)
+        # Decode the bytes into unicode characters; the decoder keeps an
+        # incomplete character and the shift state for the next block. At
+        # the end of the stream a character cut short is an error, as in open().
+        final = size is None or not new_bytes
+        chars = self._decoder.decode(new_bytes, final)
 
         # If we got bytes but couldn't decode any, then read further.
         if (size is not None) and (not chars) and (len(new_bytes) > 0):
             while not chars:
-                new_bytes = self.stream.read(1)
-                if not new_bytes:
-                    break  # end of file.
-                bytes += new_bytes
-                chars, bytes_decoded = self._incr_decode(bytes)
+                more = self.stream.read(1)
+                if not more:
+                    chars = self._decoder.decode(b"", True)  # end of file.
+                    break
+                new_bytes += more
+                chars = self._decoder.decode(more)
 
-        # Record any bytes we didn't consume.
-        self.bytebuffer = bytes[bytes_decoded:]
+        # Record any bytes we didn't consume: an incomplete character, and
+        # trailing bytes that produced none (an escape sequence) when the
+        # state here is not one a decoder started here would be in.
+        pending, shift = self._decoder.getstate()
+        self.bytebuffer, self._buffer_state = pending, (b"", shift)
+        position = self.stream.tell() - len(pending)
+        if self._buffer_state != (self._state_at(position) or self._initial_state):
+            block = buffered + new_bytes
+            consumed, state = len(block) - len(pending), self._buffer_state
+            while consumed > 0:
+                fewer, shorter, before = self._decode_from(
+                    start_state, block[: consumed - 1]
+                )
+                if len(fewer) != len(chars):
+                    break
+                consumed, state = shorter, before
+            self.bytebuffer, self._buffer_state = block[consumed:], state
 
         # Return the result
         return chars
+
+    def _new_decoder(self):
+        return codecs.getincrementaldecoder(self.encoding)(self.errors)
+
+    def _state_at_checkpoint(self):
+        """The decoder state at the first byte not yet decoded (the start
+        of ``bytebuffer``), which a read from there starts in."""
+        return self._buffer_state
+
+    def _state_at(self, position):
+        """The state a decoder starting at ``position`` must be in: the
+        state ``tell()`` remembered there, else the initial state at the
+        start of the stream, else past the codec's own BOM the state that
+        BOM left (None when there is no such BOM)."""
+        if position in self._seek_states:
+            return self._seek_states[position]
+        return self._base_state if position > 0 else None
+
+    def _remember_state(self, position, state):
+        """Keep ``state`` for ``position`` when a decoder started there
+        would not be in it by itself."""
+        if state is not None and state != (
+            self._state_at(position) or self._initial_state
+        ):
+            self._seek_states[position] = state
+
+    def _state_after_own_bom(self):
+        """The state a fresh decoder is in after the BOM it reads for
+        itself at the start of the stream, or None when it reads none or
+        the BOM leaves it as it started."""
+        if self._bom:
+            return None  # the reader skips this BOM; the codec never sees it
+        head = self.stream.read(4)
+        self.stream.seek(0)
+        initial = self._initial_state
+        for bom, _ in BOMS:
+            if head.startswith(bom):
+                decoder = self._new_decoder()
+                try:
+                    consumed = decoder.decode(bom)
+                except UnicodeDecodeError:
+                    return None
+                state = decoder.getstate()
+                if consumed == "" and state[0] == b"" and state != initial:
+                    return state
+                return None
+        return None
+
+    def _decode_from(self, state, bytes):
+        """Decode ``bytes`` from ``state`` (None for the initial state) with
+        a decoder of its own. Return ``(chars, num_consumed, state)``: the
+        characters, the bytes they took (an incomplete character at the end
+        is not consumed) and the state reached, with nothing pending."""
+        decoder = self._new_decoder()
+        if state is not None:
+            decoder.setstate(state)
+        chars = decoder.decode(bytes)
+        pending, shift = decoder.getstate()
+        return chars, len(bytes) - len(pending), (b"", shift)
 
     def _incr_decode(self, bytes):
         """
@@ -2554,30 +2974,21 @@ class SeekableUnicodeStreamReader:
         the decoded unicode string, and ``num_consumed`` is the
         number of bytes that were consumed.
         """
-        while True:
-            try:
-                return self.decode(bytes, "strict")
-            except UnicodeDecodeError as exc:
-                # If the exception occurs at the end of the string,
-                # then assume that it's a truncation error.
-                if exc.end == len(bytes):
-                    return self.decode(bytes[: exc.start], self.errors)
-
-                # Otherwise, if we're being strict, then raise it.
-                elif self.errors == "strict":
-                    raise
-
-                # If we're not strict, then re-process it with our
-                # errors setting.  This *may* raise an exception.
-                else:
-                    return self.decode(bytes, self.errors)
+        chars, num_consumed, _ = self._decode_from(None, bytes)
+        return chars, num_consumed
 
     _BOM_TABLE = {
         "utf8": [(codecs.BOM_UTF8, None)],
-        "utf16": [(codecs.BOM_UTF16_LE, "utf16-le"), (codecs.BOM_UTF16_BE, "utf16-be")],
+        "utf16": [
+            (codecs.BOM_UTF16_LE, "utf-16-le"),
+            (codecs.BOM_UTF16_BE, "utf-16-be"),
+        ],
         "utf16le": [(codecs.BOM_UTF16_LE, None)],
         "utf16be": [(codecs.BOM_UTF16_BE, None)],
-        "utf32": [(codecs.BOM_UTF32_LE, "utf32-le"), (codecs.BOM_UTF32_BE, "utf32-be")],
+        "utf32": [
+            (codecs.BOM_UTF32_LE, "utf-32-le"),
+            (codecs.BOM_UTF32_BE, "utf-32-be"),
+        ],
         "utf32le": [(codecs.BOM_UTF32_LE, None)],
         "utf32be": [(codecs.BOM_UTF32_BE, None)],
     }
@@ -2622,4 +3033,7 @@ __all__ = [
     "OpenOnDemandZipFile",
     "GzipFileSystemPathPointer",
     "SeekableUnicodeStreamReader",
+    "text_encoding",
+    "BOMS",
+    "encoding_from_bom",
 ]

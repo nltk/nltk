@@ -119,12 +119,13 @@ class AlignedSent:
         s += "".join([f'"{w}_target" [label="{w}"] \n' for w in mots])
 
         # Alignment; a pair whose target is None is an unaligned source word,
-        # which _check_alignment admits and which draws no edge.
+        # which _check_alignment admits and which draws no edge. Only the first
+        # two fields index the words: a pair may carry more (sure/possible).
         s += "".join(
             [
-                f'"{words[u]}_source" -- "{mots[v]}_target" \n'
-                for u, v in self._alignment
-                if v is not None
+                f'"{words[pair[0]]}_source" -- "{mots[pair[1]]}_target" \n'
+                for pair in self._alignment
+                if pair[1] is not None
             ]
         )
 
@@ -287,21 +288,32 @@ class Alignment(frozenset):
             self._build_index()
         if not positions:
             positions = self._index.keys()
+        # An unaligned word (target None) maps to nothing, so it adds nothing to
+        # the image; only the first two fields of a pair are positions.
         for p in positions:
-            image.update(f for _, f in self._index.get(p, []))
+            image.update(
+                pair[1] for pair in self._index.get(p, []) if pair[1] is not None
+            )
         return sorted(image)
 
     def __repr__(self):
         """
         Produce a Giza-formatted string representing the alignment.
+
+        An unaligned pair ``(i, None)`` sorts before the aligned pairs of ``i``.
         """
-        return "Alignment(%r)" % sorted(self)
+        return "Alignment(%r)" % sorted(self, key=_pair_key)
 
     def __str__(self):
         """
         Produce a Giza-formatted string representing the alignment.
+
+        NULL-target pairs are omitted because non-mappings are implicit.
         """
-        return " ".join("%d-%d" % p[:2] for p in sorted(self))
+        return " ".join(
+            "%d-%d" % pair[:2]
+            for pair in sorted(pair for pair in self if pair[1] is not None)
+        )
 
     def _build_index(self):
         """
@@ -319,6 +331,17 @@ class Alignment(frozenset):
         self._index = {}
         for p in self:
             self._index.setdefault(p[0], []).append(p)
+
+
+def _pair_key(pair):
+    """
+    Sort key for alignment pairs that tolerates a ``None`` target: ``(i, None)``
+    orders before ``(i, j)``; for integer pairs the order is the tuple order.
+    """
+    target = pair[1]
+    return (pair[0], target is not None, 0 if target is None else target) + tuple(
+        pair[2:]
+    )
 
 
 def _giza2pair(pair_string):

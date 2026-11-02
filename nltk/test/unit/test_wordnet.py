@@ -14,7 +14,6 @@ L = wn.lemma
 
 
 class WordnNetDemo(unittest.TestCase):
-
     def test_value_equality_for_distinct_instances(self):
         # Guards against deleting __eq__ and falling back to identity equality.
         synset = S("dog.n.01")

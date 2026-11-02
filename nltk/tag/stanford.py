@@ -170,7 +170,7 @@ class StanfordTagger(TaggerI):
         finally:
             if input_file_path:
                 try:
-                    os.unlink(input_file_path)
+                    pathsec.unlink(input_file_path, context="StanfordTagger")
                 except FileNotFoundError:
                     pass
                 except OSError:

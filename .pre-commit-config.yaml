@@ -11,7 +11,7 @@ repos:
     rev: v3.21.2
     hooks:
     - id: pyupgrade
-      args: ["--py310-plus"]
+      args: ["--py311-plus"]
   - repo: https://github.com/psf/black
     rev: 25.11.0
     hooks:
@@ -133,6 +133,31 @@ repos:
         outside nltk.jsontags itself; read through jsontags.safe_json_load /
         safe_json_loads, which bound nesting depth and size.
       entry: python tools/check_all_json_through_jsontags.py
+      language: system
+      pass_filenames: false
+      always_run: true
+    - id: no-machine-leaks
+      name: no developer home directory or credential token in the tree
+      description: >-
+        A path under a developer's home directory works on one machine and
+        ships in the sdist (CWE-200/CWE-540); a credential token in the tree
+        is public forever (CWE-798). Fails on any /Users/<name>, /home/<name>
+        or C:\Users\<name> whose <name> is not a documented placeholder, and
+        on PyPI/GitHub/AWS/HF/Anthropic/Google/Slack token shapes and PEM
+        private keys, unless annotated `# machine-leak ok: <reason>`.
+      entry: python tools/check_no_machine_leaks.py
+      language: system
+      pass_filenames: false
+      always_run: true
+    - id: all-yaml-through-jsontags
+      name: every YAML deserialization routes through nltk.jsontags
+      description: >-
+        yaml.safe_load builds an unbounded object graph, so a deeply nested or
+        oversized document is a DoS (uncontrolled recursion CWE-674 / resource
+        exhaustion CWE-400). Fails on any yaml.load/safe_load/full_load call
+        outside nltk.jsontags itself; read through jsontags.safe_yaml_load /
+        safe_yaml_loads, which bound nesting depth, node count and size.
+      entry: python tools/check_all_yaml_through_jsontags.py
       language: system
       pass_filenames: false
       always_run: true

@@ -109,7 +109,6 @@ setup(
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
-        "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
         "Programming Language :: Python :: 3.12",
         "Programming Language :: Python :: 3.13",
@@ -125,7 +124,7 @@ setup(
         "Topic :: Text Processing :: Linguistic",
     ],
     package_data={"nltk": ["test/*.doctest", "VERSION"]},
-    python_requires=">=3.10",
+    python_requires=">=3.11",
     install_requires=[
         "defusedxml",
         "click",
@@ -134,7 +133,10 @@ setup(
         "tqdm",
     ],
     extras_require=extras_require,
-    packages=find_packages(),
+    # The unit tests (nltk.test.unit, 270+ files, the attack harnesses and the
+    # advisory probes among them) are for the repository and CI; the wheel
+    # ships the library and the doctests only. The sdist still carries them.
+    packages=find_packages(exclude=["nltk.test.unit", "nltk.test.unit.*"]),
     zip_safe=False,  # since normal files will be present too?
     entry_points=console_scripts,
 )

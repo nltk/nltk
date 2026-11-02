@@ -43,9 +43,12 @@ pure-Python work beside each one, normalises every sample by the rate its
 units read, and takes the median over the reps of each big run against the
 small block measured next to it; when those reps read on both sides of the
 bar, more are taken so that two misread reps cannot carry the median. The
-thresholds, the floor, the 4x jump and the reps are unchanged.
+collector's full collections, whose cost follows the heap rather than the
+op, run between the timed blocks and never inside them. The thresholds, the
+floor, the 4x jump and the reps are unchanged.
 """
 
+import gc
 import math
 import threading
 import time
@@ -209,6 +212,24 @@ class ScalingSample:
         )
 
 
+#: Third collector threshold inside a timed block: no full collection there.
+NO_FULL_COLLECTION = 1 << 30
+
+
+def _young_collections_only(func, *args):
+    """``cpu_and_wall(func, *args)`` with only the collector's young
+    collections running during the call and a full collection once it
+    returns, outside the timed window; the caller's thresholds are restored.
+    """
+    thresholds = gc.get_threshold()
+    gc.set_threshold(thresholds[0], thresholds[1], NO_FULL_COLLECTION)
+    try:
+        return cpu_and_wall(func, *args)
+    finally:
+        gc.set_threshold(*thresholds)
+        gc.collect()
+
+
 def scaling_samples(op, small, big, reps=3):
     """``reps`` interleaved samples of ``op(small)`` and ``op(big)``.
 
@@ -216,6 +237,23 @@ def scaling_samples(op, small, big, reps=3):
     one call of the big op, with a calibration unit measured before, between
     and after them, so every sample is paired with the big or small run
     measured next to it and carries the core's rate at that moment.
+
+    No full collection runs inside a timed block: its cost follows the heap
+    and the collector's state, not the op. The young collections, which walk
+    a bounded number of new objects and reclaim short-lived garbage as it
+    comes, run as usual; the full collection runs as each block ends, outside
+    it, over a heap frozen for the samples (:func:`gc.freeze`), so it walks
+    only what the measurement allocated. Inside the blocks, a pytest worker's
+    full collections walked every object earlier tests left alive (up to
+    0.75 s, about one block in ten), which took a linear sink's big runs to
+    8.1x on macOS and added a linear term no calibration unit sees to a
+    quadratic oracle, read at 6.8x on Linux; with that heap frozen they came
+    as often as a big run's own live objects allowed and walked its whole
+    structure each time, reading a linear parser at 7.9x on Windows. Pausing
+    the collector outright let a block keep 3.4 million objects of cyclic
+    garbage (2 GB). Whatever was frozen before is thawed with the rest:
+    CPython 3.12 parks its immortal objects there itself (375 at startup) and
+    parks them again at its next full collection.
     """
     samples = []
 
@@ -223,23 +261,27 @@ def scaling_samples(op, small, big, reps=3):
         for _ in range(SMALL_BLOCK):
             op(small)
 
-    rate = calibration_rate()
-    for _ in range(reps):
-        before = rate
-        small_cpu, small_wall = cpu_and_wall(small_block)
-        between = calibration_rate()
-        big_cpu, big_wall = cpu_and_wall(op, big)
+    gc.freeze()
+    try:
         rate = calibration_rate()
-        samples.append(
-            ScalingSample(
-                small_cpu / SMALL_BLOCK,
-                small_wall / SMALL_BLOCK,
-                (before + between) / 2,
-                big_cpu,
-                big_wall,
-                (between + rate) / 2,
+        for _ in range(reps):
+            before = rate
+            small_cpu, small_wall = _young_collections_only(small_block)
+            between = calibration_rate()
+            big_cpu, big_wall = _young_collections_only(op, big)
+            rate = calibration_rate()
+            samples.append(
+                ScalingSample(
+                    small_cpu / SMALL_BLOCK,
+                    small_wall / SMALL_BLOCK,
+                    (before + between) / 2,
+                    big_cpu,
+                    big_wall,
+                    (between + rate) / 2,
+                )
             )
-        )
+    finally:
+        gc.unfreeze()
     return samples
 
 

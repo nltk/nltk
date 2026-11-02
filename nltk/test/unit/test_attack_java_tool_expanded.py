@@ -50,7 +50,6 @@ import os
 import pathlib
 import shutil
 import subprocess
-import tempfile
 import uuid
 from types import SimpleNamespace
 
@@ -58,6 +57,7 @@ import pytest
 
 import nltk.data
 from nltk import internals, pathsec
+from nltk.test.unit.conftest import make_home_dir
 
 POSIX_ONLY = pytest.mark.skipif(
     os.name != "posix", reason="symlink / mode / device-file vectors are POSIX-specific"
@@ -81,9 +81,8 @@ def atk_root(monkeypatch):
     ``root``) is the portable way to have a location that is genuinely OUTSIDE
     every trusted root on Linux/macOS/Windows alike.
     """
-    home = str(pathlib.Path.home())
-    root = os.path.realpath(tempfile.mkdtemp(prefix=".nltk_atk_root_", dir=home))
-    outside = os.path.realpath(tempfile.mkdtemp(prefix=".nltk_atk_out_", dir=home))
+    root = os.path.realpath(make_home_dir(".nltk_atk_root_"))
+    outside = os.path.realpath(make_home_dir(".nltk_atk_out_"))
     monkeypatch.setattr(pathsec, "ENFORCE", True)
     monkeypatch.setattr(nltk.data, "path", [root])
     # Invalidate the memoised allowed-roots so the new single root takes effect.

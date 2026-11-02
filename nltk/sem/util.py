@@ -67,7 +67,7 @@ def root_semrep(syntree, semkey="SEM"):
     except KeyError:
         safe_print(node, end=" ")
         safe_print("has no specification for the feature %s" % semkey)
-    raise
+        raise
 
 
 def interpret_sents(inputs, grammar, semkey="SEM", trace=0):

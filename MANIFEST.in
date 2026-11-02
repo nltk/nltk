@@ -15,4 +15,7 @@ graft web
 # sdist would put maintenance tooling on end-user machines for no runtime need.
 prune tools
 
+# graft nltk sweeps in whatever sits under the tree, tracked or not: the
+# 3.10.3 sdist shipped 293 stale bytecode files. Never ship compiled caches.
+global-exclude *.py[cod]
 global-exclude *~

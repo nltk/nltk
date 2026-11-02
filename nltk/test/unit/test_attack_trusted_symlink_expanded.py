@@ -24,6 +24,7 @@ refused by its own check, with the reason naming that check and the path,
 and the canary never runs; the teeth show that removing each check lets a
 named spoof through.
 """
+
 import os
 import shutil
 import socket
@@ -35,6 +36,7 @@ from pathlib import Path
 import pytest
 
 from nltk import pathsec
+from nltk.test.unit.conftest import make_home_dir
 
 POSIX = pytest.mark.skipif(
     os.name != "posix", reason="symlinks and the POSIX ownership model"
@@ -54,7 +56,7 @@ GRAPH = "digraph { a -> b }"
 def home():
     """A private root under $HOME: a private chain on every CI runner, which a
     shared sticky ``/tmp`` is not (the resolver refuses it by design)."""
-    root = Path(tempfile.mkdtemp(prefix=".nltk_symlink_layouts_", dir=Path.home()))
+    root = Path(make_home_dir(".nltk_symlink_layouts_"))
     os.chmod(root, 0o700)
     try:
         yield root

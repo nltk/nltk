@@ -174,8 +174,7 @@ def rte_classifier(algorithm, sample_N=None):
         clf = MaxentClassifier.train(featurized_train_set, algorithm)
     else:
         err_msg = str(
-            "RTEClassifier only supports these algorithms:\n "
-            "'megam', 'GIS', 'IIS'.\n"
+            "RTEClassifier only supports these algorithms:\n 'megam', 'GIS', 'IIS'.\n"
         )
         raise Exception(err_msg)
     safe_print("Testing classifier...")

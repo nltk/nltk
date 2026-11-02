@@ -360,7 +360,7 @@ class StanfordSegmenter(TokenizerI):
         finally:
             if input_file_path:
                 try:
-                    os.unlink(input_file_path)
+                    pathsec.unlink(input_file_path, context="StanfordSegmenter")
                 except FileNotFoundError:
                     pass
                 except OSError:

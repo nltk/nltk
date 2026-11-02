@@ -469,6 +469,74 @@ class TestTweetTokenizerDigitDoS:
             TweetTokenizer().tokenize("1" * 80000)
 
 
+_ZWJ = chr(0x200D)
+_SKIN = chr(0x1F3FB)
+_FAMILY = chr(0x1F468) + _ZWJ + chr(0x1F469) + _ZWJ + chr(0x1F467)
+_ZWJ_SHAPES = {
+    "tab zwj": "\t" + _ZWJ,
+    "zwj space": _ZWJ + " ",
+    "nbsp zwj": chr(0xA0) + _ZWJ,
+    "zwj zwj space": _ZWJ + _ZWJ + " ",
+    "a zwj b zwj space": "a" + _ZWJ + "b" + _ZWJ + " ",
+    "skin zwj skin space": _SKIN + _ZWJ + _SKIN + " ",
+    "family space": _FAMILY + " ",
+    "zwj url": _ZWJ + "http://x.co",
+    "zwj emoticon": _ZWJ + ":)",
+    "zwj entity": _ZWJ + "&amp;",
+}
+_UNICODE_WHITESPACE = [
+    " ",
+    "\t",
+    "\n",
+    "\r",
+    "\x0b",
+    "\x0c",
+    chr(0x85),
+    chr(0xA0),
+    chr(0x1680),
+    chr(0x2003),
+    chr(0x2028),
+    chr(0x2029),
+    chr(0x202F),
+    chr(0x205F),
+    chr(0x3000),
+]
+
+
+class TestTweetTokenizerZwjLinear:
+    """The ZWJ and skin-tone alternative of WORD_RE after #3913 (``\\S`` where
+    ``.`` was): every repeated shape around U+200D stays linear, and a ZWJ
+    never absorbs whitespace of any Unicode class."""
+
+    @pytest.mark.parametrize("shape", sorted(_ZWJ_SHAPES))
+    def test_a_repeated_zwj_shape_is_linear(self, shape):
+        from nltk.tokenize.casual import TweetTokenizer
+
+        unit = _ZWJ_SHAPES[shape]
+        tokenize = TweetTokenizer().tokenize
+        tokenize(unit * 8000)  # completes, no TimeoutError
+        _assert_subquadratic(lambda n: tokenize(unit * n), 2000, 8000)
+
+    @pytest.mark.parametrize(
+        "ws", _UNICODE_WHITESPACE, ids=[hex(ord(c)) for c in _UNICODE_WHITESPACE]
+    )
+    def test_a_zwj_never_absorbs_whitespace(self, ws):
+        from nltk.tokenize.casual import TweetTokenizer
+
+        tokenize = TweetTokenizer().tokenize
+        for text in (
+            "a" + ws + _ZWJ + "b",
+            "a" + _ZWJ + ws + "b",
+            _SKIN + ws + _SKIN,
+            _FAMILY + ws + _FAMILY,
+            "a" + _SKIN + ws + _ZWJ + "b",
+        ):
+            tokens = tokenize(text)
+            assert len(tokens) >= 2, (text, tokens)
+            assert all(ws not in token for token in tokens), (text, tokens)
+            assert "".join(tokens) == text.replace(ws, ""), (text, tokens)
+
+
 class TestRibesResidualDoS:
     def test_benign_alignment_and_score(self):
         from nltk.translate.ribes_score import sentence_ribes, word_rank_alignment

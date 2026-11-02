@@ -14,7 +14,6 @@ which was also ported into Python in
 https://github.com/lium-lst/nmtpy/blob/master/nmtpy/metrics/mtevalbleu.py#L162
 """
 
-
 import io
 
 from nltk import redos

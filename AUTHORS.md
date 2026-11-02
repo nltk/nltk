@@ -185,6 +185,7 @@
 - Zhe Wang
 - Charlotte Wilson
 - Chuck Wooters
+- Huanyi Xie
 - Steven Xu
 - Beracah Yankama
 - Lei Ye (叶磊)
@@ -356,6 +357,11 @@
 - jankesec <https://github.com/jankesec>
 - Daniel Coles <https://github.com/manus-pi>
 - Fodhil Benhiba <https://github.com/F0DH1L>
+- Ubaid Ur Rehman <https://github.com/askubaid>
+- Maciej Zmitrukiewicz <https://github.com/MaciejZet>
+- Syed Ahnaf Raza <https://github.com/syahra712>
+- Gecko Security <https://github.com/geckosecurity>
+- Bugbunny <https://github.com/bugbunny-research>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 

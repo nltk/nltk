@@ -367,15 +367,15 @@ def _tgrep_node_action(_s, _l, tokens):
                     f"invalid or oversized /regex/ node literal {node_lit!r}: {exc}"
                 ) from None
             return (
-                lambda r: lambda n, m=None, l=None: r.search(
-                    _tgrep_node_literal_value(n)
+                lambda r: (
+                    lambda n, m=None, l=None: r.search(_tgrep_node_literal_value(n))
                 )
             )(node_rx)
         elif tokens[0].startswith("i@"):
             node_func = _tgrep_node_action(_s, _l, [tokens[0][2:].lower()])
             return (
-                lambda f: lambda n, m=None, l=None: f(
-                    _tgrep_node_literal_value(n).lower()
+                lambda f: (
+                    lambda n, m=None, l=None: f(_tgrep_node_literal_value(n).lower())
                 )
             )(node_func)
         else:
@@ -405,8 +405,10 @@ def _tgrep_nltk_tree_pos_action(_s, _l, tokens):
     node_tree_position = tuple(int(x) for x in tokens if x.isdigit())
     # capture the node's tree position
     return (
-        lambda i: lambda n, m=None, l=None: (
-            hasattr(n, "treeposition") and n.treeposition() == i
+        lambda i: (
+            lambda n, m=None, l=None: (
+                hasattr(n, "treeposition") and n.treeposition() == i
+            )
         )
     )(node_tree_position)
 
@@ -460,11 +462,13 @@ def _tgrep_relation_action(_s, _l, tokens):
             idx = int(operator[1:])
             # capture the index parameter
             retval = (
-                lambda i: lambda n, m=None, l=None: (
-                    _istree(n)
-                    and bool(list(n))
-                    and 0 <= i < len(n)
-                    and predicate(n[i], m, l)
+                lambda i: (
+                    lambda n, m=None, l=None: (
+                        _istree(n)
+                        and bool(list(n))
+                        and 0 <= i < len(n)
+                        and predicate(n[i], m, l)
+                    )
                 )
             )(idx - 1)
         # A >N B      A is the Nth child of B (the first child is >1).
@@ -472,12 +476,14 @@ def _tgrep_relation_action(_s, _l, tokens):
             idx = int(operator[1:])
             # capture the index parameter
             retval = (
-                lambda i: lambda n, m=None, l=None: (
-                    hasattr(n, "parent")
-                    and bool(n.parent())
-                    and 0 <= i < len(n.parent())
-                    and (n is n.parent()[i])
-                    and predicate(n.parent(), m, l)
+                lambda i: (
+                    lambda n, m=None, l=None: (
+                        hasattr(n, "parent")
+                        and bool(n.parent())
+                        and 0 <= i < len(n.parent())
+                        and (n is n.parent()[i])
+                        and predicate(n.parent(), m, l)
+                    )
                 )
             )(idx - 1)
         # A <' B      B is the last child of A (also synonymous with A <-1 B).
@@ -500,11 +506,13 @@ def _tgrep_relation_action(_s, _l, tokens):
             idx = -int(operator[2:])
             # capture the index parameter
             retval = (
-                lambda i: lambda n, m=None, l=None: (
-                    _istree(n)
-                    and bool(list(n))
-                    and 0 <= (i + len(n)) < len(n)
-                    and predicate(n[i + len(n)], m, l)
+                lambda i: (
+                    lambda n, m=None, l=None: (
+                        _istree(n)
+                        and bool(list(n))
+                        and 0 <= (i + len(n)) < len(n)
+                        and predicate(n[i + len(n)], m, l)
+                    )
                 )
             )(idx)
         # A >-N B 	  A is the N th-to-last child of B (the last child is >-1).
@@ -512,12 +520,14 @@ def _tgrep_relation_action(_s, _l, tokens):
             idx = -int(operator[2:])
             # capture the index parameter
             retval = (
-                lambda i: lambda n, m=None, l=None: (
-                    hasattr(n, "parent")
-                    and bool(n.parent())
-                    and 0 <= (i + len(n.parent())) < len(n.parent())
-                    and (n is n.parent()[i + len(n.parent())])
-                    and predicate(n.parent(), m, l)
+                lambda i: (
+                    lambda n, m=None, l=None: (
+                        hasattr(n, "parent")
+                        and bool(n.parent())
+                        and 0 <= (i + len(n.parent())) < len(n.parent())
+                        and (n is n.parent()[i + len(n.parent())])
+                        and predicate(n.parent(), m, l)
+                    )
                 )
             )(idx)
         # A <: B      B is the only child of A
@@ -637,7 +647,7 @@ def _tgrep_relation_action(_s, _l, tokens):
             raise TgrepException(f'cannot interpret tgrep operator "{operator}"')
     # now return the built function
     if negated:
-        return (lambda r: (lambda n, m=None, l=None: not r(n, m, l)))(retval)
+        return (lambda r: lambda n, m=None, l=None: not r(n, m, l))(retval)
     else:
         return retval
 
@@ -671,8 +681,8 @@ def _tgrep_conjunction_action(_s, _l, tokens, join_char="&"):
         return tokens[0]
     else:
         return (
-            lambda ts: lambda n, m=None, l=None: all(
-                predicate(n, m, l) for predicate in ts
+            lambda ts: (
+                lambda n, m=None, l=None: all(predicate(n, m, l) for predicate in ts)
             )
         )(tokens)
 

@@ -21,7 +21,6 @@ import http.server
 import os
 import shutil
 import socketserver
-import tempfile
 import threading
 from pathlib import Path
 
@@ -29,6 +28,7 @@ import pytest
 
 import nltk.downloader as downloader
 import nltk.pathsec as pathsec
+from nltk.test.unit.conftest import make_home_dir
 
 _BODY = b"s3cret\n"
 
@@ -49,9 +49,8 @@ def _package(url):
 
 @pytest.fixture
 def dirs(monkeypatch):
-    home = Path.home()
-    root = Path(tempfile.mkdtemp(prefix=".nltk_dl_root_", dir=home))
-    outside = Path(tempfile.mkdtemp(prefix=".nltk_dl_out_", dir=home))
+    root = Path(make_home_dir(".nltk_dl_root_"))
+    outside = Path(make_home_dir(".nltk_dl_out_"))
     import nltk
 
     monkeypatch.setattr(nltk.data, "path", [str(root)] + list(nltk.data.path))

@@ -19,7 +19,9 @@ recorded per site in ``_SITES`` below and checked here with, for every bound:
 * the re-anchoring trigger with the required literal absent AND present once
   (the engine's literal prefilter hides a quadratic otherwise), both linear;
 * teeth: the verbatim pre-fix form, on the same trigger at a size where it ran
-  past 5 s untimed, runs into a 0.5 s backstop.
+  past 5 s untimed, runs into a 0.5 s backstop; the shipped form finishes the
+  same trigger inside 0.5 s of CPU time (the engine's own timeout is wall-clock
+  on Windows, where a stalled runner would otherwise trip it).
 
 A bound that silently changed a parse (an oversized dependency terminal, an
 oversized valuation tuple) now refuses with a ValueError instead, and the
@@ -37,6 +39,10 @@ from nltk import redos
 from nltk.test.unit import timing
 
 _linear = functools.partial(timing.assert_subquadratic, cpu_bound=True, reps=2)
+
+#: The teeth backstop: the pre-fix form times out at it, the shipped form
+#: stays inside it on CPU time.
+_BACKSTOP = 0.5
 
 
 def _apply(rx, op, s):
@@ -127,9 +133,9 @@ _site(
     prefix=r"<p(?: [^>]*){0,1}>(.*?)</p>",
     op="findall",
     bound=16384,
-    at=lambda n: "<p>"
-    + "<s>" * ((n + 1) // 2)
-    + "</p>",  # pieces: a `<` and a run each
+    at=lambda n: (
+        "<p>" + "<s>" * ((n + 1) // 2) + "</p>"
+    ),  # pieces: a `<` and a run each
     marker=lambda n: "<s>" * ((n + 1) // 2),
     teeth_trigger=lambda n: "<p>" * n,
     real=577,
@@ -203,8 +209,9 @@ _site(
     data="alpino corpus, all 697032 node lines (longest name 5, value 39)",
     trigger=lambda n: "a" * n,
     trigger_present=lambda n: "a" * n + '="',
-    teeth_trigger=lambda n: "a" * n
-    + '="',  # the literal absent, the prefilter hides it
+    teeth_trigger=lambda n: (
+        "a" * n + '="'
+    ),  # the literal absent, the prefilter hides it
     prefix_n=32000,
 )
 _site(
@@ -518,8 +525,13 @@ class TestRegexBoundsCalibrated:
         site = _S[name]
         new, old, op = _shipped(site), _prefix(site), site["op"]
         trig = site["teeth_trigger"](site["prefix_n"])
-        monkeypatch.setattr(redos, "DEFAULT_TIMEOUT", 0.5)
-        _apply(new, op, trig)
+        # The shipped leg is charged on CPU time: the engine's timeout runs on
+        # C clock(), which is wall-clock on Windows, so a stalled runner tripped
+        # it on a 6 ms match (develop run 39224492907).
+        monkeypatch.setattr(redos, "DEFAULT_TIMEOUT", None)
+        spent = timing.charged(_apply, new, op, trig, cpu_bound=True)
+        assert spent < _BACKSTOP, (name, spent)
+        monkeypatch.setattr(redos, "DEFAULT_TIMEOUT", _BACKSTOP)
         with pytest.raises(TimeoutError):
             _apply(old, op, trig)
 

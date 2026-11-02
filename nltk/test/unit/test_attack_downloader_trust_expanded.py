@@ -1322,13 +1322,15 @@ class TestTheCycleForReal:
         result, text = run_download(index, dl, "tiny", extract=True)
         assert result is True and "up-to-date" in text
         # the shared-install rule reaches an existing archive-only install the
-        # same way (an upgrade of nltk over an older root install)
+        # same way (an upgrade of nltk over an older root install); under a
+        # download dir inside $HOME (the sandbox root) the install is private
+        # and nothing is extracted without being asked
         shutil.rmtree(unpacked)
         if downloader._shared_install(str(dl)):
             result, text = run_download(index, dl, "tiny", quiet=True)
             assert result is True and (unpacked / "words.txt").read_bytes() == WORDS
+            shutil.rmtree(unpacked)
         # asked not to extract, an installed archive stays as it is
-        shutil.rmtree(unpacked)
         result, text = run_download(index, dl, "tiny", quiet=True, extract=False)
         assert result is True and not unpacked.exists()
 

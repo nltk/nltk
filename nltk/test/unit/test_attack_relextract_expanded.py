@@ -100,7 +100,9 @@ class TestAgainstTheReference:
             pairs = tree2semi_rel(_chunk_tree(rng, n))
             assert len(semi_rel2reldict(pairs)) == max(0, len(pairs) - 2)
 
-        _assert_subquadratic(op, 3000, 12000)
+        # 3000 entities took 0.06 to 0.13 s on the hosted runners, at the 0.1 s
+        # floor; 12000 take 0.29 s or more on the fastest, over 2.5 times it
+        _assert_subquadratic(op, 12000, 48000)
 
 
 class TestHostileText:

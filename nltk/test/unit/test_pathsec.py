@@ -18,6 +18,7 @@ import nltk.downloader  # We will inspect this module directly
 from nltk import pathsec
 from nltk.downloader import Downloader
 from nltk.sem.util import read_sents
+from nltk.test.unit.conftest import make_home_dir
 
 
 @pytest.fixture(autouse=True)
@@ -530,8 +531,9 @@ def test_no_proxy_only_is_not_treated_as_proxied(monkeypatch):
 def test_env_proxy_carries_truth_table(proxies, bypass, expected):
     """_env_proxy_carries mirrors urllib: proxied iff a real http/https proxy
     would carry the host and it is not bypassed by NO_PROXY. Fails closed."""
-    with patch.object(urllib.request, "getproxies", lambda: proxies), patch.object(
-        urllib.request, "proxy_bypass", lambda host: bypass
+    with (
+        patch.object(urllib.request, "getproxies", lambda: proxies),
+        patch.object(urllib.request, "proxy_bypass", lambda host: bypass),
     ):
         assert (
             pathsec._env_proxy_carries("http://raw.githubusercontent.com/x") is expected
@@ -1302,7 +1304,7 @@ class TestInPlaceDataPathRestoreRevokesTrust:
         from pathlib import Path
 
         # $HOME, never a temp dir: the private per-user temp root is trusted
-        d = Path(tempfile.mkdtemp(prefix=".nltk_restore_probe_", dir=Path.home()))
+        d = Path(make_home_dir(".nltk_restore_probe_"))
         (d / "f.txt").write_text("x", encoding="utf-8")
         try:
             yield d, str(d / "f.txt")
@@ -1348,7 +1350,7 @@ def test_symlink_with_relative_parent():
     # A symlink whose target uses '..' must resolve, as long as every
     # directory on the way is private. Stage under $HOME, not /tmp:
     # is_private_dir deliberately rejects world-writable sticky dirs.
-    base = tempfile.mkdtemp(prefix="nltk-pathsec-", dir=os.path.expanduser("~"))
+    base = make_home_dir("nltk-pathsec-")
     try:
         os.chmod(base, 0o700)
         real_dir = os.path.join(base, "real")
@@ -1373,7 +1375,7 @@ def test_argv0_is_caller_supplied_name():
     import subprocess
     import sys
 
-    base = tempfile.mkdtemp(prefix="nltk-pathsec-", dir=os.path.expanduser("~"))
+    base = make_home_dir("nltk-pathsec-")
     try:
         os.chmod(base, 0o700)
         bin_dir = os.path.join(base, "bin")

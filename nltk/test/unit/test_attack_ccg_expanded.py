@@ -170,7 +170,7 @@ class TestFlatChainScaling:
 
 
 class TestPreFixShapesAtTheCap:
-    """The two shapes the tail re-slicing made quadratic, at the largest
+    """The shapes the tail re-slicing made quadratic, at the largest
     size the cap admits: the parser before the cursor rewrite (kept verbatim
     in test_advisory_probes) needed 6.6 s for the flat chain and 38.7 s for
     the nested primitive on a 2020 laptop, where the cursor parser needs
@@ -186,6 +186,29 @@ class TestPreFixShapesAtTheCap:
         assert _applications(cat) == FLAT_BIG
         # walked, not printed: str() of a category this deep recurses
         for _ in range(FLAT_BIG):
+            assert isinstance(cat, FunctionalCategory)
+            assert str(cat.arg()) == "S" and str(cat.dir()) == "/"
+            cat = cat.res()
+        assert isinstance(cat, PrimitiveCategory) and str(cat) == "S"
+
+    def test_front_loaded_chain_at_the_cap_parses_to_its_chain(self):
+        from nltk.test.unit.security_probes.ghsa_89p3_fcch_88ph import (
+            FRONT_ENTRIES,
+            front_loaded_lexicon,
+        )
+
+        lines = front_loaded_lexicon(MAX_PARSE_LEN).splitlines()
+        category = lines[1].split("=> ")[1].strip()
+        assert len(lines) == FRONT_ENTRIES + 1 and len(category) == MAX_PARSE_LEN
+        with timing.budget(10, "one front-loaded category at the cap"):
+            lex = fromstring(":- S\nw => " + category + "\n")
+        cat = lex.categories("w")[0].categ()
+        subscripts = category[category.rindex("[") + 1 : -1].split(",")
+        assert cat.arg().categ() == "S" and cat.arg().restrs() == subscripts
+        assert len(subscripts) == (MAX_PARSE_LEN - 2 * (MAX_PARSE_LEN // 8) - 4) // 2
+        # walked, not printed: str() of a category this deep recurses
+        cat = cat.res()
+        for _ in range(MAX_PARSE_LEN // 8):
             assert isinstance(cat, FunctionalCategory)
             assert str(cat.arg()) == "S" and str(cat.dir()) == "/"
             cat = cat.res()

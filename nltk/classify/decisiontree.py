@@ -340,7 +340,8 @@ def demo():
     from nltk.classify.util import binary_names_demo_features, names_demo
 
     classifier = names_demo(
-        f, binary_names_demo_features  # DecisionTreeClassifier.train,
+        f,
+        binary_names_demo_features,  # DecisionTreeClassifier.train,
     )
     safe_print(classifier.pretty_format(depth=7))
     safe_print(classifier.pseudocode(depth=7))

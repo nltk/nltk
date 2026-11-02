@@ -44,7 +44,6 @@ import os
 import pathlib
 import shutil
 import subprocess
-import tempfile
 import uuid
 from types import SimpleNamespace
 
@@ -52,6 +51,7 @@ import pytest
 
 import nltk.data
 from nltk import internals, pathsec
+from nltk.test.unit.conftest import make_home_dir
 
 
 # =========================================================================== #
@@ -61,9 +61,8 @@ from nltk import internals, pathsec
 def atk_root(monkeypatch):
     """Pin ``nltk.data.path`` to ONE fresh trusted root and expose an untrusted
     ``outside`` dir, both under the real ``$HOME`` (see module docstring)."""
-    home = str(pathlib.Path.home())
-    root = os.path.realpath(tempfile.mkdtemp(prefix=".nltk_tic_root_", dir=home))
-    outside = os.path.realpath(tempfile.mkdtemp(prefix=".nltk_tic_out_", dir=home))
+    root = os.path.realpath(make_home_dir(".nltk_tic_root_"))
+    outside = os.path.realpath(make_home_dir(".nltk_tic_out_"))
     monkeypatch.setattr(pathsec, "ENFORCE", True)
     monkeypatch.setattr(nltk.data, "path", [root])
     monkeypatch.setattr(pathsec, "_ALLOWED_ROOTS_CACHE", None, raising=False)
