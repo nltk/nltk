@@ -2,6 +2,7 @@
 Tests for BLEU translation evaluation metric
 """
 
+import math
 import unittest
 
 import pytest
@@ -416,3 +417,141 @@ class TestBLEUWithMultipleWeights(unittest.TestCase):
         assert bleu_scores[2] == corpus_bleu(
             [[ref1a, ref1b, ref1c], [ref2a]], [hyp1, hyp2], weight_3
         )
+
+
+class TestBLEUCorpusSmoothing(unittest.TestCase):
+    """
+    corpus_bleu used to hand the smoothing function only the last hypothesis
+    and its references, so methods 5, 6 and 7 mixed corpus-level precisions
+    with ngram counts taken from that single sentence.
+    """
+
+    # Two pairs with different hypothesis lengths and 5-gram precisions.
+    ref1 = "a b c d e f g".split()
+    hyp1 = "a b c d e f g".split()
+    ref2 = "h i j k l m n".split()
+    hyp2 = "h i j k l x y z".split()
+
+    def corpus_counts(self, n):
+        pairs = [([self.ref1], self.hyp1), ([self.ref2], self.hyp2)]
+        precisions = [modified_precision(refs, hyp, n) for refs, hyp in pairs]
+        numerator = sum(p_i.numerator for p_i in precisions)
+        denominator = sum(p_i.denominator for p_i in precisions)
+        return numerator, denominator
+
+    def corpus_score(self, method, reverse=False):
+        list_of_references = [[self.ref1], [self.ref2]]
+        hypotheses = [self.hyp1, self.hyp2]
+        if reverse:
+            list_of_references.reverse()
+            hypotheses.reverse()
+        return corpus_bleu(list_of_references, hypotheses, smoothing_function=method)
+
+    def test_method6_scores_a_perfect_corpus_as_one(self):
+        hypotheses = [
+            "the cat sat on the mat".split(),
+            "a quick brown fox jumps over the lazy dog".split(),
+        ]
+        list_of_references = [[hypothesis] for hypothesis in hypotheses]
+        score = corpus_bleu(
+            list_of_references,
+            hypotheses,
+            smoothing_function=SmoothingFunction().method6,
+        )
+        self.assertAlmostEqual(score, 1.0, places=12)
+
+    def test_smoothing_does_not_depend_on_the_sentence_order(self):
+        chencherry = SmoothingFunction()
+        for method in (chencherry.method5, chencherry.method6, chencherry.method7):
+            self.assertAlmostEqual(
+                self.corpus_score(method),
+                self.corpus_score(method, reverse=True),
+                places=12,
+            )
+
+    def test_method5_uses_the_corpus_level_precision_of_the_next_order(self):
+        p_n = []
+        for n in range(1, 6):
+            numerator, denominator = self.corpus_counts(n)
+            p_n.append(numerator / denominator)
+        smoothed = []
+        previous = p_n[0] + 1
+        for i in range(4):
+            previous = (previous + p_n[i] + p_n[i + 1]) / 3
+            smoothed.append(previous)
+        # The hypotheses are longer than the references, so bp is 1.
+        expected = math.exp(sum(0.25 * math.log(p_i) for p_i in smoothed))
+        score = self.corpus_score(SmoothingFunction().method5)
+        self.assertAlmostEqual(score, expected, places=12)
+
+    def test_method6_uses_the_corpus_level_ngram_counts(self):
+        chencherry = SmoothingFunction()
+        counts = [self.corpus_counts(n) for n in range(1, 5)]
+        smoothed = [numerator / denominator for numerator, denominator in counts[:2]]
+        for i in (2, 3):
+            matches, total = counts[i]
+            prior = smoothed[i - 1] ** 2 / smoothed[i - 2]
+            smoothed.append(
+                (matches + chencherry.alpha * prior) / (total + chencherry.alpha)
+            )
+        expected = math.exp(sum(0.25 * math.log(p_i) for p_i in smoothed))
+        self.assertAlmostEqual(
+            self.corpus_score(chencherry.method6), expected, places=12
+        )
+
+    def test_method5_averages_with_the_next_ngram_order(self):
+        # With two weights the smoothing has to look at trigrams, not 5-grams.
+        reference = "a b c d e f".split()
+        hypothesis = "a b c x e f".split()
+        precisions = [
+            float(modified_precision([reference], hypothesis, n)) for n in (1, 2, 3)
+        ]
+        first = (precisions[0] + 1 + precisions[0] + precisions[1]) / 3
+        second = (first + precisions[1] + precisions[2]) / 3
+        expected = math.exp(0.5 * math.log(first) + 0.5 * math.log(second))
+        score = sentence_bleu(
+            [reference],
+            hypothesis,
+            weights=(0.5, 0.5),
+            smoothing_function=SmoothingFunction().method5,
+        )
+        self.assertAlmostEqual(score, expected, places=12)
+
+    def test_direct_calls_without_the_corpus_keywords(self):
+        chencherry = SmoothingFunction()
+        for method in (chencherry.method5, chencherry.method6):
+            p_n = [modified_precision([self.ref2], self.hyp2, n) for n in range(1, 5)]
+            direct = method(list(p_n), [self.ref2], self.hyp2)
+            with_corpus = method(
+                list(p_n),
+                [self.ref2],
+                self.hyp2,
+                list_of_references=[[self.ref2]],
+                hypotheses=[self.hyp2],
+            )
+            assert direct == with_corpus
+
+    def test_smoothing_function_with_a_fixed_signature(self):
+        def no_smoothing(p_n, references, hypothesis, hyp_len):
+            return p_n
+
+        assert self.corpus_score(no_smoothing) == self.corpus_score(None)
+
+    def test_smoothing_function_with_one_corpus_keyword(self):
+        received = {}
+
+        def only_hypotheses(p_n, references, hypothesis, hyp_len, hypotheses=None):
+            received["hypotheses"] = hypotheses
+            return p_n
+
+        def only_references(
+            p_n, references, hypothesis, hyp_len, list_of_references=None
+        ):
+            received["list_of_references"] = list_of_references
+            return p_n
+
+        expected = self.corpus_score(None)
+        assert self.corpus_score(only_hypotheses) == expected
+        assert self.corpus_score(only_references) == expected
+        assert received["hypotheses"] == [self.hyp1, self.hyp2]
+        assert received["list_of_references"] == [[self.ref1], [self.ref2]]
