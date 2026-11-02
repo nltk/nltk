@@ -602,15 +602,20 @@ def test_real_malt_train_writes_model_inside_sandbox(tmp_path):
     staging dir, and must NOT pollute the current working directory as it did when
     ``-w`` defaulted to ``os.getcwd()``."""
     import nltk.data
+    import nltk.pathsec
     from nltk.parse.dependencygraph import DependencyGraph
     from nltk.parse.malt import MaltParser
 
-    malt_dir = _find_tool_dir("maltparser-1.9.2", "maltparser-1.9.1")
+    malt_dir = _find_tool_dir("maltparser-1.9.2", "maltparser-1.9.1", "maltparser")
     if malt_dir is None:
         pytest.skip("maltparser is not installed under nltk.data.path")
 
     parser = MaltParser(parser_dirname=malt_dir)
-    assert os.stat(parser.working_dir).st_mode & 0o077 == 0
+    # Private by the chokepoint's own contract on every OS; the mode bits are
+    # meaningful on POSIX only (NTFS reports 0o777 for any directory).
+    assert nltk.pathsec.is_private_dir(parser.working_dir)
+    if os.name == "posix":
+        assert os.stat(parser.working_dir).st_mode & 0o077 == 0
     assert any(
         os.path.realpath(parser.working_dir).startswith(os.path.realpath(root))
         for root in nltk.data.path
@@ -630,7 +635,7 @@ def test_real_stanford_parser_default_resource_parses(monkeypatch):
     guard treated it as a filesystem path this raises instead."""
     from nltk.parse.stanford import StanfordParser
 
-    parser_dir = _find_tool_dir("stanford-parser-full-2020-11-17")
+    parser_dir = _find_tool_dir("stanford-parser-full-2020-11-17", "stanford-parser")
     if parser_dir is None:
         pytest.skip("stanford-parser is not installed under nltk.data.path")
     monkeypatch.setenv("STANFORD_PARSER", parser_dir)
@@ -654,7 +659,7 @@ def test_real_stanford_parser_refuses_escape_with_jvm_present(monkeypatch, model
     refused before launch, so the block is the guard and not a missing JVM."""
     from nltk.parse.stanford import StanfordParser
 
-    parser_dir = _find_tool_dir("stanford-parser-full-2020-11-17")
+    parser_dir = _find_tool_dir("stanford-parser-full-2020-11-17", "stanford-parser")
     if parser_dir is None:
         pytest.skip("stanford-parser is not installed under nltk.data.path")
     monkeypatch.setenv("STANFORD_PARSER", parser_dir)

@@ -362,6 +362,7 @@ def _run_java(jar, argv, options=("-mx2g",)):
         hard_deadline=_JAVA_BUDGET,
         capture_output=True,
         text=True,
+        encoding="utf-8",
     )
     assert done is not None and run.within_budget, run
     assert done.returncode == 0, done.stderr[-500:]
