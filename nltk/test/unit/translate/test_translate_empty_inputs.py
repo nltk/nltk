@@ -1,8 +1,9 @@
 """
 Regression tests for empty-input handling in NLTK translation metrics.
 
-The score functions return 0.0 for empty corpora or hypotheses. Invalid CHRF
-n-gram ranges raise ValueError instead of causing ZeroDivisionError.
+An empty corpus raises ValueError unless on_empty="zero" scores it 0.0; an
+empty hypothesis scores 0.0. Invalid CHRF n-gram ranges raise ValueError
+instead of causing ZeroDivisionError.
 """
 
 import pytest
@@ -14,8 +15,14 @@ from nltk.translate.ribes_score import corpus_ribes, sentence_ribes
 
 
 def test_corpus_chrf_empty_corpus_returns_zero():
-    """corpus_chrf([], []) must return 0.0 not raise ZeroDivisionError."""
-    assert corpus_chrf([], []) == 0.0
+    """corpus_chrf([], []) scores 0.0 when asked to, never ZeroDivisionError."""
+    assert corpus_chrf([], [], on_empty="zero") == 0.0
+
+
+def test_corpus_chrf_empty_corpus_raises_by_default():
+    """An empty corpus has nothing to score: a clear ValueError by default."""
+    with pytest.raises(ValueError, match="the corpus is empty"):
+        corpus_chrf([], [])
 
 
 def test_corpus_chrf_min_len_greater_than_max_len_raises_value_error():
