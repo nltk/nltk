@@ -10,10 +10,11 @@
 
 from collections import Counter
 
+from nltk.translate.api import MetricI
 from nltk.util import everygrams, ngrams
 
 
-def sentence_gleu(references, hypothesis, min_len=1, max_len=4):
+def sentence_gleu(references, hypothesis, min_len=1, max_len=4, *, on_empty="raise"):
     """
     Calculates the sentence level GLEU (Google-BLEU) score described in
 
@@ -77,13 +78,20 @@ def sentence_gleu(references, hypothesis, min_len=1, max_len=4):
     :type min_len: int
     :param max_len: The maximum order of n-gram this function should extract.
     :type max_len: int
+    :param on_empty: "raise" (the default) or "zero", for a hypothesis
+        without references
+    :type on_empty: str
     :return: the sentence level GLEU score.
     :rtype: float
     """
-    return corpus_gleu([references], [hypothesis], min_len=min_len, max_len=max_len)
+    return corpus_gleu(
+        [references], [hypothesis], min_len=min_len, max_len=max_len, on_empty=on_empty
+    )
 
 
-def corpus_gleu(list_of_references, hypotheses, min_len=1, max_len=4):
+def corpus_gleu(
+    list_of_references, hypotheses, min_len=1, max_len=4, *, on_empty="raise"
+):
     """
     Calculate a single corpus-level GLEU score (aka. system-level GLEU) for all
     the hypotheses and their respective references.
@@ -140,13 +148,36 @@ def corpus_gleu(list_of_references, hypotheses, min_len=1, max_len=4):
     :param max_len: The maximum order of n-gram this function should extract.
     :type max_len: int
     :return: The corpus-level GLEU score.
+    :param on_empty: "raise" (the default) or "zero", for an empty corpus or a
+        hypothesis without references
+    :type on_empty: str
     :rtype: float
     """
-    # sanity check
-    assert len(list_of_references) == len(
-        hypotheses
-    ), "The number of hypotheses and their reference(s) should be the same"
+    return GLEU(min_len, max_len, on_empty=on_empty).corpus_score(
+        list_of_references, hypotheses
+    )
 
+
+class GLEU(MetricI):
+    """
+    Google's GLEU, corpus_gleu() and sentence_gleu() as a metric. NLTK's is its
+    only mode: neither mteval nor sacrebleu has GLEU.
+
+    :param min_len: lowest n-gram order
+    :param max_len: highest n-gram order
+    :param on_empty: "raise" or "zero", see MetricI
+    """
+
+    def __init__(self, min_len=1, max_len=4, *, mode="nltk", on_empty="raise"):
+        super().__init__(mode, on_empty)
+        self.min_len, self.max_len = min_len, max_len
+
+    def _corpus_score(self, list_of_references, hypotheses):
+        return _corpus_gleu(list_of_references, hypotheses, self.min_len, self.max_len)
+
+
+def _corpus_gleu(list_of_references, hypotheses, min_len, max_len):
+    """corpus_gleu() of a corpus with hypotheses and references."""
     # sum matches and max-token-lengths over all sentences
     corpus_n_match = 0
     corpus_n_all = 0
@@ -181,7 +212,8 @@ def corpus_gleu(list_of_references, hypotheses, min_len=1, max_len=4):
             corpus_n_match += n_match
             corpus_n_all += n_all
 
-    # corner case: empty corpus or empty references---don't divide by zero!
+    # corner case: no hypothesis or reference has n-grams of these orders,
+    # don't divide by zero
     if corpus_n_all == 0:
         gleu_score = 0.0
     else:

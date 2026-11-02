@@ -61,8 +61,14 @@ def test_sentence_ribes_identical_returns_one():
 
 
 def test_corpus_ribes_empty_corpus_returns_zero():
-    """corpus_ribes([], []) must return 0.0 not raise ZeroDivisionError."""
-    assert corpus_ribes([], []) == 0.0
+    """corpus_ribes([], []) scores 0.0 when asked to, never ZeroDivisionError."""
+    assert corpus_ribes([], [], on_empty="zero") == 0.0
+
+
+def test_corpus_ribes_empty_corpus_raises_by_default():
+    """An empty corpus has nothing to score: a clear ValueError by default."""
+    with pytest.raises(ValueError, match="the corpus is empty"):
+        corpus_ribes([], [])
 
 
 def test_corpus_ribes_identical_returns_one():
