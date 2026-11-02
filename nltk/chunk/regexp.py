@@ -125,7 +125,7 @@ class ChunkString:
         """
         # Check overall form
         if not ChunkString._VALID.match(s):
-            raise ValueError("Transformation generated invalid chunkstring:\n  %s" % s)
+            raise ValueError(f"Transformation generated invalid chunkstring:\n  {s}")
 
         # Check that parens are balanced.  If the string is long, we
         # have to do this in pieces, to avoid a maximum recursion
@@ -135,7 +135,7 @@ class ChunkString:
             substr = brackets[i * 5000 : i * 5000 + 5000]
             if not ChunkString._BALANCED_BRACKETS.match(substr):
                 raise ValueError(
-                    "Transformation generated invalid chunkstring:\n  %s" % s
+                    f"Transformation generated invalid chunkstring:\n  {s}"
                 )
 
         if verify_tags <= 0:

@@ -748,9 +748,8 @@ def dot2img(dot_string, t="svg"):
         ) from e
     except Exception as e:
         raise Exception(
-            "Cannot create image representation by running dot from string: {}".format(
-                dot_string
-            )
+            "Cannot create image representation by running dot from string: "
+            f"{dot_string}"
         ) from e
 
 

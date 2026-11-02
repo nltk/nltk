@@ -287,8 +287,8 @@ def _write_to_file(object_fields, items, entity_fields, writer):
             json_dict = items[kd]
             if not isinstance(json_dict, dict):
                 raise RuntimeError(
-                    """Key {} does not contain a dictionary
-                in the json file""".format(kd)
+                    f"""Key {kd} does not contain a dictionary
+                in the json file"""
                 )
             row += [json_dict[vd]]
         writer.writerow([sanitize_csv_field(c) for c in row])

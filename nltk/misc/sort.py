@@ -170,8 +170,8 @@ def demo():
         count_quick = quick(a)
 
         safe_print(
-            ("size=%5d:  selection=%8d,  bubble=%8d,  merge=%6d,  quick=%6d")
-            % (size, count_selection, count_bubble, count_merge, count_quick)
+            f"size={size:5d}:  selection={count_selection:8d},  bubble={count_bubble:8d},  "
+            f"merge={count_merge:6d},  quick={count_quick:6d}"
         )
 
 

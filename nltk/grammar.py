@@ -469,7 +469,7 @@ class CFG:
         """
         if not is_nonterminal(start):
             raise TypeError(
-                "start should be a Nonterminal object, not a %s" % type(start).__name__
+                f"start should be a Nonterminal object, not a {type(start).__name__}"
             )
 
         self._start = start
@@ -664,7 +664,7 @@ class CFG:
         if missing:
             missing = ", ".join(f"{w!r}" for w in missing)
             raise ValueError(
-                "Grammar does not cover some of the input words: %r." % missing
+                f"Grammar does not cover some of the input words: {missing!r}."
             )
 
     def _calculate_grammar_forms(self):
