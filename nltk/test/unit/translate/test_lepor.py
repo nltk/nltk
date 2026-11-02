@@ -19,7 +19,7 @@ import random
 import traceback
 
 from nltk.test.unit import timing
-from nltk.translate.lepor import alignment
+from nltk.translate.lepor import alignment, sentence_lepor
 
 from .. import _mp_ctx
 
@@ -84,3 +84,15 @@ def test_alignment_is_linear_not_quadratic():
             "alignment() did not finish in time: quadratic blow-up regressed"
         )
     assert run.exitcode == 0, f"alignment() worker failed (exit {run.exitcode})"
+
+
+def test_sentence_lepor_leaves_the_references_as_given():
+    # it used to tokenize the caller's list in place, so a second call with
+    # the same list handed token lists to the tokenizer
+    references = ["a bird behind the stone.", "a bird is on the rock."]
+    first = sentence_lepor(references, "a bird is on a stone.", tokenizer=str.split)
+    assert references == ["a bird behind the stone.", "a bird is on the rock."]
+    assert (
+        sentence_lepor(references, "a bird is on a stone.", tokenizer=str.split)
+        == first
+    )

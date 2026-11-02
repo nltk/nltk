@@ -269,16 +269,14 @@ def sentence_lepor(
 
     lepor_scores = list()
 
-    # Tokenize sentences.
+    # Tokenize sentences, into new lists: the caller's references stay as given.
     if tokenizer:
         hypothesis = tokenizer(hypothesis)
-        for index, reference in enumerate(references):
-            references[index] = tokenizer(reference)
+        references = [tokenizer(reference) for reference in references]
 
     else:  # If tokenizer is not provided, use the one in NLTK.
         hypothesis = nltk.word_tokenize(hypothesis)
-        for index, reference in enumerate(references):
-            references[index] = nltk.word_tokenize(reference)
+        references = [nltk.word_tokenize(reference) for reference in references]
 
     for reference in references:
         if len(reference) == 0 or len(hypothesis) == 0:
