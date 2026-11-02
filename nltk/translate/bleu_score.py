@@ -15,6 +15,7 @@ import warnings
 from collections import Counter
 from fractions import Fraction as _Fraction
 
+from nltk.translate.api import MetricI
 from nltk.util import ngrams
 
 
@@ -50,6 +51,8 @@ def sentence_bleu(
     weights=(0.25, 0.25, 0.25, 0.25),
     smoothing_function=None,
     auto_reweigh=False,
+    *,
+    on_empty="raise",
 ):
     """
     Calculate BLEU score (Bilingual Evaluation Understudy) from
@@ -128,11 +131,19 @@ def sentence_bleu(
     :type smoothing_function: SmoothingFunction
     :param auto_reweigh: Option to re-normalize the weights uniformly.
     :type auto_reweigh: bool
+    :param on_empty: "raise" (the default) or "zero", for a hypothesis
+        without references
+    :type on_empty: str
     :return: The sentence-level BLEU score. Returns a list if multiple weights were supplied.
     :rtype: float / list(float)
     """
     return corpus_bleu(
-        [references], [hypothesis], weights, smoothing_function, auto_reweigh
+        [references],
+        [hypothesis],
+        weights,
+        smoothing_function,
+        auto_reweigh,
+        on_empty=on_empty,
     )
 
 
@@ -142,6 +153,8 @@ def corpus_bleu(
     weights=(0.25, 0.25, 0.25, 0.25),
     smoothing_function=None,
     auto_reweigh=False,
+    *,
+    on_empty="raise",
 ):
     """
     Calculate a single corpus-level BLEU score (aka. system-level BLEU) for all
@@ -210,18 +223,24 @@ def corpus_bleu(
     :type smoothing_function: SmoothingFunction
     :param auto_reweigh: Option to re-normalize the weights uniformly.
     :type auto_reweigh: bool
+    :param on_empty: "raise" (the default) or "zero", for an empty corpus or a
+        hypothesis without references
+    :type on_empty: str
     :return: The corpus-level BLEU score.
     :rtype: float
     """
-    # Before proceeding to compute BLEU, perform sanity checks.
+    return BLEU(
+        weights, smoothing_function, auto_reweigh=auto_reweigh, on_empty=on_empty
+    ).corpus_score(list_of_references, hypotheses)
 
+
+def _corpus_bleu(
+    list_of_references, hypotheses, weights, smoothing_function, auto_reweigh
+):
+    """corpus_bleu() as NLTK computes it, BLEU's "nltk" mode."""
     p_numerators = Counter()  # Key = ngram order, and value = no. of ngram matches.
     p_denominators = Counter()  # Key = ngram order, and value = no. of ngram in ref.
     hyp_lengths, ref_lengths = 0, 0
-
-    assert len(list_of_references) == len(
-        hypotheses
-    ), "The number of hypotheses and their reference(s) should be the same "
 
     try:
         weights[0][0]
@@ -784,3 +803,295 @@ class SmoothingFunction:
         p_n = self.method4(p_n, references, hypothesis, hyp_len, *args, **kwargs)
         p_n = self.method5(p_n, references, hypothesis, hyp_len, *args, **kwargs)
         return p_n
+
+
+class BLEU(MetricI):
+    """
+    BLEU in three modes. ``"nltk"`` is corpus_bleu() and sentence_bleu(), with
+    any weights and the smoothing methods of SmoothingFunction. ``"mteval"``
+    and ``"sacrebleu"`` give the scores of mteval-v13a.pl and of sacrebleu on
+    the same tokens, with uniform weights up to the order ``len(weights)``.
+
+    The three modes count and smooth the same way except at the edges: NLTK
+    counts at least one hypothesis n-gram of every order in each sentence, so a
+    hypothesis shorter than an order adds an n-gram that matches nothing;
+    mteval and sacrebleu count none. An order without hypothesis n-grams leaves
+    mteval's smoothed score unchanged and makes sacrebleu's 0, unless
+    ``effective_order`` drops it. When nothing matches, NLTK and sacrebleu
+    score 0 and mteval still smooths.
+
+    A two-word translation in a corpus: NLTK counts a trigram and a 4-gram for
+    it that match nothing, mteval and sacrebleu do not.
+
+        >>> from nltk.translate.bleu_score import BLEU
+        >>> hyps = ['the cat sat on the mat today'.split(), 'thank you'.split()]
+        >>> refs = [['the cat sat on the red mat today'.split()], ['thank you'.split()]]
+        >>> round(BLEU().corpus_score(refs, hyps), 4)
+        0.5758
+        >>> round(BLEU(mode="mteval").corpus_score(refs, hyps), 4)
+        0.6372
+        >>> round(BLEU(mode="sacrebleu").corpus_score(refs, hyps), 4)
+        0.6372
+
+    The same translation alone: mteval and sacrebleu's sentence BLEU score the
+    two orders it has, times the brevity penalty; NLTK's method3, mteval's
+    smoothing, counts the missing orders as unmatched n-grams.
+
+        >>> ref, hyp = ['the cat sat on the mat'.split()], 'the cat'.split()
+        >>> round(BLEU(smoothing="exp").sentence_score(ref, hyp), 4)
+        0.0805
+        >>> round(BLEU(mode="mteval").sentence_score(ref, hyp), 4)
+        0.1353
+        >>> round(BLEU(mode="sacrebleu").sentence_score(ref, hyp), 4)
+        0.1353
+
+    :param weights: weights for unigrams, bigrams, trigrams and so on; the
+        reference modes take uniform weights only
+    :type weights: tuple(float) / list(tuple(float))
+    :param smoothing: "nltk": None (no smoothing), a method of
+        SmoothingFunction, its name ("method0" to "method7") or "none",
+        "floor", "add-k", "exp" (methods 0 to 3); "mteval": "exp" (the
+        default) or "none" (--no-smoothing); "sacrebleu": "exp" (the default),
+        "none", "floor" or "add-k"
+    :param mode: "nltk", "mteval" or "sacrebleu"
+    :param auto_reweigh: "nltk" only, see corpus_bleu()
+    :param effective_order: "sacrebleu" only: leave out the orders that have no
+        hypothesis n-grams; by default off for a corpus and on for a sentence,
+        as sacrebleu.corpus_bleu() and sacrebleu.sentence_bleu() do
+    :param brevity_penalty: "mteval" only: "closest" (the default) or "shortest"
+    :param smooth_value: "sacrebleu" only: the value of "floor" (0.1) or "add-k" (1)
+    :param on_empty: "raise" or "zero", see MetricI
+    """
+
+    modes = ("nltk", "mteval", "sacrebleu")
+    _NAMED_SMOOTHING = {
+        "none": "method0",
+        "floor": "method1",
+        "add-k": "method2",
+        "exp": "method3",
+    }
+    _REFERENCE_SMOOTHING = {
+        "mteval": ("exp", "none"),
+        "sacrebleu": ("exp", "none", "floor", "add-k"),
+    }
+
+    def __init__(
+        self,
+        weights=(0.25, 0.25, 0.25, 0.25),
+        smoothing=None,
+        *,
+        mode="nltk",
+        auto_reweigh=False,
+        effective_order=None,
+        brevity_penalty="closest",
+        smooth_value=None,
+        on_empty="raise",
+    ):
+        super().__init__(mode, on_empty)
+        self.weights = weights
+        if mode == "nltk":
+            if (
+                effective_order is not None
+                or brevity_penalty != "closest"
+                or smooth_value is not None
+            ):
+                raise ValueError(
+                    'effective_order, brevity_penalty and smooth_value belong to the "mteval" '
+                    'and "sacrebleu" modes; the "nltk" mode takes a SmoothingFunction method'
+                )
+            if isinstance(smoothing, str):
+                name = self._NAMED_SMOOTHING.get(smoothing, smoothing)
+                if name not in {f"method{i}" for i in range(8)}:
+                    raise ValueError(f"no smoothing {smoothing!r} in the nltk mode")
+                smoothing = getattr(SmoothingFunction(), name)
+            self.smoothing = smoothing
+            self.auto_reweigh = auto_reweigh
+            return
+        if auto_reweigh:
+            raise ValueError('auto_reweigh belongs to the "nltk" mode')
+        if (
+            not weights
+            or len(set(weights)) != 1
+            or isinstance(weights[0], (tuple, list))
+        ):
+            raise ValueError(
+                f"the {mode} mode takes uniform weights, one per n-gram order up to the "
+                f"highest, such as (0.25, 0.25, 0.25, 0.25); not {weights!r}"
+            )
+        smoothing = "exp" if smoothing is None else smoothing
+        if smoothing not in self._REFERENCE_SMOOTHING[mode]:
+            raise ValueError(
+                f"the {mode} mode smooths with {self._REFERENCE_SMOOTHING[mode]}, not {smoothing!r}"
+            )
+        if mode == "mteval" and (
+            effective_order is not None or smooth_value is not None
+        ):
+            raise ValueError(
+                'effective_order and smooth_value belong to the "sacrebleu" mode'
+            )
+        if mode == "sacrebleu" and brevity_penalty != "closest":
+            raise ValueError('brevity_penalty belongs to the "mteval" mode')
+        if brevity_penalty not in ("closest", "shortest"):
+            raise ValueError(
+                f"brevity_penalty is 'closest' or 'shortest', not {brevity_penalty!r}"
+            )
+        self.smoothing = smoothing
+        self.effective_order = effective_order
+        self.brevity_penalty = brevity_penalty
+        self.smooth_value = smooth_value
+
+    def _corpus_score(self, list_of_references, hypotheses, sentence=False):
+        if self.mode == "nltk":
+            return _corpus_bleu(
+                list_of_references,
+                hypotheses,
+                self.weights,
+                self.smoothing,
+                self.auto_reweigh,
+            )
+        if self.mode == "mteval":
+            return _mteval_bleu(
+                list_of_references,
+                hypotheses,
+                len(self.weights),
+                self.smoothing,
+                self.brevity_penalty,
+            )
+        effective_order = (
+            sentence if self.effective_order is None else self.effective_order
+        )
+        return _sacrebleu_bleu(
+            list_of_references,
+            hypotheses,
+            len(self.weights),
+            self.smoothing,
+            self.smooth_value,
+            effective_order,
+        )
+
+    def sentence_score(self, references, hypothesis):
+        if self.mode == "sacrebleu" and self.effective_order is None:
+            # sacrebleu.sentence_bleu() turns effective_order on by default
+            if not references:
+                return super().sentence_score(references, hypothesis)
+            return self._corpus_score([references], [hypothesis], sentence=True)
+        return super().sentence_score(references, hypothesis)
+
+
+def _reference_counts(references, hypothesis, max_order):
+    """
+    The matched and the hypothesis n-gram counts of one segment, order by order,
+    as mteval-v13a.pl (score_segment) and sacrebleu count them: a hypothesis
+    n-gram matches up to the largest number of times it occurs in a single
+    reference, and a hypothesis shorter than an order has no n-grams of it.
+    """
+    matches, totals = [0] * max_order, [0] * max_order
+    for n in range(1, max_order + 1):
+        hyp_ngrams = Counter(ngrams(hypothesis, n))
+        max_ref_ngrams = Counter()
+        for reference in references:
+            max_ref_ngrams |= Counter(ngrams(reference, n))
+        matches[n - 1] = sum((hyp_ngrams & max_ref_ngrams).values())
+        totals[n - 1] = sum(hyp_ngrams.values())
+    return matches, totals
+
+
+def _mteval_bleu(list_of_references, hypotheses, max_order, smoothing, brevity_penalty):
+    """
+    BLEU as mteval-v13a.pl computes it: the counts of every segment summed
+    (score_segment, score_document, score_system), the reference length of a
+    segment the closest one, ties going to the shorter (brevity_penalty_closest),
+    or the shortest, then bleu_score, or bleu_score_nosmoothing for "none".
+    """
+    matches, totals = [0] * max_order, [0] * max_order
+    ref_length = 0
+    for references, hypothesis in zip(list_of_references, hypotheses):
+        seg_matches, seg_totals = _reference_counts(references, hypothesis, max_order)
+        matches = [a + b for a, b in zip(matches, seg_matches)]
+        totals = [a + b for a, b in zip(totals, seg_totals)]
+        lengths = [len(reference) for reference in references]
+        if brevity_penalty == "shortest":
+            ref_length += min(lengths)
+        else:
+            ref_length += min(lengths, key=lambda r: (abs(r - len(hypothesis)), r))
+
+    if smoothing == "none":
+        # bleu_score_nosmoothing: an order without matches scores 0
+        score, cumulative = 0, 0
+        for j in range(max_order):
+            if matches[j] == 0:
+                cumulative = 0
+            else:
+                len_score = min(0, 1 - ref_length / totals[0])
+                score += math.log(matches[j] / totals[j])
+                cumulative = math.exp(score / (j + 1) + len_score)
+        return cumulative
+
+    # bleu_score: an order with no hypothesis n-grams counts as a precision of
+    # 1, an order without matches as 1 / (2^k * n-grams), k = 1, 2, ...
+    exp_len_score = 0
+    if totals[0] > 0:
+        exp_len_score = math.exp(min(0, 1 - ref_length / totals[0]))
+    score, smooth = 0, 1
+    for j in range(max_order):
+        if totals[j] == 0:
+            iscore = 0
+        elif matches[j] == 0:
+            smooth *= 2
+            iscore = math.log(1 / (smooth * totals[j]))
+        else:
+            iscore = math.log(matches[j] / totals[j])
+        score += iscore
+    return math.exp(score / max_order) * exp_len_score
+
+
+def _sacrebleu_bleu(
+    list_of_references, hypotheses, max_order, smoothing, smooth_value, effective_order
+):
+    """
+    BLEU as sacrebleu computes it (BLEU.compute_bleu in sacrebleu 2.6.0), on the
+    0 to 1 scale: the counts of every segment summed, the closest reference
+    length with ties going to the shorter, 0 when nothing matches, and for
+    "none" the logarithm of a zero precision floored at -9999999999.
+    """
+    if smooth_value is None:
+        smooth_value = {"floor": 0.1, "add-k": 1}.get(smoothing)
+    correct, total = [0] * max_order, [0] * max_order
+    sys_len = ref_len = 0
+    for references, hypothesis in zip(list_of_references, hypotheses):
+        seg_correct, seg_total = _reference_counts(references, hypothesis, max_order)
+        correct = [a + b for a, b in zip(correct, seg_correct)]
+        total = [a + b for a, b in zip(total, seg_total)]
+        sys_len += len(hypothesis)
+        ref_len += min(
+            (len(reference) for reference in references),
+            key=lambda r: (abs(r - len(hypothesis)), r),
+        )
+
+    bp = 1.0
+    if sys_len < ref_len:
+        bp = math.exp(1 - ref_len / sys_len) if sys_len > 0 else 0.0
+    if not any(correct):
+        return 0.0
+    precisions = [0.0] * max_order
+    smooth_mteval, eff_order = 1.0, max_order
+    for n in range(1, max_order + 1):
+        if smoothing == "add-k" and n > 1:
+            correct[n - 1] += smooth_value
+            total[n - 1] += smooth_value
+        if total[n - 1] == 0:
+            break
+        if effective_order:
+            eff_order = n
+        if correct[n - 1] == 0:
+            if smoothing == "exp":
+                smooth_mteval *= 2
+                precisions[n - 1] = 100.0 / (smooth_mteval * total[n - 1])
+            elif smoothing == "floor":
+                precisions[n - 1] = 100.0 * smooth_value / total[n - 1]
+        else:
+            precisions[n - 1] = 100.0 * correct[n - 1] / total[n - 1]
+    log_precisions = [
+        math.log(p) if p != 0.0 else -9999999999 for p in precisions[:eff_order]
+    ]
+    return bp * math.exp(sum(log_precisions) / eff_order) / 100
