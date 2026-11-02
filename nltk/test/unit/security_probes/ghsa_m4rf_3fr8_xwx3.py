@@ -1,6 +1,6 @@
 """GHSA-m4rf-3fr8-xwx3 [high] -- JVM argument injection bypass via per-call options in the NLTK Stanford wrappers (incomplete fix of CVE-2026-12841)"""
 
-from ._base import FIXED, STATIC, VULNERABLE, probe
+from ._base import FIXED, STATIC, VULNERABLE, probe, write_private
 
 #: Every argument class that can change the executed program, run a shell command,
 #: load an agent, redirect class loading, crack the module system open or expand an
@@ -123,7 +123,6 @@ def _jvm_argument_injection():
     """Per-call options bypassed the CVE-2026-12841 JVM argument filter."""
     import os
     import shutil
-    import stat
     import tempfile
 
     from nltk import internals, pathsec
@@ -137,9 +136,7 @@ def _jvm_argument_injection():
     # every runner) so the trap below, not the host's Java, decides the outcome
     stub_dir = tempfile.mkdtemp(prefix=".nltk_m4rf_java_", dir=os.path.expanduser("~"))
     stub = os.path.join(stub_dir, "java.exe" if os.name == "nt" else "java")
-    with open(stub, "w", encoding="utf-8") as fh:
-        fh.write("#!/bin/sh\nexit 0\n")
-    os.chmod(stub, os.stat(stub).st_mode | stat.S_IEXEC)
+    write_private(path=stub, data="#!/bin/sh\nexit 0\n", mode=0o700)
     original = internals.subprocess
     original_pathsec = pathsec.subprocess
     saved_bin, saved_opts = internals._java_bin, list(internals._java_options)

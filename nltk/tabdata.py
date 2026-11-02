@@ -14,7 +14,6 @@ def rm_nl(s):
 
 
 class TabEncoder:
-
     def list2txt(self, s):
         return "\n".join(s)
 
@@ -36,7 +35,6 @@ class TabEncoder:
 
 
 class TabDecoder:
-
     def txt2list(self, f):
         return [rm_nl(x) for x in f]
 
@@ -63,7 +61,6 @@ class TabDecoder:
 
 
 class MaxentEncoder(TabEncoder):
-
     def tupdict2tab(self, d):
         """Encode a ``(fname, fval, label) -> fid`` mapping as tab rows.
 
@@ -90,7 +87,6 @@ class MaxentEncoder(TabEncoder):
 
 
 class MaxentDecoder(TabDecoder):
-
     def tupkey2dict(self, f):
         """Decode the rows :meth:`MaxentEncoder.tupdict2tab` writes.
 
@@ -125,7 +121,6 @@ class MaxentDecoder(TabDecoder):
 
 
 class PunktDecoder(TabDecoder):
-
     def tab2intdict(self, f):
         from collections import defaultdict
 

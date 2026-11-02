@@ -627,7 +627,7 @@ class Table:
         click_to_sort=True,
         reprfunc=None,
         cnf={},
-        **kw
+        **kw,
     ):
         """
         Construct a new Table widget.
@@ -967,7 +967,7 @@ class Table:
         """
         if order not in ("ascending", "descending", "toggle"):
             raise ValueError(
-                'sort_by(): order should be "ascending", ' '"descending", or "toggle".'
+                'sort_by(): order should be "ascending", "descending", or "toggle".'
             )
         column_index = self.column_index(column_index)
         config_cookie = self._save_config_info(index_by_id=True)

@@ -49,7 +49,7 @@ class MarkdownBlock:
 
     def __str__(self):
         return (
-            f"{self.content[:self.truncate_at]}"
+            f"{self.content[: self.truncate_at]}"
             f"{'...' if len(self.content) > self.truncate_at else ''}"
         )
 

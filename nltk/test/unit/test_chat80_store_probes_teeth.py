@@ -154,10 +154,8 @@ def test_7j4p_store_guard_is_the_pathsec_hardened_open():
     probe = _fixed_or_skip("GHSA-7j4p-88wx-5jrc")
     real = pathsec._hardened_open
     try:
-        pathsec._hardened_open = (
-            lambda raw, mode, context, required_root, **kw: builtins.open(
-                raw, mode, **kw
-            )
+        pathsec._hardened_open = lambda raw, mode, context, required_root, **kw: (
+            builtins.open(raw, mode, **kw)
         )
         status, detail = probe()
         assert status == probes.VULNERABLE, detail

@@ -1,5 +1,30 @@
 # Security Policy
 
+## Supported versions
+
+| Version | Supported |
+| ------- | --------- |
+| 3.10.x  | yes       |
+| < 3.10  | no        |
+
+Security fixes are released for the current 3.10 line on Python 3.10 and
+newer. No other release line receives fixes.
+
+### Python 2.7
+
+NLTK 3.4.5 (August 2019) was the last release that ran on Python 2.7.
+The vulnerability classes fixed in the 3.10 line are present, unpatched,
+in 3.4.5 and in every earlier release, and none will be fixed there:
+Python 2.7 reached end of life in January 2020 and no longer receives
+fixes for its interpreter or standard library, so no change in NLTK could
+make it a safe place to run. There is no secure NLTK on Python 2.7.
+Pinning `nltk==3.4.5` is a known-vulnerable configuration and will stay
+one.
+
+A plain `pip install nltk` on Python 2.7 resolves to 3.5, which does not
+import on Python 2. Do not work around that failure by pinning an older
+release. The fix is Python 3.10 or newer with nltk 3.10.4 or newer.
+
 ## Reporting a Vulnerability
 
 Please report security issues to `nltk.team@gmail.com`

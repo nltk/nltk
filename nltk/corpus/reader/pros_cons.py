@@ -52,7 +52,7 @@ class ProsConsCorpusReader(CategorizedCorpusReader, CorpusReader):
         fileids,
         word_tokenizer=WordPunctTokenizer(),
         encoding="utf8",
-        **kwargs
+        **kwargs,
     ):
         """
         :param root: The root directory for the corpus.

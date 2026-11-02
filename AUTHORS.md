@@ -359,6 +359,7 @@
 - Fodhil Benhiba <https://github.com/F0DH1L>
 - Ubaid Ur Rehman <https://github.com/askubaid>
 - Maciej Zmitrukiewicz <https://github.com/MaciejZet>
+- Syed Ahnaf Raza <https://github.com/syahra712>
 - Gecko Security <https://github.com/geckosecurity>
 - Bugbunny <https://github.com/bugbunny-research>
 

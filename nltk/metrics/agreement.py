@@ -140,8 +140,13 @@ class AnnotationTask:
     def __str__(self):
         return "\r\n".join(
             map(
-                lambda x: "%s\t%s\t%s"
-                % (x["coder"], x["item"].replace("_", "\t"), ",".join(x["labels"])),
+                lambda x: "\t".join(
+                    (
+                        str(x["coder"]),
+                        x["item"].replace("_", "\t"),
+                        ",".join(x["labels"]),
+                    )
+                ),
                 self.data,
             )
         )

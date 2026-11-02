@@ -32,7 +32,8 @@ terminal, the server and the loaders, never by whether something raised:
   filesystem or terminal would not keep as written is refused;
 * the chain is one way and the pickles stay unreachable: asking for
   ``punkt_tab`` never brings ``punkt``, and a hostile ``punkt`` pickle is
-  never unpickled however its pickle-era name is loaded.
+  never unpickled: a load of its pickle-era name is refused, naming
+  ``punkt_tab``.
 
 The only thing loosened is the SSRF filter, for exactly 127.0.0.1, so the
 local server is reachable. Endless routes stop at a hard 128 MiB cap.
@@ -1204,22 +1205,20 @@ class TestPicklesStayUnreachable:
         index_url = serve_chain(server, punkt=punkt_zip(unpickling_marker(marker)))
         result, output = run_download(index_url, dl, "punkt")
         assert result is True, output
-        # the pickle-era names are served by punkt_tab, never by the pickles
+        # a pickle-era name is refused, naming punkt_tab, by name or by path
+        pickle_path = dl / "tokenizers" / "punkt" / "PY3" / "english.pickle"
         for name in (
             "tokenizers/punkt/english.pickle",
             "tokenizers/punkt/PY3/english.pickle",
             "nltk:tokenizers/punkt/english.pickle",
+            "file:" + str(pickle_path),
         ):
-            tokenizer = nltk.data.load(name, cache=False)
-            assert tokenizer.tokenize(SAMPLE) == SERVED_SPLIT, name
+            with pytest.raises(ValueError, match="retired pickle package") as caught:
+                nltk.data.load(name, cache=False)
+            assert "nltk.download('punkt_tab')" in str(caught.value)
+            assert_lines_clean(str(caught.value))
             assert not marker.exists(), name
-        # loading the pickle file itself, by its path, is refused
-        pickle_path = dl / "tokenizers" / "punkt" / "PY3" / "english.pickle"
-        for url in ("file:" + str(pickle_path),):
-            with pytest.raises(Exception) as caught:
-                nltk.data.load(url, format="pickle", cache=False)
-            assert not isinstance(caught.value, AssertionError)
-            assert not marker.exists(), url
+        assert served_split() == SERVED_SPLIT
         assert not marker.exists()
 
     def test_a_pickle_inside_punkt_tab_is_never_read_by_the_tokenizer(self, box):
@@ -1352,7 +1351,7 @@ class TestTheSuccessorEntryLies:
         result, output = run_download(index_url, dl, "punkt")
         assert result is True, output
         assert (dl / "tokenizers" / "punkt_tab.pickle").read_bytes() == payload
-        with pytest.raises(LookupError):
+        with pytest.raises(ValueError, match="pickles were retired"):
             nltk.data.load("tokenizers/punkt_tab.pickle", cache=False)
         _get_punkt_tokenizer.cache_clear()
         assert punkt_model_available("english") is False
@@ -1649,13 +1648,12 @@ out["pos_ru"] = pos_tag(["\u041c\u0430\u043c\u0430", "\u043c\u044b\u043b\u0430"]
 out["ne"] = str(ne_chunk(pos_tag(words)))
 loaded = {}
 for name in pickle_names:
-    model = nltk.data.load(name, cache=False)
-    if hasattr(model, "tokenize"):
-        loaded[name] = model.tokenize(samples["english"])
-    elif hasattr(model, "tag"):
-        loaded[name] = model.tag(words)
+    try:
+        nltk.data.load(name, cache=False)
+    except ValueError as refused:
+        loaded[name] = "refused" if "retired pickle package" in str(refused) else "?"
     else:
-        loaded[name] = str(model.parse(pos_tag(words)))
+        loaded[name] = "loaded"
 out["pickle_era_names"] = loaded
 print(json.dumps(out, sort_keys=True))
 """
@@ -1718,6 +1716,7 @@ def test_every_retired_package_brings_its_real_successor_in_a_fresh_process(box)
         "klingon": False,
     }
     assert chained["sent"] == REAL_SPLITS
+    assert chained["pickle_era_names"] == dict.fromkeys(pickle_names, "refused")
     assert not marker.exists()
     assert_contained(root, outside, dl)
 

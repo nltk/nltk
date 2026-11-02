@@ -133,9 +133,9 @@ _site(
     prefix=r"<p(?: [^>]*){0,1}>(.*?)</p>",
     op="findall",
     bound=16384,
-    at=lambda n: "<p>"
-    + "<s>" * ((n + 1) // 2)
-    + "</p>",  # pieces: a `<` and a run each
+    at=lambda n: (
+        "<p>" + "<s>" * ((n + 1) // 2) + "</p>"
+    ),  # pieces: a `<` and a run each
     marker=lambda n: "<s>" * ((n + 1) // 2),
     teeth_trigger=lambda n: "<p>" * n,
     real=577,
@@ -209,8 +209,9 @@ _site(
     data="alpino corpus, all 697032 node lines (longest name 5, value 39)",
     trigger=lambda n: "a" * n,
     trigger_present=lambda n: "a" * n + '="',
-    teeth_trigger=lambda n: "a" * n
-    + '="',  # the literal absent, the prefilter hides it
+    teeth_trigger=lambda n: (
+        "a" * n + '="'
+    ),  # the literal absent, the prefilter hides it
     prefix_n=32000,
 )
 _site(

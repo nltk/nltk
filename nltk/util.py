@@ -1507,8 +1507,8 @@ def choose(n, k):
 
     :param n: The number of things.
     :type n: int
-    :param r: The number of times a thing is taken.
-    :type r: int
+    :param k: The number of times a thing is taken.
+    :type k: int
     """
     if 0 <= k <= n:
         ntok, ktok = 1, 1

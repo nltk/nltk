@@ -1610,7 +1610,7 @@ class LeftCornerChartParser(ChartParser):
     def __init__(self, grammar, **parser_args):
         if not grammar.is_nonempty():
             raise ValueError(
-                "LeftCornerParser only works for grammars " "without empty productions."
+                "LeftCornerParser only works for grammars without empty productions."
             )
         ChartParser.__init__(self, grammar, LC_STRATEGY, **parser_args)
 

@@ -12,6 +12,7 @@ This package contains classes for retrieving Tweet documents using the
 Twitter API.
 
 """
+
 try:
     import twython
 except ImportError:

@@ -344,11 +344,9 @@ def decorator_factory(cls):
     """
     attrs = set(dir(cls))
     if "__call__" in attrs:
-        raise TypeError(
-            "You cannot decorate a class with a nontrivial " "__call__ method"
-        )
+        raise TypeError("You cannot decorate a class with a nontrivial __call__ method")
     if "call" not in attrs:
-        raise TypeError("You cannot decorate a class without a " ".call method")
+        raise TypeError("You cannot decorate a class without a .call method")
     cls.__call__ = __call__
     return cls
 

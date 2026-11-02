@@ -957,8 +957,8 @@ class TestResourceNameSteering:
         ],
     )
     def test_pickle_shim_resource_names_cannot_traverse(self, resource):
-        """load() routes a *.pickle name to a pickle-free loader; the name that
-        picks the model must not carry traversal."""
+        """load() refuses a retired *.pickle name, and a traversal in such a
+        name is refused before it can pick a file."""
         with pytest.raises((ValueError, LookupError, OSError)):
             nltk.data.load(resource)
 
@@ -1075,7 +1075,7 @@ class TestNoOtherCodeWidensTheSandbox:
                         offenders.append((relative, parent.name))
         assert (
             set(offenders) <= self.ALLOWED
-        ), "new nltk.data.path widening: %s" % sorted(set(offenders) - self.ALLOWED)
+        ), f"new nltk.data.path widening: {sorted(set(offenders) - self.ALLOWED)}"
 
 
 # Two branches merged here, so several sinks now carry TWO independent guards.

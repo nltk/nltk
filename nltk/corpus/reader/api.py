@@ -359,13 +359,11 @@ class CategorizedCorpusReader:
                 del kwargs["cat_delimiter"]
         else:
             raise ValueError(
-                "Expected keyword argument cat_pattern or " "cat_map or cat_file."
+                "Expected keyword argument cat_pattern or cat_map or cat_file."
             )
 
         if "cat_pattern" in kwargs or "cat_map" in kwargs or "cat_file" in kwargs:
-            raise ValueError(
-                "Specify exactly one of: cat_pattern, " "cat_map, cat_file."
-            )
+            raise ValueError("Specify exactly one of: cat_pattern, cat_map, cat_file.")
 
     def _init(self):
         self._f2c = defaultdict(set)

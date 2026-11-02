@@ -1052,8 +1052,7 @@ def train_maxent_classifier_with_gis(
 
     if not hasattr(encoding, "C"):
         raise TypeError(
-            "The GIS algorithm requires an encoding that "
-            "defines C (e.g., GISEncoding)."
+            "The GIS algorithm requires an encoding that defines C (e.g., GISEncoding)."
         )
 
     # Cinv is the inverse of the sum of each joint feature vector.
