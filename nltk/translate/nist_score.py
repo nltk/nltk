@@ -179,7 +179,7 @@ def corpus_nist(list_of_references, hypotheses, n=5):
             "error, but the NIST score may not be accurate.\n"
             "Consider using lower n-gram order."
         ).format(n)
-        warnings.warn(_msg)
+        warnings.warn(_msg)  # unsafe-print ok: literal text with a numeric n-gram order
         # construct list[Fraction] like what corpus_bleu does for smoothing function
         p_n = [
             fractions.Fraction(
