@@ -424,3 +424,78 @@ class PhraseTable:
 
     def __contains__(self, src_phrase):
         return src_phrase in self.src_phrases
+
+
+class MetricI:
+    """
+    A machine translation metric, set up once and then asked for the score of
+    a corpus or of one sentence::
+
+        metric.corpus_score(list_of_references, hypotheses)
+        metric.sentence_score(references, hypothesis)
+
+    Each hypothesis is a list of tokens and has its own list of references.
+
+    ``mode`` chooses whose arithmetic is reproduced on those tokens:
+    ``"nltk"`` (the default) gives the numbers NLTK has always given, and a
+    metric that also has ``"mteval"`` or ``"sacrebleu"`` gives the numbers of
+    mteval-v13a.pl or of sacrebleu. ``modes`` lists the modes of a metric.
+
+    ``on_empty`` decides the score of an input with nothing to score, a corpus
+    without hypotheses or a hypothesis without references: ``"raise"`` (the
+    default) raises ValueError, ``"zero"`` scores it 0.0. An empty hypothesis
+    is a translation and is scored like any other.
+    """
+
+    modes = ("nltk",)
+
+    def __init__(self, mode="nltk", on_empty="raise"):
+        if mode not in self.modes:
+            raise ValueError(
+                f"{type(self).__name__} has the modes {self.modes}, not {mode!r}"
+            )
+        if on_empty not in ("raise", "zero"):
+            raise ValueError(f"on_empty is 'raise' or 'zero', not {on_empty!r}")
+        self.mode = mode
+        self.on_empty = on_empty
+
+    def corpus_score(self, list_of_references, hypotheses):
+        """
+        :param list_of_references: the references of each hypothesis
+        :type list_of_references: list(list(list(str)))
+        :param hypotheses: the hypotheses
+        :type hypotheses: list(list(str))
+        :rtype: float
+        """
+        if len(list_of_references) != len(hypotheses):
+            raise ValueError(
+                f"The number of reference sets ({len(list_of_references)}) and of "
+                f"hypotheses ({len(hypotheses)}) must be the same"
+            )
+        if not hypotheses or not all(list_of_references):
+            if self.on_empty == "zero":
+                return 0.0
+            raise ValueError(
+                f"{type(self).__name__}: there is nothing to score, "
+                + (
+                    "the corpus is empty"
+                    if not hypotheses
+                    else "a hypothesis has no references"
+                )
+                + "; on_empty='zero' scores it 0.0"
+            )
+        return self._corpus_score(list_of_references, hypotheses)
+
+    def sentence_score(self, references, hypothesis):
+        """
+        :param references: the references of the hypothesis
+        :type references: list(list(str))
+        :param hypothesis: a hypothesis
+        :type hypothesis: list(str)
+        :rtype: float
+        """
+        return self.corpus_score([references], [hypothesis])
+
+    def _corpus_score(self, list_of_references, hypotheses):
+        """The score of a corpus that has hypotheses, each with references."""
+        raise NotImplementedError
