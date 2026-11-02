@@ -141,10 +141,9 @@ def test_normalize_allows_safe_percent_encoded_names(url):
     being tightened into a blanket "any percent-encoding is unsafe" rule.
     """
     out = data.normalize_resource_url(url)
-    assert out.startswith("nltk:"), (
-        f"Safe encoded name {url!r} should still normalise to an nltk: URL, "
-        f"got {out!r}"
-    )
+    assert out.startswith(
+        "nltk:"
+    ), f"Safe encoded name {url!r} should still normalise to an nltk: URL, got {out!r}"
 
 
 @pytest.mark.parametrize(

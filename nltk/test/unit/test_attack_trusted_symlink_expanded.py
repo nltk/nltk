@@ -24,6 +24,7 @@ refused by its own check, with the reason naming that check and the path,
 and the canary never runs; the teeth show that removing each check lets a
 named spoof through.
 """
+
 import os
 import shutil
 import socket

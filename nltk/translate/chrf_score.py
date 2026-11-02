@@ -7,6 +7,7 @@
 # For license information, see LICENSE.TXT
 
 """ChrF score implementation"""
+
 from collections import Counter, defaultdict
 
 from nltk import redos

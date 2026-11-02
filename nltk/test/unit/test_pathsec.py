@@ -531,8 +531,9 @@ def test_no_proxy_only_is_not_treated_as_proxied(monkeypatch):
 def test_env_proxy_carries_truth_table(proxies, bypass, expected):
     """_env_proxy_carries mirrors urllib: proxied iff a real http/https proxy
     would carry the host and it is not bypassed by NO_PROXY. Fails closed."""
-    with patch.object(urllib.request, "getproxies", lambda: proxies), patch.object(
-        urllib.request, "proxy_bypass", lambda host: bypass
+    with (
+        patch.object(urllib.request, "getproxies", lambda: proxies),
+        patch.object(urllib.request, "proxy_bypass", lambda host: bypass),
     ):
         assert (
             pathsec._env_proxy_carries("http://raw.githubusercontent.com/x") is expected

@@ -183,9 +183,7 @@ class Pl196xCorpusReader(CategorizedCorpusReader, XMLCorpusReader):
             )
             != 1
         ):
-            raise ValueError(
-                "Specify exactly one of: fileids, " "categories or textids"
-            )
+            raise ValueError("Specify exactly one of: fileids, categories or textids")
 
         if fileids is not None:
             return fileids, None

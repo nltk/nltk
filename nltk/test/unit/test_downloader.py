@@ -136,38 +136,30 @@ def test_download_package_uses_scoped_pathsec_open(tmp_path):
     tmp_file = os.path.join(download_dir, info.filename) + ".tmp"
     final_file = os.path.join(download_dir, info.filename)
 
-    with unittest.mock.patch(
-        "nltk.downloader.urlopen"
-    ) as urlopen_mock, unittest.mock.patch(
-        "nltk.downloader.pathsec_open"
-    ) as pathsec_open_mock, unittest.mock.patch(
-        "nltk.downloader.validate_path"
-    ) as validate_path_mock, unittest.mock.patch(
-        "nltk.downloader.pathsec.replace"
-    ) as replace_mock, unittest.mock.patch(
-        "nltk.downloader.os.makedirs"
-    ), unittest.mock.patch(
-        "nltk.downloader.os.open", return_value=3
-    ), unittest.mock.patch(
-        "nltk.downloader.os.close"
-    ), unittest.mock.patch(
-        "nltk.downloader.os.path.exists", return_value=False
-    ), unittest.mock.patch(
-        "nltk.downloader.time.time", return_value=0
-    ), unittest.mock.patch(
-        "nltk.downloader.itertools.count", return_value=iter([0])
-    ), unittest.mock.patch(
-        "nltk.downloader.os.path.getsize", return_value=1
-    ), unittest.mock.patch(
-        "nltk.downloader.sha256_hexdigest",
-        return_value=hashlib.sha256(b"x").hexdigest(),
-    ), unittest.mock.patch(
-        "nltk.downloader.md5_hexdigest",
-        return_value=hashlib.md5(b"x").hexdigest(),
-    ), unittest.mock.patch.object(
-        Downloader, "status", return_value=Downloader.NOT_INSTALLED
+    with (
+        unittest.mock.patch("nltk.downloader.urlopen") as urlopen_mock,
+        unittest.mock.patch("nltk.downloader.pathsec_open") as pathsec_open_mock,
+        unittest.mock.patch("nltk.downloader.validate_path") as validate_path_mock,
+        unittest.mock.patch("nltk.downloader.pathsec.replace") as replace_mock,
+        unittest.mock.patch("nltk.downloader.os.makedirs"),
+        unittest.mock.patch("nltk.downloader.os.open", return_value=3),
+        unittest.mock.patch("nltk.downloader.os.close"),
+        unittest.mock.patch("nltk.downloader.os.path.exists", return_value=False),
+        unittest.mock.patch("nltk.downloader.time.time", return_value=0),
+        unittest.mock.patch("nltk.downloader.itertools.count", return_value=iter([0])),
+        unittest.mock.patch("nltk.downloader.os.path.getsize", return_value=1),
+        unittest.mock.patch(
+            "nltk.downloader.sha256_hexdigest",
+            return_value=hashlib.sha256(b"x").hexdigest(),
+        ),
+        unittest.mock.patch(
+            "nltk.downloader.md5_hexdigest",
+            return_value=hashlib.md5(b"x").hexdigest(),
+        ),
+        unittest.mock.patch.object(
+            Downloader, "status", return_value=Downloader.NOT_INSTALLED
+        ),
     ):
-
         infile = unittest.mock.Mock()
         infile.read.side_effect = [b"x", b""]
         infile.close.return_value = None

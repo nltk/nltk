@@ -10,6 +10,7 @@
 Extension of chart parsing implementation to handle grammars with
 feature structures as nodes.
 """
+
 import os
 from time import perf_counter
 

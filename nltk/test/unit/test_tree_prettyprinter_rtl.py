@@ -50,18 +50,10 @@ PERSIAN = (
 )
 
 SMALL_LTR = (
-    "      S       \n"
-    "  ____|____    \n"
-    " NP        VP \n"
-    " |         |   \n"
-    "Mary     walks\n"
+    "      S       \n  ____|____    \n NP        VP \n |         |   \nMary     walks\n"
 )
 SMALL_RTL = (
-    "       S      \n"
-    "   ____|___    \n"
-    "  VP       NP \n"
-    "  |        |   \n"
-    "walks     Mary\n"
+    "       S      \n   ____|___    \n  VP       NP \n  |        |   \nwalks     Mary\n"
 )
 ENGLISH_RTL = """\
               s
@@ -539,8 +531,9 @@ class TestCrossingEdges:
 
     def test_continuous_edges_keep_the_bottom_up_order(self):
         # ids follow the tree positions: S 0, NP 1, Mary 2, VP 3, walks 4
-        ltr, rtl = TreePrettyPrinter(Tree.fromstring(SMALL)), TreePrettyPrinter(
-            Tree.fromstring(SMALL), rtl=True
+        ltr, rtl = (
+            TreePrettyPrinter(Tree.fromstring(SMALL)),
+            TreePrettyPrinter(Tree.fromstring(SMALL), rtl=True),
         )
         assert list(ltr.edges.items()) == [(4, 3), (2, 1), (1, 0), (3, 0)]
         assert list(rtl.edges.items()) == list(ltr.edges.items())

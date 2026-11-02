@@ -8,7 +8,7 @@ from .. import _mp_ctx
 
 
 class TestMETEOR(unittest.TestCase):
-    reference = [["this", "is", "a", "test"], ["this", "is" "test"]]
+    reference = [["this", "is", "a", "test"], ["this", "istest"]]
     candidate = ["THIS", "Is", "a", "tEST"]
 
     def test_meteor(self):

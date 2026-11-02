@@ -441,9 +441,7 @@ class ConllCorpusReader(CorpusReader):
     def _require(self, *columntypes):
         for columntype in columntypes:
             if columntype not in self._colmap:
-                raise ValueError(
-                    "This corpus does not contain a %s " "column." % columntype
-                )
+                raise ValueError(f"This corpus does not contain a {columntype} column.")
 
     @staticmethod
     def _get_column(grid, column_index):

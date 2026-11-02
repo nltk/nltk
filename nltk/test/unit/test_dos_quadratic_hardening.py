@@ -321,8 +321,9 @@ class TestXMLCorpusViewDepth:
     def test_a_subtree_past_both_bounds_is_refused_in_bounded_time(self):
         from nltk.xmlsec import MAX_DEPTH
 
-        with timing.budget(30, cpu_bound=True), pytest.raises(
-            ValueError, match="nesting depth"
+        with (
+            timing.budget(30, cpu_bound=True),
+            pytest.raises(ValueError, match="nesting depth"),
         ):
             self._shallow_match_deep_subtree(MAX_DEPTH * 20)
 
@@ -1136,9 +1137,10 @@ class TestPl196xAttributeRunBounded:
             for i in range(0, 1100, 7)
         ) + ("<p>" + "<s><w>y</w></s>" * 700 + "</p>")
         for name in _PL196X_OPEN:
-            new, old = self._pattern(name).findall(doc), self._old_pattern(
-                name
-            ).findall(doc)
+            new, old = (
+                self._pattern(name).findall(doc),
+                self._old_pattern(name).findall(doc),
+            )
             assert new == old and len(new) >= 150, (name, len(new), len(old))
         assert len(self._pattern("PARA").findall(doc)[-1]) == 700 * 15
         # the one difference is the bound itself: a run past it is no match

@@ -1978,10 +1978,8 @@ def format_debug_decision(d):
 
 def demo(text, tok_cls=PunktSentenceTokenizer, train_cls=PunktTrainer):
     """Builds a punkt model and applies it to the same text"""
-    cleanup = (
-        lambda s: redos.compile(r"(?:\r|^\s+)", re.MULTILINE)
-        .sub("", s)
-        .replace("\n", " ")
+    cleanup = lambda s: (
+        redos.compile(r"(?:\r|^\s+)", re.MULTILINE).sub("", s).replace("\n", " ")
     )
     trainer = train_cls()
     trainer.INCLUDE_ALL_COLLOCS = True

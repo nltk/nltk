@@ -57,10 +57,11 @@ def test_download_aborts_on_oversize_response(tmp_path):
     info = _Info()
     reader = _StreamingReader()
 
-    with unittest.mock.patch(
-        "nltk.downloader.urlopen", return_value=reader
-    ), unittest.mock.patch.object(
-        Downloader, "status", return_value=Downloader.NOT_INSTALLED
+    with (
+        unittest.mock.patch("nltk.downloader.urlopen", return_value=reader),
+        unittest.mock.patch.object(
+            Downloader, "status", return_value=Downloader.NOT_INSTALLED
+        ),
     ):
         messages = list(downloader._download_package(info, download_dir, force=True))
 
@@ -101,10 +102,11 @@ def test_exact_size_response_is_accepted_up_to_integrity_check(tmp_path):
         def close(self):
             pass
 
-    with unittest.mock.patch(
-        "nltk.downloader.urlopen", return_value=_OneChunk()
-    ), unittest.mock.patch.object(
-        Downloader, "status", return_value=Downloader.NOT_INSTALLED
+    with (
+        unittest.mock.patch("nltk.downloader.urlopen", return_value=_OneChunk()),
+        unittest.mock.patch.object(
+            Downloader, "status", return_value=Downloader.NOT_INSTALLED
+        ),
     ):
         messages = list(
             downloader._download_package(_Exact(), download_dir, force=True)

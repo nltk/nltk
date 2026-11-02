@@ -56,7 +56,7 @@ class YCOECorpusReader(CorpusReader):
         # Make sure we have a consistent set of items:
         documents = {f[:-4] for f in self._psd_reader.fileids()}
         if {f[:-4] for f in self._pos_reader.fileids()} != documents:
-            raise ValueError('Items in "psd" and "pos" ' "subdirectories do not match.")
+            raise ValueError('Items in "psd" and "pos" subdirectories do not match.')
 
         fileids = sorted(
             ["%s.psd" % doc for doc in documents]

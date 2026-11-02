@@ -663,9 +663,7 @@ def test_xmlsec_parses_benign_and_refuses_entity_declaration():
     assert tree.find("doc").text == "hello"
 
     billion_laughs = (
-        '<?xml version="1.0"?>'
-        '<!DOCTYPE lolz [<!ENTITY lol "lol">]>'
-        "<lolz>&lol;</lolz>"
+        '<?xml version="1.0"?><!DOCTYPE lolz [<!ENTITY lol "lol">]><lolz>&lol;</lolz>'
     )
     # EntitiesForbidden subclasses ValueError in both back ends.
     with pytest.raises(ValueError):

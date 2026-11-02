@@ -493,8 +493,7 @@ def _relative_binary_location():
             if resolved is None or _inside(resolved, box):
                 return (
                     VULNERABLE,
-                    f"{label} with PATH set to {through!r} took the decoy "
-                    f"{resolved!r}",
+                    f"{label} with PATH set to {through!r} took the decoy {resolved!r}",
                 )
         os.environ["PATH"] = scrubbed
         # phase 5 (POSIX): an install that is absolute but that any local user
