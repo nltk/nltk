@@ -175,9 +175,15 @@ jobs:
           # climbs with '..', which the tests assert renders by that name; brew's prefix
           # is g+w for admin, so its chain is made private as an operator would, link kept
           if [ "${{ runner.os }}" = "Linux" ]; then
-            sudo apt-get update -qq && sudo apt-get install -y -qq graphviz
+            # Ubuntu 26.04 moved the circo, neato, fdp and twopi layouts out of graphviz
+            # into libgvplugin-neato-layout<N>, which graphviz does not depend on; take it
+            # where the release ships it (24.04 still has the layouts inside libgvc6)
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq graphviz $(apt-cache --names-only search '^libgvplugin-neato-layout[0-9]+$' | cut -d' ' -f1)
             ls -la "$(command -v dot)"
             dot -V
+            # the trusted-spawn tests render every layout the dot binary dispatches on
+            echo 'digraph { a -> b }' | dot -Kcirco -Tsvg > /dev/null
           elif [ "${{ runner.os }}" = "macOS" ]; then
             brew install graphviz
             prefix="$(brew --prefix)"
