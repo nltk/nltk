@@ -444,7 +444,8 @@ class MetricI:
     ``on_empty`` decides the score of an input with nothing to score, a corpus
     without hypotheses or a hypothesis without references: ``"raise"`` (the
     default) raises ValueError, ``"zero"`` scores it 0.0. An empty hypothesis
-    is a translation and is scored like any other.
+    is a translation, not an empty input: most metrics score it 0, and those
+    that cannot (NIST in the "nltk" mode, LEPOR) say so.
     """
 
     modes = ("nltk",)

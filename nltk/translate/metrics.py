@@ -24,6 +24,8 @@ scores of the "nltk" mode.
 from nltk.translate.bleu_score import BLEU
 from nltk.translate.chrf_score import CHRF
 from nltk.translate.gleu_score import GLEU
+from nltk.translate.lepor import LEPOR
+from nltk.translate.meteor_score import METEOR
 from nltk.translate.nist_score import NIST
 from nltk.translate.ribes_score import RIBES
 
