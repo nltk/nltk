@@ -346,12 +346,12 @@ class StreamBackedCorpusView(AbstractLazySequence):
                     self._toknum.append(toknum + num_toks)
                 else:
                     # Check for consistency:
-                    assert (
-                        new_filepos == self._filepos[block_index]
-                    ), "inconsistent block reader (num chars read)"
-                    assert (
-                        toknum + num_toks == self._toknum[block_index]
-                    ), "inconsistent block reader (num tokens returned)"
+                    assert new_filepos == self._filepos[block_index], (
+                        "inconsistent block reader (num chars read)"
+                    )
+                    assert toknum + num_toks == self._toknum[block_index], (
+                        "inconsistent block reader (num tokens returned)"
+                    )
 
             # If we reached the end of the file, then update self._len
             if new_filepos == self._eofpos:
