@@ -15,6 +15,7 @@ from typing import List, Tuple
 from nltk.corpus import WordNetCorpusReader, wordnet
 from nltk.stem.api import StemmerI
 from nltk.stem.porter import PorterStemmer
+from nltk.translate.api import MetricI
 
 
 def _generate_enums(
@@ -369,6 +370,12 @@ def single_meteor_score(
     :param gamma: relative weight assigned to fragmentation penalty.
     :return: The sentence-level METEOR score.
     """
+    statistics = _meteor_statistics(reference, hypothesis, preprocess, stemmer, wordnet)
+    return _meteor_from_statistics(statistics, alpha, beta, gamma)
+
+
+def _meteor_statistics(reference, hypothesis, preprocess, stemmer, wordnet):
+    """The matches, chunks, hypothesis length and reference length of an alignment."""
     enum_hypothesis, enum_reference = _generate_enums(
         hypothesis, reference, preprocess=preprocess
     )
@@ -377,12 +384,17 @@ def single_meteor_score(
     matches, _, _ = _enum_align_words(
         enum_hypothesis, enum_reference, stemmer=stemmer, wordnet=wordnet
     )
-    matches_count = len(matches)
+    return len(matches), _count_chunks(matches), translation_length, reference_length
+
+
+def _meteor_from_statistics(statistics, alpha, beta, gamma):
+    """The METEOR score of alignment statistics, of a segment or summed over a test set."""
+    matches_count, chunks, translation_length, reference_length = statistics
     try:
         precision = float(matches_count) / translation_length
         recall = float(matches_count) / reference_length
         fmean = (precision * recall) / (alpha * precision + (1 - alpha) * recall)
-        chunk_count = float(_count_chunks(matches))
+        chunk_count = float(chunks)
         frag_frac = chunk_count / matches_count
     except ZeroDivisionError:
         return 0.0
@@ -399,6 +411,8 @@ def meteor_score(
     alpha: float = 0.9,
     beta: float = 3.0,
     gamma: float = 0.5,
+    *,
+    on_empty: str = "raise",
 ) -> float:
     """
     Calculates METEOR score for hypothesis with multiple references as
@@ -438,18 +452,78 @@ def meteor_score(
     :param beta: parameter for controlling shape of penalty as a function
                  of as a function of fragmentation.
     :param gamma: relative weight assigned to fragmentation penalty.
+    :param on_empty: "raise" (the default) or "zero", for a hypothesis
+        without references
     :return: The sentence-level METEOR score.
     """
-    return max(
-        single_meteor_score(
-            reference,
-            hypothesis,
-            preprocess=preprocess,
-            stemmer=stemmer,
-            wordnet=wordnet,
-            alpha=alpha,
-            beta=beta,
-            gamma=gamma,
-        )
-        for reference in references
-    )
+    return METEOR(
+        preprocess, stemmer, wordnet, alpha, beta, gamma, on_empty=on_empty
+    ).sentence_score(list(references), hypothesis)
+
+
+class METEOR(MetricI):
+    """
+    METEOR (Banerjee and Lavie, 2005; Lavie and Agarwal, 2007) as a metric;
+    meteor_score() is its sentence score. NLTK's is its only mode: neither
+    mteval nor sacrebleu has METEOR (its reference implementation is the
+    Meteor jar).
+
+    A hypothesis is scored against each reference and keeps the best score. A
+    corpus scores as Banerjee and Lavie (2005, sec. 2) define it, not as the
+    mean of the sentence scores: the statistics of each hypothesis' best
+    alignment (matches, chunks, hypothesis and reference lengths) are summed
+    over the test set, and the sentence formula is applied to the sums.
+
+        >>> from nltk.translate.meteor_score import METEOR
+        >>> hyps = ['the cat sat down'.split(), 'red house'.split()]
+        >>> refs = [['the cat sat down'.split()], ['red car'.split()]]
+        >>> [METEOR().sentence_score(r, h) for r, h in zip(refs, hyps)]
+        [0.9921875, 0.25]
+        >>> round(METEOR().corpus_score(refs, hyps), 4)
+        0.8067
+
+    Five matches in two chunks over six hypothesis and six reference words:
+    precision and recall 5/6, a penalty of 0.5 * (2/5)**3, where the mean of
+    the two sentence scores would be 0.6211.
+
+    :param preprocess: preprocessing function (default str.lower)
+    :param stemmer: nltk.stem.api.StemmerI object (default PorterStemmer())
+    :param wordnet: a wordnet corpus reader object (default nltk.corpus.wordnet)
+    :param alpha: parameter for controlling relative weights of precision and recall.
+    :param beta: parameter for controlling shape of penalty as a function of fragmentation.
+    :param gamma: relative weight assigned to fragmentation penalty.
+    :param on_empty: "raise" or "zero", see MetricI
+    """
+
+    def __init__(
+        self,
+        preprocess=str.lower,
+        stemmer=PorterStemmer(),
+        wordnet=wordnet,
+        alpha=0.9,
+        beta=3.0,
+        gamma=0.5,
+        *,
+        mode="nltk",
+        on_empty="raise",
+    ):
+        super().__init__(mode, on_empty)
+        self.preprocess, self.stemmer, self.wordnet = preprocess, stemmer, wordnet
+        self.alpha, self.beta, self.gamma = alpha, beta, gamma
+
+    def _corpus_score(self, list_of_references, hypotheses):
+        totals = [0, 0, 0, 0]
+        for references, hypothesis in zip(list_of_references, hypotheses):
+            best, best_score = None, None
+            for reference in references:
+                statistics = _meteor_statistics(
+                    reference, hypothesis, self.preprocess, self.stemmer, self.wordnet
+                )
+                score = _meteor_from_statistics(
+                    statistics, self.alpha, self.beta, self.gamma
+                )
+                # the first best reference, as max() picks it
+                if best is None or score > best_score:
+                    best, best_score = statistics, score
+            totals = [a + b for a, b in zip(totals, best)]
+        return _meteor_from_statistics(totals, self.alpha, self.beta, self.gamma)
