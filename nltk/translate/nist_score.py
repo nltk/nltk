@@ -8,16 +8,14 @@
 
 """NIST score implementation."""
 
-import fractions
 import math
-import warnings
 from collections import Counter
 
-from nltk.translate.bleu_score import SmoothingFunction
+from nltk.translate.api import MetricI
 from nltk.util import ngrams
 
 
-def sentence_nist(references, hypothesis, n=5):
+def sentence_nist(references, hypothesis, n=5, *, on_empty="raise"):
     """
     Calculate NIST score from
     George Doddington. 2002. "Automatic evaluation of machine translation quality
@@ -57,16 +55,27 @@ def sentence_nist(references, hypothesis, n=5):
     ...               'of', 'the', 'party']
 
     >>> sentence_nist([reference1, reference2, reference3], hypothesis1) # doctest: +ELLIPSIS
-    5.0379...
+    3.3709...
 
     >>> sentence_nist([reference1, reference2, reference3], hypothesis2) # doctest: +ELLIPSIS
+    1.4619...
+
+    mteval-v13a.pl gives these hypotheses other scores, those of
+    NIST(mode="mteval"), as it matches each hypothesis n-gram against all the
+    references at once:
+
+    >>> from nltk.translate.nist_score import NIST
+    >>> references = [reference1, reference2, reference3]
+    >>> NIST(mode="mteval").sentence_score(references, hypothesis1) # doctest: +ELLIPSIS
+    5.0379...
+    >>> NIST(mode="mteval").sentence_score(references, hypothesis2) # doctest: +ELLIPSIS
     2.1138...
 
-    These are the scores that mteval-v13a.pl gives for the same tokens. With a
-    single reference the score does not depend on how the references are
-    combined:
+    With a single reference the two modes agree:
 
     >>> sentence_nist([reference1], hypothesis1) # doctest: +ELLIPSIS
+    2.4477...
+    >>> NIST(mode="mteval").sentence_score([reference1], hypothesis1) # doctest: +ELLIPSIS
     2.4477...
 
     :param references: reference sentences
@@ -75,21 +84,17 @@ def sentence_nist(references, hypothesis, n=5):
     :type hypothesis: list(str)
     :param n: highest n-gram order
     :type n: int
+    :param on_empty: "raise" (the default) or "zero", for a hypothesis
+        without references
+    :type on_empty: str
     """
-    return corpus_nist([references], [hypothesis], n)
+    return corpus_nist([references], [hypothesis], n, on_empty=on_empty)
 
 
-def corpus_nist(list_of_references, hypotheses, n=5):
+def corpus_nist(list_of_references, hypotheses, n=5, *, on_empty="raise"):
     """
     Calculate a single corpus-level NIST score (aka. system-level BLEU) for all
     the hypotheses and their respective references.
-
-    The n-gram information weights are estimated from all the references. Each
-    hypothesis n-gram co-occurs with the references if it appears in any of
-    them, and its count is clipped at the largest count it has in a single
-    reference, as in mteval-v13a.pl. The length penalty compares the length of
-    the hypotheses with the average length of their references, Eqn 3 in
-    Doddington (2002).
 
     :param references: a corpus of lists of reference sentences, w.r.t. hypotheses
     :type references: list(list(list(str)))
@@ -97,12 +102,50 @@ def corpus_nist(list_of_references, hypotheses, n=5):
     :type hypotheses: list(list(str))
     :param n: highest n-gram order
     :type n: int
+    :param on_empty: "raise" (the default) or "zero", for an empty corpus or a
+        hypothesis without references
+    :type on_empty: str
     """
-    # Before proceeding to compute NIST, perform sanity checks.
-    assert len(list_of_references) == len(
-        hypotheses
-    ), "The number of hypotheses and their reference(s) should be the same"
+    return NIST(n, on_empty=on_empty).corpus_score(list_of_references, hypotheses)
 
+
+class NIST(MetricI):
+    """
+    NIST in two modes. ``"nltk"`` is corpus_nist() and sentence_nist(): for each
+    n-gram order, a hypothesis is scored against the reference that gives it
+    the highest precision of that order, and its length is compared with that
+    reference's. ``"mteval"`` is mteval-v13a.pl (score_segment and nist_score)
+    on the same tokens: a hypothesis n-gram matches when it occurs in any
+    reference, up to the largest number of times it occurs in a single one,
+    and the length is compared with the average length of the references, as
+    in Eqn 3 of Doddington (2002).
+
+    Both modes weigh the n-grams by the information they carry in all the
+    references of the corpus. When no hypothesis has n-grams of an order,
+    mteval adds 0 for that order and the "nltk" mode raises ValueError.
+
+    :param n: highest n-gram order
+    :param mode: "nltk" or "mteval"
+    :param on_empty: "raise" or "zero", see MetricI
+    """
+
+    modes = ("nltk", "mteval")
+
+    def __init__(self, n=5, *, mode="nltk", on_empty="raise"):
+        super().__init__(mode, on_empty)
+        self.n = n
+
+    def _corpus_score(self, list_of_references, hypotheses):
+        information_weights = _information_weights(list_of_references, self.n)
+        if self.mode == "mteval":
+            return _mteval_corpus_nist(
+                list_of_references, hypotheses, self.n, information_weights
+            )
+        return _corpus_nist(list_of_references, hypotheses, self.n, information_weights)
+
+
+def _information_weights(list_of_references, n):
+    """The information weight of every reference n-gram, Eqn 2 in Doddington (2002)."""
     # Collect the ngram coounts from the reference sentences.
     ngram_freq = Counter()
     total_reference_words = 0
@@ -132,8 +175,76 @@ def corpus_nist(list_of_references, hypotheses, n=5):
         else:
             numerator = total_reference_words
         information_weights[_ngram] = math.log(numerator / ngram_freq[_ngram], 2)
+    if total_reference_words == 0:
+        raise ValueError(
+            "NIST weighs n-grams by the references, and they have no words"
+        )
+    return information_weights
 
+
+def _corpus_nist(list_of_references, hypotheses, n, information_weights):
+    """corpus_nist() as NLTK computes it, NIST's "nltk" mode."""
     # Micro-average.
+    nist_precision_numerator_per_ngram = Counter()
+    nist_precision_denominator_per_ngram = Counter()
+    l_ref, l_sys = 0, 0
+    # For each order of ngram.
+    for i in range(1, n + 1):
+        # Iterate through each hypothesis and their corresponding references.
+        for references, hypothesis in zip(list_of_references, hypotheses):
+            hyp_len = len(hypothesis)
+
+            # Find reference with the best NIST score.
+            nist_score_per_ref = []
+            for reference in references:
+                _ref_len = len(reference)
+                # Counter of ngrams in hypothesis.
+                hyp_ngrams = (
+                    Counter(ngrams(hypothesis, i))
+                    if len(hypothesis) >= i
+                    else Counter()
+                )
+                ref_ngrams = (
+                    Counter(ngrams(reference, i)) if len(reference) >= i else Counter()
+                )
+                ngram_overlaps = hyp_ngrams & ref_ngrams
+                # Precision part of the score in Eqn 3
+                _numerator = sum(
+                    information_weights[_ngram] * count
+                    for _ngram, count in ngram_overlaps.items()
+                )
+                _denominator = sum(hyp_ngrams.values())
+                _precision = 0 if _denominator == 0 else _numerator / _denominator
+                nist_score_per_ref.append(
+                    (_precision, _numerator, _denominator, _ref_len)
+                )
+            # Best reference.
+            precision, numerator, denominator, ref_len = max(nist_score_per_ref)
+            nist_precision_numerator_per_ngram[i] += numerator
+            nist_precision_denominator_per_ngram[i] += denominator
+            l_ref += ref_len
+            l_sys += hyp_len
+
+    # Final NIST micro-average mean aggregation.
+    nist_precision = 0
+    for i in nist_precision_numerator_per_ngram:
+        if nist_precision_denominator_per_ngram[i] == 0:
+            raise ValueError(
+                f"No hypothesis has {i} or more words, so there are no {i}-grams to score: "
+                f"lower n, or use NIST(mode='mteval'), which adds 0 for such an order "
+                "as mteval-v13a.pl does"
+            )
+        precision = (
+            nist_precision_numerator_per_ngram[i]
+            / nist_precision_denominator_per_ngram[i]
+        )
+        nist_precision += precision
+    # Eqn 3 in Doddington(2002)
+    return nist_precision * nist_length_penalty(l_ref, l_sys)
+
+
+def _mteval_corpus_nist(list_of_references, hypotheses, n, information_weights):
+    """NIST as mteval-v13a.pl computes it, NIST's "mteval" mode."""
     nist_precision_numerator_per_ngram = Counter()
     nist_precision_denominator_per_ngram = Counter()
     l_ref, l_sys = 0, 0
@@ -163,36 +274,13 @@ def corpus_nist(list_of_references, hypotheses, n=5):
             )
             nist_precision_denominator_per_ngram[i] += sum(hyp_ngrams.values())
 
-    # Final NIST micro-average mean aggregation.
+    # mteval-v13a.pl's nist_score divides by max(n-grams, 1): an order with no
+    # hypothesis n-grams has no information either and adds 0.
     nist_precision = 0
-    try:
-        for i in nist_precision_numerator_per_ngram:
-            precision = (
-                nist_precision_numerator_per_ngram[i]
-                / nist_precision_denominator_per_ngram[i]
-            )
-            nist_precision += precision
-    except ZeroDivisionError:
-        _msg = str(
-            "The highest n-gram order of {} is too high for the hypotheses.\n"
-            "Default smoothing function will be applied to avoid zero division "
-            "error, but the NIST score may not be accurate.\n"
-            "Consider using lower n-gram order."
-        ).format(n)
-        warnings.warn(_msg)  # unsafe-print ok: literal text with a numeric n-gram order
-        # construct list[Fraction] like what corpus_bleu does for smoothing function
-        p_n = [
-            fractions.Fraction(
-                nist_precision_numerator_per_ngram[i]
-                / nist_precision_denominator_per_ngram[i]
-                if nist_precision_denominator_per_ngram[i] != 0
-                else 0.0
-            )
-            for i in nist_precision_numerator_per_ngram
-        ]
-        # do the smoothing with method0, which is the default smoothing function used in corpus_bleu.
-        p_n = SmoothingFunction().method0(p_n, hypothesis, len(hypothesis))
-        nist_precision = sum(p_n)
+    for i in nist_precision_numerator_per_ngram:
+        nist_precision += nist_precision_numerator_per_ngram[i] / max(
+            nist_precision_denominator_per_ngram[i], 1
+        )
     # Eqn 3 in Doddington(2002)
     return nist_precision * nist_length_penalty(l_ref, l_sys)
 
