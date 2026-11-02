@@ -1228,13 +1228,16 @@ This used to discard the ``(B b)`` subtree (fixed in svn 6270):
 
 Pickling ParentedTree instances didn't work for Python 3.7 onwards (See #2478)
 
-    >>> import pickle
+    >>> from functools import partial
+    >>> from nltk import picklesec
     >>> tree = ParentedTree.fromstring('(S (NN x) (NP x) (NN x))')
     >>> print(tree)
     (S (NN x) (NP x) (NN x))
 
-    >>> pickled = pickle.dumps(tree)
-    >>> tree_loaded = pickle.loads(pickled)
+    >>> # load it back through nltk.picklesec, which only rebuilds
+    >>> # classes from the modules it is told to expect
+    >>> roundtrip = partial(picklesec.roundtrip, allowed_modules=['nltk.tree'])
+    >>> tree_loaded = roundtrip(tree)
     >>> print(tree_loaded)
     (S (NN x) (NP x) (NN x))
 

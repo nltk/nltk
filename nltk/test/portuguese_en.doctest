@@ -359,10 +359,14 @@ Character Encodings
 -------------------
 
 Python understands the common character encoding used for Portuguese, ISO 8859-1 (ISO Latin 1).
+The sample text ships inside NLTK's test package, so it is read through
+``nltk.pathsec.open_package_resource``, the guard for files that ship with NLTK:
 
     >>> import os, nltk.test
+    >>> from nltk import pathsec
     >>> testdir = os.path.split(nltk.test.__file__)[0]
-    >>> text = open(os.path.join(testdir, 'floresta.txt'), 'rb').read().decode('ISO 8859-1')
+    >>> with pathsec.open_package_resource(os.path.join(testdir, 'floresta.txt'), testdir, mode='rb') as f:
+    ...     text = f.read().decode('ISO 8859-1')
     >>> text[:60]
     'O 7 e Meio \xe9 um ex-libris da noite algarvia.\n\xc9 uma das mais '
     >>> print(text[:60])
@@ -477,8 +481,10 @@ spaces.  Now the information about sentence breaks has been discarded.  We split
 material into training and testing data:
 
     >>> import os, nltk.test
+    >>> from nltk import pathsec
     >>> testdir = os.path.split(nltk.test.__file__)[0]
-    >>> text = open(os.path.join(testdir, 'floresta.txt'), 'rb').read().decode('ISO-8859-1')
+    >>> with pathsec.open_package_resource(os.path.join(testdir, 'floresta.txt'), testdir, mode='rb') as f:
+    ...     text = f.read().decode('ISO-8859-1')
     >>> lines = text.split('\n')
     >>> train = ' '.join(lines[10:])
     >>> test = ' '.join(lines[:10])

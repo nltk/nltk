@@ -362,14 +362,17 @@ Post-hoc alignment of tokens with a source string
 
 Regression Tests: MWETokenizer
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Pickle an MWETokenizer
+Pickle an MWETokenizer, and load it back through ``nltk.picklesec``, which
+only rebuilds classes from the modules it is told to expect
 
     >>> from nltk.tokenize import MWETokenizer
-    >>> import pickle
+    >>> from functools import partial
+    >>> from nltk import picklesec
+    >>> roundtrip = partial(picklesec.roundtrip,
+    ...                     allowed_modules=['nltk.tokenize.mwe', 'nltk.collections'])
 
     >>> tokenizer = MWETokenizer([('hors', "d'oeuvre")], separator='+')
-    >>> p = pickle.dumps(tokenizer)
-    >>> unpickeled = pickle.loads(p)
+    >>> unpickeled = roundtrip(tokenizer)
     >>> unpickeled.tokenize("An hors d'oeuvre tonight, sir?".split())
     ['An', "hors+d'oeuvre", 'tonight,', 'sir?']
 

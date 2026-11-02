@@ -6,7 +6,6 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
-import os
 from itertools import chain
 
 import nltk
@@ -553,18 +552,14 @@ class Glue:
         if semtype_file:
             self.semtype_file = semtype_file
         else:
-            self.semtype_file = os.path.join(
-                "grammars", "sample_grammars", "glue.semtype"
-            )
+            self.semtype_file = "grammars/sample_grammars/glue.semtype"
 
     def train_depparser(self, depgraphs=None):
         if depgraphs:
             self.depparser.train(depgraphs)
         else:
             self.depparser.train_from_file(
-                nltk.data.find(
-                    os.path.join("grammars", "sample_grammars", "glue_train.conll")
-                )
+                nltk.data.find("grammars/sample_grammars/glue_train.conll")
             )
 
     def parse_to_meaning(self, sentence):
@@ -773,9 +768,7 @@ class DrtGlue(Glue):
         self, semtype_file=None, remove_duplicates=False, depparser=None, verbose=False
     ):
         if not semtype_file:
-            semtype_file = os.path.join(
-                "grammars", "sample_grammars", "drt_glue.semtype"
-            )
+            semtype_file = "grammars/sample_grammars/drt_glue.semtype"
         Glue.__init__(self, semtype_file, remove_duplicates, depparser, verbose)
 
     def get_glue_dict(self):
