@@ -15,6 +15,7 @@ from collections.abc import Callable
 from typing import List
 
 import nltk
+from nltk.translate.api import MetricI
 
 #: Work budget for ``alignment``: the total number of candidate reference
 #: positions it may inspect. A token repeated R times yields R candidates
@@ -267,8 +268,6 @@ def sentence_lepor(
 
     """
 
-    lepor_scores = list()
-
     # Tokenize sentences, into new lists: the caller's references stay as given.
     if tokenizer:
         hypothesis = tokenizer(hypothesis)
@@ -278,23 +277,27 @@ def sentence_lepor(
         hypothesis = nltk.word_tokenize(hypothesis)
         references = [nltk.word_tokenize(reference) for reference in references]
 
+    lepor_scores = list()
     for reference in references:
-        if len(reference) == 0 or len(hypothesis) == 0:
-            raise ValueError("One of the sentence is empty. Exit.")
-
-        # Calculate the length penalty due to the difference in the length of reference and hypothesis.
-        lp = length_penalty(reference, hypothesis)
-
-        # Calculate the penalty on different positions of same word in translation.
-        npd, match_count = ngram_positional_penalty(reference, hypothesis)
-
-        harmonic_score = harmonic(
-            match_count, len(reference), len(hypothesis), alpha, beta
-        )
-
+        lp, npd, harmonic_score = _lepor_factors(reference, hypothesis, alpha, beta)
         lepor_scores.append(lp * npd * harmonic_score)
 
     return lepor_scores
+
+
+def _lepor_factors(reference, hypothesis, alpha, beta):
+    """The three factors of the LEPOR of a tokenized hypothesis and reference."""
+    if len(reference) == 0 or len(hypothesis) == 0:
+        raise ValueError("One of the sentence is empty. Exit.")
+
+    # Calculate the length penalty due to the difference in the length of reference and hypothesis.
+    lp = length_penalty(reference, hypothesis)
+
+    # Calculate the penalty on different positions of same word in translation.
+    npd, match_count = ngram_positional_penalty(reference, hypothesis)
+
+    harmonic_score = harmonic(match_count, len(reference), len(hypothesis), alpha, beta)
+    return lp, npd, harmonic_score
 
 
 def corpus_lepor(
@@ -349,3 +352,63 @@ def corpus_lepor(
         )
 
     return lepor_scores
+
+
+class LEPOR(MetricI):
+    """
+    LEPOR (Han et al., 2012) of tokenized sentences, one reference per
+    hypothesis, as a metric with one score; sentence_lepor() and corpus_lepor()
+    take strings and list a score per reference. NLTK's is its only mode.
+
+    With several references the original aligns each hypothesis word against
+    all of them together (Han, 2014, sec. 3.1), which NLTK does not implement,
+    so the metric refuses them rather than invent a way to combine the scores.
+
+    A corpus scores as LEPOR-A, the mean of the sentence scores (Eq. 8), or with
+    ``variant="B"`` as LEPOR-B, the product of each factor's mean over the
+    sentences (Eqs. 9 to 12). An empty hypothesis or reference raises
+    ValueError, as in sentence_lepor().
+
+        >>> from nltk.translate.lepor import LEPOR
+        >>> hyps = ['a bird is on a stone .'.split(), 'scary crow was not bad .'.split()]
+        >>> refs = [['a bird behind the stone .'.split()], ['scary cow was good .'.split()]]
+        >>> [round(LEPOR().sentence_score(r, h), 4) for r, h in zip(refs, hyps)]
+        [0.7824, 0.5639]
+        >>> round(LEPOR().corpus_score(refs, hyps), 4)
+        0.6732
+        >>> round(LEPOR(variant="B").corpus_score(refs, hyps), 4)
+        0.6742
+
+    :param alpha: weight of recall
+    :param beta: weight of precision
+    :param variant: "A" (the default) or "B", the corpus score
+    :param on_empty: "raise" or "zero", see MetricI
+    """
+
+    def __init__(
+        self, alpha=1.0, beta=1.0, variant="A", *, mode="nltk", on_empty="raise"
+    ):
+        super().__init__(mode, on_empty)
+        if variant not in ("A", "B"):
+            raise ValueError(f'variant is "A" or "B", not {variant!r}')
+        self.alpha, self.beta, self.variant = alpha, beta, variant
+
+    def _corpus_score(self, list_of_references, hypotheses):
+        if any(len(references) != 1 for references in list_of_references):
+            raise ValueError(
+                "LEPOR takes one reference per hypothesis: NLTK does not align a "
+                "hypothesis against several at once; sentence_lepor() lists the "
+                "score against each"
+            )
+        factors = [
+            _lepor_factors(references[0], hypothesis, self.alpha, self.beta)
+            for references, hypothesis in zip(list_of_references, hypotheses)
+        ]
+        if self.variant == "A":
+            return sum(
+                lp * npd * harmonic_score for lp, npd, harmonic_score in factors
+            ) / len(factors)
+        lp, npd, harmonic_score = (
+            sum(column) / len(factors) for column in zip(*factors)
+        )
+        return lp * npd * harmonic_score
