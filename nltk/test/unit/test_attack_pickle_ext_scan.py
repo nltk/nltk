@@ -105,10 +105,22 @@ def _crafted_payloads():
 
 
 def test_base0_int_line_no_longer_hides_ext(warm_extension):
-    """The bypass itself: the C unpickler runs the EXT opcode after ``I0x1``,
-    and both NLTK loaders now refuse the pickle before it does."""
+    """The bypass itself. CPython 3.10 to 3.13 read an INT line in base 0, so
+    their C unpickler takes ``I0x1`` as 1 and runs the EXT opcode after it,
+    where genops gave up; 3.14 reads it in base 10 and refuses the line. Each
+    interpreter is held to what it does, and both NLTK loaders refuse the
+    pickle before it runs either way."""
     payload = b"I0x1\n" + _ext_tail()
-    assert pickle.loads(payload) is _Marker  # the C unpickler accepts the line
+    try:
+        base0 = pickle.loads(b"I0x1\n.")
+    except ValueError:  # UnpicklingError is a ValueError subclass too
+        base0 = None
+    if base0 == 1:
+        assert pickle.loads(payload) is _Marker
+    else:
+        assert base0 is None
+        with pytest.raises(ValueError):
+            pickle.loads(payload)
     with pytest.raises(pickle.UnpicklingError, match="EXT1"):
         RestrictedUnpickler(io.BytesIO(payload)).load()
     with pytest.raises(pickle.UnpicklingError, match="EXT1"):

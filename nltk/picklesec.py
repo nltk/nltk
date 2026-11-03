@@ -83,9 +83,10 @@ _NO_FRAME = sys.maxsize  # the end of "the current frame" when there is none
 
 class _AmbiguousFrame(Exception):
     """An opcode at ``pos`` runs past the end of its frame, or a frame opens
-    inside a frame. Unpickling from a file, CPython 3.10.20, 3.11.9, 3.11.15
-    and 3.13.7 read an argument that crosses a frame's end from AFTER the frame
-    (the bytes left in the frame are dropped; 3.13.17 refuses the pickle), so
+    inside a frame. Unpickling from a file, CPython 3.10.20, 3.11.9, 3.11.15,
+    3.12.13, 3.13.7 and 3.14.4 read an argument that crosses a frame's end from
+    AFTER the frame (the bytes left in the frame are dropped; 3.13.17 refuses
+    the pickle), so
     from here on the C unpickler can follow another opcode stream than any scan
     that reads the bytes in order. The pickler never writes such a frame."""
 
