@@ -250,22 +250,20 @@ def _mteval_corpus_nist(list_of_references, hypotheses, n, information_weights):
     l_ref, l_sys = 0, 0
     # Iterate through each hypothesis and their corresponding references.
     for references, hypothesis in zip(list_of_references, hypotheses):
-        hyp_len = len(hypothesis)
-        l_sys += hyp_len
+        l_sys += len(hypothesis)
         # Eqn 3 in Doddington (2002) compares the hypothesis length with the
         # average length of the references, mteval-v13a.pl does the same.
         l_ref += sum(len(reference) for reference in references) / len(references)
         # For each order of ngram.
         for i in range(1, n + 1):
             # Counter of ngrams in hypothesis.
-            hyp_ngrams = Counter(ngrams(hypothesis, i)) if hyp_len >= i else Counter()
+            hyp_ngrams = Counter(ngrams(hypothesis, i))
             # A hypothesis ngram co-occurs with the references if it appears in
             # any of them. Like mteval-v13a.pl, clip its count at the largest
             # count it has in a single reference.
             max_ref_ngrams = Counter()
             for reference in references:
-                if len(reference) >= i:
-                    max_ref_ngrams |= Counter(ngrams(reference, i))
+                max_ref_ngrams |= Counter(ngrams(reference, i))
             ngram_overlaps = hyp_ngrams & max_ref_ngrams
             # Precision part of the score in Eqn 3
             nist_precision_numerator_per_ngram[i] += sum(

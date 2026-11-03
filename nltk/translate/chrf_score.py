@@ -399,11 +399,7 @@ def _sacrebleu_corpus_chrf(
                 hyp_ngrams,
                 _sacrebleu_char_ngrams(reference, max_order, ignore_whitespace),
             ):
-                matches = sum(
-                    min(count, ref[ngram])
-                    for ngram, count in hyp.items()
-                    if ngram in ref
-                )
+                matches = sum((hyp & ref).values())
                 stats += [sum(hyp.values()) if ref else 0, sum(ref.values()), matches]
             fscore = _sacrebleu_chrf_fscore(stats, max_order, beta, eps_smoothing)
             if fscore > best_fscore:

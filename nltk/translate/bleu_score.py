@@ -970,10 +970,8 @@ class BLEU(MetricI):
         )
 
     def sentence_score(self, references, hypothesis):
-        if self.mode == "sacrebleu" and self.effective_order is None:
+        if self.mode == "sacrebleu" and self.effective_order is None and references:
             # sacrebleu.sentence_bleu() turns effective_order on by default
-            if not references:
-                return super().sentence_score(references, hypothesis)
             return self._corpus_score([references], [hypothesis], sentence=True)
         return super().sentence_score(references, hypothesis)
 
@@ -984,22 +982,33 @@ class BLEU(MetricI):
         return 0.0
 
 
-def _reference_counts(references, hypothesis, max_order):
+def _reference_counts(
+    list_of_references, hypotheses, max_order, brevity_penalty="closest"
+):
     """
-    The matched and the hypothesis n-gram counts of one segment, order by order,
-    as mteval-v13a.pl (score_segment) and sacrebleu count them: a hypothesis
-    n-gram matches up to the largest number of times it occurs in a single
-    reference, and a hypothesis shorter than an order has no n-grams of it.
+    The matched and the hypothesis n-gram counts of a corpus, order by order,
+    and its reference length, as mteval-v13a.pl (score_segment) and sacrebleu
+    count them: a hypothesis n-gram matches up to the largest number of times
+    it occurs in a single reference, a hypothesis shorter than an order has no
+    n-grams of it, and the reference length of a segment is that of its
+    closest reference, ties going to the shorter, or of its shortest.
     """
     matches, totals = [0] * max_order, [0] * max_order
-    for n in range(1, max_order + 1):
-        hyp_ngrams = Counter(ngrams(hypothesis, n))
-        max_ref_ngrams = Counter()
-        for reference in references:
-            max_ref_ngrams |= Counter(ngrams(reference, n))
-        matches[n - 1] = sum((hyp_ngrams & max_ref_ngrams).values())
-        totals[n - 1] = sum(hyp_ngrams.values())
-    return matches, totals
+    ref_length = 0
+    for references, hypothesis in zip(list_of_references, hypotheses):
+        for n in range(1, max_order + 1):
+            hyp_ngrams = Counter(ngrams(hypothesis, n))
+            max_ref_ngrams = Counter()
+            for reference in references:
+                max_ref_ngrams |= Counter(ngrams(reference, n))
+            matches[n - 1] += sum((hyp_ngrams & max_ref_ngrams).values())
+            totals[n - 1] += sum(hyp_ngrams.values())
+        lengths = [len(reference) for reference in references]
+        if brevity_penalty == "shortest":
+            ref_length += min(lengths)
+        else:
+            ref_length += min(lengths, key=lambda r: (abs(r - len(hypothesis)), r))
+    return matches, totals, ref_length
 
 
 def _mteval_bleu(list_of_references, hypotheses, max_order, smoothing, brevity_penalty):
@@ -1009,17 +1018,9 @@ def _mteval_bleu(list_of_references, hypotheses, max_order, smoothing, brevity_p
     segment the closest one, ties going to the shorter (brevity_penalty_closest),
     or the shortest, then bleu_score, or bleu_score_nosmoothing for "none".
     """
-    matches, totals = [0] * max_order, [0] * max_order
-    ref_length = 0
-    for references, hypothesis in zip(list_of_references, hypotheses):
-        seg_matches, seg_totals = _reference_counts(references, hypothesis, max_order)
-        matches = [a + b for a, b in zip(matches, seg_matches)]
-        totals = [a + b for a, b in zip(totals, seg_totals)]
-        lengths = [len(reference) for reference in references]
-        if brevity_penalty == "shortest":
-            ref_length += min(lengths)
-        else:
-            ref_length += min(lengths, key=lambda r: (abs(r - len(hypothesis)), r))
+    matches, totals, ref_length = _reference_counts(
+        list_of_references, hypotheses, max_order, brevity_penalty
+    )
 
     if smoothing == "none":
         # bleu_score_nosmoothing: an order without matches scores 0
@@ -1062,17 +1063,10 @@ def _sacrebleu_bleu(
     """
     if smooth_value is None:
         smooth_value = {"floor": 0.1, "add-k": 1}.get(smoothing)
-    correct, total = [0] * max_order, [0] * max_order
-    sys_len = ref_len = 0
-    for references, hypothesis in zip(list_of_references, hypotheses):
-        seg_correct, seg_total = _reference_counts(references, hypothesis, max_order)
-        correct = [a + b for a, b in zip(correct, seg_correct)]
-        total = [a + b for a, b in zip(total, seg_total)]
-        sys_len += len(hypothesis)
-        ref_len += min(
-            (len(reference) for reference in references),
-            key=lambda r: (abs(r - len(hypothesis)), r),
-        )
+    correct, total, ref_len = _reference_counts(
+        list_of_references, hypotheses, max_order
+    )
+    sys_len = sum(len(hypothesis) for hypothesis in hypotheses)
 
     bp = 1.0
     if sys_len < ref_len:
