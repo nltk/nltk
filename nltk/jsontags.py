@@ -112,6 +112,7 @@ def _reject_non_finite_walk(obj, context="NLTK JSON"):
     any other container is walked as before.
     """
     stack = [obj]
+    push = stack.extend
     while stack:
         cur = stack.pop()
         if isinstance(cur, float):
@@ -119,27 +120,26 @@ def _reject_non_finite_walk(obj, context="NLTK JSON"):
                 raise ValueError(
                     f"{context}: non-finite JSON number (NaN/Infinity) is not allowed"
                 )
-            continue
-        if isinstance(cur, dict):
-            members = cur.values()
+        elif isinstance(cur, dict):
+            if len(cur) < _SUM_AT_LEAST or not _all_finite_members(cur.values()):
+                push(cur.values())
         elif isinstance(cur, list):
-            members = cur
-        else:
-            continue
-        # Only a large container whose first member promises the shape is
-        # summed; a tweet's mixed dicts fail that check for free, not by raising.
-        if len(members) >= _SUM_AT_LEAST:
-            first = type(next(iter(members)))
-            if first is dict:
-                if _finite_numbers(
-                    itertools.chain.from_iterable(map(dict.values, members))
-                ):
-                    continue
-            elif first is float:
-                if _finite_numbers(members):
-                    continue
-        stack.extend(members)
+            if len(cur) < _SUM_AT_LEAST or not _all_finite_members(cur):
+                push(cur)
     return obj
+
+
+def _all_finite_members(members):
+    """True when the non-empty ``members`` need no visit: their sum (when the
+    first is a float) or their values' sum (when the first is a dict) is
+    finite. Only the first member's type decides whether to try, so a tweet's
+    mixed dicts fail it for free rather than by raising inside a sum."""
+    first = type(next(iter(members)))
+    if first is dict:
+        return _finite_numbers(itertools.chain.from_iterable(map(dict.values, members)))
+    if first is float:
+        return _finite_numbers(members)
+    return False
 
 
 #: Fewest members a container needs before the walk tries to sum it: a smaller
