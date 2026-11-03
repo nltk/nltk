@@ -437,7 +437,7 @@ class MetricI:
     Each hypothesis is a list of tokens and has its own list of references.
 
     ``mode`` chooses whose arithmetic is reproduced on those tokens:
-    ``"nltk"`` (the default) gives the numbers NLTK has always given, and a
+    ``"nltk"`` (the default) gives the numbers of NLTK's functions, and a
     metric that also has ``"mteval"`` or ``"sacrebleu"`` gives the numbers of
     mteval-v13a.pl or of sacrebleu. ``modes`` lists the modes of a metric.
 

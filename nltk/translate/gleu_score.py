@@ -147,10 +147,10 @@ def corpus_gleu(
     :type min_len: int
     :param max_len: The maximum order of n-gram this function should extract.
     :type max_len: int
-    :return: The corpus-level GLEU score.
     :param on_empty: "raise" (the default) or "zero", for an empty corpus or a
         hypothesis without references
     :type on_empty: str
+    :return: The corpus-level GLEU score.
     :rtype: float
     """
     return GLEU(min_len, max_len, on_empty=on_empty).corpus_score(

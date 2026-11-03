@@ -94,6 +94,9 @@ def sentence_chrf(
     :type beta: float
     :param ignore_whitespace: ignore whitespace characters in scoring
     :type ignore_whitespace: bool
+    :param on_empty: "raise" (the default) or "zero", as for the other
+        metrics; one hypothesis with its reference is never an empty input
+    :type on_empty: str
     :return: the sentence level CHRF score.
     :rtype: float
     """
