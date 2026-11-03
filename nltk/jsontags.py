@@ -14,8 +14,10 @@ NLTK uses simple '!' tags to mark the types of objects, but the fully-qualified
 using it.
 """
 
+import itertools
 import json
 import math
+import operator
 
 json_tags = {}
 
@@ -164,7 +166,15 @@ def _scan_json_depth(data, limit):
 def _utf8_depth(text, limit):
     """:func:`_scan_json_depth` of the parsed text already as UTF-8 bytes."""
     text = text.replace(b"\\\\", b"").replace(b'\\"', b"")
-    residue = text.translate(_IDENTITY_TABLE, _NON_STRUCTURAL)
+    # With no backslash left, quotes alternate open and close, so an adjacent
+    # pair is an empty string or a close then an open with nothing between:
+    # dropping it leaves every bracket inside or outside a string as it was.
+    residue = text.translate(_IDENTITY_TABLE, _NON_STRUCTURAL).replace(b'""', b"")
+    quotes = residue.count(b'"')
+    if quotes <= _SPLIT_QUOTES:
+        # Quotes alternate, so every other piece between them is outside any
+        # string; those pieces in order are the brackets the loop counts.
+        return _bracket_depth(b"".join(residue.split(b'"')[0::2]), limit)
     depth = 0
     max_depth = 0
     in_string = False
@@ -182,6 +192,33 @@ def _utf8_depth(text, limit):
         elif byte == 0x5D or byte == 0x7D:  # ']' or '}'
             depth -= 1
     return max_depth
+
+
+#: Brackets :func:`_bracket_depth` counts per step; a document past the cap is
+#: refused within one step of crossing it, as the loop refuses it there.
+_DEPTH_STEP = 1 << 16
+_STEP_OF = bytes.maketrans(b"[{]}", b"\x02\x02\x00\x00")
+#: Most quotes left in a residue that :func:`_utf8_depth` splits on (one small
+#: bytes object per piece); a residue with more takes the loop.
+_SPLIT_QUOTES = 1 << 16
+
+
+def _bracket_depth(residue, limit):
+    """What the loop in :func:`_utf8_depth` returns for brackets that are all
+    outside strings, counted at C speed: an opener is +1, a closer -1, and the
+    deepest running total is the depth. Like the loop it returns the first
+    depth past ``limit``."""
+    depth = best = 0
+    for start in range(0, len(residue), _DEPTH_STEP):
+        steps = residue[start : start + _DEPTH_STEP].translate(_STEP_OF)
+        totals = itertools.accumulate(
+            map(operator.sub, steps, itertools.repeat(1)), initial=depth
+        )
+        best = max(best, max(totals))
+        if best > limit and best > 0:
+            return max(limit + 1, 1)
+        depth += len(steps) - 2 * steps.count(0)
+    return best
 
 
 def safe_json_loads(
