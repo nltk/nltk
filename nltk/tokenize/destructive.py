@@ -170,28 +170,28 @@ class NLTKWordTokenizer(TokenizerI):
             )
 
         for regexp, substitution in self.STARTING_QUOTES:
-            text = regexp.sub(substitution, text)
+            text = _sub(regexp, substitution, text)
 
         for regexp, substitution in self.PUNCTUATION:
-            text = regexp.sub(substitution, text)
+            text = _sub(regexp, substitution, text)
 
         # Handles parentheses.
         regexp, substitution = self.PARENS_BRACKETS
-        text = regexp.sub(substitution, text)
+        text = _sub(regexp, substitution, text)
         # Optionally convert parentheses
         if convert_parentheses:
             for regexp, substitution in self.CONVERT_PARENTHESES:
-                text = regexp.sub(substitution, text)
+                text = _sub(regexp, substitution, text)
 
         # Handles double dash.
         regexp, substitution = self.DOUBLE_DASHES
-        text = regexp.sub(substitution, text)
+        text = _sub(regexp, substitution, text)
 
         # add extra space to make things easier
         text = " " + text + " "
 
         for regexp, substitution in self.ENDING_QUOTES:
-            text = regexp.sub(substitution, text)
+            text = _sub(regexp, substitution, text)
 
         for regexp in self.CONTRACTIONS2:
             text = regexp.sub(r" \1 \2 ", text)
@@ -249,3 +249,63 @@ class NLTKWordTokenizer(TokenizerI):
             tokens = raw_tokens
 
         yield from align_tokens(tokens, text)
+
+
+#: For each of NLTKWordTokenizer's own substitution patterns (by source), the
+#: characters at least one of which every match of it contains. ``\s+`` is left
+#: out: the padded text always holds a space.
+_NEEDS_BY_SOURCE = {
+    "([\u00ab\u201c\u2018\u201e]|[`]+)": "\u00ab\u201c\u2018\u201e`",
+    r"^\"": '"',
+    r"(``)": "`",
+    r"([ \(\[{<])(\"|\'{2})": "\"'",
+    r"(?i)(?<!\w)(\')(?!(?:re|ve|ll|m|t|s|d|n)\b)(?=\w)": "'",
+    "([\u00bb\u201d\u2019])": "\u00bb\u201d\u2019",
+    r"''": "'",
+    r'"': '"',
+    r"([^' ])('[sS]|'[mM]|'[dD]|') ": "'",
+    r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) ": "'",
+    r'([^\.])(\.)([\]\)}>"\'' "\u00bb\u201d\u2019 " r"]*+)\s*$": ".",
+    r"([:,])([^\d])": ":,",
+    r"([:,])$": ":,",
+    r"\.{2,}": ".",
+    r"[;@#$%&]": ";@#$%&",
+    r"[\u2012-\u2015]": "\u2012\u2013\u2014\u2015",
+    r'([^\.])(\.)([\]\)}>"\']*)\s*$': ".",
+    r"[?!]": "?!",
+    r"([^'])' ": "'",
+    r"[*]": "*",
+    r"[\]\[\(\)\{\}\<\>]": "[](){}<>",
+    r"\(": "(",
+    r"\)": ")",
+    r"\[": "[",
+    r"\]": "]",
+    r"\{": "{",
+    r"\}": "}",
+    r"--": "-",
+}
+
+#: The same, keyed by the identity of NLTKWordTokenizer's compiled patterns, so
+#: a subclass or caller that substitutes its own pattern is never filtered.
+_NEEDS = {
+    id(pattern): _NEEDS_BY_SOURCE[pattern.pattern]
+    for pattern, _repl in (
+        NLTKWordTokenizer.STARTING_QUOTES
+        + NLTKWordTokenizer.ENDING_QUOTES
+        + NLTKWordTokenizer.PUNCTUATION
+        + NLTKWordTokenizer.CONVERT_PARENTHESES
+        + [NLTKWordTokenizer.PARENS_BRACKETS, NLTKWordTokenizer.DOUBLE_DASHES]
+    )
+    if pattern.pattern in _NEEDS_BY_SOURCE
+}
+
+
+def _sub(regexp, substitution, text):
+    """``regexp.sub(substitution, text)``, except that a text holding none of
+    the characters every match of one of NLTKWordTokenizer's own patterns
+    needs is returned as it is: there is nothing to substitute, and the timed
+    regex call (two reads of the process clock in the engine) is skipped."""
+    needs = _NEEDS.get(id(regexp))
+    if needs is not None and not any(c in text for c in needs):
+        return text
+    return regexp.sub(substitution, text)
