@@ -117,7 +117,10 @@ def test_base0_int_line_no_longer_hides_ext(warm_extension):
         )
 
 
-@pytest.mark.parametrize("payload", list(_crafted_payloads()))
+@pytest.mark.parametrize(
+    "payload",
+    [pytest.param(p, id=f"crafted{i}") for i, p in enumerate(_crafted_payloads())],
+)
 def test_scan_never_stops_on_argument_content(payload, warm_extension):
     """Whatever a line argument holds, the EXT opcode after it is refused, by
     both the in-memory and the streamed scan; this includes every content the
@@ -240,12 +243,14 @@ def test_ambiguous_frame_with_no_ext_byte_after_passes_the_scan(payload, monkeyp
 def _sample_objects():
     """Real-shaped values that exercise every argument kind the protocols
     emit: small, medium and huge ints, floats, short and long str and bytes,
-    non-ASCII text, bytearray, the containers, and booleans and None."""
+    non-ASCII text, bytearray, the containers, and booleans and None. Sets
+    hold ints only, whose iteration order is the same in every process (a
+    pytest-xdist worker collects the same ids as its peers)."""
     return [
         {"w": [1, 255, 256, 65535, 65536, -1, 2**31, 2**70, -(2**2000)]},
-        [0.5, -1e300, 3.141592653589793, "", "x" * 300, "é中\U0001f600"],
+        [0.5, -1e300, 3.141592653589793, "", "x" * 300, "\u00e9\u4e2d\U0001f600"],
         (b"", b"\x82\x83\x84" * 90, bytes(range(256)), bytearray(b"\x82" * 3)),
-        {frozenset({1, 2}), (None, True, False)},
+        [{1, 2}, frozenset({3, 4}), (None, True, False)],
         {("w%d" % i, "NN"): i / 7 for i in range(40)},
     ]
 
@@ -253,7 +258,8 @@ def _sample_objects():
 def _real_pickles():
     for proto in range(pickle.HIGHEST_PROTOCOL + 1):
         for index, obj in enumerate(_sample_objects()):
-            yield f"p{proto}-o{index}", pickle.dumps(obj, protocol=proto)
+            name = f"p{proto}-o{index}"
+            yield pytest.param(name, pickle.dumps(obj, protocol=proto), id=name)
 
 
 def _argument_bytes(data):
@@ -311,7 +317,7 @@ def test_framing_matches_genops_everywhere(name, data, chunk, monkeypatch):
 def test_framing_with_chunks_cutting_every_argument(proto, chunk, monkeypatch):
     """The streamed scan with chunks of one to three bytes, so every length
     prefix, fixed argument and line is split across reads."""
-    obj = [1, 300, 70000, 2**70, 0.25, "ab", "é" * 3, b"\x82" * 4, (None, True)]
+    obj = [1, 300, 70000, 2**70, 0.25, "ab", "\u00e9" * 3, b"\x82" * 4, (None, True)]
     _check_framing(pickle.dumps(obj, protocol=proto), chunk, monkeypatch)
 
 
