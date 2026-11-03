@@ -259,9 +259,9 @@ def test_zip_slip_interior_dotdot_symlink_escape(tmp_path):
     with pytest.raises((ValueError, PermissionError)):
         with pathsec.ZipFile(malicious_zip, "r") as zf:
             zf.extractall(root)
-    assert not (
-        outside / "evil.txt"
-    ).exists(), "member escaped the extraction root via an in-root symlink"
+    assert not (outside / "evil.txt").exists(), (
+        "member escaped the extraction root via an in-root symlink"
+    )
 
 
 # --- PROXY & HANDLER TESTS ---
@@ -304,9 +304,9 @@ def test_urlopen_honors_set_proxy_and_redirect_validation():
         proxy_handlers = [
             h for h in captured_handlers if isinstance(h, urllib.request.ProxyHandler)
         ]
-        assert (
-            len(proxy_handlers) == 1
-        ), "ProxyHandler was not inherited by pathsec.urlopen"
+        assert len(proxy_handlers) == 1, (
+            "ProxyHandler was not inherited by pathsec.urlopen"
+        )
         assert "http" in proxy_handlers[0].proxies
         assert proxy_handlers[0].proxies["http"] == test_proxy
 
@@ -319,9 +319,9 @@ def test_urlopen_honors_set_proxy_and_redirect_validation():
         assert len(redirect_handlers) == 1, "_ValidatingRedirectHandler is missing"
 
         # 3. Verify the ProxyHandler was safely copied
-        assert (
-            proxy_handlers[0] is not proxy_handler
-        ), "ProxyHandler instance was reused instead of copied! This breaks the global opener."
+        assert proxy_handlers[0] is not proxy_handler, (
+            "ProxyHandler instance was reused instead of copied! This breaks the global opener."
+        )
 
     finally:
         # Teardown: Safely restore the original global opener, leaving no trace of this test

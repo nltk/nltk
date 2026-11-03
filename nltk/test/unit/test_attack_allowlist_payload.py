@@ -379,9 +379,9 @@ def test_deeply_nested_graph_is_bounded(pathsec_sandbox):
         timeout=30,
         env=env,
     )
-    assert proc.stdout.startswith(
-        "LOADED"
-    ), f"child failed: {proc.stdout!r} / {proc.stderr!r}"
+    assert proc.stdout.startswith("LOADED"), (
+        f"child failed: {proc.stdout!r} / {proc.stderr!r}"
+    )
 
 
 def test_huge_flat_graph_is_linear(pathsec_sandbox):
@@ -421,9 +421,9 @@ def test_huge_flat_graph_is_linear(pathsec_sandbox):
         timeout=30,
         env=env,
     )
-    assert (
-        proc.stdout.strip() == f"LOADED {n}"
-    ), f"child failed: {proc.stdout!r} / {proc.stderr!r}"
+    assert proc.stdout.strip() == f"LOADED {n}", (
+        f"child failed: {proc.stdout!r} / {proc.stderr!r}"
+    )
 
 
 def test_self_referential_graph_terminates(pathsec_sandbox):

@@ -638,9 +638,9 @@ class TestSpoofedResourceNames:
         )
         result, text = run_download(index, dl, pid, quiet=True, extract=True)
         if pid == "tiny":
-            assert (
-                result is True
-            ), text  # "corpora/tiny/words.txt" forms resolve to tiny
+            assert result is True, (
+                text
+            )  # "corpora/tiny/words.txt" forms resolve to tiny
         else:
             assert result is False, (shape, text)
         assert tree(str(dl)) == before

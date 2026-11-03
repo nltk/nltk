@@ -141,9 +141,9 @@ class TestBounded:
         elapsed = clock.charged
         assert len(line) == size + 1 and line.endswith("\n")
         assert r.readline() == "rest\n"
-        assert (
-            peak < 8 * size
-        ), peak  # the spans, their join and the line, never a quadratic copy chain
+        assert peak < 8 * size, (
+            peak
+        )  # the spans, their join and the line, never a quadratic copy chain
 
     def test_a_flood_of_tiny_lines_is_linear(self):
         def op(n):

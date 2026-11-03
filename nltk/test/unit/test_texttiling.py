@@ -148,9 +148,9 @@ class TestTextTilingVocabIntroduction:
         # so later scores should be near zero
         later_scores = gap_scores[len(gap_scores) // 2 :]
         avg_later = sum(later_scores) / len(later_scores) if later_scores else 0
-        assert (
-            avg_later < 0.15
-        ), f"Average later score {avg_later} too high for repeated text"
+        assert avg_later < 0.15, (
+            f"Average later score {avg_later} too high for repeated text"
+        )
 
 
 class TestCreateTokenTable:
@@ -188,9 +188,9 @@ class TestTextTilingCommon:
         for method in [BLOCK_COMPARISON, VOCABULARY_INTRODUCTION]:
             tt = TextTilingTokenizer(w=10, k=5, similarity_method=method)
             segments = tt.tokenize(MULTI_TOPIC_TEXT)
-            assert (
-                len(segments) > 1
-            ), f"Method {method} found no boundaries in multi-topic text"
+            assert len(segments) > 1, (
+                f"Method {method} found no boundaries in multi-topic text"
+            )
 
     def test_invalid_similarity_method(self):
         """Invalid similarity method should raise ValueError."""

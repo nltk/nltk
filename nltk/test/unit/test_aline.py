@@ -95,9 +95,9 @@ class TestFeatureMatrix:
     def test_all_consonants_in_feature_matrix(self):
         """Every consonant in the consonants list should be in feature_matrix."""
         for c in aline.consonants:
-            assert (
-                c in aline.feature_matrix
-            ), f"Consonant {c!r} missing from feature_matrix"
+            assert c in aline.feature_matrix, (
+                f"Consonant {c!r} missing from feature_matrix"
+            )
 
     def test_all_vowels_in_feature_matrix(self):
         """Every vowel (place='vowel' entry) should be a valid key."""
@@ -122,16 +122,16 @@ class TestFeatureMatrix:
     def test_consonants_not_vowel_place(self):
         """No consonant should have place='vowel'."""
         for c in aline.consonants:
-            assert (
-                aline.feature_matrix[c]["place"] != "vowel"
-            ), f"Consonant {c!r} has place='vowel'"
+            assert aline.feature_matrix[c]["place"] != "vowel", (
+                f"Consonant {c!r} has place='vowel'"
+            )
 
     def test_vowels_have_vowel_place(self):
         """All vowels in feature_matrix should have place='vowel'."""
         for v in aline.vowels:
-            assert (
-                aline.feature_matrix[v]["place"] == "vowel"
-            ), f"Vowel {v!r} has place={aline.feature_matrix[v]['place']!r}"
+            assert aline.feature_matrix[v]["place"] == "vowel", (
+                f"Vowel {v!r} has place={aline.feature_matrix[v]['place']!r}"
+            )
 
     # IPA rounding checks
     def test_unrounded_vowels(self):
@@ -139,18 +139,18 @@ class TestFeatureMatrix:
         unrounded = ["i", "e", "ɛ", "a", "ɯ", "ɘ", "ɜ", "ɐ", "ɑ", "ʌ", "ɤ"]
         for v in unrounded:
             if v in aline.feature_matrix:
-                assert (
-                    aline.feature_matrix[v]["round"] == "minus"
-                ), f"IPA unrounded vowel {v!r} has round={aline.feature_matrix[v]['round']!r}"
+                assert aline.feature_matrix[v]["round"] == "minus", (
+                    f"IPA unrounded vowel {v!r} has round={aline.feature_matrix[v]['round']!r}"
+                )
 
     def test_rounded_vowels(self):
         """Vowels that are rounded in IPA should have round='plus'."""
         rounded = ["o", "u", "y", "ɒ", "ɵ", "ʏ", "ʊ"]
         for v in rounded:
             if v in aline.feature_matrix:
-                assert (
-                    aline.feature_matrix[v]["round"] == "plus"
-                ), f"IPA rounded vowel {v!r} has round={aline.feature_matrix[v]['round']!r}"
+                assert aline.feature_matrix[v]["round"] == "plus", (
+                    f"IPA rounded vowel {v!r} has round={aline.feature_matrix[v]['round']!r}"
+                )
 
     # IPA height checks
     def test_close_mid_vowels(self):
@@ -158,9 +158,9 @@ class TestFeatureMatrix:
         close_mid = ["ɘ", "ɵ"]
         for v in close_mid:
             if v in aline.feature_matrix:
-                assert (
-                    aline.feature_matrix[v]["high"] == "mid"
-                ), f"Close-mid vowel {v!r} has high={aline.feature_matrix[v]['high']!r}"
+                assert aline.feature_matrix[v]["high"] == "mid", (
+                    f"Close-mid vowel {v!r} has high={aline.feature_matrix[v]['high']!r}"
+                )
 
 
 class TestScoringFunctions:

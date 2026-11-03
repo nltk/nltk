@@ -539,6 +539,6 @@ def test_pickle_guard_visitor_no_false_positives(src):
     guard = _load_guard_module()
     visitor = guard._PickleCallVisitor("<synthetic>")
     visitor.visit(ast.parse(src))
-    assert (
-        not visitor.violations
-    ), f"guard false-flagged: {src!r} -> {visitor.violations}"
+    assert not visitor.violations, (
+        f"guard false-flagged: {src!r} -> {visitor.violations}"
+    )

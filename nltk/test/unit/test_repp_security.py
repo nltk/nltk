@@ -49,9 +49,9 @@ def test_cwd_does_not_override_configured_repp_tokenizer(tmp_path, monkeypatch):
     monkeypatch.setenv("REPP_TOKENIZER", str(trusted))
 
     tok = ReppTokenizer("reppdir")
-    assert os.path.realpath(tok.repp_dir) == os.path.realpath(
-        str(trusted)
-    ), "CWD directory overrode the trusted REPP_TOKENIZER"
+    assert os.path.realpath(tok.repp_dir) == os.path.realpath(str(trusted)), (
+        "CWD directory overrode the trusted REPP_TOKENIZER"
+    )
 
 
 def test_absolute_path_still_accepted(tmp_path, monkeypatch):

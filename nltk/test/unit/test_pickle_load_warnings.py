@@ -97,9 +97,9 @@ def test_chartparser_app_uses_allowlisting_loader():
                 )
 
     names = {n.id for n in ast.walk(tree) if isinstance(n, ast.Name)}
-    assert (
-        "AllowlistUnpickler" in names
-    ), "Expected nltk.app.chartparser_app to route loads through AllowlistUnpickler"
-    assert (
-        "_load_chart_pickle" in names
-    ), "Expected nltk.app.chartparser_app to define/use _load_chart_pickle"
+    assert "AllowlistUnpickler" in names, (
+        "Expected nltk.app.chartparser_app to route loads through AllowlistUnpickler"
+    )
+    assert "_load_chart_pickle" in names, (
+        "Expected nltk.app.chartparser_app to define/use _load_chart_pickle"
+    )

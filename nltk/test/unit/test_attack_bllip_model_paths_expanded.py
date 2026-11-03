@@ -103,9 +103,9 @@ def _assert_reranker_refused(path, root, spy):
         bllip_module.BllipParser(
             parser_model=model, reranker_features=path, reranker_weights=path
         )
-    assert (
-        spy.last is None or spy.last.reranker is None
-    ), f"a refused reranker path reached the extension: {path!r}"
+    assert spy.last is None or spy.last.reranker is None, (
+        f"a refused reranker path reached the extension: {path!r}"
+    )
 
 
 class TestParserModelOutsideRootNeverReachesTheExtension:

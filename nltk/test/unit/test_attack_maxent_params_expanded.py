@@ -494,9 +494,9 @@ class TestLoaderContent:
                 load_maxent_params(str(planted))
 
         ok, seconds = timing.within_budget(op, _NO_HANG_BUDGET, cpu_bound=True)
-        assert (
-            ok
-        ), f"a {len(rows) >> 20} MB file with a trailing bad byte took {seconds:.1f}s"
+        assert ok, (
+            f"a {len(rows) >> 20} MB file with a trailing bad byte took {seconds:.1f}s"
+        )
 
     def test_one_enormous_row_is_refused_in_bounded_time(self, pathsec_sandbox):
         planted = _plant(pathsec_sandbox.root / "p")

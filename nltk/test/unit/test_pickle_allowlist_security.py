@@ -348,9 +348,9 @@ def test_model_allowlist_uses_no_broad_namespace():
     back, the I/O/network gadgets below become reachable again."""
     from nltk.parse.transitionparser import _MODEL_ALLOWED_MODULES
 
-    assert (
-        tuple(_MODEL_ALLOWED_MODULES) == ()
-    ), "TransitionParser must not allowlist whole numpy/scipy/sklearn namespaces"
+    assert tuple(_MODEL_ALLOWED_MODULES) == (), (
+        "TransitionParser must not allowlist whole numpy/scipy/sklearn namespaces"
+    )
 
 
 @pytest.mark.parametrize("module,name", _MODEL_GADGETS)
@@ -854,9 +854,9 @@ class TestBroadAllowGadgetContainment:
         fake.spec_from_file_location = spec
         monkeypatch.setitem(sys.modules, "numpy._evil_reexport", fake)
         monkeypatch.setattr(numpy, "_evil_reexport", fake, raising=False)
-        assert self._blocked(
-            "numpy._evil_reexport", "spec_from_file_location"
-        ), "frozen-importlib code-load sink is reconstructable via a re-export"
+        assert self._blocked("numpy._evil_reexport", "spec_from_file_location"), (
+            "frozen-importlib code-load sink is reconstructable via a re-export"
+        )
 
     @pytest.mark.parametrize(
         "real_module,real_name",
@@ -891,9 +891,9 @@ class TestBroadAllowGadgetContainment:
         setattr(fake, real_name, obj)
         monkeypatch.setitem(sys.modules, modname, fake)
         monkeypatch.setattr(numpy, child, fake, raising=False)
-        assert self._blocked(
-            modname, real_name
-        ), f"{real_module}.{real_name} reconstructable via an allowed-namespace re-export"
+        assert self._blocked(modname, real_name), (
+            f"{real_module}.{real_name} reconstructable via an allowed-namespace re-export"
+        )
 
     @pytest.mark.parametrize(
         "real_module,real_name",
@@ -928,9 +928,9 @@ class TestBroadAllowGadgetContainment:
         setattr(fake, real_name, obj)
         monkeypatch.setitem(sys.modules, modname, fake)
         monkeypatch.setattr(numpy, child, fake, raising=False)
-        assert self._blocked(
-            modname, real_name
-        ), f"{real_module}.{real_name} gadget reconstructable via a re-export"
+        assert self._blocked(modname, real_name), (
+            f"{real_module}.{real_name} gadget reconstructable via a re-export"
+        )
 
     @pytest.mark.parametrize(
         "real_module,real_name",
@@ -968,9 +968,9 @@ class TestBroadAllowGadgetContainment:
         setattr(fake, real_name, obj)
         monkeypatch.setitem(sys.modules, modname, fake)
         monkeypatch.setattr(numpy, child, fake, raising=False)
-        assert self._blocked(
-            modname, real_name
-        ), f"{real_module}.{real_name} gadget reconstructable via a re-export"
+        assert self._blocked(modname, real_name), (
+            f"{real_module}.{real_name} gadget reconstructable via a re-export"
+        )
 
     def test_scipy_sparse_load_npz_reduce_reads_no_file(self, tmp_path):
         """A REDUCE payload calling scipy.sparse.load_npz on a real .npz is refused
@@ -1116,9 +1116,9 @@ class TestGuardsAreLoadBearing:
 
         monkeypatch.setattr(ps, "_DENIED_SCISTACK_QUALNAMES", frozenset())
         up2 = ps.AllowlistUnpickler(BytesIO(b""), **broad)
-        assert (
-            up2.find_class("numpy._mut_qualname", "fromfile") is sink
-        ), "removing the catch-all did not expose the sink -> guard is not load-bearing"
+        assert up2.find_class("numpy._mut_qualname", "fromfile") is sink, (
+            "removing the catch-all did not expose the sink -> guard is not load-bearing"
+        )
 
     def test_denied_module_prefix_is_load_bearing(self, monkeypatch):
         """A callable whose real module sits under a denied prefix (numpy.lib) but
@@ -1143,9 +1143,9 @@ class TestGuardsAreLoadBearing:
 
         monkeypatch.setattr(ps, "_DENIED_MODULE_PREFIXES", ())
         up2 = ps.AllowlistUnpickler(BytesIO(b""), **broad)
-        assert (
-            up2.find_class("numpy.lib._mut_prefix", "gadget") is sink
-        ), "removing the denied prefixes did not expose the sink -> guard is not load-bearing"
+        assert up2.find_class("numpy.lib._mut_prefix", "gadget") is sink, (
+            "removing the denied prefixes did not expose the sink -> guard is not load-bearing"
+        )
 
     def test_exact_denied_globals_is_load_bearing(self, monkeypatch):
         """A callable pinned only by the exact ``_DENIED_GLOBALS`` set (module not
@@ -1243,9 +1243,9 @@ class TestExtensionOpcodeBypassBlocked:
         try:
             with pytest.raises(pickle.UnpicklingError):
                 load(_ext_reduce_payload(self._EXT_CODE, f"touch {marker}"))
-            assert (
-                not marker.exists()
-            ), "EXT warm-cache gadget executed; the find_class bypass is not closed"
+            assert not marker.exists(), (
+                "EXT warm-cache gadget executed; the find_class bypass is not closed"
+            )
         finally:
             copyreg._extension_cache.pop(self._EXT_CODE, None)
 
@@ -1289,9 +1289,9 @@ class TestExtensionOpcodeBypassBlocked:
             nltk.picklesec.RestrictedUnpickler(
                 BytesIO(_ext_reduce_payload(self._EXT_CODE, f"touch {marker}"))
             ).load()
-            assert (
-                marker.exists()
-            ), "neutering the EXT scan did not expose the gadget; scan is not load-bearing"
+            assert marker.exists(), (
+                "neutering the EXT scan did not expose the gadget; scan is not load-bearing"
+            )
         finally:
             copyreg._extension_cache.pop(self._EXT_CODE, None)
 

@@ -1390,9 +1390,9 @@ class SimpleGoodTuringProbDist(ProbDistI):
             then it's assumed to be equal to ``freqdist``.B() + 1
         :type bins: int
         """
-        assert (
-            bins is None or bins > freqdist.B()
-        ), f"bins parameter must not be less than {freqdist.B() + 1}=freqdist.B()+1"
+        assert bins is None or bins > freqdist.B(), (
+            f"bins parameter must not be less than {freqdist.B() + 1}=freqdist.B()+1"
+        )
         if bins is None:
             bins = freqdist.B() + 1
         self._freqdist = freqdist

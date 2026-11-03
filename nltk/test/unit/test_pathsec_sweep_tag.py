@@ -869,9 +869,9 @@ def test_every_guard_refusal_carries_the_bracketed_marker(restricted_sandbox, va
     change drops the marker on any path, _is_guard_refusal breaks, so fail loudly."""
     with pytest.raises((PermissionError, ValueError)) as excinfo:
         pathsec.validate_tool_path(val, context="invariant", must_exist=False)
-    assert _is_guard_refusal(
-        excinfo.value
-    ), f"refusal without marker: {excinfo.value!r}"
+    assert _is_guard_refusal(excinfo.value), (
+        f"refusal without marker: {excinfo.value!r}"
+    )
 
 
 @pytest.mark.parametrize("sink", sorted(_FILE_SINKS))
@@ -912,9 +912,9 @@ def test_benign_vectors_are_not_expanded_or_decoded(pathsec_sandbox):
                 argv = exc.args[0]
                 assert len(argv) == 2, f"{vector} split into {len(argv)} argv entries"
                 assert argv[1] == path, f"{vector} was rewritten to {argv[1]!r}"
-                assert not argv[1].startswith(
-                    "-"
-                ), f"{vector} reached argv as an option"
+                assert not argv[1].startswith("-"), (
+                    f"{vector} reached argv as an option"
+                )
             else:  # pragma: no cover - the driver always reaches the sink
                 pytest.fail(f"{vector} never reached the subprocess argv")
     finally:
@@ -977,13 +977,13 @@ def _assert_teeth(action, evidence, *, what):
     except (PermissionError, ValueError, OSError):
         landed = False
     if _pinned_dir_fd_route():
-        assert (
-            landed and evidence()
-        ), f"{what}: guard removed but nothing escaped; the probe is inert"
+        assert landed and evidence(), (
+            f"{what}: guard removed but nothing escaped; the probe is inert"
+        )
     else:
-        assert (
-            not landed and not evidence()
-        ), f"{what}: pathsec.open should still refuse this on this platform"
+        assert not landed and not evidence(), (
+            f"{what}: pathsec.open should still refuse this on this platform"
+        )
 
 
 # --- the guards must be load-bearing, not incidental --------------------------
@@ -1037,9 +1037,9 @@ def test_each_guard_is_load_bearing(
         # which refuses an outside path on its own, so the write stays blocked.
         assert outcome == "refused"
         return
-    assert (
-        outcome != "refused"
-    ), f"{modname}.{attr} removed but the exploit is still blocked; the test proves nothing"
+    assert outcome != "refused", (
+        f"{modname}.{attr} removed but the exploit is still blocked; the test proves nothing"
+    )
 
 
 def _refusal_for(driver, path):
@@ -1259,9 +1259,9 @@ def test_trained_model_dir_is_allocated_inside_a_data_root():
             if isinstance(p, str)
         ]
         real = os.path.realpath(save_dir)
-        assert any(
-            real == r or real.startswith(r + os.sep) for r in roots
-        ), f"{save_dir} is not inside an allowed data root"
+        assert any(real == r or real.startswith(r + os.sep) for r in roots), (
+            f"{save_dir} is not inside an allowed data root"
+        )
         # already inside the sandbox: pathsec permits it without any widening
         pathsec.validate_path(save_dir, context="probe")
         if os.name == "posix":
@@ -2435,9 +2435,9 @@ def test_ordinary_resource_names_are_unaffected(restricted_sandbox):
         try:
             nltk.data.find(name, paths=[restricted_sandbox])
         except Exception as exc:  # noqa: BLE001 - only the reason matters here
-            assert "Unsafe resource path" not in str(
-                exc
-            ), f"{name!r} was wrongly rejected as unsafe"
+            assert "Unsafe resource path" not in str(exc), (
+                f"{name!r} was wrongly rejected as unsafe"
+            )
 
 
 @pytest.mark.parametrize("seed", [3141])

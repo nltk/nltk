@@ -158,6 +158,6 @@ def test_senseval_reader_does_not_hang_on_crafted_corpus(tmp_path):
     assert finished, "SensevalCorpusReader hung on a crafted instance (ReDoS)"
     assert status == "ok", f"reader raised in worker: {payload}"
     assert payload == 1  # one instance parsed
-    assert (
-        op_elapsed < _LINEAR_CEILING
-    ), f"reading a crafted instance took {op_elapsed:.2f}s; should be linear"
+    assert op_elapsed < _LINEAR_CEILING, (
+        f"reading a crafted instance took {op_elapsed:.2f}s; should be linear"
+    )
