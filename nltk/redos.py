@@ -57,7 +57,9 @@ so it is a drop-in replacement for a compiled pattern at those call sites.
 """
 
 import functools
+import os
 import re as _re
+import time
 
 import regex
 
@@ -84,8 +86,11 @@ __all__ = [
     "subn",
 ]
 
-#: Wall-clock seconds any single caller-supplied-pattern match may run before it
-#: is abandoned with :class:`TimeoutError`. Legitimate tokenizing / tagging /
+#: Seconds any single caller-supplied-pattern match may run before it is
+#: abandoned with :class:`TimeoutError`, as the ``regex`` engine counts them with C
+#: ``clock()``: process CPU time on POSIX, wall-clock time on Windows. A lazy
+#: :meth:`TimedPattern.finditer` is charged for its matching only, never for the
+#: caller's work between items. Legitimate tokenizing / tagging /
 #: chunking of even large inputs finishes in well under a second, so this is
 #: roughly a thousand-fold head-room for real use while still capping a crafted
 #: pattern's CPU burn. It is deliberately far below a naive "just make it large"
@@ -98,6 +103,13 @@ DEFAULT_TIMEOUT = 5.0
 #: module default", and so a later ``nltk.redos.DEFAULT_TIMEOUT = ...`` still
 #: takes effect for calls that did not pass an explicit timeout.
 _UNSET = object()
+
+#: Most matches :meth:`TimedPattern.finditer` pulls from the engine in one go.
+_FINDITER_BATCH = 256
+
+# The clock the regex engine charges a match on (C clock() on the Windows CRT is
+# wall-clock time), so the time finditer adds up is the time the engine counts.
+_engine_clock = time.perf_counter if os.name == "nt" else time.process_time
 
 
 class error(_re.error):
@@ -241,13 +253,61 @@ class TimedPattern:
             raise self._fail(t) from None
 
     def finditer(self, string, *args, timeout=_UNSET, **kwargs):
-        # ``regex.finditer`` is lazy: the timeout is enforced as items are
-        # pulled, so the guard must wrap the *iteration*, not just the call.
+        """Yield the matches of ``regex.finditer``, bounding the engine's work only.
+
+        ``regex`` times a lazy scanner from its creation, so one scanner kept for
+        the whole iteration would also charge everything the caller does between
+        items, and streaming a long but ordinary text would time out (#4009).
+        Matches are therefore pulled in batches of 1, 2, 4 ... up to
+        ``_FINDITER_BATCH`` with no caller code running, the batch's time is
+        added to the iteration's total, and the next batch comes from a fresh
+        scanner at the end of the last match with the time that is left. The
+        matching of one iteration stays bounded by ``timeout`` in total, as for
+        :meth:`findall`. After an empty match the fresh scanner first finds that
+        match again; it is skipped, which keeps ``finditer``'s rule for empty
+        matches. Arguments other than ``pos`` and ``endpos``, a reverse pattern
+        and a disabled timeout keep one scanner, charged as before.
+        """
         t = self._resolve(timeout)
-        try:
-            yield from self._rx.finditer(string, *args, timeout=t, **kwargs)
-        except TimeoutError:
-            raise self._fail(t) from None
+        bound = dict(zip(("pos", "endpos"), args))
+        if (
+            t is None
+            or t < 0
+            or len(args) > 2
+            or set(kwargs) - {"pos", "endpos"}
+            or set(bound) & set(kwargs)
+            or self._rx.flags & regex.REVERSE
+        ):
+            try:
+                yield from self._rx.finditer(string, *args, timeout=t, **kwargs)
+            except TimeoutError:
+                raise self._fail(t) from None
+            return
+        bound.update(kwargs)
+        pos, endpos = bound.get("pos"), bound.get("endpos")
+        spent, empty_at, size = 0.0, None, 1
+        while True:
+            left = t - spent
+            if left <= 0:
+                raise self._fail(t)
+            start, batch, exhausted = _engine_clock(), [], True
+            try:
+                for m in self._rx.finditer(string, pos, endpos, timeout=left):
+                    if not batch and m.start() == m.end() == empty_at:
+                        continue
+                    batch.append(m)
+                    if len(batch) == size:
+                        exhausted = False
+                        break
+            except TimeoutError:
+                raise self._fail(t) from None
+            spent += _engine_clock() - start
+            yield from batch
+            if exhausted:
+                return
+            pos = batch[-1].end()
+            empty_at = pos if batch[-1].start() == pos else None
+            size = min(2 * size, _FINDITER_BATCH)
 
     # -- transparent delegation for everything else -----------------------
 
