@@ -23,6 +23,8 @@ text - including tabs, newlines and non-ASCII/emoji - untouched. Route every
 untrusted-string terminal write through it.
 """
 
+import bisect
+
 # sanitize_csv_field is provided dynamically by __getattr__ below (it lives in
 # nltk.csvsec); keeping it in __all__ preserves the historical star-import.
 __all__ = ["sanitize_terminal", "safe_print", "sanitize_csv_field"]  # noqa: F822
@@ -133,6 +135,7 @@ def _printable_but_dangerous():
 
 
 _PRINTABLE_BUT_DANGEROUS = _printable_but_dangerous()
+_PRINTABLE_BUT_DANGEROUS_SORTED = tuple(sorted(_PRINTABLE_BUT_DANGEROUS))
 
 
 def _is_clean(text, single_line):
@@ -148,7 +151,11 @@ def _is_clean(text, single_line):
         return False
     if text.isascii():
         return True  # every printable-but-dangerous character is non-ASCII
-    return not any(c in text for c in _PRINTABLE_BUT_DANGEROUS)
+    # Only a character no greater than the text's largest can occur in it, so
+    # only that prefix of the sorted set is searched: none of it for text that
+    # stays below U+115F (Latin through Thai), a handful for CJK.
+    count = bisect.bisect_right(_PRINTABLE_BUT_DANGEROUS_SORTED, max(text))
+    return not any(c in text for c in _PRINTABLE_BUT_DANGEROUS_SORTED[:count])
 
 
 def _bidi_is_balanced(text):
@@ -276,6 +283,11 @@ def _escape_scan(text, single_line):
     return "".join(result)
 
 
+#: Separators sanitize_terminal returns unchanged; safe_print's defaults are
+#: these, so the common call skips sanitising them again on every print.
+_CLEAN_SEPARATORS = frozenset({" ", "\n", ""})
+
+
 def safe_print(*values, sep=" ", end="\n", single_line=False, **kwargs):
     """``print`` wrapper that sanitises each value with :func:`sanitize_terminal`.
 
@@ -286,8 +298,10 @@ def safe_print(*values, sep=" ", end="\n", single_line=False, **kwargs):
     as well (a filename, an id cannot then forge an extra line); ``sep`` and
     ``end`` keep default-mode sanitisation, so the trailing newline stays real.
     """
-    sep = sanitize_terminal(sep) if isinstance(sep, str) else sep
-    end = sanitize_terminal(end) if isinstance(end, str) else end
+    if not (type(sep) is str and sep in _CLEAN_SEPARATORS):
+        sep = sanitize_terminal(sep) if isinstance(sep, str) else sep
+    if not (type(end) is str and end in _CLEAN_SEPARATORS):
+        end = sanitize_terminal(end) if isinstance(end, str) else end
     print(
         *(sanitize_terminal(v, single_line=single_line) for v in values),
         sep=sep,
