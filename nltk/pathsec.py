@@ -729,6 +729,16 @@ def _exact_path_text(value, context="NLTK"):
     return str(value)
 
 
+def _within_any(target, roots):
+    """``any(target == root or target.is_relative_to(root) for root in roots)``
+    for a set of resolved roots, asked the other way round: ``target`` is under
+    a root exactly when it or one of its ``parents`` equals one, and a path's
+    hash agrees with its ``==`` (both use the flavour's case-folded form), so
+    each ancestor is looked up in the set once instead of building every
+    ancestor again for each root (``is_relative_to`` walks ``parents`` too)."""
+    return target in roots or any(parent in roots for parent in target.parents)
+
+
 def validate_path(path_input, context="NLTK", required_root=None):
     """
     Ensures file access is restricted to allowed data directories.
@@ -835,7 +845,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
 
         # LAYER 2: Global NLTK_DATA Sandbox
         allowed_roots = _get_allowed_roots()
-        if any(target == root or target.is_relative_to(root) for root in allowed_roots):
+        if _within_any(target, allowed_roots):
             return
 
         # CWD Fallback (Explicit Opt-In for ENFORCE mode)
