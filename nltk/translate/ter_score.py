@@ -9,7 +9,7 @@
 import math
 
 from nltk.metrics.distance import _check_distance_input_len
-from nltk.translate.api import MetricI
+from nltk.translate.api import MetricI, _refuse_smoothing
 
 
 def sentence_ter(references, hypothesis, *, on_empty="raise"):
@@ -104,13 +104,15 @@ class TER(MetricI):
     scores 1.0 (or 0.0 without edits) in the sacrebleu mode, as sacrebleu.
 
     :param mode: "nltk" or "sacrebleu"
+    :param smoothing: "none" only (see MetricI)
     :param on_empty: "raise" or "zero", see MetricI
     """
 
     modes = ("nltk", "sacrebleu")
 
-    def __init__(self, *, mode="nltk", on_empty="raise"):
+    def __init__(self, *, smoothing=None, mode="nltk", on_empty="raise"):
         super().__init__(mode, on_empty)
+        _refuse_smoothing(self, smoothing, "counts edits, not matches")
 
     def _corpus_score(self, list_of_references, hypotheses):
         count = _tercom_edits if self.mode == "nltk" else _sacrebleu_edits

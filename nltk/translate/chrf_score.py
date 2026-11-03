@@ -12,7 +12,7 @@ import string
 from collections import Counter, defaultdict
 
 from nltk import redos
-from nltk.translate.api import MetricI
+from nltk.translate.api import SMOOTHING, MetricI, smooth_counts
 from nltk.util import ngrams
 
 
@@ -25,6 +25,8 @@ def sentence_chrf(
     ignore_whitespace=True,
     *,
     word_order=0,
+    smoothing=None,
+    smooth_value=None,
     on_empty="raise",
 ):
     """
@@ -110,6 +112,11 @@ def sentence_chrf(
     :param word_order: the highest word n-gram order, 0 for chrF and 2 for
         chrF++
     :type word_order: int
+    :param smoothing: "eps" (the default, an order without matches scores
+        1e-16), or "none", "floor", "add-k", "exp" (see CHRF)
+    :type smoothing: str
+    :param smooth_value: the floor or the k of the smoothing
+    :type smooth_value: float
     :param on_empty: "raise" (the default) or "zero", as for the other
         metrics; one hypothesis with its reference is never an empty input
     :type on_empty: str
@@ -124,6 +131,8 @@ def sentence_chrf(
         beta=beta,
         ignore_whitespace=ignore_whitespace,
         word_order=word_order,
+        smoothing=smoothing,
+        smooth_value=smooth_value,
         on_empty=on_empty,
     )
 
@@ -222,6 +231,8 @@ def corpus_chrf(
     ignore_whitespace=True,
     *,
     word_order=0,
+    smoothing=None,
+    smooth_value=None,
     on_empty="raise",
 ):
     """
@@ -257,6 +268,11 @@ def corpus_chrf(
     :param word_order: the highest word n-gram order, 0 for chrF and 2 for
         chrF++; the corpus score of chrF++ is chrF++.py's "avgF" line
     :type word_order: int
+    :param smoothing: "eps" (the default, an order without matches scores
+        1e-16), or "none", "floor", "add-k", "exp" (see CHRF)
+    :type smoothing: str
+    :param smooth_value: the floor or the k of the smoothing
+    :type smooth_value: float
     :param on_empty: "raise" (the default) or "zero", for an empty corpus
     :type on_empty: str
     :return: the sentence level CHRF score.
@@ -267,7 +283,9 @@ def corpus_chrf(
         max_len,
         beta,
         ignore_whitespace,
+        smoothing,
         word_order=word_order,
+        smooth_value=smooth_value,
         on_empty=on_empty,
     ).corpus_score([[reference] for reference in references], hypotheses)
 
@@ -280,8 +298,21 @@ def _corpus_chrf(
     beta,
     ignore_whitespace,
     word_order=0,
+    smoothing="eps",
+    smooth_value=None,
 ):
     """corpus_chrf() as NLTK computes it, CHRF's "nltk" mode."""
+    if smoothing != "eps":
+        return _smoothed_corpus_chrf(
+            references,
+            hypotheses,
+            range(min_len, max_len + 1),
+            beta,
+            ignore_whitespace,
+            word_order,
+            smoothing,
+            smooth_value,
+        )
     num_sents = len(hypotheses)
 
     # Keep f-scores for each n-gram order separate
@@ -321,6 +352,48 @@ def _corpus_chrf(
     return (sum(total_scores) / num_ngram_sizes) / num_sents
 
 
+def _smoothed_corpus_chrf(
+    references,
+    hypotheses,
+    char_orders,
+    beta,
+    ignore_whitespace,
+    word_order,
+    smoothing,
+    smooth_value,
+):
+    """
+    The nltk mode of chrF with a smoothing of nltk.translate.api.smooth_counts:
+    the matches of each character and word order are smoothed, an order the
+    hypothesis or the reference has no n-grams of scores 0, and the F-scores
+    of the orders are averaged, then the sentences.
+    """
+    factor = beta**2
+    total = 0.0
+    for reference, hypothesis in zip(references, hypotheses):
+        ref_chars = _preprocess(reference, ignore_whitespace)
+        hyp_chars = _preprocess(hypothesis, ignore_whitespace)
+        ref_words = _separate_punctuation(reference)
+        hyp_words = _separate_punctuation(hypothesis)
+        counts = [(n, *_ngram_matches(ref_chars, hyp_chars, n)) for n in char_orders]
+        counts += [
+            (n, *_ngram_matches(ref_words, hyp_words, n))
+            for n in range(1, word_order + 1)
+        ]
+        fscores = []
+        for _, matches, hyp_count, ref_count in smooth_counts(
+            counts, smoothing, smooth_value
+        ):
+            prec = matches / hyp_count if hyp_count else 0.0
+            rec = matches / ref_count if ref_count else 0.0
+            denominator = factor * prec + rec
+            fscores.append(
+                (1 + factor) * prec * rec / denominator if denominator else 0.0
+            )
+        total += sum(fscores) / len(fscores)
+    return total / len(hypotheses)
+
+
 class CHRF(MetricI):
     """
     chrF in two modes. ``"nltk"`` is corpus_chrf() and sentence_chrf(): one
@@ -356,6 +429,17 @@ class CHRF(MetricI):
         >>> round(CHRF(word_order=2, mode="sacrebleu").corpus_score(refs, hyps), 4)
         0.6073
 
+    chrF averages its orders, so an order without matches lowers the score
+    without zeroing it. The nltk mode also takes the smoothings of
+    nltk.translate.api.smooth_counts, which smooth the matches of each
+    character and word order; "none" scores an order without matches 0, as
+    chrF++.py does, where "eps" scores it 1e-16.
+
+        >>> round(CHRF(word_order=2, smoothing="none").corpus_score(refs, hyps), 4)
+        0.5579
+        >>> round(CHRF(word_order=2, smoothing="exp").corpus_score(refs, hyps), 4)
+        0.5634
+
     :param min_len: lowest character n-gram order; 1 in the sacrebleu mode
     :param max_len: highest character n-gram order
     :param beta: weight of recall over precision: 3.0 in the nltk mode, 2 in
@@ -365,7 +449,9 @@ class CHRF(MetricI):
         of contributes: "eps" averages the F-scores of the orders, a missing
         one 1e-16 (the nltk mode, and sacrebleu's eps_smoothing); in the
         sacrebleu mode "effective-order" (its default) averages precision and
-        recall over the orders both have
+        recall over the orders both have; the nltk mode also takes "none",
+        "floor", "add-k" and "exp"
+    :param smooth_value: the floor or the k of "floor" and "add-k"
     :param word_order: highest word n-gram order: 0 for chrF, 2 for chrF++
     :param mode: "nltk" or "sacrebleu"
     :param on_empty: "raise" or "zero", see MetricI
@@ -382,6 +468,7 @@ class CHRF(MetricI):
         smoothing=None,
         *,
         word_order=0,
+        smooth_value=None,
         mode="nltk",
         on_empty="raise",
     ):
@@ -389,8 +476,11 @@ class CHRF(MetricI):
         if min_len > max_len:
             raise ValueError("min_len must be less than or equal to max_len")
         if mode == "nltk":
-            if smoothing not in (None, "eps"):
-                raise ValueError(f'the nltk mode smooths with "eps", not {smoothing!r}')
+            if smoothing not in (None, "eps") + SMOOTHING:
+                raise ValueError(
+                    f'the nltk mode smooths with "eps" or one of {SMOOTHING}, not {smoothing!r}'
+                )
+            smoothing = smoothing or "eps"
             beta = 3.0 if beta is None else beta
         else:
             if min_len != 1:
@@ -405,7 +495,7 @@ class CHRF(MetricI):
             smoothing = smoothing or "effective-order"
         self.min_len, self.max_len, self.beta = min_len, max_len, beta
         self.ignore_whitespace, self.smoothing = ignore_whitespace, smoothing
-        self.word_order = word_order
+        self.word_order, self.smooth_value = word_order, smooth_value
 
     def _corpus_score(self, list_of_references, hypotheses):
         if self.mode == "sacrebleu":
@@ -431,6 +521,8 @@ class CHRF(MetricI):
             self.beta,
             self.ignore_whitespace,
             self.word_order,
+            self.smoothing,
+            self.smooth_value,
         )
 
 

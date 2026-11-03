@@ -15,7 +15,7 @@ from collections.abc import Callable
 from typing import List
 
 import nltk
-from nltk.translate.api import MetricI
+from nltk.translate.api import MetricI, _refuse_smoothing
 
 #: Work budget for ``alignment``: the total number of candidate reference
 #: positions it may inspect. A token repeated R times yields R candidates
@@ -382,13 +382,26 @@ class LEPOR(MetricI):
     :param alpha: weight of recall
     :param beta: weight of precision
     :param variant: "A" (the default) or "B", the corpus score
+    :param smoothing: "none" only (see MetricI)
     :param on_empty: "raise" or "zero", see MetricI
     """
 
     def __init__(
-        self, alpha=1.0, beta=1.0, variant="A", *, mode="nltk", on_empty="raise"
+        self,
+        alpha=1.0,
+        beta=1.0,
+        variant="A",
+        *,
+        smoothing=None,
+        mode="nltk",
+        on_empty="raise",
     ):
         super().__init__(mode, on_empty)
+        _refuse_smoothing(
+            self,
+            smoothing,
+            "aligns the words once, one granularity no other can make up for",
+        )
         if variant not in ("A", "B"):
             raise ValueError(f'variant is "A" or "B", not {variant!r}')
         self.alpha, self.beta, self.variant = alpha, beta, variant

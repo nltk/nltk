@@ -15,7 +15,7 @@ from typing import List, Tuple
 from nltk.corpus import WordNetCorpusReader, wordnet
 from nltk.stem.api import StemmerI
 from nltk.stem.porter import PorterStemmer
-from nltk.translate.api import MetricI
+from nltk.translate.api import MetricI, _refuse_smoothing
 
 
 def _generate_enums(
@@ -492,6 +492,7 @@ class METEOR(MetricI):
     :param alpha: parameter for controlling relative weights of precision and recall.
     :param beta: parameter for controlling shape of penalty as a function of fragmentation.
     :param gamma: relative weight assigned to fragmentation penalty.
+    :param smoothing: "none" only (see MetricI)
     :param on_empty: "raise" or "zero", see MetricI
     """
 
@@ -504,10 +505,16 @@ class METEOR(MetricI):
         beta=3.0,
         gamma=0.5,
         *,
+        smoothing=None,
         mode="nltk",
         on_empty="raise",
     ):
         super().__init__(mode, on_empty)
+        _refuse_smoothing(
+            self,
+            smoothing,
+            "aligns the words once, one granularity no other can make up for",
+        )
         self.preprocess, self.stemmer, self.wordnet = preprocess, stemmer, wordnet
         self.alpha, self.beta, self.gamma = alpha, beta, gamma
 

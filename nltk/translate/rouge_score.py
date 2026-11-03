@@ -7,7 +7,7 @@
 """ROUGE score implementation."""
 
 from nltk.metrics.distance import _check_distance_input_len
-from nltk.translate.api import MetricI
+from nltk.translate.api import MetricI, _refuse_smoothing
 from nltk.translate.chrf_score import _ngram_matches
 
 
@@ -132,13 +132,21 @@ class ROUGE(MetricI):
     :param variant: the n-gram order of ROUGE-N (1, 2, ...), or "L" for ROUGE-L
     :param measure: "f" (the default), "precision" or "recall"
     :param mode: "nltk" or "rouge-1.5.5"
+    :param smoothing: "none" only (see MetricI)
     :param on_empty: "raise" or "zero", see MetricI
     """
 
     modes = ("nltk", "rouge-1.5.5")
 
-    def __init__(self, variant=1, measure="f", *, mode="nltk", on_empty="raise"):
+    def __init__(
+        self, variant=1, measure="f", *, smoothing=None, mode="nltk", on_empty="raise"
+    ):
         super().__init__(mode, on_empty)
+        _refuse_smoothing(
+            self,
+            smoothing,
+            "scores one granularity, an n-gram order or the LCS, which no other order can make up for",
+        )
         self.variant, self.measure = variant, measure
 
     def _corpus_score(self, list_of_references, hypotheses):

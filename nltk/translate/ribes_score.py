@@ -10,7 +10,7 @@
 import math
 from itertools import combinations, islice
 
-from nltk.translate.api import MetricI
+from nltk.translate.api import MetricI, _refuse_smoothing
 from nltk.util import choose, ngrams
 
 
@@ -142,11 +142,19 @@ class RIBES(MetricI):
 
     :param alpha: hyperparameter used as a prior for the unigram precision
     :param beta: hyperparameter used as a prior for the brevity penalty
+    :param smoothing: "none" only (see MetricI)
     :param on_empty: "raise" or "zero", see MetricI
     """
 
-    def __init__(self, alpha=0.25, beta=0.10, *, mode="nltk", on_empty="raise"):
+    def __init__(
+        self, alpha=0.25, beta=0.10, *, smoothing=None, mode="nltk", on_empty="raise"
+    ):
         super().__init__(mode, on_empty)
+        _refuse_smoothing(
+            self,
+            smoothing,
+            "ranks the aligned words; there are no n-gram orders to smooth",
+        )
         self.alpha, self.beta = alpha, beta
 
     def _corpus_score(self, list_of_references, hypotheses):

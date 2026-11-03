@@ -11,11 +11,19 @@
 import math
 from collections import Counter
 
-from nltk.translate.api import MetricI
+from nltk.translate.api import MetricI, smooth_counts
 from nltk.util import ngrams
 
 
-def sentence_nist(references, hypothesis, n=5, *, on_empty="raise"):
+def sentence_nist(
+    references,
+    hypothesis,
+    n=5,
+    *,
+    smoothing=None,
+    smooth_value=None,
+    on_empty="raise",
+):
     """
     Calculate NIST score from
     George Doddington. 2002. "Automatic evaluation of machine translation quality
@@ -84,14 +92,34 @@ def sentence_nist(references, hypothesis, n=5, *, on_empty="raise"):
     :type hypothesis: list(str)
     :param n: highest n-gram order
     :type n: int
+    :param smoothing: None (no smoothing), "floor", "add-k" or "exp"; see
+        nltk.translate.api.smooth_counts
+    :type smoothing: str
+    :param smooth_value: the floor or the k of the smoothing
+    :type smooth_value: float
     :param on_empty: "raise" (the default) or "zero", for a hypothesis
         without references
     :type on_empty: str
     """
-    return corpus_nist([references], [hypothesis], n, on_empty=on_empty)
+    return corpus_nist(
+        [references],
+        [hypothesis],
+        n,
+        smoothing=smoothing,
+        smooth_value=smooth_value,
+        on_empty=on_empty,
+    )
 
 
-def corpus_nist(list_of_references, hypotheses, n=5, *, on_empty="raise"):
+def corpus_nist(
+    list_of_references,
+    hypotheses,
+    n=5,
+    *,
+    smoothing=None,
+    smooth_value=None,
+    on_empty="raise",
+):
     """
     Calculate a single corpus-level NIST score (aka. system-level BLEU) for all
     the hypotheses and their respective references.
@@ -102,11 +130,18 @@ def corpus_nist(list_of_references, hypotheses, n=5, *, on_empty="raise"):
     :type hypotheses: list(list(str))
     :param n: highest n-gram order
     :type n: int
+    :param smoothing: None (no smoothing), "floor", "add-k" or "exp"; see
+        nltk.translate.api.smooth_counts
+    :type smoothing: str
+    :param smooth_value: the floor or the k of the smoothing
+    :type smooth_value: float
     :param on_empty: "raise" (the default) or "zero", for an empty corpus or a
         hypothesis without references
     :type on_empty: str
     """
-    return NIST(n, on_empty=on_empty).corpus_score(list_of_references, hypotheses)
+    return NIST(
+        n, smoothing=smoothing, smooth_value=smooth_value, on_empty=on_empty
+    ).corpus_score(list_of_references, hypotheses)
 
 
 class NIST(MetricI):
@@ -124,16 +159,43 @@ class NIST(MetricI):
     references of the corpus. When no hypothesis has n-grams of an order,
     mteval adds 0 for that order and the "nltk" mode raises ValueError.
 
+    NIST sums its orders, so an order without matches adds 0 and does not
+    take the others with it as it does in BLEU; the "nltk" mode still smooths
+    each order of the corpus, its information and its hypothesis n-grams,
+    with the methods of nltk.translate.api.smooth_counts. With "add-k" an
+    order above 1 always has n-grams to divide by. mteval does not smooth NIST.
+
+    The scrambled words match as unigrams only. "exp" lets the four orders
+    without matches count 1/2, 1/4, 1/8 and 1/16 of a bit over their 5, 4, 3
+    and 2 hypothesis n-grams, 0.2354 more:
+
+        >>> from nltk.translate.nist_score import NIST
+        >>> reference = 'the cat sat on the mat'.split()
+        >>> scrambled = 'mat the on sat cat the'.split()
+        >>> round(NIST().sentence_score([reference], scrambled), 4)
+        2.2516
+        >>> round(NIST(smoothing="exp").sentence_score([reference], scrambled), 4)
+        2.487
+
     :param n: highest n-gram order
+    :param smoothing: None (no smoothing), "floor", "add-k" or "exp", in the
+        nltk mode
+    :param smooth_value: the floor or the k of the smoothing
     :param mode: "nltk" or "mteval"
     :param on_empty: "raise" or "zero", see MetricI
     """
 
     modes = ("nltk", "mteval")
 
-    def __init__(self, n=5, *, mode="nltk", on_empty="raise"):
+    def __init__(
+        self, n=5, *, smoothing=None, smooth_value=None, mode="nltk", on_empty="raise"
+    ):
         super().__init__(mode, on_empty)
-        self.n = n
+        smoothing = smoothing or "none"
+        if mode == "mteval" and smoothing != "none":
+            raise ValueError('mteval-v13a.pl does not smooth NIST: smoothing is "none"')
+        smooth_counts([], smoothing)  # an unknown method raises ValueError
+        self.n, self.smoothing, self.smooth_value = n, smoothing, smooth_value
 
     def _corpus_score(self, list_of_references, hypotheses):
         information_weights = _information_weights(list_of_references, self.n)
@@ -141,7 +203,14 @@ class NIST(MetricI):
             return _mteval_corpus_nist(
                 list_of_references, hypotheses, self.n, information_weights
             )
-        return _corpus_nist(list_of_references, hypotheses, self.n, information_weights)
+        return _corpus_nist(
+            list_of_references,
+            hypotheses,
+            self.n,
+            information_weights,
+            self.smoothing,
+            self.smooth_value,
+        )
 
 
 def _information_weights(list_of_references, n):
@@ -182,7 +251,14 @@ def _information_weights(list_of_references, n):
     return information_weights
 
 
-def _corpus_nist(list_of_references, hypotheses, n, information_weights):
+def _corpus_nist(
+    list_of_references,
+    hypotheses,
+    n,
+    information_weights,
+    smoothing="none",
+    smooth_value=None,
+):
     """corpus_nist() as NLTK computes it, NIST's "nltk" mode."""
     # Micro-average.
     nist_precision_numerator_per_ngram = Counter()
@@ -225,19 +301,29 @@ def _corpus_nist(list_of_references, hypotheses, n, information_weights):
             l_ref += ref_len
             l_sys += hyp_len
 
-    # Final NIST micro-average mean aggregation.
+    # Final NIST micro-average mean aggregation, each order smoothed first.
+    counts = smooth_counts(
+        [
+            (
+                i,
+                nist_precision_numerator_per_ngram[i],
+                nist_precision_denominator_per_ngram[i],
+                None,
+            )
+            for i in nist_precision_numerator_per_ngram
+        ],
+        smoothing,
+        smooth_value,
+    )
     nist_precision = 0
-    for i in nist_precision_numerator_per_ngram:
-        if nist_precision_denominator_per_ngram[i] == 0:
+    for i, numerator, denominator, _ in counts:
+        if denominator == 0:
             raise ValueError(
                 f"No hypothesis has {i} or more words, so there are no {i}-grams to score: "
                 f"lower n, or use NIST(mode='mteval'), which adds 0 for such an order "
                 "as mteval-v13a.pl does"
             )
-        precision = (
-            nist_precision_numerator_per_ngram[i]
-            / nist_precision_denominator_per_ngram[i]
-        )
+        precision = numerator / denominator
         nist_precision += precision
     # Eqn 3 in Doddington(2002)
     return nist_precision * nist_length_penalty(l_ref, l_sys)

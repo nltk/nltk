@@ -859,7 +859,8 @@ class BLEU(MetricI):
         hypothesis n-grams; by default off for a corpus and on for a sentence,
         as sacrebleu.corpus_bleu() and sacrebleu.sentence_bleu() do
     :param brevity_penalty: "mteval" only: "closest" (the default) or "shortest"
-    :param smooth_value: "sacrebleu" only: the value of "floor" (0.1) or "add-k" (1)
+    :param smooth_value: the value of "floor" (0.1) or "add-k" (1), as in
+        nltk.translate.api.smooth_counts; "nltk" and "sacrebleu" modes
     :param on_empty: "raise" or "zero", see MetricI
     """
 
@@ -890,20 +891,23 @@ class BLEU(MetricI):
         super().__init__(mode, on_empty)
         self.weights = weights
         if mode == "nltk":
-            if (
-                effective_order is not None
-                or brevity_penalty != "closest"
-                or smooth_value is not None
-            ):
+            if effective_order is not None or brevity_penalty != "closest":
                 raise ValueError(
-                    'effective_order, brevity_penalty and smooth_value belong to the "mteval" '
+                    'effective_order and brevity_penalty belong to the "mteval" '
                     'and "sacrebleu" modes; the "nltk" mode takes a SmoothingFunction method'
                 )
+            if smooth_value is not None and smoothing not in ("floor", "add-k"):
+                raise ValueError('smooth_value is the value of "floor" or "add-k"')
             if isinstance(smoothing, str):
                 name = self._NAMED_SMOOTHING.get(smoothing, smoothing)
                 if name not in {f"method{i}" for i in range(8)}:
                     raise ValueError(f"no smoothing {smoothing!r} in the nltk mode")
-                smoothing = getattr(SmoothingFunction(), name)
+                if smoothing == "floor" and smooth_value is not None:
+                    smoothing = SmoothingFunction(epsilon=smooth_value).method1
+                elif smoothing == "add-k" and smooth_value not in (None, 1):
+                    smoothing = _add_k(smooth_value)
+                else:
+                    smoothing = getattr(SmoothingFunction(), name)
             self.smoothing = smoothing
             self.auto_reweigh = auto_reweigh
             return
@@ -980,6 +984,18 @@ class BLEU(MetricI):
         if self.mode == "nltk" and isinstance(self.weights[0], (tuple, list)):
             return [0.0] * len(self.weights)
         return 0.0
+
+
+def _add_k(k):
+    """SmoothingFunction.method2 with k instead of 1 added to the orders above 1."""
+
+    def smoothing(p_n, *args, **kwargs):
+        return [
+            Fraction(p.numerator + k, p.denominator + k, _normalize=False) if i else p
+            for i, p in enumerate(p_n)
+        ]
+
+    return smoothing
 
 
 def _reference_counts(

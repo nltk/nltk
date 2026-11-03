@@ -7,7 +7,7 @@
 """Word error rate (WER) implementation."""
 
 from nltk.metrics.distance import _check_distance_input_len, edit_distance
-from nltk.translate.api import MetricI
+from nltk.translate.api import MetricI, _refuse_smoothing
 
 
 def sentence_wer(references, hypothesis, *, on_empty="raise"):
@@ -99,13 +99,15 @@ class WER(MetricI):
     read.
 
     :param mode: "nltk" or "sclite"
+    :param smoothing: "none" only (see MetricI)
     :param on_empty: "raise" or "zero", see MetricI
     """
 
     modes = ("nltk", "sclite")
 
-    def __init__(self, *, mode="nltk", on_empty="raise"):
+    def __init__(self, *, smoothing=None, mode="nltk", on_empty="raise"):
         super().__init__(mode, on_empty)
+        _refuse_smoothing(self, smoothing, "counts edits, not matches")
 
     def _corpus_score(self, list_of_references, hypotheses):
         edits = words = 0
