@@ -37,6 +37,15 @@ from nltk.termsec import sanitize_terminal
 _URL_SCHEME_RE = redos.compile(r"^\s*(?:https?|ftp)://", re.IGNORECASE)
 _FILE_SCHEME_RE = redos.compile(r"^\s*file:", re.IGNORECASE)
 
+
+def _may_name_a_scheme(raw):
+    """False only when neither scheme pattern above can match ``raw``: both
+    start ``^\\s*`` and then an h or an f in either case, so a first character
+    that is ASCII, neither whitespace nor a control, and no h or f rules both
+    out without running the engine (an absolute path's ``/`` or drive letter)."""
+    return not raw or not ("\x20" < raw[0] < "\x7f") or raw[0] in "hHfF"
+
+
 # Security Enforcement Toggle
 # ENFORCE = False
 ENFORCE = True
@@ -776,7 +785,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
 
         # Reject a URL outright: no caller validates a network URL here, and
         # "http://../.." is a kernel traversal, not a host (GHSA-8mgp-746c-j5xp).
-        if _URL_SCHEME_RE.match(raw):
+        if _may_name_a_scheme(raw) and _URL_SCHEME_RE.match(raw):
             msg = (
                 f"Security Violation [{context}]: a URL was passed to a "
                 f"filesystem path check: {raw!r}. Use nltk.pathsec.urlopen() "
@@ -786,7 +795,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
                 raise PermissionError(msg)
             warnings.warn(sanitize_terminal(msg), RuntimeWarning, stacklevel=3)
             return
-        if _FILE_SCHEME_RE.match(raw):
+        if _may_name_a_scheme(raw) and _FILE_SCHEME_RE.match(raw):
             parsed = urlparse(raw)
             # urllib opens Request.selector (keeps ?/#/;) but urlparse().path
             # drops them -- that would validate a different file than opens.
@@ -997,7 +1006,9 @@ def _reject_url_shaped(raw, context):
     original string. A filesystem path is never a URL, so refusing the whole
     shape here removes that validate-one-thing/open-another gap outright.
     """
-    if _URL_SCHEME_RE.match(raw) or _FILE_SCHEME_RE.match(raw):
+    if _may_name_a_scheme(raw) and (
+        _URL_SCHEME_RE.match(raw) or _FILE_SCHEME_RE.match(raw)
+    ):
         raise PermissionError(
             f"Security Violation [{context}]: {raw!r} is a URL, not a filesystem "
             "path; the tool would open it verbatim as a relative path"
