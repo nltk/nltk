@@ -102,13 +102,14 @@ def _reject_non_finite_walk(obj, context="NLTK JSON"):
     cannot make this check itself overflow the stack (CWE-674). Returns ``obj`` so
     it can wrap the parse in one expression.
 
-    A container is not descended into when ``math.fsum`` adds up its members,
-    or the values of its members when they are all dicts, to a finite number:
-    ``fsum`` refuses a member that is no number (a string, a container, None)
-    and returns inf or NaN, or raises, whenever a member is non-finite, so a
-    finite sum proves that every number the walk would visit there is finite.
-    Model weights are a dict of dicts of floats, so the walk then sums them in
-    C instead of visiting each weight; any other container is walked as before.
+    A large container is not descended into when ``math.fsum`` adds up its
+    members (when the first is a float), or the values of its members (when
+    the first is a dict), to a finite number: ``fsum`` refuses a member that is
+    no number (a string, a container, None) and returns inf or NaN, or raises,
+    whenever a member is non-finite, so a finite sum proves that every number
+    the walk would visit there is finite. Model weights are a dict of dicts of
+    floats, so the walk then sums them in C instead of visiting each weight;
+    any other container is walked as before.
     """
     stack = [obj]
     while stack:
@@ -125,12 +126,25 @@ def _reject_non_finite_walk(obj, context="NLTK JSON"):
             members = cur
         else:
             continue
-        if _finite_numbers(members) or _finite_numbers(
-            itertools.chain.from_iterable(map(dict.values, members))
-        ):
-            continue
+        # Only a large container whose first member promises the shape is
+        # summed; a tweet's mixed dicts fail that check for free, not by raising.
+        if len(members) >= _SUM_AT_LEAST:
+            first = type(next(iter(members)))
+            if first is dict:
+                if _finite_numbers(
+                    itertools.chain.from_iterable(map(dict.values, members))
+                ):
+                    continue
+            elif first is float:
+                if _finite_numbers(members):
+                    continue
         stack.extend(members)
     return obj
+
+
+#: Fewest members a container needs before the walk tries to sum it: a smaller
+#: one costs less to visit than a failed sum does to raise.
+_SUM_AT_LEAST = 64
 
 
 def _finite_numbers(values):

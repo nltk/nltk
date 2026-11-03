@@ -192,11 +192,16 @@ def _containers():
                 yield {f"k{i}": m for i, m in enumerate(members)}
 
 
-def test_walk_matches_the_full_walk_on_every_small_container():
+@pytest.mark.parametrize("sum_at_least", [1, 64])
+def test_walk_matches_the_full_walk_on_every_small_container(sum_at_least, monkeypatch):
     """Every list of up to three members and every dict of up to two over the
     leaves (finite and non-finite floats, a sum that overflows, huge ints,
     strings, None, booleans, nested containers) is judged as the full walk
-    judges it, alone and nested one level deeper."""
+    judges it, alone and nested one level deeper; once with every non-empty
+    container tried for a sum, once with the shipped size gate."""
+    import nltk.jsontags as jsontags
+
+    monkeypatch.setattr(jsontags, "_SUM_AT_LEAST", sum_at_least)
     level = list(_containers())
     for value in level:
         assert _verdict(lambda v: _reject_non_finite_walk(v, "t"), value) == _verdict(
@@ -209,6 +214,21 @@ def test_walk_matches_the_full_walk_on_every_small_container():
             ) == _verdict(_reference_walk, value), value
 
 
+def _weights(n, bad=None, at=0):
+    """A weights-shaped document, a dict of n dicts of floats, with ``bad``
+    (a JSON literal) as one weight of the ``at``-th feature."""
+    feats = []
+    for i in range(n):
+        tags = '"NN": 0.5, "VB": -0.25'
+        if bad is not None and i == at:
+            tags += f', "JJ": {bad}'
+        feats.append(f'"f{i}": {{{tags}}}')
+    return "{" + ", ".join(feats) + "}"
+
+
+_BAD = ["NaN", "Infinity", "-Infinity", "1e400", "-1e400"]
+
+
 @pytest.mark.parametrize(
     "doc",
     [
@@ -216,11 +236,22 @@ def test_walk_matches_the_full_walk_on_every_small_container():
         '{"f": {"NN": 0.5}, "g": {"VB": -Infinity}}',
         "[[1.0, 2.0], [3.0, 1e400]]",
         '{"f": {"NN": 1e308, "VB": 1e308, "JJ": Infinity}}',
-    ],
+    ]
+    + [_weights(200, bad, at) for bad in _BAD for at in (0, 117, 199)]
+    + ["[" + ", ".join(["0.5"] * 100 + [bad]) + "]" for bad in _BAD]
+    + ["[" + ", ".join([bad] + ["0.5"] * 100) + "]" for bad in _BAD],
 )
 def test_non_finite_weight_is_still_refused(doc):
+    """Small documents, weight dicts of 200 features (large enough to be
+    summed) with a non-finite weight at the first, a middle and the last
+    feature, and long float lists with one at either end, are all refused."""
     with pytest.raises(ValueError, match="non-finite"):
         safe_json_loads(doc)
+
+
+def test_large_finite_weights_load_as_parsed():
+    for doc in (_weights(200), "[" + ", ".join(["1e308"] * 100) + "]"):
+        assert safe_json_loads(doc) == json.loads(doc)
 
 
 def test_finite_weights_whose_sum_overflows_still_load():
