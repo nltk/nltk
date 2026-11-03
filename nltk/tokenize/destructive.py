@@ -300,12 +300,13 @@ _NEEDS = {
 }
 
 
-def _sub(regexp, substitution, text):
+def _sub(regexp, substitution, text, index=None):
     """``regexp.sub(substitution, text)``, except that a text holding none of
     the characters every match of one of NLTKWordTokenizer's own patterns
     needs is returned as it is: there is nothing to substitute, and the timed
-    regex call (two reads of the process clock in the engine) is skipped."""
-    needs = _NEEDS.get(id(regexp))
+    regex call (two reads of the process clock in the engine) is skipped.
+    ``index`` is another tokenizer's own map of the same kind."""
+    needs = (_NEEDS if index is None else index).get(id(regexp))
     if needs is not None and not any(c in text for c in needs):
         return text
     return regexp.sub(substitution, text)

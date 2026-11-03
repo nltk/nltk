@@ -24,7 +24,7 @@ from typing import List, Tuple
 
 from nltk import redos
 from nltk.tokenize.api import TokenizerI
-from nltk.tokenize.destructive import MacIntyreContractions
+from nltk.tokenize.destructive import MacIntyreContractions, _sub
 from nltk.tokenize.util import align_tokens
 
 
@@ -136,28 +136,28 @@ class TreebankWordTokenizer(TokenizerI):
             )
 
         for regexp, substitution in self.STARTING_QUOTES:
-            text = regexp.sub(substitution, text)
+            text = _sub(regexp, substitution, text, _NEEDS)
 
         for regexp, substitution in self.PUNCTUATION:
-            text = regexp.sub(substitution, text)
+            text = _sub(regexp, substitution, text, _NEEDS)
 
         # Handles parentheses.
         regexp, substitution = self.PARENS_BRACKETS
-        text = regexp.sub(substitution, text)
+        text = _sub(regexp, substitution, text, _NEEDS)
         # Optionally convert parentheses
         if convert_parentheses:
             for regexp, substitution in self.CONVERT_PARENTHESES:
-                text = regexp.sub(substitution, text)
+                text = _sub(regexp, substitution, text, _NEEDS)
 
         # Handles double dash.
         regexp, substitution = self.DOUBLE_DASHES
-        text = regexp.sub(substitution, text)
+        text = _sub(regexp, substitution, text, _NEEDS)
 
         # add extra space to make things easier
         text = " " + text + " "
 
         for regexp, substitution in self.ENDING_QUOTES:
-            text = regexp.sub(substitution, text)
+            text = _sub(regexp, substitution, text, _NEEDS)
 
         for regexp in self.CONTRACTIONS2:
             text = regexp.sub(r" \1 \2 ", text)
@@ -215,6 +215,49 @@ class TreebankWordTokenizer(TokenizerI):
             tokens = raw_tokens
 
         yield from align_tokens(tokens, text)
+
+
+#: For TreebankWordTokenizer's own substitution patterns (by source), the
+#: characters at least one of which every match of it contains; a text holding
+#: none is left as it is without the timed regex call (see destructive._sub).
+_NEEDS_BY_SOURCE = {
+    r"^\"": '"',
+    r"(``)": "`",
+    r"([ \(\[{<])(\"|\'{2})": "\"'",
+    r"([:,])([^\d])": ":,",
+    r"([:,])$": ":,",
+    r"\.\.\.": ".",
+    r"[;@#$%&]": ";@#$%&",
+    r'([^\.])(\.)([\]\)}>"\']*)\s*$': ".",
+    r"[?!]": "?!",
+    r"([^'])' ": "'",
+    r"[\]\[\(\)\{\}\<\>]": "[](){}<>",
+    r"\(": "(",
+    r"\)": ")",
+    r"\[": "[",
+    r"\]": "]",
+    r"\{": "{",
+    r"\}": "}",
+    r"--": "-",
+    r"''": "'",
+    r'"': '"',
+    r"([^' ])('[sS]|'[mM]|'[dD]|') ": "'",
+    r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) ": "'",
+}
+
+#: The same, keyed by the identity of the class's compiled patterns, so an
+#: edited or substituted pattern is never filtered.
+_NEEDS = {
+    id(pattern): _NEEDS_BY_SOURCE[pattern.pattern]
+    for pattern, _repl in (
+        TreebankWordTokenizer.STARTING_QUOTES
+        + TreebankWordTokenizer.PUNCTUATION
+        + TreebankWordTokenizer.CONVERT_PARENTHESES
+        + TreebankWordTokenizer.ENDING_QUOTES
+        + [TreebankWordTokenizer.PARENS_BRACKETS, TreebankWordTokenizer.DOUBLE_DASHES]
+    )
+    if pattern.pattern in _NEEDS_BY_SOURCE
+}
 
 
 class TreebankWordDetokenizer(TokenizerI):
