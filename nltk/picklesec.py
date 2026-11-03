@@ -38,6 +38,120 @@ PICKLE_WARNING = (
 )
 
 
+_EXT_OPCODES = {
+    ord(pickle.EXT1): "EXT1",
+    ord(pickle.EXT2): "EXT2",
+    ord(pickle.EXT4): "EXT4",
+}
+
+
+def _opcode_framing():
+    """Per opcode byte, how the unpickler frames its argument, built from the
+    ``pickletools`` opcode table: the whole length of an opcode whose argument
+    has a fixed size, the width of a little-endian length prefix, and the
+    number of newline-terminated lines read. An opcode with none of the three
+    (STOP, the EXT opcodes and every byte that is no opcode) ends the scan."""
+    advance, prefix, lines = [0] * 256, [0] * 256, [0] * 256
+    counted = {
+        pickletools.TAKEN_FROM_ARGUMENT1: 1,
+        pickletools.TAKEN_FROM_ARGUMENT4: 4,
+        pickletools.TAKEN_FROM_ARGUMENT4U: 4,
+        pickletools.TAKEN_FROM_ARGUMENT8U: 8,
+    }
+    for op in pickletools.opcodes:
+        code, arg = ord(op.code), op.arg
+        if code in _EXT_OPCODES or op.code == pickle.STOP.decode("latin-1"):
+            continue
+        if arg is None:
+            advance[code] = 1
+        elif arg.n >= 0:
+            advance[code] = 1 + arg.n
+        elif arg.n == pickletools.UP_TO_NEWLINE:
+            lines[code] = 2 if arg is pickletools.stringnl_noescape_pair else 1
+        else:
+            prefix[code] = counted[arg.n]
+    return tuple(advance), tuple(prefix), tuple(lines)
+
+
+_ADVANCE, _LENGTH_PREFIX, _LINES = _opcode_framing()
+
+
+def _scan_opcodes(buf, pos):
+    """Frame the opcodes of ``buf`` from ``pos`` the way the C unpickler reads
+    them, raising on an EXT opcode. Returns ``(pos, more)``: ``more`` is False
+    once the unpickler would stop (STOP, or a byte that is no opcode), and True
+    when the opcode at ``pos`` needs bytes past the end of ``buf`` (``pos`` may
+    then lie beyond it: the bytes up to there are an argument to skip).
+
+    Only the framing is followed, never the content: an argument the unpickler
+    would refuse (an ``INT`` line it cannot parse) is stepped over like any
+    other, and a 4-byte count is read unsigned, so the scan never stops before
+    the unpickler does. ``pickletools.genops`` validated content and gave up on
+    a base-0 ``I0x1`` line the C unpickler accepts, so an EXT opcode after one
+    went unscanned."""
+    advance, prefix, lines = _ADVANCE, _LENGTH_PREFIX, _LINES
+    end = len(buf)
+    while pos < end:
+        code = buf[pos]
+        step = advance[code]
+        if step:
+            pos += step
+            continue
+        width = prefix[code]
+        if width == 1:
+            if pos + 1 >= end:
+                return pos, True
+            pos += 2 + buf[pos + 1]
+            continue
+        if width:
+            if pos + 1 + width > end:
+                return pos, True
+            size = int.from_bytes(buf[pos + 1 : pos + 1 + width], "little")
+            pos += 1 + width + size
+            continue
+        count = lines[code]
+        if not count:
+            name = _EXT_OPCODES.get(code)
+            if name is not None:
+                raise pickle.UnpicklingError(
+                    f"pickle uses the extension-registry opcode {name}, "
+                    "which bypasses find_class and is forbidden"
+                )
+            return pos, False
+        nxt = pos + 1
+        for _ in range(count):
+            nxt = buf.find(b"\n", nxt) + 1
+            if not nxt:
+                return pos, True
+        pos = nxt
+    return pos, True
+
+
+#: Bytes a streamed scan reads at a time; a line longer than this is read in
+#: doubling steps, so its bytes are searched a bounded number of times.
+_SCAN_CHUNK = 1 << 20
+
+
+def _scan_stream(file):
+    """:func:`_scan_opcodes` over a binary stream read in chunks, holding only
+    the unfinished opcode between them, so a large pickle is never read whole."""
+    # pos: stream offset of the next opcode; held: the bytes read from pos on.
+    held, pos, read_end = b"", 0, 0
+    while True:
+        chunk = file.read(max(_SCAN_CHUNK, len(held)))
+        if not chunk:
+            return
+        chunk_start, read_end = read_end, read_end + len(chunk)
+        if pos >= read_end:  # still inside an argument being skipped
+            continue
+        buf = chunk[pos - chunk_start :] if pos >= chunk_start else held + chunk
+        rel, more = _scan_opcodes(buf, 0)
+        if not more:
+            return
+        pos += rel
+        held = buf[rel:]
+
+
 def _reject_extension_opcodes(pickle_source: Any) -> None:
     """Refuse a pickle that uses the EXT1/EXT2/EXT4 extension-registry opcodes.
 
@@ -47,23 +161,15 @@ def _reject_extension_opcodes(pickle_source: Any) -> None:
     without calling ``find_class`` at all, bypassing every allowlist. NLTK
     pickles never use extension opcodes, so any EXT opcode is refused up front.
 
-    ``pickle_source`` is bytes or a binary file. ``pickletools.genops`` walks the
-    opcode stream, importing and executing nothing (so scanning a hostile payload
-    is itself safe) and, when handed a file, without reading the whole pickle
-    into memory.
+    ``pickle_source`` is bytes or a binary file. :func:`_scan_opcodes` frames the
+    opcode stream exactly as the unpickler will, importing and executing nothing
+    (so scanning a hostile payload is itself safe) and, when handed a file,
+    without reading the whole pickle into memory.
     """
-    try:
-        for opcode, _arg, _pos in pickletools.genops(pickle_source):
-            if opcode.name.startswith("EXT"):
-                raise pickle.UnpicklingError(
-                    f"pickle uses the extension-registry opcode {opcode.name}, "
-                    "which bypasses find_class and is forbidden"
-                )
-    except pickle.UnpicklingError:
-        raise
-    except Exception:
-        # Malformed before any EXT opcode; let the real unpickler raise precisely.
-        return
+    if isinstance(pickle_source, (bytes, bytearray, memoryview)):
+        _scan_opcodes(bytes(pickle_source), 0)
+    else:
+        _scan_stream(pickle_source)
 
 
 def _guarded_stream(file: BinaryIO) -> BinaryIO:
