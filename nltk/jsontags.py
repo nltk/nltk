@@ -100,6 +100,14 @@ def _reject_non_finite_walk(obj, context="NLTK JSON"):
     explicit stack, never recursion), so a document nested up to JSON_MAX_DEPTH
     cannot make this check itself overflow the stack (CWE-674). Returns ``obj`` so
     it can wrap the parse in one expression.
+
+    A container is not descended into when ``math.fsum`` adds up its members,
+    or the values of its members when they are all dicts, to a finite number:
+    ``fsum`` refuses a member that is no number (a string, a container, None)
+    and returns inf or NaN, or raises, whenever a member is non-finite, so a
+    finite sum proves that every number the walk would visit there is finite.
+    Model weights are a dict of dicts of floats, so the walk then sums them in
+    C instead of visiting each weight; any other container is walked as before.
     """
     stack = [obj]
     while stack:
@@ -109,11 +117,28 @@ def _reject_non_finite_walk(obj, context="NLTK JSON"):
                 raise ValueError(
                     f"{context}: non-finite JSON number (NaN/Infinity) is not allowed"
                 )
-        elif isinstance(cur, dict):
-            stack.extend(cur.values())
+            continue
+        if isinstance(cur, dict):
+            members = cur.values()
         elif isinstance(cur, list):
-            stack.extend(cur)
+            members = cur
+        else:
+            continue
+        if _finite_numbers(members) or _finite_numbers(
+            itertools.chain.from_iterable(map(dict.values, members))
+        ):
+            continue
+        stack.extend(members)
     return obj
+
+
+def _finite_numbers(values):
+    """True only if every item of *values* is a number and ``math.fsum`` of
+    them is finite, which no item that is a non-finite float allows."""
+    try:
+        return math.isfinite(math.fsum(values))
+    except (TypeError, ValueError, OverflowError):
+        return False
 
 
 def _parsed_text_utf8(data):
