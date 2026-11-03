@@ -977,6 +977,12 @@ class BLEU(MetricI):
             return self._corpus_score([references], [hypothesis], sentence=True)
         return super().sentence_score(references, hypothesis)
 
+    def _zero_score(self):
+        # several weights give a list of scores, as in corpus_bleu()
+        if self.mode == "nltk" and isinstance(self.weights[0], (tuple, list)):
+            return [0.0] * len(self.weights)
+        return 0.0
+
 
 def _reference_counts(references, hypothesis, max_order):
     """

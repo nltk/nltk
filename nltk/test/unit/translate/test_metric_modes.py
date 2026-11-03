@@ -192,6 +192,14 @@ def test_the_functions_take_on_empty(function):
     assert function([], [], on_empty="zero") == 0.0
 
 
+def test_several_bleu_weights_score_a_zero_each():
+    """As corpus_bleu() does when nothing matches, a list with a score per weight."""
+    weights = [(0.5, 0.5), (1 / 3, 1 / 3, 1 / 3)]
+    assert corpus_bleu([[["a"]]], [["b"]], weights) == [0, 0]
+    assert corpus_bleu([], [], weights, on_empty="zero") == [0.0, 0.0]
+    assert sentence_bleu([], ["a"], weights, on_empty="zero") == [0.0, 0.0]
+
+
 @pytest.mark.parametrize(
     "metric",
     [

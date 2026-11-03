@@ -475,7 +475,7 @@ class MetricI:
             )
         if not hypotheses or not all(list_of_references):
             if self.on_empty == "zero":
-                return 0.0
+                return self._zero_score()
             raise ValueError(
                 f"{type(self).__name__}: there is nothing to score, "
                 + (
@@ -500,3 +500,7 @@ class MetricI:
     def _corpus_score(self, list_of_references, hypotheses):
         """The score of a corpus that has hypotheses, each with references."""
         raise NotImplementedError
+
+    def _zero_score(self):
+        """The score of an input with nothing to score, under on_empty="zero"."""
+        return 0.0
