@@ -171,8 +171,44 @@ class ToktokTokenizer(TokenizerI):
     def tokenize(self, text, return_str=False):
         text = str(text)  # Converts input string into unicode.
         for regexp, substitution in self.TOKTOK_REGEXES:
-            text = regexp.sub(substitution, text)
+            needs = _NEEDS.get(id(regexp))
+            if needs is None or any(c in text for c in needs):
+                text = regexp.sub(substitution, text)
         # Finally, strips heading and trailing spaces
         # and converts output string into unicode.
         text = str(text.strip())
         return text if return_str else text.split()
+
+
+#: For ToktokTokenizer's own patterns with a short list of them (by source),
+#: the characters at least one of which every match contains; a text holding
+#: none is left as it is without the timed regex call. The four wide Unicode
+#: punctuation and currency classes and the space run are always run.
+_NEEDS_BY_SOURCE = {
+    "\u00a0": "\u00a0",
+    r":(?!//)": ":",
+    r"\?(?!\S)": "?",
+    r"(:\/\/)[\S+\.\S+\/\S+][\/]": ":",
+    r" /": "/",
+    "& ": "&",
+    "\t": "\t",
+    r"\|": "|",
+    r"(,{2,})": ",",
+    r"(?<!,)([," "\u060c" r"])(?![,\d])": ",\u060c",
+    "(['\u2019`])": "'\u2019`",
+    r" ` ` ": "`",
+    r" ' ' ": "'",
+    "([\u2013\u2014])": "\u2013\u2014",
+    r"(-{2,})": "-",
+    r"(\.{2,})": ".",
+    r"(?<!\.)\.$": ".",
+    r"""(?<!\.)\.\s*(["'""" "\u2019\u00bb\u203a\u201d" r"""]) *$""": ".",
+}
+
+#: The same, keyed by the identity of the class's compiled patterns, so a
+#: subclass or caller that substitutes its own pattern is never filtered.
+_NEEDS = {
+    id(pattern): _NEEDS_BY_SOURCE[pattern.pattern]
+    for pattern, _repl in ToktokTokenizer.TOKTOK_REGEXES
+    if pattern.pattern in _NEEDS_BY_SOURCE
+}
