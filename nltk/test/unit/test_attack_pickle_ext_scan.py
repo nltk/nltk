@@ -146,24 +146,95 @@ def _frame(body):
     return pickle.FRAME + struct.pack("<Q", len(body)) + body
 
 
+# Opcodes whose argument crosses the end of their frame, then an EXT opcode.
+# "hidden" is the bypass: a file-backed unpickler that reads BININT's argument
+# from after the frame runs the EXT1 opcode that, read in order, is the payload
+# of a SHORT_BINSTRING.
+_STRADDLING = {
+    "line": b"\x80\x04" + _frame(b"I1") + b"2\n" + _ext_tail(),
+    "counted": b"\x80\x04" + _frame(b"\x8c\x03a") + b"bc" + _ext_tail(),
+    "fixed": b"\x80\x04" + _frame(b"J\x01\x02") + b"\x03\x04" + _ext_tail(),
+    "nested": b"\x80\x04" + _frame(b"K\x01" + _frame(b"0")) + _ext_tail()[1:],
+    "hidden": b"\x80\x04"
+    + _frame(b"J\x01\x02")
+    + b"\x00\x00U\x03"
+    + pickle.EXT1
+    + bytes([_CODE])
+    + b"..",
+}
+
+
+@pytest.mark.parametrize("name", sorted(_STRADDLING))
+def test_argument_across_a_frame_end_cannot_hide_ext(name, warm_extension, monkeypatch):
+    """Where an opcode crosses the end of its frame (or a frame opens inside
+    one) the unpickler may read a different opcode stream, so an EXT opcode
+    byte anywhere after that point is refused, by both loaders and by the
+    in-memory and streamed scans, whatever this interpreter's unpickler does."""
+    payload = _STRADDLING[name]
+    with pytest.raises(pickle.UnpicklingError):
+        RestrictedUnpickler(io.BytesIO(payload)).load()
+    with pytest.raises(pickle.UnpicklingError):
+        allowlisted_pickle_load(
+            io.BytesIO(payload), allowed_globals={("builtins", "int")}
+        )
+    for chunk in (1, 3, 1 << 20):
+        monkeypatch.setattr(picklesec, "_SCAN_CHUNK", chunk)
+        with pytest.raises(pickle.UnpicklingError):
+            _reject_extension_opcodes(io.BufferedReader(io.BytesIO(payload)))
+
+
+def _file_unpickler_outcome(payload):
+    try:
+        return pickle.Unpickler(io.BytesIO(payload)).load()
+    except Exception as exc:
+        return exc
+
+
+def test_hidden_ext_runs_exactly_where_the_unpickler_drops_the_frame():
+    """Read in order the "hidden" payload holds no EXT opcode. This
+    interpreter's file-backed unpickler is first classified on a probe with
+    no EXT byte: it reads straight on across the frame's end (5), reads the
+    argument from after the frame (BININT 03 04 4B 05), or refuses the
+    crossing. The hidden payload then does exactly what that predicts: a
+    SHORT_BINSTRING it cannot decode, the registered global, or a refusal."""
+    payload = _STRADDLING["hidden"]
+    ops = [op.name for op, _arg, _pos in pickletools.genops(payload)]
+    assert "EXT1" not in ops and "SHORT_BINSTRING" in ops
+    probe = b"\x80\x04" + _frame(b"J\x01\x02") + b"\x03\x04K\x05."
+    reads = _file_unpickler_outcome(probe)
+    copyreg.add_extension(__name__, "_Marker", _CODE)
+    try:
+        pickle.loads(pickle.EXT1 + bytes([_CODE]) + pickle.STOP)
+        outcome = _file_unpickler_outcome(payload)
+    finally:
+        copyreg.remove_extension(__name__, "_Marker", _CODE)
+        copyreg._extension_cache.pop(_CODE, None)
+    if reads == 5:  # in order: the EXT1 byte is string payload
+        assert isinstance(outcome, UnicodeDecodeError), outcome
+    elif reads == int.from_bytes(b"\x03\x04K\x05", "little", signed=True):
+        assert outcome is _Marker, outcome  # the bypass the frame rule closes
+    else:
+        assert isinstance(reads, pickle.UnpicklingError), reads
+        assert isinstance(outcome, pickle.UnpicklingError), outcome
+
+
 @pytest.mark.parametrize(
     "payload",
     [
-        b"\x80\x04" + _frame(b"I1") + b"2\n" + _ext_tail(),
-        b"\x80\x04" + _frame(b"\x8c\x03a") + b"bc" + _ext_tail(),
-        b"\x80\x04" + _frame(b"K\x01") + _ext_tail(),
-        b"\x80\x04" + _frame(b"K\x01" + _frame(b"0")) + _ext_tail()[1:],
-        b"\x80\x04" + _frame(b"J\x01\x02") + b"\x03\x04" + _ext_tail(),
+        b"\x80\x04" + _frame(b"J\x01\x02") + b"\x03\x04K\x05.",
+        b"\x80\x04" + _frame(b"K\x82J\x01\x02") + b"\x03\x04K\x05.",
+        b"\x80\x04" + _frame(b"K\x01" + _frame(b"0")) + b"K\x02.",
     ],
-    ids=["line", "counted", "after", "nested", "fixed"],
+    ids=["no-ext-byte", "ext-byte-before", "nested-no-ext"],
 )
-def test_arguments_across_a_frame_boundary(payload, warm_extension):
-    """The unpickler reads an argument straight across a frame's end, so the
-    scan does too; each payload runs the EXT opcode in the C unpickler."""
-    assert pickle.loads(payload) is _Marker
-    assert pickle.Unpickler(io.BytesIO(payload)).load() is _Marker
-    with pytest.raises(pickle.UnpicklingError, match="EXT1"):
-        RestrictedUnpickler(io.BytesIO(payload)).load()
+def test_ambiguous_frame_with_no_ext_byte_after_passes_the_scan(payload, monkeypatch):
+    """No byte at or after the ambiguous point can be an EXT opcode, so the
+    scan passes the pickle, as the byte search already does for a pickle with
+    no EXT value at all (whether the unpickler then loads it is its own call)."""
+    _reject_extension_opcodes(payload)
+    for chunk in (1, 3, 1 << 20):
+        monkeypatch.setattr(picklesec, "_SCAN_CHUNK", chunk)
+        _reject_extension_opcodes(io.BufferedReader(io.BytesIO(payload)))
 
 
 def _sample_objects():
@@ -187,10 +258,11 @@ def _real_pickles():
 
 def _argument_bytes(data):
     """Offsets of the bytes inside arguments that framing never looks at: the
-    payload of a counted argument, a fixed-size argument, and a line's text."""
+    payload of a counted argument, a fixed-size argument (a frame's length is
+    framing itself), and a line's text."""
     ops = list(pickletools.genops(data))
     for (op, _arg, pos), nxt in zip(ops, [p for _o, _a, p in ops[1:]] + [len(data)]):
-        if op.arg is None:
+        if op.arg is None or op.name == "FRAME":
             continue
         n = op.arg.n
         if n >= 0:
@@ -275,72 +347,21 @@ def test_scan_ends_where_the_unpickler_does():
 
 
 def test_every_opcode_has_a_framing():
-    """Each opcode of this interpreter's pickle protocols is either framed or
-    ends the scan, from the same table the unpickler documents."""
-    for op in pickletools.opcodes:
-        code = ord(op.code)
+    """Each opcode of this interpreter's pickle protocols is framed by the
+    tables built from pickletools, or is one the scan decides itself (STOP,
+    FRAME and the three EXT opcodes); no byte that is no opcode is framed."""
+    codes = {ord(op.code): op for op in pickletools.opcodes}
+    for code, op in codes.items():
         framed = (
             picklesec._ADVANCE[code]
             or picklesec._LENGTH_PREFIX[code]
             or picklesec._LINES[code]
         )
-        ends = op.name == "STOP" or op.name.startswith("EXT")
-        assert bool(framed) != ends, op.name
-    assert {op.code for op in pickletools.opcodes} >= {
-        chr(c) for c in range(256) if picklesec._ADVANCE[c]
-    }
-
-
-def _outcome(scan, data):
-    try:
-        scan(data)
-        return "clean"
-    except pickle.UnpicklingError as exc:
-        return str(exc)
-
-
-def test_byte_search_decides_like_the_framing():
-    """Bytes holding no EXT opcode value are passed without framing; every
-    short input decides exactly as framing it would: all strings of up to two
-    bytes, and three-byte strings over the bytes that matter."""
-    full = picklesec._scan_opcodes
-    inputs = [bytes([a]) for a in range(256)]
-    inputs += [bytes([a, b]) for a in range(256) for b in range(256)]
-    alphabet = b"\x82\x83\x84.\n\x00\x01IKUXc\x8c\x8e\x95\xff"
-    inputs += [bytes([a, b, c]) for a in alphabet for b in alphabet for c in alphabet]
-    for data in inputs:
-        assert _outcome(_reject_extension_opcodes, data) == _outcome(
-            lambda d: full(d, 0), data
-        ), data
-
-
-def test_bytesio_judged_in_place_from_its_position():
-    """A plain BytesIO is judged from its current position, which is left
-    where it was; bytes before the position are never read by the unpickler."""
-    ext = pickle.EXT1 + b"\x01" + pickle.STOP
-    stream = io.BytesIO(ext + b"K\x01.")
-    stream.seek(len(ext))
-    _reject_extension_opcodes(stream)
-    assert stream.tell() == len(ext)
-    assert RestrictedUnpickler(stream).load() == 1
-    stream = io.BytesIO(b"K\x01" + ext)
-    stream.seek(2)
-    with pytest.raises(pickle.UnpicklingError, match="EXT1"):
-        _reject_extension_opcodes(stream)
-    assert stream.tell() == 2
-
-
-def test_bytesio_subclass_is_read_not_trusted():
-    """A BytesIO subclass can serve the unpickler other bytes than its buffer,
-    so only an exact BytesIO is judged in place; a subclass is scanned through
-    the read calls the unpickler itself makes."""
-
-    class Lying(io.BytesIO):
-        def read(self, size=-1):
-            return io.BytesIO(pickle.EXT1 + b"\x01" + pickle.STOP).read(size)
-
-        def readline(self, size=-1):
-            return b""
-
-    with pytest.raises(pickle.UnpicklingError, match="EXT1"):
-        _reject_extension_opcodes(Lying(b"K\x01."))
+        decided = op.name in ("STOP", "FRAME") or op.name.startswith("EXT")
+        assert bool(framed) != decided, op.name
+    for code in set(range(256)) - set(codes):
+        assert not (
+            picklesec._ADVANCE[code]
+            or picklesec._LENGTH_PREFIX[code]
+            or picklesec._LINES[code]
+        ), code

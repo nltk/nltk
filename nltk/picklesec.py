@@ -24,6 +24,7 @@ from __future__ import annotations
 import io
 import pickle
 import pickletools
+import sys
 import types
 import warnings
 from collections.abc import Iterable
@@ -51,7 +52,8 @@ def _opcode_framing():
     ``pickletools`` opcode table: the whole length of an opcode whose argument
     has a fixed size, the width of a little-endian length prefix, and the
     number of newline-terminated lines read. An opcode with none of the three
-    (STOP, the EXT opcodes and every byte that is no opcode) ends the scan."""
+    (STOP, FRAME, the EXT opcodes and every byte that is no opcode) is decided
+    by :func:`_scan_opcodes` itself."""
     advance, prefix, lines = [0] * 256, [0] * 256, [0] * 256
     counted = {
         pickletools.TAKEN_FROM_ARGUMENT1: 1,
@@ -61,7 +63,7 @@ def _opcode_framing():
     }
     for op in pickletools.opcodes:
         code, arg = ord(op.code), op.arg
-        if code in _EXT_OPCODES or op.code == pickle.STOP.decode("latin-1"):
+        if code in _EXT_OPCODES or code in (_STOP, _FRAME):
             continue
         if arg is None:
             advance[code] = 1
@@ -74,15 +76,33 @@ def _opcode_framing():
     return tuple(advance), tuple(prefix), tuple(lines)
 
 
+_STOP, _FRAME = ord(pickle.STOP), ord(pickle.FRAME)
 _ADVANCE, _LENGTH_PREFIX, _LINES = _opcode_framing()
+_NO_FRAME = sys.maxsize  # the end of "the current frame" when there is none
 
 
-def _scan_opcodes(buf, pos):
+class _AmbiguousFrame(Exception):
+    """An opcode at ``pos`` runs past the end of its frame, or a frame opens
+    inside a frame. Unpickling from a file, CPython 3.10.20, 3.11.9, 3.11.15
+    and 3.13.7 read an argument that crosses a frame's end from AFTER the frame
+    (the bytes left in the frame are dropped; 3.13.17 refuses the pickle), so
+    from here on the C unpickler can follow another opcode stream than any scan
+    that reads the bytes in order. The pickler never writes such a frame."""
+
+    def __init__(self, pos):
+        super().__init__(pos)
+        self.pos = pos
+
+
+def _scan_opcodes(buf, pos, frame_end=_NO_FRAME):
     """Frame the opcodes of ``buf`` from ``pos`` the way the C unpickler reads
-    them, raising on an EXT opcode. Returns ``(pos, more)``: ``more`` is False
-    once the unpickler would stop (STOP, or a byte that is no opcode), and True
-    when the opcode at ``pos`` needs bytes past the end of ``buf`` (``pos`` may
-    then lie beyond it: the bytes up to there are an argument to skip).
+    them, raising on an EXT opcode. Returns ``(pos, more, frame_end)``:
+    ``more`` is False once the unpickler would stop (STOP, or a byte that is no
+    opcode), and True when the opcode at ``pos`` needs bytes past the end of
+    ``buf`` (``pos`` may then lie beyond it: the bytes up to there are an
+    argument to skip); ``frame_end`` is where the current frame ends, in
+    ``buf``'s offsets, and is passed back in to go on. Raises
+    :class:`_AmbiguousFrame` where an opcode crosses its frame's end.
 
     Only the framing is followed, never the content: an argument the unpickler
     would refuse (an ``INT`` line it cannot parse) is stepped over like any
@@ -93,39 +113,61 @@ def _scan_opcodes(buf, pos):
     advance, prefix, lines = _ADVANCE, _LENGTH_PREFIX, _LINES
     end = len(buf)
     while pos < end:
+        if pos >= frame_end:
+            frame_end = _NO_FRAME
         code = buf[pos]
-        step = advance[code]
-        if step:
-            pos += step
-            continue
-        width = prefix[code]
-        if width == 1:
-            if pos + 1 >= end:
-                return pos, True
-            pos += 2 + buf[pos + 1]
-            continue
-        if width:
-            if pos + 1 + width > end:
-                return pos, True
-            size = int.from_bytes(buf[pos + 1 : pos + 1 + width], "little")
-            pos += 1 + width + size
-            continue
-        count = lines[code]
-        if not count:
-            name = _EXT_OPCODES.get(code)
-            if name is not None:
-                raise pickle.UnpicklingError(
-                    f"pickle uses the extension-registry opcode {name}, "
-                    "which bypasses find_class and is forbidden"
-                )
-            return pos, False
-        nxt = pos + 1
-        for _ in range(count):
-            nxt = buf.find(b"\n", nxt) + 1
-            if not nxt:
-                return pos, True
+        nxt = pos + advance[code]
+        if nxt == pos:
+            width = prefix[code]
+            if width == 1:
+                if pos + 1 >= end:
+                    return pos, True, frame_end
+                nxt = pos + 2 + buf[pos + 1]
+            elif width:
+                if pos + 1 + width > end:
+                    return pos, True, frame_end
+                size = int.from_bytes(buf[pos + 1 : pos + 1 + width], "little")
+                nxt = pos + 1 + width + size
+            elif code == _FRAME:
+                if pos + 9 > end:
+                    return pos, True, frame_end
+                if frame_end != _NO_FRAME:
+                    raise _AmbiguousFrame(pos)
+                pos += 9
+                frame_end = pos + int.from_bytes(buf[pos - 8 : pos], "little")
+                continue
+            elif lines[code]:
+                nxt = pos + 1
+                for _ in range(lines[code]):
+                    nxt = buf.find(b"\n", nxt) + 1
+                    if not nxt:
+                        if frame_end <= end:
+                            raise _AmbiguousFrame(pos)
+                        return pos, True, frame_end
+            else:
+                name = _EXT_OPCODES.get(code)
+                if name is not None:
+                    raise pickle.UnpicklingError(
+                        f"pickle uses the extension-registry opcode {name}, "
+                        "which bypasses find_class and is forbidden"
+                    )
+                return pos, False, frame_end
+        if nxt > frame_end:
+            raise _AmbiguousFrame(pos)
         pos = nxt
-    return pos, True
+    return pos, True, frame_end
+
+
+def _refuse_ext_byte_after_frame(found):
+    """Refuse, when ``found``, a pickle whose framing became ambiguous with an
+    EXT opcode byte somewhere after that point: the unpickler could run it."""
+    if found:
+        raise pickle.UnpicklingError(
+            "pickle has an opcode that crosses the end of its frame (or a frame "
+            "inside a frame), which an unpickler reading from a file can follow "
+            "as another opcode stream, and an extension-registry opcode byte "
+            "follows it; refusing it"
+        )
 
 
 #: Bytes a streamed scan reads at a time; a line longer than this is read in
@@ -137,7 +179,7 @@ def _scan_stream(file):
     """:func:`_scan_opcodes` over a binary stream read in chunks, holding only
     the unfinished opcode between them, so a large pickle is never read whole."""
     # pos: stream offset of the next opcode; held: the bytes read from pos on.
-    held, pos, read_end = b"", 0, 0
+    held, pos, read_end, frame_end = b"", 0, 0, _NO_FRAME
     while True:
         chunk = file.read(max(_SCAN_CHUNK, len(held)))
         if not chunk:
@@ -146,9 +188,21 @@ def _scan_stream(file):
         if pos >= read_end:  # still inside an argument being skipped
             continue
         buf = chunk[pos - chunk_start :] if pos >= chunk_start else held + chunk
-        rel, more = _scan_opcodes(buf, 0)
+        local_end = frame_end if frame_end == _NO_FRAME else frame_end - pos
+        try:
+            rel, more, local_end = _scan_opcodes(buf, 0, local_end)
+        except _AmbiguousFrame as ambiguous:
+            found = any(buf.find(v, ambiguous.pos) >= 0 for v in _EXT_BYTES)
+            while not found:
+                chunk = file.read(_SCAN_CHUNK)
+                if not chunk:
+                    break
+                found = any(chunk.find(v) >= 0 for v in _EXT_BYTES)
+            _refuse_ext_byte_after_frame(found)
+            return
         if not more:
             return
+        frame_end = local_end if local_end == _NO_FRAME else pos + local_end
         pos += rel
         held = buf[rel:]
 
@@ -181,7 +235,12 @@ def _reject_extension_opcodes(pickle_source: Any) -> None:
         _scan_stream(pickle_source)
         return
     if any(data.find(value, start) >= 0 for value in _EXT_BYTES):
-        _scan_opcodes(data, start)
+        try:
+            _scan_opcodes(data, start)
+        except _AmbiguousFrame as ambiguous:
+            _refuse_ext_byte_after_frame(
+                any(data.find(value, ambiguous.pos) >= 0 for value in _EXT_BYTES)
+            )
 
 
 def _guarded_stream(file: BinaryIO) -> BinaryIO:
