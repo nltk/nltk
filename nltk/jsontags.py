@@ -14,6 +14,7 @@ NLTK uses simple '!' tags to mark the types of objects, but the fully-qualified
 using it.
 """
 
+import io
 import itertools
 import json
 import math
@@ -302,6 +303,32 @@ def safe_json_loads(
     return _reject_non_finite_walk(parsed, context)
 
 
+#: Bytes one read of a capped binary read asks for: a buffered stream
+#: allocates what it is asked for before reading, so one read of the whole cap
+#: reserved JSON_MAX_BYTES (200 MiB) for every model file loaded.
+_READ_STEP = 1 << 20
+
+
+def _read_capped(reader, size):
+    """``reader.read(size)``, asked of a buffered binary stream in steps of at
+    most ``_READ_STEP`` bytes, so it costs the bytes the stream holds rather
+    than ``size``. A buffered stream's ``read(n)`` returns fewer than ``n``
+    bytes only at the end, so steps that stop at ``size`` or at the first
+    empty read return exactly what one read would. Any other stream keeps the
+    single read: a raw one may return short, and a text stream counts in its
+    own unit (a code point, or a byte it decodes)."""
+    if not isinstance(reader, io.BufferedIOBase):
+        return reader.read(size)
+    parts, total = [], 0
+    while total < size:
+        part = reader.read(min(_READ_STEP, size - total))
+        if not part:
+            break
+        parts.append(part)
+        total += len(part)
+    return b"".join(parts)
+
+
 def safe_json_load(
     fp,
     *,
@@ -321,8 +348,7 @@ def safe_json_load(
     encoded byte length. Works with both text and binary streams.
     """
     # Prefer the binary buffer so the byte cap bounds the read itself.
-    reader = getattr(fp, "buffer", fp)
-    data = reader.read(max_bytes + 1)
+    data = _read_capped(getattr(fp, "buffer", fp), max_bytes + 1)
     if len(data) > max_bytes:
         raise ValueError(f"{context}: JSON resource exceeds the {max_bytes}-byte limit")
     return safe_json_loads(
