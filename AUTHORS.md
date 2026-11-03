@@ -362,6 +362,18 @@
 - Syed Ahnaf Raza <https://github.com/syahra712>
 - Gecko Security <https://github.com/geckosecurity>
 - Bugbunny <https://github.com/bugbunny-research>
+- Senyi Li <https://github.com/EgodPrime>
+- Faizzyhon <https://github.com/faizzyhon>
+- Venish Paneliya <https://github.com/VenishPaneliya>
+- HUANG Fei <https://github.com/hzhwcmhf>
+- Michael Higgins <https://github.com/Higgs32584>
+- Mavik <https://github.com/themavik>
+- CodingSelim <https://github.com/CodingSelim>
+- Pranay Mukherjee <https://github.com/53X>
+- Samriddhi Sinha <https://github.com/djokester>
+- Tamir Bennatan <https://github.com/tamirbennatan>
+- Daniel Kleine <https://github.com/d-kleine>
+- purificant <https://github.com/purificant>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
