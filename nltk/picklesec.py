@@ -43,6 +43,7 @@ _EXT_OPCODES = {
     ord(pickle.EXT2): "EXT2",
     ord(pickle.EXT4): "EXT4",
 }
+_EXT_BYTES = (pickle.EXT1, pickle.EXT2, pickle.EXT4)
 
 
 def _opcode_framing():
@@ -164,12 +165,23 @@ def _reject_extension_opcodes(pickle_source: Any) -> None:
     ``pickle_source`` is bytes or a binary file. :func:`_scan_opcodes` frames the
     opcode stream exactly as the unpickler will, importing and executing nothing
     (so scanning a hostile payload is itself safe) and, when handed a file,
-    without reading the whole pickle into memory.
+    without reading the whole pickle into memory. A plain ``io.BytesIO`` is
+    judged in place, from its current position, since its buffer is exactly
+    what the unpickler will read; its position is left unchanged.
+
+    Every opcode is one byte of the stream, so bytes that hold none of the
+    three EXT opcode values cannot hold an EXT opcode: that is decided by a
+    byte search, and only a pickle holding one of the values is framed.
     """
-    if isinstance(pickle_source, (bytes, bytearray, memoryview)):
-        _scan_opcodes(bytes(pickle_source), 0)
+    if type(pickle_source) is io.BytesIO:
+        data, start = pickle_source.getvalue(), pickle_source.tell()
+    elif isinstance(pickle_source, (bytes, bytearray, memoryview)):
+        data, start = bytes(pickle_source), 0
     else:
         _scan_stream(pickle_source)
+        return
+    if any(data.find(value, start) >= 0 for value in _EXT_BYTES):
+        _scan_opcodes(data, start)
 
 
 def _guarded_stream(file: BinaryIO) -> BinaryIO:

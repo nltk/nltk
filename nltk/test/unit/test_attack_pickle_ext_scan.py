@@ -289,3 +289,58 @@ def test_every_opcode_has_a_framing():
     assert {op.code for op in pickletools.opcodes} >= {
         chr(c) for c in range(256) if picklesec._ADVANCE[c]
     }
+
+
+def _outcome(scan, data):
+    try:
+        scan(data)
+        return "clean"
+    except pickle.UnpicklingError as exc:
+        return str(exc)
+
+
+def test_byte_search_decides_like_the_framing():
+    """Bytes holding no EXT opcode value are passed without framing; every
+    short input decides exactly as framing it would: all strings of up to two
+    bytes, and three-byte strings over the bytes that matter."""
+    full = picklesec._scan_opcodes
+    inputs = [bytes([a]) for a in range(256)]
+    inputs += [bytes([a, b]) for a in range(256) for b in range(256)]
+    alphabet = b"\x82\x83\x84.\n\x00\x01IKUXc\x8c\x8e\x95\xff"
+    inputs += [bytes([a, b, c]) for a in alphabet for b in alphabet for c in alphabet]
+    for data in inputs:
+        assert _outcome(_reject_extension_opcodes, data) == _outcome(
+            lambda d: full(d, 0), data
+        ), data
+
+
+def test_bytesio_judged_in_place_from_its_position():
+    """A plain BytesIO is judged from its current position, which is left
+    where it was; bytes before the position are never read by the unpickler."""
+    ext = pickle.EXT1 + b"\x01" + pickle.STOP
+    stream = io.BytesIO(ext + b"K\x01.")
+    stream.seek(len(ext))
+    _reject_extension_opcodes(stream)
+    assert stream.tell() == len(ext)
+    assert RestrictedUnpickler(stream).load() == 1
+    stream = io.BytesIO(b"K\x01" + ext)
+    stream.seek(2)
+    with pytest.raises(pickle.UnpicklingError, match="EXT1"):
+        _reject_extension_opcodes(stream)
+    assert stream.tell() == 2
+
+
+def test_bytesio_subclass_is_read_not_trusted():
+    """A BytesIO subclass can serve the unpickler other bytes than its buffer,
+    so only an exact BytesIO is judged in place; a subclass is scanned through
+    the read calls the unpickler itself makes."""
+
+    class Lying(io.BytesIO):
+        def read(self, size=-1):
+            return io.BytesIO(pickle.EXT1 + b"\x01" + pickle.STOP).read(size)
+
+        def readline(self, size=-1):
+            return b""
+
+    with pytest.raises(pickle.UnpicklingError, match="EXT1"):
+        _reject_extension_opcodes(Lying(b"K\x01."))
