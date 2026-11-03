@@ -8,6 +8,7 @@
 
 """ChrF score implementation"""
 
+import string
 from collections import Counter, defaultdict
 
 from nltk import redos
@@ -23,6 +24,7 @@ def sentence_chrf(
     beta=3.0,
     ignore_whitespace=True,
     *,
+    word_order=0,
     on_empty="raise",
 ):
     """
@@ -82,6 +84,17 @@ def sentence_chrf(
         >>> sentence_chrf(ref1, hyp1, min_len=2, max_len=3) # doctest: +ELLIPSIS
         0.6617...
 
+    chrF++ (Popovic, 2017) adds word n-grams to the character n-grams:
+    ``word_order=2`` averages the F-scores of the word unigrams and bigrams
+    with those of the six character orders. The words are the text split at
+    whitespace, with a punctuation mark at the end or the start of a word
+    split off, as chrF++.py does. Here the word unigrams (F 0.679) match
+    better than the average character order (0.635) and the word bigrams
+    (0.526) worse, so chrF++ ends a little below chrF:
+
+        >>> sentence_chrf(ref1, hyp1, word_order=2) # doctest: +ELLIPSIS
+        0.6269...
+
     :param references: reference sentence
     :type references: list(str) / str
     :param hypothesis: a hypothesis sentence
@@ -94,6 +107,9 @@ def sentence_chrf(
     :type beta: float
     :param ignore_whitespace: ignore whitespace characters in scoring
     :type ignore_whitespace: bool
+    :param word_order: the highest word n-gram order, 0 for chrF and 2 for
+        chrF++
+    :type word_order: int
     :param on_empty: "raise" (the default) or "zero", as for the other
         metrics; one hypothesis with its reference is never an empty input
     :type on_empty: str
@@ -107,6 +123,7 @@ def sentence_chrf(
         max_len,
         beta=beta,
         ignore_whitespace=ignore_whitespace,
+        word_order=word_order,
         on_empty=on_empty,
     )
 
@@ -119,6 +136,28 @@ def _preprocess(sent, ignore_whitespace):
     if ignore_whitespace:
         sent = redos.sub(r"\s+", "", sent)
     return sent
+
+
+def _separate_punctuation(sent):
+    """
+    The words of chrF++: the text split at whitespace, and of a word longer
+    than one character the punctuation mark at its end, or else at its start,
+    split off, as chrF++.py (Popovic, 2017) and sacrebleu split them.
+
+        >>> _separate_punctuation("Hello, (world)!")
+        ['Hello', ',', '(world)', '!']
+    """
+    if not isinstance(sent, str):
+        sent = " ".join(sent)
+    words = []
+    for word in sent.split():
+        if len(word) > 1 and word[-1] in string.punctuation:
+            words += [word[:-1], word[-1]]
+        elif len(word) > 1 and word[0] in string.punctuation:
+            words += [word[0], word[1:]]
+        else:
+            words.append(word)
+    return words
 
 
 def chrf_precision_recall_fscore_support(
@@ -145,14 +184,9 @@ def chrf_precision_recall_fscore_support(
     :return: Returns the precision, recall and f-score and support (true positive).
     :rtype: tuple(float)
     """
-    ref_ngrams = Counter(ngrams(reference, n))
-    hyp_ngrams = Counter(ngrams(hypothesis, n))
-
-    # calculate the number of ngram matches
-    overlap_ngrams = ref_ngrams & hyp_ngrams
-    tp = sum(overlap_ngrams.values())  # True positives.
-    tpfp = sum(hyp_ngrams.values())  # True positives + False positives.
-    tpfn = sum(ref_ngrams.values())  # True positives + False negatives.
+    # True positives, true positives + false positives (the hypothesis
+    # n-grams) and true positives + false negatives (the reference n-grams).
+    tp, tpfp, tpfn = _ngram_matches(reference, hypothesis, n)
 
     try:
         prec = tp / tpfp  # precision
@@ -164,6 +198,21 @@ def chrf_precision_recall_fscore_support(
     return prec, rec, fscore, tp
 
 
+def _ngram_matches(reference, hypothesis, n):
+    """
+    The n-grams of order n the hypothesis shares with the reference, each
+    counted at most as often as the reference has it, and the numbers of
+    hypothesis and of reference n-grams: what chrF, chrF++ and ROUGE-N divide.
+
+        >>> _ngram_matches('the cat sat on the mat'.split(), 'the the the cat'.split(), 1)
+        (3, 4, 6)
+    """
+    ref_ngrams = Counter(ngrams(reference, n))
+    hyp_ngrams = Counter(ngrams(hypothesis, n))
+    matches = sum((ref_ngrams & hyp_ngrams).values())
+    return matches, sum(hyp_ngrams.values()), sum(ref_ngrams.values())
+
+
 def corpus_chrf(
     references,
     hypotheses,
@@ -172,6 +221,7 @@ def corpus_chrf(
     beta=3.0,
     ignore_whitespace=True,
     *,
+    word_order=0,
     on_empty="raise",
 ):
     """
@@ -204,17 +254,33 @@ def corpus_chrf(
     :type beta: float
     :param ignore_whitespace: ignore whitespace characters in scoring
     :type ignore_whitespace: bool
+    :param word_order: the highest word n-gram order, 0 for chrF and 2 for
+        chrF++; the corpus score of chrF++ is chrF++.py's "avgF" line
+    :type word_order: int
     :param on_empty: "raise" (the default) or "zero", for an empty corpus
     :type on_empty: str
     :return: the sentence level CHRF score.
     :rtype: float
     """
     return CHRF(
-        min_len, max_len, beta, ignore_whitespace, on_empty=on_empty
+        min_len,
+        max_len,
+        beta,
+        ignore_whitespace,
+        word_order=word_order,
+        on_empty=on_empty,
     ).corpus_score([[reference] for reference in references], hypotheses)
 
 
-def _corpus_chrf(references, hypotheses, min_len, max_len, beta, ignore_whitespace):
+def _corpus_chrf(
+    references,
+    hypotheses,
+    min_len,
+    max_len,
+    beta,
+    ignore_whitespace,
+    word_order=0,
+):
     """corpus_chrf() as NLTK computes it, CHRF's "nltk" mode."""
     num_sents = len(hypotheses)
 
@@ -223,6 +289,15 @@ def _corpus_chrf(references, hypotheses, min_len, max_len, beta, ignore_whitespa
 
     # Iterate through each hypothesis and their corresponding references.
     for reference, hypothesis in zip(references, hypotheses):
+        # chrF++: the word n-gram orders are averaged with the character ones
+        ref_words = _separate_punctuation(reference)
+        hyp_words = _separate_punctuation(hypothesis)
+        for n in range(1, word_order + 1):
+            fscore = chrf_precision_recall_fscore_support(
+                ref_words, hyp_words, n, beta=beta
+            )[2]
+            ngram_fscores["word", n].append(fscore)
+
         # preprocess both reference and hypothesis
         reference = _preprocess(reference, ignore_whitespace)
         hypothesis = _preprocess(hypothesis, ignore_whitespace)
@@ -251,8 +326,8 @@ class CHRF(MetricI):
     chrF in two modes. ``"nltk"`` is corpus_chrf() and sentence_chrf(): one
     reference per hypothesis, the F-score of each character n-gram order
     averaged over the orders, and a corpus score that averages the sentence
-    scores. ``"sacrebleu"`` is sacrebleu's CHRF (sacrebleu 2.6.0, without word
-    n-grams): character n-grams from 1 to ``max_len``, the best reference of
+    scores. ``"sacrebleu"`` is sacrebleu's CHRF (sacrebleu 2.6.0):
+    character n-grams from 1 to ``max_len``, the best reference of
     each hypothesis, and a corpus score from the statistics of all sentences.
 
     A sentence in both modes, with the same beta and sacrebleu's "eps"
@@ -268,6 +343,19 @@ class CHRF(MetricI):
         >>> round(CHRF(mode="sacrebleu").corpus_score(refs, hyps), 4)
         0.5974
 
+    chrF++ (Popovic, 2017) is chrF with word n-grams, ``word_order=2``: the
+    word unigrams and bigrams are two more orders, averaged with the six
+    character orders. Both modes split the words as chrF++.py does (see
+    _separate_punctuation). A sentence in the nltk mode gets chrF++.py's
+    sentence score, and a corpus its "avgF" line, the mean of the sentence
+    scores; the sacrebleu mode is sacrebleu's CHRF(word_order=2), whose corpus
+    score with "eps" is chrF++.py's other line, from the summed statistics.
+
+        >>> round(CHRF(word_order=2).corpus_score(refs, hyps), 4)
+        0.5579
+        >>> round(CHRF(word_order=2, mode="sacrebleu").corpus_score(refs, hyps), 4)
+        0.6073
+
     :param min_len: lowest character n-gram order; 1 in the sacrebleu mode
     :param max_len: highest character n-gram order
     :param beta: weight of recall over precision: 3.0 in the nltk mode, 2 in
@@ -278,6 +366,7 @@ class CHRF(MetricI):
         one 1e-16 (the nltk mode, and sacrebleu's eps_smoothing); in the
         sacrebleu mode "effective-order" (its default) averages precision and
         recall over the orders both have
+    :param word_order: highest word n-gram order: 0 for chrF, 2 for chrF++
     :param mode: "nltk" or "sacrebleu"
     :param on_empty: "raise" or "zero", see MetricI
     """
@@ -292,6 +381,7 @@ class CHRF(MetricI):
         ignore_whitespace=True,
         smoothing=None,
         *,
+        word_order=0,
         mode="nltk",
         on_empty="raise",
     ):
@@ -315,6 +405,7 @@ class CHRF(MetricI):
             smoothing = smoothing or "effective-order"
         self.min_len, self.max_len, self.beta = min_len, max_len, beta
         self.ignore_whitespace, self.smoothing = ignore_whitespace, smoothing
+        self.word_order = word_order
 
     def _corpus_score(self, list_of_references, hypotheses):
         if self.mode == "sacrebleu":
@@ -325,6 +416,7 @@ class CHRF(MetricI):
                 self.beta,
                 self.ignore_whitespace,
                 self.smoothing == "eps",
+                self.word_order,
             )
         if any(len(references) != 1 for references in list_of_references):
             raise ValueError(
@@ -338,7 +430,19 @@ class CHRF(MetricI):
             self.max_len,
             self.beta,
             self.ignore_whitespace,
+            self.word_order,
         )
+
+
+def _sacrebleu_ngrams(sent, max_order, ignore_whitespace, word_order):
+    """
+    sacrebleu's extract_all_char_ngrams and, for chrF++, its word n-grams
+    (extract_word_ngrams), on a string or a list of tokens.
+    """
+    words = _separate_punctuation(sent)
+    return _sacrebleu_char_ngrams(sent, max_order, ignore_whitespace) + [
+        Counter(ngrams(words, n)) for n in range(1, word_order + 1)
+    ]
 
 
 def _sacrebleu_char_ngrams(sent, max_order, ignore_whitespace):
@@ -384,28 +488,38 @@ def _sacrebleu_chrf_fscore(statistics, max_order, beta, eps_smoothing):
 
 
 def _sacrebleu_corpus_chrf(
-    list_of_references, hypotheses, max_order, beta, ignore_whitespace, eps_smoothing
+    list_of_references,
+    hypotheses,
+    max_order,
+    beta,
+    ignore_whitespace,
+    eps_smoothing,
+    word_order=0,
 ):
     """
     chrF as sacrebleu computes it: for each hypothesis the statistics
     (hypothesis, reference and matched n-grams of every order) of the reference
     with the best F-score, summed over the corpus, then one F-score. An order
-    the reference has no n-grams of counts no hypothesis n-grams either.
+    the reference has no n-grams of counts no hypothesis n-grams either. The
+    word orders of chrF++ follow the character orders.
     """
-    totals = [0] * (3 * max_order)
+    orders = max_order + word_order
+    totals = [0] * (3 * orders)
     for references, hypothesis in zip(list_of_references, hypotheses):
-        hyp_ngrams = _sacrebleu_char_ngrams(hypothesis, max_order, ignore_whitespace)
+        hyp_ngrams = _sacrebleu_ngrams(
+            hypothesis, max_order, ignore_whitespace, word_order
+        )
         best_stats, best_fscore = [], -1.0
         for reference in references:
             stats = []
             for hyp, ref in zip(
                 hyp_ngrams,
-                _sacrebleu_char_ngrams(reference, max_order, ignore_whitespace),
+                _sacrebleu_ngrams(reference, max_order, ignore_whitespace, word_order),
             ):
                 matches = sum((hyp & ref).values())
                 stats += [sum(hyp.values()) if ref else 0, sum(ref.values()), matches]
-            fscore = _sacrebleu_chrf_fscore(stats, max_order, beta, eps_smoothing)
+            fscore = _sacrebleu_chrf_fscore(stats, orders, beta, eps_smoothing)
             if fscore > best_fscore:
                 best_stats, best_fscore = stats, fscore
         totals = [a + b for a, b in zip(totals, best_stats)]
-    return _sacrebleu_chrf_fscore(totals, max_order, beta, eps_smoothing)
+    return _sacrebleu_chrf_fscore(totals, orders, beta, eps_smoothing)

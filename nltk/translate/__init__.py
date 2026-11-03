@@ -31,3 +31,6 @@ from nltk.translate.gdfa import grow_diag_final_and
 from nltk.translate.gleu_score import sentence_gleu as gleu
 from nltk.translate.phrase_based import extract
 from nltk.translate.lepor import sentence_lepor as lepor, corpus_lepor
+from nltk.translate.ter_score import sentence_ter as ter
+from nltk.translate.wer_score import sentence_wer as wer
+from nltk.translate.rouge_score import sentence_rouge as rouge

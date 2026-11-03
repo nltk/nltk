@@ -17,9 +17,23 @@ from nltk.translate.lepor import (
     sentence_lepor,
 )
 from nltk.translate.meteor_score import meteor_score, single_meteor_score
-from nltk.translate.metrics import BLEU, CHRF, GLEU, LEPOR, METEOR, NIST, RIBES
+from nltk.translate.metrics import (
+    BLEU,
+    CHRF,
+    GLEU,
+    LEPOR,
+    METEOR,
+    NIST,
+    RIBES,
+    ROUGE,
+    TER,
+    WER,
+)
 from nltk.translate.nist_score import corpus_nist, sentence_nist
 from nltk.translate.ribes_score import corpus_ribes, sentence_ribes
+from nltk.translate.rouge_score import corpus_rouge
+from nltk.translate.ter_score import corpus_ter
+from nltk.translate.wer_score import corpus_wer
 
 TOL = 1e-9
 IDS = list(CASES)
@@ -158,6 +172,14 @@ METRICS = {
     "RIBES-nltk": lambda **kw: RIBES(**kw),
     "METEOR-nltk": lambda **kw: METEOR(**kw),
     "LEPOR-nltk": lambda **kw: LEPOR(**kw),
+    "CHRF++-nltk": lambda **kw: CHRF(word_order=2, **kw),
+    "CHRF++-sacrebleu": lambda **kw: CHRF(word_order=2, mode="sacrebleu", **kw),
+    "TER-nltk": lambda **kw: TER(**kw),
+    "TER-sacrebleu": lambda **kw: TER(mode="sacrebleu", **kw),
+    "WER-nltk": lambda **kw: WER(**kw),
+    "WER-sclite": lambda **kw: WER(mode="sclite", **kw),
+    "ROUGE-nltk": lambda **kw: ROUGE(**kw),
+    "ROUGE-rouge-1.5.5": lambda **kw: ROUGE(mode="rouge-1.5.5", **kw),
 }
 
 
@@ -183,7 +205,16 @@ def test_different_numbers_of_references_and_hypotheses_raise(make):
 
 @pytest.mark.parametrize(
     "function",
-    [corpus_bleu, corpus_nist, corpus_chrf, corpus_gleu, corpus_ribes],
+    [
+        corpus_bleu,
+        corpus_nist,
+        corpus_chrf,
+        corpus_gleu,
+        corpus_ribes,
+        corpus_ter,
+        corpus_wer,
+        corpus_rouge,
+    ],
     ids=lambda f: f.__name__,
 )
 def test_the_functions_take_on_empty(function):
