@@ -50,10 +50,10 @@ the interpreter's ``int_max_str_digits`` default, the giant-integer conversion
 cost.
 """
 
-# Keep only the six bytes that can change structural nesting depth or open and
-# close a string literal; ``_scan_json_depth`` deletes everything else at C
-# speed before its Python-level scan (see that function's docstring).
-_STRUCTURAL_BYTES = b'"\\[]{}'
+# Keep only the five bytes that can change structural nesting depth or open and
+# close a string literal; ``_scan_json_depth`` resolves escapes, then deletes
+# everything else at C speed before its Python-level scan (see its docstring).
+_STRUCTURAL_BYTES = b'"[]{}'
 _IDENTITY_TABLE = bytes(range(256))
 _NON_STRUCTURAL = bytes(i for i in range(256) if i not in _STRUCTURAL_BYTES)
 
@@ -114,6 +114,26 @@ def _reject_non_finite_walk(obj, context="NLTK JSON"):
     return obj
 
 
+def _parsed_text_utf8(data):
+    """The text ``json.loads`` will parse, as UTF-8 bytes.
+
+    A ``str`` is parsed as it is. ``bytes`` are decoded first with the
+    encoding ``json.detect_encoding`` picks, which is UTF-16 or UTF-32 when the
+    null-byte pattern says so: a scan of those raw bytes would see a quote or a
+    bracket in the high byte of an unrelated code unit (U+4E22 is ``22 4E`` in
+    UTF-16-LE) and miss the real ones, so they are decoded as the parser will
+    decode them. UTF-8 needs no round trip: its multi-byte sequences hold no
+    ASCII byte, so the structural bytes are already where the parser sees them.
+    """
+    if isinstance(data, str):
+        return data.encode("utf-8", "surrogatepass")
+    data = bytes(data)
+    encoding = json.detect_encoding(data)
+    if encoding in ("utf-8", "utf-8-sig"):
+        return data
+    return data.decode(encoding, "surrogatepass").encode("utf-8", "surrogatepass")
+
+
 def _scan_json_depth(data, limit):
     """Return the maximum structural nesting depth of *data*, stopping early.
 
@@ -123,29 +143,36 @@ def _scan_json_depth(data, limit):
     is rejected after only a few thousand bytes), and it never recurses, so it
     cannot itself be the crash it is guarding against.
 
+    *data* is what the caller hands ``json.loads`` (``str`` or ``bytes``), so
+    the scan sees the text the parser will (see :func:`_parsed_text_utf8`).
+    Escapes are resolved before anything is deleted: a backslash escapes the
+    one character after it, so each ``\\\\`` pair (an escaped backslash) and
+    then each ``\\"`` pair (an escaped quote) is removed. Scanning only after
+    the deletion let the backslash of ``\\n`` swallow the next structural byte,
+    the string's closing quote, so every bracket up to the next quote was
+    taken for string content and a document of any depth passed.
+
     Every byte that cannot change nesting depth or open/close a string literal
-    is deleted at C speed by :meth:`bytes.translate` before the Python-level
-    loop runs, so a legit multi-megabyte model is scanned in well under a
-    second while brackets buried in string values are still counted correctly.
+    (the backslashes left once the escapes are resolved among them) is deleted
+    at C speed by :meth:`bytes.translate` before the Python-level loop runs,
+    so a legit multi-megabyte model is scanned in well under a second while
+    brackets buried in string values are still counted correctly.
     """
-    if isinstance(data, str):
-        data = data.encode("utf-8", "surrogatepass")
-    residue = bytes(data).translate(_IDENTITY_TABLE, _NON_STRUCTURAL)
+    return _utf8_depth(_parsed_text_utf8(data), limit)
+
+
+def _utf8_depth(text, limit):
+    """:func:`_scan_json_depth` of the parsed text already as UTF-8 bytes."""
+    text = text.replace(b"\\\\", b"").replace(b'\\"', b"")
+    residue = text.translate(_IDENTITY_TABLE, _NON_STRUCTURAL)
     depth = 0
     max_depth = 0
     in_string = False
-    escaped = False
     for byte in residue:
-        if in_string:
-            if escaped:
-                escaped = False
-            elif byte == 0x5C:  # backslash
-                escaped = True
-            elif byte == 0x22:  # closing quote
-                in_string = False
+        if byte == 0x22:  # a quote opens or closes a string literal
+            in_string = not in_string
+        elif in_string:
             continue
-        if byte == 0x22:  # opening quote
-            in_string = True
         elif byte == 0x5B or byte == 0x7B:  # '[' or '{'
             depth += 1
             if depth > max_depth:
@@ -188,7 +215,9 @@ def safe_json_loads(
         raise ValueError(
             f"{context}: JSON document is {size} bytes, over the {max_bytes}-byte limit"
         )
-    depth = _scan_json_depth(raw, max_depth)
+    depth = _utf8_depth(
+        raw if isinstance(data, str) else _parsed_text_utf8(raw), max_depth
+    )
     if depth > max_depth:
         raise ValueError(
             f"{context}: JSON nesting depth exceeds the maximum allowed ({max_depth})"
@@ -438,7 +467,8 @@ class JSONTaggedDecoder(json.JSONDecoder):
                 f"JSON document is {size} bytes, over the "
                 f"{self.MAX_DECODE_BYTES}-byte limit"
             )
-        if _scan_json_depth(raw, self.MAX_DECODE_DEPTH) > self.MAX_DECODE_DEPTH:
+        text = raw if isinstance(s, str) else _parsed_text_utf8(raw)
+        if _utf8_depth(text, self.MAX_DECODE_DEPTH) > self.MAX_DECODE_DEPTH:
             raise ValueError(
                 f"JSON nesting depth exceeds maximum allowed ({self.MAX_DECODE_DEPTH})"
             )
