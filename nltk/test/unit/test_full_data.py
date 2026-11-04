@@ -300,6 +300,8 @@ def test_large_grammar_parse_counts(name):
             found = 0
         if found != expected:
             wrong.append([" ".join(words), expected, found])
+    # three Alvey counts differ, as distinct trees all four chart strategies agree
+    # on: alvey.fcfg is not quite the grammar the counts were made with
     same_departures("parse counts", name, wrong)
 
 
