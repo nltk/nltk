@@ -428,10 +428,8 @@ jobs:
 
   all-data:
     name: Every data file and module, base against change (shard ${{ matrix.shard }} of 8)
-    # With the full-data label only: tools/check_all_data.py reads every file of
-    # the data index through each NLTK loader and reader that can open it, and
-    # imports every module, on the base commit and on this change, and fails on
-    # any call that regressed or did not finish. The packages are split in shards.
+    # With the full-data label only: every file of the data index through every NLTK loader,
+    # base against change (tools/check_all_data.py), then known answers (test_full_data.py)
     needs: [pre-commit]
     if: contains(github.event.pull_request.labels.*.name, 'full-data')
     runs-on: ubuntu-latest
@@ -501,6 +499,27 @@ jobs:
 
       - name: Compare the two runs
         run: python tools/check_all_data.py compare "$RUNNER_TEMP/base.json" "$RUNNER_TEMP/head.json"
+
+      - name: Known answers on every package of the shard
+        # also when the comparison failed: the two report different things
+        if: ${{ !cancelled() }}
+        shell: bash
+        env:
+          NLTK_FULL_DATA: "1"
+          SHARD: ${{ matrix.shard }}
+          PYTHONSAFEPATH: "1"
+        run: |
+          # each package's modules run on all of its data, against answers from outside NLTK
+          python tools/check_all_data.py shard "$RUNNER_TEMP/packages.json" "$SHARD/8" "$RUNNER_TEMP/shard.json"
+          rc=0
+          NLTK_FULL_DATA_INDEX="$RUNNER_TEMP/packages.json" NLTK_FULL_DATA_PACKAGES="$RUNNER_TEMP/shard.json" \
+            NLTK_FULL_DATA_FOUND="$RUNNER_TEMP/found" \
+            pytest -p no:cacheprovider -rA --numprocesses 4 nltk/test/unit/test_full_data.py || rc=1
+          # what a package departs in, when it is not what is pinned: the list to review
+          if [ -d "$RUNNER_TEMP/found" ]; then
+            echo "::group::departures found"; cat "$RUNNER_TEMP"/found/*.jsonl; echo "::endgroup::"
+          fi
+          exit $rc
 
   docker-cross-account:
     name: Docker root build, appuser runtime (#3928)
