@@ -69,6 +69,20 @@ def test_depth_scan_matches_the_byte_by_byte_reference():
             assert got == depth, text
 
 
+@pytest.mark.parametrize("step", [1, 2, 3])
+def test_depth_scan_in_steps_matches_the_byte_by_byte_reference(step, monkeypatch):
+    """The same texts read in steps of one to three bytes, so that every run of
+    backslashes and every escape is split between two steps somewhere, scan
+    exactly as they do whole."""
+    monkeypatch.setattr("nltk.jsontags._READ_STEP", step)
+    for text in _texts():
+        depth, sound = _reference_depth(text)
+        got = _utf8_depth(text, 10**9)
+        assert got >= sound, (step, text)
+        if _no_stray_backslash(text):
+            assert got == depth, (step, text)
+
+
 def _no_stray_backslash(text):
     in_string = escaped = False
     for byte in text:

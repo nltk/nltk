@@ -24,7 +24,13 @@ import pytest
 
 import nltk.jsontags as jsontags
 from nltk.data import SeekableUnicodeStreamReader
-from nltk.jsontags import JSON_MAX_BYTES, safe_json_load
+from nltk.jsontags import (
+    JSON_MAX_BYTES,
+    JSON_MAX_DEPTH,
+    JSONTaggedDecoder,
+    safe_json_load,
+    safe_json_loads,
+)
 
 
 def _streams(data):
@@ -106,3 +112,78 @@ def test_a_small_json_file_no_longer_reserves_the_cap():
     )
     assert direct < 4 * 2**20, direct
     assert decoded < 4 * 2**20, decoded
+
+
+@pytest.mark.parametrize(
+    "encoding, char",
+    [
+        ("utf-16-le", "中"),
+        ("utf-16-be", "中"),
+        ("utf-16-le", "\U0001f600"),
+        ("utf-32-le", "\U0001f600"),
+    ],
+)
+def test_depth_scan_of_utf16_and_utf32_costs_less_than_the_document(encoding, char):
+    """The depth scan decodes UTF-16 and UTF-32 as the parser will, in steps,
+    keeping only their ASCII characters, so an 8 MiB document peaks below its
+    own size; decoding it whole and encoding it again as UTF-8 peaked at two
+    to three times it, all before the scan could refuse anything."""
+    doc = ('["' + char * (8 * 2**20 // len(char.encode(encoding))) + '"]').encode(
+        encoding
+    )
+    peak = _peak_of(lambda: jsontags._scan_json_depth(doc, JSON_MAX_DEPTH))
+    assert peak < len(doc), (peak, len(doc))
+    assert jsontags._scan_json_depth(doc, JSON_MAX_DEPTH) == 1
+
+
+def _refusal(data):
+    with pytest.raises(ValueError, match="nesting depth exceeds"):
+        safe_json_loads(data)
+
+
+@pytest.mark.parametrize("deep_at", ["start", "end"])
+@pytest.mark.parametrize(
+    "form", ["bytes", "bytearray", "str", "utf-16-le", "utf-32-le"]
+)
+def test_depth_scan_costs_a_few_steps_whatever_the_form(form, deep_at, monkeypatch):
+    """The scan reads the text in steps and resolves escapes within each, so a
+    4 MiB document with escapes throughout, too deep near its start or its end,
+    is refused at a peak of a few steps in every form. Encoding a str whole and
+    resolving the escapes of the whole text copied it once or twice before the
+    scan could refuse anything."""
+    monkeypatch.setattr(jsontags, "_READ_STEP", 1 << 16)
+    unit = 'a\\"b\\\\c'
+    pad = '"' + unit * (4 * 2**20 // len(unit)) + '"'
+    deep = "[" * (JSON_MAX_DEPTH + 1) + "]" * (JSON_MAX_DEPTH + 1)
+    doc = "[" + (deep + ", " + pad if deep_at == "start" else pad + ", " + deep) + "]"
+    data = {
+        "bytes": doc.encode("utf-8"),
+        "bytearray": bytearray(doc.encode("utf-8")),
+        "str": doc,
+        "utf-16-le": doc.encode("utf-16-le"),
+        "utf-32-le": doc.encode("utf-32-le"),
+    }[form]
+    scan = _peak_of(lambda: jsontags._scan_json_depth(data, JSON_MAX_DEPTH))
+    refusal = _peak_of(lambda: _refusal(data))
+    assert scan < 2**20 and refusal < 2**20, (scan, refusal, len(data))
+
+
+@pytest.mark.parametrize("step", [1, 2, 3, 1 << 20])
+def test_byte_cap_counts_every_utf8_byte_in_steps(step, monkeypatch):
+    """The UTF-8 size of a str is counted a step at a time. With characters of
+    every width split between steps, a document exactly at the cap loads and
+    one byte over is refused with its exact size, through both chokepoints."""
+    monkeypatch.setattr(jsontags, "_READ_STEP", step)
+    doc = '["a", "é", "中", "\U0001f600", "\ud800", {"k": "\\u0041"}]'
+    size = len(doc.encode("utf-8", "surrogatepass"))
+    over = f"{size} bytes, over the {size - 1}-byte limit"
+    encoded = doc.encode("utf-8", "surrogatepass")
+    for data in (doc, encoded, bytearray(encoded)):
+        assert safe_json_loads(data, max_bytes=size) == json.loads(doc)
+        with pytest.raises(ValueError, match=over):
+            safe_json_loads(data, max_bytes=size - 1)
+    monkeypatch.setattr(JSONTaggedDecoder, "MAX_DECODE_BYTES", size)
+    assert json.loads(doc, cls=JSONTaggedDecoder) == json.loads(doc)
+    monkeypatch.setattr(JSONTaggedDecoder, "MAX_DECODE_BYTES", size - 1)
+    with pytest.raises(ValueError, match=over):
+        json.loads(doc, cls=JSONTaggedDecoder)

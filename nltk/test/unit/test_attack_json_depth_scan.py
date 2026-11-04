@@ -74,6 +74,9 @@ def _forms(doc):
     yield "str", doc
     for enc in _ENCODINGS:
         yield enc, doc.encode(enc)
+    # A bytearray is decoded as bytes are, from a buffer that is not bytes.
+    for enc in ("utf-8", "utf-16-le"):
+        yield "bytearray " + enc, bytearray(doc.encode(enc))
 
 
 @pytest.mark.parametrize("name,doc", list(_attack_docs(JSON_MAX_DEPTH + 1)))
@@ -178,3 +181,123 @@ def test_scan_equals_true_depth_on_every_small_document():
             assert _scan_json_depth(data, 10**9) == expected, (form, doc)
         seen += 1
     assert seen > 1000
+
+
+# The scan keeps only the ASCII characters of decoded UTF-16 and UTF-32; one
+# non-ASCII character of each width.
+_NON_ASCII = ["é", "中", "\U0001f600"]
+
+
+def _non_ascii_leaves():
+    """Each leaf string with a non-ASCII character at every position inside
+    its quotes: beside an escape, and between a backslash and what follows."""
+    for leaf in _LEAF_STRINGS:
+        body = leaf[1:-1]
+        for char in _NON_ASCII:
+            for i in range(len(body) + 1):
+                yield '"' + body[:i] + char + body[i:] + '"'
+
+
+def test_scan_of_non_ascii_text_beside_escapes():
+    """On every leaf with a non-ASCII character inserted anywhere, alone and in
+    two nestings, in every form: a document the parser reads scans to exactly
+    the depth it builds, and one it refuses (a backslash before a non-ASCII
+    character) is refused by safe_json_loads with a ValueError."""
+    read = refused = 0
+    for leaf in sorted(set(_non_ascii_leaves())):
+        for doc in (
+            leaf,
+            "[" + leaf + ", [[" + leaf + "]]]",
+            "{" + leaf + ": [" + leaf + "]}",
+        ):
+            try:
+                expected = _depth(json.loads(doc))
+            except json.JSONDecodeError:
+                for form, data in _forms(doc):
+                    with pytest.raises(ValueError):
+                        safe_json_loads(data)
+                refused += 1
+                continue
+            for form, data in _forms(doc):
+                assert _scan_json_depth(data, 10**9) == expected, (form, doc)
+            read += 1
+    assert read > 200 and refused > 100, (read, refused)
+
+
+_CHILD_NON_ASCII = r"""
+import sys
+from nltk.jsontags import safe_json_loads
+sys.setrecursionlimit(1_000_000)
+n = 300_000
+doc = '["\\中", ' + "[" * n + "]" * n + "]"
+try:
+    safe_json_loads(doc.encode(sys.argv[1]) if sys.argv[1] != "str" else doc)
+except ValueError as exc:
+    print("STOPPED", type(exc).__name__)
+"""
+
+
+@pytest.mark.parametrize("form", ["str", "utf-8", "utf-16-le", "utf-32-le"])
+def test_deep_document_after_a_backslash_before_non_ascii_cannot_crash(form):
+    """The scan drops the non-ASCII character after a backslash in decoded
+    text, so the string seems to run to the end and the nesting after it is
+    not counted; the parser stops at that malformed escape, before it reaches
+    the nesting. With the recursion limit raised the document must stop with a
+    ValueError, never a crash, in every form."""
+    env = dict(os.environ, PYTHONPATH=os.pathsep.join(sys.path))
+    proc = subprocess.run(
+        [sys.executable, "-c", _CHILD_NON_ASCII, form],
+        capture_output=True,
+        text=True,
+        env=env,
+        timeout=300,
+    )
+    assert proc.returncode == 0, (proc.returncode, proc.stderr[-500:])
+    assert "STOPPED" in proc.stdout, proc.stdout
+
+
+def _documents_with_runs():
+    """Documents whose strings hold a run of up to seven backslashes before a
+    quote, a letter or the closing quote."""
+    for k in range(4):
+        for tail in ("", '\\"', '\\"\\"', "\\n", '\\"x'):
+            leaf = '"' + "\\\\" * k + tail + '"'
+            yield "[" + leaf + ", [[1]]]"
+            yield "{" + leaf + ": [" + leaf + ', {"k": []}]}'
+
+
+@pytest.mark.parametrize("step", [1, 2, 3, 4, 5, 7, 11])
+def test_scan_in_steps_of_any_size_equals_true_depth(step, monkeypatch):
+    """The scan reads the text a step at a time, carrying a string, an escape
+    and a run of backslashes into the next step. With steps of a few bytes, so
+    that each of them is split somewhere, every document scans to exactly the
+    depth the parser builds in every form, and one it refuses is refused."""
+    monkeypatch.setattr("nltk.jsontags._READ_STEP", step)
+    docs = set(_documents(1)) | set(_documents_with_runs())
+    for leaf in _non_ascii_leaves():
+        docs.add("[" + leaf + ", [[" + leaf + "]]]")
+    read = refused = 0
+    for doc in sorted(docs):
+        try:
+            expected = _depth(json.loads(doc))
+        except json.JSONDecodeError:
+            for form, data in _forms(doc):
+                with pytest.raises(ValueError):
+                    safe_json_loads(data)
+            refused += 1
+            continue
+        for form, data in _forms(doc):
+            assert _scan_json_depth(data, 10**9) == expected, (step, form, doc)
+        read += 1
+    assert read > 300 and refused > 30, (read, refused)
+
+
+@pytest.mark.parametrize("step", [1, 2, 3, 1 << 20])
+def test_scan_of_surrogates_split_between_steps(step, monkeypatch):
+    """A str, and UTF-8 that json.loads decodes with surrogatepass, carry lone
+    and reversed surrogates; split between steps they scan to the parsed depth."""
+    monkeypatch.setattr("nltk.jsontags._READ_STEP", step)
+    for chars in ("\ud800", "\udfff", "\ud83d\ude00", "\ude00\ud83d", "\U0001f600"):
+        doc = '["' + chars + '\\\\", [["' + chars + '"], {"' + chars + '": []}]]'
+        for data in (doc, doc.encode("utf-8", "surrogatepass")):
+            assert _scan_json_depth(data, 10**9) == _depth(json.loads(data)) == 4
