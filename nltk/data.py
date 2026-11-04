@@ -48,11 +48,12 @@ import warnings
 from abc import ABCMeta, abstractmethod
 from gzip import WRITE as GZ_WRITE
 from gzip import GzipFile
-from io import BufferedIOBase, BytesIO, TextIOWrapper
+from io import BytesIO, TextIOWrapper
 from urllib.parse import unquote
 from urllib.request import url2pathname
 
 from nltk import pathsec, redos
+from nltk.jsontags import _read_capped
 from nltk.pathsec import ZipFile
 from nltk.pathsec import open as _secure_open
 from nltk.pathsec import urlopen as _secure_urlopen
@@ -2371,27 +2372,6 @@ def text_encoding(encoding):
     return encoding
 
 
-#: Bytes one underlying read of a large ``SeekableUnicodeStreamReader.read``
-#: asks for: a buffered stream allocates the whole request before reading, so
-#: ``read(JSON_MAX_BYTES + 1)`` of a model file reserved 200 MiB for it.
-_READ_STEP = 1 << 20
-
-
-def _read_in_steps(stream, size):
-    """``stream.read(size)`` of a buffered stream in steps of at most
-    ``_READ_STEP`` bytes, stopping at ``size`` or at the first empty read,
-    which is where one ``read(size)`` stops (a buffered read returns short only
-    at the end); it costs the bytes there, not ``size``."""
-    parts, total = [], 0
-    while total < size:
-        part = stream.read(min(_READ_STEP, size - total))
-        if not part:
-            break
-        parts.append(part)
-        total += len(part)
-    return b"".join(parts)
-
-
 class SeekableUnicodeStreamReader:
     """
     A stream reader that automatically encodes the source byte stream
@@ -2849,10 +2829,9 @@ class SeekableUnicodeStreamReader:
         start_state, buffered = self._buffer_state, self.bytebuffer
         if size is None:
             new_bytes = self.stream.read()
-        elif size > _READ_STEP and isinstance(self.stream, BufferedIOBase):
-            new_bytes = _read_in_steps(self.stream, size)
         else:
-            new_bytes = self.stream.read(size)
+            # Stepped, so a model's read(JSON_MAX_BYTES + 1) does not reserve 200 MiB.
+            new_bytes = _read_capped(self.stream, size)
 
         # Decode the bytes into unicode characters; the decoder keeps an
         # incomplete character and the shift state for the next block. At

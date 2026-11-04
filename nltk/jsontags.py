@@ -15,10 +15,8 @@ using it.
 """
 
 import io
-import itertools
 import json
 import math
-import operator
 
 json_tags = {}
 
@@ -53,9 +51,8 @@ the interpreter's ``int_max_str_digits`` default, the giant-integer conversion
 cost.
 """
 
-# Keep only the five bytes that can change structural nesting depth or open and
-# close a string literal; ``_scan_json_depth`` resolves escapes, then deletes
-# everything else at C speed before its Python-level scan (see its docstring).
+# The bytes that open or close a string or change the nesting depth; the depth
+# scan deletes every other byte at C speed before its Python loop.
 _STRUCTURAL_BYTES = b'"[]{}'
 _IDENTITY_TABLE = bytes(range(256))
 _NON_STRUCTURAL = bytes(i for i in range(256) if i not in _STRUCTURAL_BYTES)
@@ -101,18 +98,8 @@ def _reject_non_finite_walk(obj, context="NLTK JSON"):
     explicit stack, never recursion), so a document nested up to JSON_MAX_DEPTH
     cannot make this check itself overflow the stack (CWE-674). Returns ``obj`` so
     it can wrap the parse in one expression.
-
-    A large container is not descended into when ``math.fsum`` adds up its
-    members (when the first is a float), or the values of its members (when
-    the first is a dict), to a finite number: ``fsum`` refuses a member that is
-    no number (a string, a container, None) and returns inf or NaN, or raises,
-    whenever a member is non-finite, so a finite sum proves that every number
-    the walk would visit there is finite. Model weights are a dict of dicts of
-    floats, so the walk then sums them in C instead of visiting each weight;
-    any other container is walked as before.
     """
     stack = [obj]
-    push = stack.extend
     while stack:
         cur = stack.pop()
         if isinstance(cur, float):
@@ -121,39 +108,10 @@ def _reject_non_finite_walk(obj, context="NLTK JSON"):
                     f"{context}: non-finite JSON number (NaN/Infinity) is not allowed"
                 )
         elif isinstance(cur, dict):
-            if len(cur) < _SUM_AT_LEAST or not _all_finite_members(cur.values()):
-                push(cur.values())
+            stack.extend(cur.values())
         elif isinstance(cur, list):
-            if len(cur) < _SUM_AT_LEAST or not _all_finite_members(cur):
-                push(cur)
+            stack.extend(cur)
     return obj
-
-
-def _all_finite_members(members):
-    """True when the non-empty ``members`` need no visit: their sum (when the
-    first is a float) or their values' sum (when the first is a dict) is
-    finite. Only the first member's type decides whether to try, so a tweet's
-    mixed dicts fail it for free rather than by raising inside a sum."""
-    first = type(next(iter(members)))
-    if first is dict:
-        return _finite_numbers(itertools.chain.from_iterable(map(dict.values, members)))
-    if first is float:
-        return _finite_numbers(members)
-    return False
-
-
-#: Fewest members a container needs before the walk tries to sum it: a smaller
-#: one costs less to visit than a failed sum does to raise.
-_SUM_AT_LEAST = 64
-
-
-def _finite_numbers(values):
-    """True only if every item of *values* is a number and ``math.fsum`` of
-    them is finite, which no item that is a non-finite float allows."""
-    try:
-        return math.isfinite(math.fsum(values))
-    except (TypeError, ValueError, OverflowError):
-        return False
 
 
 def _parsed_text_utf8(data):
@@ -194,27 +152,18 @@ def _scan_json_depth(data, limit):
     the string's closing quote, so every bracket up to the next quote was
     taken for string content and a document of any depth passed.
 
-    Every byte that cannot change nesting depth or open/close a string literal
-    (the backslashes left once the escapes are resolved among them) is deleted
-    at C speed by :meth:`bytes.translate` before the Python-level loop runs,
-    so a legit multi-megabyte model is scanned in well under a second while
-    brackets buried in string values are still counted correctly.
+    Every other byte (the backslashes left after that among them) is deleted
+    at C speed by :meth:`bytes.translate` before the Python loop runs, so a
+    multi-megabyte model is scanned in well under a second.
     """
     return _utf8_depth(_parsed_text_utf8(data), limit)
 
 
 def _utf8_depth(text, limit):
     """:func:`_scan_json_depth` of the parsed text already as UTF-8 bytes."""
+    # Resolve escapes before deleting: each escaped backslash, then each quote.
     text = text.replace(b"\\\\", b"").replace(b'\\"', b"")
-    # With no backslash left, quotes alternate open and close, so an adjacent
-    # pair is an empty string or a close then an open with nothing between:
-    # dropping it leaves every bracket inside or outside a string as it was.
-    residue = text.translate(_IDENTITY_TABLE, _NON_STRUCTURAL).replace(b'""', b"")
-    quotes = residue.count(b'"')
-    if quotes <= _SPLIT_QUOTES:
-        # Quotes alternate, so every other piece between them is outside any
-        # string; those pieces in order are the brackets the loop counts.
-        return _bracket_depth(b"".join(residue.split(b'"')[0::2]), limit)
+    residue = text.translate(_IDENTITY_TABLE, _NON_STRUCTURAL)
     depth = 0
     max_depth = 0
     in_string = False
@@ -232,33 +181,6 @@ def _utf8_depth(text, limit):
         elif byte == 0x5D or byte == 0x7D:  # ']' or '}'
             depth -= 1
     return max_depth
-
-
-#: Brackets :func:`_bracket_depth` counts per step; a document past the cap is
-#: refused within one step of crossing it, as the loop refuses it there.
-_DEPTH_STEP = 1 << 16
-_STEP_OF = bytes.maketrans(b"[{]}", b"\x02\x02\x00\x00")
-#: Most quotes left in a residue that :func:`_utf8_depth` splits on (one small
-#: bytes object per piece); a residue with more takes the loop.
-_SPLIT_QUOTES = 1 << 16
-
-
-def _bracket_depth(residue, limit):
-    """What the loop in :func:`_utf8_depth` returns for brackets that are all
-    outside strings, counted at C speed: an opener is +1, a closer -1, and the
-    deepest running total is the depth. Like the loop it returns the first
-    depth past ``limit``."""
-    depth = best = 0
-    for start in range(0, len(residue), _DEPTH_STEP):
-        steps = residue[start : start + _DEPTH_STEP].translate(_STEP_OF)
-        totals = itertools.accumulate(
-            map(operator.sub, steps, itertools.repeat(1)), initial=depth
-        )
-        best = max(best, max(totals))
-        if best > limit and best > 0:
-            return max(limit + 1, 1)
-        depth += len(steps) - 2 * steps.count(0)
-    return best
 
 
 def safe_json_loads(
@@ -317,20 +239,17 @@ def safe_json_loads(
     return _reject_non_finite_walk(parsed, context)
 
 
-#: Bytes one read of a capped binary read asks for: a buffered stream
-#: allocates what it is asked for before reading, so one read of the whole cap
-#: reserved JSON_MAX_BYTES (200 MiB) for every model file loaded.
+#: Most bytes one step of a capped read asks for: a buffered stream reserves what
+#: it is asked for, so one read of the 200 MiB cap reserved 200 MiB per model.
 _READ_STEP = 1 << 20
 
 
 def _read_capped(reader, size):
     """``reader.read(size)``, asked of a buffered binary stream in steps of at
-    most ``_READ_STEP`` bytes, so it costs the bytes the stream holds rather
-    than ``size``. A buffered stream's ``read(n)`` returns fewer than ``n``
-    bytes only at the end, so steps that stop at ``size`` or at the first
-    empty read return exactly what one read would. Any other stream keeps the
-    single read: a raw one may return short, and a text stream counts in its
-    own unit (a code point, or a byte it decodes)."""
+    most ``_READ_STEP`` bytes, so it costs only the bytes that are there. A
+    buffered ``read(n)`` is short only at the end, so the result is the same.
+    Any other stream keeps one read: a raw read may be short, and a text
+    stream counts characters, not bytes."""
     if not isinstance(reader, io.BufferedIOBase):
         return reader.read(size)
     parts, total = [], 0

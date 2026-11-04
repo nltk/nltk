@@ -22,7 +22,6 @@ import tracemalloc
 
 import pytest
 
-import nltk.data as nltk_data
 import nltk.jsontags as jsontags
 from nltk.data import SeekableUnicodeStreamReader
 from nltk.jsontags import JSON_MAX_BYTES, safe_json_load
@@ -78,9 +77,9 @@ def test_seekable_reader_reads_the_same_in_steps(step, encoding, monkeypatch):
         return [reader.read(size), reader.tell(), reader.read(size), reader.tell()]
 
     for size in (len(data) // 3, len(data) // 2, len(data), len(data) + 3, 10**8):
-        monkeypatch.setattr(nltk_data, "_READ_STEP", 10**10)  # one read
+        monkeypatch.setattr(jsontags, "_READ_STEP", 10**10)  # one read
         want = read_twice(size)
-        monkeypatch.setattr(nltk_data, "_READ_STEP", step)
+        monkeypatch.setattr(jsontags, "_READ_STEP", step)
         assert read_twice(size) == want, size
     assert "".join(read_twice(len(data))[0::2]) == _TEXTS[encoding]
 
