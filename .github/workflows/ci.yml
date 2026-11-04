@@ -426,6 +426,90 @@ jobs:
             pytest --numprocesses auto "${probes[@]}" -rsx --doctest-modules nltk
           fi
 
+  all-data:
+    name: Every data package and module, base against change
+    # On a full run, like the advisory probes: tools/check_all_data.py reads the
+    # whole data index through NLTK's own readers and imports every module, on
+    # the base commit and on this change, and fails on any call that regressed.
+    needs: [pre-commit, setup-matrix]
+    if: needs.setup-matrix.outputs.full == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # the base commit is checked out beside the change, so all history
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+
+      - name: Set NLTK_DATA environment variable
+        shell: bash
+        run: echo "NLTK_DATA=${{ github.workspace }}/nltk_data" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install --upgrade --requirement requirements-ci.txt
+
+      - name: Cache nltk data
+        uses: actions/cache@v6
+        with:
+          path: ${{ github.workspace }}/nltk_data
+          key: nltk_data_${{ runner.os }}_v2
+
+      - name: Bring every package of the index up to date
+        shell: bash
+        run: |
+          # a cache can predate a package or its update: download adds or refreshes it,
+          # then every package of the index must be installed and match its checksum
+          python -c "import os, nltk; from pathlib import Path; path = Path(os.environ['NLTK_DATA']); path.mkdir(parents=True, exist_ok=True); assert nltk.download('all', download_dir=path, quiet=True)"
+          python tools/check_all_data.py packages "$PWD" "$RUNNER_TEMP/packages.json"
+
+      - name: Check out the base commit
+        shell: bash
+        env:
+          EVENT: ${{ github.event_name }}
+          MERGE_GROUP_BASE: ${{ github.event.merge_group.base_sha }}
+          PUSH_BEFORE: ${{ github.event.before }}
+        run: |
+          # a pull request is checked out merged into its base branch, the first
+          # parent; a merge group and a push compare with the commit they build on
+          base="$(git rev-parse HEAD^1)"
+          if [ "$EVENT" = merge_group ]; then
+            base="$MERGE_GROUP_BASE"
+          elif [ "$EVENT" = push ] && [ -n "$PUSH_BEFORE" ] && [ "$PUSH_BEFORE" != 0000000000000000000000000000000000000000 ]; then
+            base="$PUSH_BEFORE"
+          fi
+          git worktree add --detach "$RUNNER_TEMP/base" "$base"
+          echo "base:   $(git -C "$RUNNER_TEMP/base" log -1 --format='%h %s')"
+          echo "change: $(git log -1 --format='%h %s')"
+
+      - name: Read every package and import every module on both trees
+        shell: bash
+        env:
+          # sets, and what readers build from them, keep one order across processes
+          PYTHONHASHSEED: "0"
+        run: |
+          python -P -s tools/check_all_data.py run "$RUNNER_TEMP/base" "$RUNNER_TEMP/packages.json" "$RUNNER_TEMP/base.json" 2> "$RUNNER_TEMP/base.log" &
+          base=$!
+          python -P -s tools/check_all_data.py run "$PWD" "$RUNNER_TEMP/packages.json" "$RUNNER_TEMP/head.json" 2> "$RUNNER_TEMP/head.log" &
+          head=$!
+          rc=0
+          wait "$base" || rc=1
+          wait "$head" || rc=1
+          echo "::group::base"; cat "$RUNNER_TEMP/base.log"; echo "::endgroup::"
+          echo "::group::change"; cat "$RUNNER_TEMP/head.log"; echo "::endgroup::"
+          exit $rc
+
+      - name: Compare the two runs
+        run: python tools/check_all_data.py compare "$RUNNER_TEMP/base.json" "$RUNNER_TEMP/head.json"
+
   docker-cross-account:
     name: Docker root build, appuser runtime (#3928)
     # The reporter's shape run for real: a python:3.11-slim image built from
