@@ -161,10 +161,9 @@ def _frame(body):
     return pickle.FRAME + struct.pack("<Q", len(body)) + body
 
 
-# Opcodes whose argument crosses the end of their frame, then an EXT opcode.
-# "hidden" is the bypass: a file-backed unpickler that reads BININT's argument
-# from after the frame runs the EXT1 opcode that, read in order, is the payload
-# of a SHORT_BINSTRING.
+# Opcodes whose argument crosses the end of their frame, then an EXT opcode;
+# "hidden" runs EXT1 where BININT's argument is read from after the frame,
+# while read in order that EXT1 is a SHORT_BINSTRING's payload.
 _STRADDLING = {
     "line": b"\x80\x04" + _frame(b"I1") + b"2\n" + _ext_tail(),
     "counted": b"\x80\x04" + _frame(b"\x8c\x03a") + b"bc" + _ext_tail(),
