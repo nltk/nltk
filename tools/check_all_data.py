@@ -15,7 +15,7 @@ base commit and once on the change, and compares the two runs call by call:
 * every file of every package is read in full with ``nltk.data.load``, raw as
   NLTK serves it, raw again from the package's zip archive where it is
   unzipped too, and as text; a file in a format ``nltk.data.load`` recognises
-  (pickle, JSON, YAML, grammars, valuations, logic) is loaded in that format,
+  (JSON, YAML, grammars, valuations, logic) is loaded in that format,
   every ``.json`` file is also parsed with :func:`~nltk.jsontags.safe_json_load`,
   and every ``.xml`` file with NLTK's ``XMLCorpusReader``;
 * every corpus loader in ``nltk.corpus`` is read through each public method
@@ -29,6 +29,9 @@ base commit and once on the change, and compares the two runs call by call:
   chunker, tagsets, VADER, stemmers and chat80 run their real pipelines;
 * every module under ``nltk`` is imported, and its public names and
   signatures are recorded.
+
+Pickle files are left out: NLTK no longer loads pickles, and each retired
+pickle package has a pickle-free replacement in the index, which is read.
 
 Each call records a digest of its whole result, hashed item by item as it is
 read, and of what it printed to stdout and stderr, or the exception it raised. ``compare`` fails
@@ -45,6 +48,7 @@ Usage::
     PYTHONHASHSEED=0 python -P -s tools/check_all_data.py run TREE PACKAGES.json \
         OUT.json [--jobs N] [--shard I/N] [--modules]
     python tools/check_all_data.py compare BASE.json HEAD.json
+    python tools/check_all_data.py shard PACKAGES.json I/N OUT.json
 
 ``run`` refuses to start without a fixed ``PYTHONHASHSEED``: the order of a
 set, and of anything a reader builds from one, otherwise changes per process.
@@ -547,7 +551,12 @@ def _check_package(masks, nltk, pkg, loaders):
     run = _Run(masks)
     pid, subdir = pkg["id"], pkg["subdir"]
     files, unzipped = _package_files(nltk, subdir, pid)
-    run.note("files", "ok" if files else "absent", str(len(files)))
+    # NLTK no longer loads pickles: each retired pickle package has a replacement
+    pickles = [f for f in files if f.endswith(".pickle")]
+    files = [f for f in files if not f.endswith(".pickle")]
+    run.note("files", "ok" if files or pickles else "absent", str(len(files)))
+    if pickles:
+        run.note("pickles not read", "ok", str(len(pickles)))
     load = lambda p, f: nltk.data.load(p, format=f, cache=False)
     for name in files:
         path = f"{subdir}/{name}"
@@ -672,6 +681,15 @@ def command_packages(tree, out_path):
     return 1 if missing else 0
 
 
+def command_shard(packages_path, shard, out_path):
+    """Write the packages of one shard, as ``run --shard`` reads them."""
+    with open(packages_path, encoding="utf-8") as f:
+        packages = json.load(f)
+    index, count = (int(n) for n in shard.split("/"))
+    _write_json(out_path, _shard(packages, index, count))
+    return 0
+
+
 def command_run(tree, packages_path, out_path, jobs=1, shard="0/1", modules=False):
     if (
         os.environ.get("PYTHONHASHSEED", "random") == "random"
@@ -767,19 +785,22 @@ def _classify(base, head):
 
 
 def _coverage(run):
-    """(files of the index, files read in full, the files that were not) of a run."""
-    files = read = 0
+    """(files of the index, files read in full, the files that were not, pickles
+    left out) of a run."""
+    files = read = pickles = 0
     unread = []
     for pid, calls in run["packages"].items():
         if "files" in calls:
             files += int(calls["files"][1] or 0)
+        if "pickles not read" in calls:
+            pickles += int(calls["pickles not read"][1])
         for label, entry in calls.items():
             if label.startswith("read ") and not label.startswith("read zip "):
                 if entry[0] == "ok":
                     read += 1
                 else:
                     unread.append((pid, label[5:], entry[:2]))
-    return files, read, unread
+    return files, read, unread, pickles
 
 
 def command_compare(base_path, head_path):
@@ -792,13 +813,13 @@ def command_compare(base_path, head_path):
             f"the runs read different packages (shards {base['shard']}, {head['shard']})"
         )
     failing, reported = _classify(base, head)
-    files, read, unread = _coverage(head)
+    files, read, unread, pickles = _coverage(head)
     calls = sum(map(len, head["packages"].values()))
     packages = len(head["packages"]) - 1
     lines = [
         f"## Every data file and module, shard {head['shard']}: {packages} packages, {calls} calls, {len(head['modules'])} modules",
         "",
-        f"**{read} of the {files} files** of these packages read in full on the change; {len(unread)} could not be read (listed below).",
+        f"**{read} of the {files} files** of these packages read in full on the change; {len(unread)} could not be read (listed below); {pickles} pickle files left out, as NLTK no longer loads pickles.",
         "",
         f"**{len(failing)} regressions** (a call that worked on the base and fails, changed or is gone; a call that ran out of time on either tree; a module that no longer imports), {len(reported)} other differences.",
     ]
@@ -854,12 +875,18 @@ def main(argv):
     run.add_argument("--jobs", type=int, default=1)
     run.add_argument("--shard", default="0/1")
     run.add_argument("--modules", action="store_true")
+    shard = commands.add_parser("shard")
+    shard.add_argument("packages")
+    shard.add_argument("shard")
+    shard.add_argument("out")
     compare = commands.add_parser("compare")
     compare.add_argument("base")
     compare.add_argument("head")
     args = parser.parse_args(argv)
     if args.command == "packages":
         return command_packages(args.tree, args.out)
+    if args.command == "shard":
+        return command_shard(args.packages, args.shard, args.out)
     if args.command == "run":
         return command_run(
             args.tree, args.packages, args.out, args.jobs, args.shard, args.modules
