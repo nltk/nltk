@@ -171,8 +171,12 @@ class ToktokTokenizer(TokenizerI):
     def tokenize(self, text, return_str=False):
         text = str(text)  # Converts input string into unicode.
         for regexp, substitution in self.TOKTOK_REGEXES:
-            needs = _NEEDS.get(id(regexp))
-            if needs is None or any(c in text for c in needs):
+            entry = _NEEDS.get(id(regexp))
+            if (
+                entry is None
+                or entry[0] is not regexp
+                or any(c in text for c in entry[1])
+            ):
                 text = regexp.sub(substitution, text)
         # Finally, strips heading and trailing spaces
         # and converts output string into unicode.
@@ -204,10 +208,11 @@ _NEEDS_BY_SOURCE = {
     r"""(?<!\.)\.\s*(["'""" "\u2019\u00bb\u203a\u201d" r"""]) *$""": ".",
 }
 
-#: The same, keyed by the identity of the class's compiled patterns, so a
-#: subclass or caller that substitutes its own pattern is never filtered.
+#: The same, keyed by the identity of the class's compiled patterns and holding
+#: each one, so no other object can take its id while the entry lives and an
+#: entry applies only to that very pattern; any other pattern always runs.
 _NEEDS = {
-    id(pattern): _NEEDS_BY_SOURCE[pattern.pattern]
+    id(pattern): (pattern, _NEEDS_BY_SOURCE[pattern.pattern])
     for pattern, _repl in ToktokTokenizer.TOKTOK_REGEXES
     if pattern.pattern in _NEEDS_BY_SOURCE
 }

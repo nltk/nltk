@@ -50,7 +50,8 @@ def test_no_match_without_a_needed_character(pattern, repl):
     """Every string of up to two characters over all the needed characters
     and ten others, and of three over a smaller set, that holds none of this
     pattern's needed characters is left unchanged by its substitution."""
-    needs = treebank_module._NEEDS[id(pattern)]
+    held, needs = treebank_module._NEEDS[id(pattern)]
+    assert held is pattern
     wide = [c for c in _ALL_NEEDED + _OTHERS if c not in needs]
     narrow = [c for c in _ALL_NEEDED[::3] + _OTHERS[:6] if c not in needs]
     strings = [""]

@@ -245,10 +245,11 @@ _NEEDS_BY_SOURCE = {
     r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) ": "'",
 }
 
-#: The same, keyed by the identity of the class's compiled patterns, so an
-#: edited or substituted pattern is never filtered.
+#: The same, keyed by the identity of the class's compiled patterns and holding
+#: each one, so no other object can take its id while the entry lives and an
+#: entry applies only to that very pattern; an edited one always runs.
 _NEEDS = {
-    id(pattern): _NEEDS_BY_SOURCE[pattern.pattern]
+    id(pattern): (pattern, _NEEDS_BY_SOURCE[pattern.pattern])
     for pattern, _repl in (
         TreebankWordTokenizer.STARTING_QUOTES
         + TreebankWordTokenizer.PUNCTUATION

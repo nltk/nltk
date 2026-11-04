@@ -41,7 +41,8 @@ def test_filtered_patterns_are_the_ones_with_a_short_character_list():
     ],
 )
 def test_no_match_without_a_needed_character(pattern, repl):
-    needs = toktok._NEEDS[id(pattern)]
+    held, needs = toktok._NEEDS[id(pattern)]
+    assert held is pattern
     wide = [c for c in _ALL_NEEDED + _OTHERS if c not in needs]
     narrow = [c for c in _ALL_NEEDED[::2] + _OTHERS[:6] if c not in needs]
     strings = [""]
@@ -72,3 +73,17 @@ def test_a_substituted_pattern_is_always_run():
         TOKTOK_REGEXES = [(redos.compile(r"x"), "y")] + ToktokTokenizer.TOKTOK_REGEXES
 
     assert Mine().tokenize("ax b") == ["ay", "b"]
+
+
+def test_an_entry_applies_only_to_the_pattern_it_holds(monkeypatch):
+    """An entry found under a pattern's id but holding another object, which
+    is what a reused id would look like, does not filter that pattern."""
+    mine, other = redos.compile(r"x"), redos.compile(r"x")
+
+    class Mine(ToktokTokenizer):
+        TOKTOK_REGEXES = [(mine, "y")]
+
+    monkeypatch.setitem(toktok._NEEDS, id(mine), (other, "q"))
+    assert Mine().tokenize("axb") == ["ayb"]
+    monkeypatch.setitem(toktok._NEEDS, id(mine), (mine, "q"))
+    assert Mine().tokenize("axb") == ["axb"]

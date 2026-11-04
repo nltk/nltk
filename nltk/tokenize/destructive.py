@@ -285,10 +285,11 @@ _NEEDS_BY_SOURCE = {
     r"--": "-",
 }
 
-#: The same, keyed by the identity of NLTKWordTokenizer's compiled patterns, so
-#: a subclass or caller that substitutes its own pattern is never filtered.
+#: The same, keyed by the identity of NLTKWordTokenizer's compiled patterns and
+#: holding each one, so no other object can take its id while the entry lives
+#: and an entry applies only to that very pattern; any other pattern always runs.
 _NEEDS = {
-    id(pattern): _NEEDS_BY_SOURCE[pattern.pattern]
+    id(pattern): (pattern, _NEEDS_BY_SOURCE[pattern.pattern])
     for pattern, _repl in (
         NLTKWordTokenizer.STARTING_QUOTES
         + NLTKWordTokenizer.ENDING_QUOTES
@@ -300,13 +301,19 @@ _NEEDS = {
 }
 
 
+def _needs_of(index, regexp):
+    """The characters ``index`` holds for this very ``regexp`` object, or None."""
+    entry = index.get(id(regexp))
+    return entry[1] if entry is not None and entry[0] is regexp else None
+
+
 def _sub(regexp, substitution, text, index=None):
     """``regexp.sub(substitution, text)``, except that a text holding none of
     the characters every match of one of NLTKWordTokenizer's own patterns
     needs is returned as it is: there is nothing to substitute, and the timed
     regex call (two reads of the process clock in the engine) is skipped.
     ``index`` is another tokenizer's own map of the same kind."""
-    needs = (_NEEDS if index is None else index).get(id(regexp))
+    needs = _needs_of(_NEEDS if index is None else index, regexp)
     if needs is not None and not any(c in text for c in needs):
         return text
     return regexp.sub(substitution, text)

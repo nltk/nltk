@@ -52,7 +52,8 @@ def test_no_match_without_a_needed_character(pattern, repl):
     """Every string of up to two characters over all the needed characters
     and ten others, and of three over a smaller set, that holds none of this
     pattern's needed characters is left unchanged by its substitution."""
-    needs = destructive._NEEDS[id(pattern)]
+    held, needs = destructive._NEEDS[id(pattern)]
+    assert held is pattern
     wide = [c for c in _ALL_NEEDED + _OTHERS if c not in needs]
     narrow = [c for c in _ALL_NEEDED[::3] + _OTHERS[:6] if c not in needs]
     strings = [""]
@@ -98,3 +99,13 @@ def test_a_substituted_pattern_is_always_run():
         DOUBLE_DASHES = (redos.compile(r"--"), r" -- ")
 
     assert Mine().tokenize("ax b--c") == ["ay", "b", "--", "c"]
+
+
+def test_an_entry_applies_only_to_the_pattern_it_holds(monkeypatch):
+    """An entry found under a pattern's id but holding another object, which
+    is what a reused id would look like, does not filter that pattern."""
+    mine, other = redos.compile(r"x"), redos.compile(r"x")
+    monkeypatch.setitem(destructive._NEEDS, id(mine), (other, "q"))
+    assert destructive._sub(mine, "y", "axb") == "ayb"
+    monkeypatch.setitem(destructive._NEEDS, id(mine), (mine, "q"))
+    assert destructive._sub(mine, "y", "axb") == "axb"
