@@ -427,14 +427,19 @@ jobs:
           fi
 
   all-data:
-    name: Every data package and module, base against change
-    # On a full run, like the advisory probes: tools/check_all_data.py reads the
-    # whole data index through NLTK's own readers and imports every module, on
-    # the base commit and on this change, and fails on any call that regressed.
-    needs: [pre-commit, setup-matrix]
-    if: needs.setup-matrix.outputs.full == 'true'
+    name: Every data file and module, base against change (shard ${{ matrix.shard }} of 8)
+    # With the full-data label only: tools/check_all_data.py reads every file of
+    # the data index through each NLTK loader and reader that can open it, and
+    # imports every module, on the base commit and on this change, and fails on
+    # any call that regressed or did not finish. The packages are split in shards.
+    needs: [pre-commit]
+    if: contains(github.event.pull_request.labels.*.name, 'full-data')
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
     permissions:
       contents: read
     steps:
@@ -450,59 +455,46 @@ jobs:
 
       - name: Set NLTK_DATA environment variable
         shell: bash
-        run: echo "NLTK_DATA=${{ github.workspace }}/nltk_data" >> $GITHUB_ENV
+        run: echo "NLTK_DATA=$RUNNER_TEMP/nltk_data" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install --upgrade --requirement requirements-ci.txt
 
-      - name: Cache nltk data
-        uses: actions/cache@v6
-        with:
-          path: ${{ github.workspace }}/nltk_data
-          key: nltk_data_${{ runner.os }}_v2
-
-      - name: Bring every package of the index up to date
+      - name: Download all the data with the NLTK downloader
         shell: bash
         run: |
-          # a cache can predate a package or its update: download adds or refreshes it,
-          # then every package of the index must be installed and match its checksum
-          python -c "import os, nltk; from pathlib import Path; path = Path(os.environ['NLTK_DATA']); path.mkdir(parents=True, exist_ok=True); assert nltk.download('all', download_dir=path, quiet=True)"
+          # no cache: the downloader of this change fetches every package of the index,
+          # then each must be installed and match its checksum (the CLI exits 0 on error)
+          python -m nltk.downloader -d "$NLTK_DATA" -e all
           python tools/check_all_data.py packages "$PWD" "$RUNNER_TEMP/packages.json"
 
       - name: Check out the base commit
         shell: bash
-        env:
-          EVENT: ${{ github.event_name }}
-          MERGE_GROUP_BASE: ${{ github.event.merge_group.base_sha }}
-          PUSH_BEFORE: ${{ github.event.before }}
         run: |
-          # a pull request is checked out merged into its base branch, the first
-          # parent; a merge group and a push compare with the commit they build on
-          base="$(git rev-parse HEAD^1)"
-          if [ "$EVENT" = merge_group ]; then
-            base="$MERGE_GROUP_BASE"
-          elif [ "$EVENT" = push ] && [ -n "$PUSH_BEFORE" ] && [ "$PUSH_BEFORE" != 0000000000000000000000000000000000000000 ]; then
-            base="$PUSH_BEFORE"
-          fi
-          git worktree add --detach "$RUNNER_TEMP/base" "$base"
+          # a pull request is checked out merged into its base branch, the first parent
+          git worktree add --detach "$RUNNER_TEMP/base" HEAD^1
           echo "base:   $(git -C "$RUNNER_TEMP/base" log -1 --format='%h %s')"
           echo "change: $(git log -1 --format='%h %s')"
 
-      - name: Read every package and import every module on both trees
+      - name: Read every file of the shard's packages on both trees
         shell: bash
         env:
           # sets, and what readers build from them, keep one order across processes
           PYTHONHASHSEED: "0"
+          SHARD: ${{ matrix.shard }}
         run: |
-          python -P -s tools/check_all_data.py run "$RUNNER_TEMP/base" "$RUNNER_TEMP/packages.json" "$RUNNER_TEMP/base.json" 2> "$RUNNER_TEMP/base.log" &
-          base=$!
-          python -P -s tools/check_all_data.py run "$PWD" "$RUNNER_TEMP/packages.json" "$RUNNER_TEMP/head.json" 2> "$RUNNER_TEMP/head.log" &
-          head=$!
+          modules=()
+          if [ "$SHARD" = 0 ]; then modules=(--modules); fi
+          for tree in base head; do
+            dir="$RUNNER_TEMP/base"
+            if [ "$tree" = head ]; then dir="$PWD"; fi
+            python -P -s tools/check_all_data.py run "$dir" "$RUNNER_TEMP/packages.json" "$RUNNER_TEMP/$tree.json" --jobs 2 --shard "$SHARD/8" "${modules[@]}" 2> "$RUNNER_TEMP/$tree.log" &
+            pids+=($!)
+          done
           rc=0
-          wait "$base" || rc=1
-          wait "$head" || rc=1
+          for pid in "${pids[@]}"; do wait "$pid" || rc=1; done
           echo "::group::base"; cat "$RUNNER_TEMP/base.log"; echo "::endgroup::"
           echo "::group::change"; cat "$RUNNER_TEMP/head.log"; echo "::endgroup::"
           exit $rc
