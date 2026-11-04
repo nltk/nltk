@@ -1,7 +1,22 @@
 {
  "files": {
+  "averaged_perceptron_tagger_eng": {
+   "taggers/averaged_perceptron_tagger_eng/averaged_perceptron_tagger_eng.classes.json": "AttributeError: 'list' object has no attribute 'keys'",
+   "taggers/averaged_perceptron_tagger_eng/averaged_perceptron_tagger_eng.tagdict.json": "TypeError: 'dict_keys' object is not an iterator",
+   "taggers/averaged_perceptron_tagger_eng/averaged_perceptron_tagger_eng.weights.json": "TypeError: 'dict_keys' object is not an iterator"
+  },
   "extended_omw": {
    "corpora/extended_omw/wikt/wn-wikt-*uogien?.tab": "ValueError: Unsafe resource path: 'corpora/extended_omw/wikt/wn-wikt-*uogien?.tab'"
+  },
+  "tagsets_json": {
+   "help/tagsets_json/PY3_json/brown_tagset.json": "TypeError: 'dict_keys' object is not an iterator",
+   "help/tagsets_json/PY3_json/claws5_tagset.json": "TypeError: 'dict_keys' object is not an iterator",
+   "help/tagsets_json/PY3_json/upenn_tagset.json": "TypeError: 'dict_keys' object is not an iterator"
+  },
+  "twitter_samples": {
+   "corpora/twitter_samples/negative_tweets.json": "JSONDecodeError: Extra data: line 2 column 1 (char 2365)",
+   "corpora/twitter_samples/positive_tweets.json": "JSONDecodeError: Extra data: line 2 column 1 (char 3286)",
+   "corpora/twitter_samples/tweets.20150430-223406.json": "JSONDecodeError: Extra data: line 2 column 1 (char 4974)"
   }
  },
  "moses_sample": {
@@ -60,6 +75,28 @@
     "Pe": 2,
     "Ps": 2
    }
+  }
+ },
+ "readers": {
+  "alpino": {
+   "alpino": [
+    [
+     "alpino.xml",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "alpino.xml",
+     "tagged_sents are the tags of parsed_sents"
+    ]
+   ]
+  },
+  "ptb": {
+   "ptb": [
+    [
+     "*",
+     "categories: ValueError"
+    ]
+   ]
   }
  },
  "snowball_data": {
@@ -7790,5 +7827,50 @@
    "fed up",
    "l"
   ]
+ },
+ "wordnets": {
+  "wordnet31": {
+   "its key raises": [
+    "ddc%1:06:01::",
+    "ddi%1:06:01::",
+    "earth%1:15:01::",
+    "earth%1:17:02::",
+    "kb%1:23:01::",
+    "kb%1:23:03::",
+    "moon%1:17:03::",
+    "sun%1:17:02::"
+   ],
+   "not found by its key": [
+    "a%1:10:00::",
+    "b%1:10:00::",
+    "baroque%3:01:00::",
+    "c%1:10:00::",
+    "d%1:10:00::",
+    "doomsday%1:28:00::",
+    "e%1:10:00::",
+    "f%1:10:00::",
+    "g%1:10:00::",
+    "h%1:10:00::",
+    "i%1:10:00::",
+    "j%1:10:00::",
+    "k%1:10:00::",
+    "l%1:10:00::",
+    "m%1:10:00::",
+    "n%1:10:00::",
+    "o%1:10:00::",
+    "p%1:10:00::",
+    "q%1:10:00::",
+    "r%1:10:00::",
+    "s%1:10:00::",
+    "t%1:10:00::",
+    "u%1:10:00::",
+    "utopian%3:01:00::",
+    "v%1:10:00::",
+    "w%1:10:00::",
+    "x%1:10:00::",
+    "y%1:10:00::",
+    "z%1:10:00::"
+   ]
+  }
  }
 }

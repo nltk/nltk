@@ -132,6 +132,16 @@ def test_every_package_has_known_answers():
 CHECKED = sorted(p["id"] for p in SHARD if p["id"] not in RETIRED)
 
 
+def _format_args():
+    from nltk.sem.drt import DrtParser
+
+    # its semantics are DRT, which nltk/test/drt.doctest reads with this parser
+    return {"grammars/book_grammars/drt.fcfg": {"logic_parser": DrtParser()}}
+
+
+_FORMAT_ARGS = _format_args()
+
+
 def _package_files(pkg):
     """(path, form) of every file of a package NLTK can serve: as it finds it,
     and from the zip archive too where the package is also unzipped."""
@@ -168,7 +178,7 @@ def test_every_file_loads(pid):
             extension = name.rsplit(".", 1)[-1].lower() if "." in name else ""
             if form == "served" and extension in nltk.data.AUTO_FORMATS:
                 if extension not in ("txt", "text", "pickle"):
-                    nltk.data.load(path, cache=False)
+                    nltk.data.load(path, cache=False, **_FORMAT_ARGS.get(path, {}))
         except Exception as e:
             refused[path] = f"{type(e).__name__}: {e}"[:160]
     same_departures("files", pid, refused)
@@ -1588,6 +1598,8 @@ def reader_departures(reader):
     from nltk.parse import DependencyGraph
     from nltk.tree import Tree
 
+    # a lazy loader becomes the reader it loads at its first use: load it first
+    fileids = list(reader.fileids())
     plaintext = isinstance(reader, PlaintextCorpusReader)
     exact_plaintext = type(reader) in (
         PlaintextCorpusReader,
@@ -1605,7 +1617,7 @@ def reader_departures(reader):
         "chunked_sents",
         "iob_sents",
     )
-    for fid in reader.fileids():
+    for fid in fileids:
         v = {
             name: _view(reader, name, fid)
             for name in views
@@ -1729,19 +1741,36 @@ def corpus_readers(pid):
     nltk.corpus, or the reader NLTK has for it."""
     import importlib
 
+    readers = []
+    for module_name, name in _LOADERS.get(pid, []):
+        readers.append((name, getattr(importlib.import_module(module_name), name)))
+    if pid in _BUILT:
+        try:
+            readers.append((pid, _BUILT[pid]()))
+        except Exception as e:
+            readers.append((pid, f"cannot be built: {type(e).__name__}: {e}"[:200]))
+    return readers
+
+
+def _loader_table():
+    """Package id -> (module, name) of each loader, read before any is loaded:
+    a loaded one is its reader, which no longer says what it loads."""
+    import importlib
+
     from nltk.corpus.util import LazyCorpusLoader
 
-    readers = []
+    table = defaultdict(list)
     for module_name in ("nltk.corpus", "nltk.corpus.europarl_raw"):
         module = importlib.import_module(module_name)
         for name in sorted(dir(module)):
             loader = getattr(module, name, None)
             if isinstance(loader, LazyCorpusLoader):
-                if vars(loader)["_LazyCorpusLoader__name"].split("/")[0] == pid:
-                    readers.append((name, loader))
-    if pid in _BUILT:
-        readers.append((pid, _BUILT[pid]()))
-    return readers
+                pid = vars(loader)["_LazyCorpusLoader__name"].split("/")[0]
+                table[pid].append((module_name, name))
+    return table
+
+
+_LOADERS = _loader_table() if FULL else {}
 
 
 def _build(pid):
@@ -1780,7 +1809,10 @@ _NOT_WORD_READERS = {
 
 def _invariants(pid):
     def check():
-        found = {label: reader_departures(r) for label, r in corpus_readers(pid)}
+        found = {
+            label: r if isinstance(r, str) else reader_departures(r)
+            for label, r in corpus_readers(pid)
+        }
         assert found, f"{pid} has no reader"
         same_departures("readers", pid, {k: v for k, v in found.items() if v})
 
@@ -1791,24 +1823,8 @@ def _register_corpora():
     for pkg in INDEX:
         if pkg["subdir"] == "corpora" and pkg["id"] not in _NOT_WORD_READERS:
             pid = pkg["id"]
-            if pid in _BUILT or any(True for _ in _loader_names(pid)):
+            if pid in _BUILT or pid in _LOADERS:
                 ANSWERS[pid].append(_invariants(pid))
-
-
-def _loader_names(pid):
-    import importlib
-
-    from nltk.corpus.util import LazyCorpusLoader
-
-    for module_name in ("nltk.corpus", "nltk.corpus.europarl_raw"):
-        module = importlib.import_module(module_name)
-        for name in dir(module):
-            loader = getattr(module, name, None)
-            if (
-                isinstance(loader, LazyCorpusLoader)
-                and vars(loader)["_LazyCorpusLoader__name"].split("/")[0] == pid
-            ):
-                yield name
 
 
 if FULL:
