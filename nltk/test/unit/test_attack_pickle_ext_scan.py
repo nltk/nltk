@@ -63,9 +63,8 @@ def _ext_tail():
     return pickle.POP + pickle.EXT1 + bytes([_CODE]) + pickle.STOP
 
 
-# Argument contents the C unpickler and pickletools may judge differently.
-# Each line opcode is followed by POP, EXT1 and STOP, so a scan that stopped at
-# the line would never see the EXT opcode.
+# Line arguments the C unpickler and pickletools may judge differently, each
+# followed by POP, EXT1 and STOP: a scan that stopped at the line misses EXT1.
 _LINE_CONTENTS = (
     b"0x1",
     b"0o7",
@@ -161,9 +160,8 @@ def _frame(body):
     return pickle.FRAME + struct.pack("<Q", len(body)) + body
 
 
-# Opcodes whose argument crosses the end of their frame, then an EXT opcode;
-# "hidden" runs EXT1 where BININT's argument is read from after the frame,
-# while read in order that EXT1 is a SHORT_BINSTRING's payload.
+# Arguments crossing their frame's end, then EXT1. In "hidden" the unpickler runs
+# EXT1 (BININT read past the frame); in order it is a SHORT_BINSTRING's payload.
 _STRADDLING = {
     "line": b"\x80\x04" + _frame(b"I1") + b"2\n" + _ext_tail(),
     "counted": b"\x80\x04" + _frame(b"\x8c\x03a") + b"bc" + _ext_tail(),
