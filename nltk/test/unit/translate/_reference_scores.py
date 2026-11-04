@@ -5,7 +5,7 @@
 # For license information, see LICENSE.TXT
 
 """
-Scores of 16 small corpora by the reference implementations, for the
+Scores of 17 small corpora by the reference implementations, for the
 "mteval" and "sacrebleu" modes of the metrics in nltk.translate.
 
 MTEVAL: mteval-v14.pl from moses-smt/mosesdecoder 08e782040 (sha256
@@ -14,6 +14,8 @@ SGML files with -c, the default smoothing ("exp") and --no-smoothing
 ("none"), its report printed with 12 decimals. mteval-v13a.pl gives the same
 numbers except for C10, an empty hypothesis, where it stops on "Can't take
 log of 0" in its length-ratio line. Sentence scores are one-segment test sets.
+C16 has the word "0": mteval weighs a bigram that starts with it against all
+the reference words, as Perl reads the string "0" as false.
 
 SACREBLEU: sacrebleu 2.6.0, tokenize="none", scores divided by 100. BLEU with
 smooth_method none, exp, floor and add-k, effective_order off and on
@@ -457,6 +459,16 @@ CASES = {
             ["the", "the", "the", "the", "the", "the", "the"],
         )
     ],
+    "C16_zero_token": [
+        (
+            [["the", "match", "ended", "3", ":", "0", "for", "the", "home", "team"]],
+            ["the", "home", "team", "won", "3", ":", "0", "in", "the", "match"],
+        ),
+        (
+            [["0", "points", "for", "the", "visitors", "and", "0", "goals"]],
+            ["the", "visitors", "got", "0", "points", "and", "0", "goals"],
+        ),
+    ],
 }
 
 MTEVAL = {
@@ -603,6 +615,15 @@ MTEVAL = {
         "nist.corpus.4": 0.60442206212,
         "nist.corpus.5": 0.60442206212,
         "nist.sentence.5": [0.60442206212],
+    },
+    "C16_zero_token": {
+        "bleu.corpus.exp": 0.254349456827,
+        "bleu.sentence.exp": [0.298474589601, 0.302137539736],
+        "bleu.corpus.none": 0.0,
+        "bleu.sentence.none": [0.0, 0.0],
+        "nist.corpus.4": 3.765037761694,
+        "nist.corpus.5": 3.765037761694,
+        "nist.sentence.5": [2.679764698132, 3.232142857143],
     },
 }
 
@@ -1028,5 +1049,31 @@ SACREBLEU = {
         "chrf.sentence.beta3.effective-order": [0.14680981632981915],
         "chrf.corpus.beta3.eps": 0.14680733924337935,
         "chrf.sentence.beta3.eps": [0.14680733924337935],
+    },
+    "C16_zero_token": {
+        "bleu.corpus.none": 0.0,
+        "bleu.sentence.none": [0.0, 0.0],
+        "bleu.corpus.none.eff": 0.0,
+        "bleu.sentence.none.eff": [0.0, 0.0],
+        "bleu.corpus.exp": 0.2543494568273062,
+        "bleu.sentence.exp": [0.29847458960098217, 0.30213753973567686],
+        "bleu.corpus.exp.eff": 0.2543494568273062,
+        "bleu.sentence.exp.eff": [0.29847458960098217, 0.30213753973567686],
+        "bleu.corpus.floor": 0.17009373332928007,
+        "bleu.sentence.floor": [0.19960198807747329, 0.20205155046766232],
+        "bleu.corpus.floor.eff": 0.17009373332928007,
+        "bleu.sentence.floor.eff": [0.19960198807747329, 0.20205155046766232],
+        "bleu.corpus.add-k": 0.31666408005860797,
+        "bleu.sentence.add-k": [0.3760603093086393, 0.401714209472326],
+        "bleu.corpus.add-k.eff": 0.31666408005860797,
+        "bleu.sentence.add-k.eff": [0.3760603093086393, 0.401714209472326],
+        "chrf.corpus.beta2.effective-order": 0.6496310450079009,
+        "chrf.sentence.beta2.effective-order": [0.5606095946644141, 0.7367008172755298],
+        "chrf.corpus.beta2.eps": 0.6496298117273842,
+        "chrf.sentence.beta2.eps": [0.5606049647568452, 0.7367008172755298],
+        "chrf.corpus.beta3.effective-order": 0.6461033146853816,
+        "chrf.sentence.beta3.effective-order": [0.5545022630043347, 0.7367008172755298],
+        "chrf.corpus.beta3.eps": 0.6461026323017325,
+        "chrf.sentence.beta3.eps": [0.5544997436882935, 0.7367008172755299],
     },
 }

@@ -158,6 +158,10 @@ class NIST(MetricI):
     Both modes weigh the n-grams by the information they carry in all the
     references of the corpus. When no hypothesis has n-grams of an order,
     mteval adds 0 for that order and the "nltk" mode raises ValueError.
+    mteval-v13a.pl weighs a bigram whose first word is "0" against all the
+    reference words, because Perl reads the string "0" as false; the mteval
+    mode does the same, so its scores are the script's, and the nltk mode
+    weighs such a bigram by the count of "0", as Eqn 2 says.
 
     NIST sums its orders, so an order without matches adds 0 and does not
     take the others with it as it does in BLEU; the "nltk" mode still smooths
@@ -198,7 +202,9 @@ class NIST(MetricI):
         self.n, self.smoothing, self.smooth_value = n, smoothing, smooth_value
 
     def _corpus_score(self, list_of_references, hypotheses):
-        information_weights = _information_weights(list_of_references, self.n)
+        information_weights = _information_weights(
+            list_of_references, self.n, mteval=self.mode == "mteval"
+        )
         if self.mode == "mteval":
             return _mteval_corpus_nist(
                 list_of_references, hypotheses, self.n, information_weights
@@ -213,8 +219,11 @@ class NIST(MetricI):
         )
 
 
-def _information_weights(list_of_references, n):
-    """The information weight of every reference n-gram, Eqn 2 in Doddington (2002)."""
+def _information_weights(list_of_references, n, mteval=False):
+    """
+    The information weight of every reference n-gram, Eqn 2 in Doddington
+    (2002); with ``mteval``, as mteval-v13a.pl computes them.
+    """
     # Collect the ngram coounts from the reference sentences.
     ngram_freq = Counter()
     total_reference_words = 0
@@ -239,7 +248,10 @@ def _information_weights(list_of_references, n):
         #     information_weights[_ngram] = -1 * math.log(ngram_freq[_ngram]/denominator) / math.log(2)
         #
         # Mathematically, it's equivalent to the our implementation:
-        if _mgram and _mgram in ngram_freq:
+        # mteval-v13a.pl tests the prefix as a Perl string, which is false
+        # when it is "0": there a bigram that starts with the word "0" is
+        # weighed against all the reference words, as a unigram is.
+        if _mgram and _mgram in ngram_freq and not (mteval and _mgram == ("0",)):
             numerator = ngram_freq[_mgram]
         else:
             numerator = total_reference_words
