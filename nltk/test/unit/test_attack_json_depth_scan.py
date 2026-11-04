@@ -301,3 +301,63 @@ def test_scan_of_surrogates_split_between_steps(step, monkeypatch):
         doc = '["' + chars + '\\\\", [["' + chars + '"], {"' + chars + '": []}]]'
         for data in (doc, doc.encode("utf-8", "surrogatepass")):
             assert _scan_json_depth(data, 10**9) == _depth(json.loads(data)) == 4
+
+
+def test_tagged_raw_decode_refuses_a_deep_value_at_any_index():
+    """raw_decode, the decoder's call for the value at an index of a longer
+    string, runs the same recursive C scanner as decode: a value nested past
+    the cap is refused at the start, after a prefix, and after any string."""
+    limit = JSONTaggedDecoder.MAX_DECODE_DEPTH
+    for name, doc in _attack_docs(limit + 1):
+        for prefix in ("", "1 ", '"[[[" '):
+            with pytest.raises(ValueError, match=_REFUSED):
+                JSONTaggedDecoder().raw_decode(prefix + doc + " [1]", len(prefix))
+    nested = _nested(limit)
+    assert JSONTaggedDecoder().raw_decode(nested + " x") == (
+        json.loads(nested),
+        len(nested),
+    )
+
+
+def test_tagged_raw_decode_scans_only_the_value_it_decodes():
+    """The scan of raw_decode stops where the value at the index closes, as the
+    parser does: a shallow value before a deep one decodes, so value after value
+    of one long string is scanned once each, and the deep one is refused when
+    its turn comes, as decode refuses the whole string."""
+    deep = _nested(JSONTaggedDecoder.MAX_DECODE_DEPTH + 1)
+    s = '[[1], {"a": "]]"}] ' + deep
+    decoder = JSONTaggedDecoder()
+    value, end = decoder.raw_decode(s)
+    assert value == [[1], {"a": "]]"}] and s[end:] == " " + deep
+    with pytest.raises(ValueError, match=_REFUSED):
+        decoder.raw_decode(s, end + 1)
+    with pytest.raises(ValueError, match=_REFUSED):
+        json.loads(s, cls=JSONTaggedDecoder)
+
+
+_CHILD_RAW_DECODE = r"""
+import sys
+from nltk.jsontags import JSONTaggedDecoder
+sys.setrecursionlimit(1_000_000)
+n = 300_000
+try:
+    JSONTaggedDecoder().raw_decode("1 " + "[" * n + "]" * n, 2)
+except ValueError as exc:
+    print("REFUSED", exc)
+"""
+
+
+def test_tagged_raw_decode_of_a_deep_value_cannot_crash():
+    """With the recursion limit raised, a 300,000-deep value handed to
+    raw_decode reached the C scanner unscanned: a segfault on Python 3.11 and
+    a RecursionError after it. It must be refused with the scan's message."""
+    env = dict(os.environ, PYTHONPATH=os.pathsep.join(sys.path))
+    proc = subprocess.run(
+        [sys.executable, "-c", _CHILD_RAW_DECODE],
+        capture_output=True,
+        text=True,
+        env=env,
+        timeout=300,
+    )
+    assert proc.returncode == 0, (proc.returncode, proc.stderr[-500:])
+    assert "REFUSED" in proc.stdout and _REFUSED in proc.stdout, proc.stdout

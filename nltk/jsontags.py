@@ -115,7 +115,7 @@ def _reject_non_finite_walk(obj, context="NLTK JSON"):
     return obj
 
 
-def _parsed_text_steps(data):
+def _parsed_text_steps(data, start=0):
     """The text ``json.loads`` will parse, as UTF-8 bytes in steps of ``_READ_STEP``.
 
     A ``str`` is parsed as it is. ``bytes`` are decoded first with the
@@ -138,9 +138,10 @@ def _parsed_text_steps(data):
     scan costs that much memory beyond the document whatever its form. Encoding
     a ``str`` whole, or decoding UTF-16 whole and encoding it again, held one or
     two more copies of the document before the scan could refuse it (CWE-400).
+    ``start`` is where a ``str`` is read from.
     """
     if isinstance(data, str):
-        for i in range(0, len(data), _READ_STEP):
+        for i in range(start, len(data), _READ_STEP):
             yield data[i : i + _READ_STEP].encode("utf-8", "surrogatepass")
         return
     encoding = json.detect_encoding(data)
@@ -202,8 +203,12 @@ def _utf8_depth(text, limit):
     return _steps_depth(steps, limit)
 
 
-def _steps_depth(steps, limit):
-    """The depth of the parsed text given in steps; see :func:`_scan_json_depth`."""
+def _steps_depth(steps, limit, first_value=False):
+    """The depth of the parsed text given in steps; see :func:`_scan_json_depth`.
+
+    With ``first_value`` the scan stops where the first value closes, which is
+    as far as ``raw_decode`` parses.
+    """
     depth = 0
     max_depth = 0
     in_string = False
@@ -230,6 +235,8 @@ def _steps_depth(steps, limit):
                         return max_depth
             elif byte == 0x5D or byte == 0x7D:  # ']' or '}'
                 depth -= 1
+                if first_value and depth == 0:
+                    return max_depth
     return max_depth
 
 
@@ -540,6 +547,23 @@ class JSONTaggedDecoder(json.JSONDecoder):
             )
         try:
             return self.decode_obj(super().decode(s))
+        except RecursionError:
+            raise ValueError("JSON nesting too deep to decode safely")
+
+    def raw_decode(self, s, idx=0):
+        # A direct call, decoding the value at idx of a longer string, runs the
+        # same recursive C scanner; it is scanned as far as that value goes.
+        if s[idx : idx + 1] in ("[", "{"):
+            steps = _parsed_text_steps(s, idx)
+            if _steps_depth(steps, self.MAX_DECODE_DEPTH, first_value=True) > (
+                self.MAX_DECODE_DEPTH
+            ):
+                raise ValueError(
+                    "JSON nesting depth exceeds maximum allowed "
+                    f"({self.MAX_DECODE_DEPTH})"
+                )
+        try:
+            return super().raw_decode(s, idx)
         except RecursionError:
             raise ValueError("JSON nesting too deep to decode safely")
 
