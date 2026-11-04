@@ -23,6 +23,7 @@ Model (Doctoral dissertation). Columbus, OH, USA: The Ohio State University.
 
 from nltk import redos
 from nltk.tokenize.api import TokenizerI
+from nltk.tokenize.destructive import _sub
 
 
 class ToktokTokenizer(TokenizerI):
@@ -171,22 +172,15 @@ class ToktokTokenizer(TokenizerI):
     def tokenize(self, text, return_str=False):
         text = str(text)  # Converts input string into unicode.
         for regexp, substitution in self.TOKTOK_REGEXES:
-            entry = _NEEDS.get(id(regexp))
-            if (
-                entry is None
-                or entry[0] is not regexp
-                or any(c in text for c in entry[1])
-            ):
-                text = regexp.sub(substitution, text)
+            text = _sub(regexp, substitution, text, _NEEDS)
         # Finally, strips heading and trailing spaces
         # and converts output string into unicode.
         text = str(text.strip())
         return text if return_str else text.split()
 
 
-#: For 18 of ToktokTokenizer's own patterns (by source), the characters one
-#: of which every match contains; a text holding none skips the timed call.
-#: The four wide Unicode classes and the space run always run.
+#: For 18 of ToktokTokenizer's own patterns (by source), the characters every
+#: match holds one of (see destructive._sub); the other patterns always run.
 _NEEDS_BY_SOURCE = {
     "\u00a0": "\u00a0",
     r":(?!//)": ":",
@@ -208,9 +202,8 @@ _NEEDS_BY_SOURCE = {
     r"""(?<!\.)\.\s*(["'""" "\u2019\u00bb\u203a\u201d" r"""]) *$""": ".",
 }
 
-#: The same, keyed by the identity of the class's compiled patterns and holding
-#: each one, so no other object can take its id while the entry lives and an
-#: entry applies only to that very pattern; any other pattern always runs.
+#: The same by ``id`` of each compiled pattern, holding the pattern so the id is
+#: never reused; an entry applies only to that object, so any other pattern runs.
 _NEEDS = {
     id(pattern): (pattern, _NEEDS_BY_SOURCE[pattern.pattern])
     for pattern, _repl in ToktokTokenizer.TOKTOK_REGEXES

@@ -39,10 +39,9 @@ _FILE_SCHEME_RE = redos.compile(r"^\s*file:", re.IGNORECASE)
 
 
 def _may_name_a_scheme(raw):
-    """False only when neither scheme pattern above can match ``raw``: both
-    start ``^\\s*`` and then an h or an f in either case, so a first character
-    that is ASCII, neither whitespace nor a control, and no h or f rules both
-    out without running the engine (an absolute path's ``/`` or drive letter)."""
+    """False only when neither scheme pattern above can match ``raw``. Both
+    start ``^\\s*`` then h or f, so a printable, non-space ASCII first character
+    other than h or f (a ``/`` or a drive letter) rules them out."""
     return not raw or not ("\x20" < raw[0] < "\x7f") or raw[0] in "hHfF"
 
 
@@ -740,11 +739,8 @@ def _exact_path_text(value, context="NLTK"):
 
 def _within_any(target, roots):
     """``any(target == root or target.is_relative_to(root) for root in roots)``
-    for a set of resolved roots, asked the other way round: ``target`` is under
-    a root exactly when it or one of its ``parents`` equals one, and a path's
-    hash agrees with its ``==`` (both use the flavour's case-folded form), so
-    each ancestor is looked up in the set once instead of building every
-    ancestor again for each root (``is_relative_to`` walks ``parents`` too)."""
+    for a set of roots: ``target`` is under a root exactly when it or one of
+    its ``parents`` is in the set (a path hashes as it compares)."""
     return target in roots or any(parent in roots for parent in target.parents)
 
 

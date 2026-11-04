@@ -218,8 +218,7 @@ class TreebankWordTokenizer(TokenizerI):
 
 
 #: For TreebankWordTokenizer's own substitution patterns (by source), the
-#: characters at least one of which every match of it contains; a text holding
-#: none is left as it is without the timed regex call (see destructive._sub).
+#: characters every match holds at least one of (see destructive._sub).
 _NEEDS_BY_SOURCE = {
     r"^\"": '"',
     r"(``)": "`",
@@ -245,9 +244,8 @@ _NEEDS_BY_SOURCE = {
     r"([^' ])('ll|'LL|'re|'RE|'ve|'VE|n't|N'T) ": "'",
 }
 
-#: The same, keyed by the identity of the class's compiled patterns and holding
-#: each one, so no other object can take its id while the entry lives and an
-#: entry applies only to that very pattern; an edited one always runs.
+#: The same by ``id`` of each compiled pattern, holding the pattern so the id is
+#: never reused; an entry applies only to that object, so any other pattern runs.
 _NEEDS = {
     id(pattern): (pattern, _NEEDS_BY_SOURCE[pattern.pattern])
     for pattern, _repl in (

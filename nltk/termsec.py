@@ -151,9 +151,8 @@ def _is_clean(text, single_line):
         return False
     if text.isascii():
         return True  # every printable-but-dangerous character is non-ASCII
-    # Only a character no greater than the text's largest can occur in it, so
-    # only that prefix of the sorted set is searched: none of it for text that
-    # stays below U+115F (Latin through Thai), a handful for CJK.
+    # Only characters no greater than the text's largest can occur in it, so
+    # search just that prefix of the sorted set (none below U+115F).
     count = bisect.bisect_right(_PRINTABLE_BUT_DANGEROUS_SORTED, max(text))
     return not any(c in text for c in _PRINTABLE_BUT_DANGEROUS_SORTED[:count])
 

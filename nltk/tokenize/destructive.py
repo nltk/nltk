@@ -251,9 +251,8 @@ class NLTKWordTokenizer(TokenizerI):
         yield from align_tokens(tokens, text)
 
 
-#: For each of NLTKWordTokenizer's own substitution patterns (by source), the
-#: characters at least one of which every match of it contains. ``\s+`` is left
-#: out: the padded text always holds a space.
+#: For NLTKWordTokenizer's own substitution patterns (by source), the characters
+#: every match holds at least one of (``\s+`` is left out: there is always a space).
 _NEEDS_BY_SOURCE = {
     "([\u00ab\u201c\u2018\u201e]|[`]+)": "\u00ab\u201c\u2018\u201e`",
     r"^\"": '"',
@@ -285,9 +284,8 @@ _NEEDS_BY_SOURCE = {
     r"--": "-",
 }
 
-#: The same, keyed by the identity of NLTKWordTokenizer's compiled patterns and
-#: holding each one, so no other object can take its id while the entry lives
-#: and an entry applies only to that very pattern; any other pattern always runs.
+#: The same by ``id`` of each compiled pattern, holding the pattern so the id is
+#: never reused; an entry applies only to that object, so any other pattern runs.
 _NEEDS = {
     id(pattern): (pattern, _NEEDS_BY_SOURCE[pattern.pattern])
     for pattern, _repl in (
@@ -301,19 +299,14 @@ _NEEDS = {
 }
 
 
-def _needs_of(index, regexp):
-    """The characters ``index`` holds for this very ``regexp`` object, or None."""
-    entry = index.get(id(regexp))
-    return entry[1] if entry is not None and entry[0] is regexp else None
-
-
 def _sub(regexp, substitution, text, index=None):
     """``regexp.sub(substitution, text)``, except that a text holding none of
     the characters every match of one of NLTKWordTokenizer's own patterns
     needs is returned as it is: there is nothing to substitute, and the timed
     regex call (two reads of the process clock in the engine) is skipped.
     ``index`` is another tokenizer's own map of the same kind."""
-    needs = _needs_of(_NEEDS if index is None else index, regexp)
-    if needs is not None and not any(c in text for c in needs):
-        return text
+    entry = (_NEEDS if index is None else index).get(id(regexp))
+    if entry is not None and entry[0] is regexp:
+        if not any(c in text for c in entry[1]):
+            return text
     return regexp.sub(substitution, text)
