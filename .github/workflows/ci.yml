@@ -460,6 +460,10 @@ jobs:
           pip install --upgrade pip
           pip install --upgrade --requirement requirements-ci.txt
 
+      - name: Build bllipparser, which drives the BLLIP model
+        # NLTK's BLLIP wrapper and its tests need it; a failed build fails the job
+        run: pip install bllipparser
+
       - name: Download all the data with the NLTK downloader
         shell: bash
         run: |
@@ -515,6 +519,8 @@ jobs:
           NLTK_FULL_DATA_INDEX="$RUNNER_TEMP/packages.json" NLTK_FULL_DATA_PACKAGES="$RUNNER_TEMP/shard.json" \
             NLTK_FULL_DATA_FOUND="$RUNNER_TEMP/found" \
             pytest -p no:cacheprovider -rA --numprocesses 4 nltk/test/unit/test_full_data.py || rc=1
+          # NLTK's own BLLIP tests, skipped where bllipparser is not installed, run here
+          if [ "$SHARD" = 0 ]; then pytest -p no:cacheprovider -rA nltk/test/unit/test_bllip.py || rc=1; fi
           # what a package departs in, when it is not what is pinned: the list to review
           if [ -d "$RUNNER_TEMP/found" ]; then
             echo "::group::departures found"; cat "$RUNNER_TEMP"/found/*.jsonl; echo "::endgroup::"

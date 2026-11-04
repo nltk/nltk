@@ -1240,17 +1240,37 @@ def _language(grammar):
 
 @answers("bllip_wsj_no_aux")
 def _bllip_model():
-    # bllipparser, which NLTK's wrapper drives, builds on no Python NLTK supports,
-    # so the model is checked for the files BllipParser.from_unified_model_dir reads
-    root = nltk.data.find("models/bllip_wsj_no_aux/")
-    files = set(_listing(root))
-    for needed in (
-        "parser/terms.txt",
-        "parser/pSgT.txt",
-        "reranker/features.gz",
-        "reranker/weights.gz",
-    ):
-        assert any(f.endswith(needed) for f in files), needed
+    # bllipparser builds with GCC (the full-data job installs it): the model parses
+    from nltk.parse.bllip import BllipParser
+
+    parser = BllipParser.from_unified_model_dir(
+        nltk.data.find("models/bllip_wsj_no_aux").path
+    )
+    # the outputs documented in nltk/parse/bllip.py and nltk/test/unit/test_bllip.py
+    assert (
+        str(parser.parse_one("British left waffles on Falklands .".split())).split()
+        == (
+            "(S1 (S (NP (JJ British) (NN left)) (VP (VBZ waffles) (PP (IN on) "
+            "(NP (NNP Falklands)))) (. .)))"
+        ).split()
+    )
+    parses = parser.parse_all("Time flies".split())
+    assert len(parses) == 50
+    assert str(parses[0]) == "(S1 (S (NP (NNP Time)) (VP (VBZ flies))))"
+    assert str(next(parser.tagged_parse([("Time", "VB"), ("flies", "NNS")]))) == (
+        "(S1 (NP (VB Time) (NNS flies)))"
+    )
+    assert str(next(parser.tagged_parse([("Time", "NN"), ("flies", None)]))) == (
+        "(S1 (NP (NN Time) (VBZ flies)))"
+    )
+    telescope = next(parser.parse("I saw the man with the telescope".split()))
+    assert (
+        str(telescope).split()
+        == (
+            "(S1 (S (NP (PRP I)) (VP (VBD saw) (NP (DT the) (NN man)) "
+            "(PP (IN with) (NP (DT the) (NN telescope))))))"
+        ).split()
+    )
 
 
 # Every WordNet: invariants on every synset and lemma; the multilingual wordnets
