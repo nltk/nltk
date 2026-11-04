@@ -180,10 +180,9 @@ class ToktokTokenizer(TokenizerI):
         return text if return_str else text.split()
 
 
-#: For ToktokTokenizer's own patterns with a short list of them (by source),
-#: the characters at least one of which every match contains; a text holding
-#: none is left as it is without the timed regex call. The four wide Unicode
-#: punctuation and currency classes and the space run are always run.
+#: For 18 of ToktokTokenizer's own patterns (by source), the characters one
+#: of which every match contains; a text holding none skips the timed call.
+#: The four wide Unicode classes and the space run always run.
 _NEEDS_BY_SOURCE = {
     "\u00a0": "\u00a0",
     r":(?!//)": ":",
