@@ -246,9 +246,8 @@ FINDITER_PATTERNS = [
     r"[.?!](?=(\s+\S+|[)\"]))",
 ]
 
-#: Every string over this alphabet up to three characters with every pos/endpos
-#: pair, then every four-character one from its start: the same cases on every
-#: Python version, unlike random sampling.
+#: Every string over this alphabet up to 3 characters with every pos/endpos, then
+#: every 4-character one from its start: the same cases on every Python version.
 FINDITER_ALPHABET = "ab .\n"
 FINDITER_LONGER = [
     "This is fine. " * 5,

@@ -86,17 +86,8 @@ __all__ = [
     "subn",
 ]
 
-#: Seconds any single caller-supplied-pattern match may run before it is
-#: abandoned with :class:`TimeoutError`, as the ``regex`` engine counts them with C
-#: ``clock()``: process CPU time on POSIX, wall-clock time on Windows. A lazy
-#: :meth:`TimedPattern.finditer` is charged for its matching only, never for the
-#: caller's work between items. Legitimate tokenizing / tagging /
-#: chunking of even large inputs finishes in well under a second, so this is
-#: roughly a thousand-fold head-room for real use while still capping a crafted
-#: pattern's CPU burn. It is deliberately far below a naive "just make it large"
-#: value (e.g. 60s): in a denial-of-service the busy-wait window *is* the damage,
-#: so a shorter cap is strictly safer. Set a call's ``timeout`` to ``None`` to
-#: disable the limit for a trusted pattern.
+#: Seconds one match call may run on the regex engine's clock (CPU time on POSIX,
+#: wall time on Windows); short on purpose, as a ReDoS's busy-wait is the damage.
 DEFAULT_TIMEOUT = 5.0
 
 #: Sentinel so ``timeout=None`` (disable) is distinguishable from "use the
