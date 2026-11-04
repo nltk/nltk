@@ -299,8 +299,8 @@ def test_large_grammar_parse_counts(name):
                 raise
             found = 0
         if found != expected:
-            wrong.append((" ".join(words), expected, found))
-    assert wrong == []
+            wrong.append([" ".join(words), expected, found])
+    same_departures("parse counts", name, wrong)
 
 
 @answers("large_grammars")
@@ -1202,6 +1202,7 @@ def _small_grammars():
     # no documented examples: every sentence each context-free grammar generates
     # has a parse, and every grammar of the package loads in its format
     for package in ("spanish_grammars", "basque_grammars", "sample_grammars"):
+        unloadable = {}
         for name in sorted(_listing(nltk.data.find(f"grammars/{package}/"))):
             path = f"grammars/{package}/{name}"
             ext = name.rsplit(".", 1)[-1]
@@ -1215,10 +1216,14 @@ def _small_grammars():
                 ]
                 assert unparsed == [], (path, unparsed[:5])
             elif ext in ("fcfg", "fol", "val"):
-                assert nltk.data.load(path), path
+                try:
+                    assert nltk.data.load(path), path
+                except ValueError as e:
+                    unloadable[path] = f"{type(e).__name__}: {e}"[:160]
             elif ext == "regexp":
                 rules = nltk.data.load(path, format="text")
                 assert nltk.RegexpParser(rules), path
+        same_departures("grammars that do not load", package, unloadable)
 
 
 def _language(grammar):
@@ -1405,7 +1410,8 @@ def _extended_omw():
         for lang in added
         if not any(True for _ in wordnet.all_lemma_names(lang=lang))
     ]
-    assert empty == []
+    # nearly all of a script outside the Basic Multilingual Plane
+    same_departures("extended_omw", "languages without lemmas", empty)
 
 
 # Corpora no NLTK loader opens: what their READMEs state, and agreement between
@@ -1466,12 +1472,13 @@ def _unicode_samples():
         raw = nltk.data.load(
             f"corpora/unicode_samples/{name}", format="raw", cache=False
         )
-        root = xmlsec.fromstring(raw)
-        return [s.text.strip() for s in root.iter("sent")], raw.decode(encoding)
+        # expat reads no multi-byte encoding but UTF-8: decode, drop the declaration
+        text = raw.decode(encoding).split("?>", 1)[1]
+        return [s.text.strip() for s in xmlsec.fromstring(text).iter("sent")]
 
     # the GB2312 and UTF-8 copies of the Sinorama sample hold the same sentence
-    gb, _ = sentence("sinorama-gb.xml", "gb2312")
-    utf8, _ = sentence("sinorama-utf8.xml", "utf-8")
+    gb = sentence("sinorama-gb.xml", "gb2312")
+    utf8 = sentence("sinorama-utf8.xml", "utf-8")
     assert gb == utf8 and gb, (gb, utf8)
     text = nltk.data.load(
         "corpora/unicode_samples/polish-lat2.txt", format="raw", cache=False
@@ -1748,8 +1755,17 @@ def corpus_readers(pid):
         try:
             readers.append((pid, _BUILT[pid]()))
         except Exception as e:
-            readers.append((pid, f"cannot be built: {type(e).__name__}: {e}"[:200]))
+            message = f"cannot be built: {type(e).__name__}: {e}"
+            readers.append((pid, _masked(message)[:200]))
     return readers
+
+
+def _masked(text):
+    """``text`` with the data directories replaced, so a pin holds on any machine."""
+    for root in sorted(nltk.data.path, key=len, reverse=True):
+        if root and os.path.isdir(root):
+            text = text.replace(root, "<data>")
+    return text
 
 
 def _loader_table():
@@ -1849,4 +1865,8 @@ def _mwa_ppdb():
     entries = reader.entries()
     # one pair of synonyms on every line, every line read
     assert len(entries) == len(lines) == 210372
-    assert all(len(pair) == 2 and all(pair) for pair in entries)
+    # entries splits lines with str.splitlines, which breaks at \x1c to \x1e too
+    halves = [
+        [i, *pair] for i, pair in enumerate(entries) if len(pair) != 2 or not all(pair)
+    ]
+    same_departures("mwa_ppdb", "entries without both sides", halves)

@@ -1,12 +1,47 @@
 {
+ "extended_omw": {
+  "languages without lemmas": [
+   "akk_wikt",
+   "arb_wikt",
+   "ett_wikt",
+   "gmy_wikt",
+   "got_wikt",
+   "kho_wikt",
+   "phn_wikt",
+   "pho_wikt",
+   "uga_wikt",
+   "xeb_wikt",
+   "xlc_wikt",
+   "xld_wikt",
+   "xlu_wikt",
+   "xmr_wikt",
+   "xpu_wikt",
+   "xum_wikt"
+  ]
+ },
  "files": {
   "averaged_perceptron_tagger_eng": {
    "taggers/averaged_perceptron_tagger_eng/averaged_perceptron_tagger_eng.classes.json": "AttributeError: 'list' object has no attribute 'keys'",
    "taggers/averaged_perceptron_tagger_eng/averaged_perceptron_tagger_eng.tagdict.json": "TypeError: 'dict_keys' object is not an iterator",
    "taggers/averaged_perceptron_tagger_eng/averaged_perceptron_tagger_eng.weights.json": "TypeError: 'dict_keys' object is not an iterator"
   },
+  "averaged_perceptron_tagger_rus": {
+   "taggers/averaged_perceptron_tagger_rus/averaged_perceptron_tagger_rus.classes.json": "AttributeError: 'list' object has no attribute 'keys'",
+   "taggers/averaged_perceptron_tagger_rus/averaged_perceptron_tagger_rus.tagdict.json": "TypeError: 'dict_keys' object is not an iterator",
+   "taggers/averaged_perceptron_tagger_rus/averaged_perceptron_tagger_rus.weights.json": "TypeError: 'dict_keys' object is not an iterator"
+  },
   "extended_omw": {
    "corpora/extended_omw/wikt/wn-wikt-*uogien?.tab": "ValueError: Unsafe resource path: 'corpora/extended_omw/wikt/wn-wikt-*uogien?.tab'"
+  },
+  "kimmo": {
+   "corpora/kimmo/englex.cfg": "ValueError: Unable to parse line 5: lexicon: englex.lex\nExpected an arrow",
+   "corpora/kimmo/english.cfg": "ValueError: Unable to parse line 5: lexicon: englishpyk.lex\nExpected an arrow",
+   "corpora/kimmo/kimmo.cfg": "ValueError: Unable to parse line 5: lexicon: english.lex\nExpected an arrow",
+   "corpora/kimmo/spanish.cfg": "ValueError: Unable to parse line 5: lexicon: spanish.lex\nExpected an arrow",
+   "corpora/kimmo/turkish.cfg": "ValueError: Unable to parse line 3: lexicon: turkish.lex\nExpected an arrow"
+  },
+  "sample_grammars": {
+   "grammars/sample_grammars/chat80.fcfg": "ValueError: Unable to parse line 19: NP[-PRED, NUM=pl,SEM=<(\\P Q. exists x. (Q(x) and P(x)) ?nom)>] -> Nom[NUM=pl,SEM=?nom]\nError parsing feature structure\n    "
   },
   "tagsets_json": {
    "help/tagsets_json/PY3_json/brown_tagset.json": "TypeError: 'dict_keys' object is not an iterator",
@@ -19,8 +54,51 @@
    "corpora/twitter_samples/tweets.20150430-223406.json": "JSONDecodeError: Extra data: line 2 column 1 (char 4974)"
   }
  },
+ "framenet": {
+  "framenet_v15": {
+   "docs": "FramenetError: Unknown frame id: 398",
+   "exemplars": "AssertionError: (245505, 'GF', (134, 143, 'Dep'))",
+   "fe_relations": 10020,
+   "fes": 9633,
+   "frame_relations": 1676,
+   "frames": 1019,
+   "ft_sents": "FramenetError: Unknown frame id: 398",
+   "lus": 11829,
+   "semtypes": 73
+  },
+  "framenet_v17": {
+   "docs": 107,
+   "exemplars": 200751,
+   "fe_relations": 12393,
+   "fes": 11428,
+   "frame_relations": 2070,
+   "frames": 1221,
+   "ft_sents": 10147,
+   "lus": 13572,
+   "semtypes": 109
+  }
+ },
+ "grammars that do not load": {
+  "sample_grammars": {
+   "grammars/sample_grammars/chat80.fcfg": "ValueError: Unable to parse line 19: NP[-PRED, NUM=pl,SEM=<(\\P Q. exists x. (Q(x) and P(x)) ?nom)>] -> Nom[NUM=pl,SEM=?nom]\nError parsing feature structure\n    "
+  }
+ },
  "moses_sample": {
   "this is a small house": "the small house is a"
+ },
+ "mwa_ppdb": {
+  "entries without both sides": [
+   [
+    59174,
+    "\u0016",
+    ""
+   ],
+   [
+    159988,
+    "",
+    "¡"
+   ]
+  ]
  },
  "perluniprops": {
   "outside their class": {
@@ -90,6 +168,266 @@
     ]
    ]
   },
+  "cess_cat": {
+   "cess_cat": [
+    [
+     "10662_20000612.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "10662_20000612.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "110_19990701.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "110_19990701.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "12154_20000706.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "12154_20000706.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "28643_20010329.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "28643_20010329.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "60_20020201.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "60_20020201.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "66_19990302.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "66_19990302.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "77312_20030224.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "77312_20030224.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "86327_20030508.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "86327_20030508.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "94_20000301.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "94_20000301.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ]
+   ]
+  },
+  "cess_esp": {
+   "cess_esp": [
+    [
+     "104_C-6.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "104_C-6.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "10585_20000313.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "10585_20000313.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "13476_20000120_2.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "13476_20000120_2.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "14234_20000217_2.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "14234_20000217_2.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "14827_20000719_3.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "14827_20000719_3.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "16182_20001121_1.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "16182_20001121_1.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "16563_20001121.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "16563_20001121.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "2000060104_5-1.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "2000060104_5-1.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "2000060104_5-2.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "2000060104_5-2.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "2000060111_5-3.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "2000060111_5-3.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "2000060204_5-1.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "2000060204_5-1.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "2000060211_6-3.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "2000060211_6-3.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "204_C-2.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "204_C-2.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "211_C-6.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "211_C-6.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ],
+    [
+     "dc3-14.tbf",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "dc3-14.tbf",
+     "tagged_sents are the tags of parsed_sents"
+    ]
+   ]
+  },
+  "floresta": {
+   "floresta": [
+    [
+     "Floresta_7.4.ptb",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "Floresta_7.4.ptb",
+     "tagged_sents are the tags of parsed_sents"
+    ]
+   ]
+  },
+  "masc_tagged": {
+   "masc_tagged": [
+    [
+     "*",
+     "the categories cover every file"
+    ]
+   ]
+  },
+  "mte_teip5": {
+   "multext_east": [
+    [
+     "oana-sk.xml",
+     "tagged_words are the flattened tagged_sents"
+    ],
+    [
+     "oana-sk.xml",
+     "words are the flattened sentences"
+    ]
+   ]
+  },
+  "pl196x": {
+   "pl196x": [
+    [
+     "*",
+     "the categories cover every file"
+    ]
+   ]
+  },
+  "product_reviews_1": {
+   "product_reviews_1": [
+    [
+     "README.txt",
+     "words are the flattened sentences"
+    ]
+   ]
+  },
+  "product_reviews_2": {
+   "product_reviews_2": [
+    [
+     "README.txt",
+     "words are the flattened sentences"
+    ],
+    [
+     "ipod.txt",
+     "words are the flattened sentences"
+    ]
+   ]
+  },
   "ptb": {
    "ptb": [
     [
@@ -97,6 +435,29 @@
      "categories: ValueError"
     ]
    ]
+  },
+  "sinica_treebank": {
+   "sinica_treebank": [
+    [
+     "parsed",
+     "sentences are the leaves of parsed_sents"
+    ],
+    [
+     "parsed",
+     "tagged_sents are the tags of parsed_sents"
+    ]
+   ]
+  },
+  "udhr": {
+   "udhr": [
+    [
+     "Arabic_Alarabia-Arabic",
+     "words are the characters of the sentences"
+    ]
+   ]
+  },
+  "ycoe": {
+   "ycoe": "cannot be built: OSError: No such file or directory: '<data>/corpora/ycoe/psd'"
   }
  },
  "snowball_data": {
@@ -7829,6 +8190,61 @@
   ]
  },
  "wordnets": {
+  "wordnet": {
+   "hypernyms without hyponyms": [
+    [
+     "inhibit.v.04",
+     "suppress.v.04"
+    ]
+   ],
+   "its key raises": [
+    "ddc%1:06:01::",
+    "ddi%1:06:01::",
+    "earth%1:15:01::",
+    "earth%1:17:02::",
+    "kb%1:23:01::",
+    "kb%1:23:03::",
+    "moon%1:17:03::",
+    "sun%1:17:02::"
+   ],
+   "not found by its key": [
+    "a%1:10:00::",
+    "b%1:10:00::",
+    "baroque%3:01:00::",
+    "c%1:10:00::",
+    "d%1:10:00::",
+    "doomsday%1:28:00::",
+    "e%1:10:00::",
+    "f%1:10:00::",
+    "g%1:10:00::",
+    "h%1:10:00::",
+    "i%1:10:00::",
+    "j%1:10:00::",
+    "k%1:10:00::",
+    "l%1:10:00::",
+    "m%1:10:00::",
+    "n%1:10:00::",
+    "o%1:10:00::",
+    "p%1:10:00::",
+    "q%1:10:00::",
+    "r%1:10:00::",
+    "s%1:10:00::",
+    "t%1:10:00::",
+    "u%1:10:00::",
+    "utopian%3:01:00::",
+    "v%1:10:00::",
+    "w%1:10:00::",
+    "x%1:10:00::",
+    "y%1:10:00::",
+    "z%1:10:00::"
+   ]
+  },
+  "wordnet2022": {
+   "its key raises": [
+    "lgbt+%1:14:00::",
+    "lgbtqia+%1:14:00::"
+   ]
+  },
   "wordnet31": {
    "its key raises": [
     "ddc%1:06:01::",
