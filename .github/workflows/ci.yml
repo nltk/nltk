@@ -461,10 +461,11 @@ jobs:
           pip install --upgrade --requirement requirements-ci.txt
 
       - name: Build bllipparser, which drives the BLLIP model
-        # GCC 14+ reports an error in a reranker template that is never instantiated
-        # (tree.h, size_); it is only reported at instantiation. A failed build fails.
+        # GCC 14+ reports an error in a reranker template never instantiated (tree.h,
+        # size_); this reports it at instantiation instead. A failed build fails.
         env:
-          CFLAGS: -Wno-template-body
+          # the C++ sources are compiled with CXXFLAGS, which replace the defaults
+          CXXFLAGS: -O3 -Wno-template-body
         run: pip install bllipparser
 
       - name: Download all the data with the NLTK downloader
