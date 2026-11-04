@@ -88,7 +88,14 @@ def _alarm(signum, frame):
     raise _Timeout()
 
 
-def _canonical(value, tree):
+def _mask(text, masks):
+    """``text`` with each path of ``masks`` replaced by its label."""
+    for path, label in masks:
+        text = text.replace(path, label)
+    return text
+
+
+def _canonical(value, masks):
     """A process-independent form of ``value``: sets sorted, addresses dropped."""
     kind = type(value)
     if kind in (str, bytes):
@@ -96,15 +103,15 @@ def _canonical(value, tree):
     if value is None or kind in (bool, int, float):
         return value
     if kind in (list, tuple):
-        return [_canonical(v, tree) for v in value]
+        return [_canonical(v, masks) for v in value]
     if kind in (set, frozenset):
-        return sorted((_canonical(v, tree) for v in value), key=repr)
+        return sorted((_canonical(v, masks) for v in value), key=repr)
     if kind is dict:
-        items = ((_canonical(k, tree), _canonical(v, tree)) for k, v in value.items())
+        items = ((_canonical(k, masks), _canonical(v, masks)) for k, v in value.items())
         return sorted(items, key=repr)
     if isinstance(value, ElementTree.Element):
         return ElementTree.tostring(value)
-    return _ADDRESS.sub("", repr(value)).replace(tree, "<tree>")
+    return _mask(_ADDRESS.sub("", repr(value)), masks)
 
 
 def _sample(value):
@@ -120,16 +127,16 @@ def _sample(value):
         return value
 
 
-def _digest(value, tree):
-    text = repr(_canonical(value, tree)).replace(tree, "<tree>")
+def _digest(value, masks):
+    text = _mask(repr(_canonical(value, masks)), masks)
     return hashlib.sha256(text.encode("utf-8", "surrogatepass")).hexdigest()[:16]
 
 
 class _Run:
     """The calls of one package, recorded as label -> [status, detail, printed, seconds]."""
 
-    def __init__(self, tree):
-        self.tree = tree
+    def __init__(self, masks):
+        self.masks = masks
         self.calls = {}
 
     def call(self, label, fn):
@@ -145,13 +152,13 @@ class _Run:
                 value = _sample(fn())
             entry = [
                 "ok",
-                _digest(value, self.tree),
-                _digest(printed.getvalue(), self.tree),
+                _digest(value, self.masks),
+                _digest(printed.getvalue(), self.masks),
             ]
         except _Timeout:
             entry = ["timeout", "", ""]
         except Exception as e:
-            message = str(e)[:200].replace(self.tree, "<tree>")
+            message = _mask(str(e), self.masks)[:200]
             entry = [type(e).__name__, message, ""]
         finally:
             signal.alarm(0)
@@ -159,7 +166,7 @@ class _Run:
         return entry[0] == "ok"
 
     def note(self, label, status, detail=""):
-        self.calls[label] = [status, detail, "", 0]
+        self.calls[label] = [status, _mask(detail, self.masks)[:200], "", 0]
 
 
 def _import_tree(tree):
@@ -222,14 +229,14 @@ def _read_corpus(run, label, reader):
     try:
         fileids = list(reader.fileids())[:CORPUS_FILES]
     except Exception as e:
-        run.note(f"{label}.fileids", type(e).__name__, str(e)[:200])
+        run.note(f"{label}.fileids", type(e).__name__, str(e))
     for attr in sorted(dir(reader)):
         if attr.startswith("_") or attr in SKIP_METHODS:
             continue
         try:
             method = getattr(reader, attr)
         except Exception as e:
-            run.note(f"{label}.{attr}", type(e).__name__, str(e)[:200])
+            run.note(f"{label}.{attr}", type(e).__name__, str(e))
             continue
         if not callable(method) or inspect.isclass(method):
             continue
@@ -424,13 +431,13 @@ def _pipelines(run, pid):
         try:
             reader = _reader_for(pid)
         except Exception as e:
-            run.note("reader", type(e).__name__, str(e)[:200])
+            run.note("reader", type(e).__name__, str(e))
         else:
             _read_corpus(run, type(reader).__name__, reader)
 
 
-def _check_package(tree, nltk, pkg, loaders):
-    run = _Run(tree)
+def _check_package(masks, nltk, pkg, loaders):
+    run = _Run(masks)
     pid, subdir = pkg["id"], pkg["subdir"]
     files = _package_files(nltk, subdir, pid)
     run.note("files", "ok" if files else "absent", str(len(files)))
@@ -466,7 +473,7 @@ def _safe_json(nltk, path):
         return safe_json_load(stream, context=path)
 
 
-def _import_every_module(tree, nltk):
+def _import_every_module(masks, nltk):
     """Module -> [status, detail, digest of public names and signatures, names]."""
     names = ["nltk"] + sorted(
         m.name
@@ -495,14 +502,14 @@ def _import_every_module(tree, nltk):
                     )
                 except (TypeError, ValueError):
                     signatures.append((attr, "?"))
-            modules[name] = ["ok", "", _digest((public, signatures), tree), public]
+            modules[name] = ["ok", "", _digest((public, signatures), masks), public]
         except _Timeout:
             modules[name] = ["timeout", "", "", []]
         except BaseException as e:
             # SystemExit too: a module that exits on import is recorded, not obeyed
             modules[name] = [
                 type(e).__name__,
-                str(e)[:200].replace(tree, "<tree>"),
+                _mask(str(e), masks)[:200],
                 "",
                 [],
             ]
@@ -544,6 +551,15 @@ def command_run(tree, packages_path, out_path):
         )
     tree = os.path.realpath(tree)
     nltk = _import_tree(tree)
+    # Both runs read one data directory, which can lie inside a tree (CI keeps it
+    # in the checkout), so data paths are masked before the tree, longest first.
+    paths = {
+        (r, "<data>")
+        for root in _data_roots(nltk)
+        for r in (root, os.path.realpath(root))
+    }
+    paths |= {(tree, "<tree>")}
+    masks = sorted(paths, key=lambda m: -len(m[0]))
     random.seed(0)
     signal.signal(signal.SIGALRM, _alarm)
     with open(packages_path, encoding="utf-8") as f:
@@ -558,7 +574,7 @@ def command_run(tree, packages_path, out_path):
     for pkg in packages:
         start = time.perf_counter()
         results[pkg["id"]] = calls = _check_package(
-            tree, nltk, pkg, loaders.get(pkg["id"], [])
+            masks, nltk, pkg, loaders.get(pkg["id"], [])
         )
         failed = sum(1 for c in calls.values() if c[0] != "ok")
         print(
@@ -566,7 +582,7 @@ def command_run(tree, packages_path, out_path):
             file=sys.stderr,
             flush=True,
         )
-    modules = _import_every_module(tree, nltk)
+    modules = _import_every_module(masks, nltk)
     _write_json(out_path, {"packages": results, "modules": modules})
     print(
         f"{len(packages)} packages, {sum(map(len, results.values()))} calls, {len(modules)} modules"
