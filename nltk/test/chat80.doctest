@@ -165,7 +165,7 @@ following for each individual constant::
 
    PropN[NUM=sg, SEM=<\P.P(zloty)>] -> 'Zloty'
 
-The set of rules is written to the file ``chat_pnames.cfg`` in the
+The set of rules is written to the file ``chat_pnames.fcfg`` in the
 current directory.
 
 SQL Query

@@ -117,7 +117,7 @@ following for each individual constant::
 
    PropN[NUM=sg, SEM=<\P.P(zloty)>] -> 'Zloty'
 
-The set of rules is written to the file ``chat_pnames.cfg`` in the
+The set of rules is written to the file ``chat_pnames.fcfg`` in the
 current directory.
 
 """
@@ -1150,7 +1150,7 @@ def label_indivs(valuation, lexicon=False):
     if lexicon:
         lex = make_lex(domain)
         with pathsec_open(
-            "chat_pnames.cfg", "w", context="chat80.label_indivs"
+            "chat_pnames.fcfg", "w", context="chat80.label_indivs"
         ) as outfile:
             outfile.writelines(lex)
     # read the pairs into the valuation

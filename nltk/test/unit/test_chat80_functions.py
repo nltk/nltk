@@ -210,7 +210,7 @@ def test_make_lex_writes_a_rule_for_each_name():
 
 def test_the_written_lexicon_loads_as_a_grammar(stage, valuation):
     chat80.make_valuation(chat80.concepts(), lexicon=True)
-    with open(os.path.join(stage, "chat_pnames.cfg")) as f:
+    with open(os.path.join(stage, "chat_pnames.fcfg")) as f:
         text = f.read()
     grammar = FeatureGrammar.fromstring("% start PropN\n" + text)
     assert len(grammar.productions()) == len(valuation.domain)
@@ -344,7 +344,7 @@ def test_main_prints_the_concepts_and_the_valuation(monkeypatch, capsys):
 def test_main_writes_the_lexicon(stage, monkeypatch, capsys):
     _main(monkeypatch, "-x")
     assert "Writing out lexical rules" in capsys.readouterr().out
-    with open(os.path.join(stage, "chat_pnames.cfg")) as f:
+    with open(os.path.join(stage, "chat_pnames.fcfg")) as f:
         assert "-> 'Upper_Volta'\n" in f.read()
 
 
