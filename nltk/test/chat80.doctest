@@ -164,9 +164,9 @@ a pair ``('zloty', 'zloty')``. In order to parse English sentences that
 refer to these entities, we also create a lexical item such as the
 following for each individual constant::
 
-   PropN[num=sg, sem=<\P.(P zloty)>] -> 'Zloty'
+   PropN[NUM=sg, SEM=<\P.P(zloty)>] -> 'Zloty'
 
-The set of rules is written to the file ``chat_pnames.fcfg`` in the
+The set of rules is written to the file ``chat_pnames.cfg`` in the
 current directory.
 
 SQL Query

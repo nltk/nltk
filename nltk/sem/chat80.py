@@ -116,7 +116,7 @@ a pair ``('zloty', 'zloty')``. In order to parse English sentences that
 refer to these entities, we also create a lexical item such as the
 following for each individual constant::
 
-   PropN[num=sg, sem=<\P.(P zloty)>] -> 'Zloty'
+   PropN[NUM=sg, SEM=<\P.P(zloty)>] -> 'Zloty'
 
 The set of rules is written to the file ``chat_pnames.cfg`` in the
 current directory.
@@ -1098,7 +1098,7 @@ def make_lex(symbols):
 
 """
     lex.append(header)
-    template = r"PropN[num=sg, sem=<\P.(P %s)>] -> '%s'\n"
+    template = r"PropN[NUM=sg, SEM=<\P.P(%s)>] -> '%s'" + "\n"
 
     for s in symbols:
         parts = s.split("_")
