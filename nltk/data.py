@@ -1984,11 +1984,6 @@ def switch_p_tagger(lang):
     return _get_tagger(lang)
 
 
-######################################################################
-# Grammars nltk_data ships broken
-######################################################################
-
-
 class Chat80Repair:
     """
     Repairs nltk_data's chat80.fcfg as ``load`` reads it: the file, unchanged
