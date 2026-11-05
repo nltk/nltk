@@ -12,6 +12,7 @@ feature structures as nodes.
 """
 
 import copy
+import functools
 import os
 import weakref
 from time import perf_counter
@@ -336,6 +337,24 @@ def _plain_clash(fstruct1, fstruct2):
     return False
 
 
+@functools.lru_cache(maxsize=2**14)
+def _frozen_production_variables(production):
+    return frozenset(
+        find_variables((production.lhs(),) + production.rhs(), fs_class=FeatStruct)
+    )
+
+
+def _production_variables(production):
+    """
+    The variables of a production's nonterminals.  A frozen production can't
+    change, so its variables are cached.
+    """
+    symbols = (production.lhs(),) + production.rhs()
+    if all(not isinstance(s, FeatStruct) or s.frozen() for s in symbols):
+        return _frozen_production_variables(production)
+    return find_variables(symbols, fs_class=FeatStruct)
+
+
 def _rename_order(fstruct, order, visited):
     # Add the variables of a plain ``fstruct`` to the dict ``order``, in the
     # order ``_rename_variables`` first meets them.
@@ -595,9 +614,7 @@ class FeatureBottomUpPredictCombineRule(BottomUpPredictCombineRule):
                 # from the two different productions to match.
                 if renamed is None:
                     renamed = _RenameChain(found, _plain_grammar(grammar))
-                renamed.rename(
-                    find_variables((prod.lhs(),) + prod.rhs(), fs_class=FeatStruct)
-                )
+                renamed.rename(_production_variables(prod))
                 if renamed.plain and _plain_clash(_next, found):
                     continue
 
