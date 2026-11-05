@@ -1203,6 +1203,9 @@ class CrossValidationProbDist(ProbDistI):
             prob += heldout_probdist.prob(sample)
         return prob / len(self._heldout_probdists)
 
+    def max(self):
+        return max(self.samples(), key=self.prob)
+
     def discount(self):
         raise NotImplementedError()
 
