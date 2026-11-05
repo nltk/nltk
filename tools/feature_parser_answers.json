@@ -484,6 +484,42 @@
    "parses": 50,
    "sha256": "1d353d272b08d693eb0bdde86eaac61bcd3508b58fee106acf41a75a55ce42c4"
   },
+  "grammars/sample_grammars/chat80.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "642706e545c4f998c5e45ef19e7d23ae9c54473023623d8e84811d8dbe9cee91"
+  },
+  "grammars/sample_grammars/chat80.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "363bdab80909bbbec3d347e3d46c221223b002b22e82938ce0b50f6724e27582"
+  },
+  "grammars/sample_grammars/chat80.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "e289a0a45c3df91198b92c18e8180ff2acf5ba3b4a1c361438a008f351985476"
+  },
+  "grammars/sample_grammars/chat80.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "663f27e9d04049ca21ec159e43427aff422a8cf227846f1ef047ac478cf89800"
+  },
+  "grammars/sample_grammars/chat80.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "0c399631d1765e52cb06776fee3bae210acdb6e806c512a2cb6c4658bc90b402"
+  },
+  "grammars/sample_grammars/chat80.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "d7efdd77073ae138c4f6890e98ddadfaa58071ea618ee060271d9aef053e603b"
+  },
+  "grammars/sample_grammars/chat80.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "f4aa6aebf16ffe4fd23b01353550b457a25fcbbfc0e81a68a57d0559bdaeec55"
+  },
+  "grammars/sample_grammars/chat80.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "f70133e004ca04bf325661de69de654c77d5d28c069b9539560dcc21b2de20a8"
+  },
+  "grammars/sample_grammars/chat80.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "8c5efc17c91337fb2b0cf9d5b4265fb01d24356b2dcacfed44434fe3267877b6"
+  },
   "grammars/sample_grammars/chat_pnames.fcfg FeatureBottomUpChartParser": {
    "parses": 50,
    "sha256": "89325ac84820001fcd387c04b930061614b2251b453b159efc51801d143f8c3d"
@@ -881,7 +917,5 @@
    "sha256": "ff94b8cf08132e9a36f0725129b1b5d6d1fdfb9e5c15978b4daa77dbfd253153"
   }
  },
- "unloadable": {
-  "grammars/sample_grammars/chat80.fcfg": "ValueError: Unable to parse line 19: NP[-PRED, NUM=pl,SEM=<(\\P Q. exists x. (Q(x) and P(x)) ?nom)>] -> Nom[NUM=pl,SEM=?nom]\nError parsing feature structure\n    NP[-PRED, NUM=pl,SEM=<(\\P Q. exists x. ("
- }
+ "unloadable": {}
 }
