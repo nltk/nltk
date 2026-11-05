@@ -106,15 +106,17 @@ def test_shortcuts_leave_every_edge_and_tree(
     words = sentence.split()
     fast = _chart(parser_class, grammar, words)
     assert bool(fast[1]) == parses, sentence
-    monkeypatch.setattr(featurechart, "_plain_grammar", lambda grammar: False)
+    monkeypatch.setattr(
+        featurechart.PlainGrammar, "is_plain", staticmethod(lambda grammar: False)
+    )
     assert fast == _chart(parser_class, grammar, words)
 
 
 def test_plain_grammars_are_told_apart():
-    assert featurechart._plain_grammar(PLAIN)
-    assert not featurechart._plain_grammar(STORAGE)
+    assert featurechart.PlainGrammar.is_plain(PLAIN)
+    assert not featurechart.PlainGrammar.is_plain(STORAGE)
     # The answer is kept for the grammar's lifetime, keyed by the grammar.
-    assert PLAIN in featurechart._plain_grammars
+    assert PLAIN in featurechart.PlainGrammar._known
 
 
 def test_plain_clash_only_where_unify_fails():
@@ -127,7 +129,7 @@ def test_plain_clash_only_where_unify_fails():
     clashes = 0
     for fstruct1 in symbols:
         for fstruct2 in symbols:
-            if featurechart._plain_clash(fstruct1, fstruct2):
+            if featurechart.PlainGrammar.clash(fstruct1, fstruct2):
                 clashes += 1
                 assert unify(fstruct1, fstruct2) is None, (fstruct1, fstruct2)
     assert clashes
@@ -150,14 +152,14 @@ def test_rename_chain_names_variables_as_rename_variables_does(text):
         {Variable("?y3"), Variable("?x4")},
         {Variable("?y")},
     ]
-    chain = featurechart._RenameChain(fstruct, True)
+    chain = featurechart.PlainGrammar.RenameChain(fstruct, True)
     expected = fstruct
     for used_vars in used:
         chain.rename(used_vars)
         expected = expected.rename_variables(used_vars=used_vars)
         assert repr(chain.current()) == repr(expected)
     # Renames left unbuilt in between still end at the same names.
-    chain = featurechart._RenameChain(fstruct, True)
+    chain = featurechart.PlainGrammar.RenameChain(fstruct, True)
     for used_vars in used:
         chain.rename(used_vars)
     assert repr(chain.current()) == repr(expected)
