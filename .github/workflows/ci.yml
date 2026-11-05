@@ -521,7 +521,7 @@ jobs:
           python tools/check_all_data.py shard "$RUNNER_TEMP/packages.json" "$SHARD/8" "$RUNNER_TEMP/shard.json"
           rc=0
           NLTK_FULL_DATA_INDEX="$RUNNER_TEMP/packages.json" NLTK_FULL_DATA_PACKAGES="$RUNNER_TEMP/shard.json" \
-            NLTK_FULL_DATA_FOUND="$RUNNER_TEMP/found" \
+            NLTK_FULL_DATA_FOUND="$RUNNER_TEMP/found" NLTK_FULL_DATA_SHARD="$SHARD/8" \
             pytest -p no:cacheprovider -rA --numprocesses 4 nltk/test/unit/test_full_data.py || rc=1
           # NLTK's own BLLIP tests, skipped where bllipparser is not installed, run here
           if [ "$SHARD" = 0 ]; then pytest -p no:cacheprovider -rA nltk/test/unit/test_bllip.py || rc=1; fi

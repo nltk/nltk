@@ -101,23 +101,9 @@
   ]
  },
  "parse counts": {
-  "alvey": [
-   [
-    "why is she having the abbot she knows on that because it mattered that the message accepted by her wasn't in the abbey she didn't anticipate helping",
-    447,
-    375
-   ],
-   [
-    "kim was asked whether she anticipated that the anxious abbot who did see the message would hear the admission or message which the abbey accepted but didn't ask",
-    320,
-    360
-   ],
-   [
-    "who did either the abbot or the message but not the abbey in the abbey have a characteristic desire to help give the message to the abbot who is here",
-    52,
-    62
-   ]
-  ]
+  "alvey 212": 375,
+  "alvey 224": 360,
+  "alvey 228": 62
  },
  "perluniprops": {
   "outside their class": {

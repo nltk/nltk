@@ -31,6 +31,7 @@ list. The retired pickle packages are not read: NLTK no longer loads them, and
 each has a pickle-free replacement in the index, which is checked instead.
 """
 
+import functools
 import json
 import math
 import os
@@ -264,19 +265,31 @@ def _listing(root):
 # Grammars: the parse count of every test sentence shipped with them.
 
 
-#: The large grammars, when this shard checks their package.
-LARGE_GRAMMARS = (
-    ["atis", "commandtalk", "alvey"]
-    if "large_grammars" in {p["id"] for p in SHARD}
-    else []
-)
+def _large_grammar_sentences():
+    """(grammar, index) of every test sentence of the large grammars, dealt over the
+    shards in turn: parsing them is most of a shard's time, one by one."""
+    if not FULL:
+        return []
+    from nltk.parse.util import extract_test_sentences
+
+    cases = []
+    for name in ("atis", "commandtalk", "alvey"):
+        sentences = extract_test_sentences(
+            nltk.data.load(f"grammars/large_grammars/{name}_sentences.txt")
+        )
+        cases += [(name, i) for i in range(len(sentences))]
+    index, count = (
+        int(n) for n in os.environ.get("NLTK_FULL_DATA_SHARD", "0/1").split("/")
+    )
+    return [case for k, case in enumerate(cases) if k % count == index]
 
 
-@pytest.mark.parametrize("name", LARGE_GRAMMARS)
-def test_large_grammar_parse_counts(name):
-    """Each test sentence of the large grammars has the number of parses its
-    file gives; a sentence given none and using a word the grammar lacks is
-    refused with NLTK's coverage error, which is also no parse."""
+LARGE_GRAMMAR_SENTENCES = _large_grammar_sentences()
+
+
+@functools.cache
+def _large_grammar(name):
+    """(parser, test sentences) of a large grammar, read once per process."""
     from nltk.parse import BottomUpLeftCornerChartParser, FeatureChartParser
     from nltk.parse.util import extract_test_sentences
 
@@ -289,25 +302,30 @@ def test_large_grammar_parse_counts(name):
     sentences = extract_test_sentences(
         nltk.data.load(f"grammars/large_grammars/{name}_sentences.txt")
     )
-    assert sentences
-    wrong = []
-    for words, expected in sentences:
-        try:
-            found = len(list(parser.parse(words)))
-        except ValueError as e:
-            if "does not cover" not in str(e):
-                raise
-            found = 0
-        if found != expected:
-            wrong.append([" ".join(words), expected, found])
+    return parser, sentences
+
+
+@pytest.mark.parametrize("name, index", LARGE_GRAMMAR_SENTENCES)
+def test_large_grammar_parse_count(name, index):
+    """The test sentence has the number of parses its grammar's file gives; one
+    given none that uses a word the grammar lacks is refused with NLTK's coverage
+    error, which is also no parse."""
+    parser, sentences = _large_grammar(name)
+    words, expected = sentences[index]
+    try:
+        found = len(list(parser.parse(words)))
+    except ValueError as e:
+        if "does not cover" not in str(e):
+            raise
+        found = 0
     # three Alvey counts differ, as distinct trees all four chart strategies agree
     # on: alvey.fcfg is not quite the grammar the counts were made with
-    same_departures("parse counts", name, wrong)
+    same_departures("parse counts", f"{name} {index}", found, answer=expected)
 
 
 @answers("large_grammars")
 def _large_grammars_load():
-    # the parse counts are test_large_grammar_parse_counts, one test per grammar
+    # the parse counts are test_large_grammar_parse_count, one test per sentence
     for name, ext in (("atis", "cfg"), ("commandtalk", "cfg"), ("alvey", "fcfg")):
         assert nltk.data.load(f"grammars/large_grammars/{name}.{ext}").productions()
 
