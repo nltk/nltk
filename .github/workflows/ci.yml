@@ -506,3 +506,96 @@ jobs:
 
       - name: Check the built distributions against the tracked tree
         run: python tools/check_sdist_hygiene.py dist/*
+
+  feature-parsers:
+    name: Feature parsers, base against change (shard ${{ matrix.shard }} of 16)
+    # Every feature parser on every feature grammar in nltk_data, on the base
+    # tree and on this change: each chart edge and tree must agree, and the CPU
+    # time of each parse is the benchmark. Costly, so only with `full-data`.
+    needs: [changes]
+    if: needs.changes.outputs.code == 'true' && contains(github.event.pull_request.labels.*.name, 'full-data')
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+    env:
+      PYTHONHASHSEED: "0"
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 2
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+
+      - name: Install NLTK's dependencies
+        run: pip install -e .
+
+      - name: Set NLTK_DATA and the rows folder
+        run: |
+          echo "NLTK_DATA=$RUNNER_TEMP/nltk_data" >> "$GITHUB_ENV"
+          echo "ROWS=$RUNNER_TEMP/rows" >> "$GITHUB_ENV"
+
+      - name: Download the grammars
+        run: |
+          # the CLI exits 0 on a failed download, so check each package after
+          packages="large_grammars book_grammars sample_grammars basque_grammars spanish_grammars"
+          for attempt in 1 2 3; do
+            python -m nltk.downloader -d "$NLTK_DATA" $packages || true
+            if python -c "import sys; from nltk.downloader import Downloader; d = Downloader(); sys.exit(not all(d.is_installed(p, '$NLTK_DATA') for p in sys.argv[1:]))" $packages; then
+              exit 0
+            fi
+            sleep 30
+          done
+          exit 1
+
+      - name: Check out the base tree
+        run: git worktree add "$RUNNER_TEMP/base" HEAD^1
+
+      - name: Parse every sentence of the shard on the base tree, then on this change
+        run: |
+          mkdir -p "$ROWS"
+          python tools/check_feature_parsers.py items "$ROWS/items.json"
+          python tools/check_feature_parsers.py run "$RUNNER_TEMP/base" "$ROWS/items.json" "$ROWS/base.jsonl" --shard "${{ matrix.shard }}/16"
+          python tools/check_feature_parsers.py run . "$ROWS/items.json" "$ROWS/change.jsonl" --shard "${{ matrix.shard }}/16"
+
+      - name: Compare the shard
+        run: python tools/check_feature_parsers.py compare "$ROWS/items.json" "$ROWS/base.jsonl" "$ROWS/change.jsonl" --shard "${{ matrix.shard }}/16" --summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Keep the rows
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: feature-parsers-${{ matrix.shard }}
+          path: ${{ runner.temp }}/rows/
+
+  feature-parsers-summary:
+    name: Feature parsers, every shard together
+    needs: [feature-parsers]
+    if: ${{ !cancelled() && needs.feature-parsers.result != 'skipped' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: feature-parsers-*
+          path: rows
+
+      - name: Compare every shard
+        run: |
+          items=$(ls rows/*/items.json | head -1)
+          python tools/check_feature_parsers.py compare "$items" "rows/*/base.jsonl" "rows/*/change.jsonl" --summary "$GITHUB_STEP_SUMMARY"
