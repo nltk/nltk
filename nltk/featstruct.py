@@ -2066,6 +2066,11 @@ class Feature:
     def __hash__(self):
         return hash(self._name)
 
+    def __deepcopy__(self, memo):
+        # A feature is not changed once made, so a deep copy of a feature
+        # structure shares its feature names, as it does string names.
+        return self
+
     # ////////////////////////////////////////////////////////////
     # These can be overridden by subclasses:
     # ////////////////////////////////////////////////////////////

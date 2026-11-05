@@ -679,6 +679,11 @@ class Variable:
     def __hash__(self):
         return hash(self.name)
 
+    def __deepcopy__(self, memo):
+        # A variable is not changed once made (its name is its hash), so a
+        # deep copy shares it, as it would a string.
+        return self
+
     def __str__(self):
         return self.name
 
