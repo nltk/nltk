@@ -29,8 +29,7 @@ The Chat-80 World Database consists of the following files::
 
 This module uses a slightly modified version of ``world0.pl``, in which
 a set of Prolog rules have been omitted. The modified file is named
-``world1.pl``. Currently, the file ``rivers.pl`` is not read in, since
-it uses a list rather than a string in the second field.
+``world1.pl``. ``river_courses`` reads each river's course from ``rivers.pl``.
 
 Reading Chat-80 Files
 =====================
@@ -164,7 +163,7 @@ a pair ``('zloty', 'zloty')``. In order to parse English sentences that
 refer to these entities, we also create a lexical item such as the
 following for each individual constant::
 
-   PropN[num=sg, sem=<\P.(P zloty)>] -> 'Zloty'
+   PropN[NUM=sg, SEM=<\P.P(zloty)>] -> 'Zloty'
 
 The set of rules is written to the file ``chat_pnames.fcfg`` in the
 current directory.
