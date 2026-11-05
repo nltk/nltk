@@ -25,10 +25,20 @@ The timeout is monkeypatched short so the suite stays fast; payloads are long
 enough that 2**N backtracking cannot finish inside any small window.
 """
 
+import itertools
+import time
+
 import pytest
+import regex
 
 from nltk import redos
 from nltk.test.unit import timing
+from nltk.tokenize import (
+    PunktSentenceTokenizer,
+    WhitespaceTokenizer,
+    WordPunctTokenizer,
+)
+from nltk.tokenize.util import regexp_span_tokenize
 
 FAST_TIMEOUT = 0.5
 EVIL = "a" * 64 + "!"  # long enough that no small window lets 2**N finish
@@ -184,6 +194,132 @@ class TestExpandedBackstopFamily:
     def test_benign_large_input_still_processes_fast(self):
         with timing.budget(3.0):
             assert len(redos.compile(r"\w+").findall("word " * 100000)) == 100000
+
+
+def _burn(seconds):
+    """Spend ``seconds`` of process CPU time, standing for a consumer's own work."""
+    end = time.process_time() + seconds
+    while time.process_time() < end:
+        pass
+
+
+#: Lazy ``finditer`` consumers in the library, each streaming items to its caller.
+STREAMING = {
+    "TimedPattern.finditer": lambda text: redos.compile(r"\w+").finditer(text),
+    "PunktSentenceTokenizer.span_tokenize": lambda text: (
+        PunktSentenceTokenizer().span_tokenize(text)
+    ),
+    "WhitespaceTokenizer.span_tokenize": lambda text: (
+        WhitespaceTokenizer().span_tokenize(text)
+    ),
+    "WordPunctTokenizer.span_tokenize": lambda text: (
+        WordPunctTokenizer().span_tokenize(text)
+    ),
+    "regexp_span_tokenize": lambda text: regexp_span_tokenize(text, r"\s+"),
+}
+
+#: Patterns for the equivalence check, with empty matches, anchors and lookarounds.
+FINDITER_PATTERNS = [
+    r"x*",
+    r"|a",
+    r"a|",
+    r"\b",
+    r"\B",
+    r"(?=a)",
+    r"a??",
+    r"^",
+    r"$",
+    r"(?m)^",
+    r"(?m)$",
+    r"(?<=a)b*",
+    r"(?<!a)",
+    r"(?<=\s)|(?=\s)",
+    r"\s+",
+    r"\w+",
+    r"(?:ab)*",
+    r"(a)|(b)|",
+    r"(?i)AB*",
+    r"\G\w",
+    r"(?V1)x*",
+    r"(?V1)\b",
+    r"(?r)a*",
+    r"[.?!](?=(\s+\S+|[)\"]))",
+]
+
+#: Every string over this alphabet up to 3 characters with every pos/endpos, then
+#: every 4-character one from its start: the same cases on every Python version.
+FINDITER_ALPHABET = "ab .\n"
+FINDITER_LONGER = [
+    "This is fine. " * 5,
+    "a!!! b. c?) d.",
+    "\n\n a\nb  .",
+    "ab" * 20 + " x",
+]
+
+
+def _finditer_cases():
+    for n in range(4):
+        for chars in itertools.product(FINDITER_ALPHABET, repeat=n):
+            s = "".join(chars)
+            for pos in range(n + 1):
+                for endpos in (None, *range(pos, n + 1)):
+                    yield s, pos, endpos
+    for chars in itertools.product(FINDITER_ALPHABET, repeat=4):
+        yield "".join(chars), 0, None
+    for s in FINDITER_LONGER:
+        for pos, endpos in ((0, None), (3, None), (0, len(s) - 2), (5, len(s) - 4)):
+            yield s, pos, endpos
+
+
+class TestFinditerChargesMatchingOnly:
+    """A lazy ``finditer`` is charged for the engine's matching only (#4009).
+
+    ``regex`` times a scanner from its creation, so one scanner kept for the
+    whole iteration also charged the consumer's own work between items, and
+    streaming a long but ordinary text (Punkt over ``gutenberg.raw()``) raised
+    TimeoutError. The matching time of one iteration must still be bounded in
+    total, or many slow matches would each get a full budget.
+    """
+
+    @pytest.mark.parametrize("name", sorted(STREAMING))
+    def test_consumer_work_between_items_is_not_charged(self, name, fast_timeout):
+        text = "This is fine. " * 10
+        expected = sum(1 for _ in STREAMING[name](text))
+        items = 0
+        for _ in STREAMING[name](text):
+            items += 1
+            if items <= 10:
+                _burn(FAST_TIMEOUT / 5)
+        assert items == expected >= 10
+
+    def test_total_matching_time_is_still_bounded(self, fast_timeout):
+        # One match backtracks about 2**15 steps, far inside the budget, but
+        # thousands of them in one iteration must still exhaust the one budget.
+        rx = redos.compile(r"(a|a)*$|b")
+        piece = "a" * 14 + "b"
+        assert rx.search(piece).group() == "b"
+        with pytest.raises(TimeoutError):
+            for _ in rx.finditer(piece * 8000):
+                pass
+
+    @pytest.mark.parametrize("batch", [1, 3, redos._FINDITER_BATCH])
+    @pytest.mark.parametrize("pattern", FINDITER_PATTERNS)
+    def test_same_matches_as_one_scanner(self, pattern, batch, monkeypatch):
+        # A batch of 1 restarts the scanner after every match, the hardest case
+        # for the empty-match rule.
+        monkeypatch.setattr(redos, "_FINDITER_BATCH", batch)
+        engine, rx = regex.compile(pattern), redos.compile(pattern)
+        for s, pos, endpos in _finditer_cases():
+            want = [(m.span(), m.groups()) for m in engine.finditer(s, pos, endpos)]
+            got = [(m.span(), m.groups()) for m in rx.finditer(s, pos, endpos)]
+            assert got == want, (s, pos, endpos)
+
+    def test_keyword_positions_and_engine_only_arguments(self):
+        assert [m.start() for m in redos.finditer(r"a", "aaaa")] == [0, 1, 2, 3]
+        rx = redos.compile(r"a")
+        assert [m.start() for m in rx.finditer("aaaa", pos=1, endpos=3)] == [1, 2]
+        overlapped = redos.compile(r"aa").finditer("aaa", overlapped=True)
+        assert [m.span() for m in overlapped] == [(0, 2), (1, 3)]
 
 
 # --------------------------------------------------------------------------

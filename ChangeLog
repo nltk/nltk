@@ -1,6 +1,7 @@
 Version 3.10.5 (unreleased)
 
 * `nltk.data.load()` refuses the pickle packages retired for CVE-2024-39705 (`punkt`, `averaged_perceptron_tagger`, `averaged_perceptron_tagger_ru`, `maxent_ne_chunker`, `maxent_treebank_pos_tagger`) instead of silently handing back their tab replacements: a load that reaches for one of their pickles, under any spelling of the name and in any format, raises `ValueError` before anything is read, naming the replacement to download and the call that loads it (for example `nltk.download('punkt_tab')`, then `nltk.tokenize.PunktTokenizer('english')`) (PR #3955)
+* `nltk.redos`: a lazy `finditer` is charged for the regex engine's own matching only, not for the work its consumer does between items, so streaming a long ordinary text (`sent_tokenize(gutenberg.raw())`, `span_tokenize` of the whitespace and wordpunct tokenizers) no longer raises `TimeoutError`; the matching time of one iteration is still bounded by `nltk.redos.DEFAULT_TIMEOUT` in total (PR #4012, reported in #4009)
 
 Version 3.10.4 2026-10-20
 
