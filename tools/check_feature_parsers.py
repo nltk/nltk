@@ -1,11 +1,12 @@
 """
-Parse with every feature grammar in nltk_data on two NLTK trees and compare.
+Parse with every feature grammar in nltk_data and check the output.
 
 A change to feature unification or to the feature chart rules must leave the
-parsers' output exactly as it was. This tool parses the same sentences with a
-base tree and a changed tree, and compares every edge of every chart and every
-tree, in order. It also records the CPU time of each parse, so the comparison
-doubles as a benchmark.
+parsers' output exactly as it was. This tool parses the same sentences on an
+NLTK tree and checks every edge of every chart and every tree, in order: against
+the answers pinned in ``feature_parser_answers.json``, or against another tree.
+It records the CPU time of each parse, so a comparison of two trees doubles as
+a benchmark.
 
 The work is the Alvey grammar's 229 test sentences under four feature
 parsers (bottom-up left-corner, bottom-up, top-down and Earley), and every
@@ -13,12 +14,17 @@ other ``.fcfg`` grammar in nltk_data under all nine feature parsers, on
 sentences generated from the grammar::
 
     python tools/check_feature_parsers.py items ITEMS.json
-    python tools/check_feature_parsers.py run TREE ITEMS.json OUT.jsonl --shard 0/16
+    python tools/check_feature_parsers.py run TREE ITEMS.json ROWS.jsonl
+    python tools/check_feature_parsers.py check ITEMS.json ROWS.jsonl [--summary MD]
     python tools/check_feature_parsers.py compare ITEMS.json BASE CHANGE [--summary MD]
+    python tools/check_feature_parsers.py pin ITEMS.json ROWS.jsonl
 
-``run`` writes one JSON row per parse and skips rows already in OUT. BASE and
-CHANGE are glob patterns of row files, such as ``rows/*/base.jsonl``; ``compare``
-exits 1 if a parse is missing from either side or if any two rows disagree.
+``run`` writes one JSON row per parse and skips rows already in ROWS. ``check``
+exits 1 if a parse is missing or if a grammar's rows under a parser differ from
+the pinned answers; ``compare`` exits 1 if a parse is missing from either tree
+or if any two rows disagree. ``pin`` writes the answers from rows of a tree
+whose output is right. Row arguments are glob patterns, such as
+``rows/*/base.jsonl``.
 """
 
 import argparse
@@ -58,6 +64,8 @@ ALL_PARSERS = (
     "FeatureIncrementalBottomUpChartParser",
     "FeatureIncrementalBottomUpLeftCornerChartParser",
 )
+
+ANSWERS = pathlib.Path(__file__).with_name("feature_parser_answers.json")
 
 #: Relative cost of each parser on Alvey, measured on its longest sentence.
 COST = {"FeatureTopDownChartParser": 5, "FeatureEarleyChartParser": 5}
@@ -134,18 +142,13 @@ def items(out):
                 )
     if not any(item["grammar"] == ALVEY for item in work):
         sys.exit(f"{ALVEY} is not installed")
-    # Costliest first, dealt round the shards, so each gets a like share.
+    # Costliest first, so the last parses to finish are short ones.
     work.sort(key=lambda item: (-item["cost"], item["id"]))
     with open(out, "w") as f:
         json.dump({"items": work, "unloadable": unloadable}, f, indent=1)
     print(f"{len(work)} parses of {len({i['grammar'] for i in work})} grammars")
     for name, error in unloadable.items():
         print(f"  not loadable: {name}: {error}")
-
-
-def _shard(work, shard):
-    index, count = map(int, shard.split("/"))
-    return [item for k, item in enumerate(work) if k % count == index]
 
 
 def _sha(lines):
@@ -205,9 +208,9 @@ def _parse(item):
     return row
 
 
-def run(tree, items_file, out, shard, jobs):
+def run(tree, items_file, out, jobs):
     with open(items_file) as f:
-        work = _shard(json.load(f)["items"], shard)
+        work = json.load(f)["items"]
     done = set()
     if os.path.exists(out):
         with open(out) as f:
@@ -235,11 +238,76 @@ def _rows(pattern):
     return rows
 
 
-def compare(items_file, base_path, change_path, shard, summary):
+def _report(text, summary):
+    print(text)
+    if summary:
+        with open(summary, "a") as f:
+            f.write(text + "\n")
+
+
+def _groups(work):
+    groups = defaultdict(list)
+    for item in work:
+        groups[f"{item['grammar']} {item['parser']}"].append(item["id"])
+    return groups
+
+
+def _digests(work, rows):
+    """One digest per grammar and parser, over its rows in id order."""
+    digests = {}
+    for key, ids in sorted(_groups(work).items()):
+        lines = [
+            json.dumps([i] + [rows.get(i, {}).get(field) for field in FIELDS])
+            for i in sorted(ids)
+        ]
+        digests[key] = {"parses": len(ids), "sha256": _sha(lines)}
+    return digests
+
+
+def pin(items_file, rows_path):
     with open(items_file) as f:
         work = json.load(f)["items"]
-    if shard:
-        work = _shard(work, shard)
+    rows = _rows(rows_path)
+    missing = [item["id"] for item in work if item["id"] not in rows]
+    if missing:
+        sys.exit(f"{len(missing)} parses have no row, such as {missing[0]}")
+    with open(ANSWERS, "w") as f:
+        json.dump(_digests(work, rows), f, indent=1, sort_keys=True)
+        f.write("\n")
+    print(f"pinned {len(work)} parses into {ANSWERS}")
+
+
+def check(items_file, rows_path, summary):
+    with open(items_file) as f:
+        work = json.load(f)["items"]
+    rows = _rows(rows_path)
+    with open(ANSWERS) as f:
+        pinned = json.load(f)
+    found = _digests(work, rows)
+    missing = [item["id"] for item in work if item["id"] not in rows]
+    departures = sorted(
+        key for key in set(pinned) | set(found) if pinned.get(key) != found.get(key)
+    )
+    lines = [
+        f"{len(work)} parses: {len(missing)} missing, "
+        f"{len(departures)} of {len(pinned)} pinned groups depart",
+        "",
+        "| grammar | parser | parses | CPU s |",
+        "|---|---|---:|---:|",
+    ]
+    for key, ids in sorted(_groups(work).items()):
+        grammar, parser = key.rsplit("/", 1)[-1].split(" ")
+        cpu = sum(rows[i]["cpu"] for i in ids if i in rows)
+        lines.append(f"| {grammar} | {parser} | {len(ids)} | {cpu:.1f} |")
+    lines += [f"- missing: {item_id}" for item_id in missing[:50]]
+    lines += [f"- departs: {key}" for key in departures]
+    _report("\n".join(lines), summary)
+    return 1 if missing or departures else 0
+
+
+def compare(items_file, base_path, change_path, summary):
+    with open(items_file) as f:
+        work = json.load(f)["items"]
     base, change = _rows(base_path), _rows(change_path)
     missing = [
         (side, item["id"])
@@ -279,11 +347,7 @@ def compare(items_file, base_path, change_path, shard, summary):
         lines.append(f"- missing from {side}: {item_id}")
     for item_id, field, was, now in departures[:50]:
         lines.append(f"- departure: {item_id}: {field} {was!r} -> {now!r}")
-    text = "\n".join(lines)
-    print(text)
-    if summary:
-        with open(summary, "a") as f:
-            f.write(text + "\n")
+    _report("\n".join(lines), summary)
     return 1 if missing or departures else 0
 
 
@@ -296,22 +360,31 @@ def main():
     p.add_argument("tree")
     p.add_argument("items")
     p.add_argument("out")
-    p.add_argument("--shard", default="0/1")
     p.add_argument("--jobs", type=int, default=os.cpu_count())
+    p = sub.add_parser("check")
+    p.add_argument("items")
+    p.add_argument("rows")
+    p.add_argument("--summary")
     p = sub.add_parser("compare")
     p.add_argument("items")
     p.add_argument("base")
     p.add_argument("change")
-    p.add_argument("--shard")
     p.add_argument("--summary")
+    p = sub.add_parser("pin")
+    p.add_argument("items")
+    p.add_argument("rows")
     args = ap.parse_args()
     if args.command == "items":
         _init(os.getcwd())
         items(args.out)
     elif args.command == "run":
-        run(args.tree, args.items, args.out, args.shard, args.jobs)
+        run(args.tree, args.items, args.out, args.jobs)
+    elif args.command == "check":
+        sys.exit(check(args.items, args.rows, args.summary))
+    elif args.command == "compare":
+        sys.exit(compare(args.items, args.base, args.change, args.summary))
     else:
-        sys.exit(compare(args.items, args.base, args.change, args.shard, args.summary))
+        pin(args.items, args.rows)
 
 
 if __name__ == "__main__":

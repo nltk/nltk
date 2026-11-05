@@ -508,26 +508,19 @@ jobs:
         run: python tools/check_sdist_hygiene.py dist/*
 
   feature-parsers:
-    name: Feature parsers, base against change (shard ${{ matrix.shard }} of 16)
-    # Every feature parser on every feature grammar in nltk_data, on the base
-    # tree and on this change: each chart edge and tree must agree, and the CPU
-    # time of each parse is the benchmark. Costly, so only with `full-data`.
+    name: Feature parsers against their pinned answers
+    # Every feature parser on every feature grammar in nltk_data: each edge, tree and
+    # error must match tools/feature_parser_answers.json. Costly, so only with `full-data`.
     needs: [changes]
     if: needs.changes.outputs.code == 'true' && contains(github.event.pull_request.labels.*.name, 'full-data')
     runs-on: ubuntu-latest
-    timeout-minutes: 300
+    timeout-minutes: 180
     permissions:
       contents: read
-    strategy:
-      fail-fast: false
-      matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
     env:
       PYTHONHASHSEED: "0"
     steps:
       - uses: actions/checkout@v7
-        with:
-          fetch-depth: 2
 
       - name: Set up Python
         uses: actions/setup-python@v7
@@ -555,47 +548,18 @@ jobs:
           done
           exit 1
 
-      - name: Check out the base tree
-        run: git worktree add "$RUNNER_TEMP/base" HEAD^1
-
-      - name: Parse every sentence of the shard on the base tree, then on this change
+      - name: Parse every sentence
         run: |
           mkdir -p "$ROWS"
           python tools/check_feature_parsers.py items "$ROWS/items.json"
-          python tools/check_feature_parsers.py run "$RUNNER_TEMP/base" "$ROWS/items.json" "$ROWS/base.jsonl" --shard "${{ matrix.shard }}/16"
-          python tools/check_feature_parsers.py run . "$ROWS/items.json" "$ROWS/change.jsonl" --shard "${{ matrix.shard }}/16"
+          python tools/check_feature_parsers.py run . "$ROWS/items.json" "$ROWS/rows.jsonl"
 
-      - name: Compare the shard
-        run: python tools/check_feature_parsers.py compare "$ROWS/items.json" "$ROWS/base.jsonl" "$ROWS/change.jsonl" --shard "${{ matrix.shard }}/16" --summary "$GITHUB_STEP_SUMMARY"
+      - name: Check every parse against the pinned answers
+        run: python tools/check_feature_parsers.py check "$ROWS/items.json" "$ROWS/rows.jsonl" --summary "$GITHUB_STEP_SUMMARY"
 
       - name: Keep the rows
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
         with:
-          name: feature-parsers-${{ matrix.shard }}
+          name: feature-parsers
           path: ${{ runner.temp }}/rows/
-
-  feature-parsers-summary:
-    name: Feature parsers, every shard together
-    needs: [feature-parsers]
-    if: ${{ !cancelled() && needs.feature-parsers.result != 'skipped' }}
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Set up Python
-        uses: actions/setup-python@v7
-        with:
-          python-version: "3.14"
-
-      - uses: actions/download-artifact@v8
-        with:
-          pattern: feature-parsers-*
-          path: rows
-
-      - name: Compare every shard
-        run: |
-          items=$(ls rows/*/items.json | head -1)
-          python tools/check_feature_parsers.py compare "$items" "rows/*/base.jsonl" "rows/*/change.jsonl" --summary "$GITHUB_STEP_SUMMARY"
