@@ -36,6 +36,7 @@ import atexit
 import codecs
 import errno
 import functools
+import hashlib
 import locale
 import os
 import pickle
@@ -1983,6 +1984,73 @@ def switch_p_tagger(lang):
     return _get_tagger(lang)
 
 
+######################################################################
+# Grammars nltk_data ships broken
+######################################################################
+
+# chat80.fcfg (unchanged since 2012) is in the logic syntax NLTK left in July
+# 2008, with seven stray parentheses and an include NLTK's reader never had.
+_CHAT80_FCFG = "8094999c94a37e93401db595b4fca643ddcceaedeb620c7eb8d2822395ab8c0a"
+_CHAT_PNAMES_FCFG = "1426b7f126892a6e82126c113624b8e466372a563d49b3aaaf82a27ca5e006ad"
+
+#: Exact (old, new) edits that let a grammar load, keyed by the SHA-256 of the
+#: shipped file, so a file with any other content is read as it is.
+_GRAMMAR_REPAIRS = {
+    _CHAT80_FCFG: (
+        (r"(Q(x) and P(x)) ?nom)>", r"(Q(x) and P(x)))(?nom)>"),
+        ("(x,y))>", "(x,y)>"),
+        (r"(X \x.border(y,x))>", r"X(\x.border(y,x))>"),
+        (r"(X \x.contain(y,x))>", r"X(\x.contain(y,x))>"),
+        (r"(X \y.(P(x) & in(x,y)))>", r"X(\y.(P(x) & in(x,y)))>"),
+        (r"(X \y.(P(x) & with(x,y)))>", r"X(\y.(P(x) & with(x,y)))>"),
+    ),
+    # The lexicon chat80.fcfg includes names its features num and sem, not NUM and SEM.
+    _CHAT_PNAMES_FCFG: (("PropN[num=sg, sem=<", "PropN[NUM=sg, SEM=<"),),
+}
+
+#: The include line of a shipped grammar, and the shipped resource it stands for.
+_GRAMMAR_INCLUDES = {
+    _CHAT80_FCFG: (
+        "% include chat_pnames.cfg",
+        "grammars/sample_grammars/chat_pnames.fcfg",
+    ),
+}
+
+
+#: The repaired text of each pinned grammar read so far, by its SHA-256 and the
+#: text it was read as, so a grammar read again is not repaired again.
+_REPAIRED_GRAMMARS = {}
+
+
+def _repair_edits(digest, string_data):
+    for old, new in _GRAMMAR_REPAIRS[digest]:
+        string_data = string_data.replace(old, new)
+    return string_data
+
+
+def _repair_grammar(binary_data, string_data):
+    """
+    Return the text of a grammar that nltk_data ships broken, repaired by the
+    exact edits pinned to that exact file; any other text is returned as it is.
+    An include line is replaced by the shipped resource it names, read through
+    ``load`` (so the sandbox applies) and repaired the same way. Each pinned
+    grammar is repaired once, and its repaired text kept for the next read.
+    """
+    digest = hashlib.sha256(binary_data).hexdigest()
+    if digest not in _GRAMMAR_REPAIRS:
+        return string_data
+    key = (digest, string_data)
+    if key not in _REPAIRED_GRAMMARS:
+        repaired = _repair_edits(digest, string_data)
+        if digest in _GRAMMAR_INCLUDES:
+            line, resource = _GRAMMAR_INCLUDES[digest]
+            included = load(resource, format="raw", cache=False)
+            lexicon = _repair_grammar(included, included.decode("utf-8"))
+            repaired = repaired.replace(line, lexicon)
+        _REPAIRED_GRAMMARS[key] = repaired
+    return _REPAIRED_GRAMMARS[key]
+
+
 def load(
     resource_url,
     format="auto",
@@ -2128,7 +2196,7 @@ def load(
             resource_val = grammar.PCFG.fromstring(string_data, encoding=encoding)
         elif format == "fcfg":
             resource_val = grammar.FeatureGrammar.fromstring(
-                string_data,
+                _repair_grammar(binary_data, string_data),
                 logic_parser=logic_parser,
                 fstruct_reader=fstruct_reader,
                 encoding=encoding,
