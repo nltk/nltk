@@ -11,6 +11,7 @@ Extension of chart parsing implementation to handle grammars with
 feature structures as nodes.
 """
 
+import copy
 import os
 import weakref
 from time import perf_counter
@@ -22,6 +23,8 @@ from nltk.featstruct import (
     Feature,
     SlashFeature,
     _is_mapping,
+    _rename_variable,
+    _rename_variables,
     find_variables,
     unify,
 )
@@ -333,6 +336,62 @@ def _plain_clash(fstruct1, fstruct2):
     return False
 
 
+def _rename_order(fstruct, order, visited):
+    # Add the variables of a plain ``fstruct`` to the dict ``order``, in the
+    # order ``_rename_variables`` first meets them.
+    if id(fstruct) in visited:
+        return
+    visited.add(id(fstruct))
+    items = fstruct.items() if _is_mapping(fstruct) else enumerate(fstruct)
+    for fname, fval in items:
+        if isinstance(fval, Variable):
+            order.setdefault(fval, fval)
+        elif isinstance(fval, FeatStruct):
+            _rename_order(fval, order, visited)
+
+
+class _RenameChain:
+    """
+    Stands in for ``fstruct = fstruct.rename_variables(used_vars=...)`` done
+    over and over.  On a plain grammar the renames are worked out on the
+    variable names alone, and ``fstruct`` is copied only when ``current()``
+    asks for it.
+    """
+
+    def __init__(self, fstruct, plain):
+        self.plain = plain
+        self._fstruct = self._current = fstruct
+        # Each variable of ``fstruct`` mapped to its name after the renames.
+        self._names = {}
+        if plain:
+            _rename_order(fstruct, self._names, set())
+
+    def rename(self, used_vars):
+        if not self.plain:
+            self._current = self._current.rename_variables(used_vars=used_vars)
+            return
+        # rename_variables renames every variable, in the order it meets them,
+        # to a name not in ``used_vars``, in ``fstruct`` or given out before.
+        used = set(self._names.values()).union(used_vars)
+        for var, name in self._names.items():
+            new_name = _rename_variable(name, used)
+            self._names[var] = new_name
+            used.add(new_name)
+        self._current = None
+
+    def current(self):
+        if self._current is None:
+            self._current = _rename_variables(
+                copy.deepcopy(self._fstruct),
+                set(),
+                set(),
+                dict(self._names),
+                FeatStruct,
+                set(),
+            )
+        return self._current
+
+
 # ////////////////////////////////////////////////////////////
 # Fundamental Rule
 # ////////////////////////////////////////////////////////////
@@ -524,6 +583,7 @@ class FeatureBottomUpPredictCombineRule(BottomUpPredictCombineRule):
         if edge.is_incomplete():
             return
         found = edge.lhs()
+        renamed = None
         for prod in grammar.productions(rhs=found):
             bindings = {}
             if isinstance(edge, FeatureTreeEdge):
@@ -533,14 +593,15 @@ class FeatureBottomUpPredictCombineRule(BottomUpPredictCombineRule):
 
                 # We rename vars here, because we don't want variables
                 # from the two different productions to match.
-                used_vars = find_variables(
-                    (prod.lhs(),) + prod.rhs(), fs_class=FeatStruct
+                if renamed is None:
+                    renamed = _RenameChain(found, _plain_grammar(grammar))
+                renamed.rename(
+                    find_variables((prod.lhs(),) + prod.rhs(), fs_class=FeatStruct)
                 )
-                found = found.rename_variables(used_vars=used_vars)
-                if _plain_grammar(grammar) and _plain_clash(_next, found):
+                if renamed.plain and _plain_clash(_next, found):
                     continue
 
-                result = unify(_next, found, bindings, rename_vars=False)
+                result = unify(_next, renamed.current(), bindings, rename_vars=False)
                 if result is None:
                     continue
 
