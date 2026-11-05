@@ -29,8 +29,9 @@ The Chat-80 World Database consists of the following files::
 
 This module uses a slightly modified version of ``world0.pl``, in which
 a set of Prolog rules have been omitted. The modified file is named
-``world1.pl``. Currently, the file ``rivers.pl`` is not read in, since
-it uses a list rather than a string in the second field.
+``world1.pl``. The file ``rivers.pl`` gives each river's course as a list
+of regions rather than as fields, so it has a reader of its own,
+``river_courses``.
 
 Reading Chat-80 Files
 =====================

@@ -34,8 +34,9 @@ The Chat-80 World Database consists of the following files::
 
 This module uses a slightly modified version of ``world0.pl``, in which
 a set of Prolog rules have been omitted. The modified file is named
-``world1.pl``. Currently, the file ``rivers.pl`` is not read in, since
-it uses a list rather than a string in the second field.
+``world1.pl``. The file ``rivers.pl`` gives each river's course as a list
+of regions rather than as fields, so it has a reader of its own,
+``river_courses``.
 
 Reading Chat-80 Files
 =====================
@@ -413,6 +414,13 @@ ocean = {
 
 sea = {"rel_name": "sea", "closures": [], "schema": ["sea"], "filename": "world1.pl"}
 
+rivers = {
+    "rel_name": "river",
+    "closures": [],
+    "schema": ["river", "course"],
+    "filename": "rivers.pl",
+}
+
 
 items = [
     "borders",
@@ -425,6 +433,7 @@ items = [
     "region",
     "ocean",
     "sea",
+    "rivers",
 ]
 items = tuple(sorted(items))
 
@@ -439,6 +448,7 @@ item_metadata = {
     "region": region,
     "ocean": ocean,
     "sea": sea,
+    "rivers": rivers,
 }
 
 rels = item_metadata.values()
@@ -740,6 +750,74 @@ def _str2records(filename, rel):
     return recs
 
 
+def river_courses(filename="rivers.pl"):
+    """
+    Read the course of each river in a Chat-80 rivers file.
+
+    A record such as ``river(nile,[mediterranean,egypt,sudan,uganda]).`` lists
+    the regions a river passes, from the sea it drains into up to the country
+    where it rises. A record may run over more than one line.
+
+    :param filename: filename containing the rivers
+    :type filename: str
+    :return: the course of each river, keyed by its name
+    :rtype: dict(str, list(str))
+    """
+    courses = {}
+    record = ""
+    contents = nltk.data.load("corpora/chat80/%s" % filename, format="text")
+    for line in contents.splitlines():
+        line = line.strip()
+        if record or line.startswith("river("):
+            record += line
+            if record.endswith("])."):
+                name, course = record[len("river(") : -len("]).")].split(",[", 1)
+                courses[name] = course.split(",")
+                record = ""
+    return courses
+
+
+def river_concepts(filename="rivers.pl"):
+    """
+    Make the river concepts of Chat-80's ``world0.pl`` from a rivers file: the
+    unary ``river``, and binary ``drains``, ``rises`` and ``flows`` relating a
+    river to the sea it drains into, the country where it rises, and each
+    region it flows through.
+
+    Chat-80's ``flows(R, C1, C2)``, a river flowing from one region into the
+    next, relates three things; it is read off the courses ``river_courses``
+    returns, since a valuation's relations here are unary or binary.
+
+    :param filename: filename containing the rivers
+    :type filename: str
+    :return: a list of ``Concept`` objects
+    :rtype: list
+    """
+    courses = river_courses(filename)
+    return [
+        Concept("river", arity=1, extension=set(courses)),
+        Concept(
+            "drains",
+            arity=2,
+            extension={(river, course[0]) for river, course in courses.items()},
+        ),
+        Concept(
+            "rises",
+            arity=2,
+            extension={(river, course[-1]) for river, course in courses.items()},
+        ),
+        Concept(
+            "flows",
+            arity=2,
+            extension={
+                (river, region)
+                for river, course in courses.items()
+                for region in course[1:]
+            },
+        ),
+    ]
+
+
 def unary_concept(label, subj, records):
     """
     Make a unary concept out of the primary key in a record.
@@ -818,7 +896,10 @@ def process_bundle(rels):
         schema = rel["schema"]
         filename = rel["filename"]
 
-        concept_list = clause2concepts(filename, rel_name, schema, closures)
+        if filename == "rivers.pl":
+            concept_list = river_concepts(filename)
+        else:
+            concept_list = clause2concepts(filename, rel_name, schema, closures)
         for c in concept_list:
             label = c.prefLabel
             if label in concepts:
