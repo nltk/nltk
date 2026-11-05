@@ -20,8 +20,8 @@ sentences generated from the grammar::
     python tools/check_feature_parsers.py pin ITEMS.json ROWS.jsonl
 
 ``run`` writes one JSON row per parse and skips rows already in ROWS. ``check``
-exits 1 if a parse is missing or if a grammar's rows under a parser differ from
-the pinned answers; ``compare`` exits 1 if a parse is missing from either tree
+exits 1 if a parse is missing, if a grammar's rows under a parser differ from
+the pinned answers, or if a grammar loads or fails to load other than pinned; ``compare`` exits 1 if a parse is missing from either tree
 or if any two rows disagree. ``pin`` writes the answers from rows of a tree
 whose output is right. Row arguments are glob patterns, such as
 ``rows/*/base.jsonl``.
@@ -148,7 +148,7 @@ def items(out):
         json.dump({"items": work, "unloadable": unloadable}, f, indent=1)
     print(f"{len(work)} parses of {len({i['grammar'] for i in work})} grammars")
     for name, error in unloadable.items():
-        print(f"  not loadable: {name}: {error}")
+        print(f"  does not load: {name}: {error}")
 
 
 def _sha(lines):
@@ -266,31 +266,43 @@ def _digests(work, rows):
 
 def pin(items_file, rows_path):
     with open(items_file) as f:
-        work = json.load(f)["items"]
+        listed = json.load(f)
+    work = listed["items"]
     rows = _rows(rows_path)
     missing = [item["id"] for item in work if item["id"] not in rows]
     if missing:
         sys.exit(f"{len(missing)} parses have no row, such as {missing[0]}")
+    # a grammar that does not load is pinned too, with its error, not skipped
+    answers = {"groups": _digests(work, rows), "unloadable": listed["unloadable"]}
     with open(ANSWERS, "w") as f:
-        json.dump(_digests(work, rows), f, indent=1, sort_keys=True)
+        json.dump(answers, f, indent=1, sort_keys=True)
         f.write("\n")
-    print(f"pinned {len(work)} parses into {ANSWERS}")
+    print(f"pinned {len(work)} parses and {len(listed['unloadable'])} failed loads")
 
 
 def check(items_file, rows_path, summary):
     with open(items_file) as f:
-        work = json.load(f)["items"]
+        listed = json.load(f)
+    work, unloadable = listed["items"], listed["unloadable"]
     rows = _rows(rows_path)
     with open(ANSWERS) as f:
-        pinned = json.load(f)
+        answers = json.load(f)
+    pinned, pinned_unloadable = answers["groups"], answers["unloadable"]
     found = _digests(work, rows)
     missing = [item["id"] for item in work if item["id"] not in rows]
     departures = sorted(
         key for key in set(pinned) | set(found) if pinned.get(key) != found.get(key)
     )
+    load_departures = sorted(
+        name
+        for name in set(pinned_unloadable) | set(unloadable)
+        if pinned_unloadable.get(name) != unloadable.get(name)
+    )
     lines = [
         f"{len(work)} parses: {len(missing)} missing, "
-        f"{len(departures)} of {len(pinned)} pinned groups depart",
+        f"{len(departures)} of {len(pinned)} pinned groups depart; "
+        f"{len(unloadable)} grammars do not load, "
+        f"{len(load_departures)} of them other than pinned",
         "",
         "| grammar | parser | parses | CPU s |",
         "|---|---|---:|---:|",
@@ -301,8 +313,11 @@ def check(items_file, rows_path, summary):
         lines.append(f"| {grammar} | {parser} | {len(ids)} | {cpu:.1f} |")
     lines += [f"- missing: {item_id}" for item_id in missing[:50]]
     lines += [f"- departs: {key}" for key in departures]
+    for name in load_departures:
+        was, now = pinned_unloadable.get(name), unloadable.get(name)
+        lines.append(f"- loads other than pinned: {name}: {was!r} -> {now!r}")
     _report("\n".join(lines), summary)
-    return 1 if missing or departures else 0
+    return 1 if missing or departures or load_departures else 0
 
 
 def compare(items_file, base_path, change_path, summary):
