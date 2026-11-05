@@ -107,6 +107,29 @@ def test_a_grammar_read_again_is_not_repaired_again():
     assert nltk.data.load(CHAT80) is nltk.data.load(CHAT80)
 
 
+def test_the_repair_is_for_chat80_fcfg_alone():
+    assert Chat80Repair.applies_to("nltk:" + CHAT80)
+    assert Chat80Repair.applies_to("file:/data/" + CHAT80)
+    assert Chat80Repair.applies_to(r"file:C:\data\grammars\sample_grammars\chat80.fcfg")
+    for other in (
+        PNAMES,
+        "grammars/book_grammars/feat0.fcfg",
+        CHAT80[: -len("fcfg")] + "cfg",
+    ):
+        assert not Chat80Repair.applies_to("nltk:" + other)
+
+
+@pytest.mark.parametrize(
+    "resource",
+    [PNAMES, "grammars/book_grammars/feat0.fcfg", "grammars/sample_grammars/sem2.fcfg"],
+)
+def test_other_grammars_load_as_shipped(resource):
+    # the lexicon too keeps its num and sem when it is loaded on its own
+    text = _raw(resource).decode("utf-8")
+    loaded = nltk.data.load(resource, cache=False)
+    assert loaded.productions() == FeatureGrammar.fromstring(text).productions()
+
+
 def test_other_text_is_read_as_it_is():
     text = "% start S\nS -> 'a'\n"
     assert Chat80Repair.repair(text.encode(), text) == text

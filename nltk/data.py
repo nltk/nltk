@@ -1998,6 +1998,9 @@ class Chat80Repair:
     so a file with any other content is read as it is.
     """
 
+    #: The one resource ``load`` repairs; it hands no other grammar to ``repair``.
+    RESOURCE = "grammars/sample_grammars/chat80.fcfg"
+
     #: The SHA-256 of the shipped chat80.fcfg, and of the lexicon it includes.
     GRAMMAR = "8094999c94a37e93401db595b4fca643ddcceaedeb620c7eb8d2822395ab8c0a"
     LEXICON = "1426b7f126892a6e82126c113624b8e466372a563d49b3aaaf82a27ca5e006ad"
@@ -2023,6 +2026,11 @@ class Chat80Repair:
     #: The repaired text of each pinned file read so far, by its SHA-256 and the
     #: text it was read as, so a file read again is not repaired again.
     _repaired = {}
+
+    @classmethod
+    def applies_to(cls, resource_url):
+        """Whether ``resource_url`` names chat80.fcfg, as ``nltk:`` or by its path."""
+        return resource_url.replace("\\", "/").endswith(cls.RESOURCE)
 
     @classmethod
     def repair(cls, binary_data, string_data):
@@ -2195,7 +2203,8 @@ def load(
         elif format == "pcfg":
             resource_val = grammar.PCFG.fromstring(string_data, encoding=encoding)
         elif format == "fcfg":
-            string_data = Chat80Repair.repair(binary_data, string_data)
+            if Chat80Repair.applies_to(resource_url):
+                string_data = Chat80Repair.repair(binary_data, string_data)
             resource_val = grammar.FeatureGrammar.fromstring(
                 string_data,
                 logic_parser=logic_parser,
