@@ -179,7 +179,8 @@ def test_every_list_the_real_dump_writes_is_a_sorted_extension(
     keys = [key for key, value in dumped.items() if isinstance(value, list)]
     with shelve.open(base, "r") as store:
         lists = [store[key] for key in keys]
-    assert len(lists) == 20
+    # the 20 relations of the other files, and rivers.pl's river, drains, rises, flows
+    assert len(lists) == 24
     assert lists == [dumped[key] for key in keys]
     assert all(chat80._is_extension_list(value) for value in lists)
 

@@ -2524,9 +2524,14 @@ class FeatStructReader:
         ("read_str_value", redos.compile("[uU]?[rR]?(['\"])")),
         ("read_int_value", redos.compile(r"-?\d+")),
         ("read_sym_value", redos.compile(r"[a-zA-Z_][a-zA-Z0-9_]*")),
+        # The variable names read_var_value accepts; each run of them is followed
+        # by a character it can't match, so the pattern runs in linear time.
         (
             "read_app_value",
-            redos.compile(r"<(app)\((\?[a-z][a-z]*)\s*," r"\s*(\?[a-z][a-z]*)\)>"),
+            redos.compile(
+                r"<(app)\((\?[a-zA-Z_][a-zA-Z0-9_]*)\s*,"
+                r"\s*(\?[a-zA-Z_][a-zA-Z0-9_]*)\)>"
+            ),
         ),
         #       ('read_logic_value', re.compile(r'<([^>]*)>')),
         # lazily match any character after '<' until we hit a '>' not preceded by '-'

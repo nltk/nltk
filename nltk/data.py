@@ -36,6 +36,7 @@ import atexit
 import codecs
 import errno
 import functools
+import hashlib
 import locale
 import os
 import pickle
@@ -1983,6 +1984,76 @@ def switch_p_tagger(lang):
     return _get_tagger(lang)
 
 
+class Chat80Repair:
+    """
+    Repairs nltk_data's chat80.fcfg as ``load`` reads it: the file, unchanged
+    since 2012, is in the logic syntax NLTK left in July 2008.
+
+    Each edit is exact text, pinned to the SHA-256 of the file it applies to,
+    so a file with any other content is read as it is.
+    """
+
+    #: The one resource ``load`` repairs; it hands no other grammar to ``repair``.
+    RESOURCE = "grammars/sample_grammars/chat80.fcfg"
+
+    #: The SHA-256 of the shipped chat80.fcfg, and of the lexicon it includes.
+    GRAMMAR = "8094999c94a37e93401db595b4fca643ddcceaedeb620c7eb8d2822395ab8c0a"
+    LEXICON = "1426b7f126892a6e82126c113624b8e466372a563d49b3aaaf82a27ca5e006ad"
+
+    #: Exact (old, new) edits, keyed by the SHA-256 of the file they apply to.
+    EDITS = {
+        GRAMMAR: (
+            (r"(Q(x) and P(x)) ?nom)>", r"(Q(x) and P(x)))(?nom)>"),
+            ("(x,y))>", "(x,y)>"),
+            (r"(X \x.border(y,x))>", r"X(\x.border(y,x))>"),
+            (r"(X \x.contain(y,x))>", r"X(\x.contain(y,x))>"),
+            (r"(X \y.(P(x) & in(x,y)))>", r"X(\y.(P(x) & in(x,y)))>"),
+            (r"(X \y.(P(x) & with(x,y)))>", r"X(\y.(P(x) & with(x,y)))>"),
+        ),
+        # the lexicon names its features num and sem, not chat80.fcfg's NUM and SEM
+        LEXICON: (("PropN[num=sg, sem=<", "PropN[NUM=sg, SEM=<"),),
+    }
+
+    #: chat80.fcfg's include line, which NLTK's reader never had, and the
+    #: shipped resource it stands for.
+    INCLUDE = ("% include chat_pnames.cfg", "grammars/sample_grammars/chat_pnames.fcfg")
+
+    #: The repaired text of each pinned file read so far, by its SHA-256 and the
+    #: text it was read as, so a file read again is not repaired again.
+    _repaired = {}
+
+    @classmethod
+    def applies_to(cls, resource_url):
+        """Whether ``resource_url`` names chat80.fcfg, as ``nltk:`` or by its path."""
+        return resource_url.replace("\\", "/").endswith(cls.RESOURCE)
+
+    @classmethod
+    def repair(cls, binary_data, string_data):
+        """
+        Return ``string_data`` repaired if ``binary_data`` is a pinned file, or
+        as it is. The include is read through ``load``, so the sandbox applies.
+        """
+        digest = hashlib.sha256(binary_data).hexdigest()
+        if digest not in cls.EDITS:
+            return string_data
+        key = (digest, string_data)
+        if key not in cls._repaired:
+            repaired = cls._edit(digest, string_data)
+            if digest == cls.GRAMMAR:
+                line, resource = cls.INCLUDE
+                included = load(resource, format="raw", cache=False)
+                lexicon = cls.repair(included, included.decode("utf-8"))
+                repaired = repaired.replace(line, lexicon)
+            cls._repaired[key] = repaired
+        return cls._repaired[key]
+
+    @classmethod
+    def _edit(cls, digest, string_data):
+        for old, new in cls.EDITS[digest]:
+            string_data = string_data.replace(old, new)
+        return string_data
+
+
 def load(
     resource_url,
     format="auto",
@@ -2127,6 +2198,8 @@ def load(
         elif format == "pcfg":
             resource_val = grammar.PCFG.fromstring(string_data, encoding=encoding)
         elif format == "fcfg":
+            if Chat80Repair.applies_to(resource_url):
+                string_data = Chat80Repair.repair(binary_data, string_data)
             resource_val = grammar.FeatureGrammar.fromstring(
                 string_data,
                 logic_parser=logic_parser,
