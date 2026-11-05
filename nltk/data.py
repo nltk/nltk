@@ -1988,67 +1988,67 @@ def switch_p_tagger(lang):
 # Grammars nltk_data ships broken
 ######################################################################
 
-# chat80.fcfg (unchanged since 2012) is in the logic syntax NLTK left in July
-# 2008, with seven stray parentheses and an include NLTK's reader never had.
-_CHAT80_FCFG = "8094999c94a37e93401db595b4fca643ddcceaedeb620c7eb8d2822395ab8c0a"
-_CHAT_PNAMES_FCFG = "1426b7f126892a6e82126c113624b8e466372a563d49b3aaaf82a27ca5e006ad"
 
-#: Exact (old, new) edits that let a grammar load, keyed by the SHA-256 of the
-#: shipped file, so a file with any other content is read as it is.
-_GRAMMAR_REPAIRS = {
-    _CHAT80_FCFG: (
-        (r"(Q(x) and P(x)) ?nom)>", r"(Q(x) and P(x)))(?nom)>"),
-        ("(x,y))>", "(x,y)>"),
-        (r"(X \x.border(y,x))>", r"X(\x.border(y,x))>"),
-        (r"(X \x.contain(y,x))>", r"X(\x.contain(y,x))>"),
-        (r"(X \y.(P(x) & in(x,y)))>", r"X(\y.(P(x) & in(x,y)))>"),
-        (r"(X \y.(P(x) & with(x,y)))>", r"X(\y.(P(x) & with(x,y)))>"),
-    ),
-    # The lexicon chat80.fcfg includes names its features num and sem, not NUM and SEM.
-    _CHAT_PNAMES_FCFG: (("PropN[num=sg, sem=<", "PropN[NUM=sg, SEM=<"),),
-}
-
-#: The include line of a shipped grammar, and the shipped resource it stands for.
-_GRAMMAR_INCLUDES = {
-    _CHAT80_FCFG: (
-        "% include chat_pnames.cfg",
-        "grammars/sample_grammars/chat_pnames.fcfg",
-    ),
-}
-
-
-#: The repaired text of each pinned grammar read so far, by its SHA-256 and the
-#: text it was read as, so a grammar read again is not repaired again.
-_REPAIRED_GRAMMARS = {}
-
-
-def _repair_edits(digest, string_data):
-    for old, new in _GRAMMAR_REPAIRS[digest]:
-        string_data = string_data.replace(old, new)
-    return string_data
-
-
-def _repair_grammar(binary_data, string_data):
+class Chat80Repair:
     """
-    Return the text of a grammar that nltk_data ships broken, repaired by the
-    exact edits pinned to that exact file; any other text is returned as it is.
-    An include line is replaced by the shipped resource it names, read through
-    ``load`` (so the sandbox applies) and repaired the same way. Each pinned
-    grammar is repaired once, and its repaired text kept for the next read.
+    Repairs nltk_data's chat80.fcfg as ``load`` reads it: the file, unchanged
+    since 2012, is in the logic syntax NLTK left in July 2008.
+
+    Each edit is exact text, pinned to the SHA-256 of the file it applies to,
+    so a file with any other content is read as it is.
     """
-    digest = hashlib.sha256(binary_data).hexdigest()
-    if digest not in _GRAMMAR_REPAIRS:
+
+    #: The SHA-256 of the shipped chat80.fcfg, and of the lexicon it includes.
+    GRAMMAR = "8094999c94a37e93401db595b4fca643ddcceaedeb620c7eb8d2822395ab8c0a"
+    LEXICON = "1426b7f126892a6e82126c113624b8e466372a563d49b3aaaf82a27ca5e006ad"
+
+    #: Exact (old, new) edits, keyed by the SHA-256 of the file they apply to.
+    EDITS = {
+        GRAMMAR: (
+            (r"(Q(x) and P(x)) ?nom)>", r"(Q(x) and P(x)))(?nom)>"),
+            ("(x,y))>", "(x,y)>"),
+            (r"(X \x.border(y,x))>", r"X(\x.border(y,x))>"),
+            (r"(X \x.contain(y,x))>", r"X(\x.contain(y,x))>"),
+            (r"(X \y.(P(x) & in(x,y)))>", r"X(\y.(P(x) & in(x,y)))>"),
+            (r"(X \y.(P(x) & with(x,y)))>", r"X(\y.(P(x) & with(x,y)))>"),
+        ),
+        # the lexicon names its features num and sem, not chat80.fcfg's NUM and SEM
+        LEXICON: (("PropN[num=sg, sem=<", "PropN[NUM=sg, SEM=<"),),
+    }
+
+    #: chat80.fcfg's include line, which NLTK's reader never had, and the
+    #: shipped resource it stands for.
+    INCLUDE = ("% include chat_pnames.cfg", "grammars/sample_grammars/chat_pnames.fcfg")
+
+    #: The repaired text of each pinned file read so far, by its SHA-256 and the
+    #: text it was read as, so a file read again is not repaired again.
+    _repaired = {}
+
+    @classmethod
+    def repair(cls, binary_data, string_data):
+        """
+        Return ``string_data`` repaired if ``binary_data`` is a pinned file, or
+        as it is. The include is read through ``load``, so the sandbox applies.
+        """
+        digest = hashlib.sha256(binary_data).hexdigest()
+        if digest not in cls.EDITS:
+            return string_data
+        key = (digest, string_data)
+        if key not in cls._repaired:
+            repaired = cls._edit(digest, string_data)
+            if digest == cls.GRAMMAR:
+                line, resource = cls.INCLUDE
+                included = load(resource, format="raw", cache=False)
+                lexicon = cls.repair(included, included.decode("utf-8"))
+                repaired = repaired.replace(line, lexicon)
+            cls._repaired[key] = repaired
+        return cls._repaired[key]
+
+    @classmethod
+    def _edit(cls, digest, string_data):
+        for old, new in cls.EDITS[digest]:
+            string_data = string_data.replace(old, new)
         return string_data
-    key = (digest, string_data)
-    if key not in _REPAIRED_GRAMMARS:
-        repaired = _repair_edits(digest, string_data)
-        if digest in _GRAMMAR_INCLUDES:
-            line, resource = _GRAMMAR_INCLUDES[digest]
-            included = load(resource, format="raw", cache=False)
-            lexicon = _repair_grammar(included, included.decode("utf-8"))
-            repaired = repaired.replace(line, lexicon)
-        _REPAIRED_GRAMMARS[key] = repaired
-    return _REPAIRED_GRAMMARS[key]
 
 
 def load(
@@ -2195,8 +2195,9 @@ def load(
         elif format == "pcfg":
             resource_val = grammar.PCFG.fromstring(string_data, encoding=encoding)
         elif format == "fcfg":
+            string_data = Chat80Repair.repair(binary_data, string_data)
             resource_val = grammar.FeatureGrammar.fromstring(
-                _repair_grammar(binary_data, string_data),
+                string_data,
                 logic_parser=logic_parser,
                 fstruct_reader=fstruct_reader,
                 encoding=encoding,

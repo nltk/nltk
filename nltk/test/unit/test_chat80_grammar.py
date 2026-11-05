@@ -15,13 +15,7 @@ import re
 import pytest
 
 import nltk
-from nltk.data import (
-    _CHAT80_FCFG,
-    _CHAT_PNAMES_FCFG,
-    _GRAMMAR_INCLUDES,
-    _GRAMMAR_REPAIRS,
-    _repair_grammar,
-)
+from nltk.data import Chat80Repair
 from nltk.featstruct import TYPE, FeatStruct
 from nltk.grammar import FeatureGrammar
 from nltk.parse import FeatureChartParser
@@ -69,8 +63,8 @@ def answer():
 
 
 def test_the_shipped_files_are_the_ones_the_repairs_are_pinned_to():
-    assert hashlib.sha256(_raw(CHAT80)).hexdigest() == _CHAT80_FCFG
-    assert hashlib.sha256(_raw(PNAMES)).hexdigest() == _CHAT_PNAMES_FCFG
+    assert hashlib.sha256(_raw(CHAT80)).hexdigest() == Chat80Repair.GRAMMAR
+    assert hashlib.sha256(_raw(PNAMES)).hexdigest() == Chat80Repair.LEXICON
 
 
 def test_the_shipped_file_does_not_load_as_it_is():
@@ -81,18 +75,18 @@ def test_the_shipped_file_does_not_load_as_it_is():
 def test_each_edit_meets_its_text_as_often_as_the_file_has_it():
     # 1 + 7 + 2 + 2 + 1 + 1: the 14 productions that fail on their own
     text = _raw(CHAT80).decode("utf-8")
-    counts = [text.count(old) for old, new in _GRAMMAR_REPAIRS[_CHAT80_FCFG]]
+    counts = [text.count(old) for old, new in Chat80Repair.EDITS[Chat80Repair.GRAMMAR]]
     assert counts == [1, 7, 2, 2, 1, 1]
     lexicon = _raw(PNAMES).decode("utf-8")
-    ((old, new),) = _GRAMMAR_REPAIRS[_CHAT_PNAMES_FCFG]
+    ((old, new),) = Chat80Repair.EDITS[Chat80Repair.LEXICON]
     assert lexicon.count(old) == lexicon.count("->") == 540
-    line, resource = _GRAMMAR_INCLUDES[_CHAT80_FCFG]
+    line, resource = Chat80Repair.INCLUDE
     assert text.count(line) == 1 and resource == PNAMES
 
 
 def test_the_repaired_text_has_no_old_form_left():
-    repaired = _repair_grammar(_raw(CHAT80), _raw(CHAT80).decode("utf-8"))
-    for old, new in _GRAMMAR_REPAIRS[_CHAT80_FCFG]:
+    repaired = Chat80Repair.repair(_raw(CHAT80), _raw(CHAT80).decode("utf-8"))
+    for old, new in Chat80Repair.EDITS[Chat80Repair.GRAMMAR]:
         assert old not in repaired
     assert "% include" not in repaired
     assert "PropN[num=" not in repaired and repaired.count("PropN[NUM=sg") == 540
@@ -107,18 +101,18 @@ def test_chat80_loads_with_nltk_data_alone():
 
 def test_a_grammar_read_again_is_not_repaired_again():
     raw = _raw(CHAT80)
-    first = _repair_grammar(raw, raw.decode("utf-8"))
+    first = Chat80Repair.repair(raw, raw.decode("utf-8"))
     # a fresh read of the file gets the kept text back, not a new repair of it
-    assert _repair_grammar(raw, raw.decode("utf-8")) is first
+    assert Chat80Repair.repair(raw, raw.decode("utf-8")) is first
     assert nltk.data.load(CHAT80) is nltk.data.load(CHAT80)
 
 
 def test_other_text_is_read_as_it_is():
     text = "% start S\nS -> 'a'\n"
-    assert _repair_grammar(text.encode(), text) == text
+    assert Chat80Repair.repair(text.encode(), text) == text
     # a file that differs from the shipped one by a byte is not touched
     changed = _raw(CHAT80) + b"\n"
-    assert _repair_grammar(changed, changed.decode("utf-8")) == changed.decode()
+    assert Chat80Repair.repair(changed, changed.decode("utf-8")) == changed.decode()
 
 
 def test_app_reads_every_variable_name_the_reader_accepts():
