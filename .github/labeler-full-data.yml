@@ -1,0 +1,12 @@
+# A change to the feature parsers gets full-data, which runs their test in ci.yml;
+# this label is only ever added here, so a full-data a maintainer adds stays put.
+full-data:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "nltk/parse/**/*"
+      - "nltk/featstruct.py"
+      - "nltk/grammar.py"
+      - "nltk/sem/logic.py"
+      - "nltk/sem/drt.py"
+      - "tools/check_feature_parsers.py"
+      - "tools/feature_parser_answers.json"

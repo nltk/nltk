@@ -35,6 +35,7 @@ jobs:
       pull-requests: read
     outputs:
       code: ${{ steps.filter.outputs.code }}
+      parsing: ${{ steps.filter.outputs.parsing }}
     steps:
       - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
@@ -49,6 +50,15 @@ jobs:
               - 'MANIFEST.in'
               - '.github/workflows/**'
               - 'tools/github_actions/**'
+            # the files .github/labeler-full-data.yml labels full-data
+            parsing:
+              - 'nltk/parse/**'
+              - 'nltk/featstruct.py'
+              - 'nltk/grammar.py'
+              - 'nltk/sem/logic.py'
+              - 'nltk/sem/drt.py'
+              - 'tools/check_feature_parsers.py'
+              - 'tools/feature_parser_answers.json'
 
   pre-commit:
     name: pre-commit
@@ -509,10 +519,10 @@ jobs:
 
   feature-parsers:
     name: Test all feature parsers
-    # Every feature parser on every feature grammar in nltk_data: each edge, tree and
-    # error must match tools/feature_parser_answers.json. Costly, so only with `full-data`.
+    # Each edge, tree and error of every feature parser must match the pinned answers;
+    # it runs when the parsing files change (labelled full-data then) or with full-data.
     needs: [changes]
-    if: needs.changes.outputs.code == 'true' && contains(github.event.pull_request.labels.*.name, 'full-data')
+    if: needs.changes.outputs.parsing == 'true' || (needs.changes.outputs.code == 'true' && contains(github.event.pull_request.labels.*.name, 'full-data'))
     runs-on: ubuntu-latest
     timeout-minutes: 180
     permissions:
