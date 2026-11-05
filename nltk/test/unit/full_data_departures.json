@@ -40,9 +40,6 @@
    "corpora/kimmo/spanish.cfg": "ValueError: Unable to parse line 5: lexicon: spanish.lex\nExpected an arrow",
    "corpora/kimmo/turkish.cfg": "ValueError: Unable to parse line 3: lexicon: turkish.lex\nExpected an arrow"
   },
-  "sample_grammars": {
-   "grammars/sample_grammars/chat80.fcfg": "ValueError: Unable to parse line 19: NP[-PRED, NUM=pl,SEM=<(\\P Q. exists x. (Q(x) and P(x)) ?nom)>] -> Nom[NUM=pl,SEM=?nom]\nError parsing feature structure\n    "
-  },
   "tagsets_json": {
    "help/tagsets_json/PY3_json/brown_tagset.json": "TypeError: 'dict_keys' object is not an iterator",
    "help/tagsets_json/PY3_json/claws5_tagset.json": "TypeError: 'dict_keys' object is not an iterator",
@@ -78,11 +75,7 @@
    "semtypes": 109
   }
  },
- "grammars that do not load": {
-  "sample_grammars": {
-   "grammars/sample_grammars/chat80.fcfg": "ValueError: Unable to parse line 19: NP[-PRED, NUM=pl,SEM=<(\\P Q. exists x. (Q(x) and P(x)) ?nom)>] -> Nom[NUM=pl,SEM=?nom]\nError parsing feature structure\n    "
-  }
- },
+ "grammars that do not load": {},
  "moses_sample": {
   "this is a small house": "the small house is a"
  },
