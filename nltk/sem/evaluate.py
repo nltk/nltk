@@ -162,9 +162,13 @@ class Valuation(dict):
             if isinstance(val, str):
                 dom.append(val)
             elif not isinstance(val, bool):
-                dom.extend(
-                    [elem for tuple_ in val for elem in tuple_ if elem is not None]
-                )
+                # A one-place relation may list its members bare, as chat80's
+                # valuations do: such a member is one individual, not its letters.
+                for member in val:
+                    if isinstance(member, str):
+                        dom.append(member)
+                    else:
+                        dom.extend(elem for elem in member if elem is not None)
         return set(dom)
 
     @property
@@ -569,7 +573,10 @@ class Model:
                 # It's a predicate expression ("P(x,y)"), so used uncurried arguments
                 funval = self._satisfy(function, g)
                 argvals = tuple(self._satisfy(arg, g) for arg in arguments)
-                return argvals in funval
+                if argvals in funval:
+                    return True
+                # a member listed bare in a one-place relation (see Valuation.domain)
+                return len(argvals) == 1 and argvals[0] in funval
             else:
                 # It must be a lambda expression, so use curried form
                 funval = self._satisfy(parsed.function, g)
