@@ -104,6 +104,9 @@ from nltk.sem.logic import (
 )
 from nltk.termsec import safe_print
 
+#: Types that ``copy.deepcopy`` returns unchanged, without touching its memo.
+_DEEPCOPY_ATOMIC = (str, int, float, bool, type(None))
+
 ######################################################################
 # Feature Structure
 ######################################################################
@@ -746,7 +749,12 @@ class FeatDict(FeatStruct, dict):
     def __deepcopy__(self, memo):
         memo[id(self)] = selfcopy = self.__class__()
         for key, val in self._items():
-            selfcopy[copy.deepcopy(key, memo)] = copy.deepcopy(val, memo)
+            # copy.deepcopy returns these as they are, so skip the call.
+            if type(key) not in _DEEPCOPY_ATOMIC:
+                key = copy.deepcopy(key, memo)
+            if type(val) not in _DEEPCOPY_ATOMIC:
+                val = copy.deepcopy(val, memo)
+            selfcopy[key] = val
         return selfcopy
 
     ##////////////////////////////////////////////////////////////
@@ -1024,7 +1032,10 @@ class FeatList(FeatStruct, list):
 
     def __deepcopy__(self, memo):
         memo[id(self)] = selfcopy = self.__class__()
-        selfcopy.extend(copy.deepcopy(fval, memo) for fval in self)
+        selfcopy.extend(
+            fval if type(fval) in _DEEPCOPY_ATOMIC else copy.deepcopy(fval, memo)
+            for fval in self
+        )
         return selfcopy
 
     ##////////////////////////////////////////////////////////////
@@ -1237,12 +1248,13 @@ def rename_variables(
     if new_vars is None:
         new_vars = {}
     if vars is None:
-        vars = find_variables(fstruct, fs_class)
+        vars = own_vars = find_variables(fstruct, fs_class)
     else:
         vars = set(vars)
+        own_vars = find_variables(fstruct, fs_class)
 
     # Add our own variables to used_vars.
-    used_vars = find_variables(fstruct, fs_class).union(used_vars)
+    used_vars = own_vars.union(used_vars)
 
     # Copy ourselves, and rename variables in the copy.
     return _rename_variables(
@@ -2053,6 +2065,11 @@ class Feature:
 
     def __hash__(self):
         return hash(self._name)
+
+    def __deepcopy__(self, memo):
+        # A feature is not changed once made, so a deep copy of a feature
+        # structure shares its feature names, as it does string names.
+        return self
 
     # ////////////////////////////////////////////////////////////
     # These can be overridden by subclasses:

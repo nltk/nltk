@@ -35,6 +35,7 @@ jobs:
       pull-requests: read
     outputs:
       code: ${{ steps.filter.outputs.code }}
+      parsing: ${{ steps.filter.outputs.parsing }}
     steps:
       - uses: actions/checkout@v7
       - uses: dorny/paths-filter@v4
@@ -49,6 +50,15 @@ jobs:
               - 'MANIFEST.in'
               - '.github/workflows/**'
               - 'tools/github_actions/**'
+            # the files .github/labeler-full-data.yml labels full-data
+            parsing:
+              - 'nltk/parse/**'
+              - 'nltk/featstruct.py'
+              - 'nltk/grammar.py'
+              - 'nltk/sem/logic.py'
+              - 'nltk/sem/drt.py'
+              - 'tools/check_feature_parsers.py'
+              - 'tools/feature_parser_answers.json'
 
   pre-commit:
     name: pre-commit
@@ -506,3 +516,69 @@ jobs:
 
       - name: Check the built distributions against the tracked tree
         run: python tools/check_sdist_hygiene.py dist/*
+
+  feature-parsers:
+    name: ${{ matrix.name }}
+    # Each edge, tree and error of every feature parser must match the pinned answers;
+    # it runs when the parsing files change (labelled full-data then) or with full-data.
+    needs: [changes]
+    if: needs.changes.outputs.parsing == 'true' || (needs.changes.outputs.code == 'true' && contains(github.event.pull_request.labels.*.name, 'full-data'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        # the chart parsers of featurechart.py, and the incremental ones of earleychart.py
+        include:
+          - family: chart
+            name: Test feature chart parsers
+          - family: incremental
+            name: Test incremental feature parsers
+    env:
+      PYTHONHASHSEED: "0"
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+
+      - name: Install NLTK's dependencies
+        run: pip install -e .
+
+      - name: Set NLTK_DATA and the rows folder
+        run: |
+          echo "NLTK_DATA=$RUNNER_TEMP/nltk_data" >> "$GITHUB_ENV"
+          echo "ROWS=$RUNNER_TEMP/rows" >> "$GITHUB_ENV"
+
+      - name: Download the grammars
+        run: |
+          # the CLI exits 0 on a failed download, so check each package after
+          packages="large_grammars book_grammars sample_grammars basque_grammars spanish_grammars"
+          for attempt in 1 2 3; do
+            python -m nltk.downloader -d "$NLTK_DATA" $packages || true
+            if python -c "import sys; from nltk.downloader import Downloader; d = Downloader(); sys.exit(not all(d.is_installed(p, '$NLTK_DATA') for p in sys.argv[1:]))" $packages; then
+              exit 0
+            fi
+            sleep 30
+          done
+          exit 1
+
+      - name: Parse every sentence
+        run: |
+          mkdir -p "$ROWS"
+          python tools/check_feature_parsers.py items "$ROWS/items.json" --family "${{ matrix.family }}"
+          python tools/check_feature_parsers.py run . "$ROWS/items.json" "$ROWS/rows.jsonl"
+
+      - name: Check every parse against the pinned answers
+        run: python tools/check_feature_parsers.py check "$ROWS/items.json" "$ROWS/rows.jsonl" --summary "$GITHUB_STEP_SUMMARY"
+
+      - name: Keep the rows
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: feature-parsers-${{ matrix.family }}
+          path: ${{ runner.temp }}/rows/
