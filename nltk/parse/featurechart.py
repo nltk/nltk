@@ -12,10 +12,19 @@ feature structures as nodes.
 """
 
 import os
+import weakref
 from time import perf_counter
 
 from nltk.data import make_staging_dir
-from nltk.featstruct import TYPE, FeatStruct, find_variables, unify
+from nltk.featstruct import (
+    TYPE,
+    FeatStruct,
+    Feature,
+    SlashFeature,
+    _is_mapping,
+    find_variables,
+    unify,
+)
 from nltk.grammar import (
     CFG,
     FeatStructNonterminal,
@@ -39,6 +48,7 @@ from nltk.parse.chart import (
     TreeEdge,
 )
 from nltk.sem import logic
+from nltk.sem.logic import Variable
 from nltk.termsec import safe_print
 from nltk.tree import Tree
 
@@ -244,6 +254,86 @@ class FeatureChart(Chart):
 
 
 # ////////////////////////////////////////////////////////////
+# Shortcuts for Plain Grammars
+# ////////////////////////////////////////////////////////////
+
+#: Types of feature value that unify only with an equal value.
+_PLAIN_VALUES = (str, int, float, bool, type(None))
+
+#: Types of feature name that unify two such values by equality.
+_PLAIN_NAMES = (str, Feature, SlashFeature)
+
+_plain_grammars = weakref.WeakKeyDictionary()
+
+
+def _plain_fstruct(fstruct, visited):
+    if id(fstruct) in visited:
+        return True
+    visited.add(id(fstruct))
+    if _is_mapping(fstruct):
+        if any(type(fname) not in _PLAIN_NAMES for fname in fstruct):
+            return False
+        values = fstruct.values()
+    else:
+        values = fstruct
+    for fval in values:
+        if type(fval) in _PLAIN_VALUES or type(fval) is Variable:
+            continue
+        if not isinstance(fval, FeatStruct) or not _plain_fstruct(fval, visited):
+            return False
+    return True
+
+
+def _plain_grammar(grammar):
+    """
+    Return True if every feature in ``grammar`` has a plain value, a variable
+    or a feature structure as its value, and is named by a string or a plain
+    ``Feature``.  Unifying such structures fails or succeeds, and never raises
+    or draws a new variable name (as a logic expression can), so the shortcuts
+    below leave every edge as it was.
+    """
+    try:
+        return _plain_grammars[grammar]
+    except KeyError:
+        pass
+    except TypeError:  # a grammar that can't be weakly referenced
+        return _all_plain(grammar)
+    plain = _plain_grammars[grammar] = _all_plain(grammar)
+    return plain
+
+
+def _all_plain(grammar):
+    visited = set()
+    for production in grammar.productions():
+        for symbol in (production.lhs(),) + production.rhs():
+            if isinstance(symbol, FeatStruct):
+                if not _plain_fstruct(symbol, visited):
+                    return False
+            elif not isinstance(symbol, str):
+                return False
+    return True
+
+
+def _plain_clash(fstruct1, fstruct2):
+    """
+    Return True if a feature named by a string has unequal plain values in
+    ``fstruct1`` and ``fstruct2``.  ``unify(fstruct1, fstruct2)`` then fails,
+    so on a plain grammar the copies it and ``rename_variables`` make can be
+    skipped.
+    """
+    for fname, fval2 in fstruct2.items():
+        if type(fname) is str and fname in fstruct1:
+            fval1 = fstruct1[fname]
+            if (
+                type(fval1) in _PLAIN_VALUES
+                and type(fval2) in _PLAIN_VALUES
+                and fval1 != fval2
+            ):
+                return True
+    return False
+
+
+# ////////////////////////////////////////////////////////////
 # Fundamental Rule
 # ////////////////////////////////////////////////////////////
 
@@ -285,6 +375,8 @@ class FeatureFundamentalRule(FundamentalRule):
             if not is_nonterminal(nextsym):
                 return
             if left_edge.nextsym()[TYPE] != right_edge.lhs()[TYPE]:
+                return
+            if _plain_grammar(grammar) and _plain_clash(nextsym, found):
                 return
             # Create a copy of the bindings.
             bindings = left_edge.bindings()
@@ -382,6 +474,7 @@ class FeatureTopDownPredictRule(CachedTopDownPredictRule):
         if done[0] is chart and done[1] is grammar:
             return
 
+        plain = _plain_grammar(grammar)
         for prod in grammar.productions(lhs=nextsym):
             # If the left corner in the predicted production is
             # leaf, it must match with the input.
@@ -395,6 +488,8 @@ class FeatureTopDownPredictRule(CachedTopDownPredictRule):
 
             # We rename vars here, because we don't want variables
             # from the two different productions to match.
+            if plain and _plain_clash(prod.lhs(), nextsym_with_bindings):
+                continue
             if unify(prod.lhs(), nextsym_with_bindings, rename_vars=True):
                 new_edge = FeatureTreeEdge.from_production(prod, edge.end())
                 if chart.insert(new_edge, ()):
@@ -442,6 +537,8 @@ class FeatureBottomUpPredictCombineRule(BottomUpPredictCombineRule):
                     (prod.lhs(),) + prod.rhs(), fs_class=FeatStruct
                 )
                 found = found.rename_variables(used_vars=used_vars)
+                if _plain_grammar(grammar) and _plain_clash(_next, found):
+                    continue
 
                 result = unify(_next, found, bindings, rename_vars=False)
                 if result is None:
