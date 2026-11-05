@@ -54,6 +54,7 @@ from urllib.parse import unquote
 from urllib.request import url2pathname
 
 from nltk import pathsec, redos
+from nltk.jsontags import _read_capped
 from nltk.pathsec import ZipFile
 from nltk.pathsec import open as _secure_open
 from nltk.pathsec import urlopen as _secure_urlopen
@@ -2902,7 +2903,8 @@ class SeekableUnicodeStreamReader:
         if size is None:
             new_bytes = self.stream.read()
         else:
-            new_bytes = self.stream.read(size)
+            # Stepped, so a model's read(JSON_MAX_BYTES + 1) does not reserve 200 MiB.
+            new_bytes = _read_capped(self.stream, size)
 
         # Decode the bytes into unicode characters; the decoder keeps an
         # incomplete character and the shift state for the next block. At

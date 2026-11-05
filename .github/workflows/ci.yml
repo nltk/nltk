@@ -443,6 +443,111 @@ jobs:
             pytest --numprocesses auto "${probes[@]}" -rsx --doctest-modules nltk
           fi
 
+  all-data:
+    name: Every data file and module, base against change (shard ${{ matrix.shard }} of 8)
+    # With the full-data label only: every file of the data index through every NLTK loader,
+    # base against change (tools/check_all_data.py), then known answers (test_full_data.py)
+    needs: [pre-commit]
+    if: contains(github.event.pull_request.labels.*.name, 'full-data')
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          # the base commit is checked out beside the change, so all history
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+
+      - name: Set NLTK_DATA environment variable
+        shell: bash
+        run: echo "NLTK_DATA=$RUNNER_TEMP/nltk_data" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install --upgrade --requirement requirements-ci.txt
+
+      - name: Build bllipparser, which drives the BLLIP model
+        # GCC 14+ reports an error in a reranker template never instantiated (tree.h,
+        # size_); this reports it at instantiation instead. A failed build fails.
+        env:
+          # the C++ sources are compiled with CXXFLAGS, which replace the defaults
+          CXXFLAGS: -O3 -Wno-template-body
+        run: pip install bllipparser
+
+      - name: Download all the data with the NLTK downloader
+        shell: bash
+        run: |
+          # no cache: the downloader of this change fetches every package of the index,
+          # then each must be installed and match its checksum (the CLI exits 0 on error)
+          python -m nltk.downloader -d "$NLTK_DATA" -e all
+          python tools/check_all_data.py packages "$PWD" "$RUNNER_TEMP/packages.json"
+
+      - name: Check out the base commit
+        shell: bash
+        run: |
+          # a pull request is checked out merged into its base branch, the first parent
+          git worktree add --detach "$RUNNER_TEMP/base" HEAD^1
+          echo "base:   $(git -C "$RUNNER_TEMP/base" log -1 --format='%h %s')"
+          echo "change: $(git log -1 --format='%h %s')"
+
+      - name: Read every file of the shard's packages on both trees
+        shell: bash
+        env:
+          # sets, and what readers build from them, keep one order across processes
+          PYTHONHASHSEED: "0"
+          SHARD: ${{ matrix.shard }}
+        run: |
+          modules=()
+          if [ "$SHARD" = 0 ]; then modules=(--modules); fi
+          for tree in base head; do
+            dir="$RUNNER_TEMP/base"
+            if [ "$tree" = head ]; then dir="$PWD"; fi
+            python -P -s tools/check_all_data.py run "$dir" "$RUNNER_TEMP/packages.json" "$RUNNER_TEMP/$tree.json" --jobs 2 --shard "$SHARD/8" "${modules[@]}" 2> "$RUNNER_TEMP/$tree.log" &
+            pids+=($!)
+          done
+          rc=0
+          for pid in "${pids[@]}"; do wait "$pid" || rc=1; done
+          echo "::group::base"; cat "$RUNNER_TEMP/base.log"; echo "::endgroup::"
+          echo "::group::change"; cat "$RUNNER_TEMP/head.log"; echo "::endgroup::"
+          exit $rc
+
+      - name: Compare the two runs
+        run: python tools/check_all_data.py compare "$RUNNER_TEMP/base.json" "$RUNNER_TEMP/head.json"
+
+      - name: Known answers on every package of the shard
+        # also when the comparison failed: the two report different things
+        if: ${{ !cancelled() }}
+        shell: bash
+        env:
+          NLTK_FULL_DATA: "1"
+          SHARD: ${{ matrix.shard }}
+          PYTHONSAFEPATH: "1"
+        run: |
+          # each package's modules run on all of its data, against answers from outside NLTK
+          python tools/check_all_data.py shard "$RUNNER_TEMP/packages.json" "$SHARD/8" "$RUNNER_TEMP/shard.json"
+          rc=0
+          NLTK_FULL_DATA_INDEX="$RUNNER_TEMP/packages.json" NLTK_FULL_DATA_PACKAGES="$RUNNER_TEMP/shard.json" \
+            NLTK_FULL_DATA_FOUND="$RUNNER_TEMP/found" NLTK_FULL_DATA_SHARD="$SHARD/8" \
+            pytest -p no:cacheprovider -rA --numprocesses 4 nltk/test/unit/test_full_data.py || rc=1
+          # NLTK's own BLLIP tests, skipped where bllipparser is not installed, run here
+          if [ "$SHARD" = 0 ]; then pytest -p no:cacheprovider -rA nltk/test/unit/test_bllip.py || rc=1; fi
+          # what a package departs in, when it is not what is pinned: the list to review
+          if [ -d "$RUNNER_TEMP/found" ]; then
+            echo "::group::departures found"; cat "$RUNNER_TEMP"/found/*.jsonl; echo "::endgroup::"
+          fi
+          exit $rc
+
   docker-cross-account:
     name: Docker root build, appuser runtime (#3928)
     # The reporter's shape run for real: a python:3.11-slim image built from
