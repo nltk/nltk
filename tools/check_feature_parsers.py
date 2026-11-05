@@ -13,7 +13,7 @@ parsers (bottom-up left-corner, bottom-up, top-down and Earley), and every
 other ``.fcfg`` grammar in nltk_data under all nine feature parsers, on
 sentences generated from the grammar::
 
-    python tools/check_feature_parsers.py items ITEMS.json
+    python tools/check_feature_parsers.py items ITEMS.json [--family chart|incremental]
     python tools/check_feature_parsers.py run TREE ITEMS.json ROWS.jsonl
     python tools/check_feature_parsers.py check ITEMS.json ROWS.jsonl [--summary MD]
     python tools/check_feature_parsers.py compare ITEMS.json BASE CHANGE [--summary MD]
@@ -65,6 +65,25 @@ ALL_PARSERS = (
     "FeatureIncrementalBottomUpLeftCornerChartParser",
 )
 
+#: The parsers in two families, a CI job each: the chart parsers of
+#: featurechart.py and the incremental ones of earleychart.py.
+FAMILIES = {
+    "chart": (
+        "FeatureChartParser",
+        "FeatureBottomUpChartParser",
+        "FeatureBottomUpLeftCornerChartParser",
+        "FeatureTopDownChartParser",
+    ),
+    "incremental": (
+        "FeatureIncrementalChartParser",
+        "FeatureEarleyChartParser",
+        "FeatureIncrementalTopDownChartParser",
+        "FeatureIncrementalBottomUpChartParser",
+        "FeatureIncrementalBottomUpLeftCornerChartParser",
+    ),
+}
+assert sorted(sum(FAMILIES.values(), ())) == sorted(ALL_PARSERS)
+
 ANSWERS = pathlib.Path(__file__).with_name("feature_parser_answers.json")
 
 #: Relative cost of each parser on Alvey, measured on its longest sentence.
@@ -109,7 +128,7 @@ def _generated(grammar):
     return sentences[::step][:SAMPLE]
 
 
-def items(out):
+def items(out, family=None):
     import nltk
     from nltk.parse.util import extract_test_sentences
 
@@ -127,6 +146,8 @@ def items(out):
         else:
             sentences, parsers = _generated(grammar), ALL_PARSERS
         for parser in parsers:
+            if family and parser not in FAMILIES[family]:
+                continue
             for index, words in enumerate(sentences):
                 cost = COST.get(parser, 1) * len(words) ** 3
                 if name != ALVEY:
@@ -145,7 +166,9 @@ def items(out):
     # Costliest first, so the last parses to finish are short ones.
     work.sort(key=lambda item: (-item["cost"], item["id"]))
     with open(out, "w") as f:
-        json.dump({"items": work, "unloadable": unloadable}, f, indent=1)
+        json.dump(
+            {"items": work, "unloadable": unloadable, "family": family}, f, indent=1
+        )
     print(f"{len(work)} parses of {len({i['grammar'] for i in work})} grammars")
     for name, error in unloadable.items():
         print(f"  does not load: {name}: {error}")
@@ -268,6 +291,8 @@ def pin(items_file, rows_path):
     with open(items_file) as f:
         listed = json.load(f)
     work = listed["items"]
+    if listed.get("family"):
+        sys.exit("pin from the items of every parser, not of one family")
     rows = _rows(rows_path)
     missing = [item["id"] for item in work if item["id"] not in rows]
     if missing:
@@ -288,6 +313,12 @@ def check(items_file, rows_path, summary):
     with open(ANSWERS) as f:
         answers = json.load(f)
     pinned, pinned_unloadable = answers["groups"], answers["unloadable"]
+    family = listed.get("family")
+    if family:
+        # each job checks every pinned group of its own family's parsers
+        pinned = {
+            k: v for k, v in pinned.items() if k.rsplit(" ", 1)[1] in FAMILIES[family]
+        }
     found = _digests(work, rows)
     missing = [item["id"] for item in work if item["id"] not in rows]
     departures = sorted(
@@ -371,6 +402,7 @@ def main():
     sub = ap.add_subparsers(dest="command", required=True)
     p = sub.add_parser("items")
     p.add_argument("out")
+    p.add_argument("--family", choices=sorted(FAMILIES))
     p = sub.add_parser("run")
     p.add_argument("tree")
     p.add_argument("items")
@@ -391,7 +423,7 @@ def main():
     args = ap.parse_args()
     if args.command == "items":
         _init(os.getcwd())
-        items(args.out)
+        items(args.out, args.family)
     elif args.command == "run":
         run(args.tree, args.items, args.out, args.jobs)
     elif args.command == "check":

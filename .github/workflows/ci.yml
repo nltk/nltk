@@ -518,7 +518,7 @@ jobs:
         run: python tools/check_sdist_hygiene.py dist/*
 
   feature-parsers:
-    name: Test all feature parsers
+    name: ${{ matrix.name }}
     # Each edge, tree and error of every feature parser must match the pinned answers;
     # it runs when the parsing files change (labelled full-data then) or with full-data.
     needs: [changes]
@@ -527,6 +527,15 @@ jobs:
     timeout-minutes: 180
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        # the chart parsers of featurechart.py, and the incremental ones of earleychart.py
+        include:
+          - family: chart
+            name: Test feature chart parsers
+          - family: incremental
+            name: Test incremental feature parsers
     env:
       PYTHONHASHSEED: "0"
     steps:
@@ -561,7 +570,7 @@ jobs:
       - name: Parse every sentence
         run: |
           mkdir -p "$ROWS"
-          python tools/check_feature_parsers.py items "$ROWS/items.json"
+          python tools/check_feature_parsers.py items "$ROWS/items.json" --family "${{ matrix.family }}"
           python tools/check_feature_parsers.py run . "$ROWS/items.json" "$ROWS/rows.jsonl"
 
       - name: Check every parse against the pinned answers
@@ -571,5 +580,5 @@ jobs:
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
         with:
-          name: feature-parsers
+          name: feature-parsers-${{ matrix.family }}
           path: ${{ runner.temp }}/rows/
