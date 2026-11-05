@@ -508,7 +508,7 @@ jobs:
         run: python tools/check_sdist_hygiene.py dist/*
 
   feature-parsers:
-    name: Feature parsers against their pinned answers
+    name: Test all feature parsers
     # Every feature parser on every feature grammar in nltk_data: each edge, tree and
     # error must match tools/feature_parser_answers.json. Costly, so only with `full-data`.
     needs: [changes]
