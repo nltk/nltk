@@ -424,3 +424,163 @@ class PhraseTable:
 
     def __contains__(self, src_phrase):
         return src_phrase in self.src_phrases
+
+
+class MetricI:
+    """
+    A machine translation metric, set up once and then asked for the score of
+    a corpus or of one sentence::
+
+        metric.corpus_score(list_of_references, hypotheses)
+        metric.sentence_score(references, hypothesis)
+
+    Each hypothesis is a list of tokens and has its own list of references.
+
+    ``mode`` chooses whose arithmetic is reproduced on those tokens:
+    ``"nltk"`` (the default) gives the numbers of NLTK's functions, and a
+    metric that also has ``"mteval"`` or ``"sacrebleu"`` gives the numbers of
+    mteval-v13a.pl or of sacrebleu. ``modes`` lists the modes of a metric.
+
+    ``on_empty`` decides the score of an input with nothing to score, a corpus
+    without hypotheses or a hypothesis without references: ``"raise"`` (the
+    default) raises ValueError, ``"zero"`` scores it 0.0. An empty hypothesis
+    is a translation, not an empty input: most metrics score it 0, and those
+    that cannot (NIST in the "nltk" mode, LEPOR) say so.
+
+    ``smoothing`` decides what a granularity of the score, an n-gram order or
+    a character or word order, contributes when the hypothesis has n-grams of
+    it but none match; ``smooth_value`` sets its constant. The metrics that
+    combine several granularities (BLEU, NIST, CHRF, GLEU) take the methods of
+    smooth_counts(), the same in each; the others score one granularity or
+    count edits, have nothing to rescue a zero with, and take "none" only.
+    """
+
+    modes = ("nltk",)
+
+    def __init__(self, mode="nltk", on_empty="raise"):
+        if mode not in self.modes:
+            raise ValueError(
+                f"{type(self).__name__} has the modes {self.modes}, not {mode!r}"
+            )
+        if on_empty not in ("raise", "zero"):
+            raise ValueError(f"on_empty is 'raise' or 'zero', not {on_empty!r}")
+        self.mode = mode
+        self.on_empty = on_empty
+
+    def corpus_score(self, list_of_references, hypotheses):
+        """
+        :param list_of_references: the references of each hypothesis
+        :type list_of_references: list(list(list(str)))
+        :param hypotheses: the hypotheses
+        :type hypotheses: list(list(str))
+        :rtype: float
+        """
+        if len(list_of_references) != len(hypotheses):
+            raise ValueError(
+                f"The number of reference sets ({len(list_of_references)}) and of "
+                f"hypotheses ({len(hypotheses)}) must be the same"
+            )
+        if not hypotheses or not all(list_of_references):
+            if self.on_empty == "zero":
+                return self._zero_score()
+            raise ValueError(
+                f"{type(self).__name__}: there is nothing to score, "
+                + (
+                    "the corpus is empty"
+                    if not hypotheses
+                    else "a hypothesis has no references"
+                )
+                + "; on_empty='zero' scores it 0.0"
+            )
+        return self._corpus_score(list_of_references, hypotheses)
+
+    def sentence_score(self, references, hypothesis):
+        """
+        :param references: the references of the hypothesis
+        :type references: list(list(str))
+        :param hypothesis: a hypothesis
+        :type hypothesis: list(str)
+        :rtype: float
+        """
+        return self.corpus_score([references], [hypothesis])
+
+    def _corpus_score(self, list_of_references, hypotheses):
+        """The score of a corpus that has hypotheses, each with references."""
+        raise NotImplementedError
+
+    def _zero_score(self):
+        """The score of an input with nothing to score, under on_empty="zero"."""
+        return 0.0
+
+
+#: The smoothing methods of the metrics that combine granularities.
+SMOOTHING = ("none", "floor", "add-k", "exp")
+
+
+def smooth_counts(counts, smoothing="none", value=None):
+    """
+    Smooth the n-gram counts of the granularities a score combines, the same
+    way for every metric in nltk.translate that combines them. ``counts``
+    lists, lowest order first, ``(order, matches, hypothesis_ngrams,
+    reference_ngrams)`` for each granularity (``reference_ngrams`` is None
+    for a metric of precision only). Smoothing exists for a score that
+    multiplies its granularities, as BLEU does: one order without matches
+    would make it 0 however well the others match. The methods are those of
+    Chen and Cherry (2014), "A Systematic Comparison of Smoothing Techniques
+    for Sentence-Level BLEU", WMT, which sacrebleu and mteval also use:
+
+    - "none": the counts as they are.
+    - "floor" (smoothing 1): a granularity with hypothesis n-grams and no
+      matches counts ``value`` matches, 0.1 by default; sacrebleu's "floor",
+      BLEU's method1.
+    - "add-k" (smoothing 2): ``value``, 1 by default, is added to the matches
+      and the n-gram counts of every order above 1 (Lin and Och, 2004);
+      sacrebleu's "add-k", BLEU's method2.
+    - "exp" (smoothing 3): the k-th granularity with hypothesis n-grams and no
+      matches counts 1 / 2**k matches; mteval-v13a.pl's smoothing, sacrebleu's
+      "exp", BLEU's method3.
+
+    Three matched unigrams, no bigram or trigram among the hypothesis' three
+    and two:
+
+        >>> counts = [(1, 3, 4, 5), (2, 0, 3, 4), (3, 0, 2, 3)]
+        >>> smooth_counts(counts, "floor")
+        [(1, 3, 4, 5), (2, 0.1, 3, 4), (3, 0.1, 2, 3)]
+        >>> smooth_counts(counts, "add-k")
+        [(1, 3, 4, 5), (2, 1, 4, 5), (3, 1, 3, 4)]
+        >>> smooth_counts(counts, "exp")
+        [(1, 3, 4, 5), (2, 0.5, 3, 4), (3, 0.25, 2, 3)]
+
+    :param counts: (order, matches, hypothesis n-grams, reference n-grams or None)
+    :type counts: list(tuple)
+    :param smoothing: "none", "floor", "add-k" or "exp"
+    :param value: the floor (0.1) or the k (1); not used by "none" and "exp"
+    :rtype: list(tuple)
+    """
+    if smoothing == "none":
+        return list(counts)
+    if smoothing == "floor":
+        floor = 0.1 if value is None else value
+        return [(n, floor if m == 0 and h > 0 else m, h, r) for n, m, h, r in counts]
+    if smoothing == "add-k":
+        k = 1 if value is None else value
+        return [
+            (n, m + k, h + k, None if r is None else r + k) if n > 1 else (n, m, h, r)
+            for n, m, h, r in counts
+        ]
+    if smoothing == "exp":
+        smoothed, k = [], 1
+        for n, m, h, r in counts:
+            if m == 0 and h > 0:
+                m, k = 1 / 2**k, k + 1
+            smoothed.append((n, m, h, r))
+        return smoothed
+    raise ValueError(f"smoothing is one of {SMOOTHING}, not {smoothing!r}")
+
+
+def _refuse_smoothing(metric, smoothing, why):
+    """The smoothing check of a metric with no granularities to smooth."""
+    if smoothing not in (None, "none"):
+        raise ValueError(
+            f'{type(metric).__name__} {why}: it takes smoothing "none", not {smoothing!r}'
+        )

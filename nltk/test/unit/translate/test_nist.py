@@ -6,7 +6,39 @@ import io
 import unittest
 
 from nltk.data import find, open_datafile
-from nltk.translate.nist_score import corpus_nist
+from nltk.translate.nist_score import NIST, corpus_nist, sentence_nist
+
+# The sentences from the sentence_nist doctest. The expected scores below were
+# computed with mteval-v13a.pl on the same whitespace tokens, with the -c flag
+# so that the case is preserved.
+HYPOTHESIS1 = (
+    "It is a guide to action which ensures that the military always obeys the "
+    "commands of the party"
+).split()
+HYPOTHESIS2 = (
+    "It is to insure the troops forever hearing the activity guidebook that party "
+    "direct"
+).split()
+REFERENCE1 = (
+    "It is a guide to action that ensures that the military will forever heed "
+    "Party commands"
+).split()
+REFERENCE2 = (
+    "It is the guiding principle which guarantees the military forces always "
+    "being under the command of the Party"
+).split()
+REFERENCE3 = (
+    "It is the practical guide for the army always to heed the directions of the "
+    "party"
+).split()
+
+
+def mteval_sentence_nist(references, hypothesis, n=5):
+    return NIST(n, mode="mteval").sentence_score(references, hypothesis)
+
+
+def mteval_corpus_nist(list_of_references, hypotheses, n=5):
+    return NIST(n, mode="mteval").corpus_score(list_of_references, hypotheses)
 
 
 class TestNIST(unittest.TestCase):
@@ -34,3 +66,124 @@ class TestNIST(unittest.TestCase):
                     nltk_nist = corpus_nist(references, hypotheses, i)
                     # Check that the NIST scores difference is less than 0.5
                     assert abs(mteval_nist - nltk_nist) < 0.05
+
+    def test_too_big_n(self):
+        # hypothesis with length 18
+        hypothesis = "It is a guide to action which ensures that the military always obeys the commands of the party".split()
+
+        references = [
+            "It is the guide to action that ensures that the military will forever heed Party commands".split(),
+            "It is the guding principle which guarantees the military forces always being under the command of the Party".split(),
+            "It is the practical guide for the army always to heed the directions of the party".split(),
+        ]
+        # normal case, should be greater than 0.0
+        nist_score = corpus_nist([references], [hypothesis])
+        assert nist_score > 0.0
+        # No hypothesis has 19 or more words: the nltk mode says so ...
+        with self.assertRaisesRegex(ValueError, "no 19-grams to score"):
+            corpus_nist([references], [hypothesis], n=20)
+        # ... and mteval-v13a.pl adds 0 for each such order; its cumulative
+        # score for this sentence is 4.524628226049 from order 3 to 9
+        for n in (5, 9, 20):
+            self.assertAlmostEqual(
+                mteval_corpus_nist([references], [hypothesis], n=n),
+                4.524628226049,
+                places=10,
+            )
+
+    def test_single_reference_matches_mteval(self):
+        self.assertAlmostEqual(
+            sentence_nist([REFERENCE1], HYPOTHESIS1, n=1), 2.388888888889, places=8
+        )
+        self.assertAlmostEqual(
+            sentence_nist([REFERENCE1], HYPOTHESIS1), 2.447712418300, places=8
+        )
+        self.assertAlmostEqual(
+            sentence_nist([REFERENCE1], HYPOTHESIS2), 1.523880196056, places=8
+        )
+
+    def test_multiple_references_match_mteval(self):
+        references = [REFERENCE1, REFERENCE2, REFERENCE3]
+        self.assertAlmostEqual(
+            mteval_sentence_nist(references, HYPOTHESIS1, n=1), 4.292547512225, places=8
+        )
+        self.assertAlmostEqual(
+            mteval_sentence_nist(references, HYPOTHESIS1, n=2), 4.876360012514, places=8
+        )
+        self.assertAlmostEqual(
+            mteval_sentence_nist(references, HYPOTHESIS1), 5.037920168830, places=8
+        )
+        self.assertAlmostEqual(
+            mteval_sentence_nist(references, HYPOTHESIS2), 2.113874560032, places=8
+        )
+
+    def test_corpus_multiple_references_matches_mteval(self):
+        list_of_references = [[REFERENCE1, REFERENCE2, REFERENCE3]] * 2
+        hypotheses = [HYPOTHESIS1, HYPOTHESIS2]
+        self.assertAlmostEqual(
+            mteval_corpus_nist(list_of_references, hypotheses, n=1),
+            3.441575964369,
+            places=8,
+        )
+        self.assertAlmostEqual(
+            mteval_corpus_nist(list_of_references, hypotheses, n=2),
+            3.770086809712,
+            places=8,
+        )
+        self.assertAlmostEqual(
+            mteval_corpus_nist(list_of_references, hypotheses), 3.861760533218, places=8
+        )
+
+    def test_ngrams_match_any_reference(self):
+        # Every hypothesis unigram appears in one of the two references, so all
+        # four of them count. Each of A, B, C and D occurs once in the eight
+        # reference words and carries 3 bits of information, so the unigram
+        # precision is 12 / 4. The bigrams A B and C D carry no information
+        # because A is always followed by B and C by D.
+        hypothesis = "A B C D".split()
+        references = ["A B x y".split(), "x y C D".split()]
+        self.assertAlmostEqual(mteval_sentence_nist(references, hypothesis, n=4), 3.0)
+        # With only the first reference, A and B are the only matches.
+        self.assertAlmostEqual(
+            mteval_sentence_nist(references[:1], hypothesis, n=4), 1.0
+        )
+
+    def test_length_penalty_uses_average_reference_length(self):
+        hypothesis = "the quick brown fox jumps over the lazy dog".split()
+        same = list(hypothesis)
+        longer = (
+            "a completely different sentence that shares nothing with the "
+            "hypothesis and keeps going for a while longer"
+        ).split()
+        assert len(hypothesis) == 9 and len(longer) == 17
+        # The hypothesis is one of the references, but the references are 13
+        # words long on average, so the length penalty for 9 / 13 applies.
+        self.assertAlmostEqual(
+            mteval_sentence_nist([same, longer], hypothesis, n=1),
+            2.458743696739,
+            places=8,
+        )
+        self.assertAlmostEqual(
+            mteval_sentence_nist([same, longer], hypothesis), 2.682801548802, places=8
+        )
+        # With the single matching reference there is no length penalty.
+        self.assertAlmostEqual(
+            mteval_sentence_nist([same], hypothesis), 3.197702779220, places=8
+        )
+
+    def test_nltk_mode_keeps_its_numbers(self):
+        # corpus_nist() and sentence_nist() score each order against the best
+        # single reference, as before; mteval-v13a.pl gives 5.0379..., 2.1138...
+        # and 3.8617... (above)
+        references = [REFERENCE1, REFERENCE2, REFERENCE3]
+        self.assertAlmostEqual(
+            sentence_nist(references, HYPOTHESIS1), 3.3709935957649324, places=12
+        )
+        self.assertAlmostEqual(
+            sentence_nist(references, HYPOTHESIS2), 1.4619035460750134, places=12
+        )
+        self.assertAlmostEqual(
+            corpus_nist([references] * 2, [HYPOTHESIS1, HYPOTHESIS2]),
+            2.6375187380292515,
+            places=12,
+        )

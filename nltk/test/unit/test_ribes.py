@@ -29,11 +29,15 @@ def test_ribes_empty_hypothesis():
 
 
 def test_ribes_empty_references():
-    assert sentence_ribes([], ["a"]) == 0.0
+    assert sentence_ribes([], ["a"], on_empty="zero") == 0.0
+    with pytest.raises(ValueError, match="a hypothesis has no references"):
+        sentence_ribes([], ["a"])
 
 
 def test_ribes_empty_corpus():
-    assert corpus_ribes([], []) == 0.0
+    assert corpus_ribes([], [], on_empty="zero") == 0.0
+    with pytest.raises(ValueError, match="the corpus is empty"):
+        corpus_ribes([], [])
 
 
 def test_ribes_rejects_mismatched_corpus_lengths():

@@ -7,6 +7,36 @@
 # URL: <https://www.nltk.org/>
 # For license information, see LICENSE.TXT
 
+"""
+The machine translation metrics as objects, set up once and then scoring a
+corpus or a sentence (see nltk.translate.api.MetricI)::
+
+    >>> from nltk.translate.metrics import BLEU
+    >>> refs = [['the cat sat on the red mat today'.split()]]
+    >>> hyps = ['the cat sat on the mat today'.split()]
+    >>> round(BLEU(mode="sacrebleu").corpus_score(refs, hyps), 4)
+    0.613
+
+The functions (corpus_bleu, sentence_nist and so on) remain, and give the
+scores of the "nltk" mode. The error rates TER and WER are lower for better
+translations; the other metrics are higher.
+
+    >>> from nltk.translate.metrics import TER
+    >>> TER().corpus_score(refs, hyps)
+    0.125
+"""
+
+from nltk.translate.bleu_score import BLEU
+from nltk.translate.chrf_score import CHRF
+from nltk.translate.gleu_score import GLEU
+from nltk.translate.lepor import LEPOR
+from nltk.translate.meteor_score import METEOR
+from nltk.translate.nist_score import NIST
+from nltk.translate.ribes_score import RIBES
+from nltk.translate.rouge_score import ROUGE
+from nltk.translate.ter_score import TER
+from nltk.translate.wer_score import WER
+
 
 def alignment_error_rate(reference, hypothesis, possible=None):
     """

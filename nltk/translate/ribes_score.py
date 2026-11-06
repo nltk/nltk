@@ -10,10 +10,11 @@
 import math
 from itertools import combinations, islice
 
+from nltk.translate.api import MetricI, _refuse_smoothing
 from nltk.util import choose, ngrams
 
 
-def sentence_ribes(references, hypothesis, alpha=0.25, beta=0.10):
+def sentence_ribes(references, hypothesis, alpha=0.25, beta=0.10, *, on_empty="raise"):
     """
     The RIBES (Rank-based Intuitive Bilingual Evaluation Score) from
     Hideki Isozaki, Tsutomu Hirao, Kevin Duh, Katsuhito Sudoh and
@@ -43,10 +44,18 @@ def sentence_ribes(references, hypothesis, alpha=0.25, beta=0.10):
     :type alpha: float
     :param beta: hyperparameter used as a prior for the brevity penalty.
     :type beta: float
+    :param on_empty: "raise" (the default) or "zero", for a hypothesis
+        without references
+    :type on_empty: str
     :return: The best ribes score from one of the references.
     :rtype: float
     """
-    if not references or not hypothesis:
+    return RIBES(alpha, beta, on_empty=on_empty).sentence_score(references, hypothesis)
+
+
+def _sentence_ribes(references, hypothesis, alpha, beta):
+    """sentence_ribes() of a hypothesis with references."""
+    if not hypothesis:
         return 0.0
 
     best_ribes = -1.0
@@ -70,7 +79,9 @@ def sentence_ribes(references, hypothesis, alpha=0.25, beta=0.10):
     return best_ribes
 
 
-def corpus_ribes(list_of_references, hypotheses, alpha=0.25, beta=0.10):
+def corpus_ribes(
+    list_of_references, hypotheses, alpha=0.25, beta=0.10, *, on_empty="raise"
+):
     """
     This function "calculates RIBES for a system output (hypothesis) with
     multiple references, and returns "best" score among multi-references and
@@ -112,21 +123,48 @@ def corpus_ribes(list_of_references, hypotheses, alpha=0.25, beta=0.10):
     :type alpha: float
     :param beta: hyperparameter used as a prior for the brevity penalty.
     :type beta: float
+    :param on_empty: "raise" (the default) or "zero", for an empty corpus or a
+        hypothesis without references
+    :type on_empty: str
     :return: The best ribes score from one of the references.
     :rtype: float
     """
-    if not hypotheses:
-        return 0.0
-    if len(list_of_references) != len(hypotheses):
-        raise ValueError(
-            "The number of reference sets must match the number of hypotheses."
-        )
+    return RIBES(alpha, beta, on_empty=on_empty).corpus_score(
+        list_of_references, hypotheses
+    )
 
-    corpus_best_ribes = 0.0
-    # Iterate through each hypothesis and their corresponding references.
-    for references, hypothesis in zip(list_of_references, hypotheses):
-        corpus_best_ribes += sentence_ribes(references, hypothesis, alpha, beta)
-    return corpus_best_ribes / len(hypotheses)
+
+class RIBES(MetricI):
+    """
+    RIBES, corpus_ribes() and sentence_ribes() as a metric. NLTK's is its only
+    mode: neither mteval nor sacrebleu has RIBES (NTT's RIBES.py is the
+    reference implementation).
+
+    :param alpha: hyperparameter used as a prior for the unigram precision
+    :param beta: hyperparameter used as a prior for the brevity penalty
+    :param smoothing: "none" only (see MetricI)
+    :param on_empty: "raise" or "zero", see MetricI
+    """
+
+    def __init__(
+        self, alpha=0.25, beta=0.10, *, smoothing=None, mode="nltk", on_empty="raise"
+    ):
+        super().__init__(mode, on_empty)
+        _refuse_smoothing(
+            self,
+            smoothing,
+            "ranks the aligned words; there are no n-gram orders to smooth",
+        )
+        self.alpha, self.beta = alpha, beta
+
+    def _corpus_score(self, list_of_references, hypotheses):
+        corpus_best_ribes = 0.0
+        # Iterate through each hypothesis and their corresponding references.
+        for references, hypothesis in zip(list_of_references, hypotheses):
+            corpus_best_ribes += _sentence_ribes(
+                references, hypothesis, self.alpha, self.beta
+            )
+        return corpus_best_ribes / len(hypotheses)
 
 
 def position_of_ngram(ngram, sentence):

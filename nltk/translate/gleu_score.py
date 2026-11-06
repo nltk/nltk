@@ -10,10 +10,21 @@
 
 from collections import Counter
 
+from nltk.translate.api import MetricI, smooth_counts
+from nltk.translate.chrf_score import _ngram_matches
 from nltk.util import everygrams, ngrams
 
 
-def sentence_gleu(references, hypothesis, min_len=1, max_len=4):
+def sentence_gleu(
+    references,
+    hypothesis,
+    min_len=1,
+    max_len=4,
+    *,
+    smoothing=None,
+    smooth_value=None,
+    on_empty="raise",
+):
     """
     Calculates the sentence level GLEU (Google-BLEU) score described in
 
@@ -77,13 +88,38 @@ def sentence_gleu(references, hypothesis, min_len=1, max_len=4):
     :type min_len: int
     :param max_len: The maximum order of n-gram this function should extract.
     :type max_len: int
+    :param smoothing: None (no smoothing), "floor", "add-k" or "exp"; see
+        nltk.translate.api.smooth_counts
+    :type smoothing: str
+    :param smooth_value: the floor or the k of the smoothing
+    :type smooth_value: float
+    :param on_empty: "raise" (the default) or "zero", for a hypothesis
+        without references
+    :type on_empty: str
     :return: the sentence level GLEU score.
     :rtype: float
     """
-    return corpus_gleu([references], [hypothesis], min_len=min_len, max_len=max_len)
+    return corpus_gleu(
+        [references],
+        [hypothesis],
+        min_len=min_len,
+        max_len=max_len,
+        smoothing=smoothing,
+        smooth_value=smooth_value,
+        on_empty=on_empty,
+    )
 
 
-def corpus_gleu(list_of_references, hypotheses, min_len=1, max_len=4):
+def corpus_gleu(
+    list_of_references,
+    hypotheses,
+    min_len=1,
+    max_len=4,
+    *,
+    smoothing=None,
+    smooth_value=None,
+    on_empty="raise",
+):
     """
     Calculate a single corpus-level GLEU score (aka. system-level GLEU) for all
     the hypotheses and their respective references.
@@ -139,14 +175,109 @@ def corpus_gleu(list_of_references, hypotheses, min_len=1, max_len=4):
     :type min_len: int
     :param max_len: The maximum order of n-gram this function should extract.
     :type max_len: int
+    :param smoothing: None (no smoothing), "floor", "add-k" or "exp"; see
+        nltk.translate.api.smooth_counts
+    :type smoothing: str
+    :param smooth_value: the floor or the k of the smoothing
+    :type smooth_value: float
+    :param on_empty: "raise" (the default) or "zero", for an empty corpus or a
+        hypothesis without references
+    :type on_empty: str
     :return: The corpus-level GLEU score.
     :rtype: float
     """
-    # sanity check
-    assert len(list_of_references) == len(
-        hypotheses
-    ), "The number of hypotheses and their reference(s) should be the same"
+    return GLEU(
+        min_len,
+        max_len,
+        smoothing=smoothing,
+        smooth_value=smooth_value,
+        on_empty=on_empty,
+    ).corpus_score(list_of_references, hypotheses)
 
+
+class GLEU(MetricI):
+    """
+    Google's GLEU, corpus_gleu() and sentence_gleu() as a metric. NLTK's is its
+    only mode: neither mteval nor sacrebleu has GLEU.
+
+    GLEU pools the n-grams of all its orders, so an order without matches does
+    not zero it. It takes the smoothings of nltk.translate.api.smooth_counts,
+    which smooth each order's matches and n-grams before they are pooled. The
+    scrambled words below match as unigrams only; "exp" lets the bigrams,
+    trigrams and 4-grams count 1/2, 1/4 and 1/8 of a match, 6.875 matches of
+    the 18 n-grams:
+
+        >>> from nltk.translate.gleu_score import GLEU
+        >>> reference = 'the cat sat on the mat'.split()
+        >>> scrambled = 'mat the on sat cat the'.split()
+        >>> round(GLEU().sentence_score([reference], scrambled), 4)
+        0.3333
+        >>> round(GLEU(smoothing="exp").sentence_score([reference], scrambled), 4)
+        0.3819
+
+    :param min_len: lowest n-gram order
+    :param max_len: highest n-gram order
+    :param smoothing: None (no smoothing), "floor", "add-k" or "exp"
+    :param smooth_value: the floor or the k of the smoothing
+    :param on_empty: "raise" or "zero", see MetricI
+    """
+
+    def __init__(
+        self,
+        min_len=1,
+        max_len=4,
+        *,
+        smoothing=None,
+        smooth_value=None,
+        mode="nltk",
+        on_empty="raise",
+    ):
+        super().__init__(mode, on_empty)
+        smoothing = smoothing or "none"
+        smooth_counts([], smoothing)  # an unknown method raises ValueError
+        self.min_len, self.max_len = min_len, max_len
+        self.smoothing, self.smooth_value = smoothing, smooth_value
+
+    def _corpus_score(self, list_of_references, hypotheses):
+        if self.smoothing != "none":
+            return _smoothed_corpus_gleu(
+                list_of_references,
+                hypotheses,
+                range(self.min_len, self.max_len + 1),
+                self.smoothing,
+                self.smooth_value,
+            )
+        return _corpus_gleu(list_of_references, hypotheses, self.min_len, self.max_len)
+
+
+def _smoothed_corpus_gleu(list_of_references, hypotheses, orders, smoothing, value):
+    """
+    _corpus_gleu() with each order's matches and n-grams smoothed (see
+    nltk.translate.api.smooth_counts) before they are pooled: the pooled
+    counts of all orders are those everygrams() gives.
+    """
+    corpus_n_match = corpus_n_all = 0
+    for references, hypothesis in zip(list_of_references, hypotheses):
+        hyp_counts = []
+        for reference in references:
+            counts = smooth_counts(
+                [(n, *_ngram_matches(reference, hypothesis, n)) for n in orders],
+                smoothing,
+                value,
+            )
+            tp = sum(c[1] for c in counts)
+            n_all = max(sum(c[2] for c in counts), sum(c[3] for c in counts))
+            if n_all > 0:
+                hyp_counts.append((tp, n_all))
+        if hyp_counts:
+            n_match, n_all = max(hyp_counts, key=lambda hc: hc[0] / hc[1])
+            corpus_n_match += n_match
+            corpus_n_all += n_all
+    return corpus_n_match / corpus_n_all if corpus_n_all else 0.0
+
+
+def _corpus_gleu(list_of_references, hypotheses, min_len, max_len):
+    """corpus_gleu() of a corpus with hypotheses and references."""
     # sum matches and max-token-lengths over all sentences
     corpus_n_match = 0
     corpus_n_all = 0
@@ -181,7 +312,8 @@ def corpus_gleu(list_of_references, hypotheses, min_len=1, max_len=4):
             corpus_n_match += n_match
             corpus_n_all += n_all
 
-    # corner case: empty corpus or empty references---don't divide by zero!
+    # corner case: no hypothesis or reference has n-grams of these orders,
+    # don't divide by zero
     if corpus_n_all == 0:
         gleu_score = 0.0
     else:
