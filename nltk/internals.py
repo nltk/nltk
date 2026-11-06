@@ -1639,12 +1639,6 @@ class ElementWrapper:
     def __delitem__(self, index):
         del self._etree[index]
 
-    def __setslice__(self, start, stop, elements):
-        self._etree[start:stop] = elements
-
-    def __delslice__(self, start, stop):
-        del self._etree[start:stop]
-
     def __len__(self):
         return len(self._etree)
 
@@ -1653,10 +1647,9 @@ class ElementWrapper:
     ##////////////////////////////////////////////////////////////
 
     def __getitem__(self, index):
+        if isinstance(index, slice):
+            return [ElementWrapper(elt) for elt in self._etree[index]]
         return ElementWrapper(self._etree[index])
-
-    def __getslice__(self, start, stop):
-        return [ElementWrapper(elt) for elt in self._etree[start:stop]]
 
     def getchildren(self):
         return [ElementWrapper(elt) for elt in self._etree]
