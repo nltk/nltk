@@ -312,6 +312,12 @@ def clause(reldict, relsym):
 ############################################
 # Example of in(ORG, LOC)
 ############################################
+# The ``in`` relation filter of ``in_demo``: the atomic group commits to the
+# last ``in`` (the greedy ``.*`` finds it first), so the ``ing`` lookahead runs
+# once; retried per earlier ``in`` it was O(n**2) on corpus text (CWE-407).
+_IN_RE = redos.compile(r"(?>.*\bin\b)(?!\b.+ing)")
+
+
 def in_demo(trace=0, sql=True):
     """
     Select pairs of organizations and locations whose mentions occur with an
@@ -338,7 +344,7 @@ def in_demo(trace=0, sql=True):
 
             warnings.warn("Cannot import sqlite; sql flag will be ignored.")
 
-    IN = redos.compile(r".*\bin\b(?!\b.+ing)")
+    IN = _IN_RE
 
     safe_print()
     safe_print("IEER: in(ORG, LOC) -- just the clauses:")

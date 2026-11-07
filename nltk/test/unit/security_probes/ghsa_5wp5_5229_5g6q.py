@@ -8,7 +8,7 @@ from pathlib import Path
 
 from nltk import pathsec
 
-from ._base import FIXED, STATIC, VULNERABLE, probe
+from ._base import FIXED, STATIC, VULNERABLE, makedirs_private, probe
 
 
 @probe("GHSA-5wp5-5229-5g6q")
@@ -34,8 +34,7 @@ def _downloader_integrity():
         size = os.path.getsize(pkgzip)
         with open(pkgzip, "rb") as fh:
             good = hashlib.sha256(fh.read()).hexdigest()
-        dest = os.path.join(box, "dl")
-        os.makedirs(dest)
+        dest = makedirs_private(path=os.path.join(box, "dl"))
         installed = os.path.join(dest, "corpora", "evil.zip")
 
         def run(digest):

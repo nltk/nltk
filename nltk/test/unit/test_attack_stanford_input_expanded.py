@@ -52,8 +52,6 @@ BENIGN = [
     chr(0x1F600),
 ]
 
-JDK = "/Users/alvas/nltk_tools/jdk/jdk-21.0.12.1+1/Contents/Home"
-
 
 def _bare_tagger():
     from nltk.tag.stanford import StanfordPOSTagger
@@ -350,8 +348,6 @@ def _java():
 def _jvm_env(monkeypatch):
     import nltk.internals as internals
 
-    if not os.environ.get("JAVA_HOME") and os.path.isdir(JDK):
-        monkeypatch.setenv("JAVA_HOME", JDK)
     monkeypatch.delenv("JAVAHOME", raising=False)
     monkeypatch.setattr(internals, "_java_bin", None)
 

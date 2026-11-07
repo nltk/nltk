@@ -60,12 +60,12 @@ def test_chat80_label_indivs_refuses_outside_cwd(sandbox):
     from nltk.sem import chat80
     from nltk.sem.evaluate import Valuation
 
-    # label_indivs writes the fixed name "chat_pnames.cfg" relative to CWD; make
+    # label_indivs writes the fixed name "chat_pnames.fcfg" relative to CWD; make
     # CWD the outside dir so the write would land outside the sandbox.
     os.chdir(sandbox)
     with pytest.raises(PermissionError):
         chat80.label_indivs(Valuation([]), lexicon=True)
-    assert not (sandbox / "chat_pnames.cfg").exists()
+    assert not (sandbox / "chat_pnames.fcfg").exists()
 
 
 @pytest.mark.parametrize(

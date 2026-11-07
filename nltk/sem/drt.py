@@ -1096,8 +1096,7 @@ def resolve_anaphora(expression, trail=[], budget=None):
                 if isinstance(r_cond.second, PossibleAntecedents):
                     if not r_cond.second:
                         raise AnaphoraResolutionException(
-                            "Variable '%s' does not "
-                            "resolve to anything." % r_cond.first
+                            f"Variable '{r_cond.first}' does not resolve to anything."
                         )
 
             r_conds.append(r_cond)
@@ -1156,7 +1155,6 @@ class DrsDrawer:
         """
         master = None
         if not canvas:
-
             # Only import tkinter if the user has indicated that they
             # want to draw a UI. See issue #2949 for more info.
             from tkinter import Canvas, Tk

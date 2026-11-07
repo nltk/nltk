@@ -1,0 +1,921 @@
+{
+ "groups": {
+  "grammars/basque_grammars/basque1.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "466f2f84f74555f1e7f799d42b3b4b5e22d8103f835b7e50c36b95ae41e2462e"
+  },
+  "grammars/basque_grammars/basque1.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "f77958448b46a097e3130104537ace38ed85156ae08d0558098d05c6d650abe5"
+  },
+  "grammars/basque_grammars/basque1.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "b306413b753a60d5fe18a6eed414b0ec12ab8d1fc3641a2102e107957ebba8e5"
+  },
+  "grammars/basque_grammars/basque1.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "d3a93ab52a87f46d24b26f6d7fc7ac0dc18de85ac10b9f36b46e0e7424820ebb"
+  },
+  "grammars/basque_grammars/basque1.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "5f2bb6fb1cd19253575395953b19e22030a024e40d70b4668344086cb24eafd1"
+  },
+  "grammars/basque_grammars/basque1.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "5d050aea3be0fed7bb12a2c937d859991f21b460240153e7c2ba20e021946085"
+  },
+  "grammars/basque_grammars/basque1.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "731e43651090b6d484939b1888d068dcb5389b5549490628e84babb4e82f4b65"
+  },
+  "grammars/basque_grammars/basque1.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "9b8832b30fff1964797fee53215e12042c36fb4be10e93497b45da515007381b"
+  },
+  "grammars/basque_grammars/basque1.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "69b3b375d7cf29c7cc4b3eef2a9f74843b88425eb866058b8f6681121d9e6201"
+  },
+  "grammars/basque_grammars/basque2.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "7b160083207e6161cc0eb234872bd98bc1bc11562c84b5fc88171e9e9f8529f9"
+  },
+  "grammars/basque_grammars/basque2.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "21583ee4b2e4d316e3976984f2f6ba73ba25857ee49b4fcf512074650da7428c"
+  },
+  "grammars/basque_grammars/basque2.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "1b3ebf9c1e90c0a76b088eb2edf1aa5e10d0c7b3a812b1f396533fc9bf0b86d8"
+  },
+  "grammars/basque_grammars/basque2.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "9766a20757dc084cb9779647414f94218884047d202110c0c1ae929b98d968ab"
+  },
+  "grammars/basque_grammars/basque2.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "110012c5f5d75d58eec64cdb424e5469fa7e6ba694915c7725d286487bee8f3e"
+  },
+  "grammars/basque_grammars/basque2.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "3f3100853da009aae141bf6f5fecc06e118dd88cd49cd4f098e8d184e1a5c5e2"
+  },
+  "grammars/basque_grammars/basque2.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "f4658f3596a5a96fe139aa538826af3bd728b6748e455eab17c5cf37425d4461"
+  },
+  "grammars/basque_grammars/basque2.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "c9e92938e4c399d35936f010f1e6864b799e7518c5aaebd841293a54a089b959"
+  },
+  "grammars/basque_grammars/basque2.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "29cd8a173046e9a5ed2ad01339ba096d7506895bb1848fd9811e5f9947e7e550"
+  },
+  "grammars/basque_grammars/basque3.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "2254f6a7db54af404a36b26f1895d6d4737df62c2f78868c98b720200f1cb3a1"
+  },
+  "grammars/basque_grammars/basque3.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "e6263f7df16bbc53c8ad51d43a6f37a42765251db4a6372a4156c300e56cbff8"
+  },
+  "grammars/basque_grammars/basque3.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "a1be66c07f15808553dac24ee415f3ea474c3206d63983c378fd2cfbb9143779"
+  },
+  "grammars/basque_grammars/basque3.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "3c2ff0790f58782f351f9350e1d652a1fcbd0c53846b9e6fd6383677bd399f56"
+  },
+  "grammars/basque_grammars/basque3.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "61be7187f8d84eb9675e592a891d9689a615e6db1f21d0d72586b2d016080a04"
+  },
+  "grammars/basque_grammars/basque3.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "0c0c030005c93d127f6a1caebf4f6bbb04dd46e01c2dac6540983b214d691b68"
+  },
+  "grammars/basque_grammars/basque3.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "3bce7b6114b493af7c5151b50603959402fca91b1bcd1562efd43d8575c53e1c"
+  },
+  "grammars/basque_grammars/basque3.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "794f8f653de2ef0a848c4a1a7d9dc73d97781654453a7d976f2c5c02599baec3"
+  },
+  "grammars/basque_grammars/basque3.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "e591dcc3f2f452e7abfb4cf89b4a6d1b5f5825a5c778f158d306af84c9970ddf"
+  },
+  "grammars/book_grammars/discourse.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "a9fe9256e200573e1357eb9cce684dd6682219aa1c811a9932e8fdaf9a3c3d3a"
+  },
+  "grammars/book_grammars/discourse.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "21c262ac240bec4d229795e319c0d4f1696ed3870248e8112baf2898d23fe5a0"
+  },
+  "grammars/book_grammars/discourse.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "bcda583951535b2be2a05eaec5dea2782b55335eb7d3a4250af29a2708206695"
+  },
+  "grammars/book_grammars/discourse.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "09527286720e6ee03d3a1bec55da9fb454ca402b31ee2989fc2cf348791bd15f"
+  },
+  "grammars/book_grammars/discourse.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "5e6c9e2930433dc246f070502fc5fd9aeaf086d6e0dde5fe746afc324a44a0c1"
+  },
+  "grammars/book_grammars/discourse.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "13f670965fc0129708d33b227a928b2dd9944d267ab34355722e2b0ed1aa45b2"
+  },
+  "grammars/book_grammars/discourse.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "32e879aa34500125edcbb38593476530c2639dd30993ae3940dbdfdec6817102"
+  },
+  "grammars/book_grammars/discourse.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "46d8561471b30628ed96602b14874439f87be04e125bd425878aed44c92775f6"
+  },
+  "grammars/book_grammars/discourse.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "7b76544b7cbefe89ad9c963f73d0d7532dc32f031fb76ee08523518fc37c2a0c"
+  },
+  "grammars/book_grammars/drt.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "91d4b6d759338bc9dbfb41ebc52b62ad90bc08d47b0e62a5baedfa9d3a918641"
+  },
+  "grammars/book_grammars/drt.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "4207b213e62094cecd1142e6da171cfc07267f69ecb38d2d98b7a11cd93d54db"
+  },
+  "grammars/book_grammars/drt.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "0af8520848f3186b955da901655ec4cf8c8f02f249b30d6604d26f513669c156"
+  },
+  "grammars/book_grammars/drt.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "40aed7cdcfa615f880224bf313030cfe2ce4fe476fb0911ca244baf2f46b8e97"
+  },
+  "grammars/book_grammars/drt.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "1dd2dd3a89bda95ffd01d7ee12483f8d6d2c0121ef0477a4cc7f67493e6a2541"
+  },
+  "grammars/book_grammars/drt.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "52fc1bd81f56f2413e107440988e9a2eb1683d4ed7fa9e3bd067c4583d1520e5"
+  },
+  "grammars/book_grammars/drt.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "a5830dcda388c5c6dabd357f4fe3c93b107b9efb971f7c002f0d7ee05c432d61"
+  },
+  "grammars/book_grammars/drt.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "8dcd3fffa122a278d5037ccf8b4cdf9e24164a23e560bbb4fa4d6f1aa754b9ad"
+  },
+  "grammars/book_grammars/drt.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "0daa68103d6dd345146c42de6a43b61343362564f8568fc303f277dd26ab8608"
+  },
+  "grammars/book_grammars/feat0.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "eb35150dd881846538541afa793c102ef210108c1502f526e6dd9e09d478a493"
+  },
+  "grammars/book_grammars/feat0.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "ae151f6f461fd6fb3f1cedbc9a9a146256c8343cb7e1c4ace65e67154887e7fb"
+  },
+  "grammars/book_grammars/feat0.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "0b7b4281f1dbe341657110cd675273397af4309c646b59b36b47b40667e044e1"
+  },
+  "grammars/book_grammars/feat0.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "aa9ebb0ead34d0d48e9f0251d78eb559b16f5c1f06745ccae17b56b9ba1c4c93"
+  },
+  "grammars/book_grammars/feat0.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "ba255a8ff43f689a370cda58d227765012f277b0c1cf1be7249d6dda9462ff51"
+  },
+  "grammars/book_grammars/feat0.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "afe674420602c31307a0414c3f8ffc712d602cfef846bf54fa766500fe1af8a8"
+  },
+  "grammars/book_grammars/feat0.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "8dc10d550b17cde97eeabd2c19345c02ca51e57ab3581fb626fded21d4b0dc25"
+  },
+  "grammars/book_grammars/feat0.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "f3bb6092bd89507589688d25753bab497cff18252d26a9c4cdebfb245eb95ba6"
+  },
+  "grammars/book_grammars/feat0.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "3efd9d18fc1945612c84abe64de5f67e97f3f8b2a694b1e3c74701e30e95c342"
+  },
+  "grammars/book_grammars/feat1.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "3ed32d9e89a31eece24b60c2a6d8cfbf55994588e7c78ffaded735f3169cfb62"
+  },
+  "grammars/book_grammars/feat1.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "4ee6bbf3a8b2a7f9085d167b148b7058fbfcbcffec598f5328a3e4230e62dcd9"
+  },
+  "grammars/book_grammars/feat1.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "de136fb19f079c8ed720219dc7e2019c0c21d5ec0bbaa894849720245dbbca3e"
+  },
+  "grammars/book_grammars/feat1.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "43c403cfc3ac136a954c78843b53be69b578c9b9a58123fc1a618bda29bfaa46"
+  },
+  "grammars/book_grammars/feat1.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "ada0faf1676b8785dca8cae5440110bd8f2a42c812cdc7a6cf2849b8ccc57716"
+  },
+  "grammars/book_grammars/feat1.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "9fda56edcf623a594e6a95171095a993efbdbf339c30b98c51408418ee2a0585"
+  },
+  "grammars/book_grammars/feat1.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "428a6baa670ad07d8189ec32659fa334f639b42a5142735192375b054b78eca1"
+  },
+  "grammars/book_grammars/feat1.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "7fe6441f99fa13ce31a803f365b965dbf458bccaa48578210425ca03d23c8e96"
+  },
+  "grammars/book_grammars/feat1.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "ce378310f6d9ed2914e6800383b8c153d1826427b91ad3742e654bce6f449c83"
+  },
+  "grammars/book_grammars/german.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "984a4c70b42c6d32ea804edd5c17a9bbecc82df1d41fbb30ba738853351b7ac5"
+  },
+  "grammars/book_grammars/german.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "d231af96c893a4aec6feef65517531a13313d4b5f3e0cfcf32b8f408cf8a84d8"
+  },
+  "grammars/book_grammars/german.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "35df9186525a3a7d400f5eea1bfca1ab7dc5b37eb3f496ba54053cf68a06302f"
+  },
+  "grammars/book_grammars/german.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "8b3af05e3563acd7e7c6afb01f0f96ab84cfd2004fbe23e71df8addb33605fc3"
+  },
+  "grammars/book_grammars/german.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "c5714948635b98f7acd6a55fe39b55510e5918f856b1f48a6810c04a969769f1"
+  },
+  "grammars/book_grammars/german.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "9f07d5bd8ad833ec3bdcb1b5e03373376d60fc2fd23af660ee2202733428c8c8"
+  },
+  "grammars/book_grammars/german.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "5ee86c3639b92bfbfa9bbd08b96cc37be0b3df6d401f9cc3ee57ed4aac04cd9c"
+  },
+  "grammars/book_grammars/german.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "94dc1d21b38bd27bf7c38e9f3df94cac57337de9d3091ceb532c96100d61e53e"
+  },
+  "grammars/book_grammars/german.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "42506fe75487448578db92d309860071cafbbac6df1e3909f238d814b42973b0"
+  },
+  "grammars/book_grammars/simple-sem.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "4de5bff91d214359c3943a5316266f39a740ff02e26b56c83af0b5d6d9244e30"
+  },
+  "grammars/book_grammars/simple-sem.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "118060fd053060d757eaae1acb87a2cd9b869d6cc5b47a41e4890bf02306cd34"
+  },
+  "grammars/book_grammars/simple-sem.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "35cfce5ffd9e1614c9b00e6ae52885b9faf0be13a215ae438033b90ae6ff9fd0"
+  },
+  "grammars/book_grammars/simple-sem.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "989715acac3167d99434db9df5a2482138bc2ff22c22fe044e57578233e8595d"
+  },
+  "grammars/book_grammars/simple-sem.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "8d8aa334981042f8ab1898f893d13a89475baf07e52523288cba764743be6d7c"
+  },
+  "grammars/book_grammars/simple-sem.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "c57a12799268b58a031f6d57e8a9e05f88a95f8d2906bb25f9b030f4da21a38e"
+  },
+  "grammars/book_grammars/simple-sem.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "911cba5c887656c139d7257f350746b8cfda7ed849f1288984e22bee72bf6994"
+  },
+  "grammars/book_grammars/simple-sem.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "1de05ba49d2eac2c95ea4e5a12a4ba8fcef8019d403b783a67c5d8925d03176e"
+  },
+  "grammars/book_grammars/simple-sem.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "3baa8cc902fe8a3b14e744fb3fc43aa81dd412a283ee00897f4ca9af0c80041a"
+  },
+  "grammars/book_grammars/sql0.fcfg FeatureBottomUpChartParser": {
+   "parses": 32,
+   "sha256": "67eb4588ac1d1c6ffbe7dafacf52b891df8b6c14625ad8903b77340e6dae11d7"
+  },
+  "grammars/book_grammars/sql0.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 32,
+   "sha256": "2f56a7cdf26660e9a27dbb638f39b27c6fd68a53d22bcc13af5b678aabf7f4b2"
+  },
+  "grammars/book_grammars/sql0.fcfg FeatureChartParser": {
+   "parses": 32,
+   "sha256": "5fea79ce65f23d77952259dbf0fb7ce7e8fa99da6e0733e8f5aac92b6d599014"
+  },
+  "grammars/book_grammars/sql0.fcfg FeatureEarleyChartParser": {
+   "parses": 32,
+   "sha256": "c2365381dcda7e318c57c7feeeb6ee7070e1a3077b58d1aff6bf91f7ab217242"
+  },
+  "grammars/book_grammars/sql0.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 32,
+   "sha256": "f204729a80982b519e1c3e071ec612d3429e86073921cdf4abb43e1ef4bf0263"
+  },
+  "grammars/book_grammars/sql0.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 32,
+   "sha256": "e31bb65dae710c35e14c7f69dda96093114fd6aca2471f1bfe792a4a0419d103"
+  },
+  "grammars/book_grammars/sql0.fcfg FeatureIncrementalChartParser": {
+   "parses": 32,
+   "sha256": "a154ad1222727150187fc3cb60ff831f69c5da585f8ac5bfcf77d3b8275738fd"
+  },
+  "grammars/book_grammars/sql0.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 32,
+   "sha256": "7aa77a3199ca89012691f74637411d45879251e35464538a389810d9088426dd"
+  },
+  "grammars/book_grammars/sql0.fcfg FeatureTopDownChartParser": {
+   "parses": 32,
+   "sha256": "1424bf40605dd7dc05417a621f52d5f037a4064959f893985127464b4df67a28"
+  },
+  "grammars/book_grammars/sql1.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "abd738403bd3f547557170e921999e4fb46e6d42f973a5ec975be42116105e77"
+  },
+  "grammars/book_grammars/sql1.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "a09c732cd6752b6dcf91880f1dc90e4c21839999dcc853ac4130e53ec6ee3931"
+  },
+  "grammars/book_grammars/sql1.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "46b12398a708b42293e069b847d1af26e3800de387a0bcb1d22cf5f27a394a88"
+  },
+  "grammars/book_grammars/sql1.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "c1874f84ea6d6e010a18d889c761413ab55f618c8c8cc4ffed8649fe383ca506"
+  },
+  "grammars/book_grammars/sql1.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "244de3f09f0947ad25de8345f55f8be3f6ed2564279b0d88e4f86059571b44bb"
+  },
+  "grammars/book_grammars/sql1.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "8514f53496134349daaa4dc891877241d5574532f7f3a10fef534f90b95fe1f1"
+  },
+  "grammars/book_grammars/sql1.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "1864a00e359f0fdc3ffc802904a93ff5cf117e8706fb8cf795cb039c38c316f9"
+  },
+  "grammars/book_grammars/sql1.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "a4767630e67beca25d66416d4f1b457d30f4a486ddb7b28c3fea0df2bc1f35e7"
+  },
+  "grammars/book_grammars/sql1.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "c233642828c2f3581090f4068fd259139fcbb12efa5dcdae9851593da5cc9dcd"
+  },
+  "grammars/book_grammars/storage.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "9d53570a0771bcaa22bb4ec523e4b0e9d004ca416f887167c4fa9149f746cbe3"
+  },
+  "grammars/book_grammars/storage.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "c022e5040b433ba185726aec05c5c8defafffc3153e092faf9713eb6da97a653"
+  },
+  "grammars/book_grammars/storage.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "2e0861584e22761c7d25b20ef49c3c24b1feed3e210909472b6d7b7eab6d02f5"
+  },
+  "grammars/book_grammars/storage.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "014360424820b5137f082957681984eaa739a55635faadd13be8f104aa8e864a"
+  },
+  "grammars/book_grammars/storage.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "425cd68bc7e9f9c4ae940baf2891a2e16b8b8494627e5752708a35b72d5742b9"
+  },
+  "grammars/book_grammars/storage.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "bb25b29be8929f2edee2234a003585195b119aa8948d5687740d52861493cd64"
+  },
+  "grammars/book_grammars/storage.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "3ea0ffe658e86a7fb6ec4014d430622557c267cc7441d53eb11afcd760d331f2"
+  },
+  "grammars/book_grammars/storage.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "77a77bd94e18e6cf961b88532d1cfa3c23ff777dab69d7fd0b88220d9500c527"
+  },
+  "grammars/book_grammars/storage.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "259c53e61be123c52cf0bfc4bcf14f10d9a93b826a160c8add5d7852f2869d05"
+  },
+  "grammars/large_grammars/alvey.fcfg FeatureBottomUpChartParser": {
+   "parses": 229,
+   "sha256": "7ebb8f037983d54d97ae4e51d16b5bd68e13f32ed03ee08806a57633fa44eb33"
+  },
+  "grammars/large_grammars/alvey.fcfg FeatureChartParser": {
+   "parses": 229,
+   "sha256": "52386d7ab04532b2ecce69ab3fc11c89edf6e473c9c24c02bcb12161da722445"
+  },
+  "grammars/large_grammars/alvey.fcfg FeatureEarleyChartParser": {
+   "parses": 229,
+   "sha256": "9447b35e0ddb9873414589d976ac03f4a09e77ade0e834bda21bb87f807f702c"
+  },
+  "grammars/large_grammars/alvey.fcfg FeatureTopDownChartParser": {
+   "parses": 229,
+   "sha256": "ec066987f3488e974df5151f2583f68638fd55eeac9b827c5d9db3bb7446456a"
+  },
+  "grammars/sample_grammars/bindop.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "7cd4ddd46d8818b5588c5b509933f4c79028f9d26fd678e870b57824f4dac017"
+  },
+  "grammars/sample_grammars/bindop.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "98dfad91e83681212e7702cff57fcc1f7bdbc4cdceec6aaeadca30996123ba40"
+  },
+  "grammars/sample_grammars/bindop.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "19087ea4684be6f7fe8d46e8909d8ab6e9724f5c0f3237cb4323d44fe0fa54db"
+  },
+  "grammars/sample_grammars/bindop.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "9c0ec6961ab65ea4d51f73931b8c23427237323e68a5677267722813da5e530f"
+  },
+  "grammars/sample_grammars/bindop.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "cbc437e87ace7167454a12d03d1692b9a024e17c11d55f2c8d4e6d146ca5bc8f"
+  },
+  "grammars/sample_grammars/bindop.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "fcb764c4cb89dfef08cdaecf25f5647d1f20a595e2acbf62431b2834b54f6480"
+  },
+  "grammars/sample_grammars/bindop.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "8727fcfaa624d76aa3fcd011ee4493c4b0ebaa19a5a161675b9917148c70dff5"
+  },
+  "grammars/sample_grammars/bindop.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "46c3e458071987ff9184a08a7e99934c1ec455c8bf7e5e6f15b5a3d01ef3e1b6"
+  },
+  "grammars/sample_grammars/bindop.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "1d353d272b08d693eb0bdde86eaac61bcd3508b58fee106acf41a75a55ce42c4"
+  },
+  "grammars/sample_grammars/chat80.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "642706e545c4f998c5e45ef19e7d23ae9c54473023623d8e84811d8dbe9cee91"
+  },
+  "grammars/sample_grammars/chat80.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "363bdab80909bbbec3d347e3d46c221223b002b22e82938ce0b50f6724e27582"
+  },
+  "grammars/sample_grammars/chat80.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "e289a0a45c3df91198b92c18e8180ff2acf5ba3b4a1c361438a008f351985476"
+  },
+  "grammars/sample_grammars/chat80.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "663f27e9d04049ca21ec159e43427aff422a8cf227846f1ef047ac478cf89800"
+  },
+  "grammars/sample_grammars/chat80.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "0c399631d1765e52cb06776fee3bae210acdb6e806c512a2cb6c4658bc90b402"
+  },
+  "grammars/sample_grammars/chat80.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "d7efdd77073ae138c4f6890e98ddadfaa58071ea618ee060271d9aef053e603b"
+  },
+  "grammars/sample_grammars/chat80.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "f4aa6aebf16ffe4fd23b01353550b457a25fcbbfc0e81a68a57d0559bdaeec55"
+  },
+  "grammars/sample_grammars/chat80.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "f70133e004ca04bf325661de69de654c77d5d28c069b9539560dcc21b2de20a8"
+  },
+  "grammars/sample_grammars/chat80.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "8c5efc17c91337fb2b0cf9d5b4265fb01d24356b2dcacfed44434fe3267877b6"
+  },
+  "grammars/sample_grammars/chat_pnames.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "89325ac84820001fcd387c04b930061614b2251b453b159efc51801d143f8c3d"
+  },
+  "grammars/sample_grammars/chat_pnames.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "2ab6fd917c4898e0f6c0281b569def73d3790e964056536518decd25422b3d5f"
+  },
+  "grammars/sample_grammars/chat_pnames.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "caef6d918fb54b3c14b5791abb38456bb9dfbda51014ef4c00bd96ff79e371d6"
+  },
+  "grammars/sample_grammars/chat_pnames.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "e4e14da43e63275d0c431818c6dd5b5b1d8a1e8d1a45c5637ea5689e52085e4a"
+  },
+  "grammars/sample_grammars/chat_pnames.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "f4e901fe5bf3c7d165ea9fe4f037f635239aaa1b55372c4cc1d2b9ed369fdc3c"
+  },
+  "grammars/sample_grammars/chat_pnames.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "ff1c1a87264b6de6d67b92ddea591817fcf9c7b8f3385473408a90984cbf7d49"
+  },
+  "grammars/sample_grammars/chat_pnames.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "ab145b7d8126e33b8205123102b90689d7ba729037690fccc812060ba295e47f"
+  },
+  "grammars/sample_grammars/chat_pnames.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "e7920a08ca9ad63a6b7e867ce8eb7e1aaca08a2f650abec3d4c0d1395d9bd8ed"
+  },
+  "grammars/sample_grammars/chat_pnames.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "58c19f2199f2f4a28b1acb0db01a7f0a399702811872604b6ac3f221fce5849e"
+  },
+  "grammars/sample_grammars/event.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "2236832639de83fce85a5b90b746a5a558b5689a1bdfab0fb6d96e41975ad183"
+  },
+  "grammars/sample_grammars/event.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "5c1c4ec97e4dd21f0683a3435511e71c464380a5ea415df5c61a6b577822c271"
+  },
+  "grammars/sample_grammars/event.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "88142e3ca327a6971105d9fa9d00f0aa66bde50754aa675ef837d561c3e263ce"
+  },
+  "grammars/sample_grammars/event.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "77f129a2673f780dacc26531a602b0c3da7953f4441a92eddcc1fa14fd5d5472"
+  },
+  "grammars/sample_grammars/event.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "2a72a2a312670651daecd15afb29b7d6d5da15df3433597782180de66d75bbc0"
+  },
+  "grammars/sample_grammars/event.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "9819289c7d71df85be660dcf151d3e82577c9caf932a794219b16ed2d96d26e3"
+  },
+  "grammars/sample_grammars/event.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "1dbd8c8608e4b8d9140824c1ce59f86380e6f71c59df94b6bab45c60a9642756"
+  },
+  "grammars/sample_grammars/event.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "3257363198ac7fef84c2a86e6d4b8d6542c02f3b533d5fc055dad7ac94c830d5"
+  },
+  "grammars/sample_grammars/event.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "655886badb15af999175a5171d1c3918375f88ffc2af25870aafbae3759f91c7"
+  },
+  "grammars/sample_grammars/gluesemantics.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "8d177bea67435ea0d226b057a9a1dac902cadb6d65fb081cebdb8b2fab65a88f"
+  },
+  "grammars/sample_grammars/gluesemantics.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "0af59c569b8b6db861ce33ff385eab49cec51c26c57e85fc4c90e6babbddb5cc"
+  },
+  "grammars/sample_grammars/gluesemantics.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "490a6756fe5f009cdfc3ad00cf0c952f3963e656f87f1fa7b86cef36dcfe46bc"
+  },
+  "grammars/sample_grammars/gluesemantics.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "10b0ed50b2da4fe24956bcb68bf609a0d9baf8c80a2ea0688f011acba7d9f7eb"
+  },
+  "grammars/sample_grammars/gluesemantics.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "41ef8c13871e04c55ce7e9a1a1919816526f4cbc0fabb042f58214da5ec182a6"
+  },
+  "grammars/sample_grammars/gluesemantics.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "051a5154f147cc0c275dcf13d71c4f33daa47d9bba94079b71f98d15d4f664f4"
+  },
+  "grammars/sample_grammars/gluesemantics.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "da444f1406276edd7d15dd3f2654745b573310314cf1dca3b82c500222635fee"
+  },
+  "grammars/sample_grammars/gluesemantics.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "d99253b2a7540b8ced793e53a483ab97000aa664bf764bd8ea42da0478262025"
+  },
+  "grammars/sample_grammars/gluesemantics.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "f9e2d333823f25a9daf10a6d8c963d92b21442a259afb48610a50d291d363ba8"
+  },
+  "grammars/sample_grammars/hole.fcfg FeatureBottomUpChartParser": {
+   "parses": 20,
+   "sha256": "375e301a9027ae28171abcfb4e52d7acc200c55a8d3de104dd8733fba2503fc8"
+  },
+  "grammars/sample_grammars/hole.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 20,
+   "sha256": "528e8d5286f3b910857cc9092d75250d40e68ae515c2be7f192e78ee40f3ad55"
+  },
+  "grammars/sample_grammars/hole.fcfg FeatureChartParser": {
+   "parses": 20,
+   "sha256": "07e192140446b3d73509cc0e8fecf421a1379c89081381609f19d5987d4ef1b8"
+  },
+  "grammars/sample_grammars/hole.fcfg FeatureEarleyChartParser": {
+   "parses": 20,
+   "sha256": "94fe77071cca5b4a62df23a18cb2827433dc02f51175381a524802d449e4cda3"
+  },
+  "grammars/sample_grammars/hole.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 20,
+   "sha256": "282b68887fd849d133f8302fc5f885e8d4a77d2ee78a1e580aa7e12b6edf0103"
+  },
+  "grammars/sample_grammars/hole.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 20,
+   "sha256": "b8f3cf9adbb104e0f2b00a0f3713d1876a8949b16a5cb374aa3f260a13c49b89"
+  },
+  "grammars/sample_grammars/hole.fcfg FeatureIncrementalChartParser": {
+   "parses": 20,
+   "sha256": "f1aa17e1ec56deca2674c5c29efecb0266fe009d956658be3aa9611e90531ba6"
+  },
+  "grammars/sample_grammars/hole.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 20,
+   "sha256": "187ab06d7b0253d5122a97d5b51a51a1c0ab70750700c7c04f4ddfca41e598fd"
+  },
+  "grammars/sample_grammars/hole.fcfg FeatureTopDownChartParser": {
+   "parses": 20,
+   "sha256": "c209f32c915d98191aa44d9f7550299046b6f80ba9de282d2ae5ff7ebfecb8ae"
+  },
+  "grammars/sample_grammars/np.fcfg FeatureBottomUpChartParser": {
+   "parses": 36,
+   "sha256": "7333b69f2911204e0b6e1292b93538ab584323bc817cdf0ce3e27d9b5c74a591"
+  },
+  "grammars/sample_grammars/np.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 36,
+   "sha256": "0ecdbf5be393ab2e107f93eb9f2432b19a122304f571023f206d1948bc88abd2"
+  },
+  "grammars/sample_grammars/np.fcfg FeatureChartParser": {
+   "parses": 36,
+   "sha256": "1319da8ab5fa416f7577f0c769a131aa28519f20401a48371824ec534b00bfa6"
+  },
+  "grammars/sample_grammars/np.fcfg FeatureEarleyChartParser": {
+   "parses": 36,
+   "sha256": "cc5662fbda985da0fd8f397d84e5aa96492b144335cecc5c316b65d31b285de4"
+  },
+  "grammars/sample_grammars/np.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 36,
+   "sha256": "bab5f4bc03c8181b000b759c563d260d84c2fc36308b8974d2baedbd5ca47470"
+  },
+  "grammars/sample_grammars/np.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 36,
+   "sha256": "f105e54185bc17e9ead7ff73f099c209af37db882f3e22dc10f9211f074fc058"
+  },
+  "grammars/sample_grammars/np.fcfg FeatureIncrementalChartParser": {
+   "parses": 36,
+   "sha256": "417c5fa9f867d5b7cf0cd6a08ae34a8bbcc77c4f480a3ce1de691a199daeabd5"
+  },
+  "grammars/sample_grammars/np.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 36,
+   "sha256": "e19f709843bf2b6a95f35130ff424b0daba88e2394314a030a0ac319bd5de786"
+  },
+  "grammars/sample_grammars/np.fcfg FeatureTopDownChartParser": {
+   "parses": 36,
+   "sha256": "47bbeb0db79205bbf4b21d572742f72bfeb2f6cbcec80a5a85e9c4e2930d4799"
+  },
+  "grammars/sample_grammars/sem0.fcfg FeatureBottomUpChartParser": {
+   "parses": 1,
+   "sha256": "628a2c675e3d779a8c4c140654a251807147c3dc0a1688d7e4ed15cecd570122"
+  },
+  "grammars/sample_grammars/sem0.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 1,
+   "sha256": "ade7db482d591a85a9d816fa783b49d67c1fa63f1822b8c476b63999644c2eae"
+  },
+  "grammars/sample_grammars/sem0.fcfg FeatureChartParser": {
+   "parses": 1,
+   "sha256": "db5fc3573900cbff3709163de5d4501ec98d95e31c3d6fd26fdfe8217151c67c"
+  },
+  "grammars/sample_grammars/sem0.fcfg FeatureEarleyChartParser": {
+   "parses": 1,
+   "sha256": "c9af4b37583318cb1ececf0d7e01662c92a1a19ebd5b8ceaed272ceb89be8fce"
+  },
+  "grammars/sample_grammars/sem0.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 1,
+   "sha256": "57ddfbd47a4208530c490a80186ff72241a1787227f25b01de2fee018220629f"
+  },
+  "grammars/sample_grammars/sem0.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 1,
+   "sha256": "206fe124b23639c703b5b03ac3f738cdc32ba063b9f3871b12fc5dab8671d38e"
+  },
+  "grammars/sample_grammars/sem0.fcfg FeatureIncrementalChartParser": {
+   "parses": 1,
+   "sha256": "86ed5e24565ed8059a1e0190adfff90b28627483271551133ee1aa7f72da208b"
+  },
+  "grammars/sample_grammars/sem0.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 1,
+   "sha256": "2a46cb09f8b9359842e08a88252a828ecfb54d1bab8331990d33e1f6687441d8"
+  },
+  "grammars/sample_grammars/sem0.fcfg FeatureTopDownChartParser": {
+   "parses": 1,
+   "sha256": "fd69dab6157c1dd64b2d2144ba26444cd1b96746aebebfe10e445b8817d27256"
+  },
+  "grammars/sample_grammars/sem1.fcfg FeatureBottomUpChartParser": {
+   "parses": 2,
+   "sha256": "9b429e0c350c08ce129c1d3ff2d82d73cfde8cb5219d2ccc536a380fe4ca6f24"
+  },
+  "grammars/sample_grammars/sem1.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 2,
+   "sha256": "5742c8e3e53ac69802fe76ed9f712b49008b4afdf4c4d95be03d9e77a41035eb"
+  },
+  "grammars/sample_grammars/sem1.fcfg FeatureChartParser": {
+   "parses": 2,
+   "sha256": "cf3afc5e1c8bedd936852bb00a8807c5152e7f4a57567965460698471c9e9ffa"
+  },
+  "grammars/sample_grammars/sem1.fcfg FeatureEarleyChartParser": {
+   "parses": 2,
+   "sha256": "42b96804bf2f3e48a3f2ff1259c881be05394065dda0b2c32b0cd44222f1a806"
+  },
+  "grammars/sample_grammars/sem1.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 2,
+   "sha256": "44dc3fec46dbc9f8fa253d1b4b82d16304a53f8743b9f1f8fa778cdac8fefbbf"
+  },
+  "grammars/sample_grammars/sem1.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 2,
+   "sha256": "d636ca51c0942393def7d9c692e05acd64c90bffe3c281b3c7eb34f4e289ee39"
+  },
+  "grammars/sample_grammars/sem1.fcfg FeatureIncrementalChartParser": {
+   "parses": 2,
+   "sha256": "cad0ab17a17cd60ced97476787a938b904e3f00d9bdd5eede35864d22b640d73"
+  },
+  "grammars/sample_grammars/sem1.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 2,
+   "sha256": "6dce96f4a1f68c85bb090db2b29e3eff73aa717d29b571528d9c7611be5ec0c5"
+  },
+  "grammars/sample_grammars/sem1.fcfg FeatureTopDownChartParser": {
+   "parses": 2,
+   "sha256": "ad40ab1d0a1bb50f3ca2db806f3f1e8e1f4676b9a6bd293048471622ffc6e3c5"
+  },
+  "grammars/sample_grammars/sem2.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "fb909156c3dc0f5bb347a83f5486029feec9dfbf894d453b2cdeb42828212117"
+  },
+  "grammars/sample_grammars/sem2.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "2203f6f9d4ff1348be22851aac6da2de0e60680da8beb200cffb9015c0c3a27f"
+  },
+  "grammars/sample_grammars/sem2.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "14e5aec50f3000978d0a94f3b4a86a81823a619966a2f283ff869fe30d78ff77"
+  },
+  "grammars/sample_grammars/sem2.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "176bf20d2e691e71f838dd6f06007a46ba974b8327421d1b1ad57dfbe48ee521"
+  },
+  "grammars/sample_grammars/sem2.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "2bb9ef26cd68bf07a2c5d5448dba4aec16aa7acca618dbf31a97c229c6f4485b"
+  },
+  "grammars/sample_grammars/sem2.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "624a47ba23f4afc9cd4d6a9cbddc847964336f6e2340c118d9fe0824e05a90aa"
+  },
+  "grammars/sample_grammars/sem2.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "493dec8b1ab088764ec2480c684019b4927fe1d4d62831b5204729ed6e18761f"
+  },
+  "grammars/sample_grammars/sem2.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "ee9afac2155676765581e8dd8727dd2e91b645fdf79810bcfe83389ef7564606"
+  },
+  "grammars/sample_grammars/sem2.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "bb46d152671900b61b663c257096d76d3e758dcb8916c7f505af4c5fff988ae9"
+  },
+  "grammars/sample_grammars/sql.fcfg FeatureBottomUpChartParser": {
+   "parses": 9,
+   "sha256": "289f1775a1a2e848140b1ceb72d61bdfbd4dc299e3744bb65f5f60d23f8930d1"
+  },
+  "grammars/sample_grammars/sql.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 9,
+   "sha256": "905fc785e8f9dfc13132305a2057be41503531667cdf3261b7c20f2cb850b828"
+  },
+  "grammars/sample_grammars/sql.fcfg FeatureChartParser": {
+   "parses": 9,
+   "sha256": "b4305ad6d26cdca372e4fa9284639e73a114d7ea2c2986a995e16c2ce38262a6"
+  },
+  "grammars/sample_grammars/sql.fcfg FeatureEarleyChartParser": {
+   "parses": 9,
+   "sha256": "e6ebb3a457dac25f175458f69c06c62ee4462b0a51affdaa9afe2d8e981db943"
+  },
+  "grammars/sample_grammars/sql.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 9,
+   "sha256": "05fc77d47f9c2e7c47d9f402c53eab93654ec50b5bc8bf8f02d24b6bf1c8ac2a"
+  },
+  "grammars/sample_grammars/sql.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 9,
+   "sha256": "95e1b96063d649f9666097b5f90e1f5eadf41b9218737ccd33b2ac93db48693a"
+  },
+  "grammars/sample_grammars/sql.fcfg FeatureIncrementalChartParser": {
+   "parses": 9,
+   "sha256": "9b71ad34464a35070761d8ab4df8003c49f739c672c7ebf28b14a9dc8fa19922"
+  },
+  "grammars/sample_grammars/sql.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 9,
+   "sha256": "d14905b8f7f638d5104416fc32e60297752df1a2695b8a03d67c612b41f44e6d"
+  },
+  "grammars/sample_grammars/sql.fcfg FeatureTopDownChartParser": {
+   "parses": 9,
+   "sha256": "53a7909fcd0cdddc2d5114140eaef62dc6f3fbdf235de72119b49168cabe8f0b"
+  },
+  "grammars/spanish_grammars/spanish1.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "6a4c7d805f726257ab2ec646b3e6c065686a53c785cc6ecc8057c8fdfb28b74b"
+  },
+  "grammars/spanish_grammars/spanish1.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "01f3ec3bca62df82f0ed9fa1601d8db787cf103b678ba6f49bf7c49e337757c0"
+  },
+  "grammars/spanish_grammars/spanish1.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "f77ac8d1269c3be4a16f4b483d2978a2bd8f99c3e3b9044d8cc3a9ffe33b5cb3"
+  },
+  "grammars/spanish_grammars/spanish1.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "65bb5544da786c2f11bfd61430b52f57dec65d2d4d99eccf3100fffaf8a3d6e8"
+  },
+  "grammars/spanish_grammars/spanish1.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "ff9dc4aac84ac2bcaffaac37781d5c0c2887442954d7eb2f45f5317adf25570d"
+  },
+  "grammars/spanish_grammars/spanish1.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "e7950b6b33bb6f0d5ac02851c57575e033ac6792037210464045cc42862a0b7a"
+  },
+  "grammars/spanish_grammars/spanish1.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "a778ccb246b3e031b52eed5bb647ab4b8bfa4ea67b10ac827599d2116e211977"
+  },
+  "grammars/spanish_grammars/spanish1.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "7543488095c8a25c1b4edaca507d4833ffe7c30ce5d899d56287252f4f8bc8b9"
+  },
+  "grammars/spanish_grammars/spanish1.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "5958f1df756c0dcafba8e4c602b6b0e7bb953057485627a0338063455dadcc5d"
+  },
+  "grammars/spanish_grammars/spanish2.fcfg FeatureBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "d4bea55989b2bd0c30f1fc90135e21c0ae75d368c709329924a1b0c2a11cfadb"
+  },
+  "grammars/spanish_grammars/spanish2.fcfg FeatureBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "ad0752cb9a67a25a9e6d73fb77b00f119e98b22d8e983f88898aefdcd82f72c1"
+  },
+  "grammars/spanish_grammars/spanish2.fcfg FeatureChartParser": {
+   "parses": 50,
+   "sha256": "5742fa46cbef66eeb7459f0937902f8ef2788125d1f453aab0229aea81dd373e"
+  },
+  "grammars/spanish_grammars/spanish2.fcfg FeatureEarleyChartParser": {
+   "parses": 50,
+   "sha256": "735fbf1c3f609c26d89c96b11e52ce99ff0ceb15fa75b0dd9a02dfdcfd91add4"
+  },
+  "grammars/spanish_grammars/spanish2.fcfg FeatureIncrementalBottomUpChartParser": {
+   "parses": 50,
+   "sha256": "5d2bbd2b350a0915ea48d847ebd63c9bbd69b9234805961c356f237b7994e7ae"
+  },
+  "grammars/spanish_grammars/spanish2.fcfg FeatureIncrementalBottomUpLeftCornerChartParser": {
+   "parses": 50,
+   "sha256": "ba16b71f8d7946c6e167781bbfcf35a7e91b8ed197f66d30f67cf1749ecb9566"
+  },
+  "grammars/spanish_grammars/spanish2.fcfg FeatureIncrementalChartParser": {
+   "parses": 50,
+   "sha256": "749431d8d40615c39138e8caca7788e48e780e0f6c85a558856389478b1a3454"
+  },
+  "grammars/spanish_grammars/spanish2.fcfg FeatureIncrementalTopDownChartParser": {
+   "parses": 50,
+   "sha256": "050ad3e86683f590b82856feaffd127f384423e4e196a6e0fc694e57de8356bd"
+  },
+  "grammars/spanish_grammars/spanish2.fcfg FeatureTopDownChartParser": {
+   "parses": 50,
+   "sha256": "ff94b8cf08132e9a36f0725129b1b5d6d1fdfb9e5c15978b4daa77dbfd253153"
+  }
+ },
+ "unloadable": {}
+}

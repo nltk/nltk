@@ -10,11 +10,25 @@
 Extension of chart parsing implementation to handle grammars with
 feature structures as nodes.
 """
+
+import copy
+import functools
 import os
+import weakref
 from time import perf_counter
 
 from nltk.data import make_staging_dir
-from nltk.featstruct import TYPE, FeatStruct, find_variables, unify
+from nltk.featstruct import (
+    TYPE,
+    FeatStruct,
+    Feature,
+    SlashFeature,
+    _is_mapping,
+    _rename_variable,
+    _rename_variables,
+    find_variables,
+    unify,
+)
 from nltk.grammar import (
     CFG,
     FeatStructNonterminal,
@@ -38,6 +52,7 @@ from nltk.parse.chart import (
     TreeEdge,
 )
 from nltk.sem import logic
+from nltk.sem.logic import Variable
 from nltk.termsec import safe_print
 from nltk.tree import Tree
 
@@ -242,6 +257,157 @@ class FeatureChart(Chart):
                 yield from self.trees(edge, complete=True, tree_class=tree_class)
 
 
+class PlainGrammar:
+    """
+    The shortcuts the feature chart rules take on a grammar whose features all
+    have plain names (strings, plain Features) and plain values or variables.
+
+    Unifying such structures fails or succeeds, and never raises or draws a new
+    variable name, as a logic expression can, so no edge changes.
+    """
+
+    #: Types of feature value that unify only with an equal value.
+    VALUES = (str, int, float, bool, type(None))
+
+    #: Types of feature name that unify two such values by equality.
+    NAMES = (str, Feature, SlashFeature)
+
+    #: Whether each grammar seen so far is plain, kept for the grammar's lifetime.
+    _known = weakref.WeakKeyDictionary()
+
+    @classmethod
+    def is_plain(cls, grammar):
+        """Whether every feature of ``grammar`` is plain, worked out once a grammar."""
+        try:
+            return cls._known[grammar]
+        except KeyError:
+            pass
+        except TypeError:  # a grammar that can't be weakly referenced
+            return cls._all_plain(grammar)
+        plain = cls._known[grammar] = cls._all_plain(grammar)
+        return plain
+
+    @classmethod
+    def _all_plain(cls, grammar):
+        visited = set()
+        for production in grammar.productions():
+            for symbol in (production.lhs(),) + production.rhs():
+                if isinstance(symbol, FeatStruct):
+                    if not cls._plain_fstruct(symbol, visited):
+                        return False
+                elif not isinstance(symbol, str):
+                    return False
+        return True
+
+    @classmethod
+    def _plain_fstruct(cls, fstruct, visited):
+        if id(fstruct) in visited:
+            return True
+        visited.add(id(fstruct))
+        if _is_mapping(fstruct):
+            if any(type(fname) not in cls.NAMES for fname in fstruct):
+                return False
+            values = fstruct.values()
+        else:
+            values = fstruct
+        for fval in values:
+            if type(fval) in cls.VALUES or type(fval) is Variable:
+                continue
+            if not isinstance(fval, FeatStruct) or not cls._plain_fstruct(
+                fval, visited
+            ):
+                return False
+        return True
+
+    @classmethod
+    def clash(cls, fstruct1, fstruct2):
+        """
+        Whether a feature named by a string has unequal plain values in the two,
+        so that ``unify(fstruct1, fstruct2)`` fails and its copies can be skipped.
+        """
+        for fname, fval2 in fstruct2.items():
+            if type(fname) is str and fname in fstruct1:
+                fval1 = fstruct1[fname]
+                if (
+                    type(fval1) in cls.VALUES
+                    and type(fval2) in cls.VALUES
+                    and fval1 != fval2
+                ):
+                    return True
+        return False
+
+    @staticmethod
+    def _rename_order(fstruct, order, visited):
+        # Add the variables of a plain ``fstruct`` to the dict ``order``, in the
+        # order ``_rename_variables`` first meets them.
+        if id(fstruct) in visited:
+            return
+        visited.add(id(fstruct))
+        items = fstruct.items() if _is_mapping(fstruct) else enumerate(fstruct)
+        for fname, fval in items:
+            if isinstance(fval, Variable):
+                order.setdefault(fval, fval)
+            elif isinstance(fval, FeatStruct):
+                PlainGrammar._rename_order(fval, order, visited)
+
+    class RenameChain:
+        """
+        Stands in for ``fstruct = fstruct.rename_variables(used_vars=...)`` done
+        over and over; on a plain grammar it copies only when ``current()`` asks.
+        """
+
+        def __init__(self, fstruct, plain):
+            self.plain = plain
+            self._fstruct = self._current = fstruct
+            # Each variable of ``fstruct`` mapped to its name after the renames.
+            self._names = {}
+            if plain:
+                PlainGrammar._rename_order(fstruct, self._names, set())
+
+        def rename(self, used_vars):
+            if not self.plain:
+                self._current = self._current.rename_variables(used_vars=used_vars)
+                return
+            # rename_variables renames every variable, in the order it meets them,
+            # to a name not in ``used_vars``, in ``fstruct`` or given out before.
+            used = set(self._names.values()).union(used_vars)
+            for var, name in self._names.items():
+                new_name = _rename_variable(name, used)
+                self._names[var] = new_name
+                used.add(new_name)
+            self._current = None
+
+        def current(self):
+            if self._current is None:
+                self._current = _rename_variables(
+                    copy.deepcopy(self._fstruct),
+                    set(),
+                    set(),
+                    dict(self._names),
+                    FeatStruct,
+                    set(),
+                )
+            return self._current
+
+
+@functools.lru_cache(maxsize=2**14)
+def _frozen_production_variables(production):
+    return frozenset(
+        find_variables((production.lhs(),) + production.rhs(), fs_class=FeatStruct)
+    )
+
+
+def _production_variables(production):
+    """
+    The variables of a production's nonterminals.  A frozen production can't
+    change, so its variables are cached.
+    """
+    symbols = (production.lhs(),) + production.rhs()
+    if all(not isinstance(s, FeatStruct) or s.frozen() for s in symbols):
+        return _frozen_production_variables(production)
+    return find_variables(symbols, fs_class=FeatStruct)
+
+
 # ////////////////////////////////////////////////////////////
 # Fundamental Rule
 # ////////////////////////////////////////////////////////////
@@ -284,6 +450,8 @@ class FeatureFundamentalRule(FundamentalRule):
             if not is_nonterminal(nextsym):
                 return
             if left_edge.nextsym()[TYPE] != right_edge.lhs()[TYPE]:
+                return
+            if PlainGrammar.is_plain(grammar) and PlainGrammar.clash(nextsym, found):
                 return
             # Create a copy of the bindings.
             bindings = left_edge.bindings()
@@ -381,6 +549,7 @@ class FeatureTopDownPredictRule(CachedTopDownPredictRule):
         if done[0] is chart and done[1] is grammar:
             return
 
+        plain = PlainGrammar.is_plain(grammar)
         for prod in grammar.productions(lhs=nextsym):
             # If the left corner in the predicted production is
             # leaf, it must match with the input.
@@ -394,6 +563,8 @@ class FeatureTopDownPredictRule(CachedTopDownPredictRule):
 
             # We rename vars here, because we don't want variables
             # from the two different productions to match.
+            if plain and PlainGrammar.clash(prod.lhs(), nextsym_with_bindings):
+                continue
             if unify(prod.lhs(), nextsym_with_bindings, rename_vars=True):
                 new_edge = FeatureTreeEdge.from_production(prod, edge.end())
                 if chart.insert(new_edge, ()):
@@ -428,6 +599,7 @@ class FeatureBottomUpPredictCombineRule(BottomUpPredictCombineRule):
         if edge.is_incomplete():
             return
         found = edge.lhs()
+        renamed = None
         for prod in grammar.productions(rhs=found):
             bindings = {}
             if isinstance(edge, FeatureTreeEdge):
@@ -437,12 +609,15 @@ class FeatureBottomUpPredictCombineRule(BottomUpPredictCombineRule):
 
                 # We rename vars here, because we don't want variables
                 # from the two different productions to match.
-                used_vars = find_variables(
-                    (prod.lhs(),) + prod.rhs(), fs_class=FeatStruct
-                )
-                found = found.rename_variables(used_vars=used_vars)
+                if renamed is None:
+                    renamed = PlainGrammar.RenameChain(
+                        found, PlainGrammar.is_plain(grammar)
+                    )
+                renamed.rename(_production_variables(prod))
+                if renamed.plain and PlainGrammar.clash(_next, found):
+                    continue
 
-                result = unify(_next, found, bindings, rename_vars=False)
+                result = unify(_next, renamed.current(), bindings, rename_vars=False)
                 if result is None:
                     continue
 

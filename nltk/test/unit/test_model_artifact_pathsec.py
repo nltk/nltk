@@ -45,6 +45,7 @@ import nltk.pathsec as pathsec
 import nltk.tag.perceptron as perceptron
 from nltk.tag.perceptron import AveragedPerceptron, PerceptronTagger
 from nltk.test.unit import timing
+from nltk.test.unit.conftest import make_home_dir
 
 CANARY = "MODEL-ARTIFACT-CANARY"
 LANG = "probeartifact"
@@ -63,9 +64,7 @@ def outside_only(monkeypatch):
     that is asserted rather than assumed.
     """
     monkeypatch.setattr(pathsec, "ENFORCE", True)
-    path = pathlib.Path(
-        tempfile.mkdtemp(prefix=".nltk_artifact_outside_", dir=str(pathlib.Path.home()))
-    )
+    path = pathlib.Path(make_home_dir(".nltk_artifact_outside_"))
     resolved = path.resolve()
     inside = any(
         resolved == root or resolved.is_relative_to(root)
@@ -526,7 +525,19 @@ class TestPerceptronTaggerDirectoryOpen:
         # check and the open would leave it). validate_path is left LIVE and only
         # counted: the descriptor re-check inside _open_private_model_dir is the
         # thing under test, so skipping a call to it would disable it.
-        monkeypatch.setattr(perceptron, "validate_path", count_the_recheck)
+        if perceptron._dir_fd_write_supported():
+            monkeypatch.setattr(perceptron, "validate_path", count_the_recheck)
+        else:
+            # Without the *at calls no descriptor pins where the files land, so
+            # the sandbox's own validate_tool_dir re-check (pathsec's, not the
+            # neutered module name) must be the layer that refuses instead.
+            real_tool_dir = pathsec.validate_tool_dir
+
+            def count_the_recheck(*args, **kwargs):
+                calls.append(args)
+                return real_tool_dir(*args, **kwargs)
+
+            monkeypatch.setattr(pathsec, "validate_tool_dir", count_the_recheck)
         monkeypatch.setattr(
             perceptron, "validate_tool_dir", lambda value, *a, **k: os.fspath(value)
         )
@@ -946,8 +957,8 @@ class TestResourceNameSteering:
         ],
     )
     def test_pickle_shim_resource_names_cannot_traverse(self, resource):
-        """load() routes a *.pickle name to a pickle-free loader; the name that
-        picks the model must not carry traversal."""
+        """load() refuses a retired *.pickle name, and a traversal in such a
+        name is refused before it can pick a file."""
         with pytest.raises((ValueError, LookupError, OSError)):
             nltk.data.load(resource)
 
@@ -1064,7 +1075,7 @@ class TestNoOtherCodeWidensTheSandbox:
                         offenders.append((relative, parent.name))
         assert (
             set(offenders) <= self.ALLOWED
-        ), "new nltk.data.path widening: %s" % sorted(set(offenders) - self.ALLOWED)
+        ), f"new nltk.data.path widening: {sorted(set(offenders) - self.ALLOWED)}"
 
 
 # Two branches merged here, so several sinks now carry TWO independent guards.

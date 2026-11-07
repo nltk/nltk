@@ -22,7 +22,7 @@ class ImmutableTree(Tree):
             self._hash = hash((self._label, tuple(self)))
         except (TypeError, ValueError) as e:
             raise ValueError(
-                "%s: node value and children " "must be immutable" % type(self).__name__
+                f"{type(self).__name__}: node value and children must be immutable"
             ) from e
 
     def __setitem__(self, index, value):
@@ -84,8 +84,8 @@ class ImmutableProbabilisticTree(ImmutableTree, ProbabilisticMixIn):
     def _frozen_class(self):
         return ImmutableProbabilisticTree
 
-    def __repr__(self):
-        return f"{Tree.__repr__(self)} [{self.prob()}]"
+    def _repr_node(self, childstr):
+        return f"{super()._repr_node(childstr)} [{self.prob()}]"
 
     def __str__(self):
         return f"{self.pformat(margin=60)} [{self.prob()}]"

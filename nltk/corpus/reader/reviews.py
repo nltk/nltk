@@ -61,7 +61,6 @@ Note: Some of the files (e.g. "ipod.txt", "Canon PowerShot SD500.txt") do not
     consideration.
 """
 
-
 from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.tokenize import *
@@ -73,7 +72,10 @@ TITLE = redos.compile(r"^\[t\](.*)$")  # [t] Title
 # bracket-less run with no spaces (``"a" * 100000``) never enters that group and
 # the leading greedy ``\w+``, retried by findall at every position, is still
 # O(n**2). redos.compile bounds compile and match time regardless (CWE-1333).
-FEATURES = redos.compile(r"(\w+(?:\s\w+){0,50})\[((?:\+|\-)\d)\]")
+# Bound the word runs: the leading `\w+` is unbounded (the `{0,50}` only caps the
+# space-separated repeats), so it is O(n**2) under findall on a crafted line (CWE-407);
+# feature words are short.
+FEATURES = redos.compile(r"(\w{1,80}(?:\s\w{1,80}){0,50})\[((?:\+|\-)\d)\]")
 NOTES = redos.compile(r"\[(?!t)(p|u|s|cc|cs)\]")  # find 'p' in camera[+2][p]
 SENT = redos.compile(r"##(.*)$")  # find tokenized sentence
 

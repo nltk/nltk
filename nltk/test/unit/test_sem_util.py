@@ -1,4 +1,8 @@
-from nltk.sem.util import demo
+import pytest
+
+from nltk.grammar import FeatStructNonterminal
+from nltk.sem.util import demo, root_semrep
+from nltk.tree import Tree
 
 
 def test_demo_model_injection_safeguard(tmp_path, monkeypatch):
@@ -20,3 +24,11 @@ def test_demo_model_injection_safeguard(tmp_path, monkeypatch):
         "CRITICAL SECURITY REGRESSION: Code injection vulnerability re-introduced "
         "in nltk.sem.util.demo()"
     )
+
+
+def test_root_semrep_missing_feature_raises_keyerror():
+    """A tree whose root has no semantics feature should raise KeyError,
+    not ``RuntimeError: No active exception to reraise``."""
+    tree = Tree(FeatStructNonterminal("S[NUM='sg']"), ["John"])
+    with pytest.raises(KeyError):
+        root_semrep(tree)

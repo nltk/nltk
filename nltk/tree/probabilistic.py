@@ -28,8 +28,8 @@ class ProbabilisticTree(Tree, ProbabilisticMixIn):
     def _frozen_class(self):
         return ImmutableProbabilisticTree
 
-    def __repr__(self):
-        return f"{Tree.__repr__(self)} (p={self.prob()!r})"
+    def _repr_node(self, childstr):
+        return f"{super()._repr_node(childstr)} (p={self.prob()!r})"
 
     def __str__(self):
         return f"{self.pformat(margin=60)} (p={self.prob():.6g})"

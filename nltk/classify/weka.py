@@ -17,7 +17,7 @@ import time
 import warnings
 from sys import stdin
 
-from nltk import redos
+from nltk import pathsec, redos
 from nltk.classify.api import ClassifierI
 from nltk.data import make_staging_dir
 from nltk.internals import config_java, java
@@ -170,9 +170,7 @@ class WekaClassifier(ClassifierI):
             return self.parse_weka_output(stdout.split("\n"))
 
         finally:
-            for f in os.listdir(temp_dir):
-                os.remove(os.path.join(temp_dir, f))
-            os.rmdir(temp_dir)
+            pathsec.remove_tree(temp_dir, context="WekaClassifier", ignore_errors=True)
 
     def parse_weka_distribution(self, s):
         probs = [float(v) for v in redos.split("[*,]+", s) if v.strip()]
@@ -302,9 +300,7 @@ class WekaClassifier(ClassifierI):
             return WekaClassifier(formatter, model_filename)
 
         finally:
-            for f in os.listdir(temp_dir):
-                os.remove(os.path.join(temp_dir, f))
-            os.rmdir(temp_dir)
+            pathsec.remove_tree(temp_dir, context="WekaClassifier", ignore_errors=True)
 
 
 class ARFF_Formatter:

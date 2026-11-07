@@ -397,7 +397,7 @@ class TestEditDistanceAlign:
                 (1, 1),
                 (1, 0),
                 (0, 1),
-            ], f"Invalid step from {(i1,j1)} to {(i2,j2)}"
+            ], f"Invalid step from {(i1, j1)} to {(i2, j2)}"
 
 
 class TestCustomDistanceSandbox:

@@ -253,7 +253,7 @@ class LogicParser:
                     i += 1
                     if len(data) == i:
                         raise LogicalExpressionException(
-                            None, "End of input reached.  " "Expected: [%s]" % end
+                            None, f"End of input reached.  Expected: [{end}]"
                         )
                 if incl_quotes:
                     token += data[i]
@@ -678,6 +678,10 @@ class Variable:
 
     def __hash__(self):
         return hash(self.name)
+
+    def __deepcopy__(self, memo):
+        # A variable never changes (its name is its hash), so a copy can share it.
+        return self
 
     def __str__(self):
         return self.name
@@ -2020,10 +2024,7 @@ class LogicalExpressionException(Exception):
 class UnexpectedTokenException(LogicalExpressionException):
     def __init__(self, index, unexpected=None, expected=None, message=None):
         if unexpected and expected:
-            msg = "Unexpected token: '%s'.  " "Expected token '%s'." % (
-                unexpected,
-                expected,
-            )
+            msg = f"Unexpected token: '{unexpected}'.  Expected token '{expected}'."
         elif unexpected:
             msg = "Unexpected token: '%s'." % unexpected
             if message:

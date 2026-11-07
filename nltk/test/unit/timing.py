@@ -32,8 +32,24 @@ a broken guard that hangs reads its full wait.
 Runs must be long enough for the CPU clock to resolve: Windows reports process
 CPU time in 15.6 ms steps, so a measured run should take a few tenths of a
 second, and the scaling helpers keep a multiplicative noise floor for that.
+
+A scaling assertion compares two runs, and the core's rate can change between
+them: the macOS runners drift two to three times within a second, and under
+xdist a sibling worker shares the core for a stretch and then idles. Taking
+the fastest run of each side separately let such a change enter the ratio
+directly (a linear sink read 10x, a quadratic oracle 7.4x), so ``scaling_ratio``
+interleaves its samples, measures a short calibration unit of fixed
+pure-Python work beside each one, normalises every sample by the rate its
+units read, and takes the median over the reps of each big run against the
+small block measured next to it; when those reps read on both sides of the
+bar, more are taken so that two misread reps cannot carry the median. The
+collector's full collections, whose cost follows the heap rather than the
+op, run between the timed blocks and never inside them. The thresholds, the
+floor, the 4x jump and the reps are unchanged.
 """
 
+import gc
+import math
 import threading
 import time
 
@@ -122,55 +138,291 @@ def within_budget(func, seconds, repeats=3, cpu_bound=None):
     return best < seconds and min(wall for _, wall in runs) < ceiling, best
 
 
-def scaling_ratio(op, small, big, reps=3, noise_floor=0.1, cpu_bound=None):
-    """Fastest-of-``reps`` ``op(big)`` over ``op(small)`` (``big`` == 4*``small``).
+#: CPU seconds of fixed pure-Python work in each calibration unit beside a
+#: ``scaling_ratio`` sample: long enough for Windows's 15.6 ms CPU clock to
+#: resolve, short enough to read the core's rate at the moment of the sample.
+CALIBRATION_SECONDS = 0.1
 
-    A load-invariant scaling factor: a linear sink is ~4x, a pre-patch O(n**2)
-    sink ~16x. The floor is multiplicative so a sub-second quadratic is not
-    hidden by additive slack. The small and big runs alternate so a burst of
-    load cannot land on one side only, and each side keeps its minimum on both
-    clocks. The small side is timed as a block of four calls, so a linear sink
-    runs for about as long on both sides: the macOS runners change their core
-    rate two to three times within a second, and the minimum of short single
-    runs would catch a fast window the long run never gets, reading a linear
-    sink as up to 8x. A quadratic sink's small block is still four times
-    shorter than its big run, so that bias can only raise its ratio. A
-    CPU-bound op is judged in CPU time; an op that mostly waits is judged on
-    the wall clock and the higher of the two ratios is kept, so the fallback
-    only tightens. ``cpu_bound`` declares the op's kind and skips the heuristic.
+#: Loop iterations of one calibration chunk: a fixed amount of pure-Python
+#: work, short against CALIBRATION_SECONDS (a unit ends on a whole chunk, so
+#: the chunk is its overshoot) and long enough that the loop is the cost.
+CALIBRATION_CHUNK = 50_000
+
+
+def _calibration_chunk():
+    x = 0
+    for _ in range(CALIBRATION_CHUNK):
+        x += 1
+    return x
+
+
+def calibration_rate():
+    """CPU seconds one calibration chunk costs right now.
+
+    Whole chunks are timed until ``CALIBRATION_SECONDS`` of CPU time have
+    accumulated, so the reading resolves on every platform while the unit
+    stays short against the samples it sits between. The rate rises when
+    the core slows (a macOS runner changes its rate two to three times within
+    a second) and when a sibling shares the core (an xdist worker on the
+    other hyperthread of a hosted runner), which is what a sample measured
+    in that stretch must be normalised by.
     """
-    inf = float("inf")
-    cpu, wall = {small: inf, big: inf}, {small: inf, big: inf}
+    chunks, start = 0, time.process_time()
+    wall_start = time.perf_counter()
+    while True:
+        _calibration_chunk()
+        chunks += 1
+        elapsed = time.process_time() - start
+        if elapsed >= CALIBRATION_SECONDS:
+            return elapsed / chunks
+        # a CPU clock that stopped or went backwards: refuse, never spin on
+        waited = time.perf_counter() - wall_start
+        if elapsed < 0 or waited >= hard_deadline_for(CALIBRATION_SECONDS):
+            raise ValueError(
+                f"the CPU clock advanced {elapsed:.3f}s over {chunks} chunks "
+                f"in {waited:.0f}s of wall time"
+            )
+
+
+class ScalingSample:
+    """One rep of ``scaling_samples``: a block of ``SMALL_BLOCK`` small calls
+    and the big run measured beside it, each with the CPU seconds per call,
+    the wall seconds per call and the calibration rate read beside it (the
+    mean of the units measured just before and just after it)."""
+
+    __slots__ = (
+        "small_cpu",
+        "small_wall",
+        "small_rate",
+        "big_cpu",
+        "big_wall",
+        "big_rate",
+    )
+
+    def __init__(self, small_cpu, small_wall, small_rate, big_cpu, big_wall, big_rate):
+        self.small_cpu, self.small_wall = small_cpu, small_wall
+        self.small_rate = small_rate
+        self.big_cpu, self.big_wall, self.big_rate = big_cpu, big_wall, big_rate
+
+    def __repr__(self):
+        return (
+            f"ScalingSample(small {self.small_cpu:.3f}s cpu {self.small_wall:.3f}s "
+            f"wall at {self.small_rate * 1e3:.2f}ms/chunk, big {self.big_cpu:.3f}s "
+            f"cpu {self.big_wall:.3f}s wall at {self.big_rate * 1e3:.2f}ms/chunk)"
+        )
+
+
+#: Third collector threshold inside a timed block: no full collection there.
+NO_FULL_COLLECTION = 1 << 30
+
+
+def _young_collections_only(func, *args):
+    """``cpu_and_wall(func, *args)`` with only the collector's young
+    collections running during the call and a full collection once it
+    returns, outside the timed window; the caller's thresholds are restored.
+    """
+    thresholds = gc.get_threshold()
+    gc.set_threshold(thresholds[0], thresholds[1], NO_FULL_COLLECTION)
+    try:
+        return cpu_and_wall(func, *args)
+    finally:
+        gc.set_threshold(*thresholds)
+        gc.collect()
+
+
+def scaling_samples(op, small, big, reps=3):
+    """``reps`` interleaved samples of ``op(small)`` and ``op(big)``.
+
+    Each rep times a block of ``SMALL_BLOCK`` calls of the small op and then
+    one call of the big op, with a calibration unit measured before, between
+    and after them, so every sample is paired with the big or small run
+    measured next to it and carries the core's rate at that moment.
+
+    No full collection runs inside a timed block: its cost follows the heap
+    and the collector's state, not the op. The young collections, which walk
+    a bounded number of new objects and reclaim short-lived garbage as it
+    comes, run as usual; the full collection runs as each block ends, outside
+    it, over a heap frozen for the samples (:func:`gc.freeze`), so it walks
+    only what the measurement allocated. Inside the blocks, a pytest worker's
+    full collections walked every object earlier tests left alive (up to
+    0.75 s, about one block in ten), which took a linear sink's big runs to
+    8.1x on macOS and added a linear term no calibration unit sees to a
+    quadratic oracle, read at 6.8x on Linux; with that heap frozen they came
+    as often as a big run's own live objects allowed and walked its whole
+    structure each time, reading a linear parser at 7.9x on Windows. Pausing
+    the collector outright let a block keep 3.4 million objects of cyclic
+    garbage (2 GB). Whatever was frozen before is thawed with the rest:
+    CPython 3.12 parks its immortal objects there itself (375 at startup) and
+    parks them again at its next full collection.
+    """
+    samples = []
 
     def small_block():
         for _ in range(SMALL_BLOCK):
             op(small)
 
-    def run(n, fn, calls):
-        cpu_seconds, wall_seconds = cpu_and_wall(fn)
-        cpu[n] = min(cpu[n], cpu_seconds / calls)
-        wall[n] = min(wall[n], wall_seconds / calls)
+    gc.freeze()
+    try:
+        rate = calibration_rate()
+        for _ in range(reps):
+            before = rate
+            small_cpu, small_wall = _young_collections_only(small_block)
+            between = calibration_rate()
+            big_cpu, big_wall = _young_collections_only(op, big)
+            rate = calibration_rate()
+            samples.append(
+                ScalingSample(
+                    small_cpu / SMALL_BLOCK,
+                    small_wall / SMALL_BLOCK,
+                    (before + between) / 2,
+                    big_cpu,
+                    big_wall,
+                    (between + rate) / 2,
+                )
+            )
+    finally:
+        gc.unfreeze()
+    return samples
 
-    for _ in range(reps):
-        run(small, small_block, SMALL_BLOCK)
-        run(big, lambda: op(big), 1)
-    cpu_ratio = cpu[big] / max(cpu[small], noise_floor)
-    wall_ratio = wall[big] / max(wall[small], noise_floor)
-    if cpu_bound is True:
-        return cpu_ratio
-    if cpu_bound is False or cpu[big] < CPU_BOUND_SHARE * wall[big]:
-        return max(cpu_ratio, wall_ratio)
+
+def _median(values):
+    values = sorted(values)
+    middle = len(values) // 2
+    if len(values) % 2:
+        return values[middle]
+    return (values[middle - 1] + values[middle]) / 2
+
+
+def paired_ratio(samples, noise_floor=0.1, cpu_bound=None):
+    """The scaling factor read from interleaved samples: the median over the
+    reps of the big run over the small block measured beside it.
+
+    CPU seconds are normalised to the run's reference rate (the median of
+    the calibration rates its samples carry) before the two sides are
+    compared: a sample that ran in a slow stretch is scaled down by the rate
+    its own units read, so a speed change between the samples of one pair
+    cancels, and pairing with the median keeps a fast or slow window that
+    one side alone saw from standing against the other side's best. The
+    floor applies to the normalised small seconds, as it applied to the raw
+    seconds on a calm machine. Wall seconds are paired the same way without
+    the rate (a wait does not speed up with the core); a waiting op keeps the
+    higher of its two ratios, so the fallback only tightens.
+
+    A sample the clocks could not resolve (a reading that is not finite, a
+    clock that went backwards, a rate that read nothing, a big run the wall
+    clock did not see) is refused with ``ValueError``, never read as a ratio.
+    A CPU reading inside one tick of the clock (Windows counts process time
+    in 15.6 ms steps) is read at face value on either side, as on develop: a
+    small block there keeps the floor, a big run there reads far under the
+    bar, and a waiting op is judged on the wall clock. A load that is on for
+    the samples of one side only and off for every unit beside them leaves
+    no trace in the rates and is read at face value, as the old rule read
+    it: that is the limit of any calibration placed beside a sample, and why
+    :func:`settled_samples` takes more reps when the first ones disagree.
+    """
+    cpu_ratios, wall_ratios, shares = _per_rep_ratios(samples, noise_floor)
+    cpu_ratio = _median(cpu_ratios)
+    if _wall_counts(cpu_bound, shares):
+        return max(cpu_ratio, _median(wall_ratios))
     return cpu_ratio
+
+
+def _wall_counts(cpu_bound, shares):
+    """Whether the wall reading is judged too: declared waiting, or undeclared
+    with the big runs under ``CPU_BOUND_SHARE`` of their wall time on the CPU."""
+    return cpu_bound is False or (
+        cpu_bound is None and _median(shares) < CPU_BOUND_SHARE
+    )
+
+
+def _per_rep_ratios(samples, noise_floor):
+    """Each rep's normalised CPU reading, its wall reading and its big run's
+    CPU share, after refusing a sample the clocks could not resolve."""
+    if not samples:
+        raise ValueError("no samples")
+    for s in samples:
+        readings = (s.small_cpu, s.small_wall, s.small_rate)
+        readings += (s.big_cpu, s.big_wall, s.big_rate)
+        # not finite, a clock that went backwards, a rate that read nothing
+        # or a big run the wall clock did not see: refuse, never read a ratio
+        if (
+            not all(math.isfinite(v) for v in readings)
+            or min(readings) < 0
+            or min(s.big_wall, s.small_rate, s.big_rate) <= 0
+        ):
+            raise ValueError(f"unresolvable sample: {s!r}")
+    reference = _median([s.small_rate for s in samples] + [s.big_rate for s in samples])
+    cpu_ratios, wall_ratios, shares = [], [], []
+    for s in samples:
+        small_cpu = s.small_cpu * reference / s.small_rate
+        big_cpu = s.big_cpu * reference / s.big_rate
+        cpu_ratios.append(big_cpu / max(small_cpu, noise_floor))
+        wall_ratios.append(s.big_wall / max(s.small_wall, noise_floor))
+        shares.append(s.big_cpu / s.big_wall)
+    return cpu_ratios, wall_ratios, shares
+
+
+def settled_samples(
+    op, small, big, reps=3, noise_floor=0.1, cpu_bound=None, factor=QUADRATIC_RATIO
+):
+    """``scaling_samples``, with ``reps - 1`` more when the first reps disagree.
+
+    A load the units beside a sample do not see (a slow stretch inside a big
+    run, a sibling through one small block) moves that rep's reading alone,
+    and with three reps two such reps carry the median: a linear sink whose
+    big runs of two reps were slowed read 10.9x on a macOS runner, and two
+    slowed small blocks read a quadratic oracle at 5.3x. When the per-rep
+    readings fall on both sides of ``factor``, ``reps - 1`` more reps are
+    measured and the median is read over all ``2 * reps - 1``, which any
+    ``reps - 1`` misread reps cannot carry. When the first reps all fall on
+    one side, more reps could not move the median off it, so none are taken.
+    """
+    samples = scaling_samples(op, small, big, reps=reps)
+    cpu_ratios, wall_ratios, shares = _per_rep_ratios(samples, noise_floor)
+    judged = [cpu_ratios]
+    if _wall_counts(cpu_bound, shares):
+        judged.append(wall_ratios)
+    if any(min(r) < factor <= max(r) for r in judged):
+        samples += scaling_samples(op, small, big, reps=reps - 1)
+    return samples
+
+
+def scaling_ratio(
+    op, small, big, reps=3, noise_floor=0.1, cpu_bound=None, factor=QUADRATIC_RATIO
+):
+    """``op(big)`` over ``op(small)`` (``big`` == 4*``small``), paired by rep.
+
+    A load-invariant scaling factor: a linear sink is ~4x, a pre-patch O(n**2)
+    sink ~16x. The floor is multiplicative so a sub-second quadratic is not
+    hidden by additive slack. The small side is timed as a block of
+    ``SMALL_BLOCK`` calls, so a linear sink runs for about as long on both
+    sides, and the samples interleave (small block, big run, small block,
+    big run, ...) with a calibration unit beside each one; the ratio is the
+    median over the reps of each big run against the small block measured
+    next to it, both normalised by the rate their units read. The minimum of
+    each side taken separately, which this replaces, let a speed change
+    between the samples enter the ratio directly: a macOS runner that found a
+    fast window for one small block and none for a big run read a linear
+    sink at 10x, and an xdist sibling that shared the core through the small
+    runs and idled through a big one read a quadratic oracle at 7.4x. A
+    CPU-bound op is judged in CPU time; an op that mostly waits is judged on
+    the wall clock and the higher of the two ratios is kept, so the fallback
+    only tightens. ``cpu_bound`` declares the op's kind and skips the
+    heuristic. When the reps read on both sides of ``factor`` (the bar the
+    caller judges by) more are taken. See :func:`settled_samples`,
+    :func:`scaling_samples` and :func:`paired_ratio`.
+    """
+    samples = settled_samples(op, small, big, reps, noise_floor, cpu_bound, factor)
+    return paired_ratio(samples, noise_floor=noise_floor, cpu_bound=cpu_bound)
 
 
 def assert_subquadratic(
     op, small, big, factor=QUADRATIC_RATIO, noise_floor=0.1, reps=3, cpu_bound=None
 ):
     """Assert ``op(big)`` (big == 4*small) costs under ``factor`` times ``op(small)``."""
-    ratio = scaling_ratio(
-        op, small, big, reps=reps, noise_floor=noise_floor, cpu_bound=cpu_bound
-    )
-    assert ratio < factor, (small, big, ratio)
+    samples = settled_samples(op, small, big, reps, noise_floor, cpu_bound, factor)
+    ratio = paired_ratio(samples, noise_floor=noise_floor, cpu_bound=cpu_bound)
+    assert ratio < factor, (small, big, ratio, samples)
 
 
 # Work done in a child process or on a thread: the same rule, with the budget
@@ -191,6 +443,34 @@ def _children_cpu_seconds():
         return None
     usage = resource.getrusage(resource.RUSAGE_CHILDREN)
     return usage.ru_utime + usage.ru_stime
+
+
+def _process_cpu_seconds(process):
+    """CPU seconds a finished ``subprocess.Popen`` spent, read from its process
+    handle on Windows (kernel plus user time, kept until the handle closes), or
+    ``None`` where the handle or the call is not available."""
+    handle = getattr(process, "_handle", None)
+    if handle is None:
+        return None
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
+        times = [wintypes.FILETIME() for _ in range(4)]
+        kernel32.GetProcessTimes.argtypes = [wintypes.HANDLE] + [
+            ctypes.POINTER(wintypes.FILETIME)
+        ] * 4
+        kernel32.GetProcessTimes.restype = wintypes.BOOL
+        if not kernel32.GetProcessTimes(int(handle), *map(ctypes.byref, times)):
+            return None
+    except (AttributeError, OSError, TypeError, ValueError):
+        return None  # not Windows, or the handle cannot be queried
+    kernel, user = times[2], times[3]
+    # a FILETIME counts 100 ns intervals in two 32 bit halves
+    return sum(
+        ((t.dwHighDateTime << 32) | t.dwLowDateTime) / 1e7 for t in (kernel, user)
+    )
 
 
 def _child_main(target, args, report_q):
@@ -305,22 +585,41 @@ def run_subprocess(cmd, budget, hard_deadline=None, cpu_bound=None, **kwargs):
 
     Returns ``(completed, run)``: ``completed`` is the ``CompletedProcess`` or
     ``None`` when the command was still running at ``hard_deadline`` (a hang,
-    killed), and ``run`` is a :class:`ChildRun` charging the reaped children's
-    CPU time where the platform reports it and the wall time otherwise.
+    killed), and ``run`` is a :class:`ChildRun` charging the child's CPU time:
+    the reaped children's clock where the platform keeps one, the process
+    handle's own times on Windows (which keeps no such clock, so a child used
+    to be charged its wall time there, interpreter start-up and imports under a
+    loaded runner included), and the wall time where neither can be read.
+    ``capture_output``, ``input`` and ``check`` work as in ``subprocess.run``.
     """
     import subprocess
 
     if hard_deadline is None:
         hard_deadline = hard_deadline_for(budget)
+    if kwargs.pop("capture_output", False):
+        kwargs["stdout"] = kwargs["stderr"] = subprocess.PIPE
+    check = kwargs.pop("check", False)
+    stdin_data = kwargs.pop("input", None)
+    if stdin_data is not None:
+        kwargs["stdin"] = subprocess.PIPE
     children_before = _children_cpu_seconds()
     started = time.perf_counter()
-    try:
-        completed = subprocess.run(cmd, timeout=hard_deadline, **kwargs)
-    except subprocess.TimeoutExpired:
-        return None, ChildRun(False, None, None, time.perf_counter() - started, budget)
-    wall = time.perf_counter() - started
-    children_after = _children_cpu_seconds()
-    cpu = None
-    if children_before is not None and children_after is not None:
-        cpu = children_after - children_before
+    with subprocess.Popen(cmd, **kwargs) as process:
+        try:
+            out, err = process.communicate(stdin_data, timeout=hard_deadline)
+        except subprocess.TimeoutExpired:
+            process.kill()
+            process.wait()
+            return None, ChildRun(
+                False, None, None, time.perf_counter() - started, budget
+            )
+        wall = time.perf_counter() - started
+        children_after = _children_cpu_seconds()
+        if children_before is not None and children_after is not None:
+            cpu = children_after - children_before
+        else:
+            cpu = _process_cpu_seconds(process)  # the handle is still open here
+    completed = subprocess.CompletedProcess(process.args, process.returncode, out, err)
+    if check:
+        completed.check_returncode()
     return completed, ChildRun(True, completed.returncode, cpu, wall, budget, cpu_bound)

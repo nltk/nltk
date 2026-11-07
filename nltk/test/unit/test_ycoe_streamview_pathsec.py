@@ -31,6 +31,7 @@ from nltk.corpus.reader.util import StreamBackedCorpusView, read_whitespace_bloc
 from nltk.corpus.reader.ycoe import YCOECorpusReader
 from nltk.data import FileSystemPathPointer, ZipFilePathPointer
 from nltk.pathsec import validate_path
+from nltk.test.unit.fixture_files import makedirs_private, write_private
 
 # ``import nltk.corpus.reader.util as x`` would hand back the package attribute
 # ``util``, which a star import in the package shadows with nltk.tokenize.util.
@@ -49,9 +50,10 @@ REFUSED = (ValueError, PermissionError)
 def _write_ycoe(root, token="wat", doc="cotest"):
     """A minimal YCOE layout under ``root``: psd/ and pos/ with one document."""
     for sub, template in (("psd", PSD), ("pos", POS)):
-        os.makedirs(os.path.join(root, sub), exist_ok=True)
-        with open(os.path.join(root, sub, f"{doc}.{sub}"), "w", encoding="utf8") as f:
-            f.write(template % token)
+        makedirs_private(path=os.path.join(root, sub))
+        write_private(
+            path=os.path.join(root, sub, f"{doc}.{sub}"), data=template % token
+        )
     return root
 
 
@@ -117,7 +119,7 @@ class TestYCOEDirSymlinkContainment:
         # realpath-containment check (kept separate from full-corpus construction).
         # The root is a registered data root: a bare temp dir is not one on Linux.
         root = str(pathsec_sandbox.root / "ycoe")
-        os.makedirs(os.path.join(root, "psd"))
+        makedirs_private(path=os.path.join(root, "psd"))
         validate_path(
             os.path.join(root, "psd"), context="YCOECorpusReader", required_root=root
         )
@@ -140,7 +142,7 @@ class TestYCOEDirSymlinkContainment:
         reader itself cannot list a zip subdirectory through join() (a pre-existing
         limitation, the same with the guard removed), so only the guard is driven."""
         root, _ = pathsec_sandbox
-        os.makedirs(str(root / "corpora"))
+        makedirs_private(path=str(root / "corpora"))
         archive = str(root / "corpora" / "ycoe.zip")
         with zipfile.ZipFile(archive, "w") as zf:
             zf.writestr("ycoe/psd/cotest.psd", PSD % "wat")
@@ -250,8 +252,7 @@ class TestStreamBackedViewStatContainment:
         """BENIGN: an in-root fileid is sized at construction as before and reads."""
         root, _ = pathsec_sandbox
         path = str(root / "ok.txt")
-        with open(path, "w", encoding="utf8") as f:
-            f.write("a bb ccc")
+        write_private(path=path, data="a bb ccc")
         for fileid in (path, FileSystemPathPointer(path)):
             view = StreamBackedCorpusView(fileid, read_whitespace_block)
             assert view._eofpos == 8

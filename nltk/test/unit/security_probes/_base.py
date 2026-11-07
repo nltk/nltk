@@ -23,6 +23,9 @@ import shutil
 import socket  # noqa: F401
 import tempfile
 
+# re-exported for the probes
+from nltk.test.unit.fixture_files import makedirs_private, write_private
+
 FIXED = "FIXED"
 VULNERABLE = "VULNERABLE"
 STATIC = "STATIC"
@@ -60,9 +63,9 @@ QUADRATIC_RATIO = timing.QUADRATIC_RATIO
 #: interpreter actually worked: descheduling by a loaded runner stretches only
 #: the wall clock; a call that sleeps or waits on a child spends almost none.
 timed_both = timing.cpu_and_wall
-#: Fastest-of-reps op(big) over op(small): ~4x linear, ~16x quadratic. A wall
-#: clock stall once halved a 16x quadratic to 7.8x on a macOS runner (the r53h
-#: teeth flipped FIXED), hence CPU time: see nltk.test.unit.timing.scaling_ratio.
+#: op(big) over op(small) in CPU time, paired by rep and normalised by a
+#: calibration unit beside each sample (~4x linear, ~16x quadratic); the
+#: history of the stalls and speed changes is in timing.scaling_ratio.
 scaling_ratio = timing.scaling_ratio
 
 

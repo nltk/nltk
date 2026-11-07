@@ -44,6 +44,7 @@ import pytest
 import nltk.data
 import nltk.pathsec as pathsec
 from nltk.test.unit import timing
+from nltk.test.unit.conftest import make_home_dir
 
 # The pathsec sandbox fixtures (sandbox / restricted_sandbox / enforce_off)
 # are provided by nltk/test/unit/conftest.py.
@@ -525,7 +526,7 @@ def _hunpos_stub_bin():
         import shutil
         import tempfile
 
-        base = tempfile.mkdtemp(prefix=".nltk_hunpos_drv_", dir=os.path.expanduser("~"))
+        base = make_home_dir(".nltk_hunpos_drv_")
         atexit.register(shutil.rmtree, base, ignore_errors=True)
         binpath = os.path.join(base, "hunpos-tag")
         with open(binpath, "w") as handle:
@@ -948,22 +949,34 @@ def _disarm_perceptron_write(monkeypatch, module):
     monkeypatch.setattr(module, "validate_path", lambda *a, **k: None)
 
 
+def _pinned_dir_fd_route():
+    """True where ``save_to_json`` writes through its pinned directory
+    descriptor; False on Windows and on a POSIX build whose ``os`` lacks the
+    ``*at`` calls (the python.org macOS builds before 3.13), where it writes
+    by name through ``pathsec.open``. Read from the module so the tests and
+    the code cannot drift apart."""
+    from nltk.tag import perceptron
+
+    return _POSIX and perceptron._dir_fd_write_supported()
+
+
 def _assert_teeth(action, evidence, *, what):
     """Run *action* with a guard already neutered and report what happened.
 
-    On POSIX ``save_to_json`` writes through a pinned directory descriptor, so
+    Where ``save_to_json`` writes through a pinned directory descriptor,
     removing the containment guard really lets the write land and *evidence*
-    must show it. On Windows there is no directory descriptor: that branch
-    writes through ``pathsec.open``, which independently refuses an outside
-    path, so the correct assertion there is that the write is STILL blocked.
-    Either way the probe is not inert; it just proves a different thing.
+    must show it. Without that descriptor (Windows, or a POSIX build without
+    dir_fd support) the branch writes through ``pathsec.open``, which
+    independently refuses an outside path, so the correct assertion there is
+    that the write is STILL blocked. Either way the probe is not inert; it
+    just proves a different thing.
     """
     try:
         action()
         landed = True
     except (PermissionError, ValueError, OSError):
         landed = False
-    if _POSIX:
+    if _pinned_dir_fd_route():
         assert (
             landed and evidence()
         ), f"{what}: guard removed but nothing escaped; the probe is inert"
@@ -1019,9 +1032,9 @@ def test_each_guard_is_load_bearing(
     else:
         monkeypatch.setattr(module, attr, lambda *a, **k: None)
     outcome = _refusal_for(driver, target)
-    if not _POSIX and attr == "validate_tool_dir":
-        # The Windows save branch writes through pathsec.open, which refuses an
-        # outside path on its own, so the write stays blocked there.
+    if attr == "validate_tool_dir" and not _pinned_dir_fd_route():
+        # Without a pinned dir_fd the save branch writes through pathsec.open,
+        # which refuses an outside path on its own, so the write stays blocked.
         assert outcome == "refused"
         return
     assert (
@@ -1093,8 +1106,10 @@ def test_perceptron_save_guard_is_load_bearing(pathsec_sandbox, monkeypatch):
     _disarm_perceptron_write(monkeypatch, perceptron)
     _assert_teeth(
         lambda: _drive_save_to_json(str(victim)),
-        lambda: victim.exists()
-        and any(p.name.endswith(".weights.json") for p in victim.iterdir()),
+        lambda: (
+            victim.exists()
+            and any(p.name.endswith(".weights.json") for p in victim.iterdir())
+        ),
         what="save_to_json containment",
     )
 
@@ -1170,9 +1185,7 @@ def test_validate_tool_path_rejects_in_root_hardlink(restricted_sandbox):
 
 
 def _outside_dir():
-    return Path(
-        tempfile.mkdtemp(prefix=".nltk_tagsweep_outside_", dir=str(Path.home()))
-    )
+    return Path(make_home_dir(".nltk_tagsweep_outside_"))
 
 
 def test_validate_path_no_longer_waves_through_a_blank_path(restricted_sandbox):
@@ -1281,8 +1294,9 @@ def test_find_terminates_on_a_newline_resource_name(restricted_sandbox, resource
     caller-supplied ``PerceptronTagger(loc=...)`` of one newline burned 76s and
     2.7 GB before raising (CWE-407). Guarded by absolute time, not a ratio.
     """
-    with timing.budget(5.0, f"find({resource_name!r})"), pytest.raises(
-        (LookupError, ValueError)
+    with (
+        timing.budget(5.0, f"find({resource_name!r})"),
+        pytest.raises((LookupError, ValueError)),
     ):
         nltk.data.find(resource_name, paths=[restricted_sandbox])
 

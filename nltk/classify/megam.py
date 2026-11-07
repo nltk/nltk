@@ -20,8 +20,12 @@ for details.
 
     nltk.classify.MaxentClassifier.train(corpus, 'megam')
 
-.. _megam: http://hal3.name/megam/
+The megam page is served from its author's University of Maryland site; the
+address it was long known by, http://hal3.name/megam/, redirects there.
+
+.. _megam: https://users.umiacs.umd.edu/~hal3/megam/
 """
+
 import math
 import numbers
 import subprocess
@@ -60,7 +64,7 @@ def config_megam(bin=None):
         bin,
         env_vars=["MEGAM"],
         binary_names=["megam.opt", "megam", "megam_686", "megam_i686.opt"],
-        url="http://hal3.name/megam/",
+        url="https://users.umiacs.umd.edu/~hal3/megam/",
     )
 
 
@@ -175,17 +179,13 @@ def _megam_number(value, kind="feature value"):
 
 def _write_megam_features(vector, stream, bernoulli):
     if not vector:
-        raise ValueError(
-            "MEGAM classifier requires the use of an " "always-on feature."
-        )
+        raise ValueError("MEGAM classifier requires the use of an always-on feature.")
     for fid, fval in vector:
         if bernoulli:
             if fval == 1:
                 stream.write(" %s" % _megam_int(fid))
             elif fval != 0:
-                raise ValueError(
-                    "If bernoulli=True, then all" "features must be binary."
-                )
+                raise ValueError("If bernoulli=True, then allfeatures must be binary.")
         else:
             stream.write(f" {_megam_int(fid)} {_megam_number(fval)}")
 

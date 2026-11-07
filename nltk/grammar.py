@@ -68,6 +68,7 @@ The operation of replacing the left hand side (*lhs*) of a production
 with the right hand side (*rhs*) in a tree (*tree*) is known as
 "expanding" *lhs* to *rhs* in *tree*.
 """
+
 import re
 from collections import deque
 from functools import total_ordering
@@ -284,9 +285,7 @@ class Production:
         :type rhs: sequence(Nonterminal and terminal)
         """
         if isinstance(rhs, str):
-            raise TypeError(
-                "production right hand side should be a list, " "not a string"
-            )
+            raise TypeError("production right hand side should be a list, not a string")
         self._lhs = lhs
         self._rhs = tuple(rhs)
 
@@ -470,8 +469,7 @@ class CFG:
         """
         if not is_nonterminal(start):
             raise TypeError(
-                "start should be a Nonterminal object,"
-                " not a %s" % type(start).__name__
+                f"start should be a Nonterminal object, not a {type(start).__name__}"
             )
 
         self._start = start
@@ -576,7 +574,7 @@ class CFG:
         """
         if rhs and empty:
             raise ValueError(
-                "You cannot select empty and non-empty " "productions at the same time."
+                "You cannot select empty and non-empty productions at the same time."
             )
 
         # no constraints so return everything
@@ -666,7 +664,7 @@ class CFG:
         if missing:
             missing = ", ".join(f"{w!r}" for w in missing)
             raise ValueError(
-                "Grammar does not cover some of the " "input words: %r." % missing
+                f"Grammar does not cover some of the input words: {missing!r}."
             )
 
     def _calculate_grammar_forms(self):
@@ -749,7 +747,7 @@ class CFG:
             return self
         if self.productions(empty=True):
             raise ValueError(
-                "Grammar has Empty rules. " "Cannot deal with them at the moment"
+                "Grammar has Empty rules. Cannot deal with them at the moment"
             )
 
         step1 = CFG.eliminate_start(self)
@@ -984,9 +982,7 @@ class FeatureGrammar(CFG):
                 features, FeatStructNonterminal, logic_parser=logic_parser
             )
         elif logic_parser is not None:
-            raise Exception(
-                "'logic_parser' and 'fstruct_reader' must " "not both be set"
-            )
+            raise Exception("'logic_parser' and 'fstruct_reader' must not both be set")
 
         start, productions = read_grammar(
             input, fstruct_reader.read_partial, encoding=encoding
@@ -1006,7 +1002,7 @@ class FeatureGrammar(CFG):
         """
         if rhs and empty:
             raise ValueError(
-                "You cannot select empty and non-empty " "productions at the same time."
+                "You cannot select empty and non-empty productions at the same time."
             )
 
         # no constraints so return everything
@@ -1115,7 +1111,7 @@ class DependencyGrammar:
             try:
                 productions += _read_dependency_production(line)
             except ValueError as e:
-                raise ValueError(f"Unable to parse line {linenum}: {line}") from e
+                raise ValueError(f"Unable to parse line {linenum}: {line}\n{e}") from e
         if len(productions) == 0:
             raise ValueError("No productions found!")
         return cls(productions)
@@ -1507,26 +1503,43 @@ def standard_nonterm_parser(string, pos):
 # Reading Dependency Grammars
 #################################################################
 
+# A quoted token is at most 512 chars and an arrow at most 8: the validator and
+# the splitter carry the same bounds, so an oversized token is refused up front
+# rather than silently dropped. The longest shipped terminal is 9 chars.
 _READ_DG_RE = redos.compile(
     r"""^\s*                # leading whitespace
-                              ('[^']+')\s*        # single-quoted lhs
-                              (?:[-=]+>)\s*        # arrow
+                              ('[^']{1,512}')\s*  # single-quoted lhs
+                              (?:[-=]{1,8}>)\s*   # arrow
                               (?:(                 # rhs:
-                                   "[^"]+"         # doubled-quoted terminal
-                                 | '[^']+'         # single-quoted terminal
+                                   "[^"]{1,512}"   # doubled-quoted terminal
+                                 | '[^']{1,512}'   # single-quoted terminal
                                  | \|              # disjunction
                                  )
                                  \s*)              # trailing space
                                  *$""",  # zero or more copies
     re.VERBOSE,
 )
-_SPLIT_DG_RE = redos.compile(r"""('[^']'|[-=]+>|"[^"]+"|'[^']+'|\|)""")
+# Bound each alternation run: an alternation defeats the regex terminator prefilter,
+# so an unbounded run under .split is O(n**2) on a crafted grammar line (CWE-407);
+# arrows are ->/-->/==> and quoted tokens are short.
+_SPLIT_DG_RE = redos.compile(r"""('[^']'|[-=]{1,8}>|"[^"]{1,512}"|'[^']{1,512}'|\|)""")
 
 
 def _read_dependency_production(s):
     if not _READ_DG_RE.match(s):
-        raise ValueError("Bad production string")
+        raise ValueError(
+            "Bad production string (a quoted token is limited to 512 chars and "
+            f"an arrow to 8): {s[:40]!r}..."
+        )
     pieces = _SPLIT_DG_RE.split(s)
+    # Between two captured tokens only whitespace may remain: anything else is
+    # a token the splitter could not capture, so refuse rather than build a
+    # production with the token missing.
+    if any(p.strip() for p in pieces[::2]):
+        raise ValueError(
+            "Bad production string: a token the splitter cannot capture (over "
+            f"512 chars, or an arrow over 8): {s[:40]!r}..."
+        )
     pieces = [p for i, p in enumerate(pieces) if i % 2 == 1]
     lhside = pieces[0].strip("'\"")
     rhsides = [[]]

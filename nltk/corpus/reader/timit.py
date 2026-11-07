@@ -118,6 +118,7 @@ The 4 functions are as follows.
    timit.audiodata function.
 
 """
+
 import sys
 import time
 from io import BytesIO
@@ -505,7 +506,7 @@ class TimitCorpusReader(CorpusReader):
 
         # Method 3: complain. :)
         safe_print(
-            ("you must install pygame or ossaudiodev " "for audio playback."),
+            ("you must install pygame or ossaudiodev for audio playback."),
             file=sys.stderr,
         )
 

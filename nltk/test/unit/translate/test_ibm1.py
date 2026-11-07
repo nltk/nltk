@@ -71,3 +71,17 @@ class TestIBMModel1(unittest.TestCase):
         lexical_translation = 0.98 * 0.98 * 0.98 * 0.98 * 0.98 * 0.98
         expected_probability = lexical_translation
         self.assertEqual(round(probability, 4), round(expected_probability, 4))
+
+    def test_generated_null_alignment_string(self):
+        corpus = [
+            AlignedSent(["the", "cat"], ["katze"]),
+            AlignedSent(["the", "dog"], ["hund"]),
+            AlignedSent(["the", "book"], ["buch"]),
+        ]
+        IBMModel1(corpus, 3)
+
+        for sentence in corpus:
+            self.assertEqual(sentence.alignment, {(0, None), (1, 0)})
+            self.assertEqual(str(sentence.alignment), "1-0")
+            self.assertEqual(repr(sentence.alignment), "Alignment([(0, None), (1, 0)])")
+            self.assertIn((0, None), sentence.alignment)

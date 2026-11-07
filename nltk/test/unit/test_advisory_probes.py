@@ -14,13 +14,16 @@ import pkgutil
 import re
 import shutil
 import tempfile
+import types
 import warnings
 from collections import Counter
+from collections.abc import Callable
 
 import pytest
 
 from nltk.test.unit import security_probes as probes
 from nltk.test.unit import test_advisory_coverage_ci as covci
+from nltk.test.unit.conftest import make_home_dir
 from nltk.test.unit.security_probes import _base
 
 
@@ -126,6 +129,70 @@ def test_model_artifact_probe_covers_every_api_the_advisory_names():
         assert named in labels, f"advisory API {named} is not probed"
 
 
+def test_maxent_load_bare_open_probe_has_teeth():
+    """Restore the advisory's own bug and the probe must flip to VULNERABLE.
+
+    ``load_maxent_params`` read the four tab files through ``builtins.open``
+    on a caller path, outside the sandbox (GHSA-59f9-gqg8-mqpj). Putting that
+    back is the exact regression the probe exists to catch, so it must not
+    stay FIXED through it, for a str, a Path or a pointer argument.
+    """
+    import numpy
+
+    from nltk.classify import maxent
+    from nltk.tabdata import MaxentDecoder
+
+    probe = probes.PROBES["GHSA-59f9-gqg8-mqpj"]
+    guarded = maxent.load_maxent_params
+
+    def bare_load(tab_dir):
+        mdec, base = MaxentDecoder(), os.fspath(tab_dir)
+        with open(os.path.join(base, "weights.txt")) as fin:
+            wgt = numpy.array(list(map(numpy.float64, mdec.txt2list(fin))))
+        with open(os.path.join(base, "mapping.tab")) as fin:
+            mpg = mdec.tupkey2dict(fin)
+        with open(os.path.join(base, "labels.txt")) as fin:
+            lab = mdec.txt2list(fin)
+        with open(os.path.join(base, "alwayson.tab")) as fin:
+            aon = mdec.tab2ivdict(fin)
+        return wgt, mpg, lab, aon
+
+    maxent.load_maxent_params = bare_load
+    try:
+        status, evidence = probe()
+    finally:
+        maxent.load_maxent_params = guarded
+    assert status == probes.VULNERABLE, evidence
+    for face in ("load(pointer)", "load(str)", "load(Path)"):
+        assert face + " read" in evidence, evidence
+    assert probe()[0] == probes.FIXED
+
+
+def test_maxent_save_bare_open_probe_has_teeth():
+    """The save half of the same probe: a writer that opens the caller path
+    with ``builtins.open`` lands the parameter files outside every root, and
+    the probe must report it rather than stay FIXED on the load half alone."""
+    from nltk.classify import maxent
+
+    probe = probes.PROBES["GHSA-59f9-gqg8-mqpj"]
+    guarded = maxent.save_maxent_params
+
+    def bare_save(wgt, mpg, lab, aon, tab_dir=None):
+        os.makedirs(tab_dir, exist_ok=True)
+        with open(os.path.join(tab_dir, "weights.txt"), "w") as fout:
+            fout.write("\n".join(map(repr, wgt.tolist())))
+        return tab_dir
+
+    maxent.save_maxent_params = bare_save
+    try:
+        status, evidence = probe()
+    finally:
+        maxent.save_maxent_params = guarded
+    assert status == probes.VULNERABLE, evidence
+    assert "save wrote ['weights.txt']" in evidence, evidence
+    assert probe()[0] == probes.FIXED
+
+
 def test_perceptron_bare_open_probe_has_teeth():
     """Restore the advisory's own bug and the probe must flip to VULNERABLE.
 
@@ -207,9 +274,7 @@ def test_perceptron_load_does_not_widen_the_sandbox():
     from nltk.tag.perceptron import PerceptronTagger
 
     before = list(nltk.data.path)
-    outside = pathlib.Path(
-        tempfile.mkdtemp(prefix=".nltk_widen_", dir=str(pathlib.Path.home()))
-    )
+    outside = pathlib.Path(make_home_dir(".nltk_widen_"))
     try:
         (outside / "averaged_perceptron_tagger_xx.weights.json").write_text("{}")
         try:
@@ -381,10 +446,8 @@ def test_hardlink_write_probe_has_teeth():
     probe = probes.PROBES["GHSA-f794-5jv7-7672"]
     real = pathsec._hardened_open
     try:
-        pathsec._hardened_open = (
-            lambda raw, mode, context, required_root, **kw: builtins.open(
-                raw, mode, **kw
-            )
+        pathsec._hardened_open = lambda raw, mode, context, required_root, **kw: (
+            builtins.open(raw, mode, **kw)
         )
         assert probe()[0] == probes.VULNERABLE
     finally:
@@ -788,6 +851,295 @@ def test_r53h_front_mutation_probe_has_teeth():
     assert probe()[0] == probes.FIXED
 
 
+def test_f2h2_toolbox_probe_has_teeth(monkeypatch):
+    """Lift MAX_TOOLBOX_DEPTH: the deep settings file parses and every helper
+    walk overflows, and the probe must name each one."""
+    import nltk.toolbox
+
+    probe = probes.PROBES["GHSA-f2h2-f4fc-p978"]
+    assert probe()[0] == probes.FIXED
+
+    monkeypatch.setattr(nltk.toolbox, "MAX_TOOLBOX_DEPTH", 10**6)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "parse() accepted" in evidence
+    assert evidence.count("RecursionError escaped") == 6, evidence
+
+
+def _f2h2_regressed_to_settings_string(node, l, _depth=0, max_depth=None, **kwargs):
+    """_to_settings_string as the first GHSA-f2h2 fix (0b6975377) left it: the
+    child loop and the closing line dedented out of the non-leaf branch."""
+    import nltk.toolbox
+
+    if max_depth is None:
+        max_depth = nltk.toolbox.MAX_TOOLBOX_DEPTH
+    if _depth > max_depth:
+        raise ValueError("Toolbox nesting depth exceeds MAX_TOOLBOX_DEPTH")
+    tag = node.tag
+    text = node.text
+    if len(node) == 0:
+        if text:
+            l.append(f"\\{tag} {text}\n")
+        else:
+            l.append("\\%s\n" % tag)
+    else:
+        if text:
+            l.append(f"\\+{tag} {text}\n")
+        else:
+            l.append("\\+%s\n" % tag)
+    for n in node:
+        _f2h2_regressed_to_settings_string(n, l, _depth + 1, max_depth, **kwargs)
+    l.append("\\-%s\n" % tag)
+
+
+def _f2h2_regressed_add_blank_lines(
+    tree, blanks_before, blanks_between, _depth=0, max_depth=None
+):
+    """add_blank_lines as 0b6975377 left it: the try/except else moved under
+    ``if len(elem)`` inside the handler (getiterator as it was then)."""
+    import nltk.toolbox
+
+    if max_depth is None:
+        max_depth = nltk.toolbox.MAX_TOOLBOX_DEPTH
+    if _depth > max_depth:
+        raise ValueError("Toolbox nesting depth exceeds MAX_TOOLBOX_DEPTH")
+    try:
+        before = blanks_before[tree.tag]
+        between = blanks_between[tree.tag]
+    except KeyError:
+        for elem in tree:
+            if len(elem):
+                _f2h2_regressed_add_blank_lines(
+                    elem, blanks_before, blanks_between, _depth + 1, max_depth
+                )
+            else:
+                last_elem = None
+                for elem in tree:
+                    tag = elem.tag
+                    if last_elem is not None and last_elem.tag != tag:
+                        if tag in before and last_elem is not None:
+                            e = last_elem.getiterator()[-1]
+                            e.text = (e.text or "") + "\n"
+                    else:
+                        if tag in between:
+                            e = last_elem.getiterator()[-1]
+                            e.text = (e.text or "") + "\n"
+                    if len(elem):
+                        _f2h2_regressed_add_blank_lines(
+                            elem, blanks_before, blanks_between, _depth + 1, max_depth
+                        )
+                    last_elem = elem
+
+
+@pytest.mark.parametrize(
+    "name, regressed, expected",
+    [
+        (
+            "_to_settings_string",
+            _f2h2_regressed_to_settings_string,
+            "to_settings_string output does not read back",
+        ),
+        (
+            "add_blank_lines",
+            _f2h2_regressed_add_blank_lines,
+            "add_blank_lines fails on an ordinary tree",
+        ),
+    ],
+)
+def test_f2h2_toolbox_probe_catches_the_first_fix_regression(
+    monkeypatch, name, regressed, expected
+):
+    """Put back each helper as the first fix left it: the bound still holds,
+    so only the probe's ordinary tree leg can see it, and it must."""
+    import nltk.toolbox
+
+    probe = probes.PROBES["GHSA-f2h2-f4fc-p978"]
+    monkeypatch.setattr(nltk.toolbox, name, regressed)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert expected in evidence, evidence
+
+
+def test_32p6_group_bomb_probe_has_teeth(monkeypatch):
+    """Lift the capturing-group bound; the bomb must reach the engine and compile."""
+    from nltk import redos
+
+    probe = probes.PROBES["GHSA-32p6-cwhc-8r78"]
+    assert probe()[0] == probes.FIXED
+
+    monkeypatch.setattr(redos, "MAX_GROUP_COUNT", 10**9)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "compiled" in evidence
+
+
+def _pre_fix_ccg_parser(compile=re.compile):
+    """The CCG category parser as it stood before the cursor rewrite, copied
+    verbatim: every step re-sliced the remaining tail and NEXTPRIM_RE and
+    APP_RE captured it with a trailing (.*). Its regexes are compiled by
+    ``compile`` (the standard library, as before they were routed through
+    redos). Returns its augParseCategory."""
+    from nltk.ccg import lexicon
+
+    old_nextprim_re = compile(r"""([A-Za-z]+(?:\[[A-Za-z,]+\])?)(.*)""")
+    old_app_re = compile(r"""([\\/])([.,_]?)([.,]?)(.*)""")
+    old_prim_re = compile(r"""([A-Za-z]+)(\[[A-Za-z,]+\])?""")
+
+    def old_matchBrackets(string, _depth=0, max_depth=None):
+        if max_depth is None:
+            max_depth = lexicon.MAX_PARSE_DEPTH
+        if _depth > max_depth:
+            raise ValueError("CCG nesting depth exceeds MAX_PARSE_DEPTH")
+        rest = string[1:]
+        inside = "("
+        while rest != "" and not rest.startswith(")"):
+            if rest.startswith("("):
+                (part, rest) = old_matchBrackets(rest, _depth + 1, max_depth)
+                inside = inside + part
+            else:
+                inside = inside + rest[0]
+                rest = rest[1:]
+        if rest.startswith(")"):
+            return (inside + ")", rest[1:])
+        raise AssertionError("Unmatched bracket in string '" + string + "'")
+
+    def old_nextCategory(string, _depth=0, max_depth=None):
+        if string.startswith("("):
+            return old_matchBrackets(string, _depth, max_depth)
+        return old_nextprim_re.match(string).groups()
+
+    def old_augParseCategory(
+        line, primitives, families, var=None, _depth=0, max_depth=None
+    ):
+        if max_depth is None:
+            max_depth = lexicon.MAX_PARSE_DEPTH
+        if _depth > max_depth:
+            raise ValueError("CCG nesting depth exceeds MAX_PARSE_DEPTH")
+        (cat_string, rest) = old_nextCategory(line, _depth, max_depth)
+        if cat_string.startswith("("):
+            (res, var) = old_augParseCategory(
+                cat_string[1:-1], primitives, families, var, _depth + 1, max_depth
+            )
+        else:
+            (res, var) = lexicon.parsePrimitiveCategory(
+                old_prim_re.match(cat_string).groups(), primitives, families, var
+            )
+        while rest != "":
+            app = old_app_re.match(rest).groups()
+            direction = lexicon.parseApplication(app[0:3])
+            rest = app[3]
+            (cat_string, rest) = old_nextCategory(rest, _depth, max_depth)
+            if cat_string.startswith("("):
+                (arg, var) = old_augParseCategory(
+                    cat_string[1:-1], primitives, families, var, _depth + 1, max_depth
+                )
+            else:
+                (arg, var) = lexicon.parsePrimitiveCategory(
+                    old_prim_re.match(cat_string).groups(),
+                    primitives,
+                    families,
+                    var,
+                )
+            res = lexicon.FunctionalCategory(res, arg, direction)
+        return (res, var)
+
+    return old_augParseCategory
+
+
+def _uncapped_ccg_parser():
+    """The fixed cursor parser with only augParseCategory's MAX_PARSE_LEN
+    refusal removed; matchBrackets keeps its own, which the probe's over-cap
+    chain, carrying no bracket, never reaches."""
+    from nltk.ccg import lexicon
+
+    def uncapped_augParseCategory(
+        line, primitives, families, var=None, _depth=0, max_depth=None
+    ):
+        if max_depth is None:
+            max_depth = lexicon.MAX_PARSE_DEPTH
+        if _depth > max_depth:
+            raise ValueError("CCG nesting depth exceeds MAX_PARSE_DEPTH")
+        n = len(line)
+        (cat_string, pos) = lexicon.nextCategory(line, 0, _depth, max_depth)
+        if cat_string.startswith("("):
+            (res, var) = uncapped_augParseCategory(
+                cat_string[1:-1], primitives, families, var, _depth + 1, max_depth
+            )
+        else:
+            (res, var) = lexicon.parsePrimitiveCategory(
+                lexicon.PRIM_RE.match(cat_string).groups(), primitives, families, var
+            )
+        while pos < n:
+            m = lexicon.APP_RE.match(line, pos)
+            if m is None:
+                m.groups()
+            direction = lexicon.parseApplication(m.group(1, 2, 3))
+            pos = m.end()
+            (cat_string, pos) = lexicon.nextCategory(line, pos, _depth, max_depth)
+            if cat_string.startswith("("):
+                (arg, var) = uncapped_augParseCategory(
+                    cat_string[1:-1], primitives, families, var, _depth + 1, max_depth
+                )
+            else:
+                (arg, var) = lexicon.parsePrimitiveCategory(
+                    lexicon.PRIM_RE.match(cat_string).groups(),
+                    primitives,
+                    families,
+                    var,
+                )
+            res = lexicon.FunctionalCategory(res, arg, direction)
+        return (res, var)
+
+    return uncapped_augParseCategory
+
+
+def test_89p3_cap_removed_probe_has_teeth():
+    """Only the cap removed: the probe must flip VULNERABLE through its cap leg."""
+    from nltk.ccg import lexicon
+
+    probe = probes.PROBES["GHSA-89p3-fcch-88ph"]
+    assert probe()[0] == probes.FIXED
+
+    real = lexicon.augParseCategory
+    try:
+        lexicon.augParseCategory = _uncapped_ccg_parser()
+        status, evidence = probe()
+        assert status == probes.VULNERABLE, evidence
+        assert "not capped" in evidence, evidence
+    finally:
+        lexicon.augParseCategory = real
+    assert probe()[0] == probes.FIXED
+
+
+def test_89p3_tail_reslice_probe_has_teeth():
+    """Only the linear parse removed: the pre-fix parser behind the cap it
+    lacked, so the probe must flip VULNERABLE through its first scaling leg,
+    the front-loaded chain, which read it at 9.5x to 18.5x on the hosted
+    runners where the flat chain fell to 7.3x."""
+    from nltk.ccg import lexicon
+
+    probe = probes.PROBES["GHSA-89p3-fcch-88ph"]
+    assert probe()[0] == probes.FIXED
+    old_augParseCategory = _pre_fix_ccg_parser()
+
+    def capped_old_augParseCategory(
+        line, primitives, families, var=None, _depth=0, max_depth=None
+    ):
+        if len(line) > lexicon.MAX_PARSE_LEN:
+            raise ValueError("CCG category length exceeds MAX_PARSE_LEN")
+        return old_augParseCategory(line, primitives, families, var, _depth, max_depth)
+
+    real = lexicon.augParseCategory
+    try:
+        lexicon.augParseCategory = capped_old_augParseCategory
+        status, evidence = probe()
+        assert status == probes.VULNERABLE, evidence
+        assert "front-loaded" in evidence and "quadratic" in evidence, evidence
+    finally:
+        lexicon.augParseCategory = real
+    assert probe()[0] == probes.FIXED
+
+
 def test_scaling_ratio_counts_only_the_time_the_process_runs():
     """A run the runner deschedules must not deflate the ratio: here the small
     side does 0.12 s of CPU work and then sleeps 0.25 s beside it, which on the
@@ -882,6 +1234,145 @@ def test_relative_binary_location_probe_world_writable_phase_has_teeth(monkeypat
     status, evidence = probe()
     assert status == probes.VULNERABLE, evidence
     assert "world-writable directory" in evidence and "PWNED" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_cj8f_xml_depth_probe_has_teeth(monkeypatch):
+    """Lift both bounds; the per-tag path cost must scale quadratically in depth.
+
+    With only the depth bound lifted the width bound still refuses the 32 KB
+    path of the deep shape, so the probe stays FIXED (defence in depth)."""
+    import nltk.corpus.reader.xmldocs as xmldocs
+
+    probe = probes.PROBES["GHSA-cj8f-5fp3-6m88"]
+    assert probe()[0] == probes.FIXED
+
+    monkeypatch.setattr(xmldocs, "MAX_XML_DEPTH", 10**9)
+    status, evidence = probe()
+    assert status == probes.FIXED and "MAX_XML_PATH_LENGTH" in evidence, evidence
+
+    monkeypatch.setattr(xmldocs, "MAX_XML_PATH_LENGTH", 10**9)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "no depth bound" in evidence
+    # the path handed to the tagspec sums to d**2 characters: 16.0x for 4x depth
+    assert "scales 16.0x" in evidence, evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_cj8f_xml_path_width_probe_has_teeth(monkeypatch):
+    """Lift the width bound alone: the deep shape is still refused by depth, and
+    the wide shape (400 deep, long names, many siblings) must read quadratic."""
+    import nltk.corpus.reader.xmldocs as xmldocs
+
+    probe = probes.PROBES["GHSA-cj8f-5fp3-6m88"]
+    monkeypatch.setattr(xmldocs, "MAX_XML_PATH_LENGTH", 10**9)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "no path width bound" in evidence, evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_53pg_hypernym_walker_probe_has_teeth(monkeypatch):
+    """Neuter the visit check; the cycle and the deep chain must recurse until
+    RecursionError in every walker."""
+    import nltk.corpus.reader.wordnet as wordnet
+
+    probe = probes.PROBES["GHSA-53pg-5qp8-mhvr"]
+    assert probe()[0] == probes.FIXED
+
+    monkeypatch.setattr(wordnet, "_check_hypernym_visit", lambda synset, visited: None)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "RecursionError" in evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_ffr9_span_tokenize_probe_has_teeth(monkeypatch):
+    """Reintroduce the O(n) front removal in both tokenizer engines; the quote
+    restore must go quadratic and flip the probe."""
+    import nltk.tokenize.destructive as destructive
+    import nltk.tokenize.treebank as treebank
+
+    probe = probes.PROBES["GHSA-ffr9-mgrr-wcvr"]
+    assert probe()[0] == probes.FIXED
+
+    class _FrontPopIterator:
+        # The engines draw the matched quotes through iter()/next(); this
+        # stand-in re-slices the list on every draw, two whole-list copies per
+        # quote, so the O(n) front removal is visible at probe sizes.
+        def __init__(self, items):
+            self.items = list(items)
+
+        def __iter__(self):
+            return self
+
+        def __next__(self):
+            if not self.items:
+                raise StopIteration
+            head = self.items[0]
+            self.items[:] = self.items[1:]
+            return head
+
+    monkeypatch.setattr(destructive, "iter", _FrontPopIterator, raising=False)
+    monkeypatch.setattr(treebank, "iter", _FrontPopIterator, raising=False)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_gpwc_legality_probe_has_teeth(monkeypatch):
+    """A legal onset longer than any token defeats the saturation cut-off, so the
+    onset is reversed on every iteration again (the pre-fix loop)."""
+    from nltk.tokenize import LegalitySyllableTokenizer
+
+    probe = probes.PROBES["GHSA-gpwc-27cw-rh9r"]
+    assert probe()[0] == probes.FIXED
+
+    real = LegalitySyllableTokenizer.find_legal_onsets
+
+    def with_giant_onset(self, words):
+        return real(self, words) | {"x" * 10**6}
+
+    monkeypatch.setattr(
+        LegalitySyllableTokenizer, "find_legal_onsets", with_giant_onset
+    )
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+
+    monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+def test_8fx7_stepping_parser_probe_has_teeth(monkeypatch):
+    """Put back the pre-fix loop that drives step() with no deadline; the parse
+    must run to completion past max_time and flip the probe."""
+    from nltk.parse.recursivedescent import SteppingRecursiveDescentParser
+
+    probe = probes.PROBES["GHSA-8fx7-8jr8-84rv"]
+    assert probe()[0] == probes.FIXED
+
+    def unbounded_parse(self, tokens):
+        tokens = list(tokens)
+        self.initialize(tokens)
+        while self.step() is not None:
+            pass
+        return self.parses()
+
+    monkeypatch.setattr(SteppingRecursiveDescentParser, "parse", unbounded_parse)
+    status, evidence = probe()
+    assert status == probes.VULNERABLE, evidence
+    assert "no TimeoutError" in evidence
 
     monkeypatch.undo()
     assert probe()[0] == probes.FIXED
@@ -1043,16 +1534,85 @@ def test_wr3g_zip_hardlink_probe_has_teeth():
     assert probe()[0] == probes.FIXED
 
 
-def test_j8g8_reparse_probe_has_teeth(monkeypatch):
+@pytest.mark.parametrize("ghsa", ["GHSA-j8g8-j4j7-8j54", "GHSA-q4c8-9gwf-255x"])
+def test_readline_reparse_probe_has_teeth(ghsa, monkeypatch):
     """Report a line boundary in every block; readline then re-splits the whole
-    growing buffer each pass (the pre-fix O(n^2)) and the probe flips."""
+    growing buffer each pass (the pre-fix O(n^2)) and the probe flips.
+
+    develop gates the re-split on ``_has_line_boundary`` (the timed regex is
+    gone since #3938). GHSA-q4c8 is a second advisory on the same sink whose
+    probe is the GHSA-j8g8 measurement, so each registered id must flip here.
+    """
     import nltk.data as data
 
-    probe = probes.PROBES["GHSA-j8g8-j4j7-8j54"]
+    probe = probes.PROBES[ghsa]
     assert probe()[0] == probes.FIXED
 
     monkeypatch.setattr(data, "_has_line_boundary", lambda text: True)
     status, detail = probe()
     assert status == probes.VULNERABLE, detail  # the measured ratio, for the CI log
     monkeypatch.undo()
+    assert probe()[0] == probes.FIXED
+
+
+@pytest.mark.parametrize("sub", ["pos", "psd"])
+def test_qg35_ycoe_subdir_symlink_probe_has_teeth(sub: str) -> None:
+    """Turn off the YCOE scoped check for one subdir. The global sandbox lets
+    that subdir's link into the sibling corpus through, so the probe has to flip
+    on it. Run once per subdir so each link has to reach its sink."""
+    import nltk.corpus.reader.ycoe as ycoe
+
+    probe: Callable[[], tuple[str, str]] = probes.PROBES["GHSA-qg35-44qx-7vrr"]
+    assert _skip_if_static(probe) == probes.FIXED
+
+    real: Callable[..., None] = ycoe.validate_path
+
+    def skip_one(path: str, *args: object, **kwargs: object) -> None:
+        if os.path.basename(path) == sub:
+            return None
+        return real(path, *args, **kwargs)
+
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(ycoe, "validate_path", skip_one)
+        status, detail = probe()
+    assert status == probes.VULNERABLE, detail
+    assert detail.startswith(sub), detail
+    assert probe()[0] == probes.FIXED
+
+
+def test_w674_corpus_view_size_probe_has_teeth() -> None:
+    """Drop the containment check ahead of the constructor's stat. The view then
+    sizes the outside file and the probe must flip."""
+    # ``import nltk.corpus.reader.util as m`` binds nltk.tokenize.util instead
+    view_util: types.ModuleType = importlib.import_module("nltk.corpus.reader.util")
+    probe: Callable[[], tuple[str, str]] = probes.PROBES["GHSA-w674-vqhw-g3pg"]
+    assert _skip_if_static(probe) == probes.FIXED
+
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(view_util, "validate_path", lambda *args, **kwargs: None)
+        status, detail = probe()
+    assert status == probes.VULNERABLE, detail
+    assert "sized" in detail, detail
+    assert probe()[0] == probes.FIXED
+
+
+def test_w674_corpus_view_existence_oracle_probe_has_teeth() -> None:
+    """Stat the fileid before the real check. Nothing gets sized, but a missing
+    outside path now fails construction and a present one doesn't, so the probe
+    has to report the oracle."""
+    view_util: types.ModuleType = importlib.import_module("nltk.corpus.reader.util")
+    probe: Callable[[], tuple[str, str]] = probes.PROBES["GHSA-w674-vqhw-g3pg"]
+    assert _skip_if_static(probe) == probes.FIXED
+
+    real: Callable[..., None] = view_util.validate_path
+
+    def stat_first(path: str, *args: object, **kwargs: object) -> None:
+        os.stat(path)
+        return real(path, *args, **kwargs)
+
+    with pytest.MonkeyPatch.context() as mp:
+        mp.setattr(view_util, "validate_path", stat_first)
+        status, detail = probe()
+    assert status == probes.VULNERABLE, detail
+    assert "existence oracle" in detail, detail
     assert probe()[0] == probes.FIXED

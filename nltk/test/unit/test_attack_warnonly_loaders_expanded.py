@@ -675,15 +675,24 @@ def test_no_marshal_load_or_unsafe_yaml_or_numpy_load_in_library():
 
 
 def test_data_yaml_path_uses_safe_load():
-    """``nltk.data`` reads YAML resources with ``yaml.safe_load`` (no tag /
-    object construction). Verify the source and that safe_load refuses a
-    ``!!python/object`` tag (so a malicious .yaml resource cannot build objects)."""
+    """``nltk.data`` reads YAML resources through ``jsontags.safe_yaml_load``,
+    the bounded wrapper over ``yaml.safe_load`` (no tag / object construction,
+    plus byte, depth and node caps). Verify the source names the wrapper and no
+    raw PyYAML loader, and that both the wrapper and ``yaml.safe_load`` refuse
+    a ``!!python/object`` tag (so a malicious .yaml resource cannot build
+    objects)."""
     yaml = pytest.importorskip("yaml")
+    from nltk.jsontags import safe_yaml_loads
+
     data_src = (_NLTK_DIR / "data.py").read_text(encoding="utf-8")
-    assert "yaml.safe_load" in data_src
+    assert "safe_yaml_load(" in data_src
     assert "yaml.load(" not in data_src and "unsafe_load" not in data_src
+    assert "yaml.safe_load" not in data_src, "data.py bypasses the bounded loader"
+    payload = "!!python/object/apply:os.system ['echo hi']"
     with pytest.raises(yaml.YAMLError):
-        yaml.safe_load("!!python/object/apply:os.system ['echo hi']")
+        yaml.safe_load(payload)
+    with pytest.raises(yaml.YAMLError):
+        safe_yaml_loads(payload)
 
 
 def test_read_str_eval_is_bounded_to_a_string_literal():

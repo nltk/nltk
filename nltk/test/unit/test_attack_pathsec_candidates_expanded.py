@@ -44,7 +44,6 @@ import os
 import shutil
 import socket
 import stat
-import tempfile
 import zipfile
 from pathlib import Path
 
@@ -59,6 +58,7 @@ from nltk.pathsec import (
     validate_tool_path,
     validate_zip_archive,
 )
+from nltk.test.unit.conftest import make_home_dir
 
 REFUSALS = (PermissionError, ValueError)
 
@@ -196,7 +196,7 @@ class TestBlankAndControlOnlyPaths:
 
 class TestZipVirtualTraversal:
     def _isolated_root(self):
-        base = tempfile.mkdtemp(prefix=".nltk_zipvirt_", dir=str(Path.home()))
+        base = make_home_dir(".nltk_zipvirt_")
         dataroot = os.path.join(base, "nltk_data")
         os.makedirs(dataroot)
         with open(os.path.join(base, "secret.txt"), "w") as fh:

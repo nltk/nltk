@@ -22,7 +22,6 @@ Each instance of the ambiguous words "hard", "interest", "line", and "serve"
 is tagged with a sense identifier, and supplied with context.
 """
 
-
 from nltk import redos
 from nltk.corpus.reader.api import *
 from nltk.corpus.reader.util import *
@@ -47,11 +46,9 @@ class SensevalInstance:
         self.context = context
 
     def __repr__(self):
-        return "SensevalInstance(word=%r, position=%r, " "context=%r, senses=%r)" % (
-            self.word,
-            self.position,
-            self.context,
-            self.senses,
+        return (
+            f"SensevalInstance(word={self.word!r}, position={self.position!r}, "
+            f"context={self.context!r}, senses={self.senses!r})"
         )
 
 
@@ -178,21 +175,24 @@ def _fixXML(text):
     # fix """
     text = redos.sub(r'"""', "'\"'", text)
     # fix <s snum=dd> => <s snum="dd"/>
-    text = redos.sub(r'(<[^<]*snum=)([^">]+)>', r'\1"\2"/>', text)
+    # Bound the tag bodies below and keep `<` out of every run: a repeated `<...`
+    # anchor whose run has no terminator then stops at the next anchor, so a
+    # crafted block is O(n) rather than O(n*bound) or O(n**2) (CWE-407).
+    text = redos.sub(r'(<[^<]{0,256}snum=)([^"<>]{1,256})>', r'\1"\2"/>', text)
     # fix foreign word tag
     text = redos.sub(r"<\&frasl>\s*<p[^>]*>", "FRASL", text)
     # remove <&I .>
-    text = redos.sub(r"<\&I[^>]*>", "", text)
+    text = redos.sub(r"<\&I[^<>]{0,256}>", "", text)
     # fix <{word}>
-    text = redos.sub(r"<{([^}]+)}>", r"\1", text)
+    text = redos.sub(r"<{([^<}]{1,256})}>", r"\1", text)
     # remove <@>, <p>, </p>
     text = redos.sub(r"<(@|/?p)>", r"", text)
     # remove <&M .> and <&T .> and <&Ms .>
     text = redos.sub(r"<&\w+ \.>", r"", text)
     # remove <!DOCTYPE... > lines
-    text = redos.sub(r"<!DOCTYPE[^>]*>", r"", text)
+    text = redos.sub(r"<!DOCTYPE[^<>]{0,1024}>", r"", text)
     # remove <[hi]> and <[/p]> etc
-    text = redos.sub(r"<\[\/?[^>]+\]*>", r"", text)
+    text = redos.sub(r"<\[\/?[^<>]{1,256}\]*>", r"", text)
     # take the thing out of the brackets: <&hellip;>
     text = redos.sub(r"<(\&\w+;)>", r"\1", text)
     # and remove the & for those patterns that aren't regular XML

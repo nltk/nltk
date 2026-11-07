@@ -56,7 +56,7 @@ class YCOECorpusReader(CorpusReader):
         # Make sure we have a consistent set of items:
         documents = {f[:-4] for f in self._psd_reader.fileids()}
         if {f[:-4] for f in self._pos_reader.fileids()} != documents:
-            raise ValueError('Items in "psd" and "pos" ' "subdirectories do not match.")
+            raise ValueError('Items in "psd" and "pos" subdirectories do not match.')
 
         fileids = sorted(
             ["%s.psd" % doc for doc in documents]
@@ -147,7 +147,10 @@ class YCOEParseCorpusReader(BracketParseCorpusReader):
     that strips out (CODE ...) and (ID ...) nodes."""
 
     def _parse(self, t):
-        t = redos.sub(r"(?u)\((CODE|ID)[^\)]*\)", "", t)
+        # Bound the node body and keep `(` out of it: `(CODE`*N with no `)` was
+        # O(n**2) re-anchoring (CWE-407; see PR #3896), and excluding the anchor
+        # stops each scan at the next node. Real (CODE ...)/(ID ...) tags are short.
+        t = redos.sub(r"(?u)\((CODE|ID)[^()]{0,400}\)", "", t)
         if redos.match(r"\s*\(\s*\)\s*$", t):
             return None
         return BracketParseCorpusReader._parse(self, t)

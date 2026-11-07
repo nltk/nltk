@@ -108,6 +108,12 @@ jobs:
       - name: Build package
         run: python -m build
 
+      - name: Check the built distributions against the tracked tree
+        # The same guard CI runs on every PR, here on the artifacts about to be
+        # published: cached bytecode, untracked or hidden files, a developer's
+        # home directory or a credential shape fail the release before it exists.
+        run: python tools/check_sdist_hygiene.py dist/*
+
       - name: Extract release notes from ChangeLog
         run: |
           set -euo pipefail

@@ -43,6 +43,17 @@ reaches `site-packages`). No advisory JSON is committed; the live list is
 fetched only in the isolated CI job. STATIC probes locate NLTK source via each
 module's own `__file__`.
 
+Write fixture files with `write_private` and make fixture directories with
+`makedirs_private`, attack plants included. Both live in
+`nltk/test/unit/fixture_files.py`, and `_base` re-exports them. Plain `open()`
+and `os.makedirs` take their mode from the umask, so under umask 002 they make
+group-writable files that NLTK's trust checks refuse. The trust check then stops
+the fixture before the probe reaches the guard it tests, so the refusal says
+nothing about that guard. A teeth test that needs its plant to run fails
+outright. `tempfile.mkdtemp` already makes a `0700` directory. Only set a weaker
+mode by hand when the mode is the attack, like the `0o777` directory in
+GHSA-7mxv.
+
 ## Findings (not code changes)
 
 - Twelve published advisories, one critical (GHSA-x99w), have no

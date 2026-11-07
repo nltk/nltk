@@ -83,13 +83,11 @@ class NLTKWordTokenizer(TokenizerI):
 
     # Punctuation.
     PUNCTUATION = [
-        # The class ends with a space directly before ``\s*$``, so ``[..space..]*``
-        # and ``\s*`` both match a trailing space run and backtrack O(n**2) when
-        # the text ends in a non-space, non-class char (~32 KB pins a core). The
-        # ``regex`` engine does not collapse this, so redos.compile's wall-clock
-        # bound is required; behaviour is otherwise identical (CWE-1333).
+        # Possessive: the class holds a space right before ``\s*$``, and re-splitting
+        # a trailing space run between the two was O(n**2) (CWE-407); the maximal
+        # run is the only split that ever matched, so the spans are unchanged.
         (
-            redos.compile(r'([^\.])(\.)([\]\)}>"\'' "»”’ " r"]*)\s*$", re.U),
+            redos.compile(r'([^\.])(\.)([\]\)}>"\'' "»”’ " r"]*+)\s*$", re.U),
             r"\1 \2 \3 ",
         ),
         (redos.compile(r"([:,])([^\d])"), r" \1 \2"),
