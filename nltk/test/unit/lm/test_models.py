@@ -419,6 +419,24 @@ def test_kneserney_trigram_score(
     )
 
 
+def test_kneserney_scores_follow_later_fit(vocabulary, trigram_training_data):
+    # Continuation counts are cached between scores; a second fit must refresh them.
+    model = KneserNeyInterpolated(order=3, discount=0.75, vocabulary=vocabulary)
+    model.fit(trigram_training_data[:1])
+    model.score("c", ["a", "b"])
+    model.fit(trigram_training_data[1:])
+
+    expected = KneserNeyInterpolated(order=3, discount=0.75, vocabulary=vocabulary)
+    expected.fit(trigram_training_data)
+    for word, context in [
+        ("c", ["a", "b"]),
+        ("d", ["c"]),
+        ("b", ["a", "d"]),
+        ("e", []),
+    ]:
+        assert model.score(word, context) == expected.score(word, context)
+
+
 @pytest.fixture
 def absolute_discounting_trigram_model(trigram_training_data, vocabulary):
     model = AbsoluteDiscountingInterpolated(order=3, vocabulary=vocabulary)
