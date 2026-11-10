@@ -78,5 +78,27 @@ def test_backward_probability():
     assert_array_almost_equal(wikipedia_results, bp, 4)
 
 
+def test_best_path_matches_simple():
+    model, states, symbols = hmm._market_hmm_example()
+    for seq in (["up"], ["up", "up", "down"], ["up", "down", "down", "up"]):
+        assert model.best_path(seq) == model.best_path_simple(seq)
+
+
+def test_tag_repeated_unseen_word():
+    from nltk.probability import LidstoneProbDist
+
+    train = [
+        [("the", "DT"), ("dog", "NN"), ("runs", "VB")],
+        [("a", "DT"), ("cat", "NN"), ("sleeps", "VB")],
+    ]
+    tagger = hmm.HiddenMarkovModelTrainer().train_supervised(
+        train, estimator=lambda fd, bins: LidstoneProbDist(fd, 0.1, bins)
+    )
+    words = ["the", "blorp", "blorp", "runs"]
+    expected = tagger.best_path_simple(words)
+    assert [tag for _, tag in tagger.tag(words)] == expected
+    assert tagger._symbols.count("blorp") == 1
+
+
 def setup_module(module):
     pytest.importorskip("numpy")

@@ -346,7 +346,8 @@ class HiddenMarkovModelTagger(TaggerI):
             self._create_cache()
             P, O, X, S = self._cache
             for symbol in symbols:
-                if symbol not in self._symbols:
+                # S maps every cached symbol, so only new ones scan the list
+                if symbol not in S and symbol not in self._symbols:
                     self._cache = None
                     self._symbols.append(symbol)
             # don't bother with the work if there aren't any new symbols
@@ -395,12 +396,13 @@ class HiddenMarkovModelTagger(TaggerI):
         B = -np.ones((T, N), int)
 
         V[0] = P + O[:, S[unlabeled_sequence[0]]]
+        states = np.arange(N)
         for t in range(1, T):
-            for j in range(N):
-                vs = V[t - 1, :] + X[:, j]
-                best = np.argmax(vs)
-                V[t, j] = vs[best] + O[j, S[unlabeled_sequence[t]]]
-                B[t, j] = best
+            # vs[i, j] is the score of reaching state j at t from state i
+            vs = V[t - 1, :, np.newaxis] + X
+            best = np.argmax(vs, axis=0)
+            V[t] = vs[best, states] + O[:, S[unlabeled_sequence[t]]]
+            B[t] = best
 
         current = np.argmax(V[T - 1, :])
         sequence = [current]
