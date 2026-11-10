@@ -10,6 +10,8 @@ A word stemmer based on the Lancaster (Paice/Husk) stemming algorithm.
 Paice, Chris D. "Another Stemmer." ACM SIGIR Forum 24.3 (1990): 56-61.
 """
 
+import functools
+
 from nltk import redos
 from nltk.stem.api import StemmerI
 
@@ -18,6 +20,30 @@ from nltk.stem.api import StemmerI
 #: characters, so a crafted token is O(len**2) (CWE-770). No real word approaches
 #: this, so an over-long token is returned unstemmed rather than pinning a CPU.
 MAX_WORD_LEN = 1000
+
+_RULE_PARTS = redos.compile(r"^([a-z]+)(\*?)(\d)([a-z]*)([>\.]?)$")
+
+
+@functools.cache
+def _parse_rule(rule):
+    """Split a rule string into (ending, intact_flag, remove_total, append, cont).
+
+    The ending is returned the right way round (rules store it reversed).
+    Returns None for a string that is not a well-formed rule.
+    """
+    rule_match = _RULE_PARTS.match(rule)
+    if not rule_match:
+        return None
+    ending_string, intact_flag, remove_total, append_string, cont_flag = (
+        rule_match.groups()
+    )
+    return (
+        ending_string[::-1],
+        intact_flag,
+        int(remove_total),
+        append_string,
+        cont_flag,
+    )
 
 
 class LancasterStemmer(StemmerI):
@@ -229,8 +255,6 @@ class LancasterStemmer(StemmerI):
     def __doStemming(self, word, intact_word):
         """Perform the actual word stemming"""
 
-        valid_rule = redos.compile(r"^([a-z]+)(\*?)(\d)([a-z]*)([>\.]?)$")
-
         proceed = True
 
         while proceed:
@@ -249,22 +273,18 @@ class LancasterStemmer(StemmerI):
 
                 # Go through each rule that matches the word's final letter
                 for rule in self.rule_dictionary[word[last_letter_position]]:
-                    rule_match = valid_rule.match(rule)
-                    if rule_match:
+                    parsed_rule = _parse_rule(rule)
+                    if parsed_rule:
                         (
                             ending_string,
                             intact_flag,
                             remove_total,
                             append_string,
                             cont_flag,
-                        ) = rule_match.groups()
-
-                        # Convert the number of chars to remove when stemming
-                        # from a string to an integer
-                        remove_total = int(remove_total)
+                        ) = parsed_rule
 
                         # Proceed if word's ending matches rule's word ending
-                        if word.endswith(ending_string[::-1]):
+                        if word.endswith(ending_string):
                             if intact_flag:
                                 if word == intact_word and self.__isAcceptable(
                                     word, remove_total
