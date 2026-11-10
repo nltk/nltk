@@ -181,8 +181,9 @@ def extract_unigram_feats(document, unigrams, handle_negation=False):
     features = {}
     if handle_negation:
         document = mark_negation(document)
+    words = set(document)
     for word in unigrams:
-        features[f"contains({word})"] = word in set(document)
+        features[f"contains({word})"] = word in words
     return features
 
 
@@ -204,8 +205,9 @@ def extract_bigram_feats(document, bigrams):
     ('contains(police - prevented)', False)]
     """
     features = {}
+    document_bigrams = set(nltk.bigrams(document))
     for bigr in bigrams:
-        features[f"contains({bigr[0]} - {bigr[1]})"] = bigr in nltk.bigrams(document)
+        features[f"contains({bigr[0]} - {bigr[1]})"] = bigr in document_bigrams
     return features
 
 
