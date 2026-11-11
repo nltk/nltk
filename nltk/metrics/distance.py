@@ -258,9 +258,10 @@ def binary_distance(label1, label2):
 
 def jaccard_distance(label1, label2):
     """Distance metric comparing set-similarity."""
-    return (len(label1.union(label2)) - len(label1.intersection(label2))) / len(
-        label1.union(label2)
-    )
+    len_union = len(label1.union(label2))
+    if len_union == 0:
+        return 0.0
+    return (len_union - len(label1.intersection(label2))) / len_union
 
 
 def masi_distance(label1, label2):
@@ -277,6 +278,8 @@ def masi_distance(label1, label2):
 
     len_intersection = len(label1.intersection(label2))
     len_union = len(label1.union(label2))
+    if len_union == 0:
+        return 0.0
     len_label1 = len(label1)
     len_label2 = len(label2)
     if len_label1 == len_label2 and len_label1 == len_intersection:

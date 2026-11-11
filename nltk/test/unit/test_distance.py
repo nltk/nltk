@@ -9,8 +9,10 @@ from nltk.metrics.distance import (
     custom_distance,
     edit_distance,
     edit_distance_align,
+    jaccard_distance,
     jaro_similarity,
     jaro_winkler_similarity,
+    masi_distance,
 )
 from nltk.test.unit import timing
 
@@ -500,3 +502,19 @@ def test_edit_distance_short_inputs_unchanged():
     # The cap must not perturb ordinary short inputs.
     assert edit_distance("kitten", "sitting") == 3
     assert edit_distance("rain", "shine") == 3
+
+
+class TestSetDistances:
+    def test_jaccard_distance_both_empty(self):
+        assert jaccard_distance(set(), set()) == 0.0
+
+    def test_jaccard_distance_one_empty(self):
+        assert jaccard_distance(set(), {1, 2}) == 1.0
+        assert jaccard_distance({1, 2}, set()) == 1.0
+
+    def test_masi_distance_both_empty(self):
+        assert masi_distance(set(), set()) == 0.0
+
+    def test_masi_distance_one_empty(self):
+        assert masi_distance(set(), {1, 2}) == 1.0
+        assert masi_distance({1, 2}, set()) == 1.0
