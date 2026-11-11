@@ -11,6 +11,7 @@ According to Chen & Goodman 1995 these should work with both Backoff and
 Interpolation.
 """
 
+from collections import Counter
 from operator import methodcaller
 
 from nltk.lm.api import Smoothing
@@ -81,6 +82,10 @@ class KneserNey(Smoothing):
 
     This is an extension of smoothing with a discount.
 
+    Continuation counts are cached between scores and rebuilt when fit()
+    or NgramCounter.update() stores a new ngram, so change the counts
+    through those methods rather than by editing counts directly.
+
     Resources:
     - https://pages.ucsd.edu/~rlevy/lign256/winter2008/kneser_ney_mini_example.pdf
     - https://www.youtube.com/watch?v=ody1ysUTD7o
@@ -116,13 +121,29 @@ class KneserNey(Smoothing):
         instances were observed for each "type".
         This is different than raw ngram counts which track number of instances.
         """
-        higher_order_ngrams_with_context = (
-            counts
-            for prefix_ngram, counts in self.counts[len(context) + 2].items()
-            if prefix_ngram[1:] == context
-        )
-        higher_order_ngrams_with_word_count, total = 0, 0
-        for counts in higher_order_ngrams_with_context:
-            higher_order_ngrams_with_word_count += int(counts[word] > 0)
-            total += _count_values_gt_zero(counts)
-        return higher_order_ngrams_with_word_count, total
+        word_counts, totals = self._continuation_index(len(context) + 2)
+        return word_counts[context, word], totals[context]
+
+    def _continuation_index(self, order):
+        """Continuation counts of every (context, word) and every context.
+
+        Scanning all the ngrams of ``order`` on every call made each score
+        cost as much as the whole model, so the counts are gathered in one
+        pass and kept until the counter stores a new ngram.
+        """
+        # setdefault: a model pickled before this cache existed has no attribute.
+        cache = self.__dict__.setdefault("_continuation_cache", {})
+        # NgramCounter.update() bumps _distinct whenever it stores a new ngram.
+        version = getattr(self.counts, "_distinct", None)
+        if order not in cache or cache[order][0] != version:
+            word_counts = Counter(
+                (prefix_ngram[1:], word)
+                for prefix_ngram, counts in self.counts[order].items()
+                for word, count in counts.items()
+                if count > 0
+            )
+            totals = Counter()
+            for (context, _), count in word_counts.items():
+                totals[context] += count
+            cache[order] = (version, word_counts, totals)
+        return cache[order][1:]
