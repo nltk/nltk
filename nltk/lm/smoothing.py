@@ -82,6 +82,10 @@ class KneserNey(Smoothing):
 
     This is an extension of smoothing with a discount.
 
+    Continuation counts are cached between scores and rebuilt when fit()
+    or NgramCounter.update() stores a new ngram, so change the counts
+    through those methods rather than by editing counts directly.
+
     Resources:
     - https://pages.ucsd.edu/~rlevy/lign256/winter2008/kneser_ney_mini_example.pdf
     - https://www.youtube.com/watch?v=ody1ysUTD7o
