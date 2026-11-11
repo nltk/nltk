@@ -10,8 +10,6 @@ A word stemmer based on the Lancaster (Paice/Husk) stemming algorithm.
 Paice, Chris D. "Another Stemmer." ACM SIGIR Forum 24.3 (1990): 56-61.
 """
 
-import functools
-
 from nltk import redos
 from nltk.stem.api import StemmerI
 
@@ -24,7 +22,6 @@ MAX_WORD_LEN = 1000
 _RULE_PARTS = redos.compile(r"^([a-z]+)(\*?)(\d)([a-z]*)([>\.]?)$")
 
 
-@functools.cache
 def _parse_rule(rule):
     """Split a rule string into (ending, intact_flag, remove_total, append, cont).
 
@@ -255,6 +252,11 @@ class LancasterStemmer(StemmerI):
     def __doStemming(self, word, intact_word):
         """Perform the actual word stemming"""
 
+        # Rule strings parsed by _parse_rule, kept per stemmer so a discarded
+        # stemmer takes its custom rules with it. setdefault: a stemmer pickled
+        # before this existed has no such attribute.
+        parsed_rules = self.__dict__.setdefault("_parsed_rules", {})
+
         proceed = True
 
         while proceed:
@@ -273,7 +275,10 @@ class LancasterStemmer(StemmerI):
 
                 # Go through each rule that matches the word's final letter
                 for rule in self.rule_dictionary[word[last_letter_position]]:
-                    parsed_rule = _parse_rule(rule)
+                    try:
+                        parsed_rule = parsed_rules[rule]
+                    except KeyError:
+                        parsed_rule = parsed_rules[rule] = _parse_rule(rule)
                     if parsed_rule:
                         (
                             ending_string,
