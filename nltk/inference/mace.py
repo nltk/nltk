@@ -293,7 +293,7 @@ def test_model_found(arguments):
     """
     for goal, assumptions in arguments:
         g = Expression.fromstring(goal)
-        alist = [lp.parse(a) for a in assumptions]
+        alist = [Expression.fromstring(a) for a in assumptions]
         m = MaceCommand(g, assumptions=alist, max_models=50)
         found = m.build_model()
         for a in alist:
@@ -339,7 +339,7 @@ def test_transform_output(argument_pair):
     Transform the model into various Mace4 ``interpformat`` formats.
     """
     g = Expression.fromstring(argument_pair[0])
-    alist = [lp.parse(a) for a in argument_pair[1]]
+    alist = [Expression.fromstring(a) for a in argument_pair[1]]
     m = MaceCommand(g, assumptions=alist)
     m.build_model()
     for a in alist:
