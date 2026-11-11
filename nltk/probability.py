@@ -140,6 +140,27 @@ class FreqDist(Counter):
         self._N = None
         super().update(*args, **kwargs)
 
+    def pop(self, /, *args):
+        """
+        Override ``Counter.pop()`` to invalidate the cached N.
+        """
+        self._N = None
+        return super().pop(*args)
+
+    def popitem(self, /):
+        """
+        Override ``Counter.popitem()`` to invalidate the cached N.
+        """
+        self._N = None
+        return super().popitem()
+
+    def clear(self, /):
+        """
+        Override ``Counter.clear()`` to invalidate the cached N.
+        """
+        self._N = None
+        return super().clear()
+
     def setdefault(self, key, val):
         """
         Override ``Counter.setdefault()`` to invalidate the cached N
