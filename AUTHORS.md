@@ -363,6 +363,7 @@
 - Gecko Security <https://github.com/geckosecurity>
 - Bugbunny <https://github.com/bugbunny-research>
 - Aryan R. Ganjoo <https://github.com/AryanRG>
+- Dylan Pulver <https://github.com/dylanpulver>
 
 ## Others whose work we've taken and included in NLTK, but who didn't directly contribute it:
 
