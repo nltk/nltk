@@ -5,7 +5,7 @@ Tests for common methods of IBM translation models
 import unittest
 from collections import defaultdict
 
-from nltk.translate import AlignedSent, IBMModel
+from nltk.translate import AlignedSent, IBMModel, IBMModel1, IBMModel2
 from nltk.translate.ibm_model import AlignmentInfo
 
 
@@ -30,6 +30,31 @@ class TestIBMModel(unittest.TestCase):
         ibm_model = IBMModel(parallel_corpora)
         self.assertEqual(len(ibm_model.src_vocab), 1)  # addition of NULL token
         self.assertEqual(len(ibm_model.trg_vocab), 0)
+
+    def test_lexical_probabilities_are_normalized_after_training(self):
+        for model_class in (IBMModel1, IBMModel2):
+            for iterations in (1, 5):
+                with self.subTest(model=model_class.__name__, iterations=iterations):
+                    corpus = [
+                        AlignedSent(["X", "."], ["a", "."]),
+                        AlignedSent(["Z", "."], ["b", "b", "."]),
+                    ]
+                    model = model_class(corpus, 0)
+                    # Materialize a pair that never co-occurs before the M-step.
+                    self.assertEqual(model.translation_table["X"]["b"], 1 / 3)
+                    for _ in range(iterations):
+                        model.train(corpus)
+                    for source in model.src_vocab:
+                        total = sum(
+                            model.translation_table[t][source] for t in model.trg_vocab
+                        )
+                        self.assertAlmostEqual(total, 1.0)
+                    self.assertEqual(
+                        model.translation_table["X"]["b"], IBMModel.MIN_PROB
+                    )
+                    self.assertEqual(
+                        model.translation_table["Z"]["a"], IBMModel.MIN_PROB
+                    )
 
     def test_best_model2_alignment(self):
         # arrange
