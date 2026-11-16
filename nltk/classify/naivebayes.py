@@ -130,23 +130,28 @@ class NaiveBayesClassifier(ClassifierI):
         for fname, fval in self.most_informative_features(n):
 
             def labelprob(l):
-                return cpdist[l, fname].prob(fval)
+                if (l, fname) in cpdist:
+                    return cpdist[l, fname].prob(fval)
+                return 0.0
 
+            # Compare P(fname=fval|label) across *all* labels, not just those
+            # whose training data contained fval.  Labels that never saw fval
+            # still get a non-zero probability from the smoothing estimator
+            # (e.g. ELEProbDist), so the ratio is well-defined and correctly
+            # reflects how much the feature value separates the classes.
             labels = sorted(
-                (l for l in self._labels if fval in cpdist[l, fname].samples()),
+                self._labels,
                 key=lambda element: (-labelprob(element), element),
                 reverse=True,
             )
-            if len(labels) == 1:
+            if len(labels) < 2:
                 continue
             l0 = labels[0]
             l1 = labels[-1]
-            if cpdist[l0, fname].prob(fval) == 0:
+            if labelprob(l0) == 0:
                 ratio = "INF"
             else:
-                ratio = "%8.1f" % (
-                    cpdist[l1, fname].prob(fval) / cpdist[l0, fname].prob(fval)
-                )
+                ratio = "%8.1f" % (labelprob(l1) / labelprob(l0))
             safe_print(
                 "%24s = %-14r %6s : %-6s = %s : 1.0"
                 % (fname, fval, ("%s" % l1)[:6], ("%s" % l0)[:6], ratio)
@@ -165,22 +170,31 @@ class NaiveBayesClassifier(ClassifierI):
         if hasattr(self, "_most_informative_features"):
             return self._most_informative_features[:n]
         else:
-            # The set of (fname, fval) pairs used by this classifier.
+            # Collect all (fname, fval) pairs observed in any label's
+            # probability distribution.
             features = set()
-            # The max & min probability associated w/ each (fname, fval)
-            # pair.  Maps (fname,fval) -> float.
+            for (label, fname), probdist in self._feature_probdist.items():
+                for fval in probdist.samples():
+                    features.add((fname, fval))
+
+            # For each (fname, fval) pair, compute max and min of
+            # P(fname=fval|label) over *all* labels (not just the labels
+            # whose training data contained fval).  The smoothing estimator
+            # (e.g. ELEProbDist) returns a non-zero probability for unseen
+            # values, so the ratio is well-defined for perfectly-separating
+            # features whose fval was observed with only one label.
             maxprob = defaultdict(float)
             minprob = defaultdict(lambda: 1.0)
 
-            for (label, fname), probdist in self._feature_probdist.items():
-                for fval in probdist.samples():
-                    feature = (fname, fval)
-                    features.add(feature)
-                    p = probdist.prob(fval)
-                    maxprob[feature] = max(p, maxprob[feature])
-                    minprob[feature] = min(p, minprob[feature])
-                    if minprob[feature] == 0:
-                        features.discard(feature)
+            for feature in list(features):
+                fname, fval = feature
+                for label in self._labels:
+                    if (label, fname) in self._feature_probdist:
+                        p = self._feature_probdist[label, fname].prob(fval)
+                        maxprob[feature] = max(p, maxprob[feature])
+                        minprob[feature] = min(p, minprob[feature])
+                if minprob[feature] == 0:
+                    features.discard(feature)
 
             # Convert features to a list, & sort it by how informative
             # features are.
