@@ -953,7 +953,7 @@ class Future:
             self._loader = None  # the data is now cached
         return self._d
 
-    def __nonzero__(self):
+    def __bool__(self):
         return bool(self._data())
 
     def __len__(self):

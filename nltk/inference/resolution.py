@@ -311,8 +311,10 @@ class Clause(list):
             > 0
         )
 
-    def __getslice__(self, start, end):
-        return Clause(list.__getslice__(self, start, end))
+    def __getitem__(self, index):
+        if isinstance(index, slice):
+            return Clause(list.__getitem__(self, index))
+        return list.__getitem__(self, index)
 
     def __sub__(self, other):
         return Clause([a for a in self if a not in other])
