@@ -419,7 +419,11 @@ class PorterStemmer(StemmerI):
             (*v*) Y -> I                    happy        ->  happi
                                             sky          ->  sky
         """
+        if not word.endswith(self._step1c_suffixes):
+            return word
+        return self._apply_rule_list(word, self._step1c_rule_list())
 
+    def _step1c_rule_list(self):
         def nltk_condition(stem):
             """
             This has been modified from the original Porter algorithm so
@@ -444,20 +448,17 @@ class PorterStemmer(StemmerI):
         def original_condition(stem):
             return self._contains_vowel(stem)
 
-        return self._apply_rule_list(
-            word,
-            [
+        return [
+            (
+                "y",
+                "i",
                 (
-                    "y",
-                    "i",
-                    (
-                        nltk_condition
-                        if self.mode == self.NLTK_EXTENSIONS
-                        else original_condition
-                    ),
-                )
-            ],
-        )
+                    nltk_condition
+                    if self.mode == self.NLTK_EXTENSIONS
+                    else original_condition
+                ),
+            )
+        ]
 
     def _step2(self, word):
         """Implements Step 2 from "An algorithm for suffix stripping"
@@ -498,6 +499,11 @@ class PorterStemmer(StemmerI):
             ):
                 return self._step2(self._replace_suffix(word, "alli", "al"))
 
+        if not word.endswith(self._step2_suffixes):
+            return word
+        return self._apply_rule_list(word, self._step2_rule_list())
+
+    def _step2_rule_list(self):
         bli_rule = ("bli", "ble", self._has_positive_measure)
         abli_rule = ("abli", "able", self._has_positive_measure)
 
@@ -531,13 +537,13 @@ class PorterStemmer(StemmerI):
             # so that short stems like 'geo' 'theo' etc work like
             # 'archaeo' 'philo' etc.
             rules.append(
-                ("logi", "log", lambda stem: self._has_positive_measure(word[:-3]))
+                ("logi", "log", lambda stem: self._has_positive_measure(stem + "l"))
             )
 
         if self.mode == self.MARTIN_EXTENSIONS:
             rules.append(("logi", "log", self._has_positive_measure))
 
-        return self._apply_rule_list(word, rules)
+        return rules
 
     def _step3(self, word):
         """Implements Step 3 from "An algorithm for suffix stripping"
@@ -554,18 +560,20 @@ class PorterStemmer(StemmerI):
             (m>0) FUL   ->                  hopeful        ->  hope
             (m>0) NESS  ->                  goodness       ->  good
         """
-        return self._apply_rule_list(
-            word,
-            [
-                ("icate", "ic", self._has_positive_measure),
-                ("ative", "", self._has_positive_measure),
-                ("alize", "al", self._has_positive_measure),
-                ("iciti", "ic", self._has_positive_measure),
-                ("ical", "ic", self._has_positive_measure),
-                ("ful", "", self._has_positive_measure),
-                ("ness", "", self._has_positive_measure),
-            ],
-        )
+        if not word.endswith(self._step3_suffixes):
+            return word
+        return self._apply_rule_list(word, self._step3_rule_list())
+
+    def _step3_rule_list(self):
+        return [
+            ("icate", "ic", self._has_positive_measure),
+            ("ative", "", self._has_positive_measure),
+            ("alize", "al", self._has_positive_measure),
+            ("iciti", "ic", self._has_positive_measure),
+            ("ical", "ic", self._has_positive_measure),
+            ("ful", "", self._has_positive_measure),
+            ("ness", "", self._has_positive_measure),
+        ]
 
     def _step4(self, word):
         """Implements Step 4 from "An algorithm for suffix stripping"
@@ -595,37 +603,39 @@ class PorterStemmer(StemmerI):
         The suffixes are now removed. All that remains is a little
         tidying up.
         """
+        if not word.endswith(self._step4_suffixes):
+            return word
+        return self._apply_rule_list(word, self._step4_rule_list())
+
+    def _step4_rule_list(self):
         measure_gt_1 = lambda stem: self._measure(stem) > 1
 
-        return self._apply_rule_list(
-            word,
-            [
-                ("al", "", measure_gt_1),
-                ("ance", "", measure_gt_1),
-                ("ence", "", measure_gt_1),
-                ("er", "", measure_gt_1),
-                ("ic", "", measure_gt_1),
-                ("able", "", measure_gt_1),
-                ("ible", "", measure_gt_1),
-                ("ant", "", measure_gt_1),
-                ("ement", "", measure_gt_1),
-                ("ment", "", measure_gt_1),
-                ("ent", "", measure_gt_1),
-                # (m>1 and (*S or *T)) ION ->
-                (
-                    "ion",
-                    "",
-                    lambda stem: self._measure(stem) > 1 and stem[-1] in ("s", "t"),
-                ),
-                ("ou", "", measure_gt_1),
-                ("ism", "", measure_gt_1),
-                ("ate", "", measure_gt_1),
-                ("iti", "", measure_gt_1),
-                ("ous", "", measure_gt_1),
-                ("ive", "", measure_gt_1),
-                ("ize", "", measure_gt_1),
-            ],
-        )
+        return [
+            ("al", "", measure_gt_1),
+            ("ance", "", measure_gt_1),
+            ("ence", "", measure_gt_1),
+            ("er", "", measure_gt_1),
+            ("ic", "", measure_gt_1),
+            ("able", "", measure_gt_1),
+            ("ible", "", measure_gt_1),
+            ("ant", "", measure_gt_1),
+            ("ement", "", measure_gt_1),
+            ("ment", "", measure_gt_1),
+            ("ent", "", measure_gt_1),
+            # (m>1 and (*S or *T)) ION ->
+            (
+                "ion",
+                "",
+                lambda stem: self._measure(stem) > 1 and stem[-1] in ("s", "t"),
+            ),
+            ("ou", "", measure_gt_1),
+            ("ism", "", measure_gt_1),
+            ("ate", "", measure_gt_1),
+            ("iti", "", measure_gt_1),
+            ("ous", "", measure_gt_1),
+            ("ive", "", measure_gt_1),
+            ("ize", "", measure_gt_1),
+        ]
 
     def _step5a(self, word):
         """Implements Step 5a from "An algorithm for suffix stripping"
@@ -674,9 +684,12 @@ class PorterStemmer(StemmerI):
                                     controll       ->  control
                                     roll           ->  roll
         """
-        return self._apply_rule_list(
-            word, [("ll", "l", lambda stem: self._measure(word[:-1]) > 1)]
-        )
+        if not word.endswith(self._step5b_suffixes):
+            return word
+        return self._apply_rule_list(word, self._step5b_rule_list())
+
+    def _step5b_rule_list(self):
+        return [("ll", "l", lambda stem: self._measure(stem + "l") > 1)]
 
     def stem(self, word, to_lowercase=True):
         """
@@ -706,6 +719,28 @@ class PorterStemmer(StemmerI):
 
     def __repr__(self):
         return "<PorterStemmer>"
+
+
+def _rule_suffixes(step):
+    """The suffixes of the rules of a step in all modes, in rule order."""
+    suffixes = []
+    for mode in (
+        PorterStemmer.NLTK_EXTENSIONS,
+        PorterStemmer.MARTIN_EXTENSIONS,
+        PorterStemmer.ORIGINAL_ALGORITHM,
+    ):
+        for rule in getattr(PorterStemmer(mode), f"_step{step}_rule_list")():
+            if rule[0] not in suffixes:
+                suffixes.append(rule[0])
+    return tuple(suffixes)
+
+
+# A step returns the word unchanged when the word ends with none of these.
+PorterStemmer._step1c_suffixes = _rule_suffixes("1c")
+PorterStemmer._step2_suffixes = _rule_suffixes(2)
+PorterStemmer._step3_suffixes = _rule_suffixes(3)
+PorterStemmer._step4_suffixes = _rule_suffixes(4)
+PorterStemmer._step5b_suffixes = _rule_suffixes("5b")
 
 
 def demo():
