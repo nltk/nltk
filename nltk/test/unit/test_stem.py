@@ -2,6 +2,7 @@ import unittest
 from contextlib import closing
 
 from nltk import data
+from nltk.stem.lancaster import LancasterStemmer
 from nltk.stem.porter import PorterStemmer
 from nltk.stem.snowball import SnowballStemmer
 
@@ -183,3 +184,36 @@ class PorterTest(unittest.TestCase):
         token = "y" * 100000
         result = PorterStemmer().stem(token)
         assert isinstance(result, str)
+
+
+class LancasterTest(unittest.TestCase):
+    def test_default_rules(self):
+        stemmer = LancasterStemmer()
+        expected = {
+            "maximum": "maxim",
+            "presumably": "presum",
+            "multiply": "multiply",
+            "provision": "provid",
+            "owed": "ow",
+            "ear": "ear",
+            "saying": "say",
+            "crying": "cry",
+            "cement": "cem",
+            "nationalization": "nat",
+            "happiness": "happy",
+            "running": "run",
+            "Stemming": "stem",
+            "don't": "don't",
+        }
+        assert {word: stemmer.stem(word) for word in expected} == expected
+
+    def test_custom_rules(self):
+        stemmer = LancasterStemmer(rule_tuple=("ssen4>", "s1t.", "ylb1>", "yl2>"))
+        expected = {
+            "ness": "nest",
+            "goodness": "good",
+            "possibly": "possibl",
+            "really": "real",
+            "cats": "catt",
+        }
+        assert {word: stemmer.stem(word) for word in expected} == expected
