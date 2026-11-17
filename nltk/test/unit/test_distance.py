@@ -237,6 +237,19 @@ class TestJaroWinklerSimilarity:
         s1, s2 = "MARTHA", "MARHTA"
         assert jaro_winkler_similarity(s1, s2) >= jaro_similarity(s1, s2)
 
+    @pytest.mark.parametrize("s1, s2", [("ab", "ac"), ("abcdefx", "abcdefy")])
+    def test_max_l_zero_equals_jaro(self, s1, s2):
+        """With max_l=0 no common prefix is counted."""
+        assert jaro_winkler_similarity(s1, s2, max_l=0) == jaro_similarity(s1, s2)
+
+    def test_max_l_caps_prefix(self):
+        """The common prefix length is capped at max_l."""
+        s1, s2 = "abcdefx", "abcdefy"
+        jaro = jaro_similarity(s1, s2)
+        assert jaro_winkler_similarity(s1, s2, p=0.1, max_l=2) == pytest.approx(
+            jaro + 2 * 0.1 * (1 - jaro)
+        )
+
 
 def _alignment_has_no_substitutions(alignment):
     """Check that no step in the alignment is a diagonal move between mismatched positions."""

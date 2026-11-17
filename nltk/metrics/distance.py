@@ -541,15 +541,13 @@ def jaro_winkler_similarity(s1, s2, p=0.1, max_l=4):
     # if user did not pre-define the upperbound,
     # use shorter length between s1 and s2
 
-    # Compute the prefix matches.
+    # Compute the prefix matches, up to max_l characters.
     l = 0
     # zip() will automatically loop until the end of shorter string.
-    for s1_i, s2_i in zip(s1, s2):
+    for s1_i, s2_i in zip(s1[: max(max_l, 0)], s2):
         if s1_i == s2_i:
             l += 1
         else:
-            break
-        if l == max_l:
             break
     # Return the similarity value as described in docstring.
     return jaro_sim + (l * p * (1 - jaro_sim))
