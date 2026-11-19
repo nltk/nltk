@@ -174,6 +174,7 @@ class IBMModel4(IBMModel):
         source_word_classes,
         target_word_classes,
         probability_tables=None,
+        lexical_floor=None,
     ):
         """
         Train on ``sentence_aligned_corpus`` and create a lexical
@@ -206,15 +207,22 @@ class IBMModel4(IBMModel):
             ``non_head_distortion_table``. See ``IBMModel`` and
             ``IBMModel4`` for the type and purpose of these tables.
         :type probability_tables: dict[str]: object
+
+        :param lexical_floor: Minimum lexical probability in [0, 1], or
+            ``None`` for ``MIN_PROB``. See ``IBMModel`` for initialization,
+            zero-probability, and normalization policies.
+        :type lexical_floor: float or None
         """
-        super().__init__(sentence_aligned_corpus)
+        super().__init__(sentence_aligned_corpus, lexical_floor=lexical_floor)
         self.reset_probabilities()
         self.src_classes = source_word_classes
         self.trg_classes = target_word_classes
 
         if probability_tables is None:
             # Get probabilities from IBM model 3
-            ibm3 = IBMModel3(sentence_aligned_corpus, iterations)
+            ibm3 = IBMModel3(
+                sentence_aligned_corpus, iterations, lexical_floor=self.lexical_floor
+            )
             self.translation_table = ibm3.translation_table
             self.alignment_table = ibm3.alignment_table
             self.fertility_table = ibm3.fertility_table
@@ -222,7 +230,9 @@ class IBMModel4(IBMModel):
             self.set_uniform_probabilities(sentence_aligned_corpus)
         else:
             # Set user-defined probabilities
-            self.translation_table = probability_tables["translation_table"]
+            self._set_translation_table(
+                probability_tables["translation_table"], lexical_floor
+            )
             self.alignment_table = probability_tables["alignment_table"]
             self.fertility_table = probability_tables["fertility_table"]
             self.p1 = probability_tables["p1"]
@@ -324,7 +334,7 @@ class IBMModel4(IBMModel):
                 counts.update_fertility(normalized_count, alignment_info)
 
         # M step: Update probabilities with maximum likelihood estimates
-        # If any probability is less than MIN_PROB, clamp it to MIN_PROB
+        # Lexical estimates use lexical_floor; other tables use MIN_PROB.
         existing_alignment_table = self.alignment_table
         self.reset_probabilities()
         self.alignment_table = existing_alignment_table  # don't retrain
