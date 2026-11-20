@@ -1,4 +1,4 @@
-from nltk.tree import Tree
+from nltk.tree import Tree, TreePrettyPrinter
 
 
 def test_fromstring_allows_escaped_brackets():
@@ -26,3 +26,28 @@ def test_fromstring_normal_parsing_unaffected():
     tree = Tree.fromstring("(S (NP the cat) (VP sat))")
     assert tree.label() == "S"
     assert tree.leaves() == ["the", "cat", "sat"]
+
+
+def _drawn_leaf_order(tree):
+    # sort the leaves by the column they are drawn at
+    leaves = set(tree.leaves())
+    found = []
+    for line in TreePrettyPrinter(tree).text().splitlines():
+        start = 0
+        for word in line.split():
+            start = line.index(word, start)
+            if word in leaves:
+                found.append((2 * start + len(word), word))
+            start += len(word)
+    return [word for _, word in sorted(found)]
+
+
+def test_pretty_print_leaf_order_mixed_leaves_and_subtrees():
+    for source in (
+        "(Div (Mult sixteen four) two)",
+        "(Div two (Mult sixteen four))",
+        "(A (B one (C two three) four) five (D (E six) seven))",
+        "(S (NP a b) (VP c))",
+    ):
+        tree = Tree.fromstring(source)
+        assert _drawn_leaf_order(tree) == tree.leaves()

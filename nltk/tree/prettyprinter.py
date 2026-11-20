@@ -128,17 +128,19 @@ class TreePrettyPrinter:
                 tree = Tree.convert(tree)
                 highlight = [tree[pos] for pos in marked] + list(highlight)
                 sentence = []
-                for a in tree.subtrees():
-                    if len(a) == 0:
-                        a.append(len(sentence))
-                        sentence.append(None)
-                    elif any(not isinstance(b, Tree) for b in a):
-                        for n, b in enumerate(a):
-                            if not isinstance(b, Tree):
-                                a[n] = len(sentence)
-                                if type(b) == tuple:
-                                    b = "/".join(b)
-                                sentence.append("%s" % b)
+                # treepositions() is pre-order, so leaves are numbered in
+                # left-to-right order even when a node mixes leaves and subtrees
+                for pos in tree.treepositions():
+                    a = tree[pos]
+                    if isinstance(a, Tree):
+                        if len(a) == 0:
+                            a.append(len(sentence))
+                            sentence.append(None)
+                    else:
+                        tree[pos[:-1]][pos[-1]] = len(sentence)
+                        if type(a) == tuple:
+                            a = "/".join(a)
+                        sentence.append("%s" % a)
         self.nodes, self.coords, self.edges, self.highlight = self.nodecoords(
             tree, sentence, highlight
         )
