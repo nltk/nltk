@@ -1,4 +1,5 @@
 import queue
+import random
 from typing import Tuple
 
 import pytest
@@ -6,6 +7,8 @@ import pytest
 from nltk import pathsec
 from nltk.metrics.distance import (
     MAX_DISTANCE_INPUT_LEN,
+    _edit_dist_init,
+    _edit_dist_step,
     custom_distance,
     edit_distance,
     edit_distance_align,
@@ -20,6 +23,71 @@ from . import _mp_ctx
 
 
 class TestEditDistance:
+    @staticmethod
+    def _old_dp(s1, s2):
+        lev = _edit_dist_init(len(s1) + 1, len(s2) + 1)
+        for i in range(1, len(s1) + 1):
+            for j in range(1, len(s2) + 1):
+                _edit_dist_step(lev, i, j, s1, s2, 0, 0)
+        return lev[len(s1)][len(s2)]
+
+    @pytest.mark.parametrize("tokens", [False, True])
+    @pytest.mark.parametrize("alphabet_size", [2, 100])
+    def test_bitparallel_matches_old_dp(self, tokens, alphabet_size):
+        rng = random.Random(1776)
+        alphabet = [chr(0x400 + i) for i in range(alphabet_size)]
+        lengths = [0, 1, 2, 7, 31, 63, 64, 65, 66, 127, 128, 255, 300]
+        pairs = [(n, n) for n in lengths]
+        pairs += [(rng.randrange(301), rng.randrange(301)) for _ in range(35)]
+        for len1, len2 in pairs:
+            s1 = [rng.choice(alphabet) for _ in range(len1)]
+            s2 = [rng.choice(alphabet) for _ in range(len2)]
+            if not tokens:
+                s1, s2 = "".join(s1), "".join(s2)
+            assert edit_distance(s1, s2) == self._old_dp(s1, s2)
+            assert edit_distance(s2, s1) == self._old_dp(s2, s1)
+
+    @pytest.mark.parametrize(
+        "s1,s2",
+        [
+            ("", ""),
+            ("", "banana"),
+            ("banana", ""),
+            ("ñα猫🦉" * 17, "ñα猫🦉" * 17),
+            ("a" * 64, "b" * 65),
+            (["one", "two"] * 50, ["one", "too"] * 50),
+            ((1, 1.0, True), (True, 1, 1.0)),
+        ],
+    )
+    def test_bitparallel_edge_cases(self, s1, s2):
+        assert edit_distance(s1, s2) == self._old_dp(s1, s2)
+
+    @pytest.mark.parametrize(
+        "s1,s2", [([["one"]], [["one"]]), (["one"], [["one"]]), ([["one"]], ["one"])]
+    )
+    def test_unhashable_tokens_still_raise(self, s1, s2):
+        # The DP path has always needed hashable tokens.
+        with pytest.raises(TypeError):
+            edit_distance(s1, s2)
+
+    def test_nonreflexive_token_uses_dp(self):
+        nan = float("nan")
+        assert edit_distance([nan], [nan]) == self._old_dp([nan], [nan]) == 1
+
+    def test_equal_hashable_objects_match(self):
+        class Token:
+            def __init__(self, value):
+                self.value = value
+
+            def __eq__(self, other):
+                return isinstance(other, Token) and self.value == other.value
+
+            def __hash__(self):
+                return hash(self.value)
+
+        s1, s2 = [Token("one"), Token("two")], [Token("one"), Token("too")]
+        assert edit_distance(s1, s2) == self._old_dp(s1, s2) == 1
+
     @pytest.mark.parametrize(
         "left,right,substitution_cost,expecteds",
         [

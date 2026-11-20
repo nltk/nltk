@@ -89,6 +89,48 @@ def _edit_dist_step(
     lev[i][j] = min(a, b, c, d)
 
 
+def _edit_distance_bitparallel(s1, s2):
+    """Unit-cost Levenshtein distance via Myers (1999) / Hyyrö (2003)."""
+    width = len(s1)
+    peq = {}
+    try:
+        for i, element in enumerate(s1):
+            # Dict lookup treats an identical key as equal, even for NaN.
+            if type(element) is not str and element != element:
+                return None
+            peq[element] = peq.get(element, 0) | (1 << i)
+    except TypeError:
+        return None
+
+    if not width:
+        return None  # trivial; let the DP path keep its input checks
+
+    positive = ~0
+    negative = 0
+    distance = width
+    high_bit = 1 << (width - 1)
+    for element in s2:
+        try:
+            if type(element) is not str and element != element:
+                return None
+            matches = peq.get(element, 0)
+        except TypeError:
+            return None
+        vertical = matches | negative
+        horizontal = (((matches & positive) + positive) ^ positive) | matches
+        positive_shift = negative | ~(horizontal | positive)
+        negative_shift = positive & horizontal
+        if positive_shift & high_bit:
+            distance += 1
+        if negative_shift & high_bit:
+            distance -= 1
+        positive_shift = (positive_shift << 1) | 1
+        negative_shift <<= 1
+        positive = negative_shift | ~(vertical | positive_shift)
+        negative = positive_shift & vertical
+    return distance
+
+
 def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     """
     Calculate the Levenshtein edit-distance between two strings.
@@ -115,6 +157,12 @@ def edit_distance(s1, s2, substitution_cost=1, transpositions=False):
     :rtype: int
     """
     _check_distance_input_len(s1, s2, "edit_distance")
+    if substitution_cost == 1 and not transpositions:
+        # Match masks assume equal, hashable tokens have equal hashes.
+        distance = _edit_distance_bitparallel(s1, s2)
+        if distance is not None:
+            return distance
+
     # set up a 2-D array
     len1 = len(s1)
     len2 = len(s2)
