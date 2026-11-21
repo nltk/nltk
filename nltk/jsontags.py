@@ -14,6 +14,8 @@ NLTK uses simple '!' tags to mark the types of objects, but the fully-qualified
 using it.
 """
 
+import codecs
+import io
 import json
 import math
 
@@ -50,10 +52,9 @@ the interpreter's ``int_max_str_digits`` default, the giant-integer conversion
 cost.
 """
 
-# Keep only the six bytes that can change structural nesting depth or open and
-# close a string literal; ``_scan_json_depth`` deletes everything else at C
-# speed before its Python-level scan (see that function's docstring).
-_STRUCTURAL_BYTES = b'"\\[]{}'
+# The bytes that open or close a string or change the nesting depth; the depth
+# scan deletes every other byte at C speed before its Python loop.
+_STRUCTURAL_BYTES = b'"[]{}'
 _IDENTITY_TABLE = bytes(range(256))
 _NON_STRUCTURAL = bytes(i for i in range(256) if i not in _STRUCTURAL_BYTES)
 
@@ -114,6 +115,55 @@ def _reject_non_finite_walk(obj, context="NLTK JSON"):
     return obj
 
 
+def _parsed_text_steps(data, start=0):
+    """The text ``json.loads`` will parse, as UTF-8 bytes in steps of ``_READ_STEP``.
+
+    A ``str`` is parsed as it is. ``bytes`` are decoded first with the
+    encoding ``json.detect_encoding`` picks, which is UTF-16 or UTF-32 when the
+    null-byte pattern says so: a scan of those raw bytes would see a quote or a
+    bracket in the high byte of an unrelated code unit (U+4E22 is ``22 4E`` in
+    UTF-16-LE) and miss the real ones, so they are decoded as the parser will
+    decode them. UTF-8 needs no round trip: its multi-byte sequences hold no
+    ASCII byte, so the structural bytes are already where the parser sees them.
+
+    Of a decoded step only the ASCII characters are kept, which are UTF-8 too.
+    The scan reads six ASCII characters, and an escape the parser accepts is a
+    backslash and an ASCII character, so dropping the rest moves no structural
+    character and splits no escape; where a backslash is followed by anything
+    else the parser stops there, before any depth the scan has not counted. An
+    incremental decoder joins a character split between two steps, so the text
+    is the one a single decode gives.
+
+    Each step is a copy of at most ``_READ_STEP`` characters or bytes, so the
+    scan costs that much memory beyond the document whatever its form. Encoding
+    a ``str`` whole, or decoding UTF-16 whole and encoding it again, held one or
+    two more copies of the document before the scan could refuse it (CWE-400).
+    ``start`` is where a ``str`` is read from.
+    """
+    if isinstance(data, str):
+        for i in range(start, len(data), _READ_STEP):
+            yield data[i : i + _READ_STEP].encode("utf-8", "surrogatepass")
+        return
+    encoding = json.detect_encoding(data)
+    view = memoryview(data)
+    if encoding in ("utf-8", "utf-8-sig"):
+        for i in range(0, len(view), _READ_STEP):
+            yield bytes(view[i : i + _READ_STEP])
+        return
+    decoder = codecs.getincrementaldecoder(encoding)("surrogatepass")
+    for i in range(0, len(view), _READ_STEP):
+        yield decoder.decode(view[i : i + _READ_STEP]).encode("ascii", "ignore")
+    yield decoder.decode(b"", final=True).encode("ascii", "ignore")
+
+
+def _utf8_size(text):
+    """The number of bytes ``text`` (a ``str``) takes as UTF-8, counted in steps."""
+    return sum(
+        len(text[i : i + _READ_STEP].encode("utf-8", "surrogatepass"))
+        for i in range(0, len(text), _READ_STEP)
+    )
+
+
 def _scan_json_depth(data, limit):
     """Return the maximum structural nesting depth of *data*, stopping early.
 
@@ -123,37 +173,70 @@ def _scan_json_depth(data, limit):
     is rejected after only a few thousand bytes), and it never recurses, so it
     cannot itself be the crash it is guarding against.
 
-    Every byte that cannot change nesting depth or open/close a string literal
-    is deleted at C speed by :meth:`bytes.translate` before the Python-level
-    loop runs, so a legit multi-megabyte model is scanned in well under a
-    second while brackets buried in string values are still counted correctly.
+    *data* is what the caller hands ``json.loads`` (``str`` or ``bytes``), so
+    the scan sees the text the parser will (see :func:`_parsed_text_steps`).
+    Escapes are resolved before anything is deleted: a backslash escapes the
+    one character after it, so each ``\\\\`` pair (an escaped backslash) and
+    then each ``\\"`` pair (an escaped quote) is removed. Scanning only after
+    the deletion let the backslash of ``\\n`` swallow the next structural byte,
+    the string's closing quote, so every bracket up to the next quote was
+    taken for string content and a document of any depth passed.
+
+    Every other byte (the backslashes left after that among them) is deleted
+    at C speed by :meth:`bytes.translate` before the Python loop runs, so a
+    multi-megabyte model is scanned in well under a second.
+
+    The text is scanned a step at a time (see :func:`_parsed_text_steps`), so
+    resolving its escapes copies a step, not the document (which was copied
+    once per kind of escape before the loop could refuse anything), a document
+    deep near its start is refused after one step, and an escape split between
+    two steps is carried into the next: when a step ends in an odd run of
+    backslashes, the last one escapes the first character of the next step.
     """
-    if isinstance(data, str):
-        data = data.encode("utf-8", "surrogatepass")
-    residue = bytes(data).translate(_IDENTITY_TABLE, _NON_STRUCTURAL)
+    return _steps_depth(_parsed_text_steps(data), limit)
+
+
+def _utf8_depth(text, limit):
+    """:func:`_scan_json_depth` of the parsed text already as UTF-8 bytes."""
+    view = memoryview(text)
+    steps = (bytes(view[i : i + _READ_STEP]) for i in range(0, len(view), _READ_STEP))
+    return _steps_depth(steps, limit)
+
+
+def _steps_depth(steps, limit, first_value=False):
+    """The depth of the parsed text given in steps; see :func:`_scan_json_depth`.
+
+    With ``first_value`` the scan stops where the first value closes, which is
+    as far as ``raw_decode`` parses.
+    """
     depth = 0
     max_depth = 0
     in_string = False
-    escaped = False
-    for byte in residue:
-        if in_string:
-            if escaped:
-                escaped = False
-            elif byte == 0x5C:  # backslash
-                escaped = True
-            elif byte == 0x22:  # closing quote
-                in_string = False
-            continue
-        if byte == 0x22:  # opening quote
-            in_string = True
-        elif byte == 0x5B or byte == 0x7B:  # '[' or '{'
-            depth += 1
-            if depth > max_depth:
-                max_depth = depth
-                if max_depth > limit:
+    escaping = False
+    for step in steps:
+        if escaping and step:
+            # The character the backslash that ended the last step escapes.
+            step, escaping = step[1:], False
+        if (len(step) - len(step.rstrip(b"\\"))) % 2:
+            # An odd run of backslashes ends the step: the last escapes onward.
+            step, escaping = step[:-1], True
+        # Resolve escapes before deleting: each escaped backslash, then each quote.
+        step = step.replace(b"\\\\", b"").replace(b'\\"', b"")
+        for byte in step.translate(_IDENTITY_TABLE, _NON_STRUCTURAL):
+            if byte == 0x22:  # a quote opens or closes a string literal
+                in_string = not in_string
+            elif in_string:
+                continue
+            elif byte == 0x5B or byte == 0x7B:  # '[' or '{'
+                depth += 1
+                if depth > max_depth:
+                    max_depth = depth
+                    if max_depth > limit:
+                        return max_depth
+            elif byte == 0x5D or byte == 0x7D:  # ']' or '}'
+                depth -= 1
+                if first_value and depth == 0:
                     return max_depth
-        elif byte == 0x5D or byte == 0x7D:  # ']' or '}'
-            depth -= 1
     return max_depth
 
 
@@ -182,13 +265,12 @@ def safe_json_loads(
     # Measure size and scan depth on the UTF-8 byte view so the cap is a true
     # byte cap: a non-ASCII str has more UTF-8 bytes than code points, and
     # counting code points would let an oversized payload slip past the limit.
-    raw = data.encode("utf-8", "surrogatepass") if isinstance(data, str) else data
-    size = len(raw)
+    size = _utf8_size(data) if isinstance(data, str) else len(data)
     if size > max_bytes:
         raise ValueError(
             f"{context}: JSON document is {size} bytes, over the {max_bytes}-byte limit"
         )
-    depth = _scan_json_depth(raw, max_depth)
+    depth = _scan_json_depth(data, max_depth)
     if depth > max_depth:
         raise ValueError(
             f"{context}: JSON nesting depth exceeds the maximum allowed ({max_depth})"
@@ -211,6 +293,29 @@ def safe_json_loads(
     return _reject_non_finite_walk(parsed, context)
 
 
+#: Most bytes one step of a capped read asks for: a buffered stream reserves what
+#: it is asked for, so one read of the 200 MiB cap reserved 200 MiB per model.
+_READ_STEP = 1 << 20
+
+
+def _read_capped(reader, size):
+    """``reader.read(size)``, asked of a buffered binary stream in steps of at
+    most ``_READ_STEP`` bytes, so it costs only the bytes that are there. A
+    buffered ``read(n)`` is short only at the end, so the result is the same.
+    Any other stream keeps one read: a raw read may be short, and a text
+    stream counts characters, not bytes."""
+    if not isinstance(reader, io.BufferedIOBase):
+        return reader.read(size)
+    parts, total = [], 0
+    while total < size:
+        part = reader.read(min(_READ_STEP, size - total))
+        if not part:
+            break
+        parts.append(part)
+        total += len(part)
+    return b"".join(parts)
+
+
 def safe_json_load(
     fp,
     *,
@@ -230,8 +335,7 @@ def safe_json_load(
     encoded byte length. Works with both text and binary streams.
     """
     # Prefer the binary buffer so the byte cap bounds the read itself.
-    reader = getattr(fp, "buffer", fp)
-    data = reader.read(max_bytes + 1)
+    data = _read_capped(getattr(fp, "buffer", fp), max_bytes + 1)
     if len(data) > max_bytes:
         raise ValueError(f"{context}: JSON resource exceeds the {max_bytes}-byte limit")
     return safe_json_loads(
@@ -430,20 +534,36 @@ class JSONTaggedDecoder(json.JSONDecoder):
         # Bound size, then nesting, BEFORE ``super().decode`` runs the recursive
         # C accelerator, which can overflow the C stack (an uncatchable segfault,
         # not a ``RecursionError``) before ``decode_obj``'s Python check runs.
-        # Measure on the UTF-8 byte view so the cap counts bytes, not code points.
-        raw = s.encode("utf-8", "surrogatepass") if isinstance(s, str) else s
-        size = len(raw)
+        # Measure the UTF-8 bytes, so the cap counts bytes, not code points.
+        size = _utf8_size(s) if isinstance(s, str) else len(s)
         if size > self.MAX_DECODE_BYTES:
             raise ValueError(
                 f"JSON document is {size} bytes, over the "
                 f"{self.MAX_DECODE_BYTES}-byte limit"
             )
-        if _scan_json_depth(raw, self.MAX_DECODE_DEPTH) > self.MAX_DECODE_DEPTH:
+        if _scan_json_depth(s, self.MAX_DECODE_DEPTH) > self.MAX_DECODE_DEPTH:
             raise ValueError(
                 f"JSON nesting depth exceeds maximum allowed ({self.MAX_DECODE_DEPTH})"
             )
         try:
             return self.decode_obj(super().decode(s))
+        except RecursionError:
+            raise ValueError("JSON nesting too deep to decode safely")
+
+    def raw_decode(self, s, idx=0):
+        # A direct call, decoding the value at idx of a longer string, runs the
+        # same recursive C scanner; it is scanned as far as that value goes.
+        if s[idx : idx + 1] in ("[", "{"):
+            steps = _parsed_text_steps(s, idx)
+            if _steps_depth(steps, self.MAX_DECODE_DEPTH, first_value=True) > (
+                self.MAX_DECODE_DEPTH
+            ):
+                raise ValueError(
+                    "JSON nesting depth exceeds maximum allowed "
+                    f"({self.MAX_DECODE_DEPTH})"
+                )
+        try:
+            return super().raw_decode(s, idx)
         except RecursionError:
             raise ValueError("JSON nesting too deep to decode safely")
 
