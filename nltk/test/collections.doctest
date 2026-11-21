@@ -11,12 +11,14 @@ Collections
 Trie
 ----
 
-Trie can be pickled:
+Trie can be pickled, and loaded back through ``nltk.picklesec``, which only
+rebuilds classes from the modules it is told to expect:
 
-    >>> import pickle
+    >>> from functools import partial
+    >>> from nltk import picklesec
+    >>> roundtrip = partial(picklesec.roundtrip, allowed_modules=['nltk.collections'])
     >>> trie = nltk.collections.Trie(['a'])
-    >>> s = pickle.dumps(trie)
-    >>> pickle.loads(s)
+    >>> roundtrip(trie)
     {'a': {True: None}}
 
 LazyIteratorList

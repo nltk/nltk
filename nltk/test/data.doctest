@@ -153,24 +153,37 @@ to get the raw contents of any file, simply use ``format="raw"``:
 
 Making Local Copies
 ~~~~~~~~~~~~~~~~~~~
-..  This will not be visible in the html output: create a tempdir to
-    play in.
-    >>> import tempfile, os
-    >>> tempdir = tempfile.mkdtemp()
-    >>> old_dir = os.path.abspath('.')
-    >>> os.chdir(tempdir)
-
 The function `nltk.data.retrieve()` copies a given resource to a local
 file.  This can be useful, for example, if you want to edit one of the
-sample grammars.
+sample grammars.  The copy is written through ``nltk.pathsec``, so it
+must land inside an NLTK data directory; a destination anywhere else,
+such as a directory beside NLTK's own code, is refused:
+
+    >>> import os, nltk.test
+    >>> elsewhere = os.path.join(os.path.dirname(nltk.test.__file__), 'no_such_dir')
+    >>> nltk.data.retrieve('grammars/sample_grammars/toy.cfg',
+    ...                    os.path.join(elsewhere, 'toy.cfg'), verbose=False)
+    Traceback (most recent call last):
+    PermissionError: Security Violation [pathsec.open]: Unauthorized path ...
+
+So make a private staging directory under a data directory, and work in
+it; ``cleanup=True`` removes it when Python exits:
+
+    >>> from nltk.data import make_staging_dir
+    >>> tempdir = make_staging_dir(prefix='data_howto_', cleanup=True)
+    >>> old_dir = os.path.abspath('.')
+    >>> os.chdir(tempdir)
 
     >>> nltk.data.retrieve('grammars/sample_grammars/toy.cfg')
     Retrieving 'nltk:grammars/sample_grammars/toy.cfg', saving to 'toy.cfg'
 
+Edit the copy through ``nltk.pathsec`` too, not the built-in ``open()``:
+
     >>> # Simulate editing the grammar.
-    >>> with open('toy.cfg') as inp:
+    >>> from nltk import pathsec
+    >>> with pathsec.open('toy.cfg') as inp:
     ...     s = inp.read().replace('NP', 'DP')
-    >>> with open('toy.cfg', 'w') as out:
+    >>> with pathsec.open('toy.cfg', 'w') as out:
     ...     _bytes_written = out.write(s)
 
     >>> # Load the edited grammar, & display it.
@@ -298,10 +311,11 @@ Retrieving other Data Sources
 
 Regression Tests
 ~~~~~~~~~~~~~~~~
-Create a temp dir for tests that write files:
+Create a temp dir for tests that write files, a private staging
+directory under a data directory, as above:
 
-    >>> import tempfile, os
-    >>> tempdir = tempfile.mkdtemp()
+    >>> import os
+    >>> tempdir = make_staging_dir(prefix='data_howto_', cleanup=True)
     >>> old_dir = os.path.abspath('.')
     >>> os.chdir(tempdir)
 

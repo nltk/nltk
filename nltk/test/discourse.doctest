@@ -12,7 +12,9 @@ Discourse Checking
 Setup
 =====
 
-    >>> from nltk.test.childes_fixt import setup_module
+    >>> from nltk.test.setup_fixt import check_binary
+    >>> check_binary('mace4', env_vars=['PROVER9'])
+    >>> from nltk.test.gluesemantics_malt_fixt import setup_module
     >>> setup_module()
 
 Introduction
@@ -480,24 +482,29 @@ The ``models()`` method gives us more information about the surviving thread.
     <BLANKLINE>
 
 
-..  This will not be visible in the html output: create a tempdir to
-    play in.
-    >>> import tempfile, os
-    >>> tempdir = tempfile.mkdtemp()
+In order to play around with your own version of background knowledge,
+you might want to start off with a local copy of ``background.fol``.
+``nltk.data.retrieve()`` only writes inside an NLTK data directory, so
+work in a private staging directory under one, which ``cleanup=True``
+removes when Python exits:
+
+    >>> import os
+    >>> from nltk.data import make_staging_dir
+    >>> tempdir = make_staging_dir(prefix='discourse_howto_', cleanup=True)
     >>> old_dir = os.path.abspath('.')
     >>> os.chdir(tempdir)
-
-In order to play around with your own version of background knowledge,
-you might want to start off with a local copy of ``background.fol``:
 
     >>> nltk.data.retrieve('grammars/book_grammars/background.fol')
     Retrieving 'nltk:grammars/book_grammars/background.fol', saving to 'background.fol'
 
 After you have modified the file, the ``load_fol()`` function will parse
-the strings in the file into expressions of ``nltk.sem.logic``.
+the strings in the file into expressions of ``nltk.sem.logic``.  Read
+the file through ``nltk.pathsec``, not the built-in ``open()``:
 
+    >>> from nltk import pathsec
     >>> from nltk.inference.discourse import load_fol
-    >>> mybg = load_fol(open('background.fol').read())
+    >>> with pathsec.open('background.fol') as f:
+    ...     mybg = load_fol(f.read())
 
 The result can be loaded as an argument of ``add_background()`` in the
 manner shown earlier.
@@ -519,11 +526,11 @@ Regression Testing from book
     >>> tagger = RegexpTagger(
     ...     [('^(chases|runs)$', 'VB'),
     ...      ('^(a)$', 'ex_quant'),
-    ...      ('^(every)$', 'univ_quant'),
+    ...      ('^(every|Every)$', 'univ_quant'),
     ...      ('^(dog|boy)$', 'NN'),
     ...      ('^(He)$', 'PRP')
     ... ])
-    >>> rc = DrtGlueReadingCommand(depparser=MaltParser(tagger=tagger))
+    >>> rc = DrtGlueReadingCommand(depparser=MaltParser(tagger=tagger.tag))
     >>> dt = DiscourseTester(map(str.split, ['Every dog chases a boy', 'He runs']), rc)
     >>> dt.readings()
     <BLANKLINE>

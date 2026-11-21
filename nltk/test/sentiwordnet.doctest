@@ -33,7 +33,7 @@ Lookup
     SentiSynset('slow.v.03'), SentiSynset('slow.a.01'),
     SentiSynset('slow.a.02'), SentiSynset('dense.s.04'),
     SentiSynset('slow.a.04'), SentiSynset('boring.s.01'),
-    SentiSynset('dull.s.08'), SentiSynset('slowly.r.01'),
+    SentiSynset('dull.s.05'), SentiSynset('slowly.r.01'),
     SentiSynset('behind.r.03')]
 
     >>> happy = swn.senti_synsets('happy', 'a')
