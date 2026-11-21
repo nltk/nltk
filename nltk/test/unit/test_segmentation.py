@@ -219,18 +219,14 @@ def test_pk_boundary_free_reference_does_not_divide_by_zero():
     assert 0.0 <= score <= 1.0
 
 
-def test_pk_default_window_unchanged_for_segmented_reference():
-    """The derived default window matches the historical formula when the
-    reference has boundaries.
-
-    Uses a case where the score is not trivially 0 (ref != hyp), so the
-    assertion would fail if the default-``k`` derivation ever changed.
-    """
-    ref = "0100" * 100
-    hyp = "1" * 400
-    # Historical default: round(len(ref) / (ref.count(boundary) * 2)).
-    k = int(round(len(ref) / (ref.count("1") * 2.0)))
-    assert k == 2
-    default_score = pk(ref, hyp)
-    assert default_score != 0.0  # non-trivial case: a changed window would differ
-    assert default_score == pk(ref, hyp, k)
+@pytest.mark.parametrize(
+    "ref, hyp, expected",
+    [
+        ("000001001000", "000100010000", 6 / 11),  # segment lengths 6, 3, 4
+        ("00000001", "00000100", 3 / 7),  # segment lengths 8, 1
+        ("0100" * 100, "1" * 400, 199 / 399),
+    ],
+)
+def test_pk_default_window_from_segment_lengths(ref, hyp, expected):
+    assert pk(ref, hyp) == expected
+    assert pk(ref, hyp, k=2) == expected
