@@ -449,7 +449,7 @@ def parse_tweets_set(
     """
     Parse csv file containing tweets and output data a list of (text, label) tuples.
 
-    :param filename: the input csv filename.
+    :param filename: the input UTF-8 csv filename.
     :param label: the label to be appended to each tweet contained in the csv file.
     :param word_tokenizer: the tokenizer instance that will be used to tokenize
         each sentence into tokens (e.g. WordPunctTokenizer() or BlanklineTokenizer()).
@@ -465,7 +465,9 @@ def parse_tweets_set(
     if not sent_tokenizer:
         sent_tokenizer = PunktTokenizer()
 
-    with pathsec_open(filename, "rt", context="parse_tweets_set") as csvfile:
+    with pathsec_open(
+        filename, "rt", encoding="utf-8", context="parse_tweets_set"
+    ) as csvfile:
         reader = csv.reader(csvfile)
         if skip_header:
             next(reader, None)  # skip the header
