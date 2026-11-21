@@ -21,6 +21,7 @@ from nltk.lm import (
     WittenBellInterpolated,
 )
 from nltk.lm.preprocessing import padded_everygrams
+from nltk.util import everygrams
 
 
 @pytest.fixture(scope="session")
@@ -437,6 +438,13 @@ def test_kneserney_scores_follow_later_fit(vocabulary, trigram_training_data):
         assert model.score(word, context) == expected.score(word, context)
 
 
+def test_kneserney_context_without_continuations():
+    # "x" only starts a sentence, so the context ("x",) has no continuation counts.
+    model = KneserNeyInterpolated(3, vocabulary=Vocabulary("xabc", unk_cutoff=1))
+    model.fit([everygrams("xab", max_len=3), everygrams("abc", max_len=3)])
+    assert sum(model.score(w, ["x"]) for w in model.vocab) == pytest.approx(1.0)
+
+
 @pytest.fixture
 def absolute_discounting_trigram_model(trigram_training_data, vocabulary):
     model = AbsoluteDiscountingInterpolated(order=3, vocabulary=vocabulary)
@@ -545,6 +553,7 @@ def kneserney_bigram_model(bigram_training_data, vocabulary):
         "wittenbell_trigram_model",
         "absolute_discounting_trigram_model",
         "kneserney_bigram_model",
+        "kneserney_trigram_model",
         pytest.param(
             "stupid_backoff_trigram_model",
             marks=pytest.mark.xfail(

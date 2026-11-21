@@ -105,13 +105,23 @@ class KneserNey(Smoothing):
 
     def alpha_gamma(self, word, context):
         prefix_counts = self.counts[context]
-        word_continuation_count, total_count = (
-            (prefix_counts[word], prefix_counts.N())
-            if len(context) + 1 == self._order
-            else self._continuation_counts(word, context)
-        )
+        if len(context) + 1 == self._order:
+            word_continuation_count, total_count = (
+                prefix_counts[word],
+                prefix_counts.N(),
+            )
+            distinct_words = _count_values_gt_zero(prefix_counts)
+        else:
+            word_counts, totals, distinct = self._continuation_index(len(context) + 2)
+            word_continuation_count = word_counts[context, word]
+            total_count = totals[context]
+            # Only the words that still end a longer ngram share the mass the
+            # discount frees; an ngram seen only at a sentence start does not.
+            distinct_words = distinct[context]
+        if not total_count:
+            return 0.0, 1.0
         alpha = max(word_continuation_count - self.discount, 0.0) / total_count
-        gamma = self.discount * _count_values_gt_zero(prefix_counts) / total_count
+        gamma = self.discount * distinct_words / total_count
         return alpha, gamma
 
     def _continuation_counts(self, word, context=tuple()):
@@ -121,11 +131,15 @@ class KneserNey(Smoothing):
         instances were observed for each "type".
         This is different than raw ngram counts which track number of instances.
         """
-        word_counts, totals = self._continuation_index(len(context) + 2)
+        word_counts, totals, _ = self._continuation_index(len(context) + 2)
         return word_counts[context, word], totals[context]
 
     def _continuation_index(self, order):
         """Continuation counts of every (context, word) and every context.
+
+        Returns three counters: the count of each (context, word), the total
+        count of each context, and the number of distinct words after each
+        context.
 
         Scanning all the ngrams of ``order`` on every call made each score
         cost as much as the whole model, so the counts are gathered in one
@@ -143,7 +157,9 @@ class KneserNey(Smoothing):
                 if count > 0
             )
             totals = Counter()
+            distinct = Counter()
             for (context, _), count in word_counts.items():
                 totals[context] += count
-            cache[order] = (version, word_counts, totals)
+                distinct[context] += 1
+            cache[order] = (version, word_counts, totals, distinct)
         return cache[order][1:]
