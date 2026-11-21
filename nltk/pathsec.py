@@ -37,6 +37,14 @@ from nltk.termsec import sanitize_terminal
 _URL_SCHEME_RE = redos.compile(r"^\s*(?:https?|ftp)://", re.IGNORECASE)
 _FILE_SCHEME_RE = redos.compile(r"^\s*file:", re.IGNORECASE)
 
+
+def _may_name_a_scheme(raw):
+    """False only when neither scheme pattern above can match ``raw``. Both
+    start ``^\\s*`` then h or f, so a printable, non-space ASCII first character
+    other than h or f (a ``/`` or a drive letter) rules them out."""
+    return not raw or not ("\x20" < raw[0] < "\x7f") or raw[0] in "hHfF"
+
+
 # Security Enforcement Toggle
 # ENFORCE = False
 ENFORCE = True
@@ -729,6 +737,13 @@ def _exact_path_text(value, context="NLTK"):
     return str(value)
 
 
+def _within_any(target, roots):
+    """``any(target == root or target.is_relative_to(root) for root in roots)``
+    for a set of roots: ``target`` is under a root exactly when it or one of
+    its ``parents`` is in the set (a path hashes as it compares)."""
+    return target in roots or any(parent in roots for parent in target.parents)
+
+
 def validate_path(path_input, context="NLTK", required_root=None):
     """
     Ensures file access is restricted to allowed data directories.
@@ -766,7 +781,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
 
         # Reject a URL outright: no caller validates a network URL here, and
         # "http://../.." is a kernel traversal, not a host (GHSA-8mgp-746c-j5xp).
-        if _URL_SCHEME_RE.match(raw):
+        if _may_name_a_scheme(raw) and _URL_SCHEME_RE.match(raw):
             msg = (
                 f"Security Violation [{context}]: a URL was passed to a "
                 f"filesystem path check: {raw!r}. Use nltk.pathsec.urlopen() "
@@ -776,7 +791,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
                 raise PermissionError(msg)
             warnings.warn(sanitize_terminal(msg), RuntimeWarning, stacklevel=3)
             return
-        if _FILE_SCHEME_RE.match(raw):
+        if _may_name_a_scheme(raw) and _FILE_SCHEME_RE.match(raw):
             parsed = urlparse(raw)
             # urllib opens Request.selector (keeps ?/#/;) but urlparse().path
             # drops them -- that would validate a different file than opens.
@@ -835,7 +850,7 @@ def validate_path(path_input, context="NLTK", required_root=None):
 
         # LAYER 2: Global NLTK_DATA Sandbox
         allowed_roots = _get_allowed_roots()
-        if any(target == root or target.is_relative_to(root) for root in allowed_roots):
+        if _within_any(target, allowed_roots):
             return
 
         # CWD Fallback (Explicit Opt-In for ENFORCE mode)
@@ -987,7 +1002,9 @@ def _reject_url_shaped(raw, context):
     original string. A filesystem path is never a URL, so refusing the whole
     shape here removes that validate-one-thing/open-another gap outright.
     """
-    if _URL_SCHEME_RE.match(raw) or _FILE_SCHEME_RE.match(raw):
+    if _may_name_a_scheme(raw) and (
+        _URL_SCHEME_RE.match(raw) or _FILE_SCHEME_RE.match(raw)
+    ):
         raise PermissionError(
             f"Security Violation [{context}]: {raw!r} is a URL, not a filesystem "
             "path; the tool would open it verbatim as a relative path"

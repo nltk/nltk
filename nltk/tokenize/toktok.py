@@ -23,6 +23,7 @@ Model (Doctoral dissertation). Columbus, OH, USA: The Ohio State University.
 
 from nltk import redos
 from nltk.tokenize.api import TokenizerI
+from nltk.tokenize.destructive import _sub
 
 
 class ToktokTokenizer(TokenizerI):
@@ -171,8 +172,40 @@ class ToktokTokenizer(TokenizerI):
     def tokenize(self, text, return_str=False):
         text = str(text)  # Converts input string into unicode.
         for regexp, substitution in self.TOKTOK_REGEXES:
-            text = regexp.sub(substitution, text)
+            text = _sub(regexp, substitution, text, _NEEDS)
         # Finally, strips heading and trailing spaces
         # and converts output string into unicode.
         text = str(text.strip())
         return text if return_str else text.split()
+
+
+#: For 18 of ToktokTokenizer's own patterns (by source), the characters every
+#: match holds one of (see destructive._sub); the other patterns always run.
+_NEEDS_BY_SOURCE = {
+    "\u00a0": "\u00a0",
+    r":(?!//)": ":",
+    r"\?(?!\S)": "?",
+    r"(:\/\/)[\S+\.\S+\/\S+][\/]": ":",
+    r" /": "/",
+    "& ": "&",
+    "\t": "\t",
+    r"\|": "|",
+    r"(,{2,})": ",",
+    r"(?<!,)([," "\u060c" r"])(?![,\d])": ",\u060c",
+    "(['\u2019`])": "'\u2019`",
+    r" ` ` ": "`",
+    r" ' ' ": "'",
+    "([\u2013\u2014])": "\u2013\u2014",
+    r"(-{2,})": "-",
+    r"(\.{2,})": ".",
+    r"(?<!\.)\.$": ".",
+    r"""(?<!\.)\.\s*(["'""" "\u2019\u00bb\u203a\u201d" r"""]) *$""": ".",
+}
+
+#: The same by ``id`` of each compiled pattern, holding the pattern so the id is
+#: never reused; an entry applies only to that object, so any other pattern runs.
+_NEEDS = {
+    id(pattern): (pattern, _NEEDS_BY_SOURCE[pattern.pattern])
+    for pattern, _repl in ToktokTokenizer.TOKTOK_REGEXES
+    if pattern.pattern in _NEEDS_BY_SOURCE
+}

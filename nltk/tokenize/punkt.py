@@ -480,7 +480,12 @@ class PunktToken:
 
     def _get_type(self, tok):
         """Returns a case-normalized representation of the token."""
-        return self._RE_NUMERIC.sub("##number##", tok.lower())
+        low = tok.lower()
+        # The default pattern needs "-", ".", "," or a digit first, so another
+        # ASCII first character is a word type without a timed regex call.
+        if self._RE_NUMERIC is _DEFAULT_RE_NUMERIC and low[:1] in _NOT_NUMBER_START:
+            return low
+        return self._RE_NUMERIC.sub("##number##", low)
 
     @property
     def type_no_period(self):
@@ -522,6 +527,9 @@ class PunktToken:
     @property
     def is_ellipsis(self):
         """True if the token text is that of an ellipsis."""
+        # The default pattern matches only a token that starts with "..".
+        if self._RE_ELLIPSIS is _DEFAULT_RE_ELLIPSIS and self.tok[:2] != "..":
+            return None
         return self._RE_ELLIPSIS.match(self.tok)
 
     @property
@@ -532,6 +540,9 @@ class PunktToken:
     @property
     def is_initial(self):
         """True if the token text is that of an initial."""
+        # The default pattern matches only one character and then a period.
+        if self._RE_INITIAL is _DEFAULT_RE_INITIAL and self.tok[1:2] != ".":
+            return None
         return self._RE_INITIAL.match(self.tok)
 
     @property
@@ -582,6 +593,15 @@ class PunktToken:
             res += "<S>"
         return res
 
+
+# PunktToken's own patterns, so a subclass that overrides one keeps the timed
+# regex call; the shortcuts above are exact only for these.
+_DEFAULT_RE_NUMERIC = PunktToken._RE_NUMERIC
+_DEFAULT_RE_ELLIPSIS = PunktToken._RE_ELLIPSIS
+_DEFAULT_RE_INITIAL = PunktToken._RE_INITIAL
+#: The ASCII characters the numeric pattern cannot start with: all but "-",
+#: ".", "," and the digits, the only ASCII characters ``\d`` matches.
+_NOT_NUMBER_START = frozenset(map(chr, range(0x80))) - set("-.,0123456789")
 
 ######################################################################
 # { Punkt base class
