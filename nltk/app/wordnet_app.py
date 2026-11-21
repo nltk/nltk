@@ -135,9 +135,11 @@ class MyServerHandler(BaseHTTPRequestHandler):
             if usp == "NLTK Wordnet Browser Database Info.html":
                 word = "* Database Info *"
                 if os.path.isfile(usp):
-                    with open(
-                        usp  # sandboxed-open ok: fixed db-info filename (exact-string gated)
-                    ) as infile:
+                    with (
+                        open(
+                            usp  # sandboxed-open ok: fixed db-info filename (exact-string gated)
+                        ) as infile
+                    ):
                         page = infile.read()
                 else:
                     page = (

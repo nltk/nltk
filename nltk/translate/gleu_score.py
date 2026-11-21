@@ -143,9 +143,9 @@ def corpus_gleu(list_of_references, hypotheses, min_len=1, max_len=4):
     :rtype: float
     """
     # sanity check
-    assert len(list_of_references) == len(
-        hypotheses
-    ), "The number of hypotheses and their reference(s) should be the same"
+    assert len(list_of_references) == len(hypotheses), (
+        "The number of hypotheses and their reference(s) should be the same"
+    )
 
     # sum matches and max-token-lengths over all sentences
     corpus_n_match = 0

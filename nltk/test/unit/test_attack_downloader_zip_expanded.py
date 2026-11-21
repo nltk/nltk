@@ -1985,9 +1985,9 @@ class TestDeclaredUnzippedSize:
         result, output = run_download(index_url, dl, "tiny")
         assert result is False, output
         written = bytes_on_disk(str(dl / "corpora" / "tiny"))
-        assert (
-            written <= 1000 + downloader.UNZIPPED_SIZE_SLACK
-        ), f"{written} bytes reached disk for a package declaring 1000"
+        assert written <= 1000 + downloader.UNZIPPED_SIZE_SLACK, (
+            f"{written} bytes reached disk for a package declaring 1000"
+        )
         assert written == 0 and "Unzipped size blocked" in output
         # the zip itself was fetched and verified; only extraction refused
         assert os.path.exists(os.path.join(str(dl), "corpora", "tiny.zip"))

@@ -178,9 +178,9 @@ def test_boxer_scratch_file_staged_in_data_root(monkeypatch):
         boxer._call_boxer(b"ccg(1, t).")
 
         staged = os.path.realpath(captured["path"])
-        assert staged.startswith(
-            os.path.realpath(root) + os.sep
-        ), "boxer scratch file was staged outside the nltk.data root"
+        assert staged.startswith(os.path.realpath(root) + os.sep), (
+            "boxer scratch file was staged outside the nltk.data root"
+        )
         # Exercise the guard itself: the staged path validates as in-sandbox.
         pathsec.validate_path(captured["path"], required_root=root)
         assert captured["contents"] == "ccg(1, t)."

@@ -192,9 +192,9 @@ def test_framenet_frame_rejects_symlink_escape(tmp_path, monkeypatch):
     opened = _record_opens(monkeypatch)
     with pytest.raises(ValueError, match="escapes root"):
         fn.frame("evil_link")
-    assert not any(
-        "outside" in p for p in opened
-    ), "symlink escape reached the filesystem"
+    assert not any("outside" in p for p in opened), (
+        "symlink escape reached the filesystem"
+    )
 
 
 def test_framenet_lu_file_rejects_symlink_escape(tmp_path, monkeypatch):
@@ -216,9 +216,9 @@ def test_framenet_lu_file_rejects_symlink_escape(tmp_path, monkeypatch):
     opened = _record_opens(monkeypatch)
     with pytest.raises(ValueError, match="escapes root"):
         fn._lu_file(lu)
-    assert not any(
-        "outside" in p for p in opened
-    ), "symlink escape reached the filesystem"
+    assert not any("outside" in p for p in opened), (
+        "symlink escape reached the filesystem"
+    )
 
 
 def test_framenet_doc_rejects_symlink_escape(tmp_path, monkeypatch):
@@ -237,6 +237,6 @@ def test_framenet_doc_rejects_symlink_escape(tmp_path, monkeypatch):
     opened = _record_opens(monkeypatch)
     with pytest.raises(ValueError, match="escapes root"):
         fn.doc(7)
-    assert not any(
-        "outside" in p for p in opened
-    ), "symlink escape reached the filesystem"
+    assert not any("outside" in p for p in opened), (
+        "symlink escape reached the filesystem"
+    )

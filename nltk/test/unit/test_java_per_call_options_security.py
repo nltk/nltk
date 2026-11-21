@@ -772,6 +772,6 @@ def test_java_wrapper_uses_secure_tempfiles(modname):
     src = inspect.getsource(importlib.import_module(modname))
     for bad in _INSECURE_TEMP:
         assert bad not in src, f"{modname} uses insecure temp API {bad!r}"
-    assert any(
-        good in src for good in _SECURE_TEMP
-    ), f"{modname} does not use a recognised secure temp API {_SECURE_TEMP}"
+    assert any(good in src for good in _SECURE_TEMP), (
+        f"{modname} does not use a recognised secure temp API {_SECURE_TEMP}"
+    )

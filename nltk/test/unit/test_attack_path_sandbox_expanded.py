@@ -118,9 +118,9 @@ class TestLookalikesStayLiteralInRoot:
         # location is INSIDE the root, i.e. it did not collapse into ``../``.
         candidate = os.path.join(restricted_sandbox, spelling)
         returned = validate_tool_dir(candidate)
-        assert _under(
-            returned, restricted_sandbox
-        ), f"lookalike {spelling!r} escaped the root: {_resolve(returned)!r}"
+        assert _under(returned, restricted_sandbox), (
+            f"lookalike {spelling!r} escaped the root: {_resolve(returned)!r}"
+        )
 
     @pytest.mark.parametrize(
         "spelling",

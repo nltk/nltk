@@ -215,12 +215,12 @@ def test_concordance_app_search_catches_every_redos_failure_mode():
     path = os.path.join(os.path.dirname(nltk.__file__), "app", "concordance_app.py")
     with open(path, encoding="utf-8") as fh:
         source = fh.read()
-    assert (
-        "redos.search(q, sent)" in source
-    ), "concordance search no longer routes through redos"
-    assert (
-        "except (re.error, ValueError, TimeoutError)" in source
-    ), "concordance must catch re.error (bad), ValueError (compile DoS) and TimeoutError (ReDoS)"
+    assert "redos.search(q, sent)" in source, (
+        "concordance search no longer routes through redos"
+    )
+    assert "except (re.error, ValueError, TimeoutError)" in source, (
+        "concordance must catch re.error (bad), ValueError (compile DoS) and TimeoutError (ReDoS)"
+    )
 
 
 def test_nemo_app_refresh_catches_every_redos_failure_mode():
@@ -233,6 +233,6 @@ def test_nemo_app_refresh_catches_every_redos_failure_mode():
     with open(path, encoding="utf-8") as fh:
         source = fh.read()
     assert "redos.compile(" in source, "nemo no longer compiles its field through redos"
-    assert (
-        "except (re.error, ValueError, TimeoutError)" in source
-    ), "nemo refresh() must catch re.error, ValueError (compile DoS) and TimeoutError"
+    assert "except (re.error, ValueError, TimeoutError)" in source, (
+        "nemo refresh() must catch re.error, ValueError (compile DoS) and TimeoutError"
+    )

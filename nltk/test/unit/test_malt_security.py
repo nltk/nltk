@@ -54,9 +54,9 @@ def test_cwd_does_not_override_configured_malt_parser(tmp_path, monkeypatch):
 
     jars = find_maltparser("maltparser-1.9.2")
     chosen = os.path.realpath(os.path.dirname(jars[0]))
-    assert chosen == os.path.realpath(
-        str(trusted)
-    ), "CWD directory overrode the trusted MALT_PARSER"
+    assert chosen == os.path.realpath(str(trusted)), (
+        "CWD directory overrode the trusted MALT_PARSER"
+    )
 
 
 def test_absolute_path_still_accepted(tmp_path, monkeypatch):

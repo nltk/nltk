@@ -334,14 +334,14 @@ class LazyConcatenation(AbstractLazySequence):
 
         for sublist in sublist_iter:
             if sublist_index == (len(self._offsets) - 1):
-                assert (
-                    index + len(sublist) >= self._offsets[-1]
-                ), "offsets not monotonic increasing!"
+                assert index + len(sublist) >= self._offsets[-1], (
+                    "offsets not monotonic increasing!"
+                )
                 self._offsets.append(index + len(sublist))
             else:
-                assert self._offsets[sublist_index + 1] == index + len(
-                    sublist
-                ), "inconsistent list value (num elts)"
+                assert self._offsets[sublist_index + 1] == index + len(sublist), (
+                    "inconsistent list value (num elts)"
+                )
 
             yield from sublist[max(0, start_index - index) :]
 

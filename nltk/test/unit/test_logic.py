@@ -82,6 +82,6 @@ def test_simplify_bounds_exponential_blowup():
         raise AssertionError(
             "simplify() did not terminate: exponential beta-reduction regressed"
         )
-    assert (
-        run.exitcode == 0
-    ), f"expected a ValueError from the size cap (exit {run.exitcode})"
+    assert run.exitcode == 0, (
+        f"expected a ValueError from the size cap (exit {run.exitcode})"
+    )

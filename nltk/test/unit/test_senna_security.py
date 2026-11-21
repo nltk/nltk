@@ -92,9 +92,9 @@ def test_cwd_does_not_override_configured_senna(tmp_path, monkeypatch):
     monkeypatch.setenv("SENNA", str(trusted))
 
     senna = Senna(".", ["pos"])
-    assert os.path.realpath(senna._path) == os.path.realpath(
-        str(trusted)
-    ), "CWD directory overrode the trusted SENNA location"
+    assert os.path.realpath(senna._path) == os.path.realpath(str(trusted)), (
+        "CWD directory overrode the trusted SENNA location"
+    )
 
 
 def test_relative_senna_env_is_rejected(tmp_path, monkeypatch):

@@ -77,9 +77,9 @@ def test_megam_training_file_is_staged_inside_a_data_root(
         maxent.train_maxent_classifier_with_megam(TRAIN, trace=0)
 
     assert captured.get("exists"), "megam training file was not created"
-    assert _is_inside(
-        captured["path"], data_root
-    ), f"megam scratch file {captured['path']!r} escaped data root {data_root!r}"
+    assert _is_inside(captured["path"], data_root), (
+        f"megam scratch file {captured['path']!r} escaped data root {data_root!r}"
+    )
 
 
 def test_tadm_scratch_files_are_staged_inside_a_data_root(
@@ -102,9 +102,9 @@ def test_tadm_scratch_files_are_staged_inside_a_data_root(
         maxent.TadmMaxentClassifier.train(TRAIN, trace=0)
 
     for kind in ("events", "params"):
-        assert _is_inside(
-            captured[kind], data_root
-        ), f"tadm {kind} file {captured[kind]!r} escaped data root {data_root!r}"
+        assert _is_inside(captured[kind], data_root), (
+            f"tadm {kind} file {captured[kind]!r} escaped data root {data_root!r}"
+        )
 
 
 def test_megam_write_outside_data_root_is_refused(monkeypatch, pathsec_sandbox):

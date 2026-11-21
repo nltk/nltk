@@ -74,7 +74,7 @@ repository [nltk/nltk](https://github.com/nltk/nltk/):
   ```
 - Install the code formatters and linter used by the pre-commit hooks:
   ```bash
-  pip install black isort ruff pyupgrade
+  pip install isort ruff pyupgrade
   ```
 - Download the datasets for running tests
   (`python -m nltk.downloader all`);
@@ -93,9 +93,8 @@ and include:
 
 - [pre-commit-hooks](https://github.com/pre-commit/pre-commit-hooks) -- trailing whitespace, end-of-file fixer, YAML check
 - [pyupgrade](https://github.com/asottile/pyupgrade) -- upgrade syntax to Python 3.11+
-- [black](https://github.com/psf/black) -- code formatting
 - [isort](https://github.com/pycqa/isort) -- import sorting
-- [ruff](https://github.com/astral-sh/ruff-pre-commit) -- fast Python linter with auto-fix
+- [ruff](https://github.com/astral-sh/ruff-pre-commit) -- fast Python linter with auto-fix, and `ruff-format` for code formatting (black-compatible)
 
 You can run all hooks manually with:
 ```bash
@@ -105,7 +104,7 @@ pre-commit run --all-files
 Or run the tools individually:
 ```bash
 isort nltk/path/to/file.py
-black nltk/path/to/file.py
+ruff format nltk/path/to/file.py
 ruff check nltk/path/to/file.py
 ```
 
@@ -240,7 +239,7 @@ The [`.github/workflows/ci.yml`](https://github.com/nltk/nltk/blob/develop/.gith
  - The `pre-commit` job
    - performs these steps:
      - Downloads the `nltk` source code.
-     - Runs pre-commit on all files in the repository (black, isort, ruff, pyupgrade).
+     - Runs pre-commit on all files in the repository (isort, ruff, ruff-format, pyupgrade).
      - Fails if any hooks performed a change.
 
  - The `minimal_download_test` job

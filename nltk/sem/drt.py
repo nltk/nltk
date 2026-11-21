@@ -605,9 +605,9 @@ class DrtProposition(DrtExpression, Expression):
 
     def replace(self, variable, expression, replace_bound=False, alpha_convert=True):
         if self.variable == variable:
-            assert isinstance(
-                expression, DrtAbstractVariableExpression
-            ), "Can only replace a proposition label with a variable"
+            assert isinstance(expression, DrtAbstractVariableExpression), (
+                "Can only replace a proposition label with a variable"
+            )
             return DrtProposition(
                 expression.variable,
                 self.drs.replace(variable, expression, replace_bound, alpha_convert),

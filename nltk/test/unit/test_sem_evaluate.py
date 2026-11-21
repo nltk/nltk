@@ -89,8 +89,8 @@ def _run_in_process(target):
 def test_deeply_nested_formula_is_refused_not_evaluated():
     """A deeply-nested formula must be refused, not run as O(|domain| ** k)."""
     finished, status, value = _run_in_process(_eval_worker)
-    assert (
-        finished
-    ), "Model.evaluate ran an unbounded O(|domain| ** k) computation (DoS)"
+    assert finished, (
+        "Model.evaluate ran an unbounded O(|domain| ** k) computation (DoS)"
+    )
     assert status == "ok", f"worker raised: {value}"
     assert value == "refused"

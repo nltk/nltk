@@ -26,9 +26,9 @@ def test_normalize_rejects_no_protocol_backslashes():
 def test_normalize_allows_package_paths():
     """Valid package-style resource names should still be treated as nltk: URLs."""
     out = data.normalize_resource_url("corpora/brown")
-    assert out.startswith(
-        "nltk:"
-    ), "Package-style paths should be treated as 'nltk:' URLs"
+    assert out.startswith("nltk:"), (
+        "Package-style paths should be treated as 'nltk:' URLs"
+    )
 
 
 def test_find_rejects_traversal_direct_call():
@@ -141,9 +141,9 @@ def test_normalize_allows_safe_percent_encoded_names(url):
     being tightened into a blanket "any percent-encoding is unsafe" rule.
     """
     out = data.normalize_resource_url(url)
-    assert out.startswith(
-        "nltk:"
-    ), f"Safe encoded name {url!r} should still normalise to an nltk: URL, got {out!r}"
+    assert out.startswith("nltk:"), (
+        f"Safe encoded name {url!r} should still normalise to an nltk: URL, got {out!r}"
+    )
 
 
 @pytest.mark.parametrize(
