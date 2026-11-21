@@ -224,10 +224,9 @@ def ghd(ref, hyp, ins_cost=2.0, del_cost=2.0, shift_cost_coeff=1.0, boundary="1"
 
 def pk(ref, hyp, k=None, boundary="1"):
     """
-    Compute the Pk metric for a pair of segmentations A segmentation
-    is any sequence over a vocabulary of two items (e.g. "0", "1"),
-    where the specified boundary value is used to mark the edge of a
-    segmentation.
+    Compute the Pk metric for a pair of segmentations. Each element marks
+    whether two adjacent units belong to different segments (e.g. "1") or
+    the same segment (e.g. "0").
 
     >>> '%.2f' % pk('0100'*100, '1'*400, 2)
     '0.50'
@@ -250,11 +249,9 @@ def pk(ref, hyp, k=None, boundary="1"):
     if len(ref) != len(hyp):
         raise ValueError("Segmentations have unequal length")
     if k is None:
-        # Half the average reference segment length. A boundary-free reference
-        # has a count of 0, which would make this an uncaught ZeroDivisionError
-        # (CWE-369); treat it as a single segment (count >= 1) so the metric is
-        # still computed instead of crashing.
-        k = int(round(len(ref) / (max(ref.count(boundary), 1) * 2.0)))
+        n_units = len(ref) + 1
+        n_segments = ref.count(boundary) + 1
+        k = round(n_units / (2 * n_segments))
     if k < 0:
         raise ValueError("Window width k should not be negative")
 
