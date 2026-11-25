@@ -2490,14 +2490,15 @@ class WordNetCorpusReader(CorpusReader):
     # 1. ADDITIONS TO THE WordNetCorpusReader CLASS
     # =========================================================================
 
-    def get_direct_counts(self, pos=["n", "v"]):
+    def get_direct_counts(self, pos=None):
         """
         Parses cntlist.rev to generate a dictionary of raw, unpropagated base counts
         mapped directly to synsets.
         """
+        if pos is None:
+            pos = ("n", "v")
         direct_counts = {p: {} for p in pos}
         try:
-            # We explicitly target cntlist.rev as it is standard across WN 3.0 and OEWN
             with self.open("cntlist.rev") as stream:
                 for line in stream:
                     if isinstance(line, bytes):
@@ -2526,7 +2527,7 @@ class WordNetCorpusReader(CorpusReader):
 
         return direct_counts
 
-    def compute_ic(self, direct_counts=None, pos=["n", "v"], smoothing=0):
+    def compute_ic(self, direct_counts=None, pos=None, smoothing=0):
         """
         Dynamically computes Information Content (IC) frequencies for the taxonomy using
         strict set-theoretic closures. This prevents double-counting in multi-inheritance
@@ -2534,19 +2535,19 @@ class WordNetCorpusReader(CorpusReader):
 
         :param direct_counts: Optional dict mapping POS tags to synset frequency dicts.
                               If None, relies on get_direct_counts() to parse cntlist.rev.
-        :param pos: List of POS tags to compute IC for (default: ['n', 'v']).
+        :param pos: List of POS tags to compute IC for (default: ('n', 'v')).
         :param smoothing: Integer smoothing applied to cumulative counts (default: 0).
         :return: An IC dictionary compatible with NLTK's similarity metrics.
+
         """
+        if pos is None:
+            pos = ("n", "v")
         if direct_counts is None:
             direct_counts = self.get_direct_counts(pos)
 
         ic_dict = {}
         for p in pos:
             ic_dict[p] = {}
-
-            # The virtual root (0) must equal the strict sum of all distinct base counts
-            # to guarantee that max probability p(c) never exceeds 1.0.
             ic_dict[p][0] = int(sum(direct_counts[p].values()) + smoothing)
 
             synsets = list(self.all_synsets(p))
@@ -2561,12 +2562,14 @@ class WordNetCorpusReader(CorpusReader):
         return ic_dict
 
     def compute_extrinsic_legacy(
-        self, direct_counts=None, pos=["n", "v"], smoothing=0, accumulate=0
+        self, direct_counts=None, pos=None, smoothing=0, accumulate=0
     ):
         """
         Generates legacy Extrinsic IC by applying recursive path-summation.
         Includes cycle-detection to prevent RecursionError on WN anomalies.
         """
+        if pos is None:
+            pos = ("n", "v")
         if direct_counts is None:
             direct_counts = self.get_direct_counts(pos)
 
@@ -2576,9 +2579,8 @@ class WordNetCorpusReader(CorpusReader):
             if ss in memo:
                 return memo[ss]
             if ss in visiting:
-                return 0  # Break the infinite loop!
+                return 0
             visiting.add(ss)
-            # NB: Recursive sum of direct counts + hyponym counts (double-counts DAGs)
             fq = direct_counts[p].get(ss, 0)
             freq = fq + sum(legacy_freq(hypo) for hypo in ss._narrower()) + accumulate
             visiting.remove(ss)
@@ -2591,11 +2593,10 @@ class WordNetCorpusReader(CorpusReader):
             synsets = list(self.all_synsets(p))
             for ss in synsets:
                 ic[p][ss.offset()] = legacy_freq(ss) + smoothing
-            # Virtual Root equals total pos tokens
             ic[p][0] = sum(direct_counts[p].values())
         return ic
 
-    def compute_intrinsic_ic(self, pos=["n", "v"], lang="eng"):
+    def compute_intrinsic_ic(self, pos=None, lang="eng"):
         """
         Dynamically computes Intrinsic Information Content (IC) frequencies based on
         the topological structure of WordNet, conceptually following Seco et al. (2004).
@@ -2603,6 +2604,8 @@ class WordNetCorpusReader(CorpusReader):
         Assigns a uniform base weight of 1 to every synset and uses strict set closures
         to prevent multi-path double-counting when determining topological footprints.
         """
+        if pos is None:
+            pos = ("n", "v")
         direct_counts = {p: {} for p in pos}
 
         for p in pos:
