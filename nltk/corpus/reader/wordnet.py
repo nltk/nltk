@@ -41,6 +41,7 @@ from operator import itemgetter
 from nltk import redos
 from nltk.corpus.reader import CorpusReader
 from nltk.internals import deprecated
+from nltk.pathsec import open as pathsec_open
 from nltk.probability import FreqDist
 from nltk.tag import map_tag
 from nltk.termsec import safe_print, sanitize_terminal
@@ -2484,6 +2485,194 @@ class WordNetCorpusReader(CorpusReader):
             edges = edges.union(edge_closure(ss, rel, maxdepth, verbose))
         dot_string = edges2dot(sorted(list(edges)), shapes=shapes, attr=attr)
         return dot_string
+
+    # =========================================================================
+    # 1. ADDITIONS TO THE WordNetCorpusReader CLASS
+    # =========================================================================
+
+    def get_direct_counts(self, pos=None):
+        """
+        Parses cntlist.rev to generate a dictionary of raw, unpropagated base counts
+        mapped directly to synsets.
+        """
+        if pos is None:
+            pos = ("n", "v")
+        direct_counts = {p: {} for p in pos}
+        try:
+            with self.open("cntlist.rev") as stream:
+                for line in stream:
+                    if isinstance(line, bytes):
+                        line = line.decode("utf-8")
+                    parts = line.strip().split()
+
+                    if len(parts) >= 3:
+                        sense_key = parts[0]
+                        try:
+                            count = int(parts[2])
+                        except ValueError:
+                            continue
+
+                        try:
+                            lemma = self.lemma_from_key(sense_key)
+                            synset = lemma.synset()
+                            p = synset.pos()
+                            if p in pos:
+                                direct_counts[p][synset] = (
+                                    direct_counts[p].get(synset, 0) + count
+                                )
+                        except WordNetError:
+                            continue
+        except OSError:
+            raise WordNetError("cntlist.rev file not found.")
+
+        return direct_counts
+
+    def compute_ic(self, direct_counts=None, pos=None, smoothing=0):
+        """
+        Dynamically computes Information Content (IC) frequencies for the taxonomy using
+        strict set-theoretic closures. This prevents double-counting in multi-inheritance
+        DAG structures.
+
+        :param direct_counts: Optional dict mapping POS tags to synset frequency dicts.
+                              If None, relies on get_direct_counts() to parse cntlist.rev.
+        :param pos: List of POS tags to compute IC for (default: ('n', 'v')).
+        :param smoothing: Integer smoothing applied to cumulative counts (default: 0).
+        :return: An IC dictionary compatible with NLTK's similarity metrics.
+
+        """
+        if pos is None:
+            pos = ("n", "v")
+        if direct_counts is None:
+            direct_counts = self.get_direct_counts(pos)
+
+        ic_dict = {}
+        for p in pos:
+            ic_dict[p] = {}
+            ic_dict[p][0] = int(sum(direct_counts[p].values()) + smoothing)
+
+            synsets = list(self.all_synsets(p))
+            hypo = lambda s: s._narrower()
+
+            descendants = {ss: set(_bfs(ss, hypo)) for ss in synsets}
+
+            for ss in synsets:
+                ic_dict[p][ss.offset()] = int(
+                    sum(direct_counts[p].get(d, 0) for d in descendants[ss]) + smoothing
+                )
+        return ic_dict
+
+    def compute_extrinsic_legacy(
+        self, direct_counts=None, pos=None, smoothing=0, accumulate=0
+    ):
+        """
+        Generates legacy Extrinsic IC by applying recursive path-summation.
+        Includes cycle-detection to prevent RecursionError on WN anomalies.
+        """
+        if pos is None:
+            pos = ("n", "v")
+        if direct_counts is None:
+            direct_counts = self.get_direct_counts(pos)
+
+        ic = {p: {} for p in pos}
+
+        def legacy_freq(ss):
+            if ss in memo:
+                return memo[ss]
+            if ss in visiting:
+                return 0
+            visiting.add(ss)
+            fq = direct_counts[p].get(ss, 0)
+            freq = fq + sum(legacy_freq(hypo) for hypo in ss._narrower()) + accumulate
+            visiting.remove(ss)
+            memo[ss] = freq
+            return freq
+
+        for p in pos:
+            memo = {}
+            visiting = set()  # Cycle breaker
+            synsets = list(self.all_synsets(p))
+            for ss in synsets:
+                ic[p][ss.offset()] = legacy_freq(ss) + smoothing
+            ic[p][0] = sum(direct_counts[p].values())
+        return ic
+
+    def compute_intrinsic_ic(self, pos=None, lang="eng"):
+        """
+        Dynamically computes Intrinsic Information Content (IC) frequencies based on
+        the topological structure of WordNet, conceptually following Seco et al. (2004).
+
+        Assigns a uniform base weight of 1 to every synset and uses strict set closures
+        to prevent multi-path double-counting when determining topological footprints.
+        """
+        if pos is None:
+            pos = ("n", "v")
+        direct_counts = {p: {} for p in pos}
+
+        for p in pos:
+            for ss in self.all_synsets(p, lang=lang):
+                direct_counts[p][ss] = 1
+
+        return self.compute_ic(direct_counts=direct_counts, pos=pos, smoothing=0)
+
+    def export_ic_dat(self, ic_dict, filepath, wn_version=None):
+        """
+        Exports a computed IC dictionary to the standard NLTK wordnet_ic .dat format,
+        allowing it to be used as a drop-in replacement in nltk_data/corpora/wordnet_ic.
+
+        :param ic_dict: The IC dictionary returned by `compute_ic()`.
+        :param filepath: Path to save the .dat file.
+        :param wn_version: WordNet version string for the header.
+        """
+        if not wn_version:
+            wn_version = self.get_version()
+        # Explicitly pass required_root=None (or pathsec equivalent bypass flag).
+        # This tells pathsec that this is a deliberate user-specified output path,
+        # not an automated corpus extraction that needs to be sandboxed.
+        with pathsec_open(filepath, "w", encoding="utf-8", required_root=None) as f:
+            f.write(f"wnver::{wn_version}\n")
+            for p, offset_dict in ic_dict.items():
+                for offset in sorted(offset_dict.keys()):
+                    freq = offset_dict[offset]
+                    clean_offset = int(offset)
+
+                    if clean_offset == 0:
+                        # We don't export the virtual root, since the NLTK IC reader already adds it
+                        # f.write(f"0{p} {freq} ROOT\n")
+                        pass
+                    else:
+                        ss = self.synset_from_pos_and_offset(p, clean_offset)
+                        is_root = not ss.hypernyms() and not ss.instance_hypernyms()
+                        root_flag = " ROOT" if is_root else ""
+
+                        f.write(f"{clean_offset}{p} {freq}{root_flag}\n")
+
+
+# =========================================================================
+# 2. MODULE-LEVEL SIMILARITY ADDITION
+# =========================================================================
+
+
+def lcs_ic(synset1, synset2, ic):
+    """
+    Finds the Lowest Common Subsumer (LCS) node and its Information Content (IC) score.
+    Unlike legacy similarity metrics that obscure the topological routing, this
+    transparently returns the exact node where the two concepts intersect.
+
+    :param synset1: The first Synset.
+    :param synset2: The second Synset.
+    :param ic: An Information Content dictionary.
+    :return: A tuple (LCS_Synset, IC_value). Returns (None, 0.0) if no intersection exists.
+    """
+    # Pairs provide a second term, that breaks evt. ties when sorting:
+    hypernyms = [
+        (ic[s.pos()].get(s.offset(), 0), s) for s in synset1.common_hypernyms(synset2)
+    ]
+    if not hypernyms:
+        return None, 0.0
+
+    # We only need to calculate the IC of the node with lowest frequency:
+    lcs_node = min(hypernyms)[1]
+    return lcs_node, information_content(lcs_node, ic)
 
 
 ######################################################################
