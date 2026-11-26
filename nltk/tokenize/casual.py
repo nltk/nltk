@@ -270,21 +270,41 @@ def _replace_html_entities(text, keep=(), remove_illegal=True, encoding="utf-8")
         >>>
     """
 
+    def _numeric_value(match):
+        try:
+            return int(match.group(3), 16 if match.group(2) else 10)
+        except ValueError:
+            return None
+
+    # Start of a low surrogate reference already joined with the high
+    # surrogate before it.
+    joined_at = None
+
     def _convert_entity(match):
+        nonlocal joined_at
         entity_body = match.group(3)
         if match.group(1):
-            try:
-                if match.group(2):
-                    number = int(entity_body, 16)
-                else:
-                    number = int(entity_body, 10)
-                # Numeric character references in the 80-9F range are typically
-                # interpreted by browsers as representing the characters mapped
-                # to bytes 80-9F in the Windows-1252 encoding. For more info
-                # see: https://en.wikipedia.org/wiki/ISO/IEC_8859-1#Similar_character_sets
-                if 0x80 <= number <= 0x9F:
-                    return bytes((number,)).decode("cp1252")
-            except ValueError:
+            if match.start() == joined_at:
+                return ""
+            number = _numeric_value(match)
+            if number is None:
+                pass  # not a number: illegal
+            # Numeric character references in the 80-9F range are typically
+            # interpreted by browsers as representing the characters mapped
+            # to bytes 80-9F in the Windows-1252 encoding. For more info
+            # see: https://en.wikipedia.org/wiki/ISO/IEC_8859-1#Similar_character_sets
+            elif 0x80 <= number <= 0x9F:
+                return bytes((number,)).decode("cp1252")
+            # A character outside the BMP is sometimes escaped as its UTF-16
+            # surrogate pair, e.g. "&#55357;&#56845;" for U+1F60D. Join a
+            # pair into that character; a lone surrogate is no character
+            # (and cannot be encoded), so treat it as illegal.
+            elif 0xD800 <= number <= 0xDFFF:
+                low_match = ENT_RE.match(match.string, match.end())
+                low = low_match and low_match.group(1) and _numeric_value(low_match)
+                if number <= 0xDBFF and low and 0xDC00 <= low <= 0xDFFF:
+                    joined_at = low_match.start()
+                    return chr(0x10000 + ((number - 0xD800) << 10) + (low - 0xDC00))
                 number = None
         else:
             if entity_body in keep:
