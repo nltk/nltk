@@ -87,6 +87,34 @@ class TestTokenize:
         assert tokenizer.tokenize("a.. .b") == ["a", ".. .", "b"]
 
     @pytest.mark.parametrize(
+        "text, expected",
+        [
+            # the example from #2011: a lone high surrogate is dropped
+            ("smile 😍😂&#55357;😍", ["smile", "😍", "😂", "😍"]),
+            ("x &#56845; y", ["x", "y"]),
+            ("&#55357;&#55357;", []),
+            # a UTF-16 surrogate pair is joined into its character
+            ("pair &#55357;&#56845; end", ["pair", "😍", "end"]),
+            ("hex &#xD83D;&#xde0d; end", ["hex", "😍", "end"]),
+            ("&#55357;&#55357;&#56845;", ["😍"]),
+        ],
+    )
+    def test_tweet_tokenizer_surrogate_entities(self, text, expected):
+        """
+        Numeric entities for UTF-16 surrogates must not leave surrogates,
+        which cannot be encoded, in the tokens (#2011).
+        """
+        tokens = TweetTokenizer().tokenize(text)
+        assert tokens == expected
+        " ".join(tokens).encode("utf-8")
+
+    def test_replace_html_entities_keeps_lone_surrogate_if_asked(self):
+        from nltk.tokenize.casual import _replace_html_entities
+
+        text = "a&#55357;b"
+        assert _replace_html_entities(text, remove_illegal=False) == text
+
+    @pytest.mark.parametrize(
         "test_input, expecteds",
         [
             (
