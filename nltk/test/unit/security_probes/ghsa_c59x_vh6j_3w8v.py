@@ -13,7 +13,7 @@ def probe_ghsa_c59x_vh6j_3w8v():
     callables when unpickling untrusted models (GHSA-c59x-vh6j-3w8v).
     """
     pickle_payload = (
-        b"\x80\x04" b"c" b"numpy.lib._npyio_impl\nrecfromtxt\n" b"()" b"R" b"."
+        b"\x80\x04" b"c" b"numpy.lib._npyio_impl\nrecfromtxt\n" b"."
     )
 
     try:
@@ -21,5 +21,3 @@ def probe_ghsa_c59x_vh6j_3w8v():
         return VULNERABLE, "Submodule sink unpickled without restriction"
     except UnpicklingError as e:
         return FIXED, f"UnpicklingError raised for unauthorized submodule global: {e}"
-    except Exception as e:
-        return FIXED, f"Blocked with {type(e).__name__}: {e}"

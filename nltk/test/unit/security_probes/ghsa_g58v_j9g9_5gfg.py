@@ -18,7 +18,7 @@ def probe_ghsa_g58v_j9g9_5gfg():
         unauth_real = os.path.realpath(unauth_dir)
 
         orig_path = list(nltk.data.path)
-        nltk.data.path.append(auth_real)
+        nltk.data.path.extend([auth_real, unauth_real])
 
         try:
             root_dir = os.path.join(auth_real, "corpus_root")
@@ -38,7 +38,5 @@ def probe_ghsa_g58v_j9g9_5gfg():
                 return VULNERABLE, f"Symlink escape permitted: {resolved}"
             except (PermissionError, ValueError) as e:
                 return FIXED, f"Symlink escape blocked by path containment: {e}"
-            except Exception as e:
-                return FIXED, f"Blocked with {type(e).__name__}: {e}"
         finally:
             nltk.data.path = orig_path

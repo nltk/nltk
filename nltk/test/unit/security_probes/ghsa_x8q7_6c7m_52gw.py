@@ -20,7 +20,7 @@ def probe_ghsa_x8q7_6c7m_52gw():
 
     # Probe 2: @argfile syntax in cmd list
     try:
-        java(cmd=["@/path/to/argfile"], classpath=None)
+        java(cmd=["org.example.Main", "@/path/to/argfile"], classpath=None)
         return VULNERABLE, "Launcher option @argfile permitted in cmd sequence"
     except ValueError:
         pass
